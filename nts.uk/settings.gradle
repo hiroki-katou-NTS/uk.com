@@ -1,0 +1,3 @@
+rootProject.name = 'nts.uk'
+include 'pr:proto'
+include 'pr:web'
