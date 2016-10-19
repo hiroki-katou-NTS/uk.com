@@ -1,7 +1,54 @@
 import org.gradle.api.Project
+
+buildscript {
+	repositories {
+		mavenCentral()
+		flatDir {
+			dirs "$rootDir/libs"
+		}
+	}
+	dependencies {
+		//http://mvnrepository.com/artifact/de.aaschmid.gradle.plugins/gradle-cpd-plugin
+		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
+
+		//http://mvnrepository.com/artifact/com.bmuschko/gradle-cargo-plugin
+		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
+
+		//http://mvnrepository.com/artifact/com.eriwen/gradle-js-plugin
+		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
+	}
+}
+
+
 allprojects {
 	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'eclipse-wtp'
+	repositories {
+		repositories {
+			flatDir {
+				dirs "$rootDir/libs", 'libs'
+			}
+
+			mavenCentral()
+			maven {
+				name 'aspose'
+				url 'http://maven.aspose.com/artifactory/simple/ext-release-local/'
+			}
+		}
+	}
+	
+	apply from: "$rootDir/gradle/properties.gradle"
+	apply from: "$rootDir/gradle/library_properties.gradle"
+
+	//ビルド及び実行は、Java8を対象とする
+	sourceCompatibility = "$javaVersion"
+	targetCompatibility = "$javaVersion" 
+
+	task cleanandbuildallproject (dependsOn: ['clean', 'build'])<< {
+	}
 }
+
 project (':proto:nts.uk.pr.proto.ws') {
 	dependencies {
 		compile project(':proto:nts.uk.pr.proto.app')
@@ -49,5 +96,6 @@ project ('nts.uk.pr.web') {
 		runtime project (':proto:nts.uk.pr.proto.app')
 		runtime project (':proto:nts.uk.pr.proto.dom')
 		runtime project (':proto:nts.uk.pr.proto.infra')
+		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 	}
 }
