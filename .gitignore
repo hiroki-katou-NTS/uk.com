@@ -1,1 +1,5 @@
 /nts.uk/.nb-gradle/
+/nts.uk/pr/.gradle
+
+build/
+taskArtifacts/
