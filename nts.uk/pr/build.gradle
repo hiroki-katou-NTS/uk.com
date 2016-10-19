@@ -20,7 +20,7 @@ project (':proto:nts.uk.pr.proto.infra') {
 project ('nts.uk.pr.web') {
 	apply plugin: 'war'
 	war {
-        baseName= "healthcare.web"
+        baseName= "nts.uk.pr.web"
     }
 	def explodedPath = "${buildDir}/exploded"
     def explodedWarPath = "${explodedPath}/${war.baseName}.war"
