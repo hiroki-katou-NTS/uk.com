@@ -1,0 +1,53 @@
+import org.gradle.api.Project
+allprojects {
+	apply plugin: 'java'
+}
+project (':proto:nts.uk.pr.proto.ws') {
+	dependencies {
+		compile project(':proto:nts.uk.pr.proto.app')
+	}
+}
+project (':proto:nts.uk.pr.proto.app') {
+	dependencies {
+		compile project(':proto:nts.uk.pr.proto.dom')
+	}
+}
+project (':proto:nts.uk.pr.proto.infra') {
+	dependencies {
+		compile project(':proto:nts.uk.pr.proto.dom')
+	}
+}
+project ('nts.uk.pr.web') {
+	apply plugin: 'war'
+	war {
+        baseName= "healthcare.web"
+    }
+	def explodedPath = "${buildDir}/exploded"
+    def explodedWarPath = "${explodedPath}/${war.baseName}.war"
+    def explodedWarDeployPath = "${explodedWarPath}.dodeploy"
+    def explodedWarFolder = new File(explodedWarPath);
+    def explodedWarDeployFile = new File(explodedWarDeployPath);
+    def staticSourcePath = "${rootDir}/nts.uk.pr.web/src/main/webapp"
+    def deployPattern = ~/${war.baseName}\.war\.*/
+
+    task explodedWar(type: Copy) {  
+        into explodedWarPath
+        with war
+        doLast {
+            explodedWarDeployFile.write ''
+        }
+    }
+    
+    war.dependsOn explodedWar
+    
+    task copyStaticResource(type: Sync) {
+        from staticSourcePath
+        into explodedWarPath
+    }
+	dependencies {
+		runtime project (':proto:nts.uk.pr.proto.ws')
+		runtime project (':proto:nts.uk.pr.proto.app')
+		runtime project (':proto:nts.uk.pr.proto.dom')
+		runtime project (':proto:nts.uk.pr.proto.infra')
+	}
+}

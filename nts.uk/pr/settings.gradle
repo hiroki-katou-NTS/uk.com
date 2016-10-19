@@ -1,0 +1,5 @@
+include 'nts.uk.pr.web'
+include 'proto:nts.uk.pr.proto.app'
+include 'proto:nts.uk.pr.proto.dom'
+include 'proto:nts.uk.pr.proto.infra'
+include 'proto:nts.uk.pr.proto.ws'
