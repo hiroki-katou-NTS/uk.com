@@ -2,3 +2,7 @@ build/
 taskArtifacts/
 .nb-gradle/
 .gradle/
+
+.classpath
+.project
+.settings/

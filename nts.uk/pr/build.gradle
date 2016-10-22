@@ -47,20 +47,33 @@ allprojects {
 
 	task cleanandbuildallproject (dependsOn: ['clean', 'build'])<< {
 	}
+	
+	dependencies {
+		compile files("\\\\192.168.100.251\\DevelopSource\\Project\\UniversalK\\maven\\nts.gul\\nts.gul-0.2.jar")
+		compile files("\\\\192.168.100.251\\DevelopSource\\Project\\UniversalK\\maven\\nts.arc\\nts.arc-0.1.jar")
+	}
+}
+
+project (':shr:nts.uk.shr.com') {
+	dependencies {
+	}
 }
 
 project (':proto:nts.uk.pr.proto.ws') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project(':proto:nts.uk.pr.proto.app')
 	}
 }
 project (':proto:nts.uk.pr.proto.app') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
 }
 project (':proto:nts.uk.pr.proto.infra') {
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
 }
@@ -92,6 +105,7 @@ project ('nts.uk.pr.web') {
         into explodedWarPath
     }
 	dependencies {
+		compile project(':shr:nts.uk.shr.com')
 		runtime project (':proto:nts.uk.pr.proto.ws')
 		runtime project (':proto:nts.uk.pr.proto.app')
 		runtime project (':proto:nts.uk.pr.proto.dom')
