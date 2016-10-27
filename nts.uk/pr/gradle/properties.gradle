@@ -7,4 +7,9 @@ ext {
 
     //testの実行有無を制御するリスト
     test_skip = [:]
+    
+    // Artifactory設定
+    artifactory_contextUrl = 'http://1506-v0001:8081/artifactory'
+    artifactory_user = 'buildscript'
+    artifactory_password = 'AP8qH3heYhsucE8oPrQv3xrwn1m'
 }

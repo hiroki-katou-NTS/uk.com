@@ -1,10 +1,12 @@
 import org.gradle.api.Project
 
+apply plugin: 'java'
+
 buildscript {
 	repositories {
-		mavenCentral()
-		flatDir {
-			dirs "$rootDir/libs"
+		maven {
+			name 'nsvnmk'
+			url 'http://1506-v0001:8081/artifactory/plugins-release'
 		}
 	}
 	dependencies {
@@ -16,41 +18,65 @@ buildscript {
 
 		//http://mvnrepository.com/artifact/com.eriwen/gradle-js-plugin
 		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
+		
+		//Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
+		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4+"
 	}
 }
 
-
+//すべてのプロジェクトに適応すべき内容はここに追記する
 allprojects {
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-	apply plugin: 'eclipse-wtp'
-	repositories {
-		repositories {
-			flatDir {
-				dirs "$rootDir/libs", 'libs'
-			}
-
-			mavenCentral()
-			maven {
-				name 'aspose'
-				url 'http://maven.aspose.com/artifactory/simple/ext-release-local/'
-			}
-		}
-	}
-	
 	apply from: "$rootDir/gradle/properties.gradle"
 	apply from: "$rootDir/gradle/library_properties.gradle"
+	apply plugin: "com.jfrog.artifactory"
 
-	//�r���h�y�ю��s�́AJava8��ΏۂƂ���
+	//ビルド及び実行は、Java8を対象とする
 	sourceCompatibility = "$javaVersion"
 	targetCompatibility = "$javaVersion" 
 
 	task cleanandbuildallproject (dependsOn: ['clean', 'build'])<< {
 	}
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'eclipse-wtp'
+	repositories {
+		maven {
+			name 'aspose'
+			url 'http://maven.aspose.com/artifactory/simple/ext-release-local/'
+		}
+	}
+	
+	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
+	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
 	dependencies {
-		compile files("\\\\192.168.100.251\\DevelopSource\\Project\\UniversalK\\maven\\nts.gul\\nts.gul-0.2.jar")
-		compile files("\\\\192.168.100.251\\DevelopSource\\Project\\UniversalK\\maven\\nts.arc\\nts.arc-0.1.jar")
+		// Lombok
+		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
+		
+		// JUnit
+		testCompile group: 'junit', name: 'junit', version: '4.12'
+		
+		// JMockit
+		testCompile group: 'org.jmockit', name: 'jmockit', version: '1.28'
+		
+	    // CDI
+	    compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
+
+	    // EJB
+	    compileOnly group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+	    
+	    // Concurrency Utilities for Java EE
+	    compile group: 'javax.enterprise.concurrent', name: 'javax.enterprise.concurrent-api', version: '1.0'
+	    
+	    // JPA
+	    compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.1.1'
+	    compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.4'
+	    
+	    compile group: 'com.nittsusytem.commons', name: 'nts.gul', version: '0.3'
+	    compile group: 'com.nittsusytem.commons', name: 'nts.arc', version: '0.2'
 	}
 }
 
@@ -111,5 +137,27 @@ project ('nts.uk.pr.web') {
 		runtime project (':proto:nts.uk.pr.proto.dom')
 		runtime project (':proto:nts.uk.pr.proto.infra')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+	}
+}
+
+artifactory {
+	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+	publish {
+		repository {
+			repoKey = 'libs-release-local'
+			username = "${artifactory_user}"
+			password = "${artifactory_password}"
+			maven = true
+			
+		}
+	}
+	resolve {
+		repository {
+			repoKey = 'libs-release'
+			username = "${artifactory_user}"
+			password = "${artifactory_password}"
+			maven = true
+			
+		}
 	}
 }
