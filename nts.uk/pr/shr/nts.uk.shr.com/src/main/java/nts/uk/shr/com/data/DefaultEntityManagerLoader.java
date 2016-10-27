@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.EntityManagerLoader;
 @RequestScoped
 public class DefaultEntityManagerLoader implements EntityManagerLoader {
 
-    @PersistenceContext(unitName = "HEALTHCARE")
+    @PersistenceContext(unitName = "UK")
     private EntityManager entityManager;
     
     @Override
