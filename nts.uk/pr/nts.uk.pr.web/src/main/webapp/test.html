@@ -1,16 +1,55 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+﻿<!DOCTYPE html>
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title></title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/base.css" />
+
+        <script>
+            var __viewContext = {
+                primitiveValueConstraints: {
+                    CompanyCode: {
+                        valueType: "String",
+                        charType: "Numeric",
+                        maxLength: 4
+                    },
+                    CompanyName: {
+                        valueType: "String",
+                        charType: "Any",
+                        maxLength: 20
+                    }
+                }
+            };
+        </script>
+
+        <script src="./lib/generic/jquery/jquery-3.1.1.js"></script>
+        <script src="./lib/generic/knockoutjs/knockout-3.4.0.js"></script>
+        <script src="./lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
+        <script src="./lib/generic/lodash/lodash-1.8.3.min.js"></script>
+        <script src="lib/nittsu/util.js"></script>
+        <script src="lib/nittsu/text.js"></script>
+        <script src="lib/nittsu/ui/notify.js"></script>
+        <script src="lib/nittsu/ui/validation.js"></script>
+        <script src="lib/nittsu/ui/jquery-ext.js"></script>
+        <script src="lib/nittsu/ui/ko-ext.js"></script>
+        <script src="lib/nittsu/ui/ui.js"></script>
+
+        <script>
+            $(function () {
+                var vm = {
+                    companyCode: ko.observable('0001'),
+                    companyName: ko.observable('てすと会社')
+                };
+
+                ko.applyBindings(vm);
+            });
+        </script>
     </head>
     <body>
         <div>てすとぺーじ</div>
+
+        会社コード：<input type="text" data-bind="ntsTextBox: { value: companyCode, constraint: 'CompanyCode' }" /><br />
+        会社名：<input type="text" data-bind="ntsTextBox: { value: companyName, constraint: 'CompanyName' }" /><br />
     </body>
 </html>
