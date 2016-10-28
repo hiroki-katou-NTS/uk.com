@@ -36,11 +36,11 @@ public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveVal
     }
     
 	private static String padSpace(String rawCode, Object[] param) {
-		Class codeClass = param[1].getClass();
+		Class<?> codeClass = param[1].getClass();
         return padSpace(rawCode, codeClass);
 	}
     
-    private static String padSpace(String rawCode, Class codeClass) {
+    private static String padSpace(String rawCode, Class<?> codeClass) {
         int maxLength = PrimitiveValueUtil.getStringMaxLength(codeClass);
         if (maxLength <= 0) {
             return rawCode;
