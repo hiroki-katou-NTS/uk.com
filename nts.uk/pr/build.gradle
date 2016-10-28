@@ -53,6 +53,9 @@ subprojects {
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
 	dependencies {
+       // Apache commons lang
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+        
 		// Lombok
 		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
 		
@@ -75,8 +78,8 @@ subprojects {
 	    compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.1.1'
 	    compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.4'
 	    
-	    compile group: 'com.nittsusytem.commons', name: 'nts.gul', version: '0.3'
-	    compile group: 'com.nittsusytem.commons', name: 'nts.arc', version: '0.2'
+	    compile group: 'com.nittsusytem.commons', name: 'nts.gul', version: '0.3.1'
+	    compile group: 'com.nittsusytem.commons', name: 'nts.arc', version: '0.2.3'
 	}
 }
 
