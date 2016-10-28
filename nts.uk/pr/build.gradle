@@ -79,7 +79,7 @@ subprojects {
 	    compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.4'
 	    
 	    compile group: 'com.nittsusytem.commons', name: 'nts.gul', version: '0.3.1'
-	    compile group: 'com.nittsusytem.commons', name: 'nts.arc', version: '0.2.3'
+	    compile group: 'com.nittsusytem.commons', name: 'nts.arc', version: '0.3'
 	}
 }
 
