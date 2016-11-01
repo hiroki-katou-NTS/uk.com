@@ -1,0 +1,29 @@
+package nts.uk.ctx.core.app.company.command;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import lombok.val;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.dom.company.CompanyRepository;
+
+@RequestScoped
+@Transactional
+public class RemoveCompanyCommandHandler extends CommandHandler<RemoveCompanyCommand, Void> {
+
+	@Inject
+	private CompanyRepository companyRepository;
+	
+	@Override
+	protected Void handle(CommandHandlerContext<RemoveCompanyCommand> context) {
+		
+		val companyCode = new CompanyCode(context.getCommand().getCompanyCode());
+		this.companyRepository.remove(companyCode);
+		
+		return null;
+	}
+
+}
