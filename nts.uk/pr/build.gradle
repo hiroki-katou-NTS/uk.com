@@ -97,18 +97,27 @@ project (':proto:nts.uk.pr.proto.ws') {
 		compile project(':proto:nts.uk.pr.proto.app')
 	}
 }
+
+project (':proto:nts.uk.pr.proto.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
 project (':proto:nts.uk.pr.proto.app') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
 }
+
 project (':proto:nts.uk.pr.proto.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
 }
+
 project ('nts.uk.pr.web') {
 	apply plugin: 'war'
 	war {
@@ -138,11 +147,12 @@ project ('nts.uk.pr.web') {
     }
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+
 		runtime project (':proto:nts.uk.pr.proto.ws')
 		runtime project (':proto:nts.uk.pr.proto.app')
 		runtime project (':proto:nts.uk.pr.proto.dom')
 		runtime project (':proto:nts.uk.pr.proto.infra')
-		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 	}
 }
 
