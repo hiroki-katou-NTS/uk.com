@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.data.entity.company;
+package nts.uk.ctx.core.infra.data.entity;
 
 import lombok.Getter;
 import lombok.Setter;

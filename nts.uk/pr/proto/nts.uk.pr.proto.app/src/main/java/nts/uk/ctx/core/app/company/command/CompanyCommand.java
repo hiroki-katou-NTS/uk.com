@@ -13,6 +13,6 @@ public abstract class CompanyCommand {
 	private String companyName;
 	
 	public Company toDomain() {
-		return Company.createToAddOrUpdate(this.companyCode, this.companyName);
+		return Company.createFromJavaType(this.companyCode, this.companyName);
 	}
 }

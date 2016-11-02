@@ -12,18 +12,16 @@ import nts.uk.ctx.core.dom.company.CompanyRepository;
 
 @RequestScoped
 @Transactional
-public class RemoveCompanyCommandHandler extends CommandHandler<RemoveCompanyCommand, Void> {
+public class RemoveCompanyCommandHandler extends CommandHandler<RemoveCompanyCommand> {
 
 	@Inject
 	private CompanyRepository companyRepository;
 	
 	@Override
-	protected Void handle(CommandHandlerContext<RemoveCompanyCommand> context) {
+	protected void handle(CommandHandlerContext<RemoveCompanyCommand> context) {
 		
 		val companyCode = new CompanyCode(context.getCommand().getCompanyCode());
 		this.companyRepository.remove(companyCode);
-		
-		return null;
 	}
 
 }

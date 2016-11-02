@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.data.repository;
+package nts.uk.ctx.core.infra.data.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,14 +6,14 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
-import nts.arc.layer.infra.data.GeneralRepository;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.company.CompanyRepository;
-import nts.uk.shr.infra.data.entity.company.SmpmtCompany;
+import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 
 @RequestScoped
-public class JpaCompanyRepository extends GeneralRepository implements CompanyRepository {
+public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
 	@Override
 	public Optional<Company> find(String companyCode) {
@@ -49,7 +49,7 @@ public class JpaCompanyRepository extends GeneralRepository implements CompanyRe
 	
 	private static SmpmtCompany toEntity(Company domain) {
 		val entity = new SmpmtCompany();
-		entity.setVersion(domain.getVersion());
+		entity.fromDomain(domain);
 		entity.setCode(domain.getCode().v());
 		entity.setName(domain.getName().v());
 		
@@ -58,7 +58,7 @@ public class JpaCompanyRepository extends GeneralRepository implements CompanyRe
 
 	private static Company toDomain(SmpmtCompany entity) {
 		val domain = Company.createFromJavaType(entity.getCode(), entity.getName());
-		domain.setVersion(entity.getVersion());
+		entity.toDomain(domain);
 		
 		return domain;
 	}

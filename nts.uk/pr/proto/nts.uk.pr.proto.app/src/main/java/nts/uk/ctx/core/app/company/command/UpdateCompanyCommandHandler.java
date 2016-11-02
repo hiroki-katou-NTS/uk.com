@@ -11,18 +11,18 @@ import nts.uk.ctx.core.dom.company.CompanyRepository;
 
 @RequestScoped
 @Transactional
-public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCommand, Void> {
+public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCommand> {
 
 	@Inject
 	private CompanyRepository companyRepository;
 	
 	@Override
-	protected Void handle(CommandHandlerContext<UpdateCompanyCommand> context) {
+	protected void handle(CommandHandlerContext<UpdateCompanyCommand> context) {
 		
 		Company company = context.getCommand().toDomain();
-		this.companyRepository.update(company);
+		company.validate();
 		
-		return null;
+		this.companyRepository.update(company);
 	}
 
 
