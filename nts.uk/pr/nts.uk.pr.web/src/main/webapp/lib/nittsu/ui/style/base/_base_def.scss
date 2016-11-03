@@ -14,18 +14,19 @@ $font_color: #000;
 $button_font_color: #404040;
 $hyperlink_color: #0066CC;
 
+$activated_color: #00B050;
 
 // 変数定義 ======================================
 // ベンダープレフィックスを自動で付与する
-$set-prefix: '' , -moz- , -webkit-, -ms-;
+$set_prefix: '' , -moz- , -webkit-, -ms-;
 
 @mixin mix-propertySetPrefix($name, $value) {
-     @each $prefix in $set-prefix {
+     @each $prefix in $set_prefix {
          #{$prefix}#{$name}: $value;
     }
 }
 @mixin mix-valueSetPrefix($name, $value) {
-     @each $prefix in $set-prefix {
+     @each $prefix in $set_prefix {
         #{$name}: #{$prefix}$value;
     }
 }

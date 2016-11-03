@@ -39,7 +39,16 @@
             $(function () {
                 var vm = {
                     companyCode: ko.observable('0001'),
-                    companyName: ko.observable('てすと会社')
+                    companyName: ko.observable('てすと会社'),
+
+                    switchbutton: {
+                        roundingRules: ko.observableArray([
+                            { code: '1', name: '四捨五入' },
+                            { code: '2', name: '切り上げ' },
+                            { code: '3', name: '切り捨て' }
+                        ]),
+                        selectedRuleCode: ko.observable('1')
+                    }
                 };
 
                 ko.applyBindings(vm);
@@ -52,6 +61,17 @@
         会社コード：<input type="text" data-bind="ntsTextBox: { value: companyCode, constraint: 'CompanyCode' }" /><br />
         会社名：<input type="text" data-bind="ntsTextBox: { value: companyName, constraint: 'CompanyName' }" /><br />
         
+        <hr />
         <button>aaa</button>
+        <hr />
+
+        <div data-bind="with: switchbutton">
+            <div id="switchButtonTest" data-bind="ntsSwitchButton: {
+                options: roundingRules,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: selectedRuleCode }" class="cf">
+            </div>
+        </div>
     </body>
 </html>

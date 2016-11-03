@@ -1,0 +1,24 @@
+﻿@import "../compass-for-vs2013-master/compass";
+@import "../compass-for-vs2013-master/compass/_reset.scss";
+@import "../base/_base_def.scss";
+@import "../base/_clearfix.scss";
+
+button.nts-switch-button {
+
+    &:active {
+        top: 2px;
+        border-bottom-width: 1px;
+    }
+
+    &.selected {
+        top: 2px;
+        border-bottom-width: 1px;
+        color: #fff;
+        background-color: $activated_color;
+
+        &:hover {
+            color: #fff;
+            background-color: $activated_color;
+        }
+    }
+}

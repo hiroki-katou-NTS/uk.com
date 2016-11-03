@@ -26,11 +26,11 @@ $button-disabled-base-color: #888888;
     
     /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
     &:hover {
-        background-color: darken($button-normal-base-color, 5%) !important;
+        background-color: darken($button-normal-base-color, 5%);
     }
 
     &[disabled] {
-        background-color: darken($button-normal-base-color, 15%) !important;
+        background-color: darken($button-normal-base-color, 15%);
         cursor: default;
         color: $button-disabled-base-color;
     }
@@ -45,25 +45,25 @@ $button-disabled-base-color: #888888;
     }
 
     &.proceed {
-        background-color: $button-proceed-base-color !important;
+        background-color: $button-proceed-base-color;
 
         &:hover {
-            background-color: darken($button-proceed-base-color, 10%) !important;
+            background-color: darken($button-proceed-base-color, 10%);
         }
 
         &[disabled] {
-            background-color: darken(desaturate($button-proceed-base-color, 40%), 3%) !important;
+            background-color: darken(desaturate($button-proceed-base-color, 40%), 3%);
         }
     }
     &.danger {
-        background-color: $button-danger-base-color !important;
+        background-color: $button-danger-base-color;
 
         &:hover {
-            background-color: darken($button-danger-base-color, 5%) !important;
+            background-color: darken($button-danger-base-color, 5%);
         }
 
         &[disabled] {
-            background-color: darken(desaturate($button-danger-base-color, 55%), 3%) !important;
+            background-color: darken(desaturate($button-danger-base-color, 55%), 3%);
         }
     }
 
