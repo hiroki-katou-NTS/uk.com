@@ -371,13 +371,19 @@ $font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
   *zoom: 1;
 }
 
+button.nts-switch-button {
+  height: 25px;
+}
+
 button.nts-switch-button:active {
-  top: 2px;
+  top: 3px;
+  height: 23px;
   border-bottom-width: 1px;
 }
 
 button.nts-switch-button.selected {
-  top: 2px;
+  top: 3px;
+  height: 23px;
   border-bottom-width: 1px;
   color: #fff;
   background-color: #00B050;

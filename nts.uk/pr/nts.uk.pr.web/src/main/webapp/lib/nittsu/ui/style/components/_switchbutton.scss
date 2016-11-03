@@ -5,13 +5,20 @@
 
 button.nts-switch-button {
 
+    $button_height: 25px;
+    $button_thickness: 2px;
+
+    height: $button_height;
+
     &:active {
-        top: 2px;
+        top: 3px;
+        height: $button_height - $button_thickness;
         border-bottom-width: 1px;
     }
 
     &.selected {
-        top: 2px;
+        top: 3px;
+        height: $button_height - $button_thickness;
         border-bottom-width: 1px;
         color: #fff;
         background-color: $activated_color;
