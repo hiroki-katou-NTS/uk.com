@@ -54,14 +54,12 @@ public class CompanyWebService extends WebService {
 
 	@POST
 	@Path("add")
-	@Consumes("application/json")
 	public AsyncTaskInfo add(AddCompanyCommand command) {
 		return this.add.handle(command);
 	}
 	
 	@POST
 	@Path("update")
-	@Consumes("application/json")
 	public void update(UpdateCompanyCommand command) {
 		this.update.handle(command);
 	}
