@@ -91,6 +91,7 @@ subprojects {
 
 project (':shr:nts.uk.shr.com') {
 	dependencies {
+		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 	}
 }
 
