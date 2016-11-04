@@ -20,6 +20,12 @@ public class AddCompanyCommandHandler extends AsyncCommandHandler<AddCompanyComm
 	@Override
 	protected void handle(CommandHandlerContext<AddCompanyCommand> context) {
 		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Company company = context.getCommand().toDomain();
 		company.validate();
 		
