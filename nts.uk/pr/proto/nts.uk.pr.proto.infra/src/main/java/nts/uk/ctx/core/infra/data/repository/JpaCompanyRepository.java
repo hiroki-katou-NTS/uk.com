@@ -12,6 +12,9 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.company.CompanyRepository;
 import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 
+/**
+ * JpaCompanyRepository
+ */
 @RequestScoped
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 

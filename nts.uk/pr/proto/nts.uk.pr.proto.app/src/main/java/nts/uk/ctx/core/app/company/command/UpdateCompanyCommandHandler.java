@@ -9,13 +9,22 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyRepository;
 
+/**
+ * UpdateCompanyCommandHandler
+ */
 @RequestScoped
 @Transactional
 public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCommand> {
 
+	/** CompanyRepository */
 	@Inject
 	private CompanyRepository companyRepository;
 	
+	/**
+	 * Handle command.
+	 * 
+	 * @param context context
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<UpdateCompanyCommand> context) {
 		
