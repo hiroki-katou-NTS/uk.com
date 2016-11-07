@@ -6,7 +6,7 @@
 	<persistence-unit name="UK" transaction-type="JTA">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>java:jboss/datasources/UK</jta-data-source>
-
+		<jar-file>nts.uk.pr.proto.infra.jar</jar-file>
 		<shared-cache-mode>NONE</shared-cache-mode>
 
 	</persistence-unit>

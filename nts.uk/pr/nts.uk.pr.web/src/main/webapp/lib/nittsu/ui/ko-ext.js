@@ -120,6 +120,69 @@ var nts;
                     };
                     return NtsSwitchButtonBindingHandler;
                 }());
+                var NtsCheckboxBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function NtsCheckboxBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsCheckboxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        $(element).addClass("ntsCheckBox");
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Container.
+                        var container = $(element);
+                        // Get options.
+                        var checked = ko.unwrap(data.checked);
+                        var enable = ko.unwrap(data.enable);
+                        var textId = data.text;
+                        var checkBoxText;
+                        if (textId) {
+                            checkBoxText = (textId);
+                        }
+                        else {
+                            checkBoxText = container.text();
+                            container.text('');
+                        }
+                        var checkBox;
+                        if ($('input[type="checkbox"]', container).length == 0) {
+                            // Init new.
+                            checkBox = $('<input type="checkbox">').appendTo(container);
+                            var checkBoxLabel = $("<label><span></span></label>").appendTo(container).append(checkBoxText);
+                            $(container).on('click', "label", function () {
+                                // Do nothing if disable.
+                                if (container.hasClass('disabled')) {
+                                    return;
+                                }
+                                // Change value.
+                                checkBox.prop("checked", !checkBox.prop("checked"));
+                                data.checked(checkBox.prop("checked"));
+                            });
+                        }
+                        else {
+                            checkBox = $('input[type="checkbox"]', container);
+                        }
+                        // Set state.
+                        checkBox.prop("checked", checked);
+                        // Disable.
+                        if (enable == false) {
+                            container.addClass('disabled');
+                        }
+                        else {
+                            container.removeClass('disabled');
+                        }
+                    };
+                    return NtsCheckboxBindingHandler;
+                }());
+                ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));

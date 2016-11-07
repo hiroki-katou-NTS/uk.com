@@ -4,7 +4,7 @@
         <title></title>
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/base.css" />
+        <link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/stylesheets/base.css" />
 
         <script>
             var __viewContext = {
@@ -48,6 +48,11 @@
                             { code: '3', name: '切り捨て' }
                         ]),
                         selectedRuleCode: ko.observable('1')
+                    },
+                    checkbox: {
+                        // Check box test.
+                        isHealthInsurance: ko.observable(true),
+                        isEnable:  ko.observable(true),
                     }
                 };
 
@@ -73,5 +78,17 @@
                 value: selectedRuleCode }" class="cf">
             </div>
         </div>
+      	
+      	<hr/>
+      	
+      	<div data-bind="with: checkbox">
+                  <div id="checkBoxTest1" data-bind="ntsCheckBox: { checked: isHealthInsurance, text: 'Txt_HealthInsurance', enable: isEnable }" class="cf">
+			</div>
+                  <div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: isEnable}" class="cf">
+                  	This is test text for enable
+			</div>
+			Your selected state: <div data-bind="text: isHealthInsurance"></div>
+		</div>
+      	
     </body>
 </html>
