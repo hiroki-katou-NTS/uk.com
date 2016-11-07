@@ -1,7 +1,10 @@
-﻿var nts;
+var nts;
 (function (nts) {
+    var uk;
     (function (uk) {
+        var ui;
         (function (ui) {
+            var jqueryExtentions;
             (function (jqueryExtentions) {
                 var ntsTextBox;
                 (function (ntsTextBox) {
@@ -13,15 +16,11 @@
                             }
                         }
                     };
-
                     function init(param) {
                         return null;
                     }
                 })(ntsTextBox || (ntsTextBox = {}));
-            })(ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-            var jqueryExtentions = ui.jqueryExtentions;
-        })(uk.ui || (uk.ui = {}));
-        var ui = uk.ui;
-    })(nts.uk || (nts.uk = {}));
-    var uk = nts.uk;
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
