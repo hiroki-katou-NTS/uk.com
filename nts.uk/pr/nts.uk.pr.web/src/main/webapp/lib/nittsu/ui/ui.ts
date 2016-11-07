@@ -5,4 +5,8 @@
         isRoot: boolean;
         
     }
+    
+    export function localize(textId: string): string {
+        return textId;
+    }
 }

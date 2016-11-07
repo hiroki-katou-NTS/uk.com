@@ -1,14 +1,18 @@
-﻿var nts;
+var nts;
 (function (nts) {
+    var uk;
     (function (uk) {
+        var ui;
         (function (ui) {
             var ScreenWindow = (function () {
                 function ScreenWindow() {
                 }
                 return ScreenWindow;
-            })();
-        })(uk.ui || (uk.ui = {}));
-        var ui = uk.ui;
-    })(nts.uk || (nts.uk = {}));
-    var uk = nts.uk;
+            }());
+            function localize(textId) {
+                return textId;
+            }
+            ui.localize = localize;
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
