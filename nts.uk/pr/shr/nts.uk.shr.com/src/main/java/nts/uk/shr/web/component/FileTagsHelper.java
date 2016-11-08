@@ -1,4 +1,4 @@
-package nts.uk.shr.web.componen;
+package nts.uk.shr.web.component;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
