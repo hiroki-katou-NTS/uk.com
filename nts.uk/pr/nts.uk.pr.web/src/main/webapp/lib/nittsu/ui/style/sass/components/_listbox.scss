@@ -1,0 +1,35 @@
+.nts-list-box
+{
+	.ui-selecting {
+		background: #FECA40;
+	}
+	
+	.ui-selected {
+		background: #F39814;
+		color: white;
+	}
+	
+	li {
+		height: 28px;
+	}
+}
+
+
+#combo-box {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	height: 130px;
+	border: 1px solid #CCC;
+	background: #FCFCFC;
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 300px;
+}
+.nts-column {
+	float: left;
+	padding: 5px;
+}
+.disabled {
+	color: graytext;
+}
