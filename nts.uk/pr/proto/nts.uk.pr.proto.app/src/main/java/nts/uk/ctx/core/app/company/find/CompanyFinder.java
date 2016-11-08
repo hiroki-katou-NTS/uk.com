@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.app.company.find;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -24,8 +25,8 @@ public class CompanyFinder {
 	 * @param companyCode code
 	 * @return company
 	 */
-	public CompanyDto find(String companyCode) {
-		return this.repository.find(companyCode).map(d -> CompanyDto.fromDomain(d)).get();
+	public Optional<CompanyDto> find(String companyCode) {
+		return this.repository.find(companyCode).map(d -> CompanyDto.fromDomain(d));
 	}
 	
 	/**

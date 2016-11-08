@@ -53,14 +53,14 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	private static SmpmtCompany toEntity(Company domain) {
 		val entity = new SmpmtCompany();
 		entity.fromDomain(domain);
-		entity.setCode(domain.getCode().v());
-		entity.setName(domain.getName().v());
+		entity.code = domain.getCode().v();
+		entity.name = domain.getName().v();
 		
 		return entity;
 	}
 
 	private static Company toDomain(SmpmtCompany entity) {
-		val domain = Company.createFromJavaType(entity.getCode(), entity.getName());
+		val domain = Company.createFromJavaType(entity.code, entity.name);
 		entity.toDomain(domain);
 		
 		return domain;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.dom.company;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -25,6 +26,17 @@ public class Company extends AggregateRoot {
 	public Company(CompanyCode companyCode, CompanyName companyName) {
 		this.code = companyCode;
 		this.name = companyName;
+	}
+	
+	/**
+	 * Validate
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+		
+		// custom validate
+		//throw new BusinessException("えらーです");
 	}
 	
 	/**

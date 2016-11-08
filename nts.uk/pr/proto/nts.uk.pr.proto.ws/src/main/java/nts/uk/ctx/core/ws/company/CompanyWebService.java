@@ -37,7 +37,7 @@ public class CompanyWebService extends WebService {
 	@POST
 	@Path("find/{code}")
 	public CompanyDto find(@PathParam("code") String companyCode) {
-		return this.finder.find(companyCode);
+		return this.finder.find(companyCode).get();
 	}
 	
 	@POST

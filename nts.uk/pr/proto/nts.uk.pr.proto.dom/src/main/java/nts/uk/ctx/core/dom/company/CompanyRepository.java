@@ -14,33 +14,33 @@ public interface CompanyRepository {
 	 * @param companyCode code
 	 * @return company found
 	 */
-	public Optional<Company> find(String companyCode);
+	Optional<Company> find(String companyCode);
 	
 	/**
 	 * Find all companies.
 	 * 
 	 * @return companies
 	 */
-	public List<Company> findAll();
+	List<Company> findAll();
 	
 	/**
 	 * Add new company.
 	 * 
 	 * @param company to be added
 	 */
-	public void add(Company company);
+	void add(Company company);
 	
 	/**
 	 * Update company.
 	 * 
 	 * @param company to be updated
 	 */
-	public void update(Company company);
+	void update(Company company);
 	
 	/**
 	 * Remove company.
 	 * 
 	 * @param companyCode code of company to be removed
 	 */
-	public void remove(CompanyCode companyCode);
+	void remove(CompanyCode companyCode);
 }
