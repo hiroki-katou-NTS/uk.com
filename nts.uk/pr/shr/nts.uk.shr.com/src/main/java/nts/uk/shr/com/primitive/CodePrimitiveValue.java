@@ -47,4 +47,9 @@ public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveVal
         }
         return StringUtil.padRight(rawCode, maxLength, ' ');
     }
+    
+    @Override
+    protected String getRawValueToBeValidated() {
+    	return this.v().trim();
+    }
 }

@@ -10,24 +10,28 @@ public class CodePrimitiveValueTest {
     @Test
     public void constructs_full() {
         SampleCode sampleCode = new SampleCode("abcd");
+        sampleCode.validate();
         Assert.assertThat(sampleCode.v(), is("abcd"));
     }
     
     @Test
     public void constructs_pad() {
         SampleCode sampleCode = new SampleCode("ab");
+        sampleCode.validate();
         Assert.assertThat(sampleCode.v(), is("ab  "));
     }
     
     @Test
     public void equal_true_with_pad() {
         SampleCode sampleCode = new SampleCode("ab");
+        sampleCode.validate();
         Assert.assertThat(sampleCode.equals("ab"), is(true));
     }
     
     @Test
     public void equal_false() {
         SampleCode sampleCode = new SampleCode("ab");
+        sampleCode.validate();
         Assert.assertThat(sampleCode.equals("ac"), is(false));
     }
     
