@@ -22,7 +22,8 @@
 }
 
 .ntsCheckBox.disabled input[type="checkbox"] + label span {
-    cursor:none;
+	cursor:none;
+    cursor:not-allowed;
 }
 
 .ntsCheckBox.disabled * {

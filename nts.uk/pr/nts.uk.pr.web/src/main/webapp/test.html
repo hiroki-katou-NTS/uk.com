@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
 
         <link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/stylesheets/base.css" />
+        <link rel="stylesheet" type="text/css" href="lib/generic/jqueryui/jquery-ui.css" />
 
         <script>
             var __viewContext = {
@@ -24,6 +25,7 @@
         </script>
 
         <script src="./lib/generic/jquery/jquery-3.1.1.js"></script>
+        <script src="./lib/generic/jqueryui/jquery-ui.min.js"></script>
         <script src="./lib/generic/knockoutjs/knockout-3.4.0.js"></script>
         <script src="./lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
         <script src="./lib/generic/lodash/lodash-4.16.6.min.js"></script>
@@ -53,10 +55,56 @@
                         // Check box test.
                         isHealthInsurance: ko.observable(true),
                         isEnable:  ko.observable(true),
+                    },
+                    listbox: {
+                        itemList: ko.observableArray([
+                            new ItemModel('基本給2', '基本給'),
+                            new ItemModel('基本給1', '役職手当'),
+                            new ItemModel('基本給3', '基本給')
+                        ]),
+                        itemName: ko.observable(''),
+                        currentCode: ko.observable(3),
+                        selectedCode: ko.observable(null),
+                        isEnable: ko.observable(true),
+                        selectedCodes: ko.observableArray([]),
+                        addOptions: function () {
+                            var self = this;
+                            var newCode = self.currentCode() + 1;
+                            var itemCode = newCode.toString();
+                            var codeLength = itemCode.length;
+                            while (codeLength < 4) {
+                                itemCode = '0' + itemCode;
+                                codeLength++;
+                            }
+                            self.itemList.push(new ItemModel(itemCode, self.itemName()));
+                            self.currentCode(newCode);
+                        },
+                        deselectAll: function () {
+                            $('#combo-box').ntsListBox('deselectAll');
+                        },
+                        selectAll: function () {
+                            $('#combo-box').ntsListBox('selectAll');
+                        },
+                        clearOptions: function () {
+                            this.itemList([]);
+                        },
+                        remove: function () {
+                            var self = this;
+                            var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
+                            self.itemList.remove(selected);
+                            var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
+                            self.itemList.removeAll(selecteds);
+                        }
                     }
                 };
-
+                
+                function ItemModel(code, name) {
+                    this.code = code;
+                    this.name = name;
+                };
+                
                 ko.applyBindings(vm);
+                
             });
         </script>
     </head>
@@ -90,5 +138,35 @@
 			Your selected state: <div data-bind="text: isHealthInsurance"></div>
 		</div>
       	
+      	<hr/>
+      	<div data-bind="with: listbox">
+			<div>
+				<input data-bind="value: itemName"></input>
+				<button data-bind="click: addOptions">Add Item</button>
+			</div>
+			<br/>
+			<div id="combo-box"
+				data-bind="ntsListBox: {options: itemList,
+							optionsValue: 'code',
+							optionsText: 'name',
+							multiple: true,
+							value: selectedCodes,
+							enable: isEnable(),
+							columns: [
+								{ prop: 'code', length: 4 },
+								{ prop: 'name', length: 10 }
+							]}"
+				class="cf"></div>
+			<button data-bind="click: remove">Remove Item</button>
+			<button data-bind="click: selectAll">Select All</button>
+			<button data-bind="click: deselectAll">Deselect All</button><br/>
+			<!-- Multiple is false -->
+			<span data-bind="text: selectedCode()"></span>
+			<!-- Multiple is true -->
+			<span data-bind="text: selectedCodes()"></span>
+			<label class="status">
+				<input type="checkbox" data-bind="checked: isEnable">Enable
+			</label>
+		</div>
     </body>
 </html>
