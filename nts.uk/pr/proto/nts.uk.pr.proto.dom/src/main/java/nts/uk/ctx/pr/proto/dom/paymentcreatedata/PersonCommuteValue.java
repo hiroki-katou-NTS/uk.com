@@ -1,6 +1,8 @@
-package nts.uk.ctx.pr.proto.dom.createdata;
+package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.proto.dom.enums.CommuteMeansAttribute;
+import nts.uk.ctx.pr.proto.dom.enums.UserOrNot;
 
 /**
  * Value Object: Person commute 

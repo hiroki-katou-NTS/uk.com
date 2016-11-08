@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.createdata;
+package nts.uk.ctx.pr.proto.dom.enums;
 
 /**
  * Enum: Payroll system
