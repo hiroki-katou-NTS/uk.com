@@ -4,8 +4,10 @@
         <title></title>
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/stylesheets/base.css" />
         <link rel="stylesheet" type="text/css" href="lib/generic/jqueryui/jquery-ui.css" />
+    	<link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+		<link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/structure/infragistics.css" />
+        <link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/stylesheets/base.css" />
 
         <script>
             var __viewContext = {
@@ -29,6 +31,9 @@
         <script src="./lib/generic/knockoutjs/knockout-3.4.0.js"></script>
         <script src="./lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
         <script src="./lib/generic/lodash/lodash-4.16.6.min.js"></script>
+        <script src="./lib/generic/igniteui/js/infragistics.core.js"></script>
+        <script src="./lib/generic/igniteui/js/infragistics.lob.js"></script>
+        <script src="./lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js"></script>
         <script src="lib/nittsu/util.js"></script>
         <script src="lib/nittsu/text.js"></script>
         <script src="lib/nittsu/ui/notify.js"></script>
@@ -95,13 +100,65 @@
                             var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
                             self.itemList.removeAll(selecteds);
                         }
+                    },
+                    treegrid: {
+                        items1: ko.observableArray([new Node('0001', 'サービス部', [
+                            new Node('0001-1', 'サービス部1', []),
+                            new Node('0001-2', 'サービス部2', []),
+                            new Node('0001-3', 'サービス部3', [])
+                        ]), new Node('0002', '開発部', [])]),
+                        items2: ko.observableArray([new Node('0001', 'サービス部', [
+                            new Node('0001-1', 'サービス部1', []),
+                            new Node('0001-2', 'サービス部2', []),
+                            new Node('0001-3', 'サービス部3', [])
+                        ]), new Node('0002', '開発部', [])]),
+	                    selectedCode: ko.observableArray([]),
+	                    singleSelectedCode: ko.observable(null),
+	                    index: 0,
+	                    resetSelection: function () {
+	                        var self = this;
+	                        self.items1([new Node('0001', 'サービス部', [
+	                                new Node('0001-1', 'サービス部1', []),
+	                                new Node('0001-2', 'サービス部2', []),
+	                                new Node('0001-3', 'サービス部3', [])
+	                            ]), new Node('0002', '開発部', [])]);
+	                        self.items2([new Node('0001', 'サービス部', [
+                                new Node('0001-1', 'サービス部1', []),
+                                new Node('0001-2', 'サービス部2', []),
+                                new Node('0001-3', 'サービス部3', [])
+                            ]), new Node('0002', '開発部', [])]);
+	                        self.singleSelectedCode('0002');
+	                        self.selectedCode(['0001-1', '0002']);
+	                    },
+	                    changeDataSource: function () {
+	                        var self = this;
+	                        var i = 0;
+	                        var newArrays = new Array();
+	                        while (i < 50) {
+	                            self.index++;
+	                            i++;
+	                            newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
+	                        };
+	                        self.items1(newArrays);
+	                        self.items2(newArrays);
+	                    }
                     }
                 };
                 
+                // ListBox Item
                 function ItemModel(code, name) {
                     this.code = code;
                     this.name = name;
                 };
+                
+				// TreeGrid Node
+                function Node(code, name, childs) {
+                    this.code = code;
+                    this.name = name;
+                    this.nodeText = code + ' ' + name;
+                    this.childs = childs;
+                    this.custom = 'Random' + new Date().getTime();
+                }
                 
                 ko.applyBindings(vm);
                 
@@ -111,8 +168,8 @@
     <body>
         <div>てすとぺーじ</div>
 
-        会社コード：<input type="text" data-bind="ntsTextBox: { value: companyCode, constraint: 'CompanyCode' }" /><br />
-        会社名：<input type="text" data-bind="ntsTextBox: { value: companyName, constraint: 'CompanyName' }" /><br />
+	        会社コード：<input type="text" data-bind="ntsTextBox: { value: companyCode, constraint: 'CompanyCode' }" /><br />
+	        会社名：<input type="text" data-bind="ntsTextBox: { value: companyName, constraint: 'CompanyName' }" /><br />
         
         <hr />
         <button>aaa</button>
@@ -164,9 +221,61 @@
 			<span data-bind="text: selectedCode()"></span>
 			<!-- Multiple is true -->
 			<span data-bind="text: selectedCodes()"></span>
+			<br/>
 			<label class="status">
 				<input type="checkbox" data-bind="checked: isEnable">Enable
 			</label>
 		</div>
+		
+		<hr/>
+		<div data-bind="with: treegrid" class="cf">
+			<div style="float:left; margin-right: 15px;">
+				<b style="font-weight:bold">Multi Selection</b>
+				<table id="treegrid" data-bind="ntsTreeGridView:{
+		           	width: 500,
+			        height: 500,
+			        options: items1,
+			        selectedValues: selectedCode,
+			        optionsValue: 'code',
+			        optionsChild: 'childs',
+			        optionsText: 'nodeText',
+			        multiple: true,
+			        enable: true,
+			        showCheckBox: true}" class="cf">
+				</table>
+			</div>
+			<div style="float:left; margin-right: 15px;">
+				<b style="font-weight:bold">Single Selection</b>
+				<table id="treegrid2"  data-bind="ntsTreeGridView:{
+                   	width: 700,
+			        height: 500,
+			        options: items2,
+			        value: singleSelectedCode,
+			        optionsValue: 'code',
+			        optionsChild: 'childs',
+			        optionsText: 'nodeText',
+			        multiple: false,
+			        enable: true,
+			        extColumns: [{headerText: 'Custom', key: 'custom', width: '150px', dataType: 'string'}],
+			        showCheckBox: false}" class="cf">
+				</table>
+			</div>
+			<div style="float: left">
+				Your multiple selected code:
+				<!-- ko foreach: selectedCode -->
+					<div data-bind="text: $data"></div>
+				<!-- /ko -->
+				<br/>
+				<button data-bind="click: resetSelection">Reset</button>
+				<button data-bind="click: changeDataSource">Next Datasource</button>
+
+				<br/>
+				<br/>
+				Your single selected code:
+				<div data-bind="text: singleSelectedCode"></div>
+				<br/>
+			</div>
+		</div>
+		<hr/>
     </body>
 </html>
