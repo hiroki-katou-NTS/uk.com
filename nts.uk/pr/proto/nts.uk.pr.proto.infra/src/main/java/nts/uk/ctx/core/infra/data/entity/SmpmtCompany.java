@@ -18,3 +18,22 @@ public class SmpmtCompany extends AggregateTableEntity {
 	@Column(name = "NAME")
 	public String name;
 }
+
+/*
+ Rules:
+ 
+ 	Naming:
+ 		| DB                   | Entity             |
+ 		+----------------------+--------------------+
+ 		| PPRMT_PERSON_COMMUTE | PprmtPersonCommute |
+ 	
+ 	Type:
+ 		| DB                | Entity     |
+ 		+-------------------+------------+
+ 		| char              | String     |
+ 		| varchar           | String     |
+ 		| nvarchar          | String     |
+ 		| decimal (integer) | int        |
+ 		| decimal           | BigDecimal | 
+ 		
+*/
