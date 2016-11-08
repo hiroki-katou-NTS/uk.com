@@ -198,7 +198,7 @@
         }
     }
      
-     /**
+    /**
      * Switch button binding handler
      */
     class ListBoxBindingHandler implements KnockoutBindingHandler {
@@ -458,8 +458,149 @@
         }
     }
      
+     
+    /**
+     * Switch button binding handler
+     */
+    class NtsTreeGridViewBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+    
+        /**
+         * Init.
+         */
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+    
+            // Get data.
+            var data = valueAccessor();
+            var options: Array<any> = ko.unwrap(data.options);
+            console.log(options);
+            var optionsValue = ko.unwrap(data.optionsValue);
+            var optionsText = ko.unwrap(data.optionsText);
+    
+            var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
+            var singleValue = ko.unwrap(data.value);
+    
+            var optionsChild = ko.unwrap(data.optionsChild);
+            var extColumns: Array<any> = ko.unwrap(data.extColumns);
+            
+            // Default.
+            var showCheckBox = ko.unwrap(data.showCheckBox);
+            showCheckBox = showCheckBox != undefined ? showCheckBox : true;
+    
+            var enable = ko.unwrap(data.enable);
+            enable = enable != undefined ? enable : true;
+    
+            var height = ko.unwrap(data.height);
+            height = height ? height : '100%';
+            
+            width = width ? width : '100%';
+            var width = ko.unwrap(data.width);
+    
+            var displayColumns:Array<any> = [{ headerText: "コード", key: optionsValue,  dataType: "string", hidden: true },
+                    { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+            if (extColumns) {
+                displayColumns = displayColumns.concat(extColumns);
+            }
+    
+            // Init ig grid.
+            $(element).igTreeGrid({
+                width: width,
+                height: height,
+                dataSource: options,
+                autoGenerateColumns: false,
+                primaryKey: optionsValue,
+                columns: displayColumns,
+                childDataKey: optionsChild,
+                initialExpandDepth: 10,
+                features: [            
+                    {
+                        name: "Selection",
+                        multipleSelection: true,
+                        activation: true,
+                        rowSelectionChanged: function (evt: any, ui: any) {
+                            var selectedRows:Array<any> = ui.selectedRows;
+                            if (ko.unwrap(data.multiple)) {
+                                if (ko.isObservable(data.selectedValues)) {
+                                    data.selectedValues(_.map(selectedRows, function(row) {
+                                        return row.id;
+                                    }));
+                                }
+                            } else {
+                                if (ko.isObservable(data.value)) {
+                                    data.value(selectedRows[0].id);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: "RowSelectors",
+                        enableCheckBoxes: showCheckBox,
+                        checkBoxMode: "biState"
+                    }]
+            });
+        }
+    
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var options: Array<any> = ko.unwrap(data.options);
+            var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
+            var singleValue = ko.unwrap(data.value);
+    
+            // Clear selection.
+            if (selectedValues && selectedValues.length == 0) {
+                $(element).igTreeGridSelection("clearSelection");
+            }
+    
+            // Update datasource.
+            $(element).igTreeGrid("option", "dataSource", options);
+    
+            // Set multiple data source.
+            var multiple = ko.unwrap(data.multiple);
+            multiple = multiple != undefined ? multiple : true;
+            $(element).igTreeGridSelection("option", "multipleSelection", multiple);
+    
+            // Set show checkbox.
+            var showCheckBox = ko.unwrap(data.showCheckBox);
+            showCheckBox = showCheckBox != undefined ? showCheckBox : true;
+            $(element).igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
+    
+            // Compare value.
+            var olds = _.map($(element).igTreeGridSelection("selectedRow"), function(row: any) {
+                return row.id;
+            });
+    
+            // Not change, do nothing.
+            if (selectedValues) {
+                if (_.isEqual(selectedValues.sort(), olds.sort())) {
+                    return;
+                }
+                // Update.
+                $(element).igTreeGridSelection("clearSelection");
+                selectedValues.forEach(function(val) {
+                    $(element).igTreeGridSelection("selectRowById", val);
+                })
+            }
+    
+            if(singleValue) {
+                if(olds.length > 0 && olds[0] == singleValue) {
+                    return;
+                }
+                $(element).igTreeGridSelection("selectRowById", singleValue);
+            } 
+        }
+    }
+     
     ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
+    ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
 }
