@@ -5,8 +5,8 @@ package nts.uk.ctx.pr.proto.dom.createdata;
  *
  */
 public enum CommuteMeansAttribute {
-	PAYMENT_ITEM(1),
-	DEDUCTIONS(2);
+	TRANSPORTATION_EQUIPMENT(1),
+	TRANSPORTTION_FACILITIES(2);
 	
 	public final int value;
 	
