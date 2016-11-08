@@ -74,15 +74,15 @@
                         selectedCodes: ko.observableArray([]),
                         addOptions: function () {
                             var self = this;
-                            var newCode = currentCode() + 1;
+                            var newCode = self.currentCode() + 1;
                             var itemCode = newCode.toString();
                             var codeLength = itemCode.length;
                             while (codeLength < 4) {
                                 itemCode = '0' + itemCode;
                                 codeLength++;
                             }
-                            itemList.push(new ItemModel(itemCode, itemName()));
-                            currentCode(newCode);
+                            self.itemList.push(new ItemModel(itemCode, self.itemName()));
+                            self.currentCode(newCode);
                         },
                         deselectAll: function () {
                             $('#combo-box').ntsListBox('deselectAll');
