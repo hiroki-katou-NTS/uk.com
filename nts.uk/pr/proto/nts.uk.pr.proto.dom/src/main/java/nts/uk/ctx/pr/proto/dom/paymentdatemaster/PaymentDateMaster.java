@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
+package nts.uk.ctx.pr.proto.dom.paymentdatemaster;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
