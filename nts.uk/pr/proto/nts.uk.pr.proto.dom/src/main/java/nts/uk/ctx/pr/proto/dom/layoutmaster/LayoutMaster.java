@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.layoutmaster;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -31,9 +32,13 @@ public class LayoutMaster extends AggregateRoot {
 	/** 明細書名 */
 	@Getter
 	private LayoutName stmtName;
+	
+	/** 明細書のレイアウトのカテゴリ情報 */
+	@Getter
+	private List<LayoutMasterCategory> layoutMasterCategories;
 
 	public LayoutMaster(CompanyCode code, Date startYM, LayoutCode stmtCode, Date endYM, LayoutAtr layoutAtr,
-			LayoutName stmtName) {
+			LayoutName stmtName, List<LayoutMasterCategory> layoutMasterCategories) {
 		super();
 		this.code = code;
 		this.startYM = startYM;
@@ -41,7 +46,9 @@ public class LayoutMaster extends AggregateRoot {
 		this.endYM = endYM;
 		this.layoutAtr = layoutAtr;
 		this.stmtName = stmtName;
+		this.layoutMasterCategories = layoutMasterCategories;
 	}
+
 	
 	
 }
