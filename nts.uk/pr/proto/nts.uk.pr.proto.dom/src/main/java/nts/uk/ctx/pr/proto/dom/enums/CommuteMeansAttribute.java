@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
+package nts.uk.ctx.pr.proto.dom.enums;
 
 /**
  * Enum: commute means attribute
