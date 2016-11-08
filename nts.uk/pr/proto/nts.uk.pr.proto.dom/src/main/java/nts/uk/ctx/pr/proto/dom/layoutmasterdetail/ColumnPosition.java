@@ -1,21 +1,21 @@
 package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
 
-import java.math.BigDecimal;
+import nts.arc.primitive.IntegerPrimitiveValue;
 
-import nts.arc.primitive.DecimalPrimitiveValue;
-
-public class ColumnPosition extends DecimalPrimitiveValue<ColumnPosition>{
+public class ColumnPosition extends IntegerPrimitiveValue<ColumnPosition> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Constructor
+	 * 
 	 * @param rawValue
 	 */
-	public ColumnPosition(BigDecimal rawValue) {
-		super(rawValue);	
+	public ColumnPosition(Integer rawValue) {
+		super(rawValue);
 	}
 
 }
