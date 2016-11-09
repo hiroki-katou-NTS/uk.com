@@ -199,7 +199,141 @@
     }
      
     /**
-     * Switch button binding handler
+     * ComboBox binding handler
+     */
+    class ComboBoxBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+    
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        }
+        
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var self = this;
+            
+            // Get options.
+            var options: Array<any> = ko.unwrap(data.options);
+    
+            // Get options value.
+            var optionValue = ko.unwrap(data.optionsValue);
+            var optionText = ko.unwrap(data.optionsText);
+            var selectedValue = ko.unwrap(data.value);
+            var editable = data.editable;
+            var enable: boolean = data.enable;
+            var columns: Array<any> = data.columns;
+            
+            // Container.
+            var container = $(element);
+            var comboMode: string = editable ? 'editable' : 'dropdown';
+            
+            // Default values.
+            var distanceColumns = '     ';
+            var fillCharacter = ' '; // Character used fill to the columns.
+            var maxWidthCharacter = 15;
+            
+            // Check selected code.
+            if (options.filter(item => item[optionValue] === selectedValue).length == 0 && !editable) {
+                selectedValue = options.length > 0 ? options[0][optionValue] : '';
+                data.value(selectedValue);
+            }
+            
+            // Delete igCombo.
+            if (container.data("igCombo") !=null) {
+                container.igCombo('destroy');
+                container.removeClass('ui-state-disabled');
+            }
+            
+            // Set attribute for multi column.
+            var itemTempalate: string = undefined;
+            options = options.map((option) => {
+                var newOptionText: string = '';
+                
+                // Check muti columns.
+                if (columns && columns.length > 0) {
+                    var i = 0;
+                    itemTempalate = '<div class="nts-combo-item">';
+                    columns.forEach(item => {
+                        var prop: string = option[item.prop];
+                        var length: number = item.length;
+                        
+                        var proLength: number = prop.length;
+                        while (proLength < length && i != columns.length - 1) {
+                            // Add space character to properties.
+                            prop += fillCharacter;
+                            
+                            proLength++;
+                        }
+                        if (i == columns.length - 1) {
+                            newOptionText += prop;
+                        } else {
+                            newOptionText += prop + distanceColumns;
+                        }
+                        
+                        // Set item template.
+                        itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
+                        i++;
+                    });
+                    itemTempalate += '</div>';
+                } else {
+                    newOptionText = option[optionText];
+                }
+                // Add label attr.
+                option['nts-combo-label'] = newOptionText;
+                return option;
+            });
+            
+            // Create igCombo.
+            container.igCombo({
+                dataSource: options,
+                valueKey: data.optionsValue,
+                textKey: 'nts-combo-label',
+                mode: comboMode,
+                disabled: !enable,
+                placeHolder: '',
+                enableClearButton: false,
+                initialSelectedItems: [
+                    { value: selectedValue }
+                ],
+                itemTemplate: itemTempalate,
+                selectionChanged: function(evt: any, ui: any) {
+                    if (ui.items.length > 0) {
+                        data.value(ui.items[0].data[optionValue]);
+                    }
+                }
+            });
+            
+            // Set width for multi columns.
+            if (columns && columns.length > 0) {
+                var i = 0;
+                var totalWidth = 0;
+                columns.forEach(item => {
+                    var length: number = item.length;
+                    $('.nts-combo-column-' + i).width(length * maxWidthCharacter + 10);
+                    if (i != columns.length - 1) {
+                        $('.nts-combo-column-' + i).css({ 'float': 'left' });
+                    }
+                    totalWidth += length * maxWidthCharacter + 10;
+                    i++;
+                });
+                $('.nts-combo-item').css({'min-width': totalWidth});
+                container.css({'min-width': totalWidth});
+            }
+        }
+    }
+     
+    /**
+     * ListBox binding handler
      */
     class ListBoxBindingHandler implements KnockoutBindingHandler {
         /**
@@ -460,7 +594,7 @@
      
      
     /**
-     * Switch button binding handler
+     * TreeGrid binding handler
      */
     class NtsTreeGridViewBindingHandler implements KnockoutBindingHandler {
         /**
@@ -477,7 +611,6 @@
             // Get data.
             var data = valueAccessor();
             var options: Array<any> = ko.unwrap(data.options);
-            console.log(options);
             var optionsValue = ko.unwrap(data.optionsValue);
             var optionsText = ko.unwrap(data.optionsText);
     
@@ -597,10 +730,11 @@
             } 
         }
     }
-     
-    ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
-    ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
-    ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
+    
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
+    ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
+    ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
+    ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
+    ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
     ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
 }
