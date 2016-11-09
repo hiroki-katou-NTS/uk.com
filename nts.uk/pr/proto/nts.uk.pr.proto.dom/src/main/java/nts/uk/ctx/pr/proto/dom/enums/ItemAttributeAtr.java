@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.itemmaster;
+package nts.uk.ctx.pr.proto.dom.enums;
 /** 項目属性 */
 public enum ItemAttributeAtr {
 	//0:時間

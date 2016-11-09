@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.itemmaster;
+package nts.uk.ctx.pr.proto.dom.enums;
 /** 課税区分 */
 public enum TaxAtr {
 	//0:課税

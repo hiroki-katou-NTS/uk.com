@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.itemmaster;
+package nts.uk.ctx.pr.proto.dom.enums;
 /** 賃金対象区分 */
 public enum WageClassificationAtr {
 	//0:対象外

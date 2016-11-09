@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
+package nts.uk.ctx.pr.proto.dom.enums;
 
 public enum DistributeWay {
 	//0:割合で計算

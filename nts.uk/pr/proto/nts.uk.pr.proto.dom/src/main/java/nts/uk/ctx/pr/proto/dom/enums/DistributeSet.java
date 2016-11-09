@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
+package nts.uk.ctx.pr.proto.dom.enums;
 
 public enum DistributeSet {
 	//0:按分しない

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.itemmaster;
+package nts.uk.ctx.pr.proto.dom.enums;
 /** 項目名表示区分 */
 public enum ItemNameDisplayAtr {
 	//0:ゼロ円の場合明細書から項目名も出さない

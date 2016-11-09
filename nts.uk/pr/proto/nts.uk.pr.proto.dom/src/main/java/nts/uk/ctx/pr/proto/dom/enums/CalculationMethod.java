@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
+package nts.uk.ctx.pr.proto.dom.enums;
 /**
  * 
  * 計算方法
