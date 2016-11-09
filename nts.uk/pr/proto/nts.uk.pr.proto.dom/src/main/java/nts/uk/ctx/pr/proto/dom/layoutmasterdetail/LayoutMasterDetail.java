@@ -1,10 +1,12 @@
 package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
 
-import java.sql.Date;
+import java.util.List;
+import java.util.Date;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.layoutmaster.LayoutCode;
 /**
  * 
@@ -18,18 +20,19 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**カテゴリ区分 */
 	@Getter
 	private CategoryAtr categoryAttribute;
-	
-//	private RangeChecker alarm;
+	@Getter
+	private List<RangeChecker> alarm;
 	/**計算方法 */
 	@Getter
 	private CalculationMethod calculationMethod;
 	/**項目位置 */
 	@Getter
 	private ColumnPosition columnPosition;
-	
-//	private Distribute distribute;
-	
-//	private RangeChecker error;
+	/** 按分設定 */
+	@Getter
+	private List<Distribute> distribute;	
+	@Getter
+	private List<RangeChecker> error;
 	/**会社ＣＤ */
 	@Getter
 	private ItemCode itemCode;
@@ -45,7 +48,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 	
 	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
-			ItemCode itemCode, LayoutCode layoutCode, Date startDate, SumScopeAtr sumScopeAtr) {
+			ItemCode itemCode, LayoutCode layoutCode, Date startDate, SumScopeAtr sumScopeAtr,
+			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute) {
 		super();
 		this.companyCode = companyCode;
 		this.categoryAttribute = categoryAttribute;
@@ -55,6 +59,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.layoutCode = layoutCode;
 		this.startDate = startDate;
 		this.sumScopeAtr = sumScopeAtr;
+		this.alarm = alarm;
+		this.error = error;
+		this.distribute = distribute;
 	}
 	
 	
