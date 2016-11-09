@@ -7,12 +7,15 @@ public class RangeChecker extends DomainObject {
 	//範囲上限
 	@Getter
 	private boolean isUseHigh;
+	
 	//範囲下限
 	@Getter
 	private boolean isUseLow;
+	
 	@Getter
-	private Range<?> range;
-	public RangeChecker(boolean isUseHigh, boolean isUseLow, Range<?> range) {
+	private Range<Integer> range;
+	
+	public RangeChecker(boolean isUseHigh, boolean isUseLow, Range<Integer> range) {
 		super();
 		this.isUseHigh = isUseHigh;
 		this.isUseLow = isUseLow;
