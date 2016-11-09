@@ -69,6 +69,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 $font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
 $font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
     */
+/* line 44, ../sass/base/_base_def.scss */
+body {
+  font-size: 14px;
+  font-family: "Meiryo UI";
+}
+
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the
@@ -169,6 +175,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 $font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
 $font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
     */
+/* line 44, ../sass/base/_base_def.scss */
+body {
+  font-size: 14px;
+  font-family: "Meiryo UI";
+}
+
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the
@@ -376,6 +388,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 $font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
 $font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
     */
+/* line 44, ../sass/base/_base_def.scss */
+body {
+  font-size: 14px;
+  font-family: "Meiryo UI";
+}
+
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the
@@ -460,9 +478,48 @@ button.nts-switch-button.selected:hover {
 /* line 24, ../sass/components/_checkbox.scss */
 .ntsCheckBox.disabled input[type="checkbox"] + label span {
   cursor: none;
+  cursor: not-allowed;
 }
 
-/* line 28, ../sass/components/_checkbox.scss */
+/* line 29, ../sass/components/_checkbox.scss */
 .ntsCheckBox.disabled * {
   opacity: 0.5;
+}
+
+/* line 3, ../sass/components/_listbox.scss */
+.nts-list-box .ui-selecting {
+  background: #FECA40;
+}
+/* line 7, ../sass/components/_listbox.scss */
+.nts-list-box .ui-selected {
+  background: #F39814;
+  color: white;
+}
+/* line 12, ../sass/components/_listbox.scss */
+.nts-list-box li {
+  height: 28px;
+}
+
+/* line 18, ../sass/components/_listbox.scss */
+#list-box {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  height: 130px;
+  border: 1px solid #CCC;
+  background: #FCFCFC;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 300px;
+}
+
+/* line 29, ../sass/components/_listbox.scss */
+.nts-column {
+  float: left;
+  padding: 5px;
+}
+
+/* line 33, ../sass/components/_listbox.scss */
+.disabled {
+  color: graytext;
 }
