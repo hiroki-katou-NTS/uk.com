@@ -40,38 +40,24 @@ public class PersonalCommuteValue {
 	@Getter
 	private UserOrNot userOrNot;
 
-	/**
-	 * Personal Id
-	 */
-	@Getter
-	private PersonId personId;
-
 	public PersonalCommuteValue(String commuteCycle, long commuteAllowance, CommuteMeansAttribute commuteMeansAttribute,
-			long payStartDate, UserOrNot userOrNot, PersonId personId) {
+			long payStartDate, UserOrNot userOrNot) {
 		super();
 		this.commuteCycle = commuteCycle;
 		this.commuteAllowance = commuteAllowance;
 		this.commuteMeansAttribute = commuteMeansAttribute;
 		this.payStartDate = payStartDate;
 		this.userOrNot = userOrNot;
-		this.personId = personId;
 	}
 
 	/**
 	 * Create instance using Java type parameters.
 	 * 
-	 * @param remainDays
-	 *            remain Days
-	 * @param remainTime
-	 *            remain Time
-	 * @param personId
-	 *            personId
-	 * @return HolidayPaid
+	 * @return PersonalCommuteValue
 	 */
 	public static PersonalCommuteValue createFromJavaType(String commuteCycle, long commuteAllowance,
-			int commuteMeansAttribute, long payStartDate, int userOrNot, String personId) {
+			int commuteMeansAttribute, long payStartDate, int userOrNot) {
 		return new PersonalCommuteValue(commuteCycle, commuteAllowance,
-				CommuteMeansAttribute.valueOf(commuteMeansAttribute), payStartDate, UserOrNot.valueOf(userOrNot),
-				new PersonId(personId));
+				CommuteMeansAttribute.valueOf(commuteMeansAttribute), payStartDate, UserOrNot.valueOf(userOrNot));
 	}
 }
