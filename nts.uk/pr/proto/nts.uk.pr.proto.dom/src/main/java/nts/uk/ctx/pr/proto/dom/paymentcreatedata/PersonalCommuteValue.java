@@ -8,7 +8,7 @@ import nts.uk.ctx.pr.proto.dom.enums.UserOrNot;
  * Value Object: Person commute 
  *
  */
-public class PersonCommuteValue {
+public class PersonalCommuteValue {
 	/**
 	 * Commute cycle
 	 */

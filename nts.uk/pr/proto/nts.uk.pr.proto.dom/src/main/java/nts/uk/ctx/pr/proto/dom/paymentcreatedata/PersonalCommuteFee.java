@@ -7,7 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * Aggregate Root: Person commute fee
  *
  */
-public class PersonCommuteFee extends AggregateRoot {
+public class PersonalCommuteFee extends AggregateRoot {
 	/**
 	 * Commute no tax limit number;
 	 */
@@ -21,17 +21,17 @@ public class PersonCommuteFee extends AggregateRoot {
 	private long commuteNoTaxLimitPublishNo;
 	
 	@Getter
-	private PersonCommuteValue commute1;
+	private PersonalCommuteValue commute1;
 	
 	@Getter
-	private PersonCommuteValue commute2;
+	private PersonalCommuteValue commute2;
 	
 	@Getter
-	private PersonCommuteValue commute3;
+	private PersonalCommuteValue commute3;
 	
 	@Getter
-	private PersonCommuteValue commute4;
+	private PersonalCommuteValue commute4;
 	
 	@Getter
-	private PersonCommuteValue commute5;
+	private PersonalCommuteValue commute5;
 }
