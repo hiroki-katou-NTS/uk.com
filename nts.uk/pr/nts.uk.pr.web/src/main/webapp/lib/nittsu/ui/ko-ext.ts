@@ -198,8 +198,142 @@
         }
     }
      
-     /**
-     * Switch button binding handler
+    /**
+     * ComboBox binding handler
+     */
+    class ComboBoxBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+    
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        }
+        
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var self = this;
+            
+            // Get options.
+            var options: Array<any> = ko.unwrap(data.options);
+    
+            // Get options value.
+            var optionValue = ko.unwrap(data.optionsValue);
+            var optionText = ko.unwrap(data.optionsText);
+            var selectedValue = ko.unwrap(data.value);
+            var editable = data.editable;
+            var enable: boolean = data.enable;
+            var columns: Array<any> = data.columns;
+            
+            // Container.
+            var container = $(element);
+            var comboMode: string = editable ? 'editable' : 'dropdown';
+            
+            // Default values.
+            var distanceColumns = '     ';
+            var fillCharacter = ' '; // Character used fill to the columns.
+            var maxWidthCharacter = 15;
+            
+            // Check selected code.
+            if (options.filter(item => item[optionValue] === selectedValue).length == 0 && !editable) {
+                selectedValue = options.length > 0 ? options[0][optionValue] : '';
+                data.value(selectedValue);
+            }
+            
+            // Delete igCombo.
+            if (container.data("igCombo") !=null) {
+                container.igCombo('destroy');
+                container.removeClass('ui-state-disabled');
+            }
+            
+            // Set attribute for multi column.
+            var itemTempalate: string = undefined;
+            options = options.map((option) => {
+                var newOptionText: string = '';
+                
+                // Check muti columns.
+                if (columns && columns.length > 0) {
+                    var i = 0;
+                    itemTempalate = '<div class="nts-combo-item">';
+                    columns.forEach(item => {
+                        var prop: string = option[item.prop];
+                        var length: number = item.length;
+                        
+                        var proLength: number = prop.length;
+                        while (proLength < length && i != columns.length - 1) {
+                            // Add space character to properties.
+                            prop += fillCharacter;
+                            
+                            proLength++;
+                        }
+                        if (i == columns.length - 1) {
+                            newOptionText += prop;
+                        } else {
+                            newOptionText += prop + distanceColumns;
+                        }
+                        
+                        // Set item template.
+                        itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
+                        i++;
+                    });
+                    itemTempalate += '</div>';
+                } else {
+                    newOptionText = option[optionText];
+                }
+                // Add label attr.
+                option['nts-combo-label'] = newOptionText;
+                return option;
+            });
+            
+            // Create igCombo.
+            container.igCombo({
+                dataSource: options,
+                valueKey: data.optionsValue,
+                textKey: 'nts-combo-label',
+                mode: comboMode,
+                disabled: !enable,
+                placeHolder: '',
+                enableClearButton: false,
+                initialSelectedItems: [
+                    { value: selectedValue }
+                ],
+                itemTemplate: itemTempalate,
+                selectionChanged: function(evt: any, ui: any) {
+                    if (ui.items.length > 0) {
+                        data.value(ui.items[0].data[optionValue]);
+                    }
+                }
+            });
+            
+            // Set width for multi columns.
+            if (columns && columns.length > 0) {
+                var i = 0;
+                var totalWidth = 0;
+                columns.forEach(item => {
+                    var length: number = item.length;
+                    $('.nts-combo-column-' + i).width(length * maxWidthCharacter + 10);
+                    if (i != columns.length - 1) {
+                        $('.nts-combo-column-' + i).css({ 'float': 'left' });
+                    }
+                    totalWidth += length * maxWidthCharacter + 10;
+                    i++;
+                });
+                $('.nts-combo-item').css({'min-width': totalWidth});
+                container.css({'min-width': totalWidth});
+            }
+        }
+    }
+     
+    /**
+     * ListBox binding handler
      */
     class ListBoxBindingHandler implements KnockoutBindingHandler {
         /**
@@ -458,8 +592,149 @@
         }
     }
      
-    ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
-    ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
-    ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
+     
+    /**
+     * TreeGrid binding handler
+     */
+    class NtsTreeGridViewBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+    
+        /**
+         * Init.
+         */
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+    
+            // Get data.
+            var data = valueAccessor();
+            var options: Array<any> = ko.unwrap(data.options);
+            var optionsValue = ko.unwrap(data.optionsValue);
+            var optionsText = ko.unwrap(data.optionsText);
+    
+            var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
+            var singleValue = ko.unwrap(data.value);
+    
+            var optionsChild = ko.unwrap(data.optionsChild);
+            var extColumns: Array<any> = ko.unwrap(data.extColumns);
+            
+            // Default.
+            var showCheckBox = ko.unwrap(data.showCheckBox);
+            showCheckBox = showCheckBox != undefined ? showCheckBox : true;
+    
+            var enable = ko.unwrap(data.enable);
+            enable = enable != undefined ? enable : true;
+    
+            var height = ko.unwrap(data.height);
+            height = height ? height : '100%';
+            
+            width = width ? width : '100%';
+            var width = ko.unwrap(data.width);
+    
+            var displayColumns:Array<any> = [{ headerText: "コード", key: optionsValue,  dataType: "string", hidden: true },
+                    { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+            if (extColumns) {
+                displayColumns = displayColumns.concat(extColumns);
+            }
+    
+            // Init ig grid.
+            $(element).igTreeGrid({
+                width: width,
+                height: height,
+                dataSource: options,
+                autoGenerateColumns: false,
+                primaryKey: optionsValue,
+                columns: displayColumns,
+                childDataKey: optionsChild,
+                initialExpandDepth: 10,
+                features: [            
+                    {
+                        name: "Selection",
+                        multipleSelection: true,
+                        activation: true,
+                        rowSelectionChanged: function (evt: any, ui: any) {
+                            var selectedRows:Array<any> = ui.selectedRows;
+                            if (ko.unwrap(data.multiple)) {
+                                if (ko.isObservable(data.selectedValues)) {
+                                    data.selectedValues(_.map(selectedRows, function(row) {
+                                        return row.id;
+                                    }));
+                                }
+                            } else {
+                                if (ko.isObservable(data.value)) {
+                                    data.value(selectedRows[0].id);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        name: "RowSelectors",
+                        enableCheckBoxes: showCheckBox,
+                        checkBoxMode: "biState"
+                    }]
+            });
+        }
+    
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var options: Array<any> = ko.unwrap(data.options);
+            var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
+            var singleValue = ko.unwrap(data.value);
+    
+            // Clear selection.
+            if (selectedValues && selectedValues.length == 0) {
+                $(element).igTreeGridSelection("clearSelection");
+            }
+    
+            // Update datasource.
+            $(element).igTreeGrid("option", "dataSource", options);
+    
+            // Set multiple data source.
+            var multiple = ko.unwrap(data.multiple);
+            multiple = multiple != undefined ? multiple : true;
+            $(element).igTreeGridSelection("option", "multipleSelection", multiple);
+    
+            // Set show checkbox.
+            var showCheckBox = ko.unwrap(data.showCheckBox);
+            showCheckBox = showCheckBox != undefined ? showCheckBox : true;
+            $(element).igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
+    
+            // Compare value.
+            var olds = _.map($(element).igTreeGridSelection("selectedRow"), function(row: any) {
+                return row.id;
+            });
+    
+            // Not change, do nothing.
+            if (selectedValues) {
+                if (_.isEqual(selectedValues.sort(), olds.sort())) {
+                    return;
+                }
+                // Update.
+                $(element).igTreeGridSelection("clearSelection");
+                selectedValues.forEach(function(val) {
+                    $(element).igTreeGridSelection("selectRowById", val);
+                })
+            }
+    
+            if(singleValue) {
+                if(olds.length > 0 && olds[0] == singleValue) {
+                    return;
+                }
+                $(element).igTreeGridSelection("selectRowById", singleValue);
+            } 
+        }
+    }
+    
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
+    ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
+    ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
+    ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
+    ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
+    ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
 }
