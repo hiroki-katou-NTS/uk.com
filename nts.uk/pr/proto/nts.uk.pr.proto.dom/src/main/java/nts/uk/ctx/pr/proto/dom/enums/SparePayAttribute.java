@@ -1,19 +1,19 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
 /**
- * —\”õŒ‹æ•ª
+ * äºˆå‚™æœˆåŒºåˆ†
  * 
  * @author vunv
  *
  */
 public enum SparePayAttribute {
 	/**
-	 * ’Êí
+	 * 0:é€šå¸¸
 	 */
 	NORMAL(0),
 
 	/**
-	 * —\”õ
+	 * 1:äºˆå‚™
 	 */
 	PRELIMINARY(1);
 
