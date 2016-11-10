@@ -1,26 +1,44 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
+import java.util.HashMap;
+
 /**
- * —\”õŒ‹æ•ª
+ * ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½æ•ª
  * 
  * @author vunv
  *
  */
 public enum SparePayAttribute {
 	/**
-	 * ’Êí
+	 * ï¿½Êï¿½
 	 */
 	NORMAL(0),
 
 	/**
-	 * —\”õ
+	 * ï¿½\ï¿½ï¿½
 	 */
 	PRELIMINARY(1);
 
 	public int value;
-
+	
+	private static HashMap<Integer, SparePayAttribute> map = new HashMap<>();
+	
+	static {
+		for (SparePayAttribute item : SparePayAttribute.values()) {
+			map.put(item.value, item);
+		}
+	}
+	
 	private SparePayAttribute(int value) {
 		this.value = value;
 	}
 
+	/**
+	 * Convert to enum SparePayAttribute by value
+	 * @param value
+	 * @return SparePayAttribute
+	 */
+	public static SparePayAttribute valueOf(int value) {
+        return map.get(value);
+    }
 }
