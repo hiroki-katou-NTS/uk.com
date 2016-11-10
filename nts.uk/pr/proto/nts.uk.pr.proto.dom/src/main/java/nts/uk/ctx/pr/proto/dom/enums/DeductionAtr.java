@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.itemmaster;
+package nts.uk.ctx.pr.proto.dom.enums;
 /**控除項目種類*/
 public enum DeductionAtr {
 	//0:任意控除

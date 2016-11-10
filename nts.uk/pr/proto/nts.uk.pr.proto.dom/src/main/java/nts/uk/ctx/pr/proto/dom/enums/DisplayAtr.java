@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.itemmaster;
+package nts.uk.ctx.pr.proto.dom.enums;
 /** 表示区分 */
 public enum DisplayAtr {
 	//0:表示しない

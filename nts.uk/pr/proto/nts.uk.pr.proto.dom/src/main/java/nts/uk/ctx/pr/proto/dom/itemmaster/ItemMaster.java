@@ -3,7 +3,13 @@ package nts.uk.ctx.pr.proto.dom.itemmaster;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.layoutmaster.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.enums.DeductionAtr;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
+import nts.uk.ctx.pr.proto.dom.enums.ItemAttributeAtr;
+import nts.uk.ctx.pr.proto.dom.enums.ItemNameDisplayAtr;
+import nts.uk.ctx.pr.proto.dom.enums.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.enums.WageClassificationAtr;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.layoutmasterdetail.ItemCode;
 
 /**
