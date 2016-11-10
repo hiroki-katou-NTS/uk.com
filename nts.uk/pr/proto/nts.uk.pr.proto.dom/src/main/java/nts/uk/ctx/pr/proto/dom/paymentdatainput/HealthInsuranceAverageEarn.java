@@ -1,15 +1,12 @@
 package nts.uk.ctx.pr.proto.dom.paymentdatainput;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerMaxValue;
-import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * 処理日番号
+ * 健保標準報酬
  */
-@IntegerMinValue(1)
-@IntegerMaxValue(5)
-public class ProcessingNo extends IntegerPrimitiveValue<ProcessingNo> {
+@IntegerRangeValue(min = 0, max = 99999999)
+public class HealthInsuranceAverageEarn extends IntegerPrimitiveValue<HealthInsuranceAverageEarn> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -20,7 +17,7 @@ public class ProcessingNo extends IntegerPrimitiveValue<ProcessingNo> {
 	 * @param rawValue
 	 *            raw value
 	 */
-	public ProcessingNo(Integer rawValue) {
+	public HealthInsuranceAverageEarn(Integer rawValue) {
 		super(rawValue);
 	}
 
