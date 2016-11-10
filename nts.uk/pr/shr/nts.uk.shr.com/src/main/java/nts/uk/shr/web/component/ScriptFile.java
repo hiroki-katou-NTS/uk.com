@@ -20,7 +20,7 @@ public class ScriptFile extends UIComponentBase {
     private static Set<String> FILES_BASIC = new LinkedHashSet<String>(Arrays.asList(new String[] {
             "/lib/generic/jquery/jquery-3.1.1.js",
             "/lib/generic/jqueryui/jquery-ui.js",
-            "/lib/generic/lodash/lodash-4.16.6.js",
+            "/lib/generic/lodash/lodash-4.16.6.min.js",
             "/lib/generic/knockoutjs/knockout-3.4.0.js",
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
             "/lib/nittsu/util.js",
