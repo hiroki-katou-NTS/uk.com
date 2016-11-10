@@ -42,8 +42,6 @@ $set_prefix: '' , -moz- , -webkit-, -ms-;
 
 
 body {
-  font-size: 14px;
-  font-family: "Meiryo UI";
-  color: #000;
-  background: #FFF;
+  font-size: $normal_font_size;
+  font-family: $font_family;
 }
