@@ -50,6 +50,15 @@ public class LayoutMaster extends AggregateRoot {
 		this.layoutMasterCategories = layoutMasterCategories;
 	}
 
+	/**
+	 * create From Java Type
+	 * @return LayoutMaster
+	 */
+	public static LayoutMaster createFromJavaType(String code, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName, List<LayoutMasterCategory> layoutMasterCategories){
+		//Date startYearMonth = new
+		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
+	}
 	
 	
 }
