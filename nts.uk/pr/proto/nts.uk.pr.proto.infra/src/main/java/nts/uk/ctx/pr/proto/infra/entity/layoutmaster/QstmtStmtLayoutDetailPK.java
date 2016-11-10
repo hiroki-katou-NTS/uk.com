@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QstmtStmtLayoutDetailPk implements Serializable{
+public class QstmtStmtLayoutDetailPK implements Serializable{
 	/**
 	 * serialVersionUID
 	 */

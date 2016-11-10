@@ -11,20 +11,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 @Setter
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QstmtStmtLayoutHeadPk implements Serializable {
+public class QstmtStmtLayoutCtgPK implements Serializable{
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Basic(optional = false)
 	@Column(name ="CCD")
 	private String companyCd;
@@ -36,4 +35,8 @@ public class QstmtStmtLayoutHeadPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name ="STR_YM")
 	private int strYm;
+	
+	@Basic(optional = false)
+	@Column(name ="CTG_ATR")
+	private int ctgAtr;
 }
