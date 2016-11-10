@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import nts.uk.ctx.pr.proto.infra.entity.QcamtItem;
+
 @Entity
 @Table(name="QSTMT_STMT_LAYOUT_DETAIL")
 public class QstmtStmtLayoutDetail {
@@ -96,4 +98,7 @@ public class QstmtStmtLayoutDetail {
         @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
     })
 	public QstmtStmtLayoutCtg getQstmtStmtLayoutCtg;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutDetail")
+	public List<QcamtItem> lstItem;
 }
