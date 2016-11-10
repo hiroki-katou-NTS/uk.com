@@ -27,7 +27,7 @@ public class QstmtStmtLayoutLines extends AggregateTableEntity implements Serial
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private QstmtStmtLayoutLinesPk qstmtStmtLayoutLinesPk;
+	private QstmtStmtLayoutLinesPK qstmtStmtLayoutLinesPk;
 
 	@Basic(optional = false)
 	@Column(name ="END_YM")

@@ -19,9 +19,6 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name="QSTMT_STMT_LAYOUT_HEAD")
-@Getter
-@Setter	
-@AllArgsConstructor
 @NoArgsConstructor
 public class QstmtStmtLayoutHead extends AggregateTableEntity implements Serializable {
 	

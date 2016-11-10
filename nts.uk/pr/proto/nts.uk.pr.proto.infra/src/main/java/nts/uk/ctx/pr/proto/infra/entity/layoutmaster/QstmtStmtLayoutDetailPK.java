@@ -7,15 +7,17 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 @Setter
 @Getter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QstmtStmtLayoutLinesPk implements Serializable {
+public class QstmtStmtLayoutDetailPK implements Serializable{
 	/**
 	 * serialVersionUID
 	 */
@@ -36,10 +38,8 @@ public class QstmtStmtLayoutLinesPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name ="CTG_ATR")
 	private int ctgAtr;
-	
-	@Basic(optional = false)
-	@Column(name ="AUTO_LINE_ID")
-	private String autoLineId;
-	
 
+	@Basic(optional = false)
+	@Column(name ="ITEM_CD")
+	private String itemCd;
 }

@@ -24,7 +24,7 @@ import lombok.Setter;
 public class QstmtStmtLayoutCtg {
 	
 	@EmbeddedId
-	private QstmtStmtLayoutCtgPk qstmtStmtLayoutCtgPk;
+	private QstmtStmtLayoutCtgPK qstmtStmtLayoutCtgPk;
 
 	@Basic(optional = false)
 	@Column(name ="END_YM")
