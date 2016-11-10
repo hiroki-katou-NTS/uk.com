@@ -25,6 +25,7 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
             "/lib/nittsu/util.js",
             "/lib/nittsu/text.js",
+            "/lib/nittsu/request.js",
             "/lib/nittsu/ui/notify.js",
             "/lib/nittsu/ui/validation.js",
             "/lib/nittsu/ui/jquery-ext.js",
