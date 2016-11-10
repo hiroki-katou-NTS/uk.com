@@ -5,9 +5,13 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.uk.ctx.pr.proto.infra.entity.layoutmaster.QstmtStmtLayoutDetail;
 
 @Entity
 @Table(name="QCAMT_ITEM")
@@ -87,4 +91,12 @@ public class QcamtItem extends AggregateTableEntity {
 	
 	@Column(name = "WORK_DAYS_SCOPE_ATR")
 	public int workDaysScopeAtr;
+	
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
+        @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
+        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+    })
+	public QstmtStmtLayoutDetail layoutDetail;
 }

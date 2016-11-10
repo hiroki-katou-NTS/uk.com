@@ -2,9 +2,7 @@ package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pr.proto.dom.enums.CommuteMeansAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.PayrollSystem;
-import nts.uk.ctx.pr.proto.dom.enums.UserOrNot;
 import nts.uk.shr.com.primitive.PersonId;
 
 /**
@@ -32,20 +30,20 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	}
 
 	/**
-	 * Payroll system by DAILY || DAY
-	 * 
-	 * @return true if payroll system = 2 || 3 else false
-	 */
-	public boolean isPayrollSystemDailyOrDay() {
-		return this.payrollSystem == PayrollSystem.DAILY || this.payrollSystem == PayrollSystem.DAY;
-	}
-
-	/**
 	 * Create instance using Java type parameters.
 	 * 
 	 * @return PersonalEmploymentContract
 	 */
 	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId) {
 		return new PersonalEmploymentContract(PayrollSystem.valueOf(payrollSystem), new PersonId(personId));
+	}
+	
+	/**
+	 * Payroll system by DAILY || DAY
+	 * 
+	 * @return true if payroll system = 2(DAILY) || 3(DAY) else false
+	 */
+	public boolean isPayrollSystemDailyOrDay() {
+		return this.payrollSystem == PayrollSystem.DAILY || this.payrollSystem == PayrollSystem.DAY;
 	}
 }

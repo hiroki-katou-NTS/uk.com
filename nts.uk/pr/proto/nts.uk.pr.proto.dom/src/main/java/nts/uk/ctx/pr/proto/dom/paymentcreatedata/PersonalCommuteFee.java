@@ -2,8 +2,6 @@ package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pr.proto.dom.enums.CommuteMeansAttribute;
-import nts.uk.ctx.pr.proto.dom.enums.UserOrNot;
 import nts.uk.shr.com.primitive.PersonId;
 
 /**
@@ -44,6 +42,17 @@ public class PersonalCommuteFee extends AggregateRoot {
 	@Getter
 	private PersonId personId;
 
+	/**
+	 * Constructor with parameter.
+	 * @param commuteNoTaxLimitPrivateNo commute No Tax Limit Private No
+	 * @param commuteNoTaxLimitPublishNo commute No Tax Limit Publish No
+	 * @param commute1 other information
+	 * @param commute2 other information
+	 * @param commute3 other information
+	 * @param commute4 other information
+	 * @param commute5 other information
+	 * @param personId person id
+	 */
 	public PersonalCommuteFee(long commuteNoTaxLimitPrivateNo, long commuteNoTaxLimitPublishNo,
 			PersonalCommuteValue commute1, PersonalCommuteValue commute2, PersonalCommuteValue commute3,
 			PersonalCommuteValue commute4, PersonalCommuteValue commute5, PersonId personId) {

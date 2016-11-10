@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
 import lombok.Getter;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteMeansAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.UserOrNot;
-import nts.uk.shr.com.primitive.PersonId;
 
 /**
  * Value Object: Person commute
