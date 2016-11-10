@@ -1,26 +1,44 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
+import java.util.HashMap;
+
 /**
- * ‹‹—^Ü—^‹æ•ª
+ * ï¿½ï¿½ï¿½^ï¿½Ü—^ï¿½æ•ª
  * 
  * @author vunv
  *
  */
 public enum PayBonusAttribute {
 	/**
-	 * ‹‹—^
+	 * ï¿½ï¿½ï¿½^
 	 */
 	SALARY(0),
 
 	/**
-	 * Ü—^
+	 * ï¿½Ü—^
 	 */
 	BONUSES(1);
 
 	public int value;
 
+	private static HashMap<Integer, PayBonusAttribute> map = new HashMap<>();
+
+	static {
+		for (PayBonusAttribute item : PayBonusAttribute.values()) {
+			map.put(item.value, item);
+		}
+	}
+
 	private PayBonusAttribute(int value) {
 		this.value = value;
 	}
-
+	
+	/**
+	 * Convert to enum PayBonusAttribute by value
+	 * @param value
+	 * @return PayBonusAttribute
+	 */
+	public static PayBonusAttribute valueOf(int value) {
+        return map.get(value);
+    }
 }
