@@ -27,7 +27,7 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public QstmtStmtLayoutDetailPk qstmtStmtLayoutDetailPk;
+	public QstmtStmtLayoutDetailPK qstmtStmtLayoutDetailPk;
 
 	@Basic(optional = false)
 	@Column(name ="END_YM")

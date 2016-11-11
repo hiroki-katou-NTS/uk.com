@@ -20,7 +20,9 @@ import lombok.NoArgsConstructor;
 public class QstmtStmtLayoutCtg {
 	
 	@EmbeddedId
-	public QstmtStmtLayoutCtgPk qstmtStmtLayoutCtgPk;
+
+	public QstmtStmtLayoutCtgPK qstmtStmtLayoutCtgPk;
+
 
 	@Basic(optional = false)
 	@Column(name ="END_YM")
