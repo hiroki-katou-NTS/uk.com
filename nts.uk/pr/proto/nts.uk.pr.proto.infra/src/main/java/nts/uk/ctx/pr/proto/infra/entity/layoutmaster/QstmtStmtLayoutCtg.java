@@ -11,12 +11,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -24,15 +20,17 @@ import lombok.Setter;
 public class QstmtStmtLayoutCtg {
 	
 	@EmbeddedId
-	private QstmtStmtLayoutCtgPK qstmtStmtLayoutCtgPk;
+
+	public QstmtStmtLayoutCtgPK qstmtStmtLayoutCtgPk;
+
 
 	@Basic(optional = false)
 	@Column(name ="END_YM")
-	private int endYm;
+	public int endYm;
 
 	@Basic(optional = false)
 	@Column(name ="CTG_POS")
-	private int ctgPos;
+	public int ctgPos;
 	
 	@ManyToOne
 	@JoinColumns({
@@ -40,7 +38,7 @@ public class QstmtStmtLayoutCtg {
         @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
         @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false)
     })
-	private QstmtStmtLayoutHead layoutHead;
+	public QstmtStmtLayoutHead layoutHead;
 	
 	@OneToOne(optional=false)
 	@JoinColumns({
@@ -49,6 +47,6 @@ public class QstmtStmtLayoutCtg {
         @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
         @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
     })
-	private QstmtStmtLayoutDetail getQstmtStmtLayoutDetail;
+	public QstmtStmtLayoutDetail getQstmtStmtLayoutDetail;
 
 }
