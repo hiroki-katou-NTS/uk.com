@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmaster;
+package nts.uk.ctx.pr.proto.dom.layout;
 
 import java.util.List;
 import java.util.Optional;
