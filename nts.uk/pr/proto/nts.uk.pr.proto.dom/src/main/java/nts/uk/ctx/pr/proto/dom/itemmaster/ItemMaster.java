@@ -8,7 +8,7 @@ import nts.uk.ctx.pr.proto.dom.enums.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.enums.ItemAttributeAtr;
 import nts.uk.ctx.pr.proto.dom.enums.ItemNameDisplayAtr;
-import nts.uk.ctx.pr.proto.dom.enums.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.enums.TaxAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.WageClassificationAtr;
 import nts.uk.ctx.pr.proto.dom.layout.detail.ItemCode;
 
@@ -66,7 +66,7 @@ public class ItemMaster extends AggregateRoot{
 	private WageClassificationAtr socialInsuranceAtr;
 	/** 課税区分 */
 	@Getter
-	private TaxAtr taxAtr;
+	private TaxAttribute taxAtr;
 	/** ゼロ表示区分 */
 	@Getter
 	private DisplayAtr zeroDisplayAtr;
@@ -85,7 +85,7 @@ public class ItemMaster extends AggregateRoot{
 			WageClassificationAtr fixedPaidAtr, IntegratedItemCode integratedItemCode, ItemABName itemAbName,
 			ItemAttributeAtr itemAttributeAtr, ItemName itemName, ItemNameDisplayAtr itemNameDisplayAtr,
 			WageClassificationAtr laborInsuranceAtr, LimitMoney limitMoney, Memo memo,
-			WageClassificationAtr socialInsuranceAtr, TaxAtr taxAtr, DisplayAtr zeroDisplayAtr,
+			WageClassificationAtr socialInsuranceAtr, TaxAttribute taxAtr, DisplayAtr zeroDisplayAtr,
 			CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr) {
 		super();
 		this.displayAtr = displayAtr;

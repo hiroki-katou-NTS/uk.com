@@ -4,10 +4,10 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * 健保標準報酬
+ * 扶養人数（その月時点）　※計算項目
  */
-@IntegerRange(min = 0, max = 99999999)
-public class HealthInsuranceAverageEarn extends IntegerPrimitiveValue<HealthInsuranceAverageEarn> {
+@IntegerRange(min = 0, max = 99)
+public class DependentNumber extends IntegerPrimitiveValue<DependentNumber> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class HealthInsuranceAverageEarn extends IntegerPrimitiveValue<HealthInsu
 	 * @param rawValue
 	 *            raw value
 	 */
-	public HealthInsuranceAverageEarn(Integer rawValue) {
+	public DependentNumber(Integer rawValue) {
 		super(rawValue);
 	}
 

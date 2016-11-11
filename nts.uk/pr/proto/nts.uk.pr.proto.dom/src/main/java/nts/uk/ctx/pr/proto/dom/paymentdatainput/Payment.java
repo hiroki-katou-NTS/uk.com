@@ -6,10 +6,13 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.AgeContinuationInsureAtr;
+import nts.uk.ctx.pr.proto.dom.enums.EmploymentInsuranceAtr;
+import nts.uk.ctx.pr.proto.dom.enums.InsuredAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.PayBonusAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.SparePayAttribute;
-import nts.uk.ctx.pr.proto.dom.enums.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.enums.TaxAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.TenureAttribute;
+import nts.uk.ctx.pr.proto.dom.enums.WorkInsuranceCalculateAtr;
 import nts.uk.shr.com.primitive.PersonId;
 
 public class Payment extends AggregateRoot {
@@ -47,8 +50,20 @@ public class Payment extends AggregateRoot {
 
 	private TenureAttribute tenureAttribute;
 
-	private TaxAtr taxAtr;
+	private TaxAttribute taxAttribute;
 
+	private PensionInsuranceGrade pensionInsuranceGrade;
+
+	private PensionAverageEarn pensionAverageEarn;
+
+	private EmploymentInsuranceAtr employmentInsuranceAtr;
+	
+	private DependentNumber dependentNumber;
+	
+	private WorkInsuranceCalculateAtr workInsuranceCalculateAtr;
+	
+	private InsuredAttribute insuredAttribute;
+	
 	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo,
 			PayBonusAttribute payBonusAttribute, int processingYM, SparePayAttribute sparePayAttribute) {
 		super();
