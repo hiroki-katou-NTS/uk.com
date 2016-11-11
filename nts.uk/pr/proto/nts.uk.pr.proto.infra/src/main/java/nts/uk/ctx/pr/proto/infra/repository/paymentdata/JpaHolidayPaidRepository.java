@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.infra.repository.paymentcreatedata;
+package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
 import java.util.List;
 
