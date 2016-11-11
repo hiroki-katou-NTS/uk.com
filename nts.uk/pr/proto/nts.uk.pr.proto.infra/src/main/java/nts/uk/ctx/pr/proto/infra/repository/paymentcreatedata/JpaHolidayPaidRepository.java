@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentcreatedata;
 
 import java.util.List;
 
-import nts.uk.ctx.pr.proto.dom.paymentcreatedata.HolidayPaid;
-import nts.uk.ctx.pr.proto.dom.paymentcreatedata.HolidayPaidRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.HolidayPaid;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.HolidayPaidRepository;
 
 public class JpaHolidayPaidRepository implements HolidayPaidRepository {
 

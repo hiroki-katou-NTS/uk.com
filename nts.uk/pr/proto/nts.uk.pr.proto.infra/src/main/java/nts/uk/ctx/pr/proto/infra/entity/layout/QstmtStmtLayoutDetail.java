@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
-import nts.uk.ctx.pr.proto.infra.entity.QcamtItem;
+import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
