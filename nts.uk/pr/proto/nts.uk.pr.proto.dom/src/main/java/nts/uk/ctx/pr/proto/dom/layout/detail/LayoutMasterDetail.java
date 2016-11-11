@@ -1,12 +1,14 @@
 package nts.uk.ctx.pr.proto.dom.layout.detail;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 /**
  * 
@@ -28,9 +30,12 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**項目位置 */
 	@Getter
 	private ColumnPosition columnPosition;
-	/** 按分設定 */
+	/** 按分設定  */
 	@Getter
 	private List<Distribute> distribute;	
+	/** 表示区分 */
+	@Getter
+	private DisplayAtr displayAtr;
 	@Getter
 	private List<RangeChecker> error;
 	/**会社ＣＤ */
@@ -41,14 +46,39 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private LayoutCode layoutCode;
 	/**開始年月*/
 	@Getter
-	private Date startDate;
-	/**合計対象区分 */
+	private YearMonth startYM;
+	/** 終了年月 */
+	@Getter
+	private YearMonth endYM;
+	/** 合計対象区分 */
 	@Getter
 	private SumScopeAtr sumScopeAtr;
+	/** 個人金額コード */
+	@Getter
+	private IndividualAmountCode individualAmountCode;
+	
+	/** 計算式コード */
+	@Getter
+	private FormulaCode formulaCode;
+	
+	/** 賃金テーブルコード */
+	@Getter
+	private WageTableCode wageTableCode;
+
+	/** 共通金額 */
+	@Getter
+	private CommonAmount commonAmount;
+	
+	/** 支給相殺コード */
+	@Getter
+	private SetOffItemCode setOffItemCode;
+	
+	@Getter
+	private CommuteAtr commuteAtr;
 	
 	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
-			ItemCode itemCode, LayoutCode layoutCode, Date startDate, SumScopeAtr sumScopeAtr,
+			ItemCode itemCode, LayoutCode layoutCode, YearMonth startYM, SumScopeAtr sumScopeAtr,
 			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute) {
 		super();
 		this.companyCode = companyCode;
@@ -57,7 +87,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.columnPosition = columnPosition;
 		this.itemCode = itemCode;
 		this.layoutCode = layoutCode;
-		this.startDate = startDate;
+		this.startYM = startYM;
 		this.sumScopeAtr = sumScopeAtr;
 		this.alarm = alarm;
 		this.error = error;

@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.proto.dom.paymentdata.CommuteMeansAtr;
+import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 
 /**
  * Value Object: Person commute
@@ -24,7 +24,7 @@ public class PersonalCommuteValue {
 	 * Commute means attribute
 	 */
 	@Getter
-	private CommuteMeansAtr commuteMeansAttribute;
+	private CommuteAtr commuteMeansAttribute;
 
 	/**
 	 * Payroll start date
@@ -38,7 +38,7 @@ public class PersonalCommuteValue {
 	@Getter
 	private boolean useOrNot;
 
-	public PersonalCommuteValue(String commuteCycle, long commuteAllowance, CommuteMeansAtr commuteMeansAttribute,
+	public PersonalCommuteValue(String commuteCycle, long commuteAllowance, CommuteAtr commuteMeansAttribute,
 			long payStartDate, boolean useOrNot) {
 		super();
 		this.commuteCycle = commuteCycle;
