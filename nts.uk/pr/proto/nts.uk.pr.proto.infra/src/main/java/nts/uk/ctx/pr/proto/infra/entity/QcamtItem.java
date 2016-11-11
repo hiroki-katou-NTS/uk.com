@@ -7,7 +7,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
@@ -92,7 +92,7 @@ public class QcamtItem extends AggregateTableEntity {
 	@Column(name = "WORK_DAYS_SCOPE_ATR")
 	public int workDaysScopeAtr;
 	
-	@ManyToOne
+	@OneToOne
 	@JoinColumns({
         @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
         @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),

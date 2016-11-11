@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 
 import java.util.Optional;
 
-public interface layoutMasterDetailRepository {
+public interface LayoutMasterDetailRepository {
 	
 	/**
 	 * find layout master detail by company code, layout code, start date, category code

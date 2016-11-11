@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -122,13 +123,18 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
 	
 	@OneToOne(optional=false)
 	@JoinColumns({
+		@JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
+        @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
+        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+    })
+	public List<QcamtItem> lstItem;
+	
+	@ManyToOne
+	@JoinColumns({
         @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
         @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
         @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
         @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
     })
-	public QstmtStmtLayoutCtg getQstmtStmtLayoutCtg;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutDetail")
-	public List<QcamtItem> lstItem;
+	public QstmtStmtLayoutCtg layoutCategory;
 }
