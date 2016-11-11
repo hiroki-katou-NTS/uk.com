@@ -1,11 +1,12 @@
 package nts.uk.ctx.pr.proto.dom.paymentdatainput;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * 厚年標準報酬
  */
-@IntegerRangeValue(min = 0, max = 99999999)
+@IntegerRange(min = 0, max = 99999999)
 public class PensionAverageEarn extends IntegerPrimitiveValue<PensionAverageEarn> {
 
 	/** serialVersionUID */
