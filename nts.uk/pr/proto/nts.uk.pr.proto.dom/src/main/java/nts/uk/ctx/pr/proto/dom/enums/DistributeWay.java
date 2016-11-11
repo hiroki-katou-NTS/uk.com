@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
+import java.util.HashMap;
+
 public enum DistributeWay {
 	//0:割合で計算
 	CALCULATED_PERCENTAGE(0),
@@ -8,33 +10,26 @@ public enum DistributeWay {
 	//2:計算式
 	CALCULATION_FORMULA(2);
 	public final int value;
-
-	/**
-	 * 
-	 * 値
-	 */
-	public int value() {
-		return value;
-	}
+	
 	/**
 	 * Constructor.
 	 * 
 	 * @param カテゴリ区分の値
 	 */
-	private DistributeWay(int value) {
+	DistributeWay(int value) {
 		this.value = value;
 	}
-	public DistributeWay valueOf(int value){
-		switch (value) {
-		case 0:
-			return CALCULATED_PERCENTAGE;
-		case 1:
-			return DEDUCTION_FOR_DAYS;
-		case 2:
-			return CALCULATION_FORMULA;
-		default:
-			throw new RuntimeException("Invalid value of DistributeWay");
+	
+	private static HashMap<Integer, DistributeWay> map = new HashMap<>();
+	
+	static{
+		for(DistributeWay item: DistributeWay.values()){
+			map.put(item.value, item);
 		}
+	}
+	
+	public static DistributeWay valueOf(int value){
+		return map.get(value);
 	}
 	
 }

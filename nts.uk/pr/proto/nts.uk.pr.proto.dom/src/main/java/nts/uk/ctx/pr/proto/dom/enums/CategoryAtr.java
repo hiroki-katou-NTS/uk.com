@@ -1,10 +1,8 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
-/**
- * 
- * カテゴリ区分
- *
- */
+import java.util.HashMap;
+
+/**カテゴリ区分 */
 public enum CategoryAtr {
 	// 0:支給
 	PAYMENT(0),
@@ -19,37 +17,23 @@ public enum CategoryAtr {
 
 	public final int value;
 
-	/**
-	 * 
-	 * 値
-	 */
-	public int value() {
-		return value;
+	private static HashMap<Integer, CategoryAtr> map = new HashMap<>();
+	
+	static {
+		for(CategoryAtr item: CategoryAtr.values()){
+			map.put(item.value, item);
+		}
 	}
-
 	/**
 	 * Constructor.
 	 * 
 	 * @param カテゴリ区分の値
 	 */
-	private CategoryAtr(int value) {
+	CategoryAtr(int value) {
 		this.value = value;
 	}
-
-	public static CategoryAtr valueOf(int value) {
-		switch (value) {
-		case 0:
-			return PAYMENT;
-		case 1:
-			return DEDUCTION;
-		case 2:
-			return DILIGENCE;
-		case 3:
-			return ARTICLES;
-		case 4:
-			return OTHER;
-		default:
-			throw new RuntimeException("Invalid value of CategoryAtr");
-		}
+	
+	public static CategoryAtr valuesOf(int value){
+		return map.get(value);
 	}
 }

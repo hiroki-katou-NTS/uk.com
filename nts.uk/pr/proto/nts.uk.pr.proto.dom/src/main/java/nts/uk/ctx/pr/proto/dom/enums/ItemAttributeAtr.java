@@ -1,4 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.enums;
+
+import java.util.HashMap;
+
 /** 項目属性 */
 public enum ItemAttributeAtr {
 	//0:時間
@@ -14,33 +17,24 @@ public enum ItemAttributeAtr {
 	
 	public final int value;
 
-	/** 値 */
-	public int value() {
-		return value;
-	}
 	/**
 	 * Constructor.
 	 * 
 	 * @param 項目属性 
 	 */
-	private ItemAttributeAtr(int value) {
+	ItemAttributeAtr(int value) {
 		this.value = value;
 	}
 	
-	public ItemAttributeAtr valueOf(int value)	{
-		switch (value) {
-		case 0:
-			return HOURS;
-		case 1:
-			return TIMES;
-		case 2:
-			return AMOUNT_NO_DECIMAL;
-		case 3:
-			return AMOUNT_WITH_DECIMAL;
-		case 4:
-			return CHARACTERS;
-		default:
-			throw new RuntimeException("Invalid value of ItemAttributeAtr");
+	private static HashMap<Integer, ItemAttributeAtr> map = new HashMap<>();
+	
+	static{
+		for(ItemAttributeAtr item: ItemAttributeAtr.values()){
+			map.put(item.value, item);
 		}
+	}
+	
+	public static ItemAttributeAtr valueOf(int value)	{
+		return map.get(value);
 	}
 }
