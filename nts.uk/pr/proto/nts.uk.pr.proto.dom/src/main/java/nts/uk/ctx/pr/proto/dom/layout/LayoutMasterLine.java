@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.proto.dom.enums.LineDispAtr;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 
 public class LayoutMasterLine extends DomainObject{

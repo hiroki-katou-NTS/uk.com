@@ -10,9 +10,9 @@ import nts.uk.ctx.pr.proto.dom.enums.EmploymentInsuranceAtr;
 import nts.uk.ctx.pr.proto.dom.enums.InsuredAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.PayBonusAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.SparePayAttribute;
-import nts.uk.ctx.pr.proto.dom.enums.TaxAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.TenureAttribute;
 import nts.uk.ctx.pr.proto.dom.enums.WorkInsuranceCalculateAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.shr.com.primitive.PersonId;
 
 public class Payment extends AggregateRoot {
@@ -50,7 +50,7 @@ public class Payment extends AggregateRoot {
 
 	private TenureAttribute tenureAttribute;
 
-	private TaxAttribute taxAttribute;
+	private TaxAtr taxAttribute;
 
 	private PensionInsuranceGrade pensionInsuranceGrade;
 

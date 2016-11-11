@@ -1,6 +1,6 @@
-package nts.uk.ctx.pr.proto.dom.enums;
+package nts.uk.ctx.pr.proto.dom.itemmaster;
 /** 課税区分 */
-public enum TaxAttribute {
+public enum TaxAtr {
 	//0:課税
 	TAXATION(0),
 	//1:非課税（限度あり）
@@ -22,11 +22,11 @@ public enum TaxAttribute {
 	 * 
 	 * @param 項目属性 
 	 */
-	private TaxAttribute(int value) {
+	private TaxAtr(int value) {
 		this.value = value;
 	}
 	
-	public TaxAttribute valueOf(int value){
+	public TaxAtr valueOf(int value){
 		switch (value) {
 		case 0:
 			return TAXATION;

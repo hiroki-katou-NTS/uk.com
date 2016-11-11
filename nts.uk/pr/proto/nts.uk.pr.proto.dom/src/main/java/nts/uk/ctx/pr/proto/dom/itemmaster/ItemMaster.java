@@ -4,12 +4,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.enums.DeductionAtr;
-import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.proto.dom.enums.ItemAttributeAtr;
-import nts.uk.ctx.pr.proto.dom.enums.ItemNameDisplayAtr;
-import nts.uk.ctx.pr.proto.dom.enums.TaxAttribute;
-import nts.uk.ctx.pr.proto.dom.enums.WageClassificationAtr;
 import nts.uk.ctx.pr.proto.dom.layout.detail.ItemCode;
 
 /**
@@ -45,7 +39,7 @@ public class ItemMaster extends AggregateRoot{
 	private ItemABName itemAbName;
 	/** 項目属性 */
 	@Getter
-	private ItemAttributeAtr itemAttributeAtr;
+	private ItemAtr itemAttributeAtr;
 	/** 項目名称 */
 	@Getter
 	private ItemName itemName;
@@ -66,7 +60,7 @@ public class ItemMaster extends AggregateRoot{
 	private WageClassificationAtr socialInsuranceAtr;
 	/** 課税区分 */
 	@Getter
-	private TaxAttribute taxAtr;
+	private TaxAtr taxAtr;
 	/** ゼロ表示区分 */
 	@Getter
 	private DisplayAtr zeroDisplayAtr;
@@ -83,9 +77,9 @@ public class ItemMaster extends AggregateRoot{
 	public ItemMaster(DisplayAtr displayAtr, WageClassificationAtr avgPaidAtr,
 			CheckMaxValue checkMaxValue, CheckMinValue checkMinValue, DeductionAtr deductAttribute,
 			WageClassificationAtr fixedPaidAtr, IntegratedItemCode integratedItemCode, ItemABName itemAbName,
-			ItemAttributeAtr itemAttributeAtr, ItemName itemName, ItemNameDisplayAtr itemNameDisplayAtr,
+			ItemAtr itemAttributeAtr, ItemName itemName, ItemNameDisplayAtr itemNameDisplayAtr,
 			WageClassificationAtr laborInsuranceAtr, LimitMoney limitMoney, Memo memo,
-			WageClassificationAtr socialInsuranceAtr, TaxAttribute taxAtr, DisplayAtr zeroDisplayAtr,
+			WageClassificationAtr socialInsuranceAtr, TaxAtr taxAtr, DisplayAtr zeroDisplayAtr,
 			CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr) {
 		super();
 		this.displayAtr = displayAtr;

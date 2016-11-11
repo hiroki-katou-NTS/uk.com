@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.enums;
+package nts.uk.ctx.pr.proto.dom.itemmaster;
 
 import java.util.HashMap;
 

@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.enums.LayoutAtr;
 
 public class LayoutMaster extends AggregateRoot {
 

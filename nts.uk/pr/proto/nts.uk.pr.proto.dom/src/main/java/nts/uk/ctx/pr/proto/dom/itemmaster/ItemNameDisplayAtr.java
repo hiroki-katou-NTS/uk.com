@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.enums;
+package nts.uk.ctx.pr.proto.dom.itemmaster;
 
 /** 項目名表示区分 */
 public enum ItemNameDisplayAtr {
