@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.proto.dom.paymentcreatedata;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteMeansAttribute;
-import nts.uk.ctx.pr.proto.dom.enums.UserOrNot;
 
 /**
  * Value Object: Person commute
@@ -37,10 +36,10 @@ public class PersonalCommuteValue {
 	 * User or Not
 	 */
 	@Getter
-	private UserOrNot userOrNot;
+	private boolean userOrNot;
 
 	public PersonalCommuteValue(String commuteCycle, long commuteAllowance, CommuteMeansAttribute commuteMeansAttribute,
-			long payStartDate, UserOrNot userOrNot) {
+			long payStartDate, boolean userOrNot) {
 		super();
 		this.commuteCycle = commuteCycle;
 		this.commuteAllowance = commuteAllowance;
@@ -55,8 +54,8 @@ public class PersonalCommuteValue {
 	 * @return PersonalCommuteValue
 	 */
 	public static PersonalCommuteValue createFromJavaType(String commuteCycle, long commuteAllowance,
-			int commuteMeansAttribute, long payStartDate, int userOrNot) {
+			int commuteMeansAttribute, long payStartDate, boolean userOrNot) {
 		return new PersonalCommuteValue(commuteCycle, commuteAllowance,
-				CommuteMeansAttribute.valueOf(commuteMeansAttribute), payStartDate, UserOrNot.valueOf(userOrNot));
+				CommuteMeansAttribute.valueOf(commuteMeansAttribute), payStartDate, userOrNot);
 	}
 }
