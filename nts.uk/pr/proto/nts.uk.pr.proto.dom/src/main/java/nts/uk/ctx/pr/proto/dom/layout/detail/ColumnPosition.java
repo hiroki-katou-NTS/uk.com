@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
+package nts.uk.ctx.pr.proto.dom.layout.detail;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 

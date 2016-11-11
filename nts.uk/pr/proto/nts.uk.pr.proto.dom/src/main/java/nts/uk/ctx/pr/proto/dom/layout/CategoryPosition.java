@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmaster;
+package nts.uk.ctx.pr.proto.dom.layout;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;

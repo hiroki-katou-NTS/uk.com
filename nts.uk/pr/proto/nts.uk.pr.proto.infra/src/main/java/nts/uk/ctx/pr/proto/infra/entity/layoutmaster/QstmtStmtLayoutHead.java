@@ -24,7 +24,7 @@ public class QstmtStmtLayoutHead extends AggregateTableEntity implements Seriali
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public QstmtStmtLayoutHeadPk qstmtStmtLayoutHeadPK;
+	public QstmtStmtLayoutHeadPK qstmtStmtLayoutHeadPK;
 	
 	@Column(name ="STMT_NAME")
 	public String stmtName;

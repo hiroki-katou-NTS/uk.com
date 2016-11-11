@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QstmtStmtLayoutHeadPk {
+public class QstmtStmtLayoutHeadPK {
 
 	/**
 	 * serialVersionUID

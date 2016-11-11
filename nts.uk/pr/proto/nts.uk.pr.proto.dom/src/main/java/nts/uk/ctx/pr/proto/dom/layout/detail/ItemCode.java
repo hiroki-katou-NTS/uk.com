@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layoutmaster;
+package nts.uk.ctx.pr.proto.dom.layout.detail;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -6,19 +6,19 @@ import nts.arc.primitive.constraint.StringMaxLengh;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringCharType(CharType.NUMERIC)
-@StringMaxLengh(2)
-public class LayoutCode extends CodePrimitiveValue<LayoutCode> {
-
-	/** serialVersionUID */
-	private static final long serialVersionUID = 1L;
-
+@StringMaxLengh(4)
+public class ItemCode extends CodePrimitiveValue<ItemCode>{
 	/**
 	 * Constructor
 	 * @param rawValue
 	 */
-	public LayoutCode(String rawValue) {
-		super(rawValue);
+	public ItemCode(String rawValue) {
+		super(rawValue);		
 	}
 
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
 }
