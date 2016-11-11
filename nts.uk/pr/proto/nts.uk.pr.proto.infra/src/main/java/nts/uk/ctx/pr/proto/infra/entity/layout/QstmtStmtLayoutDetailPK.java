@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.infra.entity.layoutmaster;
+package nts.uk.ctx.pr.proto.infra.entity.layout;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QstmtStmtLayoutLinesPK implements Serializable {
+public class QstmtStmtLayoutDetailPK implements Serializable{
 	/**
 	 * serialVersionUID
 	 */
@@ -32,10 +32,8 @@ public class QstmtStmtLayoutLinesPK implements Serializable {
 	@Basic(optional = false)
 	@Column(name ="CTG_ATR")
 	public int ctgAtr;
-	
-	@Basic(optional = false)
-	@Column(name ="AUTO_LINE_ID")
-	public String autoLineId;
-	
 
+	@Basic(optional = false)
+	@Column(name ="ITEM_CD")
+	public String itemCd;
 }

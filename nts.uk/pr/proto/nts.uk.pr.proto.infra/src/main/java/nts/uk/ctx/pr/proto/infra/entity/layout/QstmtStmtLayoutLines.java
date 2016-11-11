@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.infra.entity.layoutmaster;
+package nts.uk.ctx.pr.proto.infra.entity.layout;
 
 import java.io.Serializable;
 

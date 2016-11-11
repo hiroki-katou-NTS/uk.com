@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
-import nts.uk.ctx.pr.proto.infra.entity.layoutmaster.QstmtStmtLayoutDetail;
+import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
 
 @Entity
 @Table(name="QCAMT_ITEM")
