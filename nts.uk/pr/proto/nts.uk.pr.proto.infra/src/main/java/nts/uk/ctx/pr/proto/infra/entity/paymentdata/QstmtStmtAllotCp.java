@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.infra.entity;
+package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
