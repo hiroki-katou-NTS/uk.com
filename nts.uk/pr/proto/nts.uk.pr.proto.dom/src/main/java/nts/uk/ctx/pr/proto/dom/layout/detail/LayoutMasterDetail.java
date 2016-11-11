@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.proto.dom.layoutmasterdetail;
+package nts.uk.ctx.pr.proto.dom.layout.detail;
 
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -9,7 +9,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CalculationMethod;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.SumScopeAtr;
-import nts.uk.ctx.pr.proto.dom.layoutmaster.LayoutCode;
+import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 /**
  * 
  * 明 細 書 マ ス タ 明 細

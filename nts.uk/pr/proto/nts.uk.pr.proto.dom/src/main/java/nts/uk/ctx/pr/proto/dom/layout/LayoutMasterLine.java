@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.proto.dom.layoutmaster;
+package nts.uk.ctx.pr.proto.dom.layout;
 
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.proto.dom.enums.LineDispAtr;
-import nts.uk.ctx.pr.proto.dom.layoutmasterdetail.LayoutMasterDetail;
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 
 public class LayoutMasterLine extends DomainObject{
 	
