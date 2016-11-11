@@ -21,5 +21,5 @@ public class QpdmtPaydayProcessingPK implements Serializable {
 	public int payBonusAtr;
 	
 	@Column(name = "PROCESSING_NO")
-	public BigDecimal processingNo;
+	public int processingNo;
 }

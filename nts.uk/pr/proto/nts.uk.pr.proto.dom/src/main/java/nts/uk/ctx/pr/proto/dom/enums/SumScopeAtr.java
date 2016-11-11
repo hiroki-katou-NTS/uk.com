@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
+import java.util.HashMap;
+
 /**
  * 
  * 合計対象区分
@@ -10,34 +12,31 @@ public enum SumScopeAtr {
 	EXCLUDED(0),
 	// 1:対象内
 	INCLUDED(1);
-	public final int value;
-
-	/** return 値 */
-	public int value() {
-		return value;
-	}
+	public final int value;	
 
 	/**
 	 * Constructor
 	 * 
 	 * @param 合計対象区分
 	 */
-	private SumScopeAtr(int value) {
+	SumScopeAtr(int value) {
 		this.value = value;
 	}
+	
+	private static HashMap<Integer, SumScopeAtr> map = new HashMap<>();
+	
+	static{
+		for(SumScopeAtr item: SumScopeAtr.values()){
+			map.put(item.value, item);
+		}
+	}
+	
 	/**
 	 * 
 	 * @param 合計対象区分の値
 	 * @return　合計対象区分
 	 */
 	public static SumScopeAtr valueOf(int value) {
-		switch (value) {
-		case 0:
-			return EXCLUDED;
-		case 1:
-			return INCLUDED;
-		default:
-			throw new RuntimeException("Invalid value of SumScopeAtr");
-		}
+		return map.get(value);
 	}
 }

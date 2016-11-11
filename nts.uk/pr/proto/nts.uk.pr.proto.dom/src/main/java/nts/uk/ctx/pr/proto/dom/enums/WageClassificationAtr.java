@@ -1,4 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.enums;
+
+import java.util.HashMap;
+
 /** 賃金対象区分 */
 public enum WageClassificationAtr {
 	//0:対象外
@@ -8,17 +11,21 @@ public enum WageClassificationAtr {
 	
 	public final int value;
 
-	/** 値 */
-	public int value() {
-		return value;
-	}
 	/**
 	 * Constructor.
 	 * 
 	 * @param 賃金対象区分の値
 	 */
-	private WageClassificationAtr(int value) {
+	WageClassificationAtr(int value) {
 		this.value = value;
+	}
+	
+	private static HashMap<Integer, WageClassificationAtr> map = new HashMap<>();
+	
+	static{
+		for(WageClassificationAtr item: WageClassificationAtr.values()){
+			map.put(item.value, item);
+		}
 	}
 	/**
 	 * 
@@ -27,14 +34,7 @@ public enum WageClassificationAtr {
 	 */
 	public WageClassificationAtr valueOf(int value)
 	{
-		switch (value) {
-		case 0:
-			return UN_SUBJECT;
-		case 1:
-			return SUBJECT;
-		default:
-			throw new RuntimeException("Invalid value of WageClassificationAtr");
-		}
+		return map.get(value);
 	}
 
 }
