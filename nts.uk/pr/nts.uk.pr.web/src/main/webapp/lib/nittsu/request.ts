@@ -74,6 +74,9 @@
         }
     }
 
+    /**
+     * URL and QueryString
+     */
     export class Locator {
 
         rawUrl: string;

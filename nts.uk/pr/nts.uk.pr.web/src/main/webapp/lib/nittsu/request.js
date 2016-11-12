@@ -64,6 +64,9 @@ var nts;
                 return QueryString;
             }());
             request.QueryString = QueryString;
+            /**
+             * URL and QueryString
+             */
             var Locator = (function () {
                 function Locator(url) {
                     this.rawUrl = url;
