@@ -91,6 +91,70 @@
                 return this.rawUrl;
             }
         }
+        
+        mergeRelativePath(relativePath) {
+            var stack = this.rawUrl.split('/');
+            var parts = relativePath.split('/');
+            var queryStringToAdd = QueryString.parseUrl(relativePath);
+    
+            // 最後のファイル名は除外
+            // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
+            stack.pop();
+            
+            // relativePathの先頭が '/' の場合、それを取り除く
+            if (parts[0] === '') {
+                parts.shift();
+            }
+    
+            for (var i = 0; i < parts.length; i++) {
+                if (parts[i] === '.')
+                    continue;
+                if (parts[i] === '..')
+                    stack.pop();
+                else
+                    stack.push(parts[i]);
+            }
+            
+            queryStringToAdd.mergeFrom(this.queryString);
+            
+            var queryStringParts = queryStringToAdd.hasItems()
+                ? '?' + queryStringToAdd.serialize()
+                : '';
+    
+            return new Locator(stack.join('/') + queryStringParts);
+        }
     }
+    
+    export function ajax(path: string, data: any, options: any) {
+        var dfd = $.Deferred();
+        options = options || {};
+
+        if (typeof data === 'object') {
+            data = JSON.stringify(data);
+        }
+
+        var webserviceLocator = new Locator(location.ajaxRoot).mergeRelativePath(path);
+
+        $.ajax({
+            type: options.method || 'POST',
+            contentType: options.contentType || 'application/json',
+            url: webserviceLocator.serialize(),
+            dataType: options.dataType || 'json',
+            data: data
+        }).done(function (res) {
+            dfd.resolve(res);
+        });
+
+        return dfd.promise();
+    }
+
+    var currentLocator = new Locator(window.location.href);
+    var applicationRootPath = currentLocator.mergeRelativePath(__viewContext.rootPath).rawUrl;
+    
+    export var location = {
+        current: currentLocator,
+        appRoot: applicationRootPath,
+        ajaxRoot: applicationRootPath + 'webapi/'
+    };
 
 }
