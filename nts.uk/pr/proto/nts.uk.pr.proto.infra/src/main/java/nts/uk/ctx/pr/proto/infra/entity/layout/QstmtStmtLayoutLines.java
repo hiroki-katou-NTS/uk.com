@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+//@Entity
 @Table(name="QSTMT_STMT_LAYOUT_LINES")
 public class QstmtStmtLayoutLines extends AggregateTableEntity implements Serializable {
 

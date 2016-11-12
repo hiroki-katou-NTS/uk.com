@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
 
-@Entity
+//@Entity
 @Table(name="QCAMT_ITEM")
 public class QcamtItem extends AggregateTableEntity {
 
