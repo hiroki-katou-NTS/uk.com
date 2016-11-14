@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.paymentdata.insure;
 
 /** 高年齢継続被保険者区分 */
 public enum AgeContinuationInsureAtr {
