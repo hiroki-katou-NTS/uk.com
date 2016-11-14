@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+//@Entity
 @Table(name="QSTMT_STMT_LAYOUT_CTG")
 public class QstmtStmtLayoutCtg {
 	

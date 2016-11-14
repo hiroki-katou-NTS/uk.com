@@ -21,7 +21,7 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+//@Entity
 @Table(name="QSTMT_STMT_LAYOUT_DETAIL")
 public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Serializable {
 	

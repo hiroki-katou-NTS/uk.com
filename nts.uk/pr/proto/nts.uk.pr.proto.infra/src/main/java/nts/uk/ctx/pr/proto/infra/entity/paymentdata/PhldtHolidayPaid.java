@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-@Entity
+//@Entity
 @Table(name="PHLDT_HOLIDAY_PAID")
 public class PhldtHolidayPaid extends AggregateTableEntity {
 	
