@@ -19,7 +19,7 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 	public List<HolidayPaid> find(String companyCode, List<String> personIdList) {
 		List<HolidayPaid> lstHolidayPaid = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<HolidayPaid> tmpHolidayPaid = (Optional<HolidayPaid>) this.queryProxy().query("SELECT c FROM PHLDT_HOLIDAY_PAID c WHERE c.CCD = :CCD and c.PID", PhldtHolidayPaid.class)
+			Optional<HolidayPaid> tmpHolidayPaid = (Optional<HolidayPaid>) this.queryProxy().query("SELECT c FROM PHLDT_HOLIDAY_PAID c WHERE c.CCD = :CCD and c.PID = :PID", PhldtHolidayPaid.class)
 					.setParameter("CCD", companyCode)
 					.setParameter("PID", personIdList.get(i))
 					.getSingle(c -> toDomain(c));

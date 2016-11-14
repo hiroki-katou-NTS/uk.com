@@ -61,8 +61,9 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 * 
 	 * @return PersonalEmploymentContract
 	 */
-	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId) {
-		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class), new PersonId(personId));
+	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId, String companyCode,
+			Date strD, Date endD) {
+		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class), new PersonId(personId), new CompanyCode(companyCode), strD, endD);
 	}
 
 	/**
