@@ -1,11 +1,14 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
+import lombok.AllArgsConstructor;
+
 /**
  * 修正フラグ
  * 
  * @author vunv
  *
  */
+@AllArgsConstructor
 public enum CorrectFlag {
 	/**
 	 * 0:修正なし
@@ -18,9 +21,4 @@ public enum CorrectFlag {
 	MODIFY(1);
 
 	public int value;
-
-	private CorrectFlag(int value) {
-		this.value = value;
-	}
-
 }
