@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.valueobjects;
+package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
 /**
  * 修正フラグ

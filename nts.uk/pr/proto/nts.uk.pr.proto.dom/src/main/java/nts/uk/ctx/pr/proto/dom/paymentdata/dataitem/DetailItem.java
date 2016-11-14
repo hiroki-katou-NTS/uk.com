@@ -1,7 +1,9 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.valueobjects;
+package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.pr.proto.dom.layout.detail.ItemCode;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.DetailItemPosition;
 
 /**
  * 明細データ明細
@@ -10,6 +12,11 @@ import nts.arc.layer.dom.DomainObject;
  *
  */
 public class DetailItem extends DomainObject {
+
+	/**
+	 * 項目コード
+	 */
+	private final ItemCode itemCode;
 
 	/**
 	 * 値
@@ -35,6 +42,9 @@ public class DetailItem extends DomainObject {
 	@Getter
 	private final InsuranceAtr laborInsuranceAtr;
 
+	@Getter
+	private DetailItemPosition itemPostion;
+
 	/**
 	 * Constructor
 	 * 
@@ -43,9 +53,10 @@ public class DetailItem extends DomainObject {
 	 * @param socialInsuranceAtr
 	 * @param laborInsuranceAtr
 	 */
-	public DetailItem(Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
+	public DetailItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
 			InsuranceAtr laborInsuranceAtr) {
 		super();
+		this.itemCode = itemCode;
 		this.value = value;
 		this.correctFlag = correctFlag;
 		this.socialInsuranceAtr = socialInsuranceAtr;
