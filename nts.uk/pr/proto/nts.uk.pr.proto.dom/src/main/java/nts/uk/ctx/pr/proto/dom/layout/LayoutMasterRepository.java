@@ -3,6 +3,9 @@ package nts.uk.ctx.pr.proto.dom.layout;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
+
 public interface LayoutMasterRepository {
 	//layout master
 	/**
