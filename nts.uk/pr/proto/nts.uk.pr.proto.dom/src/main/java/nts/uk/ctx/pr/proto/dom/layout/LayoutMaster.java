@@ -59,5 +59,14 @@ public class LayoutMaster extends AggregateRoot {
 		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
 	}
 	
+	/**
+	 * create From Java Type
+	 * @return LayoutMaster
+	 */
+	public static LayoutMaster createSimpleFromJavaType(String code, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName){
+		//Date startYearMonth = new
+		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
+	}
 	
 }
