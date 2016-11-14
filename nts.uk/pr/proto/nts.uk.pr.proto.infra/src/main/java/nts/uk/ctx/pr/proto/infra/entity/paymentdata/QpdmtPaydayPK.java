@@ -1,17 +1,11 @@
-package nts.uk.ctx.pr.proto.infra.entity;
+package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import javax.persistence.Embeddable;
 
 @Embeddable
 public class QpdmtPaydayPK implements Serializable {

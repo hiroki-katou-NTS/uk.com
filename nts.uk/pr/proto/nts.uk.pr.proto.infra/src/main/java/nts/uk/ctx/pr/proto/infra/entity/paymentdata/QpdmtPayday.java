@@ -1,15 +1,15 @@
-package nts.uk.ctx.pr.proto.infra.entity;
+package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
@@ -19,11 +19,9 @@ public class QpdmtPayday extends AggregateTableEntity {
 	@EmbeddedId
 	public QpdmtPaydayPK qpdmtPaydayPK;
 
-	@Basic(optional = false)
 	@Column(name = "PAY_MON")
 	public BigDecimal paymentMonth;
 
-	@Basic(optional = false)
 	@Column(name = "PAY_DAY")
 	public BigDecimal paymentDay;
 	
@@ -31,12 +29,9 @@ public class QpdmtPayday extends AggregateTableEntity {
 	@Column(name = "STD_MON")
 	public BigDecimal standardMonth;
 	
-	@Basic(optional = false)
 	@Column(name = "STD_DAY")
 	public BigDecimal standardDay;
 	
-	@Basic(optional = false)
-	@Basic(optional = false)
 	@Column(name = "PAY_DATE")
 	@Temporal(TemporalType.DATE)
 	public Date payDate;
@@ -48,7 +43,7 @@ public class QpdmtPayday extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_LEVY_MON")
-	public BigDecimal paymentDay;
+	public BigDecimal socialInsuranceLevyMonth;
 	
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DATE")
