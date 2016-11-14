@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 
 public class LayoutMaster extends AggregateRoot {
 
@@ -59,5 +60,14 @@ public class LayoutMaster extends AggregateRoot {
 		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
 	}
 	
+	/**
+	 * create From Java Type
+	 * @return LayoutMaster
+	 */
+	public static LayoutMaster createSimpleFromJavaType(String code, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName){
+		//Date startYearMonth = new
+		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
+	}
 	
 }

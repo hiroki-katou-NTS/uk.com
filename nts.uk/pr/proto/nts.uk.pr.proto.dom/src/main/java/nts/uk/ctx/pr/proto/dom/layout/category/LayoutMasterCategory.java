@@ -1,10 +1,11 @@
-package nts.uk.ctx.pr.proto.dom.layout;
+package nts.uk.ctx.pr.proto.dom.layout.category;
 
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 
 /**
  * LayoutMasterCategory valueObject
