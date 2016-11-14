@@ -28,7 +28,8 @@ public class PersonalPaymentSettingFinder {
 	 * @return company
 	 */
 	public Optional<PersonalPaymentSettingDto> find(String companyCode, Integer personId) {
-		return this.repository.find(companyCode, personId).map(d -> PersonalPaymentSettingDto.fromDomain(d));
+//		return this.repository.find(companyCode, personId).map(d -> PersonalPaymentSettingDto.fromDomain(d));
+		return null;
 	}
 
 	/**
@@ -37,7 +38,8 @@ public class PersonalPaymentSettingFinder {
 	 * @return companies
 	 */
 	public List<PersonalPaymentSettingDto> findAll() {
-		return this.repository.findAll().stream().map(d -> PersonalPaymentSettingDto.fromDomain(d))
-				.collect(Collectors.toList());
+//		return this.repository.findAll().stream().map(d -> PersonalPaymentSettingDto.fromDomain(d))
+//				.collect(Collectors.toList());
+		return null;
 	}
 }
