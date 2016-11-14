@@ -4,6 +4,7 @@ import java.util.Date;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
@@ -26,19 +27,19 @@ import nts.uk.shr.com.primitive.PersonId;
  */
 public class Payment extends AggregateRoot {
 	@Getter
-	private CompanyCode companyCode;
+	private final CompanyCode companyCode;
 
 	@Getter
-	private PersonId personId;
+	private final PersonId personId;
 
 	@Getter
-	private ProcessingNo processingNo;
+	private final ProcessingNo processingNo;
 
 	@Getter
-	private PayBonusAtr payBonusAttribute;
+	private final PayBonusAtr payBonusAttribute;
 
 	@Getter
-	private int processingYM;
+	private final YearMonth processingYM;
 
 	@Getter
 	private SparePayAtr sparePayAttribute;
@@ -72,17 +73,15 @@ public class Payment extends AggregateRoot {
 	private WorkInsuranceCalculateAtr workInsuranceCalculateAtr;
 
 	private InsuredAtr insuredAttribute;
-	
+
 	private BonusTaxRate bonusTaxRate;
-	
+
 	private CalcFlag calcFlag;
-	
+
 	private MakeMethodFlag makeMethodFlag;
-	
-	
 
 	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr payBonusAttribute,
-			int processingYM, SparePayAtr sparePayAttribute) {
+			YearMonth processingYM, SparePayAtr sparePayAttribute) {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;
