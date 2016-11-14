@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.paymentdata.residence;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;

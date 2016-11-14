@@ -1,13 +1,15 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.constraint.IntegerMaxValue;
+import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * 厚年標準報酬
+ * 賞与税率
  */
-@IntegerRange(min = 0, max = 99999999)
-public class PensionAverageEarn extends IntegerPrimitiveValue<PensionAverageEarn> {
+@IntegerMinValue(0)
+@IntegerMaxValue(99999)
+public class BonusTaxRate extends IntegerPrimitiveValue<BonusTaxRate> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -18,7 +20,7 @@ public class PensionAverageEarn extends IntegerPrimitiveValue<PensionAverageEarn
 	 * @param rawValue
 	 *            raw value
 	 */
-	public PensionAverageEarn(Integer rawValue) {
+	public BonusTaxRate(Integer rawValue) {
 		super(rawValue);
 	}
 

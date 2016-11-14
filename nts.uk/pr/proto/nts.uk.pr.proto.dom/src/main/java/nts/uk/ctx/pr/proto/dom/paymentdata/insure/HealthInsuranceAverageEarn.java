@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.paymentdata.insure;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

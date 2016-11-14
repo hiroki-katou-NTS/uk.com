@@ -1,13 +1,13 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.paymentdata.insure;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * 健康保険等級
+ * 厚年標準報酬
  */
-@IntegerRange(min = 0, max = 99)
-public class HealthInsuranceGrade extends IntegerPrimitiveValue<HealthInsuranceGrade> {
+@IntegerRange(min = 0, max = 99999999)
+public class PensionAverageEarn extends IntegerPrimitiveValue<PensionAverageEarn> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -18,7 +18,7 @@ public class HealthInsuranceGrade extends IntegerPrimitiveValue<HealthInsuranceG
 	 * @param rawValue
 	 *            raw value
 	 */
-	public HealthInsuranceGrade(Integer rawValue) {
+	public PensionAverageEarn(Integer rawValue) {
 		super(rawValue);
 	}
 

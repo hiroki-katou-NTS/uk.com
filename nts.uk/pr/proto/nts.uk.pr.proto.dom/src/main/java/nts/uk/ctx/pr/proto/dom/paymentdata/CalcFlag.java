@@ -1,25 +1,25 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 /**
- * 給与賞与区分
+ * 計算フラグ
  * 
  * @author vunv
  *
  */
-public enum PayBonusAtr {
+public enum CalcFlag {
 	/**
-	 * 0:給与
+	 * 0:未計算
 	 */
-	SALARY(0),
+	UN_CALCULATION(0),
 
 	/**
-	 * 1:賞与
+	 * 1:計算済み
 	 */
-	BONUSES(1);
+	CALCULATED(1);
 
 	public int value;
 
-	private PayBonusAtr(int value) {
+	private CalcFlag(int value) {
 		this.value = value;
 	}
 
