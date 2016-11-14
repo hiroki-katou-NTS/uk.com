@@ -11,12 +11,12 @@ public class PaymentCalculationBasicInformation extends AggregateRoot {
 	/** company code */
 	@Getter
 	private CompanyCode companyCode;
-	
-	/** Base Days*/
+
+	/** Base Days */
 	@Getter
 	private BigDecimal baseDays;
-	
-	/** Base Hours*/
+
+	/** Base Hours */
 	@Getter
 	private BigDecimal baseHours;
 
@@ -27,4 +27,15 @@ public class PaymentCalculationBasicInformation extends AggregateRoot {
 		this.baseHours = baseHours;
 	}
 	
+	/**
+	 * 
+	 * @param companyCode
+	 * @param baseDays
+	 * @param baseHours
+	 * @return
+	 */
+	public static PaymentCalculationBasicInformation createFromJavaType(String companyCode, BigDecimal baseDays, BigDecimal baseHours) {
+		return new PaymentCalculationBasicInformation(new CompanyCode(companyCode), baseDays, baseHours);
+	}
+
 }

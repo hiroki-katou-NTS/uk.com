@@ -1,12 +1,15 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.EmploymentInsuranceAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceAverageEarn;
@@ -79,6 +82,16 @@ public class Payment extends AggregateRoot {
 	private CalcFlag calcFlag;
 
 	private MakeMethodFlag makeMethodFlag;
+
+	private List<DetailItem> detailPaymentItems;
+
+	private List<DetailItem> detailDeductionItems;
+
+	private List<DetailItem> detailPersonalTimeItems;
+
+	private List<DetailItem> detailArticleItems;
+
+	private List<PrintPositionCategory> printCategories;
 
 	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr payBonusAttribute,
 			YearMonth processingYM, SparePayAtr sparePayAttribute) {

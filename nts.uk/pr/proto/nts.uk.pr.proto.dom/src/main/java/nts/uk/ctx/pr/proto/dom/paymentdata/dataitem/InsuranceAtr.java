@@ -1,11 +1,14 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
+import lombok.AllArgsConstructor;
+
 /**
  * 保対象区分
  * 
  * @author vunv
  *
  */
+@AllArgsConstructor
 public enum InsuranceAtr {
 	/**
 	 * 0:対象外
@@ -18,9 +21,5 @@ public enum InsuranceAtr {
 	SUBJECT(1);
 
 	public int value;
-
-	private InsuranceAtr(int value) {
-		this.value = value;
-	}
 
 }
