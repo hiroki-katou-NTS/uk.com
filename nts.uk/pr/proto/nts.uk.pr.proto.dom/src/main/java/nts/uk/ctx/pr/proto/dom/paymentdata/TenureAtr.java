@@ -1,11 +1,14 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
+import lombok.AllArgsConstructor;
+
 /**
  * 予備月区分
  * 
  * @author vunv
  *
  */
+@AllArgsConstructor
 public enum TenureAtr {
 	/**
 	 * 0:在職
@@ -38,9 +41,5 @@ public enum TenureAtr {
 	RETIREMENT(9);
 
 	public int value;
-
-	private TenureAtr(int value) {
-		this.value = value;
-	}
 
 }

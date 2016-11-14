@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.paymentdata.insure;
 
 /** 労働災害保険計算区分 ※参照先未確定 */
 public enum WorkInsuranceCalculateAtr {

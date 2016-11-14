@@ -1,28 +1,48 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.EmploymentInsuranceAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceAverageEarn;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceGrade;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.InsuredAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.PensionAverageEarn;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.PensionInsuranceGrade;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.WorkInsuranceCalculateAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode;
+import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceName;
 import nts.uk.shr.com.primitive.PersonId;
 
+/**
+ * 明細データ
+ * 
+ * @author vunv
+ *
+ */
 public class Payment extends AggregateRoot {
 	@Getter
-	private CompanyCode companyCode;
+	private final CompanyCode companyCode;
 
 	@Getter
-	private PersonId personId;
+	private final PersonId personId;
 
 	@Getter
-	private ProcessingNo processingNo;
+	private final ProcessingNo processingNo;
 
 	@Getter
-	private PayBonusAtr payBonusAttribute;
+	private final PayBonusAtr payBonusAttribute;
 
 	@Getter
-	private int processingYM;
+	private final YearMonth processingYM;
 
 	@Getter
 	private SparePayAtr sparePayAttribute;
@@ -50,15 +70,31 @@ public class Payment extends AggregateRoot {
 	private PensionAverageEarn pensionAverageEarn;
 
 	private EmploymentInsuranceAtr employmentInsuranceAtr;
-	
+
 	private DependentNumber dependentNumber;
-	
+
 	private WorkInsuranceCalculateAtr workInsuranceCalculateAtr;
-	
+
 	private InsuredAtr insuredAttribute;
-	
-	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo,
-			PayBonusAtr payBonusAttribute, int processingYM, SparePayAtr sparePayAttribute) {
+
+	private BonusTaxRate bonusTaxRate;
+
+	private CalcFlag calcFlag;
+
+	private MakeMethodFlag makeMethodFlag;
+
+	private List<DetailItem> detailPaymentItems;
+
+	private List<DetailItem> detailDeductionItems;
+
+	private List<DetailItem> detailPersonalTimeItems;
+
+	private List<DetailItem> detailArticleItems;
+
+	private List<PrintPositionCategory> printCategories;
+
+	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr payBonusAttribute,
+			YearMonth processingYM, SparePayAtr sparePayAttribute) {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;
@@ -67,6 +103,5 @@ public class Payment extends AggregateRoot {
 		this.processingYM = processingYM;
 		this.sparePayAttribute = sparePayAttribute;
 	}
-	
 
 }

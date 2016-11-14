@@ -1,16 +1,16 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.paymentdata.residence;
 
-import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * 住民税納付先名
+ * 住民税納付先コード
  */
-@StringCharType(CharType.ANY_HALF_WIDTH)
-@StringMaxLengh(24)
-public class ResidenceName extends StringPrimitiveValue<ResidenceName> {
+@StringCharType(CharType.NUMERIC)
+@StringMaxLengh(6)
+public class ResidenceCode extends CodePrimitiveValue<ResidenceCode> {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class ResidenceName extends StringPrimitiveValue<ResidenceName> {
 	 * @param rawValue
 	 *            raw value
 	 */
-	public ResidenceName(String rawValue) {
+	public ResidenceCode(String rawValue) {
 		super(rawValue);
 	}
 
