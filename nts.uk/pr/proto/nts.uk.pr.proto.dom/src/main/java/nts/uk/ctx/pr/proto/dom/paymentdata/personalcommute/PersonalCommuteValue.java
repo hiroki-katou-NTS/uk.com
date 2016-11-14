@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 
 /**
@@ -55,8 +56,7 @@ public class PersonalCommuteValue {
 	 */
 	public static PersonalCommuteValue createFromJavaType(String commuteCycle, long commuteAllowance,
 			int commuteMeansAttribute, long payStartDate, boolean userOrNot) {
-//		return new PersonalCommuteValue(commuteCycle, commuteAllowance,
-//				CommuteMeansAttribute.valueOf(commuteMeansAttribute), payStartDate, userOrNot);
-		return null;
+		return new PersonalCommuteValue(commuteCycle, commuteAllowance,
+				EnumAdaptor.valueOf(commuteMeansAttribute, CommuteAtr.class), payStartDate, userOrNot);
 	}
 }

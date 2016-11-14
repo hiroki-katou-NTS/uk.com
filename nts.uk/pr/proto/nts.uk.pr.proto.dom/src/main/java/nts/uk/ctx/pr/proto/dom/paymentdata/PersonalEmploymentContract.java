@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.primitive.PersonId;
 
@@ -34,10 +35,7 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 * @return PersonalEmploymentContract
 	 */
 	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId) {
-		// return new
-		// PersonalEmploymentContract(PayrollSystem.valueOf(payrollSystem), new
-		// PersonId(personId));
-		return null;
+		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class), new PersonId(personId));
 	}
 
 	/**
