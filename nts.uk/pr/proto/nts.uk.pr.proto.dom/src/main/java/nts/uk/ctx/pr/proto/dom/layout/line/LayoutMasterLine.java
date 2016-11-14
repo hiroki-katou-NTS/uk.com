@@ -1,13 +1,15 @@
-package nts.uk.ctx.pr.proto.dom.layout;
+package nts.uk.ctx.pr.proto.dom.layout.line;
+
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 
-public class LayoutMasterLine extends DomainObject{
-	
+import nts.arc.layer.dom.DomainObject;
+
+public class LayoutMasterLine extends DomainObject {
+
 	@Getter
 	private AutoLineId autoLineId;
 
@@ -17,7 +19,7 @@ public class LayoutMasterLine extends DomainObject{
 	@Getter
 	private LinePosition linePosition;
 
-	@Getter	
+	@Getter
 	private List<LayoutMasterDetail> layoutMasterDetails;
 
 	public LayoutMasterLine(AutoLineId autoLineId, LineDispAtr lineDispayAttribute, LinePosition linePosition,
