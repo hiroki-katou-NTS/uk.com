@@ -7,10 +7,10 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PersonalEmploymentContract;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PclmtPersonEmpContract;
-import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PhldtHolidayPaid;
 
 public class JpaPclmtPersonEmpContract extends JpaRepository implements PersonalEmploymentContractRepository {
 
@@ -34,7 +34,7 @@ public class JpaPclmtPersonEmpContract extends JpaRepository implements Personal
 	private static PersonalEmploymentContract toDomain(PclmtPersonEmpContract entity) {
 		val domain = PersonalEmploymentContract.createFromJavaType(entity.payrollSystem,
 				entity.pclmtPersonEmpContractPK.pId, entity.pclmtPersonEmpContractPK.pId,
-				entity.pclmtPersonEmpContractPK.strD, entity.endD);
+				GeneralDate.legacyDate(entity.pclmtPersonEmpContractPK.strD), GeneralDate.legacyDate(entity.endD));
 		entity.toDomain(domain);
 		return domain;
 	}
