@@ -5,12 +5,10 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.Company;
-import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterCategory;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHead;
 
 public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository{
