@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.entity.layout;
 
+import java.util.List;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+//@Entity
 @Table(name="QSTMT_STMT_LAYOUT_CTG")
 public class QstmtStmtLayoutCtg {
 	
@@ -42,6 +44,6 @@ public class QstmtStmtLayoutCtg {
 	public QstmtStmtLayoutHead layoutHead;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutCategory")
-	public QstmtStmtLayoutDetail layoutDetail;
+	public List<QstmtStmtLayoutLines> layoutLines;
 
 }

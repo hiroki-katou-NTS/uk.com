@@ -18,7 +18,7 @@ public interface LayoutMasterRepository {
 	 * find all layout master by company code, start date
 	 * @return layout master
 	 */
-	List<LayoutMaster> findAll(String companyCode, int strYm);
+	List<LayoutMaster> findAll(String companyCode);
 	
 	/**
 	 * Add a  new layout master

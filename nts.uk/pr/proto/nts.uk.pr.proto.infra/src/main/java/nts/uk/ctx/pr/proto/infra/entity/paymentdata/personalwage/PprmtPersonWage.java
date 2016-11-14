@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-@Entity
+//@Entity
 @Table(name="PPRMT_PERSON_WAGE")
 public class PprmtPersonWage extends AggregateTableEntity {
 	@EmbeddedId

@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-@Entity
+//@Entity
 @Table(name="QSTMT_STMT_LAYOUT_HEAD")
 @AllArgsConstructor
 @NoArgsConstructor

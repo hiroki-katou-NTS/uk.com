@@ -1,10 +1,10 @@
 package nts.uk.ctx.pr.proto.dom.layout;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 public class LayoutMaster extends AggregateRoot {
@@ -15,7 +15,7 @@ public class LayoutMaster extends AggregateRoot {
 	
 	/** 開始年月 */
 	@Getter
-	private Date startYM;
+	private YearMonth startYM;
 	
 	/** 明細書コード */
 	@Getter
@@ -23,7 +23,7 @@ public class LayoutMaster extends AggregateRoot {
 	
 	/** 終了年月 */
 	@Getter
-	private Date endYM;
+	private YearMonth endYM;
 	
 	/** レイアウト区分 */
 	@Getter
@@ -37,7 +37,7 @@ public class LayoutMaster extends AggregateRoot {
 	@Getter
 	private List<LayoutMasterCategory> layoutMasterCategories;
 
-	public LayoutMaster(CompanyCode code, Date startYM, LayoutCode stmtCode, Date endYM, LayoutAtr layoutAtr,
+	public LayoutMaster(CompanyCode code, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM, LayoutAtr layoutAtr,
 			LayoutName stmtName, List<LayoutMasterCategory> layoutMasterCategories) {
 		super();
 		this.code = code;

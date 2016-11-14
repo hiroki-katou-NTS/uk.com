@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.infra.entity;
+package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-@Entity
+//@Entity
 @Table(name = "QSTMT_STMT_ALLOT_CP")
 public class QstmtStmtAllotCp extends AggregateTableEntity {
 	

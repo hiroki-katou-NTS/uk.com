@@ -21,7 +21,7 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+//@Entity
 @Table(name="QSTMT_STMT_LAYOUT_DETAIL")
 public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Serializable {
 	
@@ -127,14 +127,15 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
         @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
         @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
     })
-	public List<QcamtItem> lstItem;
+	public List<QcamtItem> items;
 	
 	@ManyToOne
 	@JoinColumns({
         @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
         @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
         @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
-        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false),
+        @JoinColumn(name="AUTO_LINE_ID", referencedColumnName="AUTO_LINE_ID", insertable = false, updatable = false)
     })
-	public QstmtStmtLayoutCtg layoutCategory;
+	public QstmtStmtLayoutLines layoutLine;
 }
