@@ -1,12 +1,12 @@
 ﻿module nts.uk.ui.koExtentions {
 
     import validation = nts.uk.ui.validation;
-
+     
     /**
-     * TextBox
+     * TextBoxExtensible
      */
-    class NtsTextBoxBindingHandler implements KnockoutBindingHandler {
-
+    class NtsTextBoxExtensibleBindingHandler implements KnockoutBindingHandler {
+        
         constraint: validation.CharType;
 
         /**
@@ -17,7 +17,7 @@
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             this.constraint = validation.getCharType(data.constraint);
-
+            console.log(this.constraint);
             var $input = $(element);
 
             $input.change(function() {
@@ -40,7 +40,114 @@
             $input.val(newText);
         }
     }
+     
+    /**
+     * TextBox
+     */
+    class NtsTextBoxBindingHandler implements KnockoutBindingHandler {
 
+        constraint: validation.CharType;
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+
+            var data = valueAccessor();
+            var setValue: (newText: string) => {} = data.value;
+            this.constraint = validation.getCharType(data.constraint);
+            console.log(this.constraint);
+            var $input = $(element);
+
+            $input.change(function() {
+                var newText = $input.val();
+                setValue(newText);
+            });
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+
+            var data = valueAccessor();
+            var getValue: () => string = data.value;
+
+            var $input = $(element);
+            var newText = getValue();
+
+            $input.val(newText);
+        }
+    }
+     
+    /**
+     * Dialog binding handler
+     */
+    class NtsDialogBindingHandler implements KnockoutBindingHandler {
+        
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+
+        }
+        
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var title: string = ko.unwrap(data.title);
+            var message: string = ko.unwrap(data.message);
+            var okButtonColor: string = ko.unwrap(data.okButtonColor);
+            var buttonSize: string = ko.unwrap(data.buttonSize);
+            var modal: boolean = ko.unwrap(data.modal);
+            var show: boolean = ko.unwrap(data.show);
+
+            var $dialog = $("<div id='ntsDialog'></div>");
+            if(show == true) {
+                $('body').append($dialog);
+                $dialog.dialog({
+                    title: title,
+                    modal: modal,
+                    closeOnEscape: false,
+                    buttons: [{
+                        text: "はい",
+                        "class": "yes large danger",
+                        click: function(){
+                            $(this).dialog("close");
+                        }
+                    },
+                    {
+                        text: "いいえ",
+                        "class": "no large",
+                        click: function(){
+                            $(this).dialog("close");
+                        }
+                    }],
+                    open: function () {
+                        $(this).closest('.ui-dialog')
+                            .css('z-index', 120001)
+                            .find('.ui-dialog-titlebar-close').hide();
+                        $('.ui-widget-overlay').last()
+                            .css('z-index', 120000);
+                        
+                    },
+                    close: function (event) {
+                        bindingContext.$rawData.show(false);
+                    }
+                }).text(message);
+            }
+            else {
+                if($('#ntsDialog').dialog( "instance" ) != null)
+                    $('#ntsDialog').dialog("destroy");
+                $('#ntsDialog').remove();
+            }
+        }
+    }
+     
+     
     /**
      * Switch button binding handler
      */
@@ -731,7 +838,10 @@
         }
     }
     
+     
+    ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
+    ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();

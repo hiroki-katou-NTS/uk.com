@@ -25,26 +25,24 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 */
 	@Getter
 	private PersonId personId;
-	
+
 	/**
 	 * Company Code
 	 */
 	@Getter
 	private CompanyCode companyCode;
-	
+
 	/**
 	 * Start Date
 	 */
-	@Getter 
+	@Getter
 	private Date strD;
 
 	/**
 	 * End Date
 	 */
-	@Getter 
+	@Getter
 	private Date endD;
-
-	
 
 	public PersonalEmploymentContract(PayrollSystem payrollSystem, PersonId personId, CompanyCode companyCode,
 			Date strD, Date endD) {
@@ -62,7 +60,10 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 * @return PersonalEmploymentContract
 	 */
 	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId) {
-		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class), new PersonId(personId));
+		// return new
+		// PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem,
+		// PayrollSystem.class), new PersonId(personId));
+		return null;
 	}
 
 	/**

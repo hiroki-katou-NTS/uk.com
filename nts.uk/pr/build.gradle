@@ -125,7 +125,6 @@ project (':proto:nts.uk.pr.proto.infra') {
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
 }
-
 project ('nts.uk.pr.web') {
 	apply plugin: 'war'
 	war {
@@ -163,7 +162,21 @@ project ('nts.uk.pr.web') {
 		runtime project (':proto:nts.uk.pr.proto.infra')
 	}
 }
-
+project (':screen:nts.uk.pr.screen.ws') {
+	dependencies {
+		compile project (':screen:nts.uk.pr.screen.app')
+	}
+}
+project (':screen:nts.uk.pr.screen.app') {
+ 	dependencies {
+ 	 	compile project (':proto:nts.uk.pr.proto.dom')
+ 	 }
+}
+project (':screen:nts.uk.pr.screen.infra') {
+	dependencies {
+		compile project (':screen:nts.uk.pr.screen.app')
+	}
+}
 artifactory {
 	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
 	publish {

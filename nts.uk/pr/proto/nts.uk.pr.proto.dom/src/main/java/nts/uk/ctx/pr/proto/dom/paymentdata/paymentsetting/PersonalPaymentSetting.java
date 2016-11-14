@@ -19,12 +19,12 @@ public class PersonalPaymentSetting extends AggregateRoot {
 	@Getter
 	private final YearMonth startDate;
 	
-	@Getter
-	private BonusDetailCode bonusDetailCode;
+//	@Getter
+//	private BonusDetailCode bonusDetailCode;
 
 	private YearMonth endDate;
 
-	private PaymentDetailCode paymentDetailCode;
+//	private PaymentDetailCode paymentDetailCode;
 	
 	public PersonalPaymentSetting(CompanyCode companyCode, PersonId personId,YearMonth startDate) {
 		super();

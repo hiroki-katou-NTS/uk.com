@@ -5,3 +5,6 @@ include 'proto:nts.uk.pr.proto.infra'
 include 'proto:nts.uk.pr.proto.ws'
 
 include 'shr:nts.uk.shr.com'
+include 'screen:nts.uk.pr.screen.ws'
+include 'screen:nts.uk.pr.screen.app'
+include 'screen:nts.uk.pr.screen.infra'
