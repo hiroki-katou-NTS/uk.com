@@ -17,7 +17,6 @@
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             this.constraint = validation.getCharType(data.constraint);
-            console.log(this.constraint);
             var $input = $(element);
 
             $input.change(function() {
@@ -56,7 +55,6 @@
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             this.constraint = validation.getCharType(data.constraint);
-            console.log(this.constraint);
             var $input = $(element);
 
             $input.change(function() {
@@ -114,28 +112,28 @@
                     closeOnEscape: false,
                     buttons: [{
                         text: "はい",
-                        "class": "yes large danger",
+                        "class": "yes " + buttonSize + " " + okButtonColor,
                         click: function(){
+                            bindingContext.$data.okButtonCommand();
                             $(this).dialog("close");
                         }
                     },
                     {
                         text: "いいえ",
-                        "class": "no large",
+                        "class": "no " + buttonSize,
                         click: function(){
+                            bindingContext.$data.cancelButtonCommand();
                             $(this).dialog("close");
                         }
                     }],
                     open: function () {
-                        $(this).closest('.ui-dialog')
-                            .css('z-index', 120001)
-                            .find('.ui-dialog-titlebar-close').hide();
-                        $('.ui-widget-overlay').last()
-                            .css('z-index', 120000);
+                        $(this).closest('.ui-dialog').css('z-index', 120001).find('.ui-dialog-titlebar-close').hide();
+                        $(this).find('button.yes').focus();
+                        $('.ui-widget-overlay').last().css('z-index', 120000);
                         
                     },
                     close: function (event) {
-                        bindingContext.$rawData.show(false);
+                        bindingContext.$data.show(false);
                     }
                 }).text(message);
             }

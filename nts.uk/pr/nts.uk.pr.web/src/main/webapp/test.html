@@ -56,10 +56,16 @@
 					dialog: {
 						title: ko.observable("Test title"),
 						message: ko.observable("Test message"),
-						okButtonColor: ko.observable("green"),
-						buttonSize: ko.observable("Large"),
 						modal: ko.observable(true),
 						show: ko.observable(false),
+						buttonSize: ko.observable("large"),
+						okButtonColor: ko.observable("danger"),
+						okButtonCommand: function(){
+							alert("ok");
+						},
+						cancelButtonCommand: function(){
+							alert("cancel");
+						},
 						open: function(){
 							var self = this;
 							self.show(true);
@@ -230,7 +236,7 @@
 		<hr />
 		<div data-bind="with: dialog">
 			<button data-bind="click: open">Open Dialog</button>
-			<div data-bind="ntsDialog: {title: title, message: message, okButtonColor: okButtonColor, buttonSize: buttonSize, modal: modal, show: show}"></div>
+			<div data-bind="ntsDialog: {title: title, message: message, okButtonColor: okButtonColor, buttonSize: buttonSize, modal: modal, show: show, okButtonCommand: okButtonCommand}"></div>
 		</div>
 		<hr />
 		<div data-bind="with: switchbutton">
