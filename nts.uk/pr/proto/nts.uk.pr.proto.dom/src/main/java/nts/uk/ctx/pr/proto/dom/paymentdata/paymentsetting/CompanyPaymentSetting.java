@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.personalpaymentsetting;
+package nts.uk.ctx.pr.proto.dom.paymentdata.paymentsetting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -6,15 +6,11 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.BonusDetailCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentDetailCode;
-import nts.uk.shr.com.primitive.PersonId;
 
-public class PersonalPaymentSetting extends AggregateRoot {
+public class CompanyPaymentSetting extends AggregateRoot{
 	
 	@Getter
 	private final CompanyCode companyCode;
-
-	@Getter
-	private final PersonId personId;
 
 	@Getter
 	private final YearMonth startDate;
@@ -26,10 +22,9 @@ public class PersonalPaymentSetting extends AggregateRoot {
 
 	private PaymentDetailCode paymentDetailCode;
 	
-	public PersonalPaymentSetting(CompanyCode companyCode, PersonId personId,YearMonth startDate) {
+	public CompanyPaymentSetting(CompanyCode companyCode,YearMonth startDate) {
 		super();
 		this.companyCode = companyCode;
-		this.personId = personId;
 		this.startDate = startDate;
 	}
 }
