@@ -8,7 +8,11 @@
 		<link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
 		<link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/structure/infragistics.css" />
 		<link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/stylesheets/base.css" />
-
+		<style>
+			a{color:#00B050;text-decoration: none;}
+			h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
+			hr{margin: 25px 0;}
+		</style>
 		<script src="./lib/generic/jquery/jquery-3.1.1.js"></script>
 		<script src="./lib/generic/jqueryui/jquery-ui.min.js"></script>
 		<script src="./lib/generic/knockoutjs/knockout-3.4.0.js"></script>
@@ -23,7 +27,6 @@
 		<script src="lib/nittsu/ui/notify.js"></script>
 		<script src="lib/nittsu/ui/validation.js"></script>
 		<script src="lib/nittsu/ui/jquery-ext.js"></script>
-<!-- 		<script src="lib/nittsu/ui/textbox-defination.js"></script> -->
 		<script src="lib/nittsu/ui/ko-ext.js"></script>
 		<script src="lib/nittsu/ui/ui.js"></script>
 		<script>
@@ -51,25 +54,6 @@
 					textbox: {
 						value: ko.observable("test"),
 						constraint: 'CompanyCode'
-					},
-					// Dialog ViewModel
-					dialog: {
-						title: ko.observable("Test title"),
-						message: ko.observable("Test message"),
-						modal: ko.observable(true),
-						show: ko.observable(false),
-						buttonSize: ko.observable("large"),
-						okButtonColor: ko.observable("danger"),
-						okButtonCommand: function(){
-							alert("ok");
-						},
-						cancelButtonCommand: function(){
-							alert("cancel");
-						},
-						open: function(){
-							var self = this;
-							self.show(true);
-						}
 					},
 					// SwitchButton ViewModel
 					switchbutton: {
@@ -234,13 +218,10 @@
 			<input type="text" data-bind="ntsTextBoxExtensible: {value: value, constraint: constraint}" />
 		</div>
 		<hr />
-		<div data-bind="with: dialog">
-			<button data-bind="click: open">Open Dialog</button>
-			<div data-bind="ntsDialog: {title: title, message: message, okButtonColor: okButtonColor, buttonSize: buttonSize, modal: modal, show: show, okButtonCommand: okButtonCommand}"></div>
-		</div>
+		<h2><a href="sample/dialog/dialog.xhtml">&#9655; Dialog Sample</a></h2>
 		<hr />
 		<div data-bind="with: switchbutton">
-			<b style="font-weight:bold">Switch Button</b>
+			<h2>Switch Button</h2>
 			<div id="switchButtonTest" data-bind="ntsSwitchButton: {
 				options: roundingRules,
 				optionsValue: 'code',
@@ -250,7 +231,7 @@
 		</div>	  	
 	  	<hr/>
 	  	<div data-bind="with: checkbox">
-	  		<b style="font-weight:bold">CheckBox</b>
+	  		<h2>CheckBox</h2>
 			<div id="checkBoxTest1" data-bind="ntsCheckBox: { checked: isHealthInsurance, text: 'Txt_HealthInsurance', enable: isEnable }" class="cf"></div>
 			<div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: isEnable}" class="cf">
 				  	This is test text for enable
@@ -259,7 +240,7 @@
 		</div>
 	  	<hr/>
 	  	<div data-bind="with: combobox">
-	  		<b style="font-weight:bold">ComboBox</b>
+	  		<h2>ComboBox</h2>
 			<div>
 				<input data-bind="value: itemName"></input>
 				<button data-bind="click: addOptions">Add Item</button>
@@ -287,7 +268,7 @@
 	  	</div>
 	  	<hr/>
 	  	<div data-bind="with: listbox">
-	  		<b style="font-weight:bold">ListBox</b>
+	  		<h2>ListBox</h2>
 			<div>
 				<input data-bind="value: itemName"></input>
 				<button data-bind="click: addOptions">Add Item</button>
@@ -320,7 +301,7 @@
 		<hr/>
 		<div data-bind="with: treegrid" class="cf">
 			<div style="float:left; margin-right: 15px;">
-				<b style="font-weight:bold">TreeGrid Multi Selection</b>
+				<h2>TreeGrid Multi Selection</h2>
 				<table id="treegrid" data-bind="ntsTreeGridView:{
 				   	width: 500,
 					height: 500,
@@ -335,7 +316,7 @@
 				</table>
 			</div>
 			<div style="float:left; margin-right: 15px;">
-				<b style="font-weight:bold">TreeGrid Single Selection</b>
+				<h2>TreeGrid Single Selection</h2>
 				<table id="treegrid2"  data-bind="ntsTreeGridView:{
 				   	width: 700,
 					height: 500,
