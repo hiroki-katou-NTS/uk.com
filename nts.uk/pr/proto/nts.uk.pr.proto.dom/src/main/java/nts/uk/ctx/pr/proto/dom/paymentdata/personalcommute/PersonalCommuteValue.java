@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
@@ -14,13 +16,13 @@ public class PersonalCommuteValue {
 	 * Commute cycle
 	 */
 	@Getter
-	private String commuteCycle;
+	private int commuteCycle;
 
 	/**
 	 * Commute allowance
 	 */
 	@Getter
-	private long commuteAllowance;
+	private BigDecimal commuteAllowance;
 
 	/**
 	 * Commute means attribute
@@ -29,10 +31,10 @@ public class PersonalCommuteValue {
 	private CommuteAtr commuteMeansAttribute;
 
 	/**
-	 * Payroll start date
+	 * Payroll start year month
 	 */
 	@Getter
-	private long payStartDate;
+	private int payStartYm;
 
 	/**
 	 * Use or Not
@@ -40,13 +42,13 @@ public class PersonalCommuteValue {
 	@Getter
 	private UseOrNot useOrNot;
 
-	public PersonalCommuteValue(String commuteCycle, long commuteAllowance, CommuteAtr commuteMeansAttribute,
-			long payStartDate, UseOrNot useOrNot) {
+	public PersonalCommuteValue(int commuteCycle, BigDecimal commuteAllowance, CommuteAtr commuteMeansAttribute,
+			int payStartYm, UseOrNot useOrNot) {
 		super();
 		this.commuteCycle = commuteCycle;
 		this.commuteAllowance = commuteAllowance;
 		this.commuteMeansAttribute = commuteMeansAttribute;
-		this.payStartDate = payStartDate;
+		this.payStartYm = payStartYm;
 		this.useOrNot = useOrNot;
 	}
 
@@ -55,10 +57,10 @@ public class PersonalCommuteValue {
 	 * 
 	 * @return PersonalCommuteValue
 	 */
-	public static PersonalCommuteValue createFromJavaType(String commuteCycle, long commuteAllowance,
-			int commuteMeansAttribute, long payStartDate, int userOrNot) {
+	public static PersonalCommuteValue createFromJavaType(int commuteCycle, BigDecimal commuteAllowance,
+			int commuteMeansAttribute, int payStartYm, int userOrNot) {
 		return new PersonalCommuteValue(commuteCycle, commuteAllowance,
-				EnumAdaptor.valueOf(commuteMeansAttribute, CommuteAtr.class), payStartDate,
+				EnumAdaptor.valueOf(commuteMeansAttribute, CommuteAtr.class), payStartYm,
 				EnumAdaptor.valueOf(userOrNot, UseOrNot.class));
 	}
 }

@@ -21,19 +21,19 @@ public class QpdmtPayday extends AggregateTableEntity {
 
 	@Basic(optional = false)
 	@Column(name = "PAY_MON")
-	public BigDecimal paymentMonth;
+	public int paymentMonth;
 
 	@Basic(optional = false)
 	@Column(name = "PAY_DAY")
-	public BigDecimal paymentDay;
+	public int paymentDay;
 
 	@Basic(optional = false)
 	@Column(name = "STD_MON")
-	public BigDecimal standardMonth;
+	public int standardMonth;
 
 	@Basic(optional = false)
 	@Column(name = "STD_DAY")
-	public BigDecimal standardDay;
+	public int standardDay;
 
 	@Basic(optional = false)
 	@Column(name = "PAY_DATE")
