@@ -21,6 +21,6 @@ public class PprmtPersonCommutePK implements Serializable {
 	public String pId;
 	
 	@Column(name = "STR_YM")
-	public BigDecimal strYm;
+	public int strYm;
 
 }
