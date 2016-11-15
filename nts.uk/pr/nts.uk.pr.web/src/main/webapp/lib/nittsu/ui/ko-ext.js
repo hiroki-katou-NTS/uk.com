@@ -20,7 +20,6 @@ var nts;
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
-                        console.log(this.constraint);
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -52,7 +51,6 @@ var nts;
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
-                        console.log(this.constraint);
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -88,42 +86,58 @@ var nts;
                     NtsDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
+                        var dialogtype = ko.unwrap(data.dialogtype);
                         var title = ko.unwrap(data.title);
                         var message = ko.unwrap(data.message);
-                        var okButtonColor = ko.unwrap(data.okButtonColor);
-                        var buttonSize = ko.unwrap(data.buttonSize);
                         var modal = ko.unwrap(data.modal);
                         var show = ko.unwrap(data.show);
+                        var okButtonColor = ko.unwrap(data.okButtonColor);
+                        var okButtonText = ko.unwrap(data.okButtonText);
+                        var cancelButtonText = ko.unwrap(data.cancelButtonText);
+                        var buttonSize = ko.unwrap(data.buttonSize);
+                        buttonSize = buttonSize || "large";
                         var $dialog = $("<div id='ntsDialog'></div>");
                         if (show == true) {
                             $('body').append($dialog);
+                            // Create Buttons
+                            var buttons = [];
+                            var okButton = {
+                                text: okButtonText,
+                                "class": "yes " + buttonSize + " " + okButtonColor,
+                                click: function () {
+                                    bindingContext.$data.okButtonClicked();
+                                    $(this).dialog("close");
+                                }
+                            };
+                            // Create default values foreach DialogType
+                            if (dialogtype === "confirm") {
+                                okButton.text = okButtonText || "はい";
+                                buttons.push(okButton);
+                                buttons.push({
+                                    text: cancelButtonText || "いいえ",
+                                    "class": "no " + buttonSize,
+                                    click: function () {
+                                        bindingContext.$data.cancelButtonClicked();
+                                        $(this).dialog("close");
+                                    }
+                                });
+                            }
+                            else {
+                                okButton.text = okButtonText || "OK";
+                                buttons.push(okButton);
+                            }
                             $dialog.dialog({
                                 title: title,
                                 modal: modal,
                                 closeOnEscape: false,
-                                buttons: [{
-                                        text: "はい",
-                                        "class": "yes large danger",
-                                        click: function () {
-                                            $(this).dialog("close");
-                                        }
-                                    },
-                                    {
-                                        text: "いいえ",
-                                        "class": "no large",
-                                        click: function () {
-                                            $(this).dialog("close");
-                                        }
-                                    }],
+                                buttons: buttons,
                                 open: function () {
-                                    $(this).closest('.ui-dialog')
-                                        .css('z-index', 120001)
-                                        .find('.ui-dialog-titlebar-close').hide();
-                                    $('.ui-widget-overlay').last()
-                                        .css('z-index', 120000);
+                                    $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                                    $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                                    $('.ui-widget-overlay').last().css('z-index', 120000);
                                 },
                                 close: function (event) {
-                                    bindingContext.$rawData.show(false);
+                                    bindingContext.$data.show(false);
                                 }
                             }).text(message);
                         }
@@ -134,6 +148,71 @@ var nts;
                         }
                     };
                     return NtsDialogBindingHandler;
+                }());
+                /**
+                 * DialogOption binding handler
+                 */
+                var NtsDialogTestBindingHandler = (function () {
+                    function NtsDialogTestBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsDialogTestBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsDialogTestBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        var option = ko.unwrap(data.option);
+                        var dialogtype = ko.unwrap(option.dialogType);
+                        var title = ko.unwrap(option.title);
+                        var message = ko.unwrap(option.message);
+                        var modal = ko.unwrap(option.modal);
+                        var show = ko.unwrap(option.show);
+                        var buttons = ko.unwrap(option.buttons);
+                        var $dialog = $("<div id='ntsDialog'></div>");
+                        if (show == true) {
+                            $('body').append($dialog);
+                            // Create Buttons
+                            var dialogbuttons = [];
+                            var _loop_1 = function(button) {
+                                dialogbuttons.push({
+                                    text: ko.unwrap(button.text),
+                                    "class": ko.unwrap(button.class) + ko.unwrap(button.size) + " " + ko.unwrap(button.color),
+                                    click: function () { button.click(bindingContext.$data, $dialog); }
+                                });
+                            };
+                            for (var _i = 0, buttons_1 = buttons; _i < buttons_1.length; _i++) {
+                                var button = buttons_1[_i];
+                                _loop_1(button);
+                            }
+                            // Create dialog
+                            $dialog.dialog({
+                                title: title,
+                                modal: modal,
+                                closeOnEscape: false,
+                                buttons: dialogbuttons,
+                                open: function () {
+                                    $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                                    $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                                    $('.ui-widget-overlay').last().css('z-index', 120000);
+                                },
+                                close: function (event) {
+                                    bindingContext.$data.option.show(false);
+                                }
+                            }).text(message);
+                        }
+                        else {
+                            // Destroy dialog
+                            if ($('#ntsDialog').dialog("instance") != null)
+                                $('#ntsDialog').dialog("destroy");
+                            $('#ntsDialog').remove();
+                        }
+                    };
+                    return NtsDialogTestBindingHandler;
                 }());
                 /**
                  * Switch button binding handler
@@ -756,9 +835,94 @@ var nts;
                     };
                     return NtsTreeGridViewBindingHandler;
                 }());
+                var WizardBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function WizardBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    WizardBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Get step list.
+                        var options = data.steps;
+                        // Container.
+                        var container = $(element);
+                        // Create steps.
+                        for (var i = 0; i < options.length; i++) {
+                            var contentClass = options[i].content;
+                            var htmlStep = container.children('.steps').children(contentClass).html();
+                            var htmlContent = container.children('.contents').children(contentClass).html();
+                            container.append('<h1 class="' + contentClass + '">' + htmlStep + '</h1>');
+                            container.append('<div>' + htmlContent + '</div>');
+                        }
+                        var icon = container.children('.steps').children('.begin').data('icon');
+                        // Remove html.
+                        container.children('.steps').remove();
+                        container.children('.contents').remove();
+                        // Create wizard.
+                        container.steps({
+                            headerTag: "h1",
+                            bodyTag: "div",
+                            transitionEffect: "slideLeft",
+                            stepsOrientation: "vertical",
+                            titleTemplate: '<div>#title#</div>',
+                            enablePagination: false,
+                            enableFinishButton: false,
+                            autoFocus: false,
+                            onStepChanged: function () {
+                                // Remove old class.
+                                container.children('.steps').children('ul').children('li').removeClass('step-current');
+                                container.children('.steps').children('ul').children('li').removeClass('step-prev');
+                                container.children('.steps').children('ul').children('li').removeClass('step-next');
+                                // Add new class.
+                                container.children('.steps').children('ul').children('.done').addClass('disabled');
+                                container.children('.steps').children('ul').children('.current').addClass('step-current');
+                                container.children('.steps').children('ul').children('.done').addClass('step-prev');
+                                container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                            }
+                        });
+                        // Add default class.
+                        container.addClass('nts-wizard');
+                        container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
+                        container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
+                        container.children('.steps').children('ul').children('.first').addClass('begin');
+                        container.children('.steps').children('ul').children('.last').addClass('end');
+                        container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
+                        container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>');
+                        // Remove old class.
+                        container.children('.steps').children('ul').children('li').removeClass('step-current');
+                        container.children('.steps').children('ul').children('li').removeClass('step-prev');
+                        container.children('.steps').children('ul').children('li').removeClass('step-next');
+                        // Add new class.
+                        container.children('.steps').children('ul').children('.current').addClass('step-current');
+                        container.children('.steps').children('ul').children('.done').addClass('step-prev');
+                        container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                        // Remove content.
+                        container.find('.actions').hide();
+                        container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
+                        $.fn.begin = function () {
+                            $(this.selector).setStep(0);
+                        };
+                        $.fn.end = function () {
+                            $(this.selector).setStep(options.length - 1);
+                        };
+                    };
+                    /**
+                     * Update
+                     */
+                    WizardBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return WizardBindingHandler;
+                }());
+                ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
+                ko.bindingHandlers['ntsDialogTest'] = new NtsDialogTestBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
@@ -768,3 +932,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=ko-ext.js.map
