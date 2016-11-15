@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.item.find;
+package nts.uk.ctx.pr.proto.app.item.find;
 
 import lombok.Value;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;

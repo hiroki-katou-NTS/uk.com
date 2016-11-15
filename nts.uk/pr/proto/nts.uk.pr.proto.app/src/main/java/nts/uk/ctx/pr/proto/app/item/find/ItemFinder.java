@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.app.item.find;
+package nts.uk.ctx.pr.proto.app.item.find;
 
 import java.util.List;
 import java.util.Optional;
