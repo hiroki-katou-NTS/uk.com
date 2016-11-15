@@ -7,7 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalAllotSettingRepository;
+import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotPs;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotPsPK;
 

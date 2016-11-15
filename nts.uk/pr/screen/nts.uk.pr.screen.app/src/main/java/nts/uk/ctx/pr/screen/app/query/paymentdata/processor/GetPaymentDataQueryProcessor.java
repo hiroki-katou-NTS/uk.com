@@ -7,12 +7,13 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
+import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.CompanyAllotSettingRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalAllotSettingRepository;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,6 +39,9 @@ public class GetPaymentDataQueryProcessor {
 
 	@Inject
 	private LayoutMasterCategoryRepository layoutMasterCategoryRepository;
+	
+	@Inject
+	private LayoutMasterLineRepository layoutMasterLineRepository;
 
 	/**
 	 * 給与データの入力（個人別）-初期データ取得処理.
@@ -63,6 +67,12 @@ public class GetPaymentDataQueryProcessor {
 
 		// 明細書マスタカテゴリ
 		this.layoutMasterCategoryRepository.getCategories(companyCode, layout.getStmtCode().v(), baseYM);
+		
+		// 明細書マスタ行
+		
+		this.layoutMasterLineRepository.getLines(companyCode, layoutCode, startYm, autoLineId, categoryAttribute);
+		
+		
 		return null;
 	}
 }

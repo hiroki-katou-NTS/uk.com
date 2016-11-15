@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSetting;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.CompanyAllotSettingRepository;
+import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotCp;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotCpPK;
 
