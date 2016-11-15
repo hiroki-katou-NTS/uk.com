@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.primitive.PersonId;
@@ -13,13 +15,13 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * Commute no tax limit number;
 	 */
 	@Getter
-	private long commuteNoTaxLimitPrivateNo;
+	private BigDecimal commuteNoTaxLimitPrivateNo;
 
 	/**
 	 * Commute no tax limit publish number;
 	 */
 	@Getter
-	private long commuteNoTaxLimitPublishNo;
+	private BigDecimal commuteNoTaxLimitPublishNo;
 
 	@Getter
 	private PersonalCommuteValue commute1;
@@ -53,7 +55,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * @param commute5 other information
 	 * @param personId person id
 	 */
-	public PersonalCommuteFee(long commuteNoTaxLimitPrivateNo, long commuteNoTaxLimitPublishNo,
+	public PersonalCommuteFee(BigDecimal commuteNoTaxLimitPrivateNo, BigDecimal commuteNoTaxLimitPublishNo,
 			PersonalCommuteValue commute1, PersonalCommuteValue commute2, PersonalCommuteValue commute3,
 			PersonalCommuteValue commute4, PersonalCommuteValue commute5, PersonId personId) {
 		super();
@@ -72,8 +74,8 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * 
 	 * @return PersonalCommuteFee
 	 */
-	public static PersonalCommuteFee createFromJavaType(long commuteNoTaxLimitPrivateNo,
-			long commuteNoTaxLimitPublishNo, PersonalCommuteValue commute1, PersonalCommuteValue commute2,
+	public static PersonalCommuteFee createFromJavaType(BigDecimal commuteNoTaxLimitPrivateNo,
+			BigDecimal commuteNoTaxLimitPublishNo, PersonalCommuteValue commute1, PersonalCommuteValue commute2,
 			PersonalCommuteValue commute3, PersonalCommuteValue commute4, PersonalCommuteValue commute5,
 			String personId) {
 		return new PersonalCommuteFee(commuteNoTaxLimitPrivateNo, commuteNoTaxLimitPublishNo, commute1, commute2,

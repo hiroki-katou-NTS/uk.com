@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.PersonalEmploymentContract;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PclmtPersonEmpContract;
 
-public class JpaPclmtPersonEmpContract extends JpaRepository implements PersonalEmploymentContractRepository {
+public class JpaPersonalEmploymentContractRepository extends JpaRepository implements PersonalEmploymentContractRepository {
 
 	@Override
 	public List<PersonalEmploymentContract> find(String companyCode, List<String> personIdList, Date baseYmd) {

@@ -33,12 +33,13 @@ public interface LayoutMasterLineRepository {
 	 * get Line
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
-	 * @param autoLineId
-	 * @param startYm
-	 * @param categoryAttribute
+	 * @param startYM
+	 * @param stmtCode
+	 * @param endYM
+	 * @param layoutAtr
+	 * @param stmtName
 	 * @return list Line
 	 */
-	List<LayoutMasterLine> getLines(String companyCode, String layoutCode, int startYm, String autoLineId,
-			String categoryAttribute);
+	List<LayoutMasterLine> getLines(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName);
 }

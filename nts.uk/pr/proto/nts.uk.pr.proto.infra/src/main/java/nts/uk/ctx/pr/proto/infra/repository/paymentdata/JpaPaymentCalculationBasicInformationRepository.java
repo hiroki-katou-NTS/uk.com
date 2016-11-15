@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentCalculationBasicInf
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.CcastBasicCalc;
 
 @RequestScoped
-public class JpaCcastBasicCalcRepository extends JpaRepository implements PaymentCalculationBasicInformationRepository {
+public class JpaPaymentCalculationBasicInformationRepository extends JpaRepository implements PaymentCalculationBasicInformationRepository {
 
 	@Override
 	public Optional<PaymentCalculationBasicInformation> find(CompanyCode companyCode) {

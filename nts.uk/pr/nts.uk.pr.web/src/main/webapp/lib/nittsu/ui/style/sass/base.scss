@@ -1,4 +1,4 @@
-﻿@import "compass-for-vs2013-master/compass";
+@import "compass-for-vs2013-master/compass";
 @import "compass-for-vs2013-master/compass/_reset.scss";
 @import "base/_base_def.scss";
 @import "base/_clearfix.scss";
@@ -7,3 +7,12 @@
 @import "components/_checkbox.scss";
 @import "components/_listbox.scss";
 @import "components/_dialog.scss";
+@import "frame/_header.scss";
+@import "frame/_functions.scss";
+@import "frame/_contents.scss";
+
+body {
+	
+	font-size: $bfs;
+	font-family: $font_family;
+}
