@@ -58,18 +58,17 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/** 合計対象区分 */
 	@Getter
 	private SumScopeAtr sumScopeAtr;
-	
-	/** 計算式コード */
-	@Getter
-	private FormulaCode formulaCode;
-	
-	/** 賃金テーブルコード */
-	@Getter
-	private WageTableCode wageTableCode;
 
-	/** 共通金額 */
-	@Getter
-	private CommonAmount commonAmount;
+	//今回、対応対象外	
+//	/** 計算式コード */
+//	@Getter
+//	private FormulaCode formulaCode;	
+//	/** 賃金テーブルコード */
+//	@Getter
+//	private WageTableCode wageTableCode;
+//	/** 共通金額 */
+//	@Getter
+//	private CommonAmount commonAmount;
 	
 	/** 支給相殺コード */
 	@Getter
@@ -79,11 +78,12 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private CommuteAtr commuteAtr;
 	/**個人金額コード	 */
 	@Getter
-	private PersonalWageCode individualAmountCode;
+	private PersonalWageCode personalWageCode;
+	
 	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
 			ItemCode itemCode, LayoutCode layoutCode, YearMonth startYM, SumScopeAtr sumScopeAtr,
-			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,PersonalWageCode individualAmountCode) {
+			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,PersonalWageCode personalWageCode) {
 		super();
 		this.companyCode = companyCode;
 		this.categoryAttribute = categoryAttribute;
@@ -96,7 +96,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.alarm = alarm;
 		this.error = error;
 		this.distribute = distribute;
-		this.individualAmountCode = individualAmountCode;
+		this.personalWageCode = personalWageCode;
 	}
 	
 	
