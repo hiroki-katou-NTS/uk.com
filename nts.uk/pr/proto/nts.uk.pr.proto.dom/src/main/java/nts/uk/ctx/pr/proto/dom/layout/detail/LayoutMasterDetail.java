@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.proto.dom.fomula.FormulaCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
+import nts.uk.ctx.pr.proto.dom.personalwage.PersonalWageCode;
 import nts.uk.ctx.pr.proto.dom.wagetable.WageTableCode;
 /**
  * 
@@ -78,11 +79,11 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private CommuteAtr commuteAtr;
 	/**個人金額コード	 */
 	@Getter
-	private IndividualAmountCode individualAmountCode;
+	private PersonalWageCode individualAmountCode;
 	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
 			ItemCode itemCode, LayoutCode layoutCode, YearMonth startYM, SumScopeAtr sumScopeAtr,
-			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,IndividualAmountCode individualAmountCode) {
+			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,PersonalWageCode individualAmountCode) {
 		super();
 		this.companyCode = companyCode;
 		this.categoryAttribute = categoryAttribute;

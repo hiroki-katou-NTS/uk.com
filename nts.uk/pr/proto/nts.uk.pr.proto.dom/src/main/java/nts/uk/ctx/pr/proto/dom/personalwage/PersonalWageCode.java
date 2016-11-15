@@ -1,12 +1,12 @@
-package nts.uk.ctx.pr.proto.dom.layout.detail;
+package nts.uk.ctx.pr.proto.dom.personalwage;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLengh;
 
 @StringMaxLengh(2)
-public class IndividualAmountCode extends StringPrimitiveValue<IndividualAmountCode> {
+public class PersonalWageCode extends StringPrimitiveValue<PersonalWageCode> {
 
-    public IndividualAmountCode(String rawValue) {
+    public PersonalWageCode(String rawValue) {
         super(rawValue);
     }
 
