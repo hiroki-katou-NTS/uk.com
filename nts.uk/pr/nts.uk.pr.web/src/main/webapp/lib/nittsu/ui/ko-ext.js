@@ -20,7 +20,6 @@ var nts;
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
-                        console.log(this.constraint);
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -52,7 +51,6 @@ var nts;
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
-                        console.log(this.constraint);
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -88,42 +86,57 @@ var nts;
                     NtsDialogBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
+                        var dialogtype = ko.unwrap(data.dialogtype);
                         var title = ko.unwrap(data.title);
                         var message = ko.unwrap(data.message);
-                        var okButtonColor = ko.unwrap(data.okButtonColor);
-                        var buttonSize = ko.unwrap(data.buttonSize);
                         var modal = ko.unwrap(data.modal);
                         var show = ko.unwrap(data.show);
+                        var okButtonColor = ko.unwrap(data.okButtonColor);
+                        var okButtonText = ko.unwrap(data.okButtonText);
+                        var cancelButtonText = ko.unwrap(data.cancelButtonText);
+                        var buttonSize = ko.unwrap(data.buttonSize);
                         var $dialog = $("<div id='ntsDialog'></div>");
                         if (show == true) {
                             $('body').append($dialog);
+                            // Create Buttons
+                            var buttons = [];
+                            var okButton = {
+                                text: okButtonText,
+                                "class": "yes " + buttonSize + " " + okButtonColor,
+                                click: function () {
+                                    bindingContext.$data.okButtonCommand();
+                                    $(this).dialog("close");
+                                }
+                            };
+                            // Create default values foreach DialogType
+                            if (dialogtype === "confirm") {
+                                okButton.text = okButtonText || "はい";
+                                buttons.push(okButton);
+                                buttons.push({
+                                    text: cancelButtonText || "いいえ",
+                                    "class": "no " + buttonSize,
+                                    click: function () {
+                                        bindingContext.$data.cancelButtonCommand();
+                                        $(this).dialog("close");
+                                    }
+                                });
+                            }
+                            else {
+                                okButton.text = okButtonText || "OK";
+                                buttons.push(okButton);
+                            }
                             $dialog.dialog({
                                 title: title,
                                 modal: modal,
                                 closeOnEscape: false,
-                                buttons: [{
-                                        text: "はい",
-                                        "class": "yes large danger",
-                                        click: function () {
-                                            $(this).dialog("close");
-                                        }
-                                    },
-                                    {
-                                        text: "いいえ",
-                                        "class": "no large",
-                                        click: function () {
-                                            $(this).dialog("close");
-                                        }
-                                    }],
+                                buttons: buttons,
                                 open: function () {
-                                    $(this).closest('.ui-dialog')
-                                        .css('z-index', 120001)
-                                        .find('.ui-dialog-titlebar-close').hide();
-                                    $('.ui-widget-overlay').last()
-                                        .css('z-index', 120000);
+                                    $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                                    $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                                    $('.ui-widget-overlay').last().css('z-index', 120000);
                                 },
                                 close: function (event) {
-                                    bindingContext.$rawData.show(false);
+                                    bindingContext.$data.show(false);
                                 }
                             }).text(message);
                         }
