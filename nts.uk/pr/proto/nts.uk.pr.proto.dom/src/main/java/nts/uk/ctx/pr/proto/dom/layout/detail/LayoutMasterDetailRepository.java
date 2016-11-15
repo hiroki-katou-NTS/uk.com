@@ -15,9 +15,12 @@ public interface LayoutMasterDetailRepository {
 	 * @param layoutCode
 	 * @param startYm
 	 * @param categoryAttribute
+	 * @param autoLineID
+	 * @param itemCode
 	 * @return
 	 */
-	Optional<LayoutMasterDetail> find(String companyCode, String layoutCode, int startYm, String categoryAttribute);
+	Optional<LayoutMasterDetail> find(String companyCode, String layoutCode, int startYm, String stmtCode,
+			String categoryAttribute, String autoLineID, String itemCode);
 
 	/**
 	 * add a layout master detail
@@ -39,9 +42,12 @@ public interface LayoutMasterDetailRepository {
 	 * @param companyCode
 	 * @param layoutCode
 	 * @param startYm
-	 * @param categoryAttribute
+	 * @param categoryAtr
+	 * @param autoLineID
+	 * @param itemCode
 	 */
-	void remove(String companyCode, String layoutCode, int startYm, String categoryAttribute);
+	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr,
+			String autoLineID, String itemCode);
 
 	/**
 	 * get Detail
@@ -49,8 +55,10 @@ public interface LayoutMasterDetailRepository {
 	 * @param companyCode
 	 * @param layoutCode
 	 * @param startYm
-	 * @param categoryAttribute
+	 * @param categoryAtr
+	 * @param autoLineID
 	 * @return list Detail
 	 */
-	List<LayoutMasterDetail> getDetail(String companyCode, String layoutCode, int startYm, String categoryAttribute);
+	List<LayoutMasterDetail> getDetails(String companyCode, String stmtCode, int startYm,
+			int categoryAtr, String autoLineID);
 }

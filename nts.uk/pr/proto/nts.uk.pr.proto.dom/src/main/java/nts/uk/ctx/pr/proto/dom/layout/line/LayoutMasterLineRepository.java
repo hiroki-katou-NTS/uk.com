@@ -21,17 +21,24 @@ public interface LayoutMasterLineRepository {
 	/**
 	 * delete a LayoutMasterLine
 	 * 
+	 * @param companyCode
+	 * @param layoutCode
 	 * @param autoLineId
+	 * @param startYm
 	 * @param categoryAttribute
 	 */
-	void remove(String autoLineId, String categoryAttribute);
+	void remove(String companyCode, String layoutCode, int startYm, String autoLineId, String categoryAttribute);
 
 	/**
 	 * get Line
 	 * 
+	 * @param companyCode
+	 * @param layoutCode
 	 * @param autoLineId
+	 * @param startYm
 	 * @param categoryAttribute
 	 * @return list Line
 	 */
-	List<LayoutMasterLine> getLine(String autoLineId, String categoryAttribute);
+	List<LayoutMasterLine> getLines(String companyCode, String layoutCode, int startYm, String autoLineId,
+			String categoryAttribute);
 }

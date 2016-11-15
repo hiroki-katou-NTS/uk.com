@@ -20,4 +20,16 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		return null;
 	}
 
+	@Override
+	public List<ItemMaster> getAllItemMaster(String companyCode, int categoryType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

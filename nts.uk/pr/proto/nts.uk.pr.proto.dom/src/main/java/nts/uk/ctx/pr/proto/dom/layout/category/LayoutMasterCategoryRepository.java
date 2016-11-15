@@ -26,7 +26,7 @@ public interface LayoutMasterCategoryRepository {
 	 * @param layoutCode
 	 * @param startYm
 	 */
-	void remove(String companyCode, String layoutCode, int startYm);
+	void remove(String companyCode, String layoutCode, int startYm, int categoryAtr);
 
 	/**
 	 * get Categories
