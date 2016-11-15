@@ -8,6 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
@@ -85,7 +86,7 @@ public class Payment extends AggregateRoot {
 
 	private List<DetailItem> detailPaymentItems;
 
-	private List<DetailItem> detailDeductionItems;
+	private List<DetailDeductionItem> detailDeductionItems;
 
 	private List<DetailItem> detailPersonalTimeItems;
 

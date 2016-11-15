@@ -17,7 +17,6 @@
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             this.constraint = validation.getCharType(data.constraint);
-            console.log(this.constraint);
             var $input = $(element);
 
             $input.change(function() {
@@ -56,7 +55,6 @@
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             this.constraint = validation.getCharType(data.constraint);
-            console.log(this.constraint);
             var $input = $(element);
 
             $input.change(function() {
@@ -98,49 +96,64 @@
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
+            var dialogtype: string = ko.unwrap(data.dialogtype);
             var title: string = ko.unwrap(data.title);
             var message: string = ko.unwrap(data.message);
-            var okButtonColor: string = ko.unwrap(data.okButtonColor);
-            var buttonSize: string = ko.unwrap(data.buttonSize);
             var modal: boolean = ko.unwrap(data.modal);
             var show: boolean = ko.unwrap(data.show);
-
+            var okButtonColor: string = ko.unwrap(data.okButtonColor);
+            var okButtonText: string = ko.unwrap(data.okButtonText);
+            var cancelButtonText: string = ko.unwrap(data.cancelButtonText);
+            var buttonSize: string = ko.unwrap(data.buttonSize);
+            
             var $dialog = $("<div id='ntsDialog'></div>");
             if(show == true) {
                 $('body').append($dialog);
+                // Create Buttons
+                var buttons = [];
+                var okButton = {
+                    text: okButtonText,
+                    "class": "yes " + buttonSize + " " + okButtonColor,
+                    click: function(){
+                        bindingContext.$data.okButtonCommand();
+                        $(this).dialog("close");
+                    }
+                };
+                
+                // Create default values foreach DialogType
+                if(dialogtype === "confirm") {
+                    okButton.text = okButtonText || "はい";
+                    buttons.push(okButton);
+                    buttons.push({
+                        text: cancelButtonText || "いいえ",
+                        "class": "no " + buttonSize,
+                        click: function(){
+                            bindingContext.$data.cancelButtonCommand();
+                            $(this).dialog("close");
+                        }
+                    });
+                }
+                else {
+                    okButton.text = okButtonText || "OK";
+                    buttons.push(okButton);
+                }
                 $dialog.dialog({
                     title: title,
                     modal: modal,
                     closeOnEscape: false,
-                    buttons: [{
-                        text: "はい",
-                        "class": "yes large danger",
-                        click: function(){
-                            $(this).dialog("close");
-                        }
-                    },
-                    {
-                        text: "いいえ",
-                        "class": "no large",
-                        click: function(){
-                            $(this).dialog("close");
-                        }
-                    }],
+                    buttons: buttons,
                     open: function () {
-                        $(this).closest('.ui-dialog')
-                            .css('z-index', 120001)
-                            .find('.ui-dialog-titlebar-close').hide();
-                        $('.ui-widget-overlay').last()
-                            .css('z-index', 120000);
-                        
+                        $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                        $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                        $('.ui-widget-overlay').last().css('z-index', 120000);
                     },
                     close: function (event) {
-                        bindingContext.$rawData.show(false);
+                        bindingContext.$data.show(false);
                     }
                 }).text(message);
             }
             else {
-                if($('#ntsDialog').dialog( "instance" ) != null)
+                if($('#ntsDialog').dialog("instance") != null)
                     $('#ntsDialog').dialog("destroy");
                 $('#ntsDialog').remove();
             }

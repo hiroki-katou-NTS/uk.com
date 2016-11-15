@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.proto.dom.layout;
 
 import java.util.List;
 
+import nts.arc.enums.EnumAdaptor;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -12,7 +14,7 @@ public class LayoutMaster extends AggregateRoot {
 
 	/** code */
 	@Getter
-	private CompanyCode code;
+	private CompanyCode companyCode;
 	
 	/** 開始年月 */
 	@Getter
@@ -39,25 +41,30 @@ public class LayoutMaster extends AggregateRoot {
 	private List<LayoutMasterCategory> layoutMasterCategories;
 
 	public LayoutMaster(CompanyCode code, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM, LayoutAtr layoutAtr,
-			LayoutName stmtName, List<LayoutMasterCategory> layoutMasterCategories) {
+			LayoutName stmtName) {
 		super();
-		this.code = code;
+		this.companyCode = code;
 		this.startYM = startYM;
 		this.stmtCode = stmtCode;
 		this.endYM = endYM;
 		this.layoutAtr = layoutAtr;
 		this.stmtName = stmtName;
-		this.layoutMasterCategories = layoutMasterCategories;
 	}
 
 	/**
 	 * create From Java Type
 	 * @return LayoutMaster
 	 */
-	public static LayoutMaster createFromJavaType(String code, int startYM, String stmtCode, int endYM, int layoutAtr,
-			String stmtName, List<LayoutMasterCategory> layoutMasterCategories){
-		//Date startYearMonth = new
-		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
+	public static LayoutMaster createFromJavaType(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName){
+		return new LayoutMaster(
+				new CompanyCode(companyCode), 
+				new YearMonth(startYM), 
+				new LayoutCode(stmtCode), 
+				new YearMonth(endYM),
+				
+				LayoutAtr.DOT_PRINTER_CONTINUOUS_PAPER_ONE, 
+				new LayoutName(stmtName));
 	}
 	
 	/**

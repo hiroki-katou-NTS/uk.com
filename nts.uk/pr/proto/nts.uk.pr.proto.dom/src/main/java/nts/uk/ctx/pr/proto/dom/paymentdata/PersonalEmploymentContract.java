@@ -5,6 +5,7 @@ import java.util.Date;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.PersonId;
 
@@ -36,18 +37,18 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 * Start Date
 	 */
 	@Getter 
-	private Date strD;
+	private GeneralDate strD;
 
 	/**
 	 * End Date
 	 */
 	@Getter 
-	private Date endD;
+	private GeneralDate endD;
 
 	
 
 	public PersonalEmploymentContract(PayrollSystem payrollSystem, PersonId personId, CompanyCode companyCode,
-			Date strD, Date endD) {
+			GeneralDate strD, GeneralDate endD) {
 		super();
 		this.payrollSystem = payrollSystem;
 		this.personId = personId;
@@ -61,8 +62,9 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 * 
 	 * @return PersonalEmploymentContract
 	 */
-	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId) {
-		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class), new PersonId(personId));
+	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId, String companyCode,
+			GeneralDate strD, GeneralDate endD) {
+		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class), new PersonId(personId), new CompanyCode(companyCode), strD, endD);
 	}
 
 	/**

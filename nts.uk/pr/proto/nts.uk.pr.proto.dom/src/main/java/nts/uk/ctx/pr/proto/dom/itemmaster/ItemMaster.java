@@ -1,11 +1,13 @@
 package nts.uk.ctx.pr.proto.dom.itemmaster;
 
+import java.util.List;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.proto.dom.layout.detail.ItemCode;
+import nts.uk.ctx.pr.proto.dom.layout.detail.RangeChecker;
 
 /**
  * 
@@ -19,13 +21,11 @@ public class ItemMaster extends AggregateRoot{
 	/** 平均賃金対象区分 */
 	@Getter
 	private WageClassificationAtr avgPaidAtr;
-
-	/** チェック上限値 */
 	@Getter
-	private CheckMaxValue checkMaxValue;
-	/** チェック下限値 */
+	private List<RangeChecker> alarm;
 	@Getter
-	private CheckMinValue checkMinValue;
+	private List<RangeChecker> error;
+	
 	/** 控除種類 */
 	@Getter
 	private DeductionAtr deductAttribute;
@@ -75,35 +75,27 @@ public class ItemMaster extends AggregateRoot{
 	@Getter
 	private CategoryAtr categoryAtr;
 	
-	public ItemMaster(DisplayAtr displayAtr, WageClassificationAtr avgPaidAtr,
-			CheckMaxValue checkMaxValue, CheckMinValue checkMinValue, DeductionAtr deductAttribute,
-			WageClassificationAtr fixedPaidAtr, IntegratedItemCode integratedItemCode, ItemABName itemAbName,
-			ItemAtr itemAttributeAtr, ItemName itemName, ItemNameDisplayAtr itemNameDisplayAtr,
-			WageClassificationAtr laborInsuranceAtr, LimitMoney limitMoney, Memo memo,
-			WageClassificationAtr socialInsuranceAtr, TaxAtr taxAtr, DisplayAtr zeroDisplayAtr,
-			CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr) {
+	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr, ItemName itemName) {
 		super();
-		this.displayAtr = displayAtr;
-		this.avgPaidAtr = avgPaidAtr;
-		this.checkMaxValue = checkMaxValue;
-		this.checkMinValue = checkMinValue;
-		this.deductAttribute = deductAttribute;
-		this.fixedPaidAtr = fixedPaidAtr;
-		this.integratedItemCode = integratedItemCode;
-		this.itemAbName = itemAbName;
-		this.itemAttributeAtr = itemAttributeAtr;
 		this.itemName = itemName;
-		this.itemNameDisplayAtr = itemNameDisplayAtr;
-		this.laborInsuranceAtr = laborInsuranceAtr;
-		this.limitMoney = limitMoney;
-		this.memo = memo;
-		this.socialInsuranceAtr = socialInsuranceAtr;
-		this.taxAtr = taxAtr;
-		this.zeroDisplayAtr = zeroDisplayAtr;
 		this.companyCode = companyCode;
 		this.itemCode = itemCode;
 		this.categoryAtr = categoryAtr;
 	}
+	/**
+	 * Validate
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+	}	
 	
-	
+	public static ItemMaster createSimpleFromJavaType(String companyCode, String itemCode, int categoryAtr, String itemName)
+	{
+		return new ItemMaster(new CompanyCode(companyCode),
+				new ItemCode(itemCode),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				new ItemName(itemName));
+		
+	}
 }

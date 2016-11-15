@@ -9,7 +9,10 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
+import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
+import nts.uk.ctx.pr.proto.dom.personalwagename.PersonalWageCode;
 /**
  * 
  * 明 細 書 マ ス タ 明 細
@@ -53,33 +56,32 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/** 合計対象区分 */
 	@Getter
 	private SumScopeAtr sumScopeAtr;
-	/** 個人金額コード */
-	@Getter
-	private IndividualAmountCode individualAmountCode;
-	
-	/** 計算式コード */
-	@Getter
-	private FormulaCode formulaCode;
-	
-	/** 賃金テーブルコード */
-	@Getter
-	private WageTableCode wageTableCode;
-
-	/** 共通金額 */
-	@Getter
-	private CommonAmount commonAmount;
+	//今回、対応対象外	
+//	/** 計算式コード */
+//	@Getter
+//	private FormulaCode formulaCode;	
+//	/** 賃金テーブルコード */
+//	@Getter
+//	private WageTableCode wageTableCode;
+//	/** 共通金額 */
+//	@Getter
+//	private CommonAmount commonAmount;
 	
 	/** 支給相殺コード */
 	@Getter
-	private SetOffItemCode setOffItemCode;
+	private ItemCode setOffItemCode;
 	
 	@Getter
+	/**通勤区分*/
 	private CommuteAtr commuteAtr;
+	/**個人金額コード	 */
+	@Getter
+	private PersonalWageCode personalWageCode;
 	
 	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
 			ItemCode itemCode, LayoutCode layoutCode, YearMonth startYM, SumScopeAtr sumScopeAtr,
-			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute) {
+			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,PersonalWageCode personalWageCode) {
 		super();
 		this.companyCode = companyCode;
 		this.categoryAttribute = categoryAttribute;
@@ -92,6 +94,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.alarm = alarm;
 		this.error = error;
 		this.distribute = distribute;
+		this.personalWageCode = personalWageCode;
 	}
 	
 	

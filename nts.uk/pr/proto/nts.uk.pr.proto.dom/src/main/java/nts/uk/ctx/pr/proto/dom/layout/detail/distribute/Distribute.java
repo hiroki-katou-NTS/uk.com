@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.layout.detail;
+package nts.uk.ctx.pr.proto.dom.layout.detail.distribute;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;

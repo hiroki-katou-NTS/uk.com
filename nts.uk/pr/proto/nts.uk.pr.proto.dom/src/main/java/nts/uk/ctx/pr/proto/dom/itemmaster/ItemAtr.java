@@ -1,8 +1,8 @@
 package nts.uk.ctx.pr.proto.dom.itemmaster;
-
-import java.util.HashMap;
+import lombok.AllArgsConstructor;
 
 /** 項目属性 */
+@AllArgsConstructor
 public enum ItemAtr {
 	//0:時間
 	HOURS(0),
@@ -15,26 +15,5 @@ public enum ItemAtr {
 	//4:文字
 	CHARACTERS(4);
 	
-	public final int value;
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param 項目属性 
-	 */
-	ItemAtr(int value) {
-		this.value = value;
-	}
-	
-	private static HashMap<Integer, ItemAtr> map = new HashMap<>();
-	
-	static{
-		for(ItemAtr item: ItemAtr.values()){
-			map.put(item.value, item);
-		}
-	}
-	
-	public static ItemAtr valueOf(int value)	{
-		return map.get(value);
-	}
+	public final int value;	
 }

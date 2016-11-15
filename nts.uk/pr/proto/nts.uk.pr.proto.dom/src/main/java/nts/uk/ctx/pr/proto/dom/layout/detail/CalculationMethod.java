@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.proto.dom.layout.detail;
-
-import java.util.HashMap;
+import lombok.AllArgsConstructor;
 /**
  * 
  * 計算方法
  *
  */
+@AllArgsConstructor
 public enum CalculationMethod {
 	/** 0:手入力*/
 	MANUAL_ENTRY(0),
@@ -22,30 +22,5 @@ public enum CalculationMethod {
 	/**
      * value.
      */
-    public final int value;
-    
-	private static HashMap<Integer, CalculationMethod> map = new HashMap<>();
-	
-	static {
-		for(CalculationMethod item : CalculationMethod.values()){
-			map.put(item.value, item);
-		}
-	}
-	 
-    /**
-     * Constructor.
-     * @param 計算方法の値
-     */
-    CalculationMethod(int value) {
-        this.value = value;
-    }
-    
-    /**
-     * valueOf.
-     * @param 計算方法の値
-     * @return 計算方法
-     */
-    static CalculationMethod valueOf(int value) {
-        return map.get(value);
-    }    
+    public final int value;    
 }

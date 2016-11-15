@@ -7,7 +7,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -58,15 +57,12 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
 	@Column(name ="P_WAGE_CD")
 	public String pWageCd;
 
-	@Basic(optional = false)
 	@Column(name ="FORMULA_CD")
 	public String formulaCd;
 
-	@Basic(optional = false)
 	@Column(name ="WAGE_TABLE_CD")
 	public String wageTableCd;
 
-	@Basic(optional = false)
 	@Column(name ="COMMON_MNY")
 	public int commonMny;
 

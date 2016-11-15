@@ -19,37 +19,37 @@ public class QpdmtPayday extends AggregateTableEntity {
 	@EmbeddedId
 	public QpdmtPaydayPK qpdmtPaydayPK;
 
+	@Basic(optional = false)
 	@Column(name = "PAY_MON")
 	public BigDecimal paymentMonth;
 
+	@Basic(optional = false)
 	@Column(name = "PAY_DAY")
 	public BigDecimal paymentDay;
-	
+
 	@Basic(optional = false)
 	@Column(name = "STD_MON")
 	public BigDecimal standardMonth;
-	
+
+	@Basic(optional = false)
 	@Column(name = "STD_DAY")
 	public BigDecimal standardDay;
-	
+
+	@Basic(optional = false)
 	@Column(name = "PAY_DATE")
 	@Temporal(TemporalType.DATE)
 	public Date payDate;
-	
+
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
 	@Temporal(TemporalType.DATE)
 	public Date standardDate;
-	
-	@Basic(optional = false)
-	@Column(name = "SOCIAL_INS_LEVY_MON")
-	public BigDecimal socialInsuranceLevyMonth;
-	
+
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DATE")
 	@Temporal(TemporalType.DATE)
 	public Date socialInsuranceStandardDate;
-	
+
 	@Basic(optional = false)
 	@Column(name = "EMP_INS_STD_DATE")
 	@Temporal(TemporalType.DATE)
@@ -59,11 +59,11 @@ public class QpdmtPayday extends AggregateTableEntity {
 	@Column(name = "INCOME_TAX_STD_DATE")
 	@Temporal(TemporalType.DATE)
 	public Date incomeTaxReferenceDate;
-	
+
 	@Basic(optional = false)
 	@Column(name = "STMT_OUTPUT_MON")
 	public BigDecimal stmtOutputMonth;
-	
+
 	@Basic(optional = false)
 	@Column(name = "NEEDED_WORK_DAY")
 	public BigDecimal neededWorkDay;
