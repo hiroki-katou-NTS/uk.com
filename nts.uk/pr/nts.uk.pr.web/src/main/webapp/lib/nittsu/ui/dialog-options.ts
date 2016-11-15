@@ -1,49 +1,137 @@
-    
-    enum DialogType {
-        Alert,
-        Confirm
+    interface IDialogOption {
+        title?: string, 
+        message?: string,
+        modal?: boolean,
+        show?: boolean,
+        buttonSize?: ButtonSize,
+        okButtonColor?: ButtonColor,
+        okButtonText?: string,
+        cancelButtonText?: string
     }
-    
-    class DialogOption {
+
+    abstract class DialogOption {
         dialogType: DialogType;
         title: string;
         message: string;
         modal: boolean;
-        buttons: DialogButton[];
-        
-        // Default Constructor
-        public constructor() {
+        show: boolean;
+        buttonSize: ButtonSize;
+        okButtonColor: ButtonColor;
+        okButtonText: string;
+        cancelButtonText: string;
+        protected buttons: DialogButton[];
+    }
+
+    class ConfirmDialogOption extends DialogOption {
+        constructor(option?: IDialogOption)
+        {
+            super();
+            this.dialogType = "alert";
+            this.title = (option && option.title) || "";
+            this.message = (option && option.message) || "";
+            this.modal = (option && option.modal) || false;
+            this.show = (option && option.show) || false;
+            this.buttonSize = (option && option.buttonSize) || "large";
+            this.okButtonColor = (option && option.okButtonColor) || "proceed";
+            this.okButtonText = (option && option.okButtonText) || "OK";
+            this.buttons = [];
+            // Add OK Button
+            this.buttons.push({text: this.okButtonText,
+                               "class": "yes",
+                               size: this.buttonSize,
+                               color: this.okButtonColor,
+                               click: function(viewmodel, ui): void {
+                                   viewmodel.okButtonClicked();
+                                   $(ui).dialog("close");
+                               }
+                             });
+        }
+    }
+    
+    class DelDialogOption extends DialogOption {
+        constructor(option?: IDialogOption)
+        {
+            super();
+            // Default value
+            this.dialogType = "confirm";
+            this.title = (option && option.title) || "";
+            this.message = (option && option.message) || "";
+            this.modal = (option && option.modal) || true;
+            this.show = (option && option.show) || false;
+            this.buttonSize = (option && option.buttonSize) || "large";
+            this.okButtonColor = (option && option.okButtonColor) || "danger";
+            this.okButtonText = (option && option.okButtonText) || "はい";
+            this.cancelButtonText = (option && option.cancelButtonText) || "いいえ";
+            this.buttons = [];
+            // Add OK Button
+            this.buttons.push({text: this.okButtonText,
+                               "class": "yes ",
+                               size: this.buttonSize,
+                               color: this.okButtonColor,
+                               click: function(viewmodel, ui){
+                                   viewmodel.okButtonClicked();
+                                   ui.dialog("close");
+                               }
+                             });
+            // Add Cancel Button
+            this.buttons.push({text: this.cancelButtonText,
+                               "class": "no ",
+                               size: this.buttonSize,
+                               color: "",
+                               click: function(viewmodel, ui){
+                                   viewmodel.cancelButtonClicked();
+                                   ui.dialog("close");
+                               }
+                             });
         }
     }
 
-    class AlertDialogOption extends DialogOption {
-        //Default Contructor
-        public constructor(){
+    class OKDialogOption extends DialogOption {
+        constructor(option?: IDialogOption)
+        {
             super();
-            this.dialogType = DialogType.Alert;
+            // Default value
+            this.dialogType = "confirm";
+            this.title = (option && option.title) || "";
+            this.message = (option && option.message) || "";
+            this.modal = (option && option.modal) || true;
+            this.show = (option && option.show) || false;
+            this.buttonSize = (option && option.buttonSize) || "large";
+            this.okButtonColor = (option && option.okButtonColor) || "proceed";
+            this.okButtonText = (option && option.okButtonText) || "はい";
+            this.cancelButtonText = (option && option.cancelButtonText) || "いいえ";
             this.buttons = [];
-            this.buttons.push({text: "はい", size: "large", color:"success", fontSize:""});
+            // Add OK Button
+            this.buttons.push({text: this.okButtonText,
+                               "class": "yes ",
+                               size: this.buttonSize,
+                               color: this.okButtonColor,
+                               click: function(viewmodel, ui){
+                                   viewmodel.okButtonClicked();
+                                   ui.dialog("close");
+                               }
+                             });
+            // Add Cancel Button
+            this.buttons.push({text: this.cancelButtonText,
+                               "class": "no ",
+                               size: this.buttonSize,
+                               color: "",
+                               click: function(viewmodel, ui){
+                                   viewmodel.cancelButtonClicked();
+                                   ui.dialog("close");
+                               }
+                             });
         }
     }
-    
-    class ConfirmDialogOption extends DialogOption {
-        //Default Contructor
-        public constructor(){
-            super();
-            this.dialogType = DialogType.Confirm;
-            this.buttons = [];
-            this.buttons.push({text: "はい", size: "large", color:"danger", fontSize:""});
-            this.buttons.push({text: "いいえ", size: "large", color:"", fontSize:""});
-        }
-    }
-    
+
+
+    type DialogType = "alert" | "confirm";
+    type ButtonSize = "x-large" | "large" | "medium" | "small";
+    type ButtonColor = "" | "danger" | "proceed";
     class DialogButton{
         text: string;
-        size: string;
-        color: string;
-        fontSize: string;
-        
-        //Default Contructor
-        constructor(){
-        }
+        "class": string;
+        size: ButtonSize;
+        color: ButtonColor;
+        click(viewmodel, ui): void {};
     }

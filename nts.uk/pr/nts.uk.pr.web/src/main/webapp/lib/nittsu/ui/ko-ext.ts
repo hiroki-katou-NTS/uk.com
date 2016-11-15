@@ -1,4 +1,4 @@
-﻿module nts.uk.ui.koExtentions {
+module nts.uk.ui.koExtentions {
 
     import validation = nts.uk.ui.validation;
      
@@ -105,6 +105,7 @@
             var okButtonText: string = ko.unwrap(data.okButtonText);
             var cancelButtonText: string = ko.unwrap(data.cancelButtonText);
             var buttonSize: string = ko.unwrap(data.buttonSize);
+            buttonSize = buttonSize || "large";
             
             var $dialog = $("<div id='ntsDialog'></div>");
             if(show == true) {
@@ -115,7 +116,7 @@
                     text: okButtonText,
                     "class": "yes " + buttonSize + " " + okButtonColor,
                     click: function(){
-                        bindingContext.$data.okButtonCommand();
+                        bindingContext.$data.okButtonClicked();
                         $(this).dialog("close");
                     }
                 };
@@ -128,7 +129,7 @@
                         text: cancelButtonText || "いいえ",
                         "class": "no " + buttonSize,
                         click: function(){
-                            bindingContext.$data.cancelButtonCommand();
+                            bindingContext.$data.cancelButtonClicked();
                             $(this).dialog("close");
                         }
                     });
@@ -161,6 +162,69 @@
     }
      
      
+    /**
+     * DialogOption binding handler
+     */
+    class NtsDialogTestBindingHandler implements KnockoutBindingHandler {
+        
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+
+        }
+        
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var option: any = ko.unwrap(data.option);
+            var dialogtype: string = ko.unwrap(option.dialogType);
+            var title: string = ko.unwrap(option.title);
+            var message: string = ko.unwrap(option.message);
+            var modal: boolean = ko.unwrap(option.modal);
+            var show: boolean = ko.unwrap(option.show);
+            var buttons: any = ko.unwrap(option.buttons);
+            
+            var $dialog = $("<div id='ntsDialog'></div>");
+            if(show == true) {
+                $('body').append($dialog);
+                // Create Buttons
+                var dialogbuttons = [];
+                for(let button of buttons) {
+                    dialogbuttons.push({
+                        text: ko.unwrap(button.text),
+                        "class": ko.unwrap(button.class) + ko.unwrap(button.size) + " " + ko.unwrap(button.color),
+                        click: function(){button.click(bindingContext.$data, $dialog)}
+                    });
+                }
+                // Create dialog
+                $dialog.dialog({
+                    title: title,
+                    modal: modal,
+                    closeOnEscape: false,
+                    buttons: dialogbuttons,
+                    open: function () {
+                        $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                        $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                        $('.ui-widget-overlay').last().css('z-index', 120000);
+                    },
+                    close: function (event) {
+                        bindingContext.$data.option.show(false);
+                    }
+                }).text(message);
+            }
+            else {
+                // Destroy dialog
+                if($('#ntsDialog').dialog("instance") != null)
+                    $('#ntsDialog').dialog("destroy");
+                $('#ntsDialog').remove();
+            }
+        }
+    }
+          
     /**
      * Switch button binding handler
      */
@@ -855,6 +919,7 @@
     ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
+    ko.bindingHandlers['ntsDialogTest'] = new NtsDialogTestBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
