@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.paymentsetting;
+package nts.uk.ctx.pr.proto.dom.allot;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -7,7 +7,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.BonusDetailCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentDetailCode;
 
-public class CompanyPaymentSetting extends AggregateRoot{
+public class CompanyAllotSetting extends AggregateRoot{
 	
 	@Getter
 	private final CompanyCode companyCode;
@@ -22,7 +22,7 @@ public class CompanyPaymentSetting extends AggregateRoot{
 
 	private PaymentDetailCode paymentDetailCode;
 	
-	public CompanyPaymentSetting(CompanyCode companyCode,YearMonth startDate) {
+	public CompanyAllotSetting(CompanyCode companyCode,YearMonth startDate) {
 		super();
 		this.companyCode = companyCode;
 		this.startDate = startDate;
@@ -35,7 +35,7 @@ public class CompanyPaymentSetting extends AggregateRoot{
 	 * @param startDate start date
 	 * @return CompanyPaymentSetting
 	 */
-	public static CompanyPaymentSetting createFromJavaType(String companyCode, int startDate) {
-		return new CompanyPaymentSetting(new CompanyCode(companyCode), new YearMonth(startDate));
+	public static CompanyAllotSetting createFromJavaType(String companyCode, int startDate) {
+		return new CompanyAllotSetting(new CompanyCode(companyCode), new YearMonth(startDate));
 	}
 }

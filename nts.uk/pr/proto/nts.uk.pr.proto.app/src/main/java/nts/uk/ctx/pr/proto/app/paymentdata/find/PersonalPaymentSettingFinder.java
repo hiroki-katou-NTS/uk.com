@@ -8,7 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.core.dom.company.CompanyRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalPaymentSettingRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalAllotSettingRepository;
 
 /**
  * PersonalPaymentSettingFinder
@@ -18,7 +18,7 @@ public class PersonalPaymentSettingFinder {
 
 	/** PersonalPaymentSettingRepository */
 	@Inject
-	private PersonalPaymentSettingRepository repository;
+	private PersonalAllotSettingRepository repository;
 
 	/**
 	 * Find a company by code.
