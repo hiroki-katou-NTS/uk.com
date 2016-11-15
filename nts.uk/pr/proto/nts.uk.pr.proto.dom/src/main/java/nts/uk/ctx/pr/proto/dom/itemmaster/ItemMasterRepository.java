@@ -11,14 +11,14 @@ public interface ItemMasterRepository {
 	 * @param categoryType
 	 * @return
 	 */
-	Optional<ItemMaster> findAll(String companyCode, String categoryType);
+	List<ItemMaster> findAll(String companyCode, int categoryType);
 
 	/**
-	 * find item master by company code, category type, item master(code or name)
+	 * find item master by company code, category type, item master code
 	 * @param companyCode
 	 * @param categoryType
-	 * @param itemMaster
+	 * @param itemCode
 	 * @return
 	 */
-	List<ItemMaster> find(String companyCode, String categoryType, String itemMaster);
+	Optional<ItemMaster> find(String companyCode, int categoryType, String itemCode);
 }

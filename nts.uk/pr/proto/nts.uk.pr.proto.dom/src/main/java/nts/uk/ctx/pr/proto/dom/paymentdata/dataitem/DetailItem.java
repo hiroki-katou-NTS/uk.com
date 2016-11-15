@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.proto.dom.layout.detail.ItemCode;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.DetailItemPosition;
 
 /**

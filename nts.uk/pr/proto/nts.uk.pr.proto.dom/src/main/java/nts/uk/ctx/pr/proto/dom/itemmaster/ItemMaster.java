@@ -1,11 +1,13 @@
 package nts.uk.ctx.pr.proto.dom.itemmaster;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.proto.dom.layout.detail.ItemCode;
+import nts.uk.ctx.pr.proto.dom.layout.detail.RangeChecker;
 
 /**
  * 
@@ -19,13 +21,11 @@ public class ItemMaster extends AggregateRoot{
 	/** 平均賃金対象区分 */
 	@Getter
 	private WageClassificationAtr avgPaidAtr;
-
-	/** チェック上限値 */
 	@Getter
-	private CheckMaxValue checkMaxValue;
-	/** チェック下限値 */
+	private List<RangeChecker> alarm;
 	@Getter
-	private CheckMinValue checkMinValue;
+	private List<RangeChecker> error;
+	
 	/** 控除種類 */
 	@Getter
 	private DeductionAtr deductAttribute;
@@ -76,7 +76,7 @@ public class ItemMaster extends AggregateRoot{
 	private CategoryAtr categoryAtr;
 	
 	public ItemMaster(DisplayAtr displayAtr, WageClassificationAtr avgPaidAtr,
-			CheckMaxValue checkMaxValue, CheckMinValue checkMinValue, DeductionAtr deductAttribute,
+			List<RangeChecker> error, List<RangeChecker> alarm, DeductionAtr deductAttribute,
 			WageClassificationAtr fixedPaidAtr, IntegratedItemCode integratedItemCode, ItemABName itemAbName,
 			ItemAtr itemAttributeAtr, ItemName itemName, ItemNameDisplayAtr itemNameDisplayAtr,
 			WageClassificationAtr laborInsuranceAtr, LimitMoney limitMoney, Memo memo,
@@ -85,8 +85,8 @@ public class ItemMaster extends AggregateRoot{
 		super();
 		this.displayAtr = displayAtr;
 		this.avgPaidAtr = avgPaidAtr;
-		this.checkMaxValue = checkMaxValue;
-		this.checkMinValue = checkMinValue;
+		this.error = error;
+		this.alarm = alarm;
 		this.deductAttribute = deductAttribute;
 		this.fixedPaidAtr = fixedPaidAtr;
 		this.integratedItemCode = integratedItemCode;
@@ -104,6 +104,12 @@ public class ItemMaster extends AggregateRoot{
 		this.itemCode = itemCode;
 		this.categoryAtr = categoryAtr;
 	}
-	
+	/**
+	 * Validate
+	 */
+	@Override
+	public void validate() {
+		super.validate();
+	}
 	
 }

@@ -9,7 +9,10 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
+import nts.uk.ctx.pr.proto.dom.fomula.FormulaCode;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
+import nts.uk.ctx.pr.proto.dom.wagetable.WageTableCode;
 /**
  * 
  * 明 細 書 マ ス タ 明 細
@@ -53,9 +56,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/** 合計対象区分 */
 	@Getter
 	private SumScopeAtr sumScopeAtr;
-	/** 個人金額コード */
-	@Getter
-	private IndividualAmountCode individualAmountCode;
 	
 	/** 計算式コード */
 	@Getter
@@ -71,7 +71,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 	
 	/** 支給相殺コード */
 	@Getter
-	private SetOffItemCode setOffItemCode;
+	private ItemCode setOffItemCode;
 	
 	@Getter
 	private CommuteAtr commuteAtr;

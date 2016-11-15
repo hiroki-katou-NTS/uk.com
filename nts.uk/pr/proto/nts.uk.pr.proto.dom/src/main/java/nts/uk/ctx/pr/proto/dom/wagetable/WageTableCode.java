@@ -1,12 +1,12 @@
-package nts.uk.ctx.pr.proto.dom.layout.detail;
+package nts.uk.ctx.pr.proto.dom.wagetable;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLengh;
 
 @StringMaxLengh(3)
-public class FormulaCode extends StringPrimitiveValue<FormulaCode> {
+public class WageTableCode extends StringPrimitiveValue<WageTableCode>{
 
-	public FormulaCode(String rawValue) {
+	public WageTableCode(String rawValue) {
 		super(rawValue);
 	}
 
