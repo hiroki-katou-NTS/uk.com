@@ -62,19 +62,8 @@ public class LayoutMaster extends AggregateRoot {
 				new YearMonth(startYM), 
 				new LayoutCode(stmtCode), 
 				new YearMonth(endYM),
-				
-				LayoutAtr.DOT_PRINTER_CONTINUOUS_PAPER_ONE, 
+				EnumAdaptor.valueOf(layoutAtr, LayoutAtr.class), 
 				new LayoutName(stmtName));
-	}
-	
-	/**
-	 * create From Java Type
-	 * @return LayoutMaster
-	 */
-	public static LayoutMaster createSimpleFromJavaType(String code, int startYM, String stmtCode, int endYM, int layoutAtr,
-			String stmtName){
-		//Date startYearMonth = new
-		return null;// new LayoutMaster(code, startYM, stmtCode, endYM, layoutAtr, stmtName, layoutMasterCategories);
 	}
 	
 }

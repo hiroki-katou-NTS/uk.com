@@ -21,7 +21,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 			+ " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
 
 	private static LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
-		val domain = LayoutMaster.createSimpleFromJavaType(
+		val domain = LayoutMaster.createFromJavaType(
 				entity.qstmtStmtLayoutHeadPK.companyCd, 
 				entity.qstmtStmtLayoutHeadPK.strYm, 
 				entity.qstmtStmtLayoutHeadPK.stmtCd, 
