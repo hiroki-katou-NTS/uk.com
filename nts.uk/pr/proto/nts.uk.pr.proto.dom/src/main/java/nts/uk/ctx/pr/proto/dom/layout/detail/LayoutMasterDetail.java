@@ -9,12 +9,10 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.proto.dom.fomula.FormulaCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
-import nts.uk.ctx.pr.proto.dom.personalwage.PersonalWageCode;
-import nts.uk.ctx.pr.proto.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.proto.dom.personalwagename.PersonalWageCode;
 /**
  * 
  * 明 細 書 マ ス タ 明 細

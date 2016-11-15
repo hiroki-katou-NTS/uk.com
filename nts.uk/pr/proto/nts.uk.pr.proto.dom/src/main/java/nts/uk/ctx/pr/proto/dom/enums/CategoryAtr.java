@@ -1,6 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.enums;
 
+import lombok.AllArgsConstructor;
+
 /** カテゴリ区分 */
+@AllArgsConstructor
 public enum CategoryAtr {
 	// 0:支給
 	PAYMENT(0),
@@ -17,11 +20,9 @@ public enum CategoryAtr {
 	 * 印字しない
 	 */
 	DO_NOT_PRINT(-1);
-
+	
 	public final int value;
-
-	private CategoryAtr(int value) {
-		this.value = value;
-	}
+	
+	
 
 }
