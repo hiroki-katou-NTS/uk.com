@@ -6,6 +6,6 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.paymentsetting.PersonalPaymentSetting
 
 public interface PersonalPaymentSettingRepository {
 
-	Optional<PersonalPaymentSetting> find(String companyCode, Integer personId);
+	Optional<PersonalPaymentSetting> find(String companyCode, Integer personId);	
 
 }

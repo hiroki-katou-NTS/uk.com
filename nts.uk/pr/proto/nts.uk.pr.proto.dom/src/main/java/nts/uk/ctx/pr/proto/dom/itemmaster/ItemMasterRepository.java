@@ -21,4 +21,21 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	Optional<ItemMaster> find(String companyCode, int categoryType, String itemCode);
+	
+	/**
+	 * get All Item Master
+	 * @param companyCode
+	 * @param categoryType
+	 * @return list Item Master
+	 */
+	List<ItemMaster> getAllItemMaster(String companyCode, int categoryType);
+	
+	/**
+	 * get Item Master
+	 * @param companyCode
+	 * @param categoryType
+	 * @param itemCode
+	 * @return list Item Master
+	 */
+	List<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode);
 }
