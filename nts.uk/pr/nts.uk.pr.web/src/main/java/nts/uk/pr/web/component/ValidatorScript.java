@@ -60,8 +60,13 @@ public class ValidatorScript extends UIComponentBase {
         	int index1 = validationInfo.lastIndexOf(".") + 1;
         	int index2 = validationInfo.indexOf("(");
         	String validationClass = validationInfo.substring(index1, index2);
+        	boolean charType = validationClass.contains("CharType");
+        	String validationField = 
+        			validationClass.contains("MaxLeng") ? "maxLength" : validationClass.contains("CharType") ? 
+        			"charType" : validationClass.contains("MaxValue") ? "maxValue" : "minValue";
         	String targetValue = validationInfo.substring(index2+1, validationInfo.length()-1).replaceAll("value=","");
-        	result.append("\n\t\t" + validationClass + ": " + targetValue + ",");
+        	if(charType) targetValue = "\"" + targetValue + "\"";
+        	result.append("\n\t\t" + validationField + ": " + targetValue + ",");
         });
 		result.setLength(result.length()-1);
 		result.append("\n\t}");
