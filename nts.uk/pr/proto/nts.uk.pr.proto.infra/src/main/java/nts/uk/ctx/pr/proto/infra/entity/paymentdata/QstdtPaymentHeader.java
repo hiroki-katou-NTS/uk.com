@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name = "QSTDT_PAYMENT_HEADER")
 public class QstdtPaymentHeader extends AggregateTableEntity {
 	

@@ -27,4 +27,15 @@ public class CompanyPaymentSetting extends AggregateRoot{
 		this.companyCode = companyCode;
 		this.startDate = startDate;
 	}
+	
+	/**
+	 * Create instance using Java type parameters.
+	 * 
+	 * @param companyCode company code
+	 * @param startDate start date
+	 * @return CompanyPaymentSetting
+	 */
+	public static CompanyPaymentSetting createFromJavaType(String companyCode, int startDate) {
+		return new CompanyPaymentSetting(new CompanyCode(companyCode), new YearMonth(startDate));
+	}
 }

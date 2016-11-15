@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.proto.dom.paymentdata.paymentsetting.PersonalPaymentSetting;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalPaymentSettingRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
 
@@ -30,8 +31,14 @@ public class GetPaymentDataQueryProcessor {
 	 * @return company
 	 */
 	public Optional<PaymentDataResult> find(String companyCode, Integer personId) {
-		// return this.repository.find(companyCode, personId).map(d ->
-		// PersonalPaymentSettingDto.fromDomain(d));
+		String stmtCode = "";
+		// 明細書の設定（個人）
+//		this.personalPSRepository.find(companyCode, personId).ofNullable(value).ifPresent(x-> {stmtCode = x.getPaymentDetailCode().v();});
+//		if (!optpersonalPS.isPresent()) {
+			
+//		}
+		
+		
 		return null;
 	}
 }
