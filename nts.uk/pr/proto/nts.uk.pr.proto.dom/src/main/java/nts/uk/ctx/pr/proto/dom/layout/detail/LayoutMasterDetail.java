@@ -58,7 +58,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/** 合計対象区分 */
 	@Getter
 	private SumScopeAtr sumScopeAtr;
-
 	//今回、対応対象外	
 //	/** 計算式コード */
 //	@Getter
@@ -75,6 +74,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private ItemCode setOffItemCode;
 	
 	@Getter
+	/**通勤区分*/
 	private CommuteAtr commuteAtr;
 	/**個人金額コード	 */
 	@Getter
