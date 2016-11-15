@@ -73,7 +73,7 @@ public class GetPaymentDataQueryProcessor {
 		
 		// 明細書マスタ行
 		
-		this.layoutMasterLineRepository.getLines(companyCode, layoutCode, startYm, autoLineId, categoryAttribute);
+//		this.layoutMasterLineRepository.getLines(companyCode, layoutCode, startYm, autoLineId, categoryAttribute);
 		
 		
 		return null;
