@@ -11,8 +11,10 @@ import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * GetPaymentDataQueryProcessor
@@ -26,6 +28,9 @@ public class GetPaymentDataQueryProcessor {
 	/** PersonalPaymentSettingRepository */
 	@Inject
 	private PersonalAllotSettingRepository personalPSRepository;
+
+	@Inject
+	private CompanyAllotSettingRepository companyAllotSettingRepository;
 
 	/** LayoutMasterRepository */
 	@Inject
@@ -41,14 +46,15 @@ public class GetPaymentDataQueryProcessor {
 	 *            code
 	 * @return PaymentDataResult
 	 */
-	public Optional<PaymentDataResult> find(String companyCode, String personId, int baseYM) {
+	public Optional<PaymentDataResult> find(String personId, int baseYM) {
+		String companyCode = AppContexts.user().companyCode();
 		String stmtCode = "";
 		// 明細書の設定（個人）
 		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, personId, baseYM);
 		if (optpersonalPS.isPresent()) {
 			stmtCode = optpersonalPS.get().getPaymentDetailCode().v();
 		} else {
-			// stmtCode =
+			stmtCode = this.companyAllotSettingRepository.find(companyCode, baseYM).get().getPaymentDetailCode().v();
 		}
 
 		// 明細書マスターを取得、データがない場合→エラーメッセージが出します
@@ -56,7 +62,7 @@ public class GetPaymentDataQueryProcessor {
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
 
 		// 明細書マスタカテゴリ
-		this.layoutMasterCategoryRepository.getCategories(companyCode, layout.getCode().v(), baseYM);
+		this.layoutMasterCategoryRepository.getCategories(companyCode, layout.getStmtCode().v(), baseYM);
 		return null;
 	}
 }
