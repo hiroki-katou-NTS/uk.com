@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
@@ -12,15 +12,8 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 @Table(name = "QSTMT_STMT_ALLOT_CP")
 public class QstmtStmtAllotCp extends AggregateTableEntity {
 	
-	@Id
-	@Basic(optional = false)
-	@Column(name = "CCD")
-	public String companyCode;
-	
-	@Id
-	@Basic(optional = false)
-	@Column(name = "STR_YM")
-	public int startDate;
+	@EmbeddedId
+	public QstmtStmtAllotCpPK qstmtStmtAllotCpPK;
 	
 	@Basic(optional = false)
 	@Column(name = "END_YM")

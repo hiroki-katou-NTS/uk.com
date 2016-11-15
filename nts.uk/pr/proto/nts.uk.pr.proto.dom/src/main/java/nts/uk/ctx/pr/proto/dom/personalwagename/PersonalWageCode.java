@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.personalwage;
+package nts.uk.ctx.pr.proto.dom.personalwagename;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLengh;
