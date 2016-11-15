@@ -75,11 +75,13 @@ public class LayoutMasterDetail extends AggregateRoot{
 	
 	@Getter
 	private CommuteAtr commuteAtr;
-	
+	/**個人金額コード	 */
+	@Getter
+	private IndividualAmountCode individualAmountCode;
 	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
 			ItemCode itemCode, LayoutCode layoutCode, YearMonth startYM, SumScopeAtr sumScopeAtr,
-			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute) {
+			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,IndividualAmountCode individualAmountCode) {
 		super();
 		this.companyCode = companyCode;
 		this.categoryAttribute = categoryAttribute;
@@ -92,6 +94,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.alarm = alarm;
 		this.error = error;
 		this.distribute = distribute;
+		this.individualAmountCode = individualAmountCode;
 	}
 	
 	
