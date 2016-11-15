@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name = "QSTMT_STMT_ALLOT_CP")
 public class QstmtStmtAllotCp extends AggregateTableEntity {
 	
