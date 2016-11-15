@@ -6,13 +6,8 @@
       xmlns:test="http://xmlns.jcp.org/jsf/component">
 <h:head>
 	<title>validation Script from Server</title>
-	<script>
-	var __viewContext = {
-		primitiveValueConstraint: {
-			//description: "validation constraint"
-		}
-	};
-	</script>
+	<test:ValidatorInitScript>
+	</test:ValidatorInitScript>
 	<test:ValidatorScript>
 		<f:attribute name="inputclass" value="nts.uk.shr.com.primitive.PersonId" />
 	</test:ValidatorScript>
