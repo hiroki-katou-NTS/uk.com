@@ -6,14 +6,15 @@
 	
 	<!-- CSS -->
 	<link rel="stylesheet" type="text/css" href="../../lib/generic/jqueryui/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+	<link rel="stylesheet" type="text/css" href="../../lib/generic/igniteui/css/structure/infragistics.css" />
 	<link rel="stylesheet" type="text/css" href="../../lib/nittsu/ui/style/stylesheets/base.css" />
 	<style>
 		html, body{position: relative;}
-		*{box-sizing:border-box;}
 		.container{padding:40px;}
 		a{color:#00B050;text-decoration: none;}
 		b{font-weight:bold;}
-		i{font-style: italic;}
+		i{font-style: italic;display:inline-block;min-width:80px;}
 		h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
 		h3{font-size:16px;margin:3px 0;font-weight:bold;}
 		hr{margin: 25px 0;}
@@ -30,6 +31,7 @@
 	<script src="../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
 	<script src="../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
 	<script src="../../lib/nittsu/ui/ko-ext.js"></script>
+	<script src="../../lib/nittsu/ui/dialog-options.js"></script>
 
 	<script>
 		var __viewContext = {
@@ -60,11 +62,11 @@
 					buttonSize: ko.observable("large"),
 					okButtonColor: ko.observable("danger"),
 					okButtonText: ko.observable(""),
-					okButtonCommand: function(){
+					okButtonClicked: function(){
 						alert("ok");
 					},
 					cancelButtonText: ko.observable("いいえ"),
-					cancelButtonCommand: function(){
+					cancelButtonClicked: function(){
 						alert("cancel");
 					},
 					open: function(){
@@ -87,7 +89,7 @@
 					buttonSize: ko.observable("large"),
 					okButtonColor: ko.observable("proceed"),
 					okButtonText: ko.observable("OK"),
-					okButtonCommand: function(){},
+					okButtonClicked: function(){},
 					open: function(){
 						var self = this;
 						self.show(true);
@@ -95,6 +97,55 @@
 					hide: function(){
 						var self = this;
 						self.show(false);
+					}
+				},
+
+				// Dialog with Option Class
+				dialogconfirmoption: {
+					option: ko.mapping.fromJS(new ConfirmDialogOption()),
+					okButtonClicked: function(){},
+					cancelButtonClicked: function(){},
+					open: function(){
+						var self = this;
+						self.option.show(true);
+					},
+					hide: function(){
+						var self = this;
+						self.option.show(false);
+					}
+				},
+				
+				// Dialog with Option Class
+				dialogdeloption: {
+					option: ko.mapping.fromJS(new DelDialogOption({message: "You want a message, you get a message."})),
+					okButtonClicked: function(){
+						alert("ok");
+					},
+					cancelButtonClicked: function(){
+						alert("cancel");
+					},
+					open: function(){
+						var self = this;
+						self.option.show(true);
+					},
+					hide: function(){
+						var self = this;
+						self.option.show(false);
+					}
+				},
+
+				// Dialog with Option Class
+				dialogokoption: {
+					option: ko.mapping.fromJS(new OKDialogOption({title: "A test Title", message: "This is a test message created for test purpose", modal: false})),
+					okButtonClicked: function(){},
+					cancelButtonClicked: function(){},
+					open: function(){
+						var self = this;
+						self.option.show(true);
+					},
+					hide: function(){
+						var self = this;
+						self.option.show(false);
 					}
 				},
 			};
@@ -105,16 +156,39 @@
 <body>
 	<div class="container">
 		<h2><a href="../../test.html">&#9665;</a> Dialog</h2>
+		<hr/>
+		<h2>HTML Binding</h2>
 		<div data-bind="with: dialogconfirm">
-			<button data-bind="click: open">Open Confirm Dialog</button>
+			<button data-bind="click: open" class="danger">Open Confirm Dialog</button>
 			<div data-bind="ntsDialog: {dialogtype: dialogtype, title: title, message: message, modal: modal, show: show, buttonSize: buttonSize, okButtonColor: okButtonColor, okButtonText: okButtonText, cancelButtonText: cancelButtonText }"></div>
 		</div>
 		<br/>
 		<div data-bind="with: dialogalert">
-			<button data-bind="click: open">Open Alert Dialog</button>
+			<button data-bind="click: open" class="proceed">Open Alert Dialog</button>
 			<div data-bind="ntsDialog: {dialogtype: dialogtype, title: title, message: message, modal: modal, show: show, buttonSize: buttonSize, okButtonColor: okButtonColor, okButtonText: okButtonText }"></div>
 		</div>
 		<hr/>
+		<h2>TypeScript Binding</h2>
+		<div data-bind="with: dialogconfirmoption">
+			<button data-bind="click: open" class="proceed">Open Confirm Dialog</button>
+			<button data-bind="click: hide">Hide Confirm Dialog</button>
+			<div data-bind="ntsDialogTest: {option: option}"></div>
+		</div>
+		<br/>
+		<div data-bind="with: dialogdeloption">
+			<button data-bind="click: open" class="danger">Open Del Dialog</button>
+			<button data-bind="click: hide">Hide Del Dialog</button>
+			<div data-bind="ntsDialogTest: {option: option}"></div>
+		</div>
+		<br/>
+		<div data-bind="with: dialogokoption">
+			<button data-bind="click: open" class="proceed">Open OK Dialog</button>
+			<button data-bind="click: hide">Hide OK Dialog</button>
+			<div data-bind="ntsDialogTest: {option: option}"></div>
+		</div>
+		<hr/>
+		
+		<!-- API -->
 		<h2> API</h2>
 		<table>
 			<colgroup>
@@ -189,7 +263,7 @@
 					<td>okButtonColor</td>
 					<td>
 						<b>Type:</b> string<br/>
-						<b>Default:</b> Dependent on Dialog type<br/>
+						<b>Default:</b> ""<br/>
 						<b>Members:</b><br/>
 						<i>danger</i>: Red color. Default on confirm<br/>
 						<i>proceed</i>: Green color. Default on alert<br/>
@@ -199,16 +273,8 @@
 					<td>okButtonText</td>
 					<td>
 						<b>Type:</b> string<br/>
-						<b>Default:</b> "はい"<br/>
-						Text for OK button
-					</td>
-				</tr>
-				<tr>
-					<td>okButtonCommand</td>
-					<td>
-						<b>Type:</b> function<br/>
-						<b>Default:</b> <br/>
-						Function when user press OK button
+						<b>Default:</b> "はい" or "OK"<br/>
+						Text for OK button. Default value for Confirm Dialog is "OK". Delete Dialog and OK Dialog is "はい"
 					</td>
 				</tr>
 				<tr>
@@ -217,14 +283,6 @@
 						<b>Type:</b> string<br/>
 						<b>Default:</b> "いいえ"<br/>
 						Text for cancel button
-					</td>
-				</tr>
-				<tr>
-					<td>cancelButtonCommand</td>
-					<td>
-						<b>Type:</b> function<br/>
-						<b>Default:</b> <br/>
-						Function when user press cancel button
 					</td>
 				</tr>
 			</tbody>
@@ -254,6 +312,31 @@
 				</tr>
 			</tbody>
 		</table>
-</div>
+		<table>
+			<colgroup>
+				<col width="200px" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th><h3>Events</h3></th>
+					<th><h3>Description</h3></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>okButtonClicked()</td>
+					<td>
+						Triggered when OK button is clicked
+					</td>
+				</tr>
+				<tr>
+					<td>cancelButtonClicked()</td>
+					<td>
+						Triggered when cancel button is clicked
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

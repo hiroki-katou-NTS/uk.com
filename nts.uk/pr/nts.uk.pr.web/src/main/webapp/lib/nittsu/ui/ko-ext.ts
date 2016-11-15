@@ -1,12 +1,12 @@
-﻿module nts.uk.ui.koExtentions {
+module nts.uk.ui.koExtentions {
 
     import validation = nts.uk.ui.validation;
-     
+
     /**
      * TextBoxExtensible
      */
     class NtsTextBoxExtensibleBindingHandler implements KnockoutBindingHandler {
-        
+
         constraint: validation.CharType;
 
         /**
@@ -39,7 +39,7 @@
             $input.val(newText);
         }
     }
-     
+
     /**
      * TextBox
      */
@@ -77,19 +77,19 @@
             $input.val(newText);
         }
     }
-     
+
     /**
      * Dialog binding handler
      */
     class NtsDialogBindingHandler implements KnockoutBindingHandler {
-        
+
         /**
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
         }
-        
+
         /**
          * Update
          */
@@ -105,30 +105,31 @@
             var okButtonText: string = ko.unwrap(data.okButtonText);
             var cancelButtonText: string = ko.unwrap(data.cancelButtonText);
             var buttonSize: string = ko.unwrap(data.buttonSize);
-            
+            buttonSize = buttonSize || "large";
+
             var $dialog = $("<div id='ntsDialog'></div>");
-            if(show == true) {
+            if (show == true) {
                 $('body').append($dialog);
                 // Create Buttons
                 var buttons = [];
                 var okButton = {
                     text: okButtonText,
                     "class": "yes " + buttonSize + " " + okButtonColor,
-                    click: function(){
-                        bindingContext.$data.okButtonCommand();
+                    click: function() {
+                        bindingContext.$data.okButtonClicked();
                         $(this).dialog("close");
                     }
                 };
-                
+
                 // Create default values foreach DialogType
-                if(dialogtype === "confirm") {
+                if (dialogtype === "confirm") {
                     okButton.text = okButtonText || "はい";
                     buttons.push(okButton);
                     buttons.push({
                         text: cancelButtonText || "いいえ",
                         "class": "no " + buttonSize,
-                        click: function(){
-                            bindingContext.$data.cancelButtonCommand();
+                        click: function() {
+                            bindingContext.$data.cancelButtonClicked();
                             $(this).dialog("close");
                         }
                     });
@@ -142,25 +143,88 @@
                     modal: modal,
                     closeOnEscape: false,
                     buttons: buttons,
-                    open: function () {
+                    open: function() {
                         $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                         $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                         $('.ui-widget-overlay').last().css('z-index', 120000);
                     },
-                    close: function (event) {
+                    close: function(event) {
                         bindingContext.$data.show(false);
                     }
                 }).text(message);
             }
             else {
-                if($('#ntsDialog').dialog("instance") != null)
+                if ($('#ntsDialog').dialog("instance") != null)
                     $('#ntsDialog').dialog("destroy");
                 $('#ntsDialog').remove();
             }
         }
     }
-     
-     
+
+
+    /**
+     * DialogOption binding handler
+     */
+    class NtsDialogTestBindingHandler implements KnockoutBindingHandler {
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var option: any = ko.unwrap(data.option);
+            var dialogtype: string = ko.unwrap(option.dialogType);
+            var title: string = ko.unwrap(option.title);
+            var message: string = ko.unwrap(option.message);
+            var modal: boolean = ko.unwrap(option.modal);
+            var show: boolean = ko.unwrap(option.show);
+            var buttons: any = ko.unwrap(option.buttons);
+
+            var $dialog = $("<div id='ntsDialog'></div>");
+            if (show == true) {
+                $('body').append($dialog);
+                // Create Buttons
+                var dialogbuttons = [];
+                for (let button of buttons) {
+                    dialogbuttons.push({
+                        text: ko.unwrap(button.text),
+                        "class": ko.unwrap(button.class) + ko.unwrap(button.size) + " " + ko.unwrap(button.color),
+                        click: function() { button.click(bindingContext.$data, $dialog) }
+                    });
+                }
+                // Create dialog
+                $dialog.dialog({
+                    title: title,
+                    modal: modal,
+                    closeOnEscape: false,
+                    buttons: dialogbuttons,
+                    open: function() {
+                        $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                        $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                        $('.ui-widget-overlay').last().css('z-index', 120000);
+                    },
+                    close: function(event) {
+                        bindingContext.$data.option.show(false);
+                    }
+                }).text(message);
+            }
+            else {
+                // Destroy dialog
+                if ($('#ntsDialog').dialog("instance") != null)
+                    $('#ntsDialog').dialog("destroy");
+                $('#ntsDialog').remove();
+            }
+        }
+    }
+
     /**
      * Switch button binding handler
      */
@@ -317,7 +381,7 @@
             }
         }
     }
-     
+
     /**
      * ComboBox binding handler
      */
@@ -327,13 +391,13 @@
          */
         constructor() {
         }
-    
+
         /**
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
-        
+
         /**
          * Update
          */
@@ -341,10 +405,10 @@
             // Get data.
             var data = valueAccessor();
             var self = this;
-            
+
             // Get options.
             var options: Array<any> = ko.unwrap(data.options);
-    
+
             // Get options value.
             var optionValue = ko.unwrap(data.optionsValue);
             var optionText = ko.unwrap(data.optionsText);
@@ -352,33 +416,33 @@
             var editable = data.editable;
             var enable: boolean = data.enable;
             var columns: Array<any> = data.columns;
-            
+
             // Container.
             var container = $(element);
             var comboMode: string = editable ? 'editable' : 'dropdown';
-            
+
             // Default values.
             var distanceColumns = '     ';
             var fillCharacter = ' '; // Character used fill to the columns.
             var maxWidthCharacter = 15;
-            
+
             // Check selected code.
             if (options.filter(item => item[optionValue] === selectedValue).length == 0 && !editable) {
                 selectedValue = options.length > 0 ? options[0][optionValue] : '';
                 data.value(selectedValue);
             }
-            
+
             // Delete igCombo.
-            if (container.data("igCombo") !=null) {
+            if (container.data("igCombo") != null) {
                 container.igCombo('destroy');
                 container.removeClass('ui-state-disabled');
             }
-            
+
             // Set attribute for multi column.
             var itemTempalate: string = undefined;
             options = options.map((option) => {
                 var newOptionText: string = '';
-                
+
                 // Check muti columns.
                 if (columns && columns.length > 0) {
                     var i = 0;
@@ -386,12 +450,12 @@
                     columns.forEach(item => {
                         var prop: string = option[item.prop];
                         var length: number = item.length;
-                        
+
                         var proLength: number = prop.length;
                         while (proLength < length && i != columns.length - 1) {
                             // Add space character to properties.
                             prop += fillCharacter;
-                            
+
                             proLength++;
                         }
                         if (i == columns.length - 1) {
@@ -399,7 +463,7 @@
                         } else {
                             newOptionText += prop + distanceColumns;
                         }
-                        
+
                         // Set item template.
                         itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
                         i++;
@@ -412,7 +476,7 @@
                 option['nts-combo-label'] = newOptionText;
                 return option;
             });
-            
+
             // Create igCombo.
             container.igCombo({
                 dataSource: options,
@@ -432,7 +496,7 @@
                     }
                 }
             });
-            
+
             // Set width for multi columns.
             if (columns && columns.length > 0) {
                 var i = 0;
@@ -446,12 +510,12 @@
                     totalWidth += length * maxWidthCharacter + 10;
                     i++;
                 });
-                $('.nts-combo-item').css({'min-width': totalWidth});
-                container.css({'min-width': totalWidth});
+                $('.nts-combo-item').css({ 'min-width': totalWidth });
+                container.css({ 'min-width': totalWidth });
             }
         }
     }
-     
+
     /**
      * ListBox binding handler
      */
@@ -461,17 +525,17 @@
          */
         constructor() {
         }
-    
+
         /**
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
-            
+
             // Get options.
             var options: Array<any> = ko.unwrap(data.options);
-    
+
             // Get options value.
             var optionValue = ko.unwrap(data.optionsValue);
             var optionText = ko.unwrap(data.optionsText);
@@ -479,36 +543,36 @@
             var isMultiSelect = data.multiple;
             var enable: boolean = data.enable;
             var columns: Array<any> = data.columns;
-            
+
             // Container.
             var container = $(element);
-            
+
             // Default value.
             var selectSize = 6;
-            
+
             // Create select.
             container.append('<ol class="nts-list-box"></ol>');
             var selectListBoxContainer = container.find('.nts-list-box');
-            
+
             // Create changing event.
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
                 bubbles: true,
                 cancelable: true,
             });
-            
+
             // Bind selectable.
             selectListBoxContainer.selectable({
-                selected: function(event, ui) { 
+                selected: function(event, ui) {
                 },
-                stop: function( event, ui ) {
-                    
+                stop: function(event, ui) {
+
                     // If not Multi Select.
                     if (!isMultiSelect) {
                         $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
                         $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
                     }
-                    
+
                     // Add selected value.
                     var data: any = isMultiSelect ? [] : '';
                     var i = 0;
@@ -522,27 +586,27 @@
                         i++;
                     });
                     container.data('value', data);
-                    
+
                     // fire event change.
                     document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
                 },
-                unselecting: function( event, ui ) {
+                unselecting: function(event, ui) {
                     $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 }
             });
-            
+
             // Fire event.
             container.on('selectionChange', (function(e: Event) {
                 // Check is multi-selection.
                 var itemsSelected: any = container.data('value');
-                
+
                 // Create changing event.
                 var changingEvent = new CustomEvent("selectionChanging", {
-                    detail: itemsSelected, 
+                    detail: itemsSelected,
                     bubbles: true,
                     cancelable: true,
                 });
-                
+
                 // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
                 if (!changingEvent.returnValue) {
@@ -551,19 +615,19 @@
                     data.value(selectedValue);
                 } else {
                     data.value(itemsSelected);
-                    
+
                     // Create event changed.
                     var changedEvent = new CustomEvent("selectionChanged", {
                         detail: itemsSelected,
                         bubbles: true,
                         cancelable: false
                     });
-                    
+
                     // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                     document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
-                } 
+                }
             }));
-            
+
             // Create method.
             $.fn.deselectAll = function() {
                 $(this).data('value', '');
@@ -576,7 +640,7 @@
                 $(this).find('.nts-list-box').data("ui-selectable")._mouseStop(null);
             }
             $.fn.ntsListBox = function(method: string) {
-                switch(method) {
+                switch (method) {
                     case 'deselectAll':
                         this.deselectAll();
                         break;
@@ -588,17 +652,17 @@
                 }
             }
         }
-        
+
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-             // Get data.
+            // Get data.
             var data = valueAccessor();
-            
+
             // Get options.
             var options: Array<any> = ko.unwrap(data.options);
-    
+
             // Get options value.
             var optionValue = ko.unwrap(data.optionsValue);
             var optionText = ko.unwrap(data.optionsText);
@@ -606,17 +670,17 @@
             var isMultiSelect = data.multiple;
             var enable: boolean = data.enable;
             var columns: Array<any> = data.columns;
-            
+
             // Container.
             var container = $(element);
             var selectListBoxContainer = container.find('.nts-list-box');
             var maxWidthCharacter = 15;
-            
+
             // Check selected code.
             if (!isMultiSelect && options.filter(item => item[optionValue] == selectedValue).length == 0) {
                 selectedValue = '';
-            } 
-            
+            }
+
             // Remove options.
             $('li', container).each(function(index, option) {
                 var optValue = $(option).data('value');
@@ -625,28 +689,28 @@
                     return opt[optionValue] == optValue;
                 }) != -1;
                 if (!foundFlag) {
-                    
+
                     // Remove selected if not found option.
                     selectedValue = jQuery.grep(selectedValue, function(value: string) {
                         return value != optValue;
                     });
                     option.remove();
                     return;
-                } 
+                }
             })
-            
+
             // Append options.
             options.forEach(item => {
                 // Find option.
-                var targetOption : JQuery;
+                var targetOption: JQuery;
                 $('li', container).each(function(index, opt) {
                     var optValue = $(opt).data('value');
                     if (optValue == item[optionValue]) {
-                        targetOption = $(opt); 
+                        targetOption = $(opt);
                         return;
                     }
                 })
-                
+
                 // Check option is Selected.
                 var isSelected: boolean = false;
                 if (isMultiSelect) {
@@ -654,7 +718,7 @@
                 } else {
                     isSelected = selectedValue == item[optionValue];
                 }
-                
+
                 if (!targetOption) {
                     // Add option.
                     var selectedClass = isSelected ? 'ui-selected' : '';
@@ -677,22 +741,22 @@
                         targetOption.removeClass('ui-selected');
                     }
                 }
-                
+
             });
-            
+
             // Set value.
             container.data('value', selectedValue);
             container.trigger('selectionChange');
-            
+
             // Check enable.
             if (!enable) {
-                selectListBoxContainer.selectable( "disable" );;
+                selectListBoxContainer.selectable("disable");;
                 container.addClass('disabled');
             } else {
-                selectListBoxContainer.selectable( "enable" );
+                selectListBoxContainer.selectable("enable");
                 container.removeClass('disabled');
             }
-            
+
             // Set width for multi columns.
             if (columns && columns.length > 0) {
                 var i = 0;
@@ -704,15 +768,15 @@
                     i++;
                 });
                 totalWidth += 50;
-                $('.nts-list-box > li').css({'min-width': totalWidth});
-                $('.nts-list-box').css({'min-width': totalWidth});
-                container.css({'min-width': totalWidth});
+                $('.nts-list-box > li').css({ 'min-width': totalWidth });
+                $('.nts-list-box').css({ 'min-width': totalWidth });
+                container.css({ 'min-width': totalWidth });
             }
-           
+
         }
     }
-     
-     
+
+
     /**
      * TreeGrid binding handler
      */
@@ -722,43 +786,43 @@
          */
         constructor() {
         }
-    
+
         /**
          * Init.
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-    
+
             // Get data.
             var data = valueAccessor();
             var options: Array<any> = ko.unwrap(data.options);
             var optionsValue = ko.unwrap(data.optionsValue);
             var optionsText = ko.unwrap(data.optionsText);
-    
+
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
-    
+
             var optionsChild = ko.unwrap(data.optionsChild);
             var extColumns: Array<any> = ko.unwrap(data.extColumns);
-            
+
             // Default.
             var showCheckBox = ko.unwrap(data.showCheckBox);
             showCheckBox = showCheckBox != undefined ? showCheckBox : true;
-    
+
             var enable = ko.unwrap(data.enable);
             enable = enable != undefined ? enable : true;
-    
+
             var height = ko.unwrap(data.height);
             height = height ? height : '100%';
-            
+
             width = width ? width : '100%';
             var width = ko.unwrap(data.width);
-    
-            var displayColumns:Array<any> = [{ headerText: "コード", key: optionsValue,  dataType: "string", hidden: true },
-                    { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+
+            var displayColumns: Array<any> = [{ headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
+                { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
-    
+
             // Init ig grid.
             $(element).igTreeGrid({
                 width: width,
@@ -769,13 +833,13 @@
                 columns: displayColumns,
                 childDataKey: optionsChild,
                 initialExpandDepth: 10,
-                features: [            
+                features: [
                     {
                         name: "Selection",
                         multipleSelection: true,
                         activation: true,
-                        rowSelectionChanged: function (evt: any, ui: any) {
-                            var selectedRows:Array<any> = ui.selectedRows;
+                        rowSelectionChanged: function(evt: any, ui: any) {
+                            var selectedRows: Array<any> = ui.selectedRows;
                             if (ko.unwrap(data.multiple)) {
                                 if (ko.isObservable(data.selectedValues)) {
                                     data.selectedValues(_.map(selectedRows, function(row) {
@@ -796,7 +860,7 @@
                     }]
             });
         }
-    
+
         /**
          * Update
          */
@@ -806,30 +870,30 @@
             var options: Array<any> = ko.unwrap(data.options);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
-    
+
             // Clear selection.
             if (selectedValues && selectedValues.length == 0) {
                 $(element).igTreeGridSelection("clearSelection");
             }
-    
+
             // Update datasource.
             $(element).igTreeGrid("option", "dataSource", options);
-    
+
             // Set multiple data source.
             var multiple = ko.unwrap(data.multiple);
             multiple = multiple != undefined ? multiple : true;
             $(element).igTreeGridSelection("option", "multipleSelection", multiple);
-    
+
             // Set show checkbox.
             var showCheckBox = ko.unwrap(data.showCheckBox);
             showCheckBox = showCheckBox != undefined ? showCheckBox : true;
             $(element).igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
-    
+
             // Compare value.
             var olds = _.map($(element).igTreeGridSelection("selectedRow"), function(row: any) {
                 return row.id;
             });
-    
+
             // Not change, do nothing.
             if (selectedValues) {
                 if (_.isEqual(selectedValues.sort(), olds.sort())) {
@@ -841,20 +905,118 @@
                     $(element).igTreeGridSelection("selectRowById", val);
                 })
             }
-    
-            if(singleValue) {
-                if(olds.length > 0 && olds[0] == singleValue) {
+
+            if (singleValue) {
+                if (olds.length > 0 && olds[0] == singleValue) {
                     return;
                 }
                 $(element).igTreeGridSelection("selectRowById", singleValue);
-            } 
+            }
         }
     }
-    
-     
+
+    class WizardBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            // Get step list.
+            var options: Array<any> = data.steps;
+            // Container.
+            var container = $(element);
+
+            // Create steps.
+            for (var i = 0; i < options.length; i++) {
+                var contentClass: string = options[i].content;
+                var htmlStep = container.children('.steps').children(contentClass).html();
+                var htmlContent = container.children('.contents').children(contentClass).html();
+                container.append('<h1 class="' + contentClass + '">' + htmlStep + '</h1>');
+                container.append('<div>' + htmlContent + '</div>');
+            }
+            var icon = container.children('.steps').children('.begin').data('icon');
+
+            // Remove html.
+            container.children('.steps').remove();
+            container.children('.contents').remove();
+
+            // Create wizard.
+            container.steps({
+                headerTag: "h1",
+                bodyTag: "div",
+                transitionEffect: "slideLeft",
+                stepsOrientation: "vertical",
+                titleTemplate: '<div>#title#</div>',
+                enablePagination: false,
+                enableFinishButton: false,
+                autoFocus: false,
+                onStepChanged: function() {
+                    // Remove old class.
+                    container.children('.steps').children('ul').children('li').removeClass('step-current');
+                    container.children('.steps').children('ul').children('li').removeClass('step-prev');
+                    container.children('.steps').children('ul').children('li').removeClass('step-next');
+
+                    // Add new class.
+                    container.children('.steps').children('ul').children('.done').addClass('disabled');
+                    container.children('.steps').children('ul').children('.current').addClass('step-current');
+                    container.children('.steps').children('ul').children('.done').addClass('step-prev');
+                    container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                }
+            });
+
+            // Add default class.
+            container.addClass('nts-wizard');
+            container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
+            container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
+            container.children('.steps').children('ul').children('.first').addClass('begin');
+            container.children('.steps').children('ul').children('.last').addClass('end');
+            container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
+            container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>')
+
+            // Remove old class.
+            container.children('.steps').children('ul').children('li').removeClass('step-current');
+            container.children('.steps').children('ul').children('li').removeClass('step-prev');
+            container.children('.steps').children('ul').children('li').removeClass('step-next');
+
+            // Add new class.
+            container.children('.steps').children('ul').children('.current').addClass('step-current');
+            container.children('.steps').children('ul').children('.done').addClass('step-prev');
+            container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+
+            // Remove content.
+            container.find('.actions').hide();
+
+            container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
+
+            $.fn.begin = function() {
+                $(this.selector).setStep(0);
+            }
+
+            $.fn.end = function() {
+                $(this.selector).setStep(options.length - 1);
+            }
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        }
+    }
+    ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
+
+
     ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
+    ko.bindingHandlers['ntsDialogTest'] = new NtsDialogTestBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();

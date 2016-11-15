@@ -5,40 +5,47 @@ import java.util.List;
 public interface LayoutMasterLineRepository {
 
 	/**
-	 * add LayoutMasterLine
-	 * 
-	 * @param layoutMasterLine
-	 */
-	void add(LayoutMasterLine layoutMasterLine);
-
-	/**
-	 * update LayoutMasterLine
-	 * 
-	 * @param layoutMasterLine
-	 */
-	void update(LayoutMasterLine layoutMasterLine);
-
-	/**
-	 * delete a LayoutMasterLine
+	 * add a layout master line
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
-	 * @param autoLineId
 	 * @param startYm
-	 * @param categoryAttribute
+	 * @param stmtCode
 	 */
-	void remove(String companyCode, String layoutCode, int startYm, String autoLineId, String categoryAttribute);
+	void add(String companyCode, int startYm, String stmtCode);
+
+	/**
+	 * update a layout master line
+	 * 
+	 * @param companyCode
+	 * @param startYm
+	 * @param autoLineID
+	 * @param categoryAtr
+	 * @param stmtCode
+	 */
+	void update(String companyCode, int startYm, String autoLineID, String categoryAtr, String stmtCode);
+
+	/**
+	 * delete a layout master line
+	 * 
+	 * @param companyCode
+	 * @param startYm
+	 * @param autoLineID
+	 * @param categoryAtr
+	 * @param stmtCode
+	 */
+	void remove(String companyCode, int startYm, String autoLineID, String categoryAtr, String stmtCode);
 
 	/**
 	 * get Line
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
-	 * @param autoLineId
-	 * @param startYm
-	 * @param categoryAttribute
+	 * @param startYM
+	 * @param stmtCode
+	 * @param endYM
+	 * @param layoutAtr
+	 * @param stmtName
 	 * @return list Line
 	 */
-	List<LayoutMasterLine> getLines(String companyCode, String layoutCode, int startYm, String autoLineId,
-			String categoryAttribute);
+	List<LayoutMasterLine> getLines(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName);
 }

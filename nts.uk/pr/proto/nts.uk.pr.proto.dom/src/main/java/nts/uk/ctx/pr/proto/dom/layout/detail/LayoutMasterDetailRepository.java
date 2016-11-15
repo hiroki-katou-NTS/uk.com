@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
-
 public interface LayoutMasterDetailRepository {
 
 	/**
@@ -14,27 +12,34 @@ public interface LayoutMasterDetailRepository {
 	 * @param companyCode
 	 * @param layoutCode
 	 * @param startYm
-	 * @param categoryAttribute
+	 * @param categoryAtr
 	 * @param autoLineID
 	 * @param itemCode
 	 * @return
 	 */
 	Optional<LayoutMasterDetail> find(String companyCode, String layoutCode, int startYm, String stmtCode,
-			String categoryAttribute, String autoLineID, String itemCode);
+			String categoryAtr, String autoLineID, String itemCode);
 
 	/**
 	 * add a layout master detail
 	 * 
-	 * @param layoutMasterDetail
+	 * @param companyCode
+	 * @param startYm
+	 * @param stmtCode
 	 */
-	void add(LayoutMasterDetail layoutMasterDetail);
+	void add(String companyCode, int startYm, String stmtCode);
 
 	/**
 	 * update a layout master detail
 	 * 
-	 * @param layoutMasterDetail
+	 * @param companyCode
+	 * @param startYm
+	 * @param stmtCode
+	 * @param categoryAtr
+	 * @param autoLineID
+	 * @param itemCode
 	 */
-	void update(LayoutMasterDetail layoutMasterDetail);
+	void update(String companyCode, int startYm, String stmtCode, int categoryAtr, String autoLineID, String itemCode);
 
 	/**
 	 * delete a layout master detail
@@ -43,22 +48,21 @@ public interface LayoutMasterDetailRepository {
 	 * @param layoutCode
 	 * @param startYm
 	 * @param categoryAtr
-	 * @param autoLineID
-	 * @param itemCode
+	 * @param itemCode 
 	 */
-	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr,
-			String autoLineID, String itemCode);
+	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr, String itemCode);
 
 	/**
 	 * get Detail
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
-	 * @param startYm
-	 * @param categoryAtr
-	 * @param autoLineID
+	 * @param startYM
+	 * @param stmtCode
+	 * @param endYM
+	 * @param layoutAtr
+	 * @param stmtName
 	 * @return list Detail
 	 */
-	List<LayoutMasterDetail> getDetails(String companyCode, String stmtCode, int startYm,
-			int categoryAtr, String autoLineID);
+	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName);
 }

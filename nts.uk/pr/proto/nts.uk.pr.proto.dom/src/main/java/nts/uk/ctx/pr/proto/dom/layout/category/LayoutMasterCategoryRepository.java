@@ -1,32 +1,59 @@
 package nts.uk.ctx.pr.proto.dom.layout.category;
 
 import java.util.List;
+import java.util.Optional;
+
+import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 
 public interface LayoutMasterCategoryRepository {
 
 	/**
+	 * find layout master category by companyCode, layoutCode ,startYm
+	 * 
+	 * @param companyCode
+	 * @param layoutCode
+	 * @param startYm
+	 * @return
+	 */
+	Optional<LayoutMasterCategory> find(String companyCode, String layoutCode, int startYm);
+
+	/**
+	 * find layout master category by companyCode
+	 * 
+	 * @param companyCode
+	 * @return
+	 */
+	List<LayoutMasterCategory> findAll(String companyCode);
+
+	/**
 	 * add LayoutMasterCategory
-	 * 
-	 * @param layoutMasterCategory
-	 */
-
-	void add(LayoutMasterCategory layoutMasterCategory);
-
-	/**
-	 * update LayoutMasterCategory
-	 * 
-	 * @param layoutMasterCategory
-	 */
-	void update(LayoutMasterCategory layoutMasterCategory);
-
-	/**
-	 * delete a LayoutMasterCategory
 	 * 
 	 * @param companyCode
 	 * @param layoutCode
 	 * @param startYm
 	 */
-	void remove(String companyCode, String layoutCode, int startYm, int categoryAtr);
+
+	void add(String companyCode, String layoutCode, int startYm);
+
+	/**
+	 * update LayoutMasterCategory
+	 * 
+	 * @param companyCode
+	 * @param stmtCode
+	 * @param startYm
+	 * @param categoryAtr
+	 */
+	void update(String companyCode, String stmtCode, int startYm, int categoryAtr);
+
+	/**
+	 * delete a LayoutMasterCategory
+	 * 
+	 * @param companyCode
+	 * @param stmtCode
+	 * @param startYm
+	 * @param categoryAtr
+	 */
+	void remove(String companyCode, String stmtCode, int startYm, int categoryAtr);
 
 	/**
 	 * get Categories

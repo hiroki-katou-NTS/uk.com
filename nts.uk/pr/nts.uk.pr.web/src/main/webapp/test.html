@@ -1,35 +1,55 @@
 ﻿<!DOCTYPE html>
 <html>
-	<head>
-		<title></title>
-		<meta charset="UTF-8">
+<head>
+<title></title>
+<meta charset="UTF-8">
 
-		<link rel="stylesheet" type="text/css" href="lib/generic/jqueryui/jquery-ui.css" />
-		<link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
-		<link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/structure/infragistics.css" />
-		<link rel="stylesheet" type="text/css" href="lib/nittsu/ui/style/stylesheets/base.css" />
-		<style>
-			a{color:#00B050;text-decoration: none;}
-			h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
-			hr{margin: 25px 0;}
-		</style>
-		<script src="./lib/generic/jquery/jquery-3.1.1.js"></script>
-		<script src="./lib/generic/jqueryui/jquery-ui.min.js"></script>
-		<script src="./lib/generic/knockoutjs/knockout-3.4.0.js"></script>
-		<script src="./lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
-		<script src="./lib/generic/lodash/lodash-4.16.6.min.js"></script>
-		<script src="./lib/generic/igniteui/js/infragistics.core.js"></script>
-		<script src="./lib/generic/igniteui/js/infragistics.lob.js"></script>
-		<script src="./lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js"></script>
-		<script src="./lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
-		<script src="lib/nittsu/util.js"></script>
-		<script src="lib/nittsu/text.js"></script>
-		<script src="lib/nittsu/ui/notify.js"></script>
-		<script src="lib/nittsu/ui/validation.js"></script>
-		<script src="lib/nittsu/ui/jquery-ext.js"></script>
-		<script src="lib/nittsu/ui/ko-ext.js"></script>
-		<script src="lib/nittsu/ui/ui.js"></script>
-		<script>
+<link rel="stylesheet" type="text/css"
+	href="lib/generic/jqueryui/jquery-ui.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/generic/igniteui/css/structure/infragistics.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/nittsu/ui/style/stylesheets/base.css" />
+<link rel="stylesheet" type="text/css"
+	href="lib/nittsu/ui/style/stylesheets/jquery.steps.css" />
+<style>
+a {
+	color: #00B050;
+	text-decoration: none;
+}
+
+h2 {
+	color: #00B050;
+	font-size: 25px;
+	margin-bottom: 20px;
+}
+
+hr {
+	margin: 25px 0;
+}
+</style>
+<script src="./lib/generic/jquery/jquery-3.1.1.js"></script>
+<script src="./lib/generic/jquery/jquery.steps.js"></script>
+<script src="./lib/generic/jqueryui/jquery-ui.min.js"></script>
+<script src="./lib/generic/knockoutjs/knockout-3.4.0.js"></script>
+<script src="./lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
+<script src="./lib/generic/lodash/lodash-4.16.6.min.js"></script>
+<script src="./lib/generic/igniteui/js/infragistics.core.js"></script>
+<script src="./lib/generic/igniteui/js/infragistics.lob.js"></script>
+<script
+	src="./lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js"></script>
+<script
+	src="./lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+<script src="lib/nittsu/util.js"></script>
+<script src="lib/nittsu/text.js"></script>
+<script src="lib/nittsu/ui/notify.js"></script>
+<script src="lib/nittsu/ui/validation.js"></script>
+<script src="lib/nittsu/ui/jquery-ext.js"></script>
+<script src="lib/nittsu/ui/ko-ext.js"></script>
+<script src="lib/nittsu/ui/ui.js"></script>
+<script>
 			var __viewContext = {
 				primitiveValueConstraints: {
 					CompanyCode: {
@@ -45,7 +65,7 @@
 				}
 			};
 		</script>
-		<script>
+<script>
 			$(function () {
 				var vm = {
 					companyCode: ko.observable('0001'),
@@ -186,14 +206,57 @@
 							self.items1(newArrays);
 							self.items2(newArrays);
 						}
+					},
+					//Wizard ViewModel
+					wizard: {
+						stepList: ko.observableArray([
+		                    new Step('step-1', '.step-1'),
+		                    new Step('step-2', '.step-2'),
+		                    new Step('step-3', '.step-3'),
+		                    new Step('step-4', '.step-4'),
+		                    new Step('step-5', '.step-5'),
+		                    new Step('step-6', '.step-6')
+		                ]),
+		                stepSelected: ko.observable(new Step('step-1', '.step-1')),
+		                user: ko.observable(new User('U1', 'User 1')),
+		                begin: function () {
+		                    $('#wizard').begin();
+		                },
+		                end: function () {
+		                    $('#wizard').end();
+		                },
+		                next: function () {
+		                    $('#wizard').steps('next');
+		                },
+		                previous: function () {
+		                    $('#wizard').steps('previous');
+		                },
+		                getCurrentStep: function () {
+		                    alert($('#wizard').steps('getCurrentIndex'));
+		                },
+		                gotoStep: function () {
+		                    var self = this;
+		                    var index = self.stepList.indexOf(self.stepSelected());
+		                    $('#wizard').setStep(index);
+		                }
 					}
 				};
-				
+				//Wizard Step
+				function Step(id, content) {
+	                this.id = id;
+	                this.content = content;
+            	}
+            	//Wizard User
+            	function User(code, name) {
+	                this.code = ko.observable(code);
+	                this.name = ko.observable(name);
+	                this.name.subscribe(function (val) { alert(val); });
+	            }
 				// ListBox & ComboBox Item
 				function ItemModel(code, name) {
 					this.code = code;
 					this.name = name;
-				};
+				}
 				
 				// TreeGrid Node
 				function Node(code, name, childs) {
@@ -208,46 +271,57 @@
 				
 			});
 		</script>
-	</head>
-	<body>
-		<div>てすとぺーじ</div>
-			 会社コード：<input type="text" data-bind="ntsTextBox: { value: companyCode, constraint: 'CompanyCode' }" /><br />
-			 会社名：<input type="text" data-bind="ntsTextBox: { value: companyName, constraint: 'CompanyName' }" /><br />
-		<hr />
-		<div data-bind="with: textbox">
-			<input type="text" data-bind="ntsTextBoxExtensible: {value: value, constraint: constraint}" />
-		</div>
-		<hr />
-		<h2><a href="sample/dialog/dialog.xhtml">&#9655; Dialog Sample</a></h2>
-		<hr />
-		<div data-bind="with: switchbutton">
-			<h2>Switch Button</h2>
-			<div id="switchButtonTest" data-bind="ntsSwitchButton: {
+</head>
+<body>
+	<div>てすとぺーじ</div>
+	会社コード：
+	<input type="text"
+		data-bind="ntsTextBox: { value: companyCode, constraint: 'CompanyCode' }" />
+	<br /> 会社名：
+	<input type="text"
+		data-bind="ntsTextBox: { value: companyName, constraint: 'CompanyName' }" />
+	<br />
+	<hr />
+	<div data-bind="with: textbox">
+		<input type="text"
+			data-bind="ntsTextBoxExtensible: {value: value, constraint: constraint}" />
+	</div>
+	<hr />
+	<h2>
+		<a href="sample/dialog/dialog.xhtml">&#9655; Dialog Sample</a>
+	</h2>
+	<hr />
+	<div data-bind="with: switchbutton">
+		<h2>Switch Button</h2>
+		<div id="switchButtonTest"
+			data-bind="ntsSwitchButton: {
 				options: roundingRules,
 				optionsValue: 'code',
 				optionsText: 'name',
-				value: selectedRuleCode }" class="cf">
-			</div>
-		</div>	  	
-	  	<hr/>
-	  	<div data-bind="with: checkbox">
-	  		<h2>CheckBox</h2>
-			<div id="checkBoxTest1" data-bind="ntsCheckBox: { checked: isHealthInsurance, text: 'Txt_HealthInsurance', enable: isEnable }" class="cf"></div>
-			<div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: isEnable}" class="cf">
-				  	This is test text for enable
-			</div>
-			Your selected state: <div data-bind="text: isHealthInsurance"></div>
+				value: selectedRuleCode }"
+			class="cf"></div>
+	</div>
+	<hr />
+	<div data-bind="with: checkbox">
+		<h2>CheckBox</h2>
+		<div id="checkBoxTest1"
+			data-bind="ntsCheckBox: { checked: isHealthInsurance, text: 'Txt_HealthInsurance', enable: isEnable }"
+			class="cf"></div>
+		<div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: isEnable}"
+			class="cf">This is test text for enable</div>
+		Your selected state:
+		<div data-bind="text: isHealthInsurance"></div>
+	</div>
+	<hr />
+	<div data-bind="with: combobox">
+		<h2>ComboBox</h2>
+		<div>
+			<input data-bind="value: itemName"></input>
+			<button data-bind="click: addOptions">Add Item</button>
 		</div>
-	  	<hr/>
-	  	<div data-bind="with: combobox">
-	  		<h2>ComboBox</h2>
-			<div>
-				<input data-bind="value: itemName"></input>
-				<button data-bind="click: addOptions">Add Item</button>
-			</div>
-			<br/>
-			<div id="combo-box"
-				data-bind="ntsComboBox: {options: itemList,
+		<br />
+		<div id="combo-box"
+			data-bind="ntsComboBox: {options: itemList,
 							optionsValue: 'code',
 							value: selectedCode,
 							optionsText: 'name',
@@ -257,25 +331,28 @@
 								{ prop: 'code', length: 4 },
 								{ prop: 'name', length: 10 },
 							]}"
-				class="cf"></div>
-			<button data-bind="click: removeByCode">Remove Item</button><br/>
-			
-			<div class="status">
-				<label><input type="checkbox" data-bind="checked: isEnable"/>Enable</label>
-				<label><input type="checkbox" data-bind="checked: isEditable"/>Editable</label>
-			</div>
-			<div>Your selected code: <span data-bind="text:selectedCode"></span></div>
-	  	</div>
-	  	<hr/>
-	  	<div data-bind="with: listbox">
-	  		<h2>ListBox</h2>
-			<div>
-				<input data-bind="value: itemName"></input>
-				<button data-bind="click: addOptions">Add Item</button>
-			</div>
-			<br/>
-			<div id="list-box"
-				data-bind="ntsListBox: {options: itemList,
+			class="cf"></div>
+		<button data-bind="click: removeByCode">Remove Item</button>
+		<br />
+
+		<div class="status">
+			<label><input type="checkbox" data-bind="checked: isEnable" />Enable</label>
+			<label><input type="checkbox" data-bind="checked: isEditable" />Editable</label>
+		</div>
+		<div>
+			Your selected code: <span data-bind="text:selectedCode"></span>
+		</div>
+	</div>
+	<hr />
+	<div data-bind="with: listbox">
+		<h2>ListBox</h2>
+		<div>
+			<input data-bind="value: itemName"></input>
+			<button data-bind="click: addOptions">Add Item</button>
+		</div>
+		<br />
+		<div id="list-box"
+			data-bind="ntsListBox: {options: itemList,
 							optionsValue: 'code',
 							optionsText: 'name',
 							multiple: true,
@@ -285,24 +362,25 @@
 								{ prop: 'code', length: 4 },
 								{ prop: 'name', length: 10 }
 							]}"
-				class="cf"></div>
-			<button data-bind="click: remove">Remove Item</button>
-			<button data-bind="click: selectAll">Select All</button>
-			<button data-bind="click: deselectAll">Deselect All</button><br/>
-			<!-- Multiple is false -->
-			<span data-bind="text: selectedCode()"></span>
-			<!-- Multiple is true -->
-			<span data-bind="text: selectedCodes()"></span>
-			<br/>
-			<label class="status">
-				<input type="checkbox" data-bind="checked: isEnable">Enable
-			</label>
-		</div>
-		<hr/>
-		<div data-bind="with: treegrid" class="cf">
-			<div style="float:left; margin-right: 15px;">
-				<h2>TreeGrid Multi Selection</h2>
-				<table id="treegrid" data-bind="ntsTreeGridView:{
+			class="cf"></div>
+		<button data-bind="click: remove">Remove Item</button>
+		<button data-bind="click: selectAll">Select All</button>
+		<button data-bind="click: deselectAll">Deselect All</button>
+		<br />
+		<!-- Multiple is false -->
+		<span data-bind="text: selectedCode()"></span>
+		<!-- Multiple is true -->
+		<span data-bind="text: selectedCodes()"></span> <br /> <label
+			class="status"> <input type="checkbox"
+			data-bind="checked: isEnable">Enable
+		</label>
+	</div>
+	<hr />
+	<div data-bind="with: treegrid" class="cf">
+		<div style="float: left; margin-right: 15px;">
+			<h2>TreeGrid Multi Selection</h2>
+			<table id="treegrid"
+				data-bind="ntsTreeGridView:{
 				   	width: 500,
 					height: 500,
 					options: items1,
@@ -312,12 +390,14 @@
 					optionsText: 'nodeText',
 					multiple: true,
 					enable: true,
-					showCheckBox: true}" class="cf">
-				</table>
-			</div>
-			<div style="float:left; margin-right: 15px;">
-				<h2>TreeGrid Single Selection</h2>
-				<table id="treegrid2"  data-bind="ntsTreeGridView:{
+					showCheckBox: true}"
+				class="cf">
+			</table>
+		</div>
+		<div style="float: left; margin-right: 15px;">
+			<h2>TreeGrid Single Selection</h2>
+			<table id="treegrid2"
+				data-bind="ntsTreeGridView:{
 				   	width: 700,
 					height: 500,
 					options: items2,
@@ -328,25 +408,67 @@
 					multiple: false,
 					enable: true,
 					extColumns: [{headerText: 'Custom', key: 'custom', width: '150px', dataType: 'string'}],
-					showCheckBox: false}" class="cf">
-				</table>
-			</div>
-			<div style="float: left">
-				Your multiple selected code:
-				<!-- ko foreach: selectedCode -->
-					<div data-bind="text: $data"></div>
-				<!-- /ko -->
-				<br/>
-				<button data-bind="click: resetSelection">Reset</button>
-				<button data-bind="click: changeDataSource">Next Datasource</button>
+					showCheckBox: false}"
+				class="cf">
+			</table>
+		</div>
+		<div style="float: left">
+			Your multiple selected code:
+			<!-- ko foreach: selectedCode -->
+			<div data-bind="text: $data"></div>
+			<!-- /ko -->
+			<br />
+			<button data-bind="click: resetSelection">Reset</button>
+			<button data-bind="click: changeDataSource">Next Datasource</button>
 
-				<br/>
-				<br/>
-				Your single selected code:
-				<div data-bind="text: singleSelectedCode"></div>
-				<br/>
+			<br /> <br /> Your single selected code:
+			<div data-bind="text: singleSelectedCode"></div>
+			<br />
+		</div>
+	</div>
+	<hr />
+	<div data-bind="with: wizard" class="column right cf">
+		<div>
+			<select
+				data-bind="options: stepList, 
+												optionsText: 'id',
+												value: stepSelected"
+				style="width: 200px"></select>
+			<button data-bind="click: gotoStep">Go to Step</button>
+		</div>
+		<br />
+		<div id="wizard" data-bind="ntsWizard: {steps: stepList}" class="cf">
+			<div class="steps">
+				<div class="begin step-1"
+					data-icon="./files/images/ntsWizard/start-images.jpg">再集計</div>
+				<div class="step-2">
+					<span>処理方法を選ぶ</span><br /> └詳細設定をする
+				</div>
+				<div class="step-3">対象社員を選ぶ</div>
+				<div class="step-4">対象社員を選ぶ</div>
+				<div class="step-5">対象社員を選ぶ</div>
+				<div class="end step-6">実行</div>
+			</div>
+			<div class="contents">
+				<div class="step-1">contents step1</div>
+				<div class="step-2">contents step2</div>
+				<div class="step-3">contents step3</div>
+				<div class="step-4">
+					<div data-bind="with: user">
+						Code: <input type="text" data-bind="value: code"><br>
+						Name: <input type="text" data-bind="value: name">
+					</div>
+				</div>
+				<div class="step-5">contents step5</div>
+				<div class="step-6">contents step6</div>
 			</div>
 		</div>
-		<hr/>
-	</body>
+
+		<button data-bind="click: begin">Begin</button>
+		<button data-bind="click: end">End</button>
+		<button data-bind="click: previous">Previous</button>
+		<button data-bind="click: next">Next</button>
+		<button data-bind="click: getCurrentStep">Current Step Index</button>
+	</div>
+</body>
 </html>

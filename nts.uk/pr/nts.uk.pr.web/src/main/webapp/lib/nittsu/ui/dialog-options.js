@@ -3,43 +3,118 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var DialogType;
-(function (DialogType) {
-    DialogType[DialogType["Alert"] = 0] = "Alert";
-    DialogType[DialogType["Confirm"] = 1] = "Confirm";
-})(DialogType || (DialogType = {}));
 var DialogOption = (function () {
-    // Default Constructor
     function DialogOption() {
     }
     return DialogOption;
 }());
-var AlertDialogOption = (function (_super) {
-    __extends(AlertDialogOption, _super);
-    //Default Contructor
-    function AlertDialogOption() {
-        _super.call(this);
-        this.dialogType = DialogType.Alert;
-        this.buttons = [];
-        this.buttons.push({ text: "はい", size: "large", color: "success", fontSize: "" });
-    }
-    return AlertDialogOption;
-}(DialogOption));
 var ConfirmDialogOption = (function (_super) {
     __extends(ConfirmDialogOption, _super);
-    //Default Contructor
-    function ConfirmDialogOption() {
+    function ConfirmDialogOption(option) {
         _super.call(this);
-        this.dialogType = DialogType.Confirm;
+        this.dialogType = "alert";
+        this.title = (option && option.title) || "";
+        this.message = (option && option.message) || "";
+        this.modal = (option && option.modal) || false;
+        this.show = (option && option.show) || false;
+        this.buttonSize = (option && option.buttonSize) || "large";
+        this.okButtonColor = (option && option.okButtonColor) || "proceed";
+        this.okButtonText = (option && option.okButtonText) || "OK";
         this.buttons = [];
-        this.buttons.push({ text: "はい", size: "large", color: "danger", fontSize: "" });
-        this.buttons.push({ text: "いいえ", size: "large", color: "", fontSize: "" });
+        // Add OK Button
+        this.buttons.push({ text: this.okButtonText,
+            "class": "yes",
+            size: this.buttonSize,
+            color: this.okButtonColor,
+            click: function (viewmodel, ui) {
+                viewmodel.okButtonClicked();
+                $(ui).dialog("close");
+            }
+        });
     }
     return ConfirmDialogOption;
 }(DialogOption));
+var DelDialogOption = (function (_super) {
+    __extends(DelDialogOption, _super);
+    function DelDialogOption(option) {
+        _super.call(this);
+        // Default value
+        this.dialogType = "confirm";
+        this.title = (option && option.title) || "";
+        this.message = (option && option.message) || "";
+        this.modal = (option && option.modal) || true;
+        this.show = (option && option.show) || false;
+        this.buttonSize = (option && option.buttonSize) || "large";
+        this.okButtonColor = (option && option.okButtonColor) || "danger";
+        this.okButtonText = (option && option.okButtonText) || "はい";
+        this.cancelButtonText = (option && option.cancelButtonText) || "いいえ";
+        this.buttons = [];
+        // Add OK Button
+        this.buttons.push({ text: this.okButtonText,
+            "class": "yes ",
+            size: this.buttonSize,
+            color: this.okButtonColor,
+            click: function (viewmodel, ui) {
+                viewmodel.okButtonClicked();
+                ui.dialog("close");
+            }
+        });
+        // Add Cancel Button
+        this.buttons.push({ text: this.cancelButtonText,
+            "class": "no ",
+            size: this.buttonSize,
+            color: "",
+            click: function (viewmodel, ui) {
+                viewmodel.cancelButtonClicked();
+                ui.dialog("close");
+            }
+        });
+    }
+    return DelDialogOption;
+}(DialogOption));
+var OKDialogOption = (function (_super) {
+    __extends(OKDialogOption, _super);
+    function OKDialogOption(option) {
+        _super.call(this);
+        // Default value
+        this.dialogType = "confirm";
+        this.title = (option && option.title) || "";
+        this.message = (option && option.message) || "";
+        this.modal = (option && option.modal) || true;
+        this.show = (option && option.show) || false;
+        this.buttonSize = (option && option.buttonSize) || "large";
+        this.okButtonColor = (option && option.okButtonColor) || "proceed";
+        this.okButtonText = (option && option.okButtonText) || "はい";
+        this.cancelButtonText = (option && option.cancelButtonText) || "いいえ";
+        this.buttons = [];
+        // Add OK Button
+        this.buttons.push({ text: this.okButtonText,
+            "class": "yes ",
+            size: this.buttonSize,
+            color: this.okButtonColor,
+            click: function (viewmodel, ui) {
+                viewmodel.okButtonClicked();
+                ui.dialog("close");
+            }
+        });
+        // Add Cancel Button
+        this.buttons.push({ text: this.cancelButtonText,
+            "class": "no ",
+            size: this.buttonSize,
+            color: "",
+            click: function (viewmodel, ui) {
+                viewmodel.cancelButtonClicked();
+                ui.dialog("close");
+            }
+        });
+    }
+    return OKDialogOption;
+}(DialogOption));
 var DialogButton = (function () {
-    //Default Contructor
     function DialogButton() {
     }
+    DialogButton.prototype.click = function (viewmodel, ui) { };
+    ;
     return DialogButton;
 }());
+//# sourceMappingURL=dialog-options.js.map

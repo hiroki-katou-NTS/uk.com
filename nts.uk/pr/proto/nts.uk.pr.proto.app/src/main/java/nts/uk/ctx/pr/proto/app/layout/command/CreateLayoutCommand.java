@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.app.layout.command;
 
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
+import nts.uk.shr.com.context.AppContexts;
 
 public class CreateLayoutCommand {
 
@@ -14,6 +15,7 @@ public class CreateLayoutCommand {
 	 * @return
 	 */
 	public LayoutMaster toDomain(){
-		return null; //LayoutMaster.createFromJavaType(startYM, stmtCode, endYM, layoutAtr, stmtName);
+		return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(), 
+					this.startYM, this.stmtCode, this.endYM, this.layoutAtr, this.stmtName);
 	}
 }

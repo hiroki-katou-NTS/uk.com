@@ -1,15 +1,15 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo;
 
 /**
- * Aggregate Root: payment date processing master. 
+ * Aggregate Root: payment date processing master.
  *
  */
 public class PaymentDateProcessingMaster extends AggregateRoot {
@@ -18,41 +18,47 @@ public class PaymentDateProcessingMaster extends AggregateRoot {
 	 */
 	@Getter
 	private PayBonusAtr payBonusAttribute;
-	
+
 	/**
 	 * Processing Number.
 	 */
 	@Getter
 	private ProcessingNo processingNo;
-	
+
 	/**
 	 * Processing Name.
 	 */
 	@Getter
 	private ProcessingName processingName;
-	
+
 	/**
 	 * Current processing year month.
 	 */
 	@Getter
 	private YearMonth currentProcessingYm;
-	
+
 	/**
 	 * Display attribute.
 	 */
 	@Getter
-	private boolean displayAttribute;
+	private DisplayAtr displayAttribute;
 
 	/**
 	 * Constructor with parameter.
-	 * @param payBonusAtribute Payroll Bonus Attribute
-	 * @param processingNo Processing No
-	 * @param processingName Processing Name
-	 * @param currentProcessingYm Current Processing Year Month
-	 * @param displayAtribute Display Attribute
+	 * 
+	 * @param payBonusAtribute
+	 *            Payroll Bonus Attribute
+	 * @param processingNo
+	 *            Processing No
+	 * @param processingName
+	 *            Processing Name
+	 * @param currentProcessingYm
+	 *            Current Processing Year Month
+	 * @param displayAtribute
+	 *            Display Attribute
 	 */
 	public PaymentDateProcessingMaster(PayBonusAtr payBonusAttribute, ProcessingNo processingNo,
-			ProcessingName processingName, YearMonth currentProcessingYm, boolean displayAttribute) {
+			ProcessingName processingName, YearMonth currentProcessingYm, DisplayAtr displayAttribute) {
 		super();
 		this.payBonusAttribute = payBonusAttribute;
 		this.processingNo = processingNo;
@@ -60,20 +66,14 @@ public class PaymentDateProcessingMaster extends AggregateRoot {
 		this.currentProcessingYm = currentProcessingYm;
 		this.displayAttribute = displayAttribute;
 	}
-	
+
 	/**
 	 * Create instance using Java type parameters.
 	 */
-	public static PaymentDateProcessingMaster createFromJavaType(int payBonusAttribute, int processingNo,
-			String processingName, BigDecimal currentProcessingYm, boolean displayAttribute) {
-//		return new PaymentDateProcessingMaster(
-//				PayBonusAttribute.valueOf(payBonusAttribute),
-//				new ProcessingNo(processingNo),
-//				new ProcessingName(processingName),
-//				currentProcessingYm,
-//				displayAttribute
-//				);
-		
-		return null;
+	public static PaymentDateProcessingMaster createFromJavaType(int payBonusAtr, int processingNo,
+			String processingName, int currentProcessingYm, int displayAttribute) {
+		return new PaymentDateProcessingMaster(EnumAdaptor.valueOf(payBonusAtr, PayBonusAtr.class),
+				new ProcessingNo(processingNo), new ProcessingName(processingName), new YearMonth(currentProcessingYm),
+				EnumAdaptor.valueOf(displayAttribute, DisplayAtr.class));
 	}
 }
