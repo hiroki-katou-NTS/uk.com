@@ -1,12 +1,8 @@
-﻿/* 基準となるフォントサイズ (rem使いたいけどIE8非対応なので) */
-$bfs: 10px;
-$normal_font_size: $bfs * 1.4;
-$input_font_size: $bfs * 1.3;
-
-/*
-$font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
-$font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
-    */
+﻿/************************
+  Font
+************************/
+$basic_font_size: 10px;
+$bfs: $basic_font_size; // arias
 $font_family: 'Meiryo UI';
 $font_family_monospace: 'DroidSansMono', 'Meiryo';
 
@@ -15,6 +11,16 @@ $button_font_color: #404040;
 $hyperlink_color: #0066CC;
 
 $activated_color: #00B050;
+
+
+/************************
+  Frame
+************************/
+$frame_border_color: #B1B1B1;
+
+$header_height: 50px;
+$functions_area_height: 40px;
+
 
 // 変数定義 ======================================
 // ベンダープレフィックスを自動で付与する
@@ -27,7 +33,7 @@ $set_prefix: '' , -moz- , -webkit-, -ms-;
 }
 @mixin mix-valueSetPrefix($name, $value) {
      @each $prefix in $set_prefix {
-        #{$name}: #{$prefix}$value;
+        #{$name}: unquote("#{$prefix}$value");
     }
 }
 @mixin icon-button-image{
@@ -38,10 +44,4 @@ $set_prefix: '' , -moz- , -webkit-, -ms-;
     span{
         padding-left: 25px;
     }
-}
-
-
-body {
-  font-size: $normal_font_size;
-  font-family: $font_family;
 }

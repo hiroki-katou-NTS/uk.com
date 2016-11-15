@@ -11,8 +11,25 @@
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             </ui:define>
+            
             <ui:define name="content">
-            	sample
+            	
+            	<div id="functions-area">
+            		<button>新規</button>
+            		<button class="proceed">登録</button>
+            		<button class="danger">削除</button>
+            	</div>
+            	
+            	<div id="contents-area">
+            		<button class="small">小ボタン</button>　<button class="small" disabled="disabled">小ボタン</button><br/>
+            		<br />
+            		<button>中ボタン</button>　<button disabled="disabled">中ボタン</button><br/>
+            		<br />
+            		<button class="large">大ボタン</button>　<button class="large" disabled="disabled">大ボタン</button><br/>
+            		<br />
+            		<button class="x-large">特大ボタン</button>　<button class="x-large" disabled="disabled">特大ボタン</button><br/>
+            	</div>
+            	
             </ui:define>
     	</ui:composition>
    	</body>

@@ -64,17 +64,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   display: block;
 }
 
-/* 基準となるフォントサイズ (rem使いたいけどIE8非対応なので) */
-/*
-$font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
-$font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
-    */
-/* line 44, ../sass/base/_base_def.scss */
-body {
-  font-size: 14px;
-  font-family: "Meiryo UI";
-}
-
+/************************
+  Font
+************************/
+/************************
+  Frame
+************************/
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the
@@ -170,17 +165,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   display: block;
 }
 
-/* 基準となるフォントサイズ (rem使いたいけどIE8非対応なので) */
-/*
-$font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
-$font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
-    */
-/* line 44, ../sass/base/_base_def.scss */
-body {
-  font-size: 14px;
-  font-family: "Meiryo UI";
-}
-
+/************************
+  Font
+************************/
+/************************
+  Frame
+************************/
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the
@@ -302,20 +292,55 @@ button.with-icon.x-large {
 
 /* line 97, ../sass/components/_button.scss */
 button {
-  border-bottom-width: 3px;
   color: #404040;
   font-size: 13px;
-  height: 25px;
   font-family: "Meiryo UI";
-  top: 1px;
-  padding: 2px 7px;
+  top: 0;
+  height: 30px;
+  padding: 3px 7px;
+  border-bottom-width: 3px;
 }
-/* line 112, ../sass/components/_button.scss */
+/* line 123, ../sass/components/_button.scss */
 button:active {
-  height: 23px;
-  top: 3px;
+  top: 2px;
+  height: 28px;
   border-bottom-width: 1px;
-  margin-bottom: 2px;
+}
+/* line 129, ../sass/components/_button.scss */
+button.small {
+  font-size: 12px;
+  padding: 1px 4px;
+  border-bottom-width: 3px;
+  height: 25px;
+}
+/* line 142, ../sass/components/_button.scss */
+button.small:active {
+  height: 23px;
+  border-bottom-width: 1px;
+}
+/* line 148, ../sass/components/_button.scss */
+button.large {
+  font-size: 15px;
+  padding: 4px 10px;
+  border-bottom-width: 4px;
+  height: 34px;
+}
+/* line 161, ../sass/components/_button.scss */
+button.large:active {
+  height: 32px;
+  border-bottom-width: 1px;
+}
+/* line 167, ../sass/components/_button.scss */
+button.x-large {
+  font-size: 22px;
+  padding: 6px 20px;
+  border-bottom-width: 5px;
+  height: 45px;
+}
+/* line 180, ../sass/components/_button.scss */
+button.x-large:active {
+  height: 43px;
+  border-bottom-width: 1px;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
@@ -383,17 +408,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   display: block;
 }
 
-/* 基準となるフォントサイズ (rem使いたいけどIE8非対応なので) */
-/*
-$font_family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, Osaka, 'MS PGothic', arial, helvetica, sans-serif;
-$font_family_monospace: 'Osaka－等幅', 'Consolas', 'Meiryo', 'メイリオ';
-    */
-/* line 44, ../sass/base/_base_def.scss */
-body {
-  font-size: 14px;
-  font-family: "Meiryo UI";
-}
-
+/************************
+  Font
+************************/
+/************************
+  Frame
+************************/
 /**
  * For modern browsers
  * 1. The space content is one way to avoid an Opera bug when the
@@ -522,4 +542,78 @@ button.nts-switch-button.selected:hover {
 /* line 33, ../sass/components/_listbox.scss */
 .disabled {
   color: graytext;
+}
+
+/* line 1, ../sass/components/_dialog.scss */
+.ui-dialog, .ui-dialog.ui-igdialog {
+  border-color: #767171;
+}
+/* line 6, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar, .ui-dialog.ui-igdialog .ui-dialog-titlebar {
+  background: #F2F2F2;
+  color: #000;
+  border-width: 0 0 1px 0;
+  border-color: #767171;
+}
+/* line 14, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar .appear-buttons, .ui-dialog.ui-igdialog .ui-dialog-titlebar .appear-buttons {
+  position: absolute;
+  top: 3px;
+  right: 24px;
+  background-color: #F2F2F2;
+}
+/* line 20, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-titlebar .appear-buttons button, .ui-dialog.ui-igdialog .ui-dialog-titlebar .appear-buttons button {
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
+}
+/* line 28, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-content, .ui-dialog.ui-igdialog .ui-dialog-content {
+  padding: 0 10px 5px 10px;
+}
+/* line 31, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-content.notice-dialog, .ui-dialog.ui-igdialog .ui-dialog-content.notice-dialog {
+  min-width: 250px;
+  padding: 0;
+}
+/* line 35, ../sass/components/_dialog.scss */
+.ui-dialog .ui-dialog-content.notice-dialog > .text, .ui-dialog.ui-igdialog .ui-dialog-content.notice-dialog > .text {
+  display: inline-block;
+  margin: 20px;
+  word-break: break-all;
+  -ms-word-break: break-all;
+  max-height: 160px;
+  overflow-y: auto;
+  line-height: 22px;
+}
+/* line 47, ../sass/components/_dialog.scss */
+.ui-dialog > .ui-dialog-buttonpane, .ui-dialog.ui-igdialog > .ui-dialog-buttonpane {
+  padding: 10px 0;
+  border-top: solid 1px #767171;
+  text-align: center;
+}
+/* line 52, ../sass/components/_dialog.scss */
+.ui-dialog > .ui-dialog-buttonpane button, .ui-dialog.ui-igdialog > .ui-dialog-buttonpane button {
+  margin: 0 10px;
+  width: 80px;
+  font-family: "Meiryo UI";
+}
+
+/* line 1, ../sass/frame/_header.scss */
+#header {
+  background-color: #ccc;
+  height: 50px;
+}
+
+/* line 1, ../sass/frame/_functions.scss */
+#functions-area {
+  height: 40px;
+  border-bottom: solid 1px #B1B1B1;
+}
+
+/* line 14, ../sass/base.scss */
+body {
+  font-size: 10px;
+  font-family: "Meiryo UI";
 }
