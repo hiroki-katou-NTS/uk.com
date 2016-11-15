@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.proto.dom.layout;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum LayoutAtr {
 
 	/** レーザー　A4　縦向き　1人 */
@@ -34,13 +37,6 @@ public enum LayoutAtr {
      */
     public final int value;
     
-    /**
-     * Constructor.
-     * @param value value of LayoutAtr
-     */
-    private LayoutAtr(int value) {
-        this.value = value;
-    }
     
     /**
      * valueOf.
