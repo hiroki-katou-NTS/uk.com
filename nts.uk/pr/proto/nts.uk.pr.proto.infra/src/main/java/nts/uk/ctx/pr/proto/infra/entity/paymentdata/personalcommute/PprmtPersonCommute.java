@@ -17,7 +17,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
     public PprmtPersonCommutePK pprmtPersonCommutePK;
 	
 	@Column(name ="END_YM")
-	public BigDecimal endYm;
+	public int endYm;
 	
 	@Column(name ="COMMU_NOTAX_LIMIT_PUB_NO")
 	public BigDecimal commuNotaxLimitPubNo;
@@ -51,7 +51,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	public int commuteCycle1;
 	
 	@Column(name ="PAY_START_YM1")
-	public BigDecimal payStartYm1;
+	public int payStartYm1;
 	
 	@Column(name ="COMMU_ALLOWANCE1")
 	public BigDecimal commuAllowance1;
@@ -85,7 +85,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	public int commuteCycle2;
 	
 	@Column(name ="PAY_START_YM2")
-	public BigDecimal payStartYm2;
+	public int payStartYm2;
 	
 	@Column(name ="COMMU_ALLOWANCE2")
 	public BigDecimal commuAllowance2;
@@ -119,7 +119,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	public int commuteCycle3;
 	
 	@Column(name ="PAY_START_YM3")
-	public BigDecimal payStartYm3;
+	public int payStartYm3;
 	
 	@Column(name ="COMMU_ALLOWANCE3")
 	public BigDecimal commuAllowance3;
@@ -153,7 +153,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	public int commuteCycle4;
 	
 	@Column(name ="PAY_START_YM4")
-	public BigDecimal payStartYm4;
+	public int payStartYm4;
 	
 	@Column(name ="COMMU_ALLOWANCE4")
 	public BigDecimal commuAllowance4;
@@ -187,7 +187,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	public int commuteCycle5;
 	
 	@Column(name ="PAY_START_YM5")
-	public BigDecimal payStartYm5;
+	public int payStartYm5;
 	
 	@Column(name ="COMMU_ALLOWANCE5")
 	public BigDecimal commuAllowance5;

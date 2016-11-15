@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 
 public interface LayoutMasterDetailRepository {
 
@@ -53,12 +52,13 @@ public interface LayoutMasterDetailRepository {
 	 * get Detail
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
-	 * @param startYm
-	 * @param categoryAtr
-	 * @param autoLineID
+	 * @param startYM
+	 * @param stmtCode
+	 * @param endYM
+	 * @param layoutAtr
+	 * @param stmtName
 	 * @return list Detail
 	 */
-	List<LayoutMasterDetail> getDetails(String companyCode, String stmtCode, int startYm,
-			int categoryAtr, String autoLineID);
+	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
+			String stmtName);
 }
