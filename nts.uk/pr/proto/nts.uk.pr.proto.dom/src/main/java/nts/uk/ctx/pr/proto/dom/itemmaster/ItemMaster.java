@@ -15,6 +15,21 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.RangeChecker;
  *
  */
 public class ItemMaster extends AggregateRoot{
+	/** 会社コード */
+	@Getter
+	private CompanyCode companyCode;	
+	/** カテゴリ区分 */
+	@Getter
+	private CategoryAtr categoryAtr;
+	/** 項目コード */
+	@Getter
+	private ItemCode itemCode;
+	/** 項目名称 */
+	@Getter
+	private ItemName itemName;
+	/** 略名 */
+	@Getter
+	private ItemName itemAbName;
 	/** 表示区分 */
 	@Getter
 	private DisplayAtr displayAtr;
@@ -35,15 +50,10 @@ public class ItemMaster extends AggregateRoot{
 	/** 統合項目コード */
 	@Getter
 	private IntegratedItemCode integratedItemCode;
-	/** 略名 */
-	@Getter
-	private ItemABName itemAbName;
+	
 	/** 項目属性 */
 	@Getter
-	private ItemAtr itemAttributeAtr;
-	/** 項目名称 */
-	@Getter
-	private ItemName itemName;
+	private ItemAtr itemAttributeAtr;	
 	/** 項目名表示区分 */
 	@Getter
 	private ItemNameDisplayAtr itemNameDisplayAtr;
@@ -65,15 +75,7 @@ public class ItemMaster extends AggregateRoot{
 	/** ゼロ表示区分 */
 	@Getter
 	private DisplayAtr zeroDisplayAtr;
-	/** 会社コード */
-	@Getter
-	private CompanyCode companyCode;
-	/** 項目コード */
-	@Getter
-	private ItemCode itemCode;
-	/** カテゴリ区分 */
-	@Getter
-	private CategoryAtr categoryAtr;
+	
 	
 	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr, ItemName itemName) {
 		super();
