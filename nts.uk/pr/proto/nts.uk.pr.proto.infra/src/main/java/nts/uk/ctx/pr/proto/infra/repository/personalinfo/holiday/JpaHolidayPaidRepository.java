@@ -18,7 +18,7 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 	private final String SELECT_BY_CCD_AND_PID = "SELECT c FROM PHLDT_HOLIDAY_PAID c WHERE c.CCD = :CCD and c.PID = :PID";
 
 	@Override
-	public List<HolidayPaid> find(String companyCode, List<String> personIdList) {
+	public List<HolidayPaid> findAll(String companyCode, List<String> personIdList) {
 		List<HolidayPaid> lstHolidayPaid = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
 			Optional<HolidayPaid> tmpHolidayPaid = (Optional<HolidayPaid>) this.queryProxy().query(SELECT_BY_CCD_AND_PID, PhldtHolidayPaid.class)

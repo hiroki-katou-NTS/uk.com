@@ -19,7 +19,7 @@ public class JpaPersonalCommuteFeeRepository extends JpaRepository implements Pe
 	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PPRMT_PERSON_COMMUTE c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_YM <= :BASEYM and c.END_YM >= :BASEYM";
 
 	@Override
-	public List<PersonalCommuteFee> find(String companyCode, List<String> personIdList, Date baseYM) {
+	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIdList, Date baseYM) {
 		List<PersonalCommuteFee> lstPersonalCommuteFee = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
 			Optional<PersonalCommuteFee> tmpPersonalCommuteFee = this

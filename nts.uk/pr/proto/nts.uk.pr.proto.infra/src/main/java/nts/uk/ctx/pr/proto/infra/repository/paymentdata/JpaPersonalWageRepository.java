@@ -18,7 +18,7 @@ public class JpaPersonalWageRepository extends JpaRepository implements Personal
 	private final String SELECT_BY_YEAR_MONTH = "SELECT c FROM PPRMT_PERSON_WAGE c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_YM <= :BASEYM and c.END_YM >= :BASEYM";
 	
 	@Override
-	public List<PersonalWage> find(String companyCode, List<String> personIdList, Date baseYm) {
+	public List<PersonalWage> findAll(String companyCode, List<String> personIdList, Date baseYm) {
 		List<PersonalWage> lstPersonalWage = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
 			Optional<PersonalWage> tmpPersonalWage = this

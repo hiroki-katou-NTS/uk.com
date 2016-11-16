@@ -11,5 +11,5 @@ public interface PersonalEmploymentContractRepository {
 	 * @param baseYmd
 	 * @return list employment contract of list person with base times.
 	 */
-	List<PersonalEmploymentContract> find(String companyCode, List<String> personIdList, Date baseYmd);
+	List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIdList, Date baseYmd);
 }

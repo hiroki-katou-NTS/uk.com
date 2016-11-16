@@ -11,5 +11,5 @@ public interface PersonalCommuteFeeRepository {
 	 * @param baseYM
 	 * @return list personal commutes
 	 */
-	List<PersonalCommuteFee> find(String companyCode, List<String> personIdList, Date baseYM);
+	List<PersonalCommuteFee> findAll(String companyCode, List<String> personIdList, Date baseYM);
 }

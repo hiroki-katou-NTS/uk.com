@@ -14,6 +14,6 @@ public interface HolidayPaidRepository {
 	 * @param personIdList
 	 * @return List HolidayPaid of list person
 	 */
-	List<HolidayPaid> find(String companyCode, List<String> personIdList);
+	List<HolidayPaid> findAll(String companyCode, List<String> personIdList);
 	
 }

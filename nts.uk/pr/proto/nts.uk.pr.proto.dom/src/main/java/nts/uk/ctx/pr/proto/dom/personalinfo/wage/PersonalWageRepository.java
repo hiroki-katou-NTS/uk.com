@@ -11,5 +11,5 @@ public interface PersonalWageRepository {
 	 * @param baseYm
 	 * @return list of personal wage
 	 */
-	List<PersonalWage> find(String companyCode, List<String> personIdList, Date baseYm);
+	List<PersonalWage> findAll(String companyCode, List<String> personIdList, Date baseYm);
 }

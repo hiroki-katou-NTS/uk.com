@@ -20,7 +20,7 @@ public class JpaPersonalEmploymentContractRepository extends JpaRepository
 	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PCLMT_PERSON_EMP_CONTRACT c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_D <= :BASEYMD and c.END_D >= :BASEYMD";
 
 	@Override
-	public List<PersonalEmploymentContract> find(String companyCode, List<String> personIdList, Date baseYmd) {
+	public List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIdList, Date baseYmd) {
 		List<PersonalEmploymentContract> lstPersonalEmploymentContract = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
 			Optional<PersonalEmploymentContract> tmpPersonalEmploymentContract = this
