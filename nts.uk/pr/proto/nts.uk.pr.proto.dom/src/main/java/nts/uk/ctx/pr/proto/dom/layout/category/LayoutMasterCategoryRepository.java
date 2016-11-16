@@ -3,10 +3,7 @@ package nts.uk.ctx.pr.proto.dom.layout.category;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
 
-
-@RequestScoped
 public interface LayoutMasterCategoryRepository {
 
 	/**

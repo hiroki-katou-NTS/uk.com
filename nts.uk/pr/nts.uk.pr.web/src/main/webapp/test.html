@@ -440,12 +440,14 @@ hr {
 	<hr />
 	<div data-bind="with: multicheckbox">
           <h2>Multi Check Box Custom Bindings</h2>
-          <strong>List of Boxes</strong>
-          <div style="float: left" data-bind="foreach: boxes">
-              <div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}">
-              </div>
-              <br/>
-          </div>
+          <div style="float: left; margin-right: 25px">
+	          <strong>List of Boxes</strong>
+	          <div data-bind="foreach: boxes">
+	              <div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}">
+	              </div>
+	              <br/>
+	          </div>
+	      </div>
           <p> You've selected</p>
           <div style="float: left" data-bind="foreach: selectedBoxes">
               <p><span data-bind="text: id"></span></p>
