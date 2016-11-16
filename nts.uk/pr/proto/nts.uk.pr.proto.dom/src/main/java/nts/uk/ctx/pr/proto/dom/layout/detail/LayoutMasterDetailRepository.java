@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
-import nts.arc.time.YearMonth;
 
 @RequestScoped
 public interface LayoutMasterDetailRepository {
@@ -52,7 +51,7 @@ public interface LayoutMasterDetailRepository {
 	List<LayoutMasterDetail> getDetails(
 			String companyCd, 
 			String stmtCd, 
-			YearMonth startYm, 
+			int startYm, 
 			int categoryAtr);
 
 	/**
@@ -69,7 +68,7 @@ public interface LayoutMasterDetailRepository {
 	Optional<LayoutMasterDetail> getDetail(
 			String companyCd, 
 			String stmtCd, 
-			YearMonth startYm, 
+			int startYm, 
 			int categoryAtr,
 			String itemCd);
 }

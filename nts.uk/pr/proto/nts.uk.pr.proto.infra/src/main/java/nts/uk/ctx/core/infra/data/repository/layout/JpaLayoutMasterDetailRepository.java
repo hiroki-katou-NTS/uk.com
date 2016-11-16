@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
@@ -44,7 +43,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public List<LayoutMasterDetail> getDetails(String companyCd, 
 			String stmtCd, 
-			YearMonth startYm,
+			int startYm,
 			int categoryAtr) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutDetail.class)
 				.setParameter("companyCd", companyCd)
@@ -78,7 +77,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public Optional<LayoutMasterDetail> getDetail(String companyCd,
 			String stmtCd, 
-			YearMonth startYm,
+			int startYm,
 			int categoryAtr, 
 			String itemCd) {		
 		return this.queryProxy().query(SELECT_DETAIL, QstmtStmtLayoutDetail.class)
