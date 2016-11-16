@@ -67,7 +67,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		}
 		
 		// get layout master
-		Optional<LayoutMaster> layoutHeadOp = layoutMasterRepo.find(companyCode.v(), stmtCode, startYearMonth);
+		Optional<LayoutMaster> layoutHeadOp = layoutMasterRepo.getLayout(companyCode.v(), stmtCode, startYearMonth);
 		
 		LayoutMaster layoutHead = layoutHeadOp.get();
 		

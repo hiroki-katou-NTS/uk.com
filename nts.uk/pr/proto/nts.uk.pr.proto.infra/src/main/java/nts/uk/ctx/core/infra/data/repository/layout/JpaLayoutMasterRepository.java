@@ -49,7 +49,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 	
 	@Override
-	public Optional<LayoutMaster> find(String companyCode, String layoutMaster, int strYm) {
+	public Optional<LayoutMaster> getLayout(String companyCode, String layoutMaster, int strYm) {
 		
 		return this.queryProxy().query(FIND_BY_PK, QstmtStmtLayoutHead.class)
 				.setParameter("companyCd", companyCode)
@@ -59,7 +59,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	@Override
-	public List<LayoutMaster> findAll(String companyCode) {
+	public List<LayoutMaster> getLayouts(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -80,6 +80,12 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	public void remove(String companyCode, String layoutCode, int startYm) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isExist(String companyCode, String stmtCode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

@@ -12,18 +12,18 @@ public interface LayoutMasterRepository {
 	 * date
 	 * 
 	 * @param companyCode
-	 * @param layoutMaster
+	 * @param stmtCode
 	 * @param strYm
 	 * @return
 	 */
-	Optional<LayoutMaster> find(String companyCode, String layoutMaster, int strYm);
+	Optional<LayoutMaster> getLayout(String companyCode, String stmtCode, int strYm);
 
 	/**
 	 * find all layout master by company code, start date
 	 * 
 	 * @return layout master
 	 */
-	List<LayoutMaster> findAll(String companyCode);
+	List<LayoutMaster> getLayouts(String companyCode);
 
 	/**
 	 * Add a new layout master
@@ -43,9 +43,16 @@ public interface LayoutMasterRepository {
 	 * delete a layout master
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
+	 * @param stmtCode
 	 * @param startYm
 	 */
-	void remove(String companyCode, String layoutCode, int startYm);
+	void remove(String companyCode, String stmtCode, int startYm);
 
+	/**
+	 * 
+	 * @param companyCode
+	 * @param stmtCode
+	 * @return
+	 */
+	boolean isExist(String companyCode, String stmtCode);
 }
