@@ -1,0 +1,199 @@
+var nts = nts || {};
+nts.ui = nts.ui || {};
+
+nts.ui.notice = function () {
+    var notice = {};
+    nts.ui.notice = notice;
+    
+    function Notice($view) {
+        var self = this;
+        self.$view = $view;
+        self.hidingTimerId = null;
+        
+        /*
+         * IgniteUI igValidator のerrorShowing/Hidingイベントの発生条件仕様が
+         * 2015.1 -> 2015.2 で変更になったため、以下のフラグ類を使って無理やり対応
+         */
+        // 2015.2対応 - true: 表示中
+        self.shown = false;
+        
+        // 2015.2対応 - true: 消去処理を保留中(setTimeout待ち)
+        self.willHide = false;
+        
+        // 2015.2対応 - true: 消去処理をキャンセル指示
+        self.cancelHide = false;
+        
+        // 2015.2対応 - 現在の表示メッセージ
+        self.currentMessage = null;
+    }
+    
+    Notice.prototype.show = function (message) {
+        var self = this;
+        
+        // メッセージに変更が無ければ処理をキャンセル
+        if (self.shown && message === self.currentMessage) {
+            // 保留中の消去処理もキャンセル
+            if (self.willHide === true) {
+                self.cancelHide = true;
+            }
+            
+            return;
+        }
+        
+        if (self.hidingTimerId !== null) {
+            clearTimeout(self.hidingTimerId);
+            self.$view.stop();
+        }
+        
+        self.currentMessage = message;
+        self.shown = true;
+        
+        self.$view
+            .text(message)
+            .css('opacity', 0)
+            .show()
+            .animate({opacity: 1}, 300);
+    };
+    
+    Notice.prototype.hide = function (delay) {
+        var self = this;
+        
+        if (self.shown === false) {
+            return;
+        }
+        
+        if (self.willHide === false) {
+	        self.willHide = true;
+	        
+	        setTimeout(function () {
+	            // showメソッドからキャンセル指示
+	            if (self.cancelHide === true) {
+	                self.cancelHide = false;
+	                self.willHide = false;
+	                if (!nts.ui.formError.isEmpty(nts.ui.getSelfDialogId())) return;
+	            }
+	            self.currentMessage = null;
+	            
+	            delay = delay || 0;
+	            self.willHide = false;
+	            
+	            self.hidingTimerId = setTimeout(function () {
+	                self.$view.stop();
+	                self.$view.animate({opacity: 0}, 800, function () {
+	                	self.shown = false;
+	                    self.$view.hide();
+	                });
+	            }, delay);
+	        });
+        }
+    };
+
+    var createNotice = function (type) {
+        return $('<div/>').addClass('notice').addClass(type).hide();
+    };
+    
+    var $notices = {
+        regmode: new Notice(createNotice('registration-mode')),
+        info: new Notice(createNotice('information')),
+        error: new Notice(createNotice('error').click(function () {
+        		if (window.isDialog) {
+        			nts.ui.dialogError.showBoard(true);
+        		} else {
+        			nts.ui.formError.showBoard(true);
+        		}
+        	}))
+    };
+
+    Object.keys($notices).forEach(function (key) {
+        $notices[key].$view.appendTo($('#notice-area'));
+    })
+    
+    var prepareRegistrationModeView = function () {
+        $notices.regmode.$view.removeClass('modify').removeClass('create');
+        return $notices.regmode;
+    };
+    
+    /**
+     * Switch mode view to MODIFY.
+     * 
+     * @returns {undefined}
+     */
+    notice.registrationModeModify = function () {
+    };
+
+    /**
+     * Switch mode view to CREATE.
+     * 
+     * @returns {undefined}
+     */
+    notice.registrationModeCreate = function () {
+    };
+
+    /**
+     * Notify save completed.
+     * 
+     * @returns {undefined}
+     */
+    notice.saveCompleted = function () {
+        notice.information(nts.ui.message('Com_0000102'));
+    };
+
+    /**
+     * Notify save completed.
+     * 
+     * @returns {undefined}
+     */
+    notice.registerCompleted = function () {
+        notice.information(nts.ui.message('Com_0000102'));
+    };
+
+    /**
+     * Notify remove completed.
+     * 
+     * @returns {undefined}
+     */
+    notice.removeCompleted = function () {
+        notice.information(nts.ui.message('Com_0000103'));
+    };
+
+    /**
+     * Notify any information.
+     * 
+     * @param {type} message
+     * @returns {undefined}
+     */
+    notice.information = function (message) {
+        $notices.info.show(message);
+        $notices.info.hide(5000);
+    };
+
+    /**
+     * Notify any error.
+     * 
+     * @param {type} message
+     * @returns {undefined}
+     */
+    notice.error = function (message) {
+        $notices.error.show(message);
+    };
+
+    /**
+     * Clear error notification.
+     * 
+     * @returns {undefined}
+     */
+    notice.clearError = function () {
+        $notices.error.hide();
+    };
+
+    /**
+     * Clear all notifications.
+     * 
+     * @returns {undefined}
+     */
+    notice.clear = function () {
+        for (var key in $notices) {
+            $notices[key].hide();
+        }
+    };
+};

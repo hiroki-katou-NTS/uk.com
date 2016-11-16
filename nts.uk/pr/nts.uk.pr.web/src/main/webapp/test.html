@@ -49,6 +49,11 @@ hr {
 <script src="lib/nittsu/ui/jquery-ext.js"></script>
 <script src="lib/nittsu/ui/ko-ext.js"></script>
 <script src="lib/nittsu/ui/ui.js"></script>
+<script src="lib/nittsu/ui/names.js.download"></script>
+<script src="lib/nittsu/ui/formerror.js.download"></script>
+<script src="lib/nittsu/ui/startup.js.download"></script>
+<script src="lib/nittsu/ui/notice.js.download"></script>
+<script src="lib/nittsu/ui/uiutil.js.download"></script>
 <script>
 			var __viewContext = {
 				primitiveValueConstraints: {
@@ -241,16 +246,15 @@ hr {
 		                    alert($('#wizard').steps('getCurrentIndex'));
 		                },
 		                gotoStep: function () {
-		                    var self = this;
-		                    var index = self.stepList.indexOf(self.stepSelected());
+		                    var index = stepList.indexOf(stepSelected());
 		                    $('#wizard').setStep(index);
 		                }
 					}
 				};
 				//Wizard Step
 				function Step(id, content) {
-	                this.id = id;
-	                this.content = content;
+	                this.id = ko.observable(id);
+	                this.content = ko.observable(content);
             	}
 				//checkbox item
 				function BoxModel(id,name) {
@@ -439,7 +443,7 @@ hr {
 		</div>
 	</div>
 	<hr />
-	<div data-bind="with: multicheckbox">
+	<div class="cf" data-bind="with: multicheckbox">
           <h2>Multi Check Box Custom Bindings</h2>
           <div style="float: left; margin-right: 25px">
 	          <strong>List of Boxes</strong>
@@ -454,5 +458,51 @@ hr {
               <p><span data-bind="text: id"></span></p>
           </div>
       </div>
+      <hr />
+      <h2>Wizard </h2>
+      <div id="program-body" style="top: 140px; min-width: 431px;">
+			<div id="contents-area" class="two-column-layout">
+				<div class="column right cf" data-bind="with: wizard">
+					<div>
+						<select data-bind="options: stepList, 
+													optionsText: 'id',
+													value: stepSelected" style="width: 200px"></select>
+						<button data-bind="click: goto">Go to Step</button>
+					</div><br/>
+					<div id="wizard"
+						data-bind="ntsWizard: {steps: stepList}"
+						class="cf">
+						<div class="steps">
+							<div class="begin step-1" data-icon="./lib/nittsu/uiimages/ntsWizard/start-images.jpg">再集計</div>
+							<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする
+							</div>
+							<div class="step-3">対象社員を選ぶ</div>
+							<div class="step-4">対象社員を選ぶ</div>
+							<div class="step-5">対象社員を選ぶ</div>
+							<div class="end step-6">実行</div>
+						</div>
+						<div class="contents">
+							<div class="step-1">contents step1</div>
+							<div class="step-2">contents step2</div>
+							<div class="step-3">contents step3</div>
+							<div class="step-4">
+								<div data-bind="with: user">
+									Code: <input type="text" data-bind="value: code"><br>
+									Name: <input type="text" data-bind="value: name">
+								</div>
+							</div>
+							<div class="step-5">contents step5</div>
+							<div class="step-6">contents step6</div>
+						</div>
+					</div>
+					
+					<button data-bind="click: begin">Begin</button>
+					<button data-bind="click: end">End</button>
+					<button data-bind="click: previous">Previous</button>
+					<button data-bind="click: next">Next</button>
+					<button data-bind="click: getCurrentStep">Current Step Index</button>
+				</div>
+			</div>
+		</div>
 </body>
 </html>

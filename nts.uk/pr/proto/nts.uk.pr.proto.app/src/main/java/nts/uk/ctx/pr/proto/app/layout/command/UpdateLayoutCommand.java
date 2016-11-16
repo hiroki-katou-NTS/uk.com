@@ -7,15 +7,14 @@ public class UpdateLayoutCommand {
 	
 	private String stmtCode;
 	private int startYM;
-	private String stmtName;
 	private int endYM;
 	
 	/**
 	 * Convert to domain object from command values
 	 * @return
 	 */
-	public LayoutMaster toDomain(int layoutAtr){
+	public LayoutMaster toDomain(int layoutAtr, String stmtName){
 		return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(), 
-					this.startYM, this.stmtCode, this.endYM, layoutAtr, this.stmtName);
+					this.startYM, this.stmtCode, this.endYM, layoutAtr, stmtName);
 	}
 }
