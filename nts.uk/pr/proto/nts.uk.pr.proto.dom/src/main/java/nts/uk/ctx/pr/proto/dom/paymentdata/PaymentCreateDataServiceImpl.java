@@ -46,9 +46,9 @@ public class PaymentCreateDataServiceImpl implements PaymentCreateDataService {
 		//            10.2.4 if ItemCode == F212
 		//                      insert QSTDT_PAYMENT_DETAIL(VAL = REMAIN_TIME)
 		//            10.2.5 if ItemCode == F201 || F202
-		//                      insert QSTDT_PAYMENT_DETAIL(VAL = ???)	
+		//                      insert QSTDT_PAYMENT_DETAIL(VAL = QPDMT_PAYDAY.NEEDED_WORK_DAY)	
 		//            10.2.6 if ItemCode == F203
-		//                      insert QSTDT_PAYMENT_DETAIL(VAL = ???)
+		//                      insert QSTDT_PAYMENT_DETAIL(VAL = QPDMT_PAYDAY.NEEDED_WORK_DAY * CCAST_BASIC_CALC.BASE_HOURS)
 		//            10.2.7 else 
 		//                      insert QSTDT_PAYMENT_DETAIL(VAL = 0)		
 		
@@ -58,18 +58,16 @@ public class PaymentCreateDataServiceImpl implements PaymentCreateDataService {
 		
 		// 12. get PPRMT_PERSON_COMMUTE
 		
-		// 13. get QSTMT_STMT_LAYOUT_DETAIL.CALC_METHOD
+		// 13. get QSTMT_STMT_LAYOUT_DETAIL.CALC_METHOD with CTG_ATR = 0
 		
 		// 14. if CALC_METHOD == 0 || 2 || 3 || 4
-		//        insert QSTDT_PAYMENT_DETAIL(VAL = 0)
-		
-		// 15. get QCAMT_ITEM.TAX_ATR
-		// 16. if TAX_ATR == 0 || 1 || 2
-		//        insert QSTDT_PAYMENT_DETAIL(VAL = ???)
-		// 17. if TAX_ATR == 3 || 4
-		//        17.1 get QSTMT_STMT_LAYOUT_DETAIL.COMMUTE_ATR
-		//        17.2 if COMMUTE_ATR == 0
-		//             insert QSTDT_PAYMENT_DETAIL(VAL = ???) -> USE_OR_NOT = 1 && COMMU_MEANS_ATTR = 0
+		//      insert QSTDT_PAYMENT_DETAIL(VAL = 0)
+		//		14.1. get QSTMT_STMT_LAYOUT_DETAIL.CALC_METHOD with CTG_ATR = 1	
+		//      14.2. if CALC_METHOD == 0 || 2 || 3 || 4 || 5
+		//               insert QSTDT_PAYMENT_DETAIL(VAL = 0 && CTG_ATR = 1)
+		//		14.3  if CALC_METHOD == 1
+		//               insert QSTDT_PAYMENT_DETAIL(VAL = ??? && CTG_ATR = 1)
+			
 	}
 
 }

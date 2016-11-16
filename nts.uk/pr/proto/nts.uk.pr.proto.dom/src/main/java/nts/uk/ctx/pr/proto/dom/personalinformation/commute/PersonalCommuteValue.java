@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute;
+package nts.uk.ctx.pr.proto.dom.personalinformation.commute;
 
 import java.math.BigDecimal;
 

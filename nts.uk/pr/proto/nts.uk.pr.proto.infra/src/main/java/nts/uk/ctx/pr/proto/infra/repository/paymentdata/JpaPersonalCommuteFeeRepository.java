@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute.PersonalCommuteFee;
-import nts.uk.ctx.pr.proto.dom.paymentdata.personalcommute.PersonalCommuteValue;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalCommuteFeeRepository;
+import nts.uk.ctx.pr.proto.dom.personalinformation.commute.PersonalCommuteFee;
+import nts.uk.ctx.pr.proto.dom.personalinformation.commute.PersonalCommuteValue;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.personalcommute.PprmtPersonCommute;
 
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
