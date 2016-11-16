@@ -7,7 +7,6 @@ public class UpdateLayoutCommand {
 	
 	private String stmtCode;
 	private int startYM;
-	private String stmtName;
 	private int endYM;
 	
 	/**
