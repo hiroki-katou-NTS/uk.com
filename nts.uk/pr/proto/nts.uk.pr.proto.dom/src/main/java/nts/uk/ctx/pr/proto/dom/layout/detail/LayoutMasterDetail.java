@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
-import nts.uk.ctx.pr.proto.dom.personalinformation.wage.wagename.PersonalWageCode;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode;
 /**
  * 
  * 明 細 書 マ ス タ 明 細
