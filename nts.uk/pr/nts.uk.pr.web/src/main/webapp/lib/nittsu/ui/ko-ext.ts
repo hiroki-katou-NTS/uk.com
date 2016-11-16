@@ -77,7 +77,27 @@ module nts.uk.ui.koExtentions {
             $input.val(newText);
         }
     }
-
+    
+    class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
+        constructor() {}
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
+            element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
+            /*var childBindingContext = bindingContext.createChildContext(
+                    bindingContext.$rawData,
+                    null, // Optionally, pass a string here as an alias for the data item in descendant contexts
+                    function(context) {
+                        ko.utils.extend(context, valueAccessor());
+                    });*/
+            var childBindingContext = bindingContext.extend(valueAccessor);
+            ko.applyBindingsToDescendants(childBindingContext, element);
+            return {controlsDescendantBindings: true};
+        }
+        
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
+        }
+ 
+    }
     /**
      * Dialog binding handler
      */
@@ -927,7 +947,7 @@ module nts.uk.ui.koExtentions {
     }
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
 
-
+    ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
     ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
