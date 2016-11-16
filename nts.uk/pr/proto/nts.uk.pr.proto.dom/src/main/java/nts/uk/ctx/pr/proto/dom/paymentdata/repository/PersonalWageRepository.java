@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.dom.paymentdata.repository;
 import java.util.Date;
 import java.util.List;
 
-import nts.uk.ctx.pr.proto.dom.paymentdata.personalwage.PersonalWage;
+import nts.uk.ctx.pr.proto.dom.personalinformation.wage.PersonalWage;
 
 public interface PersonalWageRepository {
 	/**
