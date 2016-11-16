@@ -3,9 +3,6 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
-
-@RequestScoped
 public interface LayoutMasterDetailRepository {
 
 	/**
