@@ -31,14 +31,16 @@ public class ValidatorScript extends UIComponentBase {
         
         rw.write("<script>");
         rw.write("\t__viewContext.primitiveValueConstraint = __viewContext.primitiveValueConstraint || {};");
-        
-        String classAttribute = (String) this.getAttributes().get("inputclass");
-        String[] primitiveValueNames = classAttribute.replaceAll("\\s","").split(",");
-        for(String fqnOfPrimitiveValueClass : primitiveValueNames) {
+
+        val primitives = Helper.getPrimitiveValueNames(this.getChildren().get(0).toString());
+        for(String fqnOfPrimitiveValueClass : primitives) {
         	writePrimitiveValueConstraints(rw, fqnOfPrimitiveValueClass);
         }
-        
+
         rw.write("</script>");
+        
+        // if not cleared, content strings is shown on browser...
+        this.getChildren().clear();
     }
 	
 	private static void writePrimitiveValueConstraints(ResponseWriter rw, String fqnOfPrimitiveValueClass) throws IOException {
@@ -55,18 +57,18 @@ public class ValidatorScript extends UIComponentBase {
 		rw.append("',");
 		
 		Arrays.asList(pvClass.getDeclaredAnnotations()).stream()
-		.map(a -> a.toString())
-		.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME))
-        .forEach(representationOfAnnotation -> {
-        	String constraintName = Helper.getAnnotationName(representationOfAnnotation);
-        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
-        	
-        	try {
-				writeConstraints(rw, constraintName, parametersString);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-        });
+			.map(a -> a.toString())
+			.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME))
+	        .forEach(representationOfAnnotation -> {
+	        	String constraintName = Helper.getAnnotationName(representationOfAnnotation);
+	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
+	        	
+	        	try {
+					writeConstraints(rw, constraintName, parametersString);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+	        });
 		
 		rw.append("\n\t};");
 	}
