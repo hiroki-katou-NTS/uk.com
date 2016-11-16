@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
-@RequestScoped
 public interface LayoutMasterDetailRepository {
 
 	/**
@@ -50,7 +48,7 @@ public interface LayoutMasterDetailRepository {
 	 * @param layoutCode
 	 * @param startYm
 	 * @param categoryAtr
-	 * @param itemCode 
+	 * @param itemCode
 	 */
 	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr, String itemCode);
 
@@ -63,4 +61,24 @@ public interface LayoutMasterDetailRepository {
 	 * @return list Detail
 	 */
 	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode);
+
+	/**
+	 * get layout detail
+	 * 
+	 * @param companyCode
+	 * @param startYM
+	 * @param categoryAtr
+	 * @param categoryCode
+	 * @return
+	 */
+	List<LayoutMasterDetail> getLayoutDetail(String companyCode, int startYM, int categoryAtr, String categoryCode);
+
+	/**
+	 * get layout detail by calculation
+	 * 
+	 * @param calculationMethod
+	 * @return
+	 */
+	List<LayoutMasterDetail> getLayoutDetailByCalculation(String calculationMethod);
+
 }
