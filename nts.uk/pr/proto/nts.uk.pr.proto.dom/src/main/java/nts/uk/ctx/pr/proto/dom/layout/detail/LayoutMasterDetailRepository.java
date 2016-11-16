@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
-
 import nts.arc.time.YearMonth;
 
 @RequestScoped
