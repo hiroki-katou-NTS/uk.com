@@ -21,5 +21,4 @@ public interface PaymentDataCheckService {
 	 */
 	boolean isExists(CompanyCode companyCode, PersonId personId, PayBonusAtr payBonusAtr, YearMonth processingYearMonth);
 	
-	boolean isErrorSystem(PayrollSystem payrollSystem, CalculationMethod calculationMethod, TaxAtr taxAttribute, CommuteAtr commuteAttribute);
 }
