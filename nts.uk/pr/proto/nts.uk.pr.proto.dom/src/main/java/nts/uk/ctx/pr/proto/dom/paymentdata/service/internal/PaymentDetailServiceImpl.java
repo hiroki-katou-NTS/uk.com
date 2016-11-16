@@ -21,9 +21,9 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
 import nts.uk.ctx.pr.proto.dom.personalinformation.employmentcontract.PersonalEmploymentContract;
+import nts.uk.ctx.pr.proto.dom.personalinformation.employmentcontract.PersonalEmploymentContractRepository;
 import nts.uk.shr.com.primitive.PersonId;
 
 @RequestScoped

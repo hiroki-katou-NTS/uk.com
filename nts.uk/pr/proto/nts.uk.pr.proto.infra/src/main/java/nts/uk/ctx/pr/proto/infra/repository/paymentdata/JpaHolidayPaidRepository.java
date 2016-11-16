@@ -8,8 +8,8 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.HolidayPaidRepository;
 import nts.uk.ctx.pr.proto.dom.personalinformation.holiday.HolidayPaid;
+import nts.uk.ctx.pr.proto.dom.personalinformation.holiday.HolidayPaidRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PhldtHolidayPaid;
 
 @RequestScoped

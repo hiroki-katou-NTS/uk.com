@@ -8,8 +8,8 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.proto.dom.personalinformation.commute.PersonalCommuteFee;
+import nts.uk.ctx.pr.proto.dom.personalinformation.commute.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.proto.dom.personalinformation.commute.PersonalCommuteValue;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.personalcommute.PprmtPersonCommute;
 

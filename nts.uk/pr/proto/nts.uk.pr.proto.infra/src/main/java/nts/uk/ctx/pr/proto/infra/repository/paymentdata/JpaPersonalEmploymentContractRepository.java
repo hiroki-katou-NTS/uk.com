@@ -10,8 +10,8 @@ import javax.enterprise.context.RequestScoped;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.dom.personalinformation.employmentcontract.PersonalEmploymentContract;
+import nts.uk.ctx.pr.proto.dom.personalinformation.employmentcontract.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PclmtPersonEmpContract;
 
 @RequestScoped
