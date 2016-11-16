@@ -8,9 +8,9 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.proto.dom.personalinformation.wage.PersonalWage;
-import nts.uk.ctx.pr.proto.dom.personalinformation.wage.PersonalWageRepository;
-import nts.uk.ctx.pr.proto.infra.entity.paymentdata.personalwage.PprmtPersonWage;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWage;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWageRepository;
+import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.PprmtPersonWage;
 
 @RequestScoped
 public class JpaPersonalWageRepository extends JpaRepository implements PersonalWageRepository {
