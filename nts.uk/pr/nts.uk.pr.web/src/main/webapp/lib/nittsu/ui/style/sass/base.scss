@@ -11,8 +11,10 @@
 @import "frame/_functions.scss";
 @import "frame/_contents.scss";
 
+
 body {
-	
-	font-size: $bfs;
-	font-family: $font_family;
+    font: {
+        size: $normal_font_size;
+        family: $font_family;
+    }
 }

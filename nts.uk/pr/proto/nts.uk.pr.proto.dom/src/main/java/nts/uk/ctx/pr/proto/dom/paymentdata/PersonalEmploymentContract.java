@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.Range;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.PersonId;
 
@@ -30,27 +31,20 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 */
 	@Getter
 	private CompanyCode companyCode;
-
+	
 	/**
-	 * Start Date
+	 * Range date: from - to
 	 */
 	@Getter
-	private GeneralDate strD;
-
-	/**
-	 * End Date
-	 */
-	@Getter
-	private GeneralDate endD;
-
+	private Range<GeneralDate> rangeDate;
+	
 	public PersonalEmploymentContract(PayrollSystem payrollSystem, PersonId personId, CompanyCode companyCode,
-			GeneralDate strD, GeneralDate endD) {
+			GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.payrollSystem = payrollSystem;
 		this.personId = personId;
 		this.companyCode = companyCode;
-		this.strD = strD;
-		this.endD = endD;
+		rangeDate = Range.between(startDate, endDate);
 	}
 
 	/**
@@ -59,17 +53,26 @@ public class PersonalEmploymentContract extends AggregateRoot {
 	 * @return PersonalEmploymentContract
 	 */
 	public static PersonalEmploymentContract createFromJavaType(int payrollSystem, String personId, String companyCode,
-			GeneralDate strD, GeneralDate endD) {
+			GeneralDate startDate, GeneralDate endDate) {
 		return new PersonalEmploymentContract(EnumAdaptor.valueOf(payrollSystem, PayrollSystem.class),
-				new PersonId(personId), new CompanyCode(companyCode), strD, endD);
+				new PersonId(personId), new CompanyCode(companyCode), startDate, endDate);
 	}
 
 	/**
-	 * Payroll system by DAILY || DAY
+	 * Payroll system by DAY || HOURS
 	 * 
-	 * @return true if payroll system = 2(DAILY) || 3(DAY) else false
+	 * @return true if payroll system = 2(DAY) || 3(HOURS) else false
 	 */
 	public boolean isPayrollSystemDailyOrDay() {
-		return this.payrollSystem == PayrollSystem.DAILY || this.payrollSystem == PayrollSystem.DAY;
+		return this.payrollSystem == PayrollSystem.DAY || this.payrollSystem == PayrollSystem.HOURS;
+	}
+	
+	/**
+	 * Payroll system by MONTHLY || DAILY
+	 * 
+	 * @return true if payroll system = 0(MONTHLY) || 1(DAILY) else false
+	 */
+	public boolean isPayrollSystemDailyOrMonthly() {
+		return this.payrollSystem == PayrollSystem.MONTHLY || this.payrollSystem == PayrollSystem.DAILY;
 	}
 }

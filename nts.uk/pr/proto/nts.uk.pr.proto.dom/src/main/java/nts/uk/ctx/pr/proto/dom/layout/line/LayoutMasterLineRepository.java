@@ -2,6 +2,9 @@ package nts.uk.ctx.pr.proto.dom.layout.line;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public interface LayoutMasterLineRepository {
 
 	/**
@@ -41,11 +44,7 @@ public interface LayoutMasterLineRepository {
 	 * @param companyCode
 	 * @param startYM
 	 * @param stmtCode
-	 * @param endYM
-	 * @param layoutAtr
-	 * @param stmtName
 	 * @return list Line
 	 */
-	List<LayoutMasterLine> getLines(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
-			String stmtName);
+	List<LayoutMasterLine> getLines(String companyCode, int startYM, String stmtCode);
 }

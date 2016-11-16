@@ -1,45 +1,29 @@
     interface IDialogOption {
         title?: string, 
         message?: string,
-        modal?: boolean,
-        show?: boolean,
-        buttonSize?: ButtonSize,
-        okButtonColor?: ButtonColor,
-        okButtonText?: string,
-        cancelButtonText?: string
     }
-
+    
     abstract class DialogOption {
-        dialogType: DialogType;
         title: string;
         message: string;
-        modal: boolean;
-        show: boolean;
-        buttonSize: ButtonSize;
-        okButtonColor: ButtonColor;
-        okButtonText: string;
-        cancelButtonText: string;
+        protected modal: boolean = true;
+        protected show: boolean = false;
         protected buttons: DialogButton[];
     }
-
+    
     class ConfirmDialogOption extends DialogOption {
         constructor(option?: IDialogOption)
         {
             super();
-            this.dialogType = "alert";
+            // Default value
             this.title = (option && option.title) ? option.title : "";
             this.message = (option && option.message) ? option.message : "";
-            this.modal = (option && option.modal !== undefined) ? option.modal : true;
-            this.show = (option && option.show !== undefined) ? option.show : false;
-            this.buttonSize = (option && option.buttonSize) ? option.buttonSize : "large";
-            this.okButtonColor = (option && option.okButtonColor) ? option.okButtonColor : "proceed";
-            this.okButtonText = (option && option.okButtonText) ? option.okButtonText : "OK";
             this.buttons = [];
             // Add OK Button
-            this.buttons.push({text: this.okButtonText,
+            this.buttons.push({text: "OK",
                                "class": "yes",
-                               size: this.buttonSize,
-                               color: this.okButtonColor,
+                               size: "large",
+                               color: "proceed",
                                click: function(viewmodel, ui): void {
                                    viewmodel.okButtonClicked();
                                    $(ui).dialog("close");
@@ -53,30 +37,23 @@
         {
             super();
             // Default value
-            this.dialogType = "confirm";
             this.title = (option && option.title) ? option.title : "";
             this.message = (option && option.message) ? option.message : "";
-            this.modal = (option && option.modal !== undefined) ? option.modal : true;
-            this.show = (option && option.show !== undefined) ? option.show : false;
-            this.buttonSize = (option && option.buttonSize) ? option.buttonSize : "large";
-            this.okButtonColor = (option && option.okButtonColor) ? option.okButtonColor : "danger";
-            this.okButtonText = (option && option.okButtonText) ? option.okButtonText : "はい";
-            this.cancelButtonText = (option && option.cancelButtonText) ? option.cancelButtonText : "いいえ";
             this.buttons = [];
             // Add OK Button
-            this.buttons.push({text: this.okButtonText,
+            this.buttons.push({text: "はい",
                                "class": "yes ",
-                               size: this.buttonSize,
-                               color: this.okButtonColor,
+                               size: "large",
+                               color: "danger",
                                click: function(viewmodel, ui){
                                    viewmodel.okButtonClicked();
                                    ui.dialog("close");
                                }
                              });
             // Add Cancel Button
-            this.buttons.push({text: this.cancelButtonText,
+            this.buttons.push({text: "いいえ",
                                "class": "no ",
-                               size: this.buttonSize,
+                               size: "large",
                                color: "",
                                click: function(viewmodel, ui){
                                    viewmodel.cancelButtonClicked();
@@ -85,36 +62,29 @@
                              });
         }
     }
-
+    
     class OKDialogOption extends DialogOption {
         constructor(option?: IDialogOption)
         {
             super();
             // Default value
-            this.dialogType = "confirm";
             this.title = (option && option.title) ? option.title : "";
             this.message = (option && option.message) ? option.message : "";
-            this.modal = (option && option.modal !== undefined) ? option.modal : true;
-            this.show = (option && option.show !== undefined) ? option.show : false;
-            this.buttonSize = (option && option.buttonSize) ? option.buttonSize : "large";
-            this.okButtonColor = (option && option.okButtonColor) ? option.okButtonColor : "proceed";
-            this.okButtonText = (option && option.okButtonText) ? option.okButtonText : "はい";
-            this.cancelButtonText = (option && option.cancelButtonText) ? option.cancelButtonText : "いいえ";
             this.buttons = [];
             // Add OK Button
-            this.buttons.push({text: this.okButtonText,
+            this.buttons.push({text: "はい",
                                "class": "yes ",
-                               size: this.buttonSize,
-                               color: this.okButtonColor,
+                               size: "large",
+                               color: "proceed",
                                click: function(viewmodel, ui){
                                    viewmodel.okButtonClicked();
                                    ui.dialog("close");
                                }
                              });
             // Add Cancel Button
-            this.buttons.push({text: this.cancelButtonText,
+            this.buttons.push({text: "いいえ",
                                "class": "no ",
-                               size: this.buttonSize,
+                               size: "large",
                                color: "",
                                click: function(viewmodel, ui){
                                    viewmodel.cancelButtonClicked();
@@ -123,9 +93,7 @@
                              });
         }
     }
-
-
-    type DialogType = "alert" | "confirm";
+    
     type ButtonSize = "x-large" | "large" | "medium" | "small";
     type ButtonColor = "" | "danger" | "proceed";
     class DialogButton{

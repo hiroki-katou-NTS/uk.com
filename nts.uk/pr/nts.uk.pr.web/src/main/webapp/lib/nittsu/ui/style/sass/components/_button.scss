@@ -124,6 +124,7 @@ button {
         top: $_base_top + $_base_thickness;
         height: $_base_height - $_base_thickness;
         border-bottom-width: $_base_border_bottom;
+        margin-bottom: $_base_thickness;
     }
     
     &.small {
@@ -131,6 +132,8 @@ button {
     	$_padding_gap_v: -2px;
     	$_padding_gap_h: -3px;
     	$_thickness_gap: 0;
+    	
+    	/* START: SAME ALL SIZES */
     	$_height: $_base_height + $_padding_gap_v * 2 + $bfs * $_font_size_gap;
     	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
     	
@@ -143,6 +146,7 @@ button {
     		height: $_height - $_base_thickness;
         	border-bottom-width: $_base_border_bottom;
     	}
+    	/* END: SAME ALL SIZES */
     }
     
     &.large {
@@ -150,6 +154,8 @@ button {
     	$_padding_gap_v: 1px;
     	$_padding_gap_h: 3px;
     	$_thickness_gap: 1px;
+    	
+    	/* START: SAME ALL SIZES */
     	$_height: $_base_height + $_padding_gap_v * 2 + $bfs * $_font_size_gap;
     	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
     	
@@ -162,6 +168,7 @@ button {
     		height: $_height - $_base_thickness;
         	border-bottom-width: $_base_border_bottom;
     	}
+    	/* END: SAME ALL SIZES */
     }
     
     &.x-large {
@@ -169,6 +176,8 @@ button {
     	$_padding_gap_v: 3px;
     	$_padding_gap_h: 13px;
     	$_thickness_gap: 2px;
+    	
+    	/* START: SAME ALL SIZES */
     	$_height: $_base_height + $_padding_gap_v * 2 + $bfs * $_font_size_gap;
     	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
     	
@@ -181,48 +190,6 @@ button {
     		height: $_height - $_base_thickness;
         	border-bottom-width: $_base_border_bottom;
     	}
-    }
-    
-    &.small {
-		font-size: 11px;
-		height: 22px;
-		padding: 1px 4px;
-	}
-	
-	&.small:active {
-		height: 20px;
-	}
-	
-	&.large {
-		font-size: 14px;
-		height: 31px;
-		padding: 4px 10px;
-		border-bottom-width: 4px;
-	}
-	
-	&.large:active {
-		height: 28px;
-		border-bottom-width: 1px;
-		margin-bottom: 3px;
-	}
-	
-	&.large:active[disabled] {
-		top: 1px;
-		border-bottom-width: 4px;
-		margin-bottom: 0;
-	}
-	
-	&.x-large {
-		font-size: 21px;
-		height: 46px;
-		padding: 6px 20px;
-		border-bottom-width: 5px;
-	}
-	
-	&.x-large:active {
-		height: 42px;
-		top: 5px;
-		border-bottom-width: 1px;
-		margin-bottom: 4px;
+    	/* END: SAME ALL SIZES */
 	}
 }

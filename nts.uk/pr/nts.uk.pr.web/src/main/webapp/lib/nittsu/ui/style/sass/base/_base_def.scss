@@ -3,6 +3,7 @@
 ************************/
 $basic_font_size: 10px;
 $bfs: $basic_font_size; // arias
+$normal_font_size: $bfs * 1.4;
 $font_family: 'Meiryo UI';
 $font_family_monospace: 'DroidSansMono', 'Meiryo';
 
@@ -12,6 +13,17 @@ $hyperlink_color: #0066CC;
 
 $activated_color: #00B050;
 
+/* IE */
+@font-face {
+    font-family: 'DroidSansMono';
+    src: url('font/DroidSansMono.eot') format('truetype');
+}
+
+/* Others */
+@font-face {
+    font-family: 'DroidSansMono';
+    src: url('font/DroidSansMono.ttf') format('truetype');
+}
 
 /************************
   Frame

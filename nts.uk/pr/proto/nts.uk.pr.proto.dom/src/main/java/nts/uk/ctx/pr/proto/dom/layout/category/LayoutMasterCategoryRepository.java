@@ -3,8 +3,10 @@ package nts.uk.ctx.pr.proto.dom.layout.category;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
+import javax.enterprise.context.RequestScoped;
 
+
+@RequestScoped
 public interface LayoutMasterCategoryRepository {
 
 	/**
@@ -59,9 +61,9 @@ public interface LayoutMasterCategoryRepository {
 	 * get Categories
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
+	 * @param stmtCode
 	 * @param startYm
 	 * @return List Categories
 	 */
-	List<LayoutMasterCategory> getCategories(String companyCode, String layoutCode, int startYm);
+	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, int startYm);
 }

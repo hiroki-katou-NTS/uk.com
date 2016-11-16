@@ -5,6 +5,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.BonusDetailCode;
+import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentDetailCode;
 
 public class CompanyAllotSetting extends AggregateRoot {
@@ -24,10 +25,12 @@ public class CompanyAllotSetting extends AggregateRoot {
 	@Getter
 	private PaymentDetailCode paymentDetailCode;
 
-	public CompanyAllotSetting(CompanyCode companyCode, YearMonth startDate) {
+	public CompanyAllotSetting(CompanyCode companyCode, YearMonth startDate, BonusDetailCode bonusDetailCode,PaymentDetailCode paymentDetailCode) {
 		super();
 		this.companyCode = companyCode;
 		this.startDate = startDate;
+		this.bonusDetailCode = bonusDetailCode;
+		this.paymentDetailCode = paymentDetailCode;
 	}
 
 	/**
@@ -39,7 +42,7 @@ public class CompanyAllotSetting extends AggregateRoot {
 	 *            start date
 	 * @return CompanyPaymentSetting
 	 */
-	public static CompanyAllotSetting createFromJavaType(String companyCode, int startDate) {
-		return new CompanyAllotSetting(new CompanyCode(companyCode), new YearMonth(startDate));
+	public static CompanyAllotSetting createFromJavaType(String companyCode, int startDate, String bonusDetailCode, String paymentDetailCode) {
+		return new CompanyAllotSetting(new CompanyCode(companyCode), new YearMonth(startDate), new BonusDetailCode(bonusDetailCode), new PaymentDetailCode(paymentDetailCode));
 	}
 }
