@@ -1,0 +1,1739 @@
+/* global resourceMessages, resourceNames, textResource */
+
+var nts = nts || {};
+nts.ui = nts.ui || {};
+
+window.textResource = window.textResource || {
+    message: {},
+    name: {}
+};
+window.__textResource = window.__textResource || {
+    message: {},
+    name: {}
+};
+
+(function () {
+    
+    function block() {
+    	
+    	var width = 220;
+    	var left = ($(window).width() - width) / 2;
+    	
+        $.blockUI({
+            message: '<div class="block-ui-message">お待ちください</div>',
+            fadeIn: 200,
+            css: {
+            	width: width,
+            	left: left
+            }
+        });
+    };
+    
+    function unblock() {
+        $.unblockUI({
+            fadeOut: 200
+        });
+    }
+    
+    nts.ui.block = block;
+    nts.ui.unblock = unblock;
+})();
+
+/**
+ * Convert text into option text
+ * 
+ * @param {String}
+ *            text text
+ * @returns converted text
+ */
+nts.ui.toListItemText = function (text) {
+    return text.replace(/  /g, '　');
+};
+
+(function () {
+    function createNoticeDialog(text, buttons) {
+
+        var $control = $('<div/>').addClass('control');
+        _.each(buttons, function ($button) {
+            $control.append($button.addClass('large'));
+        });
+        
+        text = text.replace(/\n/g, '<br />');
+        
+        var $this = $('<div/>').addClass('notice-dialog')
+            .append($('<div/>').addClass('text').append(text))
+            .append($control)
+            .appendTo('body')
+            .dialog({
+                width: 'auto',
+                modal: true,
+                closeOnEscape: false,
+                open: function () {
+                    $(this).closest('.ui-dialog')
+                        .css('z-index', 120001)
+                        .find('.ui-dialog-titlebar-close').hide();
+                    $('.ui-widget-overlay').last()
+                        .css('z-index', 120000);
+                },
+                close: function (event) {
+                    $(this).dialog('destroy');
+                    $(event.target).remove();
+                }
+            });
+        
+        return $this;
+    }
+    
+    /**
+     * Show information dialog.
+     * 
+     * @param {String}
+     *            text information text
+     * @returns handler
+     */
+    nts.ui.info = (function () {
+        var $dialog = $('<div/>').hide();
+        
+        $(function () {
+            $dialog.appendTo('body').dialog({
+                autoOpen: false
+            });
+        })
+        
+        return function (text) {
+    
+            var then = $.noop;
+            
+            setTimeout(function () {
+                var $this = createNoticeDialog(
+                    text,
+                    [
+                        $('<button/>').addClass('large')
+                            .text(nts.ui.name('Com_Ok'))
+                            .click(function () {
+                                $this.dialog('close');
+                                then();
+                            })
+                    ]);
+            }, 0);
+            
+            return {
+                then: function (callback) {
+                    then = callback;
+                }
+            };
+        };
+    })();
+    
+    /**
+     * Show alert dialog.
+     * 
+     * @param {String}
+     *            text information text
+     * @returns handler
+     */
+    nts.ui.alert = function (text) {
+        return nts.ui.info(text);
+    };
+    
+    /**
+     * Show confirm dialog.
+     * 
+     * @param {String}
+     *            text information text
+     * @returns handler
+     */
+    nts.ui.confirm = function (text) {
+        var handleYes = handleNo = handleCancel = handleThen = $.noop;
+        var hasCancelButton = false;
+        
+        var handlers = {
+            ifYes: function (handler) {
+                handleYes = handler;
+                return handlers;
+            },
+            ifNo: function (handler) {
+                handleNo = handler;
+                return handlers;
+            },
+            ifCancel: function (handler) {
+                hasCancelButton = true;
+                handleCancel = handler;
+                return handlers;
+            },
+            then: function (handler) {
+                handleThen = handler;
+                return handlers;
+            }
+        };
+    
+        setTimeout(function () {
+            
+            var buttons = [];
+            
+            // yes button
+            buttons.push($('<button/>').addClass('yes').addClass('large').addClass('danger')
+                .text(nts.ui.name('Com_Yes'))
+                .click(function () {
+                    $this.dialog('close');
+                    handleYes();
+                    handleThen();
+                }));
+            
+            // no button
+            buttons.push($('<button/>').addClass('no').addClass('large')
+                .text(nts.ui.name('Com_No'))
+                .click(function () {
+                    $this.dialog('close');
+                    handleNo();
+                    handleThen();
+                }));
+            
+            // cancel button
+            if (hasCancelButton) {
+                buttons.push($('<button/>').addClass('cancel').addClass('large')
+                    .text(nts.ui.name('Com_Cancel'))
+                    .click(function () {
+                        $this.dialog('close');
+                        handleCancel();
+                        handleThen();
+                    }));
+            }
+            
+            var $this = createNoticeDialog(text, buttons);
+        });
+    
+        return handlers;
+    };
+
+})();
+
+/**
+ * Jump to specified page.
+ * 
+ * @param {String}
+ *            path path to destination
+ * @returns {undefined}
+ */
+nts.ui.jump = function (path, suppressUnload) {
+    if (suppressUnload === true) {
+        nts.ui.confirmSaveDisable();
+        window.location.href = path;
+        setTimeout(function () {
+            nts.ui.confirmSaveEnable();
+        }, 0);
+    } else {
+        window.location.href = path;
+    }
+};
+
+/**
+ * Show modal dialog.
+ * 
+ * @param {String}
+ *            path to the page that will be shown on dialog
+ * @param {type}
+ *            options
+ * @returns handler
+ */
+nts.ui.modalDialog = function (path, options) {
+    return nts.ui.dialog(true, path, options);
+};
+
+/**
+ * Show modeless dialog.
+ * 
+ * @param {String}
+ *            path to the page that will be shown on dialog
+ * @param {type}
+ *            options
+ * @returns handler
+ */
+nts.ui.modelessDialog = function (path, options) {
+    return nts.ui.dialog(false, path, options);
+};
+
+/**
+ * Show dialog.
+ * 
+ * @param {type}
+ *            modal is true, if you want to use modal dialog
+ * @param {type}
+ *            path to the page that will be shown on dialog
+ * @param {type}
+ *            options
+ * @returns handler
+ */
+nts.ui.dialog = (function () {
+
+    var defaultOptions = {
+        autoOpen: false,
+        draggable: true,
+        resizable: false,
+        create: function (event) {
+            $(event.target).dialog('widget').css('position', 'fixed');
+        }
+    };
+    
+    var minimizeContainer = {
+    	animatingDuration: 150,
+    	minimizedWidth: 200,
+    	marginLeftEnd: 20,
+    	marginBottomEnd: 20,
+    	marginHorizontal: 15,
+    	dialogs: [],
+    	add: function ($dialog) {
+    	    this.dialogs.push({
+    		id: $dialog.data('dialog-id'),
+    		$dialog: $dialog,
+    		$container: $dialog.closest('.ui-dialog')
+    	    });
+    	    
+    	    this.restruct();
+    	},
+    	remove: function ($dialog) {
+    	    var id = $dialog.data('dialog-id');
+    	    var removed = _.remove(this.dialogs, function (d) { return d.id === id });
+    	    if (removed.length === 0) {
+    		return;
+    	    }
+    	    
+    	    this.restruct();
+    	},
+    	restruct: function () {
+    	    var self = this;
+    	    this.dialogs.forEach(function (dialog, i) {
+        		var left = self.marginLeftEnd + i * (self.minimizedWidth + self.marginHorizontal);
+        		var bottom = self.marginBottomEnd;
+        		
+        		dialog.$container.position({
+        		    my: 'left bottom',
+        		    at: 'left+' + left + ' bottom-' + bottom,
+        		    of: window,
+        		    using: function (css) {
+        		        $(this).animate(css, self.animatingDuration, 'linear');
+        		    }
+        		});
+    	    });
+    	}
+    };
+
+    var dialogZIndex = 30000;
+
+    // パフォーマンスのため、body直下だけ探す
+    function findAllDialogContainers () {
+        return $('body').children('.ui-dialog');
+    }
+
+    // パフォーマンスのため、body直下だけ探す
+    function findAllOverlays () {
+        return $('body').children('.ui-widget-overlay');
+    }
+
+    // ダイアログを最前面に移動
+    function toFront ($dialog) {
+        var dialogId = $dialog.data('dialog-id');
+        var $newOverlay = null;
+
+        var $allOverlays = findAllOverlays();
+
+        $allOverlays.each(function () {
+            var $overlay = $(this);
+            if ($overlay.data('dialog-id') === undefined) {
+                $overlay.data('dialog-id', dialogId);
+            }
+        });
+
+        var $overlay = $(_.filter($allOverlays, function (o) {
+            return $(o).data('dialog-id') === dialogId;
+        })[0]) || $([]); // modelessなら無い
+
+        var maxZIndex = dialogZIndex;
+        findAllDialogContainers().each(function () {
+            var $this = $(this);
+            if ($this.data('dialog-id') !== dialogId) {
+                maxZIndex = Math.max(maxZIndex, Number($this.css('z-index')));
+            }
+        });
+
+        $overlay.css('z-index', maxZIndex + 1);
+        $dialog.closest('.ui-dialog').css('z-index', maxZIndex + 2);
+    }
+    
+    function createAppearButton(iconClass) {
+        return $('<button/>').addClass('ui-button')
+        	.addClass('ui-widget')
+        	.addClass('ui-state-default')
+        	.addClass('ui-corner-all')
+        	.addClass('ui-button-icon-only')
+        	.append($('<span/>')
+        		.addClass('ui-button-icon-primary')
+        		.addClass('ui-icon')
+        		.addClass(iconClass))
+        	.append($('<span/>').addClass('ui-button-text'))
+        	.hover(function () {
+        	    $(this).addClass('ui-state-hover');
+        	}, function () {
+        	    $(this).removeClass('ui-state-hover');
+        	});
+    }
+    
+    var duplicationChecker = {
+        openeds: {},
+        isDuplicated: function (path, options) {
+            return this.openeds[this.getIdentifier(path, options)] !== undefined;
+        },
+        opened: function (path, options) {
+            this.openeds[this.getIdentifier(path, options)] = true;
+        },
+        closed: function (path, options) {
+            delete this.openeds[this.getIdentifier(path, options)];
+        },
+        getIdentifier: function (path, options) {
+            var id = (options || {}).identifier;
+            return (typeof id === 'string' ? id : '') + '@' + path;
+        }
+    };
+
+    return function (modal, path, options, fromId) {
+        
+        if (fromId === undefined) {
+            fromId = nts.ui.getSelfDialogId();
+        }  
+
+        if (__viewContext.dialog !== undefined) {
+            return window.parent.nts.ui.dialog(modal, path, options, fromId);
+        }
+        
+        if (duplicationChecker.isDuplicated(path, options)) {
+            return { closed: $.noop };
+        }
+        duplicationChecker.opened(path, options);
+
+        options = $.extend({}, defaultOptions, options);
+        options.modal = modal;
+
+        var callback = $.noop;
+
+        options.close = (function () {
+            var _options = options;
+            
+            return function (evt, ui) {
+                minimizeContainer.remove($dialog);
+                callback();
+                $iframe.remove();
+                $(this).remove();
+                $dialog = null;
+                $iframe = null;
+                callback = null;
+                duplicationChecker.closed(path, _options);
+                options = null;
+                nts.ui.formError.hideBoard();
+            };
+        })();
+
+        var $dialog = $('<div/>').css('padding', 'initial').css('overflow', 'hidden').appendTo('body').dialog(options);
+        var $dialogContainer = $dialog.closest('.ui-dialog');
+        var dialogId = nts.util.randomId();
+        $dialog.data('dialog-id', dialogId);
+        $dialogContainer.data('dialog-id', dialogId);
+
+        
+        if (options.minmax === true) {
+            var $minimizeButton = createAppearButton('ui-icon-minus').click(function () {
+        	    $dialog.dialog('option', 'width', minimizeContainer.minimizedWidth);
+        	    $dialog.dialog('option', 'height', 0);
+        	    
+        	    minimizeContainer.add($dialog);
+        	    
+        	    $minimizeButton.hide();
+        	    $maximizeButton.show();
+        	    $restoreButton.show();
+            });
+        
+            var $maximizeButton = createAppearButton('ui-icon-extlink').click(function () {
+                $dialog.dialog('option', 'width', $(window).width() - 2);
+                $dialog.dialog('option', 'height', $(window).height());
+        	$dialogContainer.position({
+        		my: 'center',
+        		at: 'center',
+        		of: window
+        	    });
+        
+                    minimizeContainer.remove($dialog);
+                    
+                    $maximizeButton.hide();
+                    $minimizeButton.show();
+                    $restoreButton.show();
+            });
+            
+            var $restoreButton = createAppearButton('ui-icon-newwin').hide().click(function () {
+    
+                minimizeContainer.remove($dialog);
+                
+        	    $dialogContainer.position({
+        		my: 'center',
+        		at: 'center',
+        		of: window,
+        		using: function (css) {
+        		    $(this).animate(css, minimizeContainer.animatingDuration, 'linear', function () {
+        			    $dialog.dialog('option', {
+        				width: dialogWindow.dialogWidth,
+        				height: dialogWindow.dialogHeight
+        			    });
+        			    $dialogContainer.position({
+        				my: 'center',
+        				at: 'center',
+        				of: window
+        			    });
+        		    });
+        		}
+        	    });
+        	    
+        	    $restoreButton.hide();
+        	    $minimizeButton.show();
+        	    $maximizeButton.show();
+        	});
+            
+            var $appearButtons = $('<span/>').addClass('appear-buttons')
+            	.append($minimizeButton)
+            	.append($restoreButton)
+            	.append($maximizeButton);
+        
+            $dialogContainer.find('.ui-dialog-titlebar .ui-dialog-titlebar-close')
+            	.before($appearButtons);
+        }
+        var $iframe = $('<iframe/>').css({
+            width: '100%',
+            height: '100%'
+        }).appendTo($dialog);
+        $iframe.css('margin-bottom', '-' + 4 + 'px');
+
+        var dialogWindow = $iframe[0].contentWindow;
+        
+        $iframe.bind('load', function () {
+            var title = dialogWindow.dialogTitle || dialogWindow.__viewContext.system.programName;
+            
+            // dialogのxhtmlで<com:dialogSetting>を使って設定してあるはず
+            $dialog.dialog('option', {
+                width: dialogWindow.dialogWidth,
+                height: dialogWindow.dialogHeight,
+                title: title,
+                beforeClose: function () {
+                    return dialogWindow.__viewContext.dialog.beforeClose();
+                }
+            }).dialog('open');
+
+            // z-index調整
+            toFront($dialog);
+
+            dialogWindow.__viewContext.dialog = {
+                selfId: dialogId,
+                parentId: fromId,
+                title: function(title) {
+                	$dialog.dialog('option', { title: title });
+                },
+                beforeClose: function () {
+                    return true;
+                },
+                close: function () {
+                	nts.ui.formError.hideBoard();
+                    $dialog.dialog('close');
+                }
+            };
+            
+            dialogWindow.nts.ui.changeTitle = function (newTitle) {
+            	$dialog.dialog('option', {
+            		title: newTitle
+            	});
+            };
+        });
+
+        dialogWindow.location.href = path;
+
+        return {
+            closed: function (cb) {
+                callback = cb;
+            }
+        };
+    };
+})();
+
+nts.ui.getSelfDialogId = function () {
+    return (window.__viewContext.dialog && window.__viewContext.dialog.selfId) || 'main';
+};
+
+nts.ui.getMainWindow = function () {
+    return window.__viewContext.dialog ? parent : window;
+}
+
+nts.ui.close = function () {
+    if (window.parent === window) {
+        window.close();
+    } else {
+        window.__viewContext.dialog.close();
+    }
+};
+
+(function () {
+    var storageName = '__dialogSharedStorage';
+    window[storageName] = {};
+    
+    function getStorage(dialogId) {
+        var storages = nts.ui.getMainWindow()[storageName];
+        if (storages[dialogId] === undefined) {
+            storages[dialogId] = {};
+        }
+        
+        return storages[dialogId];
+    }
+
+    nts.ui.shareWithDialog = function (key, data) {
+        getStorage(nts.ui.getSelfDialogId())[key] = data;
+    };
+
+    nts.ui.getSharedFromParent = function (key) {
+        var parentId = __viewContext.dialog.parentId;
+        return getStorage(parentId)[key];
+    };
+})();
+
+nts.ui.color = (function () {
+	
+	var exports = {};
+	
+	exports.rgbTextToColorCode = function (rgbText) {
+		return (function(r, g, b) {
+			return '#' + (function(n) { return new Array(7 - n.length).join('0') + n;})((r << 16 | g << 8 | b).toString(16));
+		}).apply(this, rgbText.match(/\d+/g));
+	};
+	
+	$(function () {
+		exports.SYS = {
+			FORE: {
+				UNDETTING: getColorCodeFromSelector('hc-syscolor-fore-undetting'),
+				RED: getColorCodeFromSelector('hc-syscolor-fore-red'),
+				ORANGE: getColorCodeFromSelector('hc-syscolor-fore-orange'),
+				YELLOW: getColorCodeFromSelector('hc-syscolor-fore-yellow'),
+				BLUE: getColorCodeFromSelector('hc-syscolor-fore-blue'),
+				GREEN: getColorCodeFromSelector('hc-syscolor-fore-green')
+			}
+		};
+	});
+	
+	function getColorCodeFromSelector(className) {
+		var rgbText = $('<div/>').addClass(className).css('display', 'none').appendTo('body').css('color');
+		return exports.rgbTextToColorCode(rgbText);
+	}
+	
+	return exports;
+})();
+
+/**
+ * Get message from text resource.
+ * 
+ * @param {String}
+ *            messageId
+ * @param {String}
+ *            parameter (variable length)
+ * @returns message
+ */
+nts.ui.message = function (messageId, parameter) {
+    var message = __textResource.message[messageId] || textResource.message[messageId]
+        || '#-- THE MESSAGE IS NOT FOUND: %s --#'.replace('%s', messageId);
+
+    if (arguments.length >= 2) {
+        var formatterArgs = [message].concat(Array.prototype.slice.call(arguments, 0).slice(1));
+        return nts.text.format.apply(nts.text, formatterArgs);
+    }
+
+    return message;
+};
+
+/**
+ * Get name from text resource.
+ * 
+ * @param {String}
+ *            nameId
+ * @returns message
+ */
+nts.ui.name = function (nameId) {
+    return __textResource.name[nameId] || textResource.name[nameId]
+        || '#-- THE NAME IS NOT FOUND: %s --#'.replace('%s', nameId);
+};
+
+/**
+ * Apply igTextEditor and validation to input element.
+ * 
+ * @param {jQuery}
+ *            $input
+ * @param {jQuery}
+ *            $constraint
+ * @returns {undefined}
+ */
+nts.ui.autoTextValidator = function ($input, $constraint) {
+    var constraints = nts.ui.labelConstraint($constraint);
+    if (constraints === null) {
+        $input.igTextEditor();
+        return;
+    }
+    
+    $input.igTextEditor({
+        validatorOptions: constraints
+    });
+};
+
+nts.ui.parseConstsString = (function () {
+    function parseTextConsts(constsString) {
+        var dataConsts = constsString.split(',');
+        return {
+            type: dataConsts[0],
+            length: Number(dataConsts[1])
+        };
+    }
+    
+    function parseIntConsts(constsString) {
+        var ranges = constsString.split('-');
+        var min = ranges[0] !== '' ? Number(ranges[0]) : null;
+        var max = ranges[1] !== '' ? Number(ranges[1]) : null;
+        return {
+            min: min,
+            max: max
+        };
+    }
+    
+    return function(constType, constsString) {
+        switch (constType) {
+            case 'text': return parseTextConsts(constsString);
+            case 'int': return parseIntConsts(constsString);
+            case 'real': return parseIntConsts(constsString);
+            default: throw new Error('unknown constType: ' + constType);
+        }
+    };
+    
+})();
+
+/**
+ * Get validation constraint.
+ * 
+ * @param {type}
+ *            $constraint
+ * @param {type}
+ *            (optional) parameters
+ * @returns validatorOptions for igValidator
+ */
+nts.ui.labelConstraint = (function () {
+    
+    return function labelConstraint($constraint, parameters) {
+
+        parameters = parameters || {};
+        var specified = {};
+        
+        specified.name = $constraint.children(':first').children(':first').text();
+        specified.required = $constraint.hasClass('required');
+        
+        var constType = $constraint.data('value') || 'text'
+
+        var dataConstsString = $constraint.data('const');
+        if (dataConstsString === undefined) {
+            return specified;
+        }
+        
+        specified[constType] = nts.ui.parseConstsString(constType, dataConstsString);
+    
+        return $.extend(specified, parameters);
+    }
+})();
+
+/**
+ * Create dirty checker
+ */
+nts.ui.dirtyChecker = function (targetViewModelObservable) {
+    if (typeof targetViewModelObservable !== 'function') {
+        new Error('not observable');
+    }
+
+    var initialState;
+
+    var getTarget = function () {
+        return targetViewModelObservable();
+    }
+
+    var getCurrentState = function () {
+        return ko.mapping.toJSON(getTarget());
+    }
+
+    var reset = function () {
+        initialState = getCurrentState();
+    };
+
+    var isDirty = function () {
+        return initialState !== getCurrentState();
+    }
+
+    return {
+        reset: reset,
+        isDirty: isDirty
+    };
+};
+
+/**
+ * Show confirm dialog before unload if data has not saved.
+ */
+(function () {
+    var beforeunloadHandler;
+    
+    nts.ui.confirmSave = function (dirtyChecker) {
+
+        var checkIfIsDirty = (typeof dirtyChecker === 'function') ? dirtyChecker : function () {
+            return dirtyChecker.isDirty();
+        };
+        
+        beforeunloadHandler = function () {
+            if (checkIfIsDirty()) {
+                return nts.ui.message('Com_0000105');
+            }
+        };
+
+        nts.ui.confirmSaveEnable();
+    }
+    
+    nts.ui.confirmSaveEnable = function () {
+        $(window).bind('beforeunload', beforeunloadHandler);
+    };
+    
+    nts.ui.confirmSaveDisable = function () {
+        $(window).unbind('beforeunload');
+    };
+})();
+
+/**
+ * Format date using format: Com_0000097
+ */
+nts.ui.dateFormatCom97 = function (date) {
+    var format = nts.ui.message('Com_0000097').replace(/[\{\}]/g, '');
+    return nts.text.formatDate(date, format);
+};
+
+/**
+ * Format date using format: Com_0000159
+ */
+nts.ui.dateFormatCom159 = function (date) {
+    var format = nts.ui.message('Com_0000159').replace(/[\{\}]/g, '');
+    return nts.text.formatDate(date, format);
+};
+
+/**
+ * Format month using format: Com_0000098
+ */
+nts.ui.monthFormatCom98 = function (year, month) {
+    var format = nts.ui.message('Com_0000098').replace(/[\{\}]/g, '');
+    return nts.text.formatDate(new Date(year, month - 1, 1), format);
+};
+
+/**
+ * Format date using format: Com_0000127
+ */
+nts.ui.dateFormatCom127 = function (date) {
+    var format = nts.ui.message('Com_0000127').replace('HH', 'hh').replace(/[\{\}]/g, '');
+    return nts.text.formatDate(date, format);
+};
+
+/**
+ * Format date span using format: Com_0000099 
+ */
+nts.ui.dateSpanFormat99 = function () {
+    var dateArgs = arguments;
+    var matchedCounts = {};
+    return nts.ui.message('Com_0000099').replace(/(\{(.+?)\})/g, function () {
+        var matchedFormat = arguments[2];
+        var matchedCount = matchedCounts[matchedFormat] || 0;
+        
+        var targetDate = dateArgs[matchedCount];
+        var replaced = nts.text.formatDate(targetDate, matchedFormat);
+        
+        matchedCounts[matchedFormat] = matchedCount + 1;
+        
+        return replaced;
+    });
+};
+
+nts.ui.ig = {};
+
+nts.ui.ig.editingGrid = function (gridId) {
+    var containerId = gridId + '_container';
+    var $grid = $('#' + gridId);
+    
+    $(document).on('blur', '#' + containerId + ' input', function () {
+        if ($grid.igGridUpdating('isEditing')) {
+            $grid.igGridUpdating('endEdit', true);
+        }
+    });
+};
+
+/**
+ * customize igGrid
+ */
+(function () {
+    nts.ui.ig.grid = {};
+    
+    var editingCell = {
+        rowId: null,
+        columnKey: null
+    };
+    
+    nts.ui.ig.grid.resetEditingCell = function () {
+        editingCell.rowId = null;
+        editingCell.columnKey = null;
+    };
+    
+    nts.ui.ig.grid.getEditingCell = function () {
+        return {
+            rowId: editingCell.rowId,
+            columnKey: editingCell.columnKey
+        };
+    };
+    
+    var igGridOriginal = $.fn.igGrid;
+    $.fn.igGrid = function () {
+        
+        if (arguments.length === 1 && $.isPlainObject(arguments[0])) {
+            interruptCellEditing(arguments[0])
+        }
+        
+        var ret = igGridOriginal.apply(this, arguments);
+        return ret;
+    };
+    
+    function interruptCellEditing(igGridOptions) {
+        var feature = _.find(igGridOptions.features, function (f) {
+            return f.name === 'Updating';
+        });
+        
+        if (feature === undefined) {
+            return;
+        }
+
+        var editCellStartedOriginal = feature.editCellStarted || $.noop;
+        feature.editCellStarted = function (event, ui) {
+            editingCell.rowId = ui.rowID;
+            editingCell.columnKey = ui.columnKey;
+            
+            return editCellStartedOriginal.apply(this, arguments);
+        };
+
+//        var editCellEndedOriginal = feature.editCellEnded || $.noop;
+//        feature.editCellEnded = function (event, ui) {
+//            console.log("done")
+//            nts.ui.ig.grid.resetEditingCell();
+//            return editCellEndedOriginal.apply(this, arguments);
+//        };
+    }
+})();
+
+nts.ui.dialogError = {};
+
+/**
+ * Event to notify an error occurred.
+ */
+nts.ui.dialogError.occurred = $.Callbacks();
+
+/**
+ * Event to notify an error added.
+ */
+nts.ui.dialogError.added = $.Callbacks();
+
+/**
+ * Event to notify an error removed.
+ */
+nts.ui.dialogError.removed = $.Callbacks();
+
+/**
+ * Event to notify all errors are resolved.
+ */
+nts.ui.dialogError.resolved = $.Callbacks();
+
+/**
+ * Show dialog error board
+ */
+nts.ui.dialogError.showBoard = function(forceShowing) {
+	if (window.isDialog)
+		window.parent.nts.ui.formError.showBoard(forceShowing, nts.ui.getSelfDialogId());
+};
+/**
+ * has no error in dialog
+ */
+nts.ui.dialogError.isEmpty = function() {
+	return nts.ui.formError.isEmpty(nts.ui.getSelfDialogId());
+};
+
+/**
+ * Add error with bind on dialog
+ */
+nts.ui.dialogError.addWithBind = function(bindName, message) {
+	nts.ui.formError.addWithBind(bindName, message, nts.ui.getSelfDialogId());
+};
+
+/**
+ * Remove error with bind on dialog
+ */
+nts.ui.dialogError.removeWithBind = function(bindName) {
+	nts.ui.formError.removeWithBind(bindName, nts.ui.getSelfDialogId());
+};
+
+(function ($) {
+    $.fn.igGridStyle = function (param) {
+    	var $table = $(this);
+    	if (param !== undefined && param.stripe === false) $table.addClass('nts-not-stripe');
+		param = param || {};
+		
+    	// Fix headers and specified columns
+    	if ($table.hasClass('nts-fixed-headers-columns')) {
+    		var isExisted = discloseHeadAndCol($table, param);
+    		if (isExisted === true) param.isExisted = true;
+    		fixMultiRowHeadersAndColumns($table, param);
+    	} else if ($table.hasClass('nts-fixed-headers')) { // Fix headers only
+    		discloseHead($table);
+    		fixMultiRowsHeader($table, param);
+    	} else if ($table.hasClass('nts-fixed-columns')) { // Fix columns only
+    		discloseCol($table, param);
+    		fixColumns($table, param);
+    	} else { // Apply igGrid styles
+    		applyIgGridStyle($table);
+    	}
+    }; 
+    
+    $.fn.discloseIgGrid = function(param) {
+    	var $table = $(this);
+    	if ($table.hasClass('nts-fixed-headers-columns')) {
+    		discloseHeadAndCol($table, param);
+    	} else if ($table.hasClass('nts-fixed-headers')) {
+    		discloseHead($table);
+    	} else if ($table.hasClass('nts-fixed-columns')) {
+    		discloseCol($table, param);
+    	}
+    };
+    
+    /** Only apply igGrid style for table **/
+    function applyIgGridStyle($table) {
+
+    	$table.find('thead th').addClass('ui-iggrid-header').addClass('ui-widget-header');
+
+    	$table.addClass('ui-iggrid-table').addClass('ui-widget-content').wrap(
+    	   $('<div/>').addClass('ui-iggrid').addClass('ui-widget').addClass('ui-helper-clearfix').addClass(
+    	   'ui-corner-all').css('position', 'relative'));
+    }
+    
+    function bindScrollForFixedArea(event) {
+    	var $ntsFixedContents = $(event.target);
+    	$ntsFixedContents.closest('.nts-grid').find('.tbl-body')
+    		.scrollTop($ntsFixedContents.scrollTop());
+    };
+    
+    function bindScrollForScrollableArea(event) {
+    	var $tblBody = $(event.target);
+    	$tblBody.prev('.tbl-head').scrollLeft($tblBody.scrollLeft());
+    	$tblBody.closest('.nts-grid').find('.nts-fixed-contents')
+    		.scrollTop($tblBody.scrollTop());
+    }
+    
+    $.fn.hasScrollBar = function () {
+        return this.get(0).scrollHeight > this.height();
+    };
+    
+    $.fn.hasHorizontalScrollBar = function() {
+    	return this.get(0).scrollWidth > this.width();
+    };
+    
+    function getScrollBarWidth() {
+        var $outer = $('<div>').css({ visibility: 'hidden', width: 100, overflow: 'scroll' }).appendTo('body'),
+            widthWithScroll = $('<div>').css({ width: '100%' }).appendTo($outer).outerWidth();
+        $outer.remove();
+        return 100 - widthWithScroll;
+    };
+    
+    /** Get real column index **/
+    function getRealColumnIndex(spanRows, $cell) {
+    	var colIdx = $cell.index();
+    	var rowIdx = $cell.closest('tr').index();
+    	spanRows.forEach(function(row) {
+    		var spanRowIdx = row.spanRowIdx;
+    		var spanNumber = row.spanNumber;
+    		if (rowIdx > spanRowIdx && rowIdx < spanRowIdx + spanNumber) colIdx++;
+    	});
+    	return colIdx;
+    };
+    
+    /** Fix multi-rows header **/
+    function fixMultiRowsHeader($table, options) {
+    	var scrollBarWidth = getScrollBarWidth();
+    	
+        $table.find('thead th').addClass('ui-iggrid-header').addClass('ui-widget-header');
+        $table.addClass('ui-iggrid-table').addClass('ui-widget-content').wrap(
+        		$('<div/>').addClass('ui-iggrid').addClass('ui-widget')
+        		.addClass('ui-helper-clearfix').addClass('ui-corner-all')
+        		.css('position', 'relative'));
+        if (options !== undefined && options.width === 'auto') $table.css('width', 'auto');
+        
+        var columnCount = 0;
+        var columnWidthList = $table.find('thead tr:last th').filter(function() {
+        	return $(this).css('display') !== 'none';
+        }).map(function(index, element) {
+        	$(element).addClass('nts-th-' + columnCount++);
+        	var data = {
+        		width: $(element).width(),
+        		outerWidth: $(element).outerWidth()
+        	};
+        	return data;
+        }).get();
+        
+        var noOfHeaderRows = $table.find('thead tr').length;
+        $table.find('thead th').filter(function() {
+        	return this.rowSpan > 1 && $(this).css('display') !== 'none';
+        }).each(function(index, element) {
+        	var rowspan = $(element).attr('rowspan'); 
+        	if (rowspan !== undefined
+        		&& parseInt(rowspan) + $(element).closest('tr').index() === noOfHeaderRows) {
+        		$(element).addClass('nts-th-' + columnCount++);
+        		var data = {
+        				width: $(element).width(),
+        				outerWidth: $(element).outerWidth()
+        		};
+        		columnWidthList.push(data);
+        	}
+        });
+        
+        var tableWidth = _.sum(_.map(columnWidthList, function (item) {
+            return item.outerWidth;
+        }));
+        $table.wrap($('<div class="tbl-container">')
+            .css('overflow', 'auto')
+            .width('100%'));
+        $table.css('width', '');
+        $table.css('table-layout', '');
+        
+        var $headerTable = $('<table class="ui-iggrid-table ui-widget-content"/>')
+            .width(tableWidth + scrollBarWidth)
+            .insertBefore($table);
+        $table.find('thead').clone(true, true).appendTo($headerTable);
+        $headerTable.wrap('<div class="tbl-head"/>');
+        var headerHeight = $headerTable.find('thead').height();
+        $headerTable.css('position', 'relative');
+        $headerTable.find("thead th[class*='nts-th-']").each(function (index, element) {
+        	var classList = $(element).attr('class').split(/\s+/);
+        	_.each(classList, function(clazz, index) {
+        		if (clazz.indexOf('nts-th-') > -1) {
+        			$(element).width(columnWidthList[clazz.substring(7)].width);
+        		}
+        	});
+        });
+        
+        $table.find("thead th[class*='nts-th-']").each(function (index, element) {
+        	var classList = $(element).attr('class').split(/\s+/);
+        	_.each(classList, function(clazz, index) {
+        		if (clazz.indexOf('nts-th-') > -1) {
+        			$(element).width(columnWidthList[clazz.substring(7)].width);
+        		}
+        	});
+        });
+        $table.css('margin-top', -headerHeight);
+        $table.wrap($('<div class="tbl-body">')
+            .css('overflow', 'auto')
+            .css('position', 'relative')
+            .width(tableWidth + scrollBarWidth)
+            .height($table.data('height')));
+        
+        if (!$table.parent().hasScrollBar()) {
+            $table.parent().width(tableWidth);
+            $headerTable.width(tableWidth);
+        } else {
+        	var rowspanHeaderTail, tailRow;
+        	if (isRowspanOneRow(options, 'head')) {
+//        		var rowTransferSts;
+//        		$headerTable.find('thead tr').each(function(idx, row) {
+//        			var cells = $(row).children();
+//        			if (idx === 0) {
+//        				rowspanHeaderTail = $(cells[0]).attr('rowspan') - 1;
+//        			}
+//        			if (rowTransferSts === undefined && cells.length === 1
+//        				&& $(cells[0]).attr('rowspan') !== undefined) {
+//        				rowTransferSts = 'atRowspan';
+//        			} else if (rowTransferSts === 'atRowspan' && cells.length > 1) {
+//        				tailRow = $(row);
+//        				return false;
+//        			} 
+//        		});
+        		$headerTable.closest('.tbl-head').width(tableWidth + scrollBarWidth)
+        			.css('background-color', '#CFF1A5');
+        		$headerTable.width(tableWidth);
+        	} else {
+        		tailRow = $headerTable.find('thead tr:first');
+        		rowspanHeaderTail = $headerTable.find('thead tr').length;
+        		$('<td/>').appendTo(tailRow)
+	            	.addClass('nts-scroll-cell')
+	            	.attr('rowspan', rowspanHeaderTail).css('width', scrollBarWidth - 1)
+	            	.css('background-color', '#CFF1A5');
+	        	$headerTable.width(tableWidth + scrollBarWidth);
+        	}
+    		$table.width(tableWidth);
+    		if ($table.find('td[rowspan]').length > 0) beautify($table);
+        }
+    };
+    
+    /** Fix multi-row headers and columns **/
+    function fixMultiRowHeadersAndColumns($table, options) {
+    	var scrollBarWidth = getScrollBarWidth();
+    	
+    	var fixedColumnId = -1;
+    	if (isRowspanOneRow(options, 'head') || isRowspanOneRow(options, 'body')) {
+    		fixedColumnId = options.numberOfFixedColumns !== undefined ? options.numberOfFixedColumns : 0;
+    		if (fixedColumnId === 0) return;
+    	} else {
+	    	$table.find('thead tr:first th').each(function(index, element) {
+	    		if ($(element).hasClass('nts-fixed-column')) {
+	    			var colspan = $(element).attr('colspan');
+	    			if (colspan !== undefined) {
+	    				fixedColumnId += colspan;
+	    			} else {
+	    				fixedColumnId++;
+	    			}
+	    		}
+	    	});
+	    	fixedColumnId++;
+    	}
+    	
+    	// Outermost table
+    	var ntsGrid = $('<table class="nts-grid" cellspacing="0" cellpadding="0" border="0"/>')
+							.append('<tbody><tr><td></td><td></td></tr></tbody>');
+    	$table.parent().prepend(ntsGrid);
+    	ntsGrid.find('tbody td:eq(0)').css('vertical-align', 'top');
+    	
+    	// Style scrollable table
+    	$table.find('thead th').addClass('ui-iggrid-header').addClass('ui-widget-header');
+        $table.addClass('ui-iggrid-table').addClass('ui-widget-content').wrap(
+        		$('<div id="nts-wrapper"/>').addClass('ui-iggrid').addClass('ui-widget')
+        		.addClass('ui-helper-clearfix').addClass('ui-corner-all')
+        		.css('position', 'relative'));
+        if (options !== undefined && options.width === 'auto') $table.css('width', 'auto');
+        
+        var columnCount = 0;
+        var columnWidthList = $table.find('thead tr:last th').filter(function() {
+        	return $(this).css('display') !== 'none';
+        }).map(function(index, element) {
+        	$(element).addClass('nts-th-' + columnCount++);
+        	var data = {
+        		width: $(element).width(),
+        		outerWidth: $(element).outerWidth()
+        	};
+        	return data;
+        }).get();
+        
+        var noOfHeaderRows = $table.find('thead tr').length;
+        $table.find('thead th').filter(function() {
+        	return this.rowSpan > 1 && $(this).css('display') !== 'none';
+        }).each(function(index, element) {
+        	var rowspan = $(element).attr('rowspan'); 
+        	if (rowspan !== undefined
+        		&& parseInt(rowspan) + $(element).closest('tr').index() === noOfHeaderRows) {
+        		$(element).addClass('nts-th-' + columnCount++);
+        		var data = {
+        				width: $(element).width(),
+        				outerWidth: $(element).outerWidth()
+        		};
+        		columnWidthList.push(data);
+        	}
+        });
+        
+        // Wrapper for scrollable area
+        var ntsWrapper = $table.closest('#nts-wrapper');
+        // Set table as fixed position to keep it from collapsed when separating table
+        ntsWrapper.appendTo(ntsGrid.find('tbody td:nth-child(2)')).css('position', 'fixed')
+        				.css('top', '0px').css('left', '0px');
+    	
+        // Wrapper for fixed area
+    	var ntsFixedWrapper;
+    	if (fixedColumnId !== 0) {
+    		ntsFixedWrapper = $('<div/>').addClass('nts-fixed-wrapper').addClass('ui-iggrid').addClass('ui-widget')
+				.addClass('ui-helper-clearfix').addClass('ui-corner-all')
+				.css('position', 'relative').appendTo(ntsGrid.find('tbody td:eq(0)'));
+    	}
+    	
+    	var ntsFixedArea = $('<div/>').addClass('nts-fixed-area').css('width', '100%')
+    			.appendTo(ntsFixedWrapper);
+
+    	ntsFixedArea.append('<div class="nts-fixed-headers"/><div class="nts-fixed-contents-wrapper"/>');
+    	// Contains the table header of fixed contents
+    	var ntsFixedHeaders = ntsFixedArea.find('.nts-fixed-headers');
+    	// Contains the table body of fixed contents
+    	var ntsFixedContentsWrapper = ntsFixedArea.find('.nts-fixed-contents-wrapper');
+    	ntsFixedContentsWrapper.css('width', '100%')
+    			.css('height', '100%')
+    			.css('overflow', 'hidden')
+    			.append('<div class="nts-fixed-contents"><table><thead><tr/></thead><tbody/></table></div>');
+    	var ntsFixedHeaderTable = $('<table class="nts-fixed-header-table"/>').addClass('ui-iggrid-table').addClass('ui-widget-content')
+    		.append('<thead></thead>')
+    		.appendTo(ntsFixedHeaders);
+    	
+    	var ntsFixedContents = ntsFixedContentsWrapper.find('.nts-fixed-contents');
+    	// Add class not-stripe
+    	if ($table.hasClass('nts-not-stripe'))
+    		ntsFixedContents.find('table').addClass('nts-not-stripe');
+    	
+    	var spanRows = rowspanOf($table, 'tbody', 'td');
+    	// Split body
+    	splitTableVertical($table, ntsFixedContents.find('tbody'), spanRows, fixedColumnId, options);
+    	var spanHeaderRows = rowspanOf($table, 'thead', 'th');
+    	// Split header
+    	splitTableVertical($table, ntsFixedHeaderTable.find('thead'), spanHeaderRows, fixedColumnId, options);
+    	
+    	ntsFixedContents.css('overflow-y', 'scroll').css('width', '100%')
+				.css('height', '100%')
+				.css('padding-right', scrollBarWidth)
+        		.css('position', 'relative').height($table.data('height') - scrollBarWidth).find('table')
+    			.addClass('ui-iggrid-table').addClass('ui-widget-content');
+        
+    	var fixedColumnWidthList = [];
+    	var tempColumnWidths = $.extend(true, [], columnWidthList);
+        ntsFixedHeaders.find("thead th[class*='nts-th-']").each(function (index, element) {
+        	var classList = $(element).attr('class').split(/\s+/);
+        	for (var i = classList.length - 1; i >= 0; i--) {
+    			var clazz = classList[i];
+        		if (clazz.indexOf('nts-th-') > -1) {
+        			var widthData = columnWidthList[clazz.substring(7)];
+        			if (widthData === undefined) continue;
+        			$(element).width(widthData.width);
+        			fixedColumnWidthList.push(tempColumnWidths[clazz.substring(7)]);
+        			columnWidthList[clazz.substring(7)].width = 0;
+        			columnWidthList[clazz.substring(7)].outerWidth = 0;
+        			break;
+        		}
+        	}
+        });
+        
+        fixedColumnWidthList.forEach(function(data, index) {
+    		ntsFixedContents.find('table thead tr').append($('<th/>')
+    				.addClass('ui-iggrid-header')
+    				.addClass('ui-widget-header').width(data.width));
+    	});
+        // Margin top for table of fixed contents 
+        var fixedHeaderHeight = ntsFixedContents.find('table thead').height();
+    	ntsFixedContents.find('table').css('margin-top', -fixedHeaderHeight);
+        
+        var fixedTableWidth = _.sum(_.map(fixedColumnWidthList, function (item) {
+            return item.outerWidth;
+        }));
+        
+        // Set fixed table width
+        ntsFixedArea.width(fixedTableWidth);
+//        ntsFixedHeaderTable.width(fixedTableWidth);
+        ntsFixedHeaderTable.css('width', 'auto');
+        
+        var tableWidth = _.sum(_.map(columnWidthList, function (item) {
+            return item.outerWidth;
+        }));
+        
+        $table.wrap($('<div class="tbl-container">'));
+        
+        var $headerTable = $('<table class="ui-iggrid-table ui-widget-content"/>')
+            .insertBefore($table);
+        $table.find('thead').clone(true, true).appendTo($headerTable);
+        $headerTable.wrap($('<div class="tbl-head"/>').css('overflow', 'hidden')
+        		.width('100%'));
+        $headerTable.css('position', 'relative');
+        if (isRowspanOneRow(options, 'head')) {
+        	$headerTable.find('thead').css('float', 'right');
+        }
+        $headerTable.find("thead th[class*='nts-th-']").each(function (index, element) {
+        	var classList = $(element).attr('class').split(/\s+/);
+        	_.each(classList, function(clazz, index) {
+        		if (clazz.indexOf('nts-th-') > -1) {
+        			$(element).width(columnWidthList[clazz.substring(7)].width);
+        		}
+        	});
+        });
+        $table.find("thead th[class*='nts-th-']").each(function (index, element) {
+        	var classList = $(element).attr('class').split(/\s+/);
+        	_.each(classList, function(clazz, index) {
+        		if (clazz.indexOf('nts-th-') > -1) {
+        			$(element).width(columnWidthList[clazz.substring(7)].width);
+        		}
+        	});
+        });
+//        $table.find('thead tr:not(:last)').remove();
+        var headerHeight = $table.find('thead').height();
+        
+        $headerTable.find('thead tr').each(function() {
+        	if ($(this).children('th').length === 0) $(this).remove();
+        });
+        
+        $table.css('margin-top', -headerHeight).width(tableWidth);
+        $table.wrap($('<div class="tbl-body">')
+            .css('overflow', 'auto')
+            .css('position', 'relative')
+            .width('100%')
+            .height($table.data('height')));
+        
+        // Contains the table body of scrollable area
+        var tblBody = $table.parent('.tbl-body');
+        
+        if ($table.data('width') !== undefined) {
+        	ntsGrid.width($table.data('width'));
+        } 
+        
+        $table.find('tbody tr').each(function() {
+        	if ($(this).children('td').length === 0) $(this).remove();
+        });
+        $table.find('thead tr').each(function() {
+        	if ($(this).children('th').length === 0) $(this).remove();
+        });
+        
+        ntsFixedContents.mouseenter(function() {
+        	ntsFixedContents.scroll(bindScrollForFixedArea);
+        }).mouseleave(function() {
+        	ntsFixedContents.off('scroll', bindScrollForFixedArea);
+        });
+        
+        tblBody.mouseenter(function() {
+        	tblBody.scroll(bindScrollForScrollableArea);
+        }).mouseleave(function() {
+        	tblBody.off('scroll', bindScrollForScrollableArea);
+        });
+        
+        ntsWrapper.css('position', 'relative').css('top', null).css('left', null);
+        
+        var tableWidthIncludeScroll;
+        if (!$table.parent().hasScrollBar()) {
+            $headerTable.width(tableWidth);
+            tableWidthIncludeScroll = tableWidth;
+        } else {
+        	var rowspanHeaderTail = $headerTable.find('thead tr').length;
+            $('<td/>').appendTo($headerTable.find('thead tr:first'))
+            	.addClass('nts-scroll-cell')
+            	.attr('rowspan', rowspanHeaderTail).css('width', scrollBarWidth - 1)
+            	.css('background-color', '#CFF1A5');
+        	$headerTable.width(tableWidth + scrollBarWidth);
+            tableWidthIncludeScroll = tableWidth + scrollBarWidth;
+        }
+        
+        var estimateScrollTableWidth = $table.data('width') - fixedTableWidth;
+        if (estimateScrollTableWidth > tableWidthIncludeScroll) { 
+        	estimateScrollTableWidth = tableWidthIncludeScroll;
+        	ntsGrid.width(fixedTableWidth + estimateScrollTableWidth);
+        }
+        // Set width for scrollable area
+        ntsWrapper.width(estimateScrollTableWidth);
+        
+        if (!$table.parent().hasHorizontalScrollBar()) {
+        	ntsFixedContents.height($table.data('height'));
+        }
+        
+        // If horizontal scrollbar appears and causes vertical scrollbar show up
+        if ($table.parent().hasHorizontalScrollBar()
+        	&& $table.parent().get(0).scrollHeight >= $table.parent().height()
+        	&& $headerTable.find('td.nts-scroll-cell').length === 0) {
+        	$('<td/>').appendTo($headerTable.find('thead tr:first'))
+	        	.addClass('nts-scroll-cell')
+	        	.attr('rowspan', rowspanHeaderTail).css('width', scrollBarWidth - 1)
+	        	.css('background-color', '#CFF1A5');
+	    	$headerTable.width(tableWidth + scrollBarWidth);
+        }
+    };
+    
+    /** Fix columns **/
+    function fixColumns($table, options) {
+    	var scrollBarWidth = getScrollBarWidth();
+    	
+    	var fixedAreaWidth = 0;
+    	var fixedColumnId = -1;
+    	if (isRowspanOneRow(options, 'head') || isRowspanOneRow(options, 'body')) {
+    		fixedColumnId = options.numberOfFixedColumns !== undefined ? options.numberOfFixedColumns : 0;
+    		if (fixedColumnId === 0) return;
+    	} else {
+	    	$table.find('thead tr:first th').each(function(index, element) {
+	    		if ($(element).hasClass('nts-fixed-column')) {
+	    			var colspan = $(element).attr('colspan');
+	    			if (colspan !== undefined) {
+	    				fixedColumnId += colspan;
+	    			} else {
+	    				fixedColumnId++;
+	    			} 
+	    		}
+	    	});
+	    	fixedColumnId++;
+    	}
+    	
+    	// Outermost table
+    	var ntsGrid = $('<table class="nts-grid" cellspacing="0" cellpadding="0" border="0"/>')
+							.append('<tbody><tr><td><td/><td></td></tr>');
+    	$table.parent().prepend(ntsGrid);
+    	ntsGrid.find('tbody td:eq(0)').css('vertical-align', 'top');
+    	
+    	// Style scrollable table
+    	$table.find('thead th').addClass('ui-iggrid-header').addClass('ui-widget-header');
+        $table.addClass('ui-iggrid-table').addClass('ui-widget-content').wrap(
+        		$('<div id="nts-scroll-wrapper"/>').addClass('ui-iggrid').addClass('ui-widget')
+        		.addClass('ui-helper-clearfix').addClass('ui-corner-all')
+        		.css('position', 'relative'));
+        $table.css('width', (options && options.width) || 'auto');
+        
+        // Calculate the width of fixed area
+        if (isRowspanOneRow(options, 'head') || isRowspanOneRow(options, 'body')) {
+        	var fixedCols = options.numberOfFixedColumns;
+        	var i = 0;
+        	while (i < fixedCols) {
+	        	$table.find('thead tr').eq(i).children('th').filter(function() {
+	        		return $(this).css('display') !== 'none' && $(this).hasClass('nts-fixed-column');
+	        	}).each(function(index, element) {
+	        		fixedAreaWidth += $(element).outerWidth();
+	        		$(element).attr('colspan') !== undefined ? i += $(element).attr('colspan') : i++;
+	        	});
+        	}
+        } else {
+        	$table.find('thead tr:first th').filter(function() {
+	        	return $(this).css('display') !== 'none' && $(this).hasClass('nts-fixed-column');
+	        }).each(function(index, element) {
+	        	fixedAreaWidth += $(element).outerWidth();
+	        });
+        }
+        
+        // Wrapper for scrollable area
+        var ntsScrollWrapper = $table.closest('#nts-scroll-wrapper');
+        ntsScrollWrapper.appendTo(ntsGrid.find('tbody td:nth-child(2)'));
+    	
+        // Wrapper for fixed area
+    	var ntsFixedWrapper;
+    	if (fixedColumnId !== 0) {
+    		ntsFixedWrapper = $('<div/>').addClass('nts-fixed-wrapper').addClass('ui-iggrid').addClass('ui-widget')
+				.addClass('ui-helper-clearfix').addClass('ui-corner-all')
+				.css('position', 'relative').appendTo(ntsGrid.find('tbody td:eq(0)'));
+    	}
+    	
+    	ntsFixedWrapper.css('height', '100%')
+			.append('<div class="nts-fixed-contents"><table class="nts-fixed-content-table"><thead></thead><tbody/></table></div>');
+    	var ntsFixedContents = ntsFixedWrapper.find('.nts-fixed-contents');
+    	var ntsFixedContentTable = ntsFixedContents.find('.nts-fixed-content-table');
+    	
+    	var spanRows = rowspanOf($table, 'tbody', 'td');
+    	splitTableVertical($table, ntsFixedContents.find('tbody'), spanRows, fixedColumnId, options);
+	   	
+    	var spanHeaderRows = rowspanOf($table, 'thead', 'th');
+    	splitTableVertical($table, ntsFixedContents.find('thead'), spanHeaderRows, fixedColumnId, options);
+	   	
+	   	ntsFixedContents//.css('width', '100%')
+				.css('height', '100%')
+				.css('position', 'relative').find('table')
+				.addClass('ui-iggrid-table').addClass('ui-widget-content');
+	   	$table.wrap($('<div class="nts-scroll-container">')
+	            .css('overflow', 'auto')
+	            .css('position', 'relative')
+	            .width('100%'));
+        
+        if ($table.hasClass('nts-not-stripe')) ntsFixedContentTable.addClass('nts-not-stripe');
+        ntsFixedWrapper.css('width', fixedAreaWidth);
+        if ($table.data('width') !== undefined)
+        	ntsScrollWrapper.width($table.data('width') - fixedAreaWidth);
+        
+        $table.find('tbody tr').each(function() {
+        	if ($(this).children('td').length === 0) $(this).remove();
+        });
+        $table.find('thead tr').each(function() {
+        	if ($(this).children('th').length === 0) $(this).remove();
+        });
+    }
+    
+    function containsMultiRowHeader($table) {
+    	return $table.find('thead tr').length > 1;
+    };
+    
+    function getRowHeight($row, tableExisted) {
+    	if ($row.outerHeight(true) === 0) return 0;
+    	return tableExisted === true ? $row.outerHeight(true) : $row.outerHeight(true) + 2;
+    }
+    
+    function splitTableVertical($table, $fixedContainer, spanRows, fixedColumnId, options) {
+    	var fixedRows, containerTag, elmTag, $tr, container;
+    	if ($fixedContainer[0].tagName.toLowerCase() === 'thead') {
+    		containerTag = 'thead';
+    		elmTag = 'th';
+    		container = 'head';
+    	} else if ($fixedContainer[0].tagName.toLowerCase() === 'tbody') {
+    		containerTag = 'tbody';
+    		elmTag = 'td';
+    		container = 'body';
+    	}
+    	
+    	if (spanRows.length > 0) {
+    		var toRow, rowspanIdx;
+	    	fixedRows = $table.find(containerTag + ' tr').map(function(index, element) {
+//	    		 var whiteSpace = $(element).css('white-space');
+//	    		 var rowHeight = getRowHeight($(element).css('white-space', 'nowrap'), options.isExisted);
+//	    		 $(element).css('white-space', whiteSpace || 'initial');
+	    		 var rowHeight = getRowHeight($(element), options.isExisted);
+	    		 // With special case of row span cell as one row, not set row height and not add additional rows for span
+	    		 // Otherwise, set row height and add additional rows for span
+	    		 if (isRowspanOneRow(options, container)
+	    		 	&& $(element).find(elmTag + '[rowspan]').length > 0) {
+		    		 $tr = $('<tr/>'); 
+	    		 } else {
+	    			 $tr = $('<tr/>').height(rowHeight);
+		    		 $(element).height(rowHeight);
+	    		 }
+	    		 
+	    		 if (containerTag === 'tbody') {
+	    			 var firstCellRowspan = $(element).find(elmTag + ':first').attr('rowspan');
+	    			 if (firstCellRowspan !== undefined && toRow === undefined) {
+	    				 toRow = index + parseInt(firstCellRowspan);
+	    				 rowspanIdx = index;
+	    			 }
+	    			 
+		    		 $tr.append($(element).find(elmTag + ':lt(' + fixedColumnId + ')').filter(function() {
+		    			 return getRealColumnIndex(spanRows, $(this)) < fixedColumnId;
+		    		 }));
+		    		 
+
+	    			 if (index < toRow && index !== rowspanIdx) {
+	    				 $tr.find(elmTag + ':first').css('border-left-width', '0px');
+	    				 if (index === toRow - 1) toRow = undefined;
+	    			 }
+	    		 } else {
+	    			 $tr.append($(element).find(elmTag).filter(function(index, th) {
+			    			return $(th).hasClass('nts-fixed-column');
+			    		}).addClass('ui-iggrid-header').addClass('ui-widget-header'));
+	    		 }
+//	    		 var lastCell = $tr.find(elmTag + ':last');
+//	    		 if (lastCell.attr('rowspan') !== undefined && options !== undefined && options.rowspanCellAsOneRow !== true) {
+//	    			 // Add additional cell and rows for row span
+//	    			 $tr.append('<' + elmTag + '/>');
+//	    			 var trArr = [];
+//	    			 trArr.push($tr);
+//	    			 for (var i = 0; i < parseInt(lastCell.attr('rowspan')) - 1; i++) {
+//	    				 trArr.push($('<tr/>'));
+//	    			 }
+//	    			 return trArr;
+//	    		 } else {
+//	    			 return $tr;
+//	    		 }
+	    		 return $tr;
+	    	}).get();
+    	} else {
+    		fixedRows = $table.find(containerTag + ' tr').map(function(index, element) {
+    			 var rowHeight = getRowHeight($(element), options.isExisted);
+	    		 $(element).height(rowHeight);
+	    		 $tr = $('<tr/>').height(rowHeight);
+	    		 return containerTag === 'tbody' 
+	    			 			? $tr.append($(element).find(elmTag + ':lt(' + fixedColumnId + ')'))
+	    				 		: $tr.append($(element).find(elmTag).filter(function(index, th) {
+				    			    			return $(th).hasClass('nts-fixed-column');
+				    			    		}).addClass('ui-iggrid-header').addClass('ui-widget-header'));;
+	    	}).get();
+    	}
+    	
+    	fixedRows.forEach(function(value, index) {
+    		if (value.children('td').length || value.length > 0) $fixedContainer.append(value);
+    	});
+    }
+    
+    function rowspanOf($table, containerTag, elmTag) {
+    	return $table.find(containerTag + ' ' + elmTag + '[rowspan]').map(function(index, element) {
+    		var rowSpanData = {
+    			spanRowIdx: $(element).closest('tr').index(),
+    			spanNumber: parseInt($(element).attr('rowspan'))
+    		};
+    		return rowSpanData;
+    	}).get();
+    }
+    
+    function isRowspanOneRow(options, container) {
+    	return options !== undefined && options[container] !== undefined && options[container].rowspanCellAsOneRow ;
+    }
+    
+    function discloseHeadAndCol($table, param) {
+    	// If table's separated already
+		if ($table.closest('.nts-grid').length) {
+			var ntsGrid = $table.closest('.nts-grid');
+			$table.insertBefore(ntsGrid);
+			var $scrollableHeaderTable = ntsGrid.find('.tbl-head table');
+			
+			ntsGrid.find('.nts-fixed-headers table tr')
+				.each(function(index, element) {
+					var fixedHeaders = $(element).children();
+					if (fixedHeaders.length === 0) return true;
+					if (isRowspanOneRow(param, 'head')
+						&& $(fixedHeaders[0]).attr('rowspan') !== undefined) {
+//						$scrollableHeaderTable.find('thead').prepend($(element));
+						$table.find('thead').prepend($(element));
+					} else {
+		    			for (var i = fixedHeaders.length - 1; i >= 0; i--) {
+//		    				$scrollableHeaderTable.find('thead tr').eq(index).prepend(fixedHeaders[i]);
+		    				$table.find('thead tr').eq(index).prepend($(fixedHeaders[i]).width($(fixedHeaders[i]).data('width') || ''));
+		    			}
+					}
+				});
+//			$scrollableHeaderTable.find('.nts-scroll-cell').remove();
+//			$table.find('thead').replaceWith($scrollableHeaderTable.find('thead').css('float', 'none'));
+			$table.width('');
+			ntsGrid.remove();
+			$table.addClass('fixed');
+			return true;
+		} else if ($table.hasClass('fixed')) {
+			return true;
+		}
+		return false;
+    }
+    
+    function discloseHead($table) {
+    	if ($table.closest('.tbl-container').length) {
+    		$table.closest('.tbl-container').find('.tbl-head').unwrap().unwrap().remove();
+    		$table.unwrap();
+		}
+    }
+    
+    function discloseCol($table, param) {
+    	if ($table.closest('.nts-grid').length) {
+			var ntsGrid = $table.closest('.nts-grid');
+			$table.insertBefore(ntsGrid);
+			
+			if (isRowspanOneRow(param, 'head')) {
+				ntsGrid.find('.nts-fixed-wrapper table thead tr')
+					.each(function(index, element) {
+						if ($(element).children('th[rowspan]').length > 0) {
+							$table.find('thead tr').eq(index).before($(element).clone(true, true));
+						} else {
+							var fixedHeaders = $(element).children();
+			    			for (var i = fixedHeaders.length - 1; i >= 0; i--) {
+			    				$table.find('thead tr').eq(index).prepend(fixedHeaders[i]);
+			    			}
+						}
+					});
+			} else {
+    			ntsGrid.find('.nts-fixed-wrapper table thead tr')
+					.each(function(index, element) {
+						var fixedHeaders = $(element).children();
+		    			for (var i = fixedHeaders.length - 1; i >= 0; i--) {
+		    				$table.find('thead tr').eq(index).prepend(fixedHeaders[i]);
+		    			}
+					});
+			}
+			$table.css('width', '100%');
+			ntsGrid.remove();
+		}
+    }
+    
+    /* Remove left border of table with rowspan */
+    function beautify($table) {
+    	var toRow, rowspanIdx;
+    	$table.find('tbody tr').each(function(index, element) {
+    		 
+			 var firstCellRowspan = $(element).find('td:first').attr('rowspan');
+			 if (firstCellRowspan !== undefined && toRow === undefined) {
+				 toRow = index + parseInt(firstCellRowspan);
+				 rowspanIdx = index;
+			 }
+
+			 if (index < toRow && index !== rowspanIdx) {
+				 $(element).find('td:first').css('border-left-width', '0px');
+				 if (index === toRow - 1) toRow = undefined;
+			 }
+    	});
+    }
+})(jQuery);
