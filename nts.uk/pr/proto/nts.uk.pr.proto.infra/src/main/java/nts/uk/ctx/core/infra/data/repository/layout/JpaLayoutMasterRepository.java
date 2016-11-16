@@ -29,7 +29,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 				entity.stmtName);
 		
 		entity.toDomain(domain);
-		
+
 		return domain;
 	}
 	
@@ -66,19 +66,18 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public void add(LayoutMaster layoutMaster) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().insert(toEntity(layoutMaster));		
 	}
 
 	@Override
 	public void update(LayoutMaster layoutMaster) {
-		// TODO Auto-generated method stub
+		this.commandProxy().update(toEntity(layoutMaster));
 		
 	}
 
 	@Override
 	public void remove(String companyCode, String layoutCode, int startYm) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
