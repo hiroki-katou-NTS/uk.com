@@ -16,14 +16,14 @@ public interface LayoutMasterRepository {
 	 * @param strYm
 	 * @return
 	 */
-	Optional<LayoutMaster> findAll(String companyCode, String layoutMaster, int strYm);
+	Optional<LayoutMaster> find(String companyCode, String layoutMaster, int strYm);
 
 	/**
 	 * find all layout master by company code, start date
 	 * 
 	 * @return layout master
 	 */
-	List<LayoutMaster> find(String companyCode);
+	List<LayoutMaster> findAll(String companyCode);
 
 	/**
 	 * Add a new layout master

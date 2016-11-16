@@ -62,7 +62,7 @@ public class GetPaymentDataQueryProcessor {
 		}
 
 		// get layout master info
-		LayoutMaster layout = this.layoutMasterRepository.findAll(companyCode, stmtCode, baseYM)
+		LayoutMaster layout = this.layoutMasterRepository.find(companyCode, stmtCode, baseYM)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("蟇ｾ雎｡繝�繝ｼ繧ｿ縺後≠繧翫∪縺帙ｓ縲�")));
 
 		// 明細書マスタカテゴリ
