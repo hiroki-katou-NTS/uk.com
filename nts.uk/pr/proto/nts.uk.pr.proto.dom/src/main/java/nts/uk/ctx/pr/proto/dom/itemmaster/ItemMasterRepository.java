@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
-@RequestScoped
+
 public interface ItemMasterRepository {		
 	
 	/**

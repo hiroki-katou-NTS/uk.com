@@ -38,7 +38,7 @@ public class LayoutMaster extends AggregateRoot {
 	
 	/** 明細書のレイアウトのカテゴリ情報 */
 	@Getter
-	private List<LayoutMasterCategory> layoutMasterCategories;
+	private List<LayoutMaster> layoutMasters;
 
 	public LayoutMaster(CompanyCode code, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM, LayoutAtr layoutAtr,
 			LayoutName stmtName) {
