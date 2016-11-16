@@ -15,7 +15,7 @@ public interface LayoutMasterDetailRepository {
 	 * @param startYm
 	 * @param stmtCode
 	 */
-	void add(String companyCode, int startYm, String stmtCode);
+	void add(LayoutMasterDetail layoutMasterDetail);
 
 	/**
 	 * update a layout master detail
@@ -51,8 +51,7 @@ public interface LayoutMasterDetailRepository {
 	List<LayoutMasterDetail> getDetails(
 			String companyCd, 
 			String stmtCd, 
-			int startYm, 
-			int categoryAtr);
+			int startYm);
 
 	/**
 	 * get detail

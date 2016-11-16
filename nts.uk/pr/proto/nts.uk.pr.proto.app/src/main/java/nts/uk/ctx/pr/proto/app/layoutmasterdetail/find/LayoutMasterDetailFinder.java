@@ -18,7 +18,6 @@ public class LayoutMasterDetailFinder {
 	 * @param companyCd
 	 * @param stmtCd
 	 * @param startYm
-	 * @param categoryAtr
 	 * @return
 	 */
 	public List<LayoutMasterDetailDto> getDetails(String companyCd,
@@ -27,8 +26,7 @@ public class LayoutMasterDetailFinder {
 			int categoryAtr){
 		return this.repository.getDetails(companyCd,
 				stmtCd,
-				startYm, 
-				categoryAtr).stream()
+				startYm).stream()
 				.map(item ->LayoutMasterDetailDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}

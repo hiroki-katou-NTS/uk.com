@@ -15,14 +15,12 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm"
-			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr := ctgAtr";
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
 	@Override
-	public void add(String companyCode, int startYm, String stmtCode) {
-		// TODO Auto-generated method stub
-		
+	public void add(LayoutMasterDetail layoutMasterDetail) {
+		//this.commandProxy().insert();
 	}
 
 	@Override
@@ -43,8 +41,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public List<LayoutMasterDetail> getDetails(String companyCd, 
 			String stmtCd, 
-			int startYm,
-			int categoryAtr) {
+			int startYm) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutDetail.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
