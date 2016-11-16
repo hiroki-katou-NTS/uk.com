@@ -90,6 +90,12 @@ hr {
 						isHealthInsurance: ko.observable(true),
 						isEnable:  ko.observable(true),
 					},
+					multicheckbox: {
+						boxes: ko.observableArray([
+				            new BoxModel(1, 'box 1'), new BoxModel(2, 'box 2'), new BoxModel(3, 'box 3')
+				    	]),
+				    	selectedBoxes: ko.observableArray([])
+				    },
 					// ComboBox ViewModel
 					combobox: {
 						itemList: ko.observableArray([
@@ -246,6 +252,11 @@ hr {
 	                this.id = id;
 	                this.content = content;
             	}
+				//checkbox item
+				function BoxModel(id,name) {
+				    this.id = ko.observable(id);
+				    this.name = ko.observable(name);
+				}
             	//Wizard User
             	function User(code, name) {
 	                this.code = ko.observable(code);
@@ -427,48 +438,18 @@ hr {
 		</div>
 	</div>
 	<hr />
-	<div data-bind="with: wizard" class="column right cf">
-		<div>
-			<select
-				data-bind="options: stepList, 
-												optionsText: 'id',
-												value: stepSelected"
-				style="width: 200px"></select>
-			<button data-bind="click: gotoStep">Go to Step</button>
-		</div>
-		<br />
-		<div id="wizard" data-bind="ntsWizard: {steps: stepList}" class="cf">
-			<div class="steps">
-				<div class="begin step-1"
-					data-icon="./lib/nittsu/ui/style/images/ntsWizard/start-images.jpg">再集計</div>
-				<div class="step-2">
-					<span>処理方法を選ぶ</span><br /> └詳細設定をする
-				</div>
-				<div class="step-3">対象社員を選ぶ</div>
-				<div class="step-4">対象社員を選ぶ</div>
-				<div class="step-5">対象社員を選ぶ</div>
-				<div class="end step-6">実行</div>
-			</div>
-			<div class="contents">
-				<div class="step-1">contents step1</div>
-				<div class="step-2">contents step2</div>
-				<div class="step-3">contents step3</div>
-				<div class="step-4">
-					<div data-bind="with: user">
-						Code: <input type="text" data-bind="value: code"><br>
-						Name: <input type="text" data-bind="value: name">
-					</div>
-				</div>
-				<div class="step-5">contents step5</div>
-				<div class="step-6">contents step6</div>
-			</div>
-		</div>
-
-		<button data-bind="click: begin">Begin</button>
-		<button data-bind="click: end">End</button>
-		<button data-bind="click: previous">Previous</button>
-		<button data-bind="click: next">Next</button>
-		<button data-bind="click: getCurrentStep">Current Step Index</button>
-	</div>
+	<div data-bind="with: multicheckbox">
+          <h2>Multi Check Box Custom Bindings</h2>
+          <strong>List of Boxes</strong>
+          <div style="float: left" data-bind="foreach: boxes">
+              <div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}">
+              </div>
+              <br/>
+          </div>
+          <p> You've selected</p>
+          <div style="float: left" data-bind="foreach: selectedBoxes">
+              <p><span data-bind="text: id"></span></p>
+          </div>
+      </div>
 </body>
 </html>

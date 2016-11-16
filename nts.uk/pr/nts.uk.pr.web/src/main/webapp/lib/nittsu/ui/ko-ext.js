@@ -69,6 +69,25 @@ var nts;
                     };
                     return NtsTextBoxBindingHandler;
                 }());
+                var NtsMultiCheckBoxBindingHandler = (function () {
+                    function NtsMultiCheckBoxBindingHandler() {
+                    }
+                    NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
+                        /*var childBindingContext = bindingContext.createChildContext(
+                                bindingContext.$rawData,
+                                null, // Optionally, pass a string here as an alias for the data item in descendant contexts
+                                function(context) {
+                                    ko.utils.extend(context, valueAccessor());
+                                });*/
+                        var childBindingContext = bindingContext.extend(valueAccessor);
+                        ko.applyBindingsToDescendants(childBindingContext, element);
+                        return { controlsDescendantBindings: true };
+                    };
+                    NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return NtsMultiCheckBoxBindingHandler;
+                }());
                 /**
                  * Dialog binding handler
                  */
@@ -838,6 +857,7 @@ var nts;
                     return WizardBindingHandler;
                 }());
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
+                ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
                 ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
@@ -850,3 +870,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=ko-ext.js.map
