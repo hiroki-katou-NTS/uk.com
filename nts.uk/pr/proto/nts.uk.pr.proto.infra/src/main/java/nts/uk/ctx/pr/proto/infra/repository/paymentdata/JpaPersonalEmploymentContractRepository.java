@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -12,16 +14,17 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.PersonalEmploymentContract;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PclmtPersonEmpContract;
 
-public class JpaPersonalEmploymentContractRepository extends JpaRepository implements PersonalEmploymentContractRepository {
+@RequestScoped
+public class JpaPersonalEmploymentContractRepository extends JpaRepository
+		implements PersonalEmploymentContractRepository {
+	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PCLMT_PERSON_EMP_CONTRACT c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_D <= :BASEYMD and c.END_D >= :BASEYMD";
 
 	@Override
 	public List<PersonalEmploymentContract> find(String companyCode, List<String> personIdList, Date baseYmd) {
 		List<PersonalEmploymentContract> lstPersonalEmploymentContract = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<PersonalEmploymentContract> tmpPersonalEmploymentContract = (Optional<PersonalEmploymentContract>) this
-					.queryProxy()
-					.query("SELECT c FROM PCLMT_PERSON_EMP_CONTRACT c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_D <= :BASEYMD and c.END_D >= :BASEYMD",
-							PclmtPersonEmpContract.class)
+			Optional<PersonalEmploymentContract> tmpPersonalEmploymentContract = this
+					.queryProxy().query(SELECT_BY_CCD_PID_STRD_ENDD, PclmtPersonEmpContract.class)
 					.setParameter("CCD", companyCode).setParameter("PID", personIdList.get(i))
 					.setParameter("BASEYMD", baseYmd).getSingle(c -> toDomain(c));
 			if (tmpPersonalEmploymentContract.isPresent()) {
