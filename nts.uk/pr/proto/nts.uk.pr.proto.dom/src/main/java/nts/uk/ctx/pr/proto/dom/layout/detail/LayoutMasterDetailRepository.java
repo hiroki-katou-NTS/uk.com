@@ -3,6 +3,8 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
+@RequestScoped
 public interface LayoutMasterDetailRepository {
 
 	/**
@@ -58,11 +60,7 @@ public interface LayoutMasterDetailRepository {
 	 * @param companyCode
 	 * @param startYM
 	 * @param stmtCode
-	 * @param endYM
-	 * @param layoutAtr
-	 * @param stmtName
 	 * @return list Detail
 	 */
-	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
-			String stmtName);
+	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode);
 }

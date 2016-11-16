@@ -2,7 +2,16 @@ package nts.uk.ctx.pr.proto.dom.personalwagename;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public interface PersonalWageNameRepository {
-	List<PersonalWageNameMaster> getPersonalWageName(String companyCode, int categoryAtr, String personalWageCode,
-			String personalWageName);
+	
+	/**
+	 * getPersonalWageName
+	 * @param companyCode
+	 * @param categoryAtr
+	 * @return
+	 */
+	List<PersonalWageNameMaster> getPersonalWageName(String companyCode, int categoryAtr);
 }
