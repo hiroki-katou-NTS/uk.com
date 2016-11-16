@@ -6,11 +6,10 @@
       xmlns:test="http://xmlns.jcp.org/jsf/component">
 <h:head>
 	<title>validation Script from Server</title>
-	<test:ValidatorInitScript>
-	</test:ValidatorInitScript>
-	<test:ValidatorScript>
-		<f:attribute name="inputclass" value="nts.uk.shr.com.primitive.PersonId,nts.uk.shr.com.primitive.EmployeeId" />
-	</test:ValidatorScript>
+	
+	<test:viewcontext />
+
+	<test:ValidatorScript inputclass="nts.uk.shr.com.primitive.PersonId,nts.uk.shr.com.primitive.EmployeeId,nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber" />
 </h:head>
 
 	
