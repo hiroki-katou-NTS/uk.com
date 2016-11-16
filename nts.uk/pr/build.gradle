@@ -125,6 +125,9 @@ project (':proto:nts.uk.pr.proto.infra') {
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
 }
+project (':screen') {
+	apply plugin: 'eclipse-wtp'
+}
 project ('nts.uk.pr.web') {
 	apply plugin: 'war'
 	war {
