@@ -22,25 +22,5 @@ public class PaymentDataCheckServiceImpl implements PaymentDataCheckService {
 		return false;
 	}
 
-	@Override
-	public boolean isErrorSystem(PayrollSystem payrollSystem, CalculationMethod calculationMethod, TaxAtr taxAttribute, CommuteAtr commuteAttribute) {
-		if (payrollSystem == null) {
-			return false;
-		}
-		
-		if (calculationMethod == null) {
-			return false;
-		}
-		
-		if (taxAttribute == null) {
-			return false;
-		}
-		
-		if (commuteAttribute == null) {
-			return false;
-		}
-		
-		return true;
-	}
 
 }
