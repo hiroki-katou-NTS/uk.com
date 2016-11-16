@@ -10,16 +10,17 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHead;
+
 @RequestScoped
 public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository{
 
-	private static String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
-	private static String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
+	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
 
-	private static LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
+	private final LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
 		val domain = LayoutMaster.createFromJavaType(
 				entity.qstmtStmtLayoutHeadPK.companyCd, 
 				entity.qstmtStmtLayoutHeadPK.strYm, 

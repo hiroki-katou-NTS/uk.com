@@ -43,6 +43,8 @@ public interface LayoutMasterLineRepository {
 
 	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm);
 
+
+
 	/**
 	 * get Line
 	 * 

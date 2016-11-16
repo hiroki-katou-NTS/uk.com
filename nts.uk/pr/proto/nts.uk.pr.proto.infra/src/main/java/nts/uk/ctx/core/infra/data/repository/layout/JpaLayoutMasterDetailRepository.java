@@ -3,12 +3,15 @@ package nts.uk.ctx.core.infra.data.repository.layout;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
 
+@RequestScoped
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
