@@ -25,8 +25,9 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 @Table(name = "QSTMT_STMT_LAYOUT_CTG")
 public class QstmtStmtLayoutCtg extends AggregateTableEntity implements Serializable{
 
-	@EmbeddedId
+	private static final long serialVersionUID = 1L;
 
+	@EmbeddedId
 	public QstmtStmtLayoutCtgPK qstmtStmtLayoutCtgPk;
 
 	@Basic(optional = false)

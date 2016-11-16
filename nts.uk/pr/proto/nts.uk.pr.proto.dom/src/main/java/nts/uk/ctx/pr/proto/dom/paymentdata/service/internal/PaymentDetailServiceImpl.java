@@ -85,7 +85,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		List<LayoutMasterCategory> categories = layoutCategoryMasterRepo.getCategories(companyCode.v(), layoutHead.getStmtCode().v(), startYearMonth);
 		
 		// get layout lines
-		List<LayoutMasterLine> layoutLines = layoutLineMasterRepo.getLines(companyCode.v(), startYearMonth, stmtCode);
+		List<LayoutMasterLine> layoutLines = layoutLineMasterRepo.getLines(companyCode.v(), stmtCode, startYearMonth);
 		
 //		// get layout detail master
 //		Optional<LayoutMasterDetail> layoutDetail = layoutDetailMasterRepo.find(companyCode.v(), layoutHead.getStmtCode().v(), startYearMonth, stmtCode, 2, autoLineID);

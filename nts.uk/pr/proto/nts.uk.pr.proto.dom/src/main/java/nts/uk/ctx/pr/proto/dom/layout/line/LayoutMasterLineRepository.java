@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.layout.line;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -38,6 +39,10 @@ public interface LayoutMasterLineRepository {
 	 */
 	void remove(String companyCode, int startYm, String autoLineID, String categoryAtr, String stmtCode);
 
+	Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId);
+
+	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm);
+
 	/**
 	 * get Line
 	 * 
@@ -46,5 +51,6 @@ public interface LayoutMasterLineRepository {
 	 * @param stmtCode
 	 * @return list Line
 	 */
-	List<LayoutMasterLine> getLines(String companyCode, int startYM, String stmtCode);
+	
+
 }

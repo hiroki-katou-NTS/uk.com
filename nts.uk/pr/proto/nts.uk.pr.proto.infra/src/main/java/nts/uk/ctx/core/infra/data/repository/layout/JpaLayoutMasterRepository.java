@@ -13,8 +13,8 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHead;
 @RequestScoped
 public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository{
 
-	private static String FIND_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
-	private static String FIND_BY_PK = FIND_NO_WHERE 
+	private static String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
+	private static String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
@@ -51,12 +51,14 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	@Override
 	public Optional<LayoutMaster> getLayout(String companyCode, String layoutMaster, int strYm) {
 		
-		return this.queryProxy().query(FIND_BY_PK, QstmtStmtLayoutHead.class)
+		return this.queryProxy().query(SELECT_NO_WHERE, QstmtStmtLayoutHead.class)
 				.setParameter("companyCd", companyCode)
 				.setParameter("stmtCd", layoutMaster)
 				.setParameter("strYm", strYm)
 				.getSingle(c -> toDomain(c));
 	}
+	
+
 
 	@Override
 	public List<LayoutMaster> getLayouts(String companyCode) {
