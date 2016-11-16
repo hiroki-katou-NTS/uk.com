@@ -45,8 +45,8 @@ public interface LayoutMasterDetailRepository {
 	 * delete a layout master detail
 	 * 
 	 * @param companyCode
-	 * @param layoutCode
 	 * @param startYm
+	 * @param stmtCode
 	 * @param categoryAtr
 	 * @param itemCode
 	 */
@@ -68,10 +68,10 @@ public interface LayoutMasterDetailRepository {
 	 * @param companyCode
 	 * @param startYM
 	 * @param categoryAtr
-	 * @param categoryCode
+	 * @param layoutCode
 	 * @return
 	 */
-	List<LayoutMasterDetail> getLayoutDetail(String companyCode, int startYM, int categoryAtr, String categoryCode);
+	List<LayoutMasterDetail> getLayoutDetail(String companyCode, int startYM, int categoryAtr, String layoutCode);
 
 	/**
 	 * get layout detail by calculation
