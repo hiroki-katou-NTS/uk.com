@@ -8,15 +8,15 @@ var nts;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
                 /**
-                 * TextBoxExtensible
+                 * TextEditor
                  */
-                var NtsTextBoxExtensibleBindingHandler = (function () {
-                    function NtsTextBoxExtensibleBindingHandler() {
+                var NtsTextEditorBindingHandler = (function () {
+                    function NtsTextEditorBindingHandler() {
                     }
                     /**
                      * Init.
                      */
-                    NtsTextBoxExtensibleBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
@@ -29,14 +29,14 @@ var nts;
                     /**
                      * Update
                      */
-                    NtsTextBoxExtensibleBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var getValue = data.value;
                         var $input = $(element);
                         var newText = getValue();
                         $input.val(newText);
                     };
-                    return NtsTextBoxExtensibleBindingHandler;
+                    return NtsTextEditorBindingHandler;
                 }());
                 /**
                  * TextBox
@@ -858,7 +858,7 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-                ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
+                ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
@@ -870,4 +870,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=ko-ext.js.map

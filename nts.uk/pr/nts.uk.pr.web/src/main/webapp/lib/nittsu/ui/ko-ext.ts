@@ -3,9 +3,9 @@ module nts.uk.ui.koExtentions {
     import validation = nts.uk.ui.validation;
 
     /**
-     * TextBoxExtensible
+     * TextEditor
      */
-    class NtsTextBoxExtensibleBindingHandler implements KnockoutBindingHandler {
+    class NtsTextEditorBindingHandler implements KnockoutBindingHandler {
 
         constraint: validation.CharType;
 
@@ -948,7 +948,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
 
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-    ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
+    ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();

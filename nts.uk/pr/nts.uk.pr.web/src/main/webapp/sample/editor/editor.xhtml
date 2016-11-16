@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"></meta>
+	<title>Dialog Sample</title>
+	
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="../../lib/generic/jqueryui/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+	<link rel="stylesheet" type="text/css" href="../../lib/generic/igniteui/css/structure/infragistics.css" />
+	<link rel="stylesheet" type="text/css" href="../../lib/nittsu/ui/style/stylesheets/base.css" />
+	<style>
+		html, body{position: relative;}
+		.container{padding:25px 40px;}
+		a{color:#00B050;text-decoration: none;}
+		b{font-weight:bold;}
+		i{font-style: italic;display:inline-block;min-width:80px;}
+		h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
+		h3{font-size:16px;margin:3px 0;font-weight:bold;}
+		hr{margin: 25px 0;}
+		table{float:left;border-collapse: collapse;margin:10px 30px 30px 0;}
+		table th, table td{padding: 5px 5px;border:1px solid #ccc;}
+		table th{background:#eee;border-bottom-width:2px;}
+		table td:first-child{background:#fafafa;}
+		pre{background:#eff0f1;padding:10px 5px;color:#333;margin:10px 0;}
+	</style>
+	
+	<!-- Script -->
+	<script src="../../lib/generic/jquery/jquery-3.1.1.js"></script>
+	<script src="../../lib/generic/jqueryui/jquery-ui.min.js"></script>
+	<script src="../../lib/generic/knockoutjs/knockout-3.4.0.js"></script>
+	<script src="../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
+	<script src="../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
+	<script src="../../lib/nittsu/ui/ko-ext.js"></script>
+	<script src="../../lib/nittsu/ui/textbox-definition.js"></script>
+
+	<script>
+		var __viewContext = {
+			primitiveValueConstraints: {
+				CompanyCode: {
+					valueType: "String",
+					charType: "Numeric",
+					maxLength: 4
+				},
+				CompanyName: {
+					valueType: "String",
+					charType: "Any",
+					maxLength: 20
+				}
+			}
+		};
+	</script>
+	<script>
+		$(function () {
+			var vm = {
+				// TextEditor
+				texteditor: {
+					option: ko.mapping.fromJS(null),
+					enable: function(){},
+					readonly: function(){},
+					value: function(){},
+					change: function(){}
+				},
+			};
+			
+			ko.applyBindings(vm);
+		});
+	</script>
+</head>
+<body>
+	<div class="container">
+		<div class="cf">
+			<h2><a href="../../test.html">&#9665;</a> Editor</h2>
+			<hr/>
+			<h2>TextEditor Binding</h2>
+			<div data-bind="texteditor">
+				<input type="text" />
+			</div>
+			<br/>
+			<!-- API -->
+			<h2>TextEditor API</h2>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>TextEditorOption</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>textmode</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "text"<br/>
+							<b>Members:</b><br/>
+							<i>text</i>: Single line text editor type text<br/>
+							<i>password</i>: Single line text editor type password<br/>
+							<i>multiline</i>: Multi line text editor type text
+						</td>
+					</tr>
+					<tr>
+						<td>placeholder</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Hint text for the control
+						</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Set width for the control
+						</td>
+					</tr>
+					<tr>
+						<td>textalign</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "left"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Align text to left<br/>
+							<i>right</i>: Align text to right<br/>
+							<i>center</i>: Align text to center
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Methods</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>enable(boolean)</td>
+						<td>
+							Enable or disable control
+						</td>
+					</tr>
+					<tr>
+						<td>readonly(boolean)</td>
+						<td>
+							Toggles the readonly state of the control
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Events</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>change()</td>
+						<td>
+							Triggered when value of the control is changed
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<hr/>
+		<div class="cf">
+			<h2>NumberEditor Binding</h2>
+			<div data-bind="texteditor">
+				<input type="text" />
+			</div>
+			<br/>
+			<!-- API -->
+			<h2>NumberEditor API</h2>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>NumberEditorOption</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>groupseperator</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ","<br/>
+							Group symbol for number
+						</td>
+					</tr>
+					<tr>
+						<td>grouplength</td>
+						<td>
+							<b>Type:</b> number<br/>
+							<b>Default:</b> 0<br/>
+							Length to group number
+						</td>
+					</tr>
+					<tr>
+						<td>decimalseperator</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "."<br/>
+							Seperator symbol for decimal
+						</td>
+					</tr>
+					<tr>
+						<td>decimallength</td>
+						<td>
+							<b>Type:</b> number<br/>
+							<b>Default:</b> 0<br/>
+							Length for decimal
+						</td>
+					</tr>
+					<tr>
+						<td>currencyformat</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							<b>Members:</b><br/>
+							<i>JPY</i>: Japan Yen<br/>
+							<i>USD</i>: United States dollar<br/>
+							Currency symbol
+						</td>
+					</tr>
+					<tr>
+						<td>currencyposition</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> depend<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Display at left. Default for JPA<br/>
+							<i>right</i>: Display at right. Default for USD<br/>
+							Currency position
+						</td>
+					</tr>					
+					<tr>
+						<td>placeholder</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Hint text for the control
+						</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Set width for the control
+						</td>
+					</tr>
+					<tr>
+						<td>textalign</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "right"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Align text to left<br/>
+							<i>right</i>: Align text to right<br/>
+							<i>center</i>: Align text to center
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Methods</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>enable(boolean)</td>
+						<td>
+							Enable or disable control
+						</td>
+					</tr>
+					<tr>
+						<td>readonly(boolean)</td>
+						<td>
+							Toggles the readonly state of the control
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Events</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>change()</td>
+						<td>
+							Triggered when value of the control is changed
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<hr/>
+		<div class="cf">
+			<h2>TimeEditor Binding</h2>
+			<div data-bind="texteditor">
+				<input type="text" />
+			</div>
+			<br/>
+			<!-- API -->
+			<h2>TimeEditor API</h2>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>TimeEditorOption</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>placeholder</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Hint text for the control
+						</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Set width for the control
+						</td>
+					</tr>
+					<tr>
+						<td>textalign</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "right"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Align text to left<br/>
+							<i>right</i>: Align text to right<br/>
+							<i>center</i>: Align text to center
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Methods</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>enable(boolean)</td>
+						<td>
+							Enable or disable control
+						</td>
+					</tr>
+					<tr>
+						<td>readonly(boolean)</td>
+						<td>
+							Toggles the readonly state of the control
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Events</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>change()</td>
+						<td>
+							Triggered when value of the control is changed
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<hr/>
+		<div class="cf">
+			<h2>MaskEditor Binding</h2>
+			<div data-bind="texteditor">
+				<input type="text" />
+			</div>
+			<br/>
+			<!-- API -->
+			<h2>MaskEditor API</h2>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>EmployeeCodeEditorOption</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>blankdirection</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "left"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Blank space fill to left<br/>
+							<i>right</i>: Blank space fill to right<br/>
+							Set direction for blank space
+						</td>
+					</tr>					
+					<tr>
+						<td>blankfill</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Fill blank with character
+						</td>
+					</tr>
+					<tr>
+						<td>placeholder</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Hint text for the control
+						</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Set width for the control
+						</td>
+					</tr>
+					<tr>
+						<td>textalign</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "right"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Align text to left<br/>
+							<i>right</i>: Align text to right<br/>
+							<i>center</i>: Align text to center
+						</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th><h3>CardEditorOption</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>placeholder</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Hint text for the control
+						</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Set width for the control
+						</td>
+					</tr>
+					<tr>
+						<td>textalign</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "right"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Align text to left<br/>
+							<i>right</i>: Align text to right<br/>
+							<i>center</i>: Align text to center
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Methods</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>enable(boolean)</td>
+						<td>
+							Enable or disable control
+						</td>
+					</tr>
+					<tr>
+						<td>readonly(boolean)</td>
+						<td>
+							Toggles the readonly state of the control
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h3>Events</h3></th>
+						<th><h3>Description</h3></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>change()</td>
+						<td>
+							Triggered when value of the control is changed
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
