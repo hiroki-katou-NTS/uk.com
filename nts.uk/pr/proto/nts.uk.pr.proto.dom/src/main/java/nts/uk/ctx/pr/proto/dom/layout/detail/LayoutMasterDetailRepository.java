@@ -5,23 +5,10 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
+import nts.arc.time.YearMonth;
+
 @RequestScoped
 public interface LayoutMasterDetailRepository {
-
-	/**
-	 * find layout master detail by company code, layout code, start date,
-	 * category code
-	 * 
-	 * @param companyCode
-	 * @param layoutCode
-	 * @param startYm
-	 * @param categoryAtr
-	 * @param autoLineID
-	 * @param itemCode
-	 * @return
-	 */
-	Optional<LayoutMasterDetail> find(String companyCode, String layoutCode, int startYm, String stmtCode,
-			String categoryAtr, String autoLineID, String itemCode);
 
 	/**
 	 * add a layout master detail
@@ -59,11 +46,15 @@ public interface LayoutMasterDetailRepository {
 	 * get Detail
 	 * 
 	 * @param companyCode
-	 * @param startYM
-	 * @param stmtCode
-	 * @return list Detail
+	 * @param layout code
+	 * @param start YM
+	 * @return category type
 	 */
-	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode);
+	List<LayoutMasterDetail> getDetails(
+			String companyCd, 
+			String stmtCd, 
+			YearMonth startYm, 
+			int categoryAtr);
 
 	/**
 	 * get detail
@@ -73,17 +64,13 @@ public interface LayoutMasterDetailRepository {
 	 * @param startYM
 	 * @param categoryAtr
 	 * @param calculationMethod
+	 * @param item code
 	 * @return
 	 */
-	List<LayoutMasterDetail> getDetail(String companyCode, String layoutCode, int startYM, int categoryAtr,
-			String calculationMethod);
-
-	/**
-	 * get detail by calculation
-	 * 
-	 * @param calculationMethod
-	 * @return
-	 */
-	List<LayoutMasterDetail> getDetailByCalculation(String calculationMethod);
-
+	Optional<LayoutMasterDetail> getDetail(
+			String companyCd, 
+			String stmtCd, 
+			YearMonth startYm, 
+			int categoryAtr,
+			String itemCd);
 }
