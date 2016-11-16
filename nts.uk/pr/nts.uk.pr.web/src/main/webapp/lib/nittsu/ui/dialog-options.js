@@ -5,6 +5,8 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var DialogOption = (function () {
     function DialogOption() {
+        this.modal = true;
+        this.show = false;
     }
     return DialogOption;
 }());
@@ -12,20 +14,15 @@ var ConfirmDialogOption = (function (_super) {
     __extends(ConfirmDialogOption, _super);
     function ConfirmDialogOption(option) {
         _super.call(this);
-        this.dialogType = "alert";
+        // Default value
         this.title = (option && option.title) ? option.title : "";
         this.message = (option && option.message) ? option.message : "";
-        this.modal = (option && option.modal !== undefined) ? option.modal : true;
-        this.show = (option && option.show !== undefined) ? option.show : false;
-        this.buttonSize = (option && option.buttonSize) ? option.buttonSize : "large";
-        this.okButtonColor = (option && option.okButtonColor) ? option.okButtonColor : "proceed";
-        this.okButtonText = (option && option.okButtonText) ? option.okButtonText : "OK";
         this.buttons = [];
         // Add OK Button
-        this.buttons.push({ text: this.okButtonText,
+        this.buttons.push({ text: "OK",
             "class": "yes",
-            size: this.buttonSize,
-            color: this.okButtonColor,
+            size: "large",
+            color: "proceed",
             click: function (viewmodel, ui) {
                 viewmodel.okButtonClicked();
                 $(ui).dialog("close");
@@ -39,30 +36,23 @@ var DelDialogOption = (function (_super) {
     function DelDialogOption(option) {
         _super.call(this);
         // Default value
-        this.dialogType = "confirm";
         this.title = (option && option.title) ? option.title : "";
         this.message = (option && option.message) ? option.message : "";
-        this.modal = (option && option.modal !== undefined) ? option.modal : true;
-        this.show = (option && option.show !== undefined) ? option.show : false;
-        this.buttonSize = (option && option.buttonSize) ? option.buttonSize : "large";
-        this.okButtonColor = (option && option.okButtonColor) ? option.okButtonColor : "danger";
-        this.okButtonText = (option && option.okButtonText) ? option.okButtonText : "はい";
-        this.cancelButtonText = (option && option.cancelButtonText) ? option.cancelButtonText : "いいえ";
         this.buttons = [];
         // Add OK Button
-        this.buttons.push({ text: this.okButtonText,
+        this.buttons.push({ text: "はい",
             "class": "yes ",
-            size: this.buttonSize,
-            color: this.okButtonColor,
+            size: "large",
+            color: "danger",
             click: function (viewmodel, ui) {
                 viewmodel.okButtonClicked();
                 ui.dialog("close");
             }
         });
         // Add Cancel Button
-        this.buttons.push({ text: this.cancelButtonText,
+        this.buttons.push({ text: "いいえ",
             "class": "no ",
-            size: this.buttonSize,
+            size: "large",
             color: "",
             click: function (viewmodel, ui) {
                 viewmodel.cancelButtonClicked();
@@ -77,30 +67,23 @@ var OKDialogOption = (function (_super) {
     function OKDialogOption(option) {
         _super.call(this);
         // Default value
-        this.dialogType = "confirm";
         this.title = (option && option.title) ? option.title : "";
         this.message = (option && option.message) ? option.message : "";
-        this.modal = (option && option.modal !== undefined) ? option.modal : true;
-        this.show = (option && option.show !== undefined) ? option.show : false;
-        this.buttonSize = (option && option.buttonSize) ? option.buttonSize : "large";
-        this.okButtonColor = (option && option.okButtonColor) ? option.okButtonColor : "proceed";
-        this.okButtonText = (option && option.okButtonText) ? option.okButtonText : "はい";
-        this.cancelButtonText = (option && option.cancelButtonText) ? option.cancelButtonText : "いいえ";
         this.buttons = [];
         // Add OK Button
-        this.buttons.push({ text: this.okButtonText,
+        this.buttons.push({ text: "はい",
             "class": "yes ",
-            size: this.buttonSize,
-            color: this.okButtonColor,
+            size: "large",
+            color: "proceed",
             click: function (viewmodel, ui) {
                 viewmodel.okButtonClicked();
                 ui.dialog("close");
             }
         });
         // Add Cancel Button
-        this.buttons.push({ text: this.cancelButtonText,
+        this.buttons.push({ text: "いいえ",
             "class": "no ",
-            size: this.buttonSize,
+            size: "large",
             color: "",
             click: function (viewmodel, ui) {
                 viewmodel.cancelButtonClicked();

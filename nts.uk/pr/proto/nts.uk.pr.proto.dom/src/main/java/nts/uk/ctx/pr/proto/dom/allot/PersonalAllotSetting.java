@@ -28,11 +28,13 @@ public class PersonalAllotSetting extends AggregateRoot {
 	@Getter
 	private PaymentDetailCode paymentDetailCode;
 
-	public PersonalAllotSetting(CompanyCode companyCode, PersonId personId, YearMonth startDate) {
+	public PersonalAllotSetting(CompanyCode companyCode, PersonId personId, YearMonth startDate, BonusDetailCode bonusDetailCode, PaymentDetailCode paymentDetailCode) {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;
 		this.startDate = startDate;
+		this.bonusDetailCode = bonusDetailCode;
+		this.paymentDetailCode = paymentDetailCode;
 	}
 
 	/**
@@ -46,8 +48,8 @@ public class PersonalAllotSetting extends AggregateRoot {
 	 *            start date
 	 * @return PersonalPaymentSetting
 	 */
-	public static PersonalAllotSetting createFromJavaType(String companyCode, String personId, int startDate) {
+	public static PersonalAllotSetting createFromJavaType(String companyCode, String personId, int startDate, String bonusDetailCode, String paymentDetailCode) {
 		return new PersonalAllotSetting(new CompanyCode(companyCode), new PersonId(personId),
-				new YearMonth(startDate));
+				new YearMonth(startDate),new BonusDetailCode(bonusDetailCode), new PaymentDetailCode(paymentDetailCode));
 	}
 }

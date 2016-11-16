@@ -3,6 +3,9 @@ package nts.uk.ctx.pr.proto.dom.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public interface ItemMasterRepository {
 	
 	/**
@@ -16,26 +19,26 @@ public interface ItemMasterRepository {
 	/**
 	 * find item master by company code, category type, item master code
 	 * @param companyCode
-	 * @param categoryType
+	 * @param categoryAtr
 	 * @param itemCode
 	 * @return
 	 */
-	Optional<ItemMaster> find(String companyCode, int categoryType, String itemCode);
+	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
 	
 	/**
 	 * get All Item Master
 	 * @param companyCode
-	 * @param categoryType
+	 * @param categoryAtr
 	 * @return list Item Master
 	 */
-	List<ItemMaster> getAllItemMaster(String companyCode, int categoryType);
+	List<ItemMaster> getAllItemMaster(String companyCode, int categoryAtr);
 	
 	/**
 	 * get Item Master
 	 * @param companyCode
-	 * @param categoryType
+	 * @param categoryAtr
 	 * @param itemCode
 	 * @return list Item Master
 	 */
-	List<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode);
+	List<ItemMaster> getItemMaster(String companyCode, int categoryAtr, String itemCode);
 }
