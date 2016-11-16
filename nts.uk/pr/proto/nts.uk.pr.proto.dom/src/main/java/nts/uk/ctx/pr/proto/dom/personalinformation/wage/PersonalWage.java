@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.personalwage;
+package nts.uk.ctx.pr.proto.dom.personalinformation.wage;
 
 import lombok.Getter;
 import lombok.Setter;

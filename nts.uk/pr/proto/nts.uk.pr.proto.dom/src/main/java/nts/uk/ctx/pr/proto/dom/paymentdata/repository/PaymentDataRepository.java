@@ -1,5 +1,5 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.repository;
 
-public interface PersonRepository {
-
+public interface PaymentDataRepository {
+	
 }

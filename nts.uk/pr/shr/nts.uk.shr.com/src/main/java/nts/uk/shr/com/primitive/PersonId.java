@@ -1,10 +1,9 @@
 package nts.uk.shr.com.primitive;
 
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.StringPrimitiveValue;
 import nts.gul.text.IdentifierUtil;
 
-@StringMaxLengh(36)
-public class PersonId extends CodePrimitiveValue<PersonId>{
+public class PersonId extends StringPrimitiveValue<PersonId>{
 
 	/**
 	 * 

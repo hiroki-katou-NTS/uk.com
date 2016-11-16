@@ -8,18 +8,20 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.proto.dom.paymentdata.HolidayPaid;
-import nts.uk.ctx.pr.proto.dom.paymentdata.repository.HolidayPaidRepository;
+import nts.uk.ctx.pr.proto.dom.personalinformation.holiday.HolidayPaid;
+import nts.uk.ctx.pr.proto.dom.personalinformation.holiday.HolidayPaidRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.PhldtHolidayPaid;
 
 @RequestScoped
 public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPaidRepository {
+	
+	private final String SELECT_BY_CCD_AND_PID = "SELECT c FROM PHLDT_HOLIDAY_PAID c WHERE c.CCD = :CCD and c.PID = :PID";
 
 	@Override
 	public List<HolidayPaid> find(String companyCode, List<String> personIdList) {
 		List<HolidayPaid> lstHolidayPaid = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<HolidayPaid> tmpHolidayPaid = (Optional<HolidayPaid>) this.queryProxy().query("SELECT c FROM PHLDT_HOLIDAY_PAID c WHERE c.CCD = :CCD and c.PID = :PID", PhldtHolidayPaid.class)
+			Optional<HolidayPaid> tmpHolidayPaid = (Optional<HolidayPaid>) this.queryProxy().query(SELECT_BY_CCD_AND_PID, PhldtHolidayPaid.class)
 					.setParameter("CCD", companyCode)
 					.setParameter("PID", personIdList.get(i))
 					.getSingle(c -> toDomain(c));

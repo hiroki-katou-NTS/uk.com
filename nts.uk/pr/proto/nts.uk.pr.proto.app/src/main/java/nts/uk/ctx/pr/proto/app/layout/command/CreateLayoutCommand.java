@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.proto.app.layout.command;
 
+import lombok.Getter;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.shr.com.context.AppContexts;
 
+@Getter
 public class CreateLayoutCommand {
 
 	private String stmtCode;
