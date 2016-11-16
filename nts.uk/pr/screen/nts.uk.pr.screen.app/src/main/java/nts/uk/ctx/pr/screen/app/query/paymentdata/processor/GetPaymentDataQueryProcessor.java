@@ -62,7 +62,7 @@ public class GetPaymentDataQueryProcessor {
 		}
 
 		// 譏守ｴｰ譖ｸ繝槭せ繧ｿ繝ｼ繧貞叙蠕励�√ョ繝ｼ繧ｿ縺後↑縺�蝣ｴ蜷遺�偵お繝ｩ繝ｼ繝｡繝�繧ｻ繝ｼ繧ｸ縺悟�ｺ縺励∪縺�
-		LayoutMaster layout = this.layoutMasterRepository.find(companyCode, stmtCode, baseYM)
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, stmtCode, baseYM)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("蟇ｾ雎｡繝�繝ｼ繧ｿ縺後≠繧翫∪縺帙ｓ縲�")));
 
 

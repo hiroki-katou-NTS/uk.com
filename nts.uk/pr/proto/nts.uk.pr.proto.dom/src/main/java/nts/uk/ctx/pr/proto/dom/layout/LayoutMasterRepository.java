@@ -3,8 +3,7 @@ package nts.uk.ctx.pr.proto.dom.layout;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
-import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
+
 
 public interface LayoutMasterRepository {
 	// layout master
@@ -17,14 +16,14 @@ public interface LayoutMasterRepository {
 	 * @param strYm
 	 * @return
 	 */
-	Optional<LayoutMaster> find(String companyCode, String layoutMaster, int strYm);
+	Optional<LayoutMaster> getLayout(String companyCode, String layoutMaster, int strYm);
 
 	/**
 	 * find all layout master by company code, start date
 	 * 
 	 * @return layout master
 	 */
-	List<LayoutMaster> findAll(String companyCode);
+	List<LayoutMaster> getLayouts(String companyCode);
 
 	/**
 	 * Add a new layout master
