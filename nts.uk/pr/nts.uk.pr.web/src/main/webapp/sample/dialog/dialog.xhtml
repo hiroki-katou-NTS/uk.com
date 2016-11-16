@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="../../lib/nittsu/ui/style/stylesheets/base.css" />
 	<style>
 		html, body{position: relative;}
-		.container{padding:40px;}
+		.container{padding:25px 40px;}
 		a{color:#00B050;text-decoration: none;}
 		b{font-weight:bold;}
 		i{font-style: italic;display:inline-block;min-width:80px;}
@@ -22,6 +22,7 @@
 		table th, table td{padding: 5px 5px;border:1px solid #ccc;}
 		table th{background:#eee;border-bottom-width:2px;}
 		table td:first-child{background:#fafafa;}
+		pre{background:#eff0f1;padding:10px 5px;color:#333;margin:10px 0;}
 	</style>
 	
 	<!-- Script -->
@@ -50,58 +51,11 @@
 		};
 	</script>
 	<script>
+		var vm;
 		$(function () {
-			var vm = {
-				// Dialog ViewModel
+			vm = {
+				// Dialog Confirm
 				dialogconfirm: {
-					dialogtype: ko.observable("confirm"),
-					title: ko.observable("Test title"),
-					message: ko.observable("Test message"),
-					modal: ko.observable(true),
-					show: ko.observable(false),
-					buttonSize: ko.observable("large"),
-					okButtonColor: ko.observable("danger"),
-					okButtonText: ko.observable(""),
-					okButtonClicked: function(){
-						alert("ok");
-					},
-					cancelButtonText: ko.observable("いいえ"),
-					cancelButtonClicked: function(){
-						alert("cancel");
-					},
-					open: function(){
-						var self = this;
-						self.show(true);
-					},
-					hide: function(){
-						var self = this;
-						self.show(false);
-					}
-				},
-				
-				// Dialog ViewModel
-				dialogalert: {
-					dialogtype: ko.observable("alert"),
-					title: ko.observable(""),
-					message: ko.observable("Test message"),
-					modal: ko.observable(true),
-					show: ko.observable(false),
-					buttonSize: ko.observable("large"),
-					okButtonColor: ko.observable("proceed"),
-					okButtonText: ko.observable("OK"),
-					okButtonClicked: function(){},
-					open: function(){
-						var self = this;
-						self.show(true);
-					},
-					hide: function(){
-						var self = this;
-						self.show(false);
-					}
-				},
-
-				// Dialog with Option Class
-				dialogconfirmoption: {
 					option: ko.mapping.fromJS(new ConfirmDialogOption()),
 					okButtonClicked: function(){},
 					cancelButtonClicked: function(){},
@@ -115,14 +69,16 @@
 					}
 				},
 				
-				// Dialog with Option Class
-				dialogdeloption: {
-					option: ko.mapping.fromJS(new DelDialogOption({message: "You want a message, you get a message."})),
+				// Dialog Delete
+				dialogdel: {
+					option: ko.mapping.fromJS(new DelDialogOption({
+						message: "You want a message, you get a message."})
+					),
 					okButtonClicked: function(){
-						alert("ok");
+						alert("Ok");
 					},
 					cancelButtonClicked: function(){
-						alert("cancel");
+						alert("Cancel");
 					},
 					open: function(){
 						var self = this;
@@ -134,9 +90,12 @@
 					}
 				},
 
-				// Dialog with Option Class
-				dialogokoption: {
-					option: ko.mapping.fromJS(new OKDialogOption({title: "A test Title", message: "This is a test message created for test purpose", modal: false})),
+				// Dialog OK
+				dialogok: {
+					option: ko.mapping.fromJS(new OKDialogOption({
+						title: "A test Title",
+						message: "This is a test message created for test purpose"})
+					),
 					okButtonClicked: function(){},
 					cancelButtonClicked: function(){},
 					open: function(){
@@ -149,45 +108,52 @@
 					}
 				},
 			};
+			
 			ko.applyBindings(vm);
+			
+			$('#testbtn').click(function(){
+				vm.dialogconfirm.open();
+			})
 		});
+		
+		function test(){
+			vm.dialogdel.open();
+		}
 	</script>
 </head>
 <body>
 	<div class="container">
 		<h2><a href="../../test.html">&#9665;</a> Dialog</h2>
 		<hr/>
-		<h2>HTML Binding</h2>
-		<div data-bind="with: dialogconfirm">
-			<button data-bind="click: open" class="danger">Open Confirm Dialog</button>
-			<div data-bind="ntsDialog: {dialogtype: dialogtype, title: title, message: message, modal: modal, show: show, buttonSize: buttonSize, okButtonColor: okButtonColor, okButtonText: okButtonText, cancelButtonText: cancelButtonText }"></div>
-		</div>
-		<br/>
-		<div data-bind="with: dialogalert">
-			<button data-bind="click: open" class="proceed">Open Alert Dialog</button>
-			<div data-bind="ntsDialog: {dialogtype: dialogtype, title: title, message: message, modal: modal, show: show, buttonSize: buttonSize, okButtonColor: okButtonColor, okButtonText: okButtonText }"></div>
-		</div>
-		<hr/>
 		<h2>TypeScript Binding</h2>
-		<div data-bind="with: dialogconfirmoption">
-			<button data-bind="click: open" class="proceed">Open Confirm Dialog</button>
-			<button data-bind="click: hide">Hide Confirm Dialog</button>
-			<div data-bind="ntsDialogTest: {option: option}"></div>
+		<div data-bind="with: dialogconfirm">
+			<button data-bind="click: open" class="proceed">Confirm Dialog</button>
+			<div data-bind="ntsDialog: {option: option}"></div>
 		</div>
 		<br/>
-		<div data-bind="with: dialogdeloption">
-			<button data-bind="click: open" class="danger">Open Del Dialog</button>
-			<button data-bind="click: hide">Hide Del Dialog</button>
-			<div data-bind="ntsDialogTest: {option: option}"></div>
+		<div data-bind="with: dialogdel">
+			<button data-bind="click: open" class="danger">Del Dialog</button>
+			<div data-bind="ntsDialog: {option: option}"></div>
 		</div>
 		<br/>
-		<div data-bind="with: dialogokoption">
-			<button data-bind="click: open" class="proceed">Open OK Dialog</button>
-			<button data-bind="click: hide">Hide OK Dialog</button>
-			<div data-bind="ntsDialogTest: {option: option}"></div>
+		<div data-bind="with: dialogok">
+			<button data-bind="click: open" class="proceed">OK Dialog</button>
+			<div data-bind="ntsDialog: {option: option}"></div>
 		</div>
 		<hr/>
-		
+		<h2>Example</h2>
+		<button id="testbtn">JQuery event</button>
+		<pre>
+	$('#testbtn').click(function(){
+		vm.dialogconfirm.open();
+	})</pre>
+		<br/>
+		<button onclick="test()">Javascript Function</button>
+		<pre>
+	function test(){
+		vm.dialogdel.open();
+	}</pre>
+		<hr/>
 		<!-- API -->
 		<h2> API</h2>
 		<table>
@@ -202,16 +168,6 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>dialogtype</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						<b>Members:</b><br/>
-						<i>confirm</i>: Show confirm dialog<br/>
-						<i>alert</i>: Show alert dialog<br/>
-					</td>
-				</tr>
-				<tr>
 					<td>title</td>
 					<td>
 						<b>Type:</b> string<br/>
@@ -225,64 +181,6 @@
 						<b>Type:</b> string<br/>
 						<b>Default:</b> ""<br/>
 						Message content for dialog
-					</td>
-				</tr>
-				<tr>
-					<td>modal</td>
-					<td>
-						<b>Type:</b> boolean<br/>
-						<b>Default:</b> true<br/>
-						<b>Members:</b><br/>
-						<i>true</i>: Show dialog in modal mode<br/>
-						<i>false</i>: Do not show dialog in modal mode<br/>
-					</td>
-				</tr>
-				<tr>
-					<td>show</td>
-					<td>
-						<b>Type:</b> boolean<br/>
-						<b>Default:</b> false<br/>
-						<b>Members:</b><br/>
-						<i>true</i>: Show dialog onload<br/>
-						<i>false</i>: Hide dialog onload<br/>
-					</td>
-				</tr>
-				<tr>
-					<td>buttonSize</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> "large"<br/>
-						<b>Members:</b><br/>
-						<i>x-large</i>: Extra large button<br/>
-						<i>large</i>: Large button<br/>
-						<i>medium</i>: Medium button<br/>
-						<i>small</i>: Small button<br/>
-					</td>
-				</tr>
-				<tr>
-					<td>okButtonColor</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						<b>Members:</b><br/>
-						<i>danger</i>: Red color. Default on confirm<br/>
-						<i>proceed</i>: Green color. Default on alert<br/>
-					</td>
-				</tr>
-				<tr>
-					<td>okButtonText</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> "はい" or "OK"<br/>
-						Text for OK button. Default value for Confirm Dialog is "OK". Delete Dialog and OK Dialog is "はい"
-					</td>
-				</tr>
-				<tr>
-					<td>cancelButtonText</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> "いいえ"<br/>
-						Text for cancel button
 					</td>
 				</tr>
 			</tbody>

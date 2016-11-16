@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.personalwagename;
+package nts.uk.ctx.pr.proto.dom.personalinformation.wage.wagename;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

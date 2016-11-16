@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
+
 @RequestScoped
 public interface LayoutMasterDetailRepository {
 
@@ -50,7 +51,7 @@ public interface LayoutMasterDetailRepository {
 	 * @param layoutCode
 	 * @param startYm
 	 * @param categoryAtr
-	 * @param itemCode 
+	 * @param itemCode
 	 */
 	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr, String itemCode);
 
@@ -63,4 +64,26 @@ public interface LayoutMasterDetailRepository {
 	 * @return list Detail
 	 */
 	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode);
+
+	/**
+	 * get detail
+	 * 
+	 * @param companyCode
+	 * @param layoutCode
+	 * @param startYM
+	 * @param categoryAtr
+	 * @param calculationMethod
+	 * @return
+	 */
+	List<LayoutMasterDetail> getDetail(String companyCode, String layoutCode, int startYM, int categoryAtr,
+			String calculationMethod);
+
+	/**
+	 * get detail by calculation
+	 * 
+	 * @param calculationMethod
+	 * @return
+	 */
+	List<LayoutMasterDetail> getDetailByCalculation(String calculationMethod);
+
 }

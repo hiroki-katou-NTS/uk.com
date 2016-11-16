@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata;
+package nts.uk.ctx.pr.proto.dom.personalinformation.holiday;
 
 import java.math.BigDecimal;
 

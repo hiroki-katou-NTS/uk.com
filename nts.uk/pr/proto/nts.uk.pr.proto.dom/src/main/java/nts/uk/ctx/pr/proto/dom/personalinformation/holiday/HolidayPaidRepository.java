@@ -1,8 +1,6 @@
-package nts.uk.ctx.pr.proto.dom.paymentdata.repository;
+package nts.uk.ctx.pr.proto.dom.personalinformation.holiday;
 
 import java.util.List;
-
-import nts.uk.ctx.pr.proto.dom.paymentdata.HolidayPaid;
 
 /**
  * @author hungnm
