@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.layout.detail.CalculationMethod;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDataCheckService;
-import nts.uk.ctx.pr.proto.dom.personalinformation.employmentcontract.PayrollSystem;
+import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PayrollSystem;
 import nts.uk.shr.com.primitive.PersonId;
 
 @RequestScoped
@@ -22,25 +22,5 @@ public class PaymentDataCheckServiceImpl implements PaymentDataCheckService {
 		return false;
 	}
 
-	@Override
-	public boolean isErrorSystem(PayrollSystem payrollSystem, CalculationMethod calculationMethod, TaxAtr taxAttribute, CommuteAtr commuteAttribute) {
-		if (payrollSystem == null) {
-			return false;
-		}
-		
-		if (calculationMethod == null) {
-			return false;
-		}
-		
-		if (taxAttribute == null) {
-			return false;
-		}
-		
-		if (commuteAttribute == null) {
-			return false;
-		}
-		
-		return true;
-	}
 
 }

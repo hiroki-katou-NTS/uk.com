@@ -23,7 +23,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	 * find all item master by company code, category type
 	 */
 	@Override
-	public List<ItemMaster> findAll(String companyCode, int categoryType) {		
+	public List<ItemMaster> getAllItemMaster(String companyCode, int categoryType) {		
 		return this.queryProxy().query(FIND_ALL_ITEMS, QcamtItem.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType)
@@ -44,24 +44,12 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	/**
 	 * find item by company code, category type, item code
 	 */
-	public Optional<ItemMaster> find(String companyCode, int categoryType, String itemCode) {
+	public Optional<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode) {
 		return this.queryProxy().query(FIND_ITEM, QcamtItem.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType)
 				.setParameter("itemCd", itemCode)
 				.getSingle(c -> toDomain(c));
-	}
-
-	@Override
-	public List<ItemMaster> getAllItemMaster(String companyCode, int categoryType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

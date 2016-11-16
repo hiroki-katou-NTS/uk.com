@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
-import nts.uk.ctx.pr.proto.dom.personalinformation.wage.wagename.PersonalWageCode;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode;
 /**
  * 
  * 明 細 書 マ ス タ 明 細
@@ -22,9 +22,21 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**会社ＣＤ */
 	@Getter
 	private CompanyCode companyCode;
+	/**明細書コード*/
+	@Getter
+	private LayoutCode layoutCode;
+	/**開始年月*/
+	@Getter
+	private YearMonth startYM;
+	/** 終了年月 */
+	@Getter
+	private YearMonth endYM;
 	/**カテゴリ区分 */
 	@Getter
-	private CategoryAtr categoryAttribute;
+	private CategoryAtr categoryAtr;	
+	/**項目CD */
+	@Getter
+	private ItemCode itemCode;
 	@Getter
 	private List<RangeChecker> alarm;
 	/**計算方法 */
@@ -41,18 +53,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private DisplayAtr displayAtr;
 	@Getter
 	private List<RangeChecker> error;
-	/**会社ＣＤ */
-	@Getter
-	private ItemCode itemCode;
-	/**明細書コード*/
-	@Getter
-	private LayoutCode layoutCode;
-	/**開始年月*/
-	@Getter
-	private YearMonth startYM;
-	/** 終了年月 */
-	@Getter
-	private YearMonth endYM;
+	
 	/** 合計対象区分 */
 	@Getter
 	private SumScopeAtr sumScopeAtr;
@@ -76,15 +77,14 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private CommuteAtr commuteAtr;
 	/**個人金額コード	 */
 	@Getter
-	private PersonalWageCode personalWageCode;
-	
-	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAttribute,
+	private PersonalWageCode personalWageCode;	
+	public LayoutMasterDetail(CompanyCode companyCode, CategoryAtr categoryAtr,
 			CalculationMethod calculationMethod, ColumnPosition columnPosition,
 			ItemCode itemCode, LayoutCode layoutCode, YearMonth startYM, SumScopeAtr sumScopeAtr,
 			List<RangeChecker> alarm, List<RangeChecker> error,List<Distribute> distribute,PersonalWageCode personalWageCode) {
 		super();
 		this.companyCode = companyCode;
-		this.categoryAttribute = categoryAttribute;
+		this.categoryAtr = categoryAtr;
 		this.calculationMethod = calculationMethod;
 		this.columnPosition = columnPosition;
 		this.itemCode = itemCode;
