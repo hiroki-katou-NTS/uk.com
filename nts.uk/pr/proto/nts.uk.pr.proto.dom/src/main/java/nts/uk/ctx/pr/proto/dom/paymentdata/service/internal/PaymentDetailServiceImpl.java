@@ -87,31 +87,31 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		// get layout lines
 		List<LayoutMasterLine> layoutLines = layoutLineMasterRepo.getLines(companyCode.v(), startYearMonth, stmtCode);
 		
-		// get layout detail master
-		Optional<LayoutMasterDetail> layoutDetail = layoutDetailMasterRepo.find(companyCode.v(), layoutHead.getStmtCode().v(), startYearMonth, stmtCode, 2, autoLineID);
-		
-		// get item
-		Optional<ItemMaster> itemMaster = itemMasterRepo.getItemMaster(companyCode.v(), categoryAtr, itemCode);
-		
-		// get PayrollSystem
-		List<PersonalEmploymentContract> personalEmploymentContractList = personalEmploymentContractRepo.find(companyCode.v(), personIdList, baseYmd);
-		
-		// get holiday
-		List<HolidayPaid> holiday = holidayPaidRepo.find(companyCode.v(), personIdList);
-		
-		Map<PersonId, PersonalEmploymentContract> maps = personalEmploymentContractList.stream().collect(Collectors.toMap(PersonalEmploymentContract::getPersonId, x -> x));
-		
-		PersonalEmploymentContract personal = maps.get(personId);
-		
-		// PayrollSystem == 2 || 3 
-		if (personal.isPayrollSystemDailyOrDay()) {
-			payValue = getPayValueByMonthlyDaily(itemCode, holiday, payDay, payCalBasic);
-		} else if (personal.isPayrollSystemDailyOrMonthly()) { 
-			// PayrollSystem == 0 || 1
-			payValue = getPayValueByPayrollDayHours(itemCode, holiday);
-		} else {
-			throw new RuntimeException("Error system");
-		}
+//		// get layout detail master
+//		Optional<LayoutMasterDetail> layoutDetail = layoutDetailMasterRepo.find(companyCode.v(), layoutHead.getStmtCode().v(), startYearMonth, stmtCode, 2, autoLineID);
+//		
+//		// get item
+//		Optional<ItemMaster> itemMaster = itemMasterRepo.getItemMaster(companyCode.v(), categoryAtr, itemCode);
+//		
+//		// get PayrollSystem
+//		List<PersonalEmploymentContract> personalEmploymentContractList = personalEmploymentContractRepo.find(companyCode.v(), personIdList, baseYmd);
+//		
+//		// get holiday
+//		List<HolidayPaid> holiday = holidayPaidRepo.find(companyCode.v(), personIdList);
+//		
+//		Map<PersonId, PersonalEmploymentContract> maps = personalEmploymentContractList.stream().collect(Collectors.toMap(PersonalEmploymentContract::getPersonId, x -> x));
+//		
+//		PersonalEmploymentContract personal = maps.get(personId);
+//		
+//		// PayrollSystem == 2 || 3 
+//		if (personal.isPayrollSystemDailyOrDay()) {
+//			payValue = getPayValueByMonthlyDaily(itemCode, holiday, payDay, payCalBasic);
+//		} else if (personal.isPayrollSystemDailyOrMonthly()) { 
+//			// PayrollSystem == 0 || 1
+//			payValue = getPayValueByPayrollDayHours(itemCode, holiday);
+//		} else {
+//			throw new RuntimeException("Error system");
+//		}
 		
 		return payValue;
 	}
