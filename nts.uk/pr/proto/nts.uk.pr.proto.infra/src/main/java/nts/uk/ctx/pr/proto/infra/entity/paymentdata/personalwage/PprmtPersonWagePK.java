@@ -27,6 +27,6 @@ public class PprmtPersonWagePK implements Serializable {
 	public String pWageCd;
 	
 	@Column(name = "STR_YM")
-	public BigDecimal strYm;
+	public int strYm;
 
 }

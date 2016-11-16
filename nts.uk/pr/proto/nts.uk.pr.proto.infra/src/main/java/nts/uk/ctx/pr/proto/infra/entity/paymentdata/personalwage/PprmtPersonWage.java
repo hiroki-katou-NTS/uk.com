@@ -16,7 +16,7 @@ public class PprmtPersonWage extends AggregateTableEntity {
     public PprmtPersonWagePK pprmtPersonWagePK;
 	
 	@Column(name = "END_YM")
-	public BigDecimal endYm;
+	public int endYm;
 	
 	@Column(name = "VAL")
 	public BigDecimal val;
