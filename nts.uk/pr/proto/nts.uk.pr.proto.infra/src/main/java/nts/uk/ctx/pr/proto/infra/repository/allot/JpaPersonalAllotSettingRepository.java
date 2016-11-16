@@ -23,7 +23,7 @@ public class JpaPersonalAllotSettingRepository extends JpaRepository implements 
 
 	private static PersonalAllotSetting toDomain(QstmtStmtAllotPs entity) {
 		val domain = PersonalAllotSetting.createFromJavaType(entity.qstmtStmtAllotPsPK.companyCode,
-				entity.qstmtStmtAllotPsPK.personId, entity.qstmtStmtAllotPsPK.startDate);
+				entity.qstmtStmtAllotPsPK.personId, entity.qstmtStmtAllotPsPK.startDate, entity.bonusDetailCode, entity.paymentDetailCode);
 
 		entity.toDomain(domain);
 		return domain;
