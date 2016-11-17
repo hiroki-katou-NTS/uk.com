@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.screen.app.query.paymentdata.processor;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
@@ -12,7 +13,11 @@ import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -43,6 +48,9 @@ public class GetPaymentDataQueryProcessor {
 	@Inject
 	private LayoutMasterLineRepository layoutMasterLineRepository;
 
+	@Inject
+	private LayoutMasterDetailRepository layoutMasterDetailRepository;
+
 	/**
 	 * get data detail
 	 * 
@@ -52,7 +60,9 @@ public class GetPaymentDataQueryProcessor {
 	 */
 	public Optional<PaymentDataResult> find(String personId, int baseYM) {
 		String companyCode = AppContexts.user().companyCode();
+		int startYM;
 		String stmtCode = "";
+
 		// get stmtCode
 		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, personId, baseYM);
 		if (optpersonalPS.isPresent()) {
@@ -63,15 +73,18 @@ public class GetPaymentDataQueryProcessor {
 
 		// get layout master info
 		LayoutMaster layout = this.layoutMasterRepository.find(companyCode, stmtCode, baseYM)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("蟇ｾ雎｡繝�繝ｼ繧ｿ縺後≠繧翫∪縺帙ｓ縲�")));
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
+		startYM = layout.getStartYM().v();
 
 		// 明細書マスタカテゴリ
-		this.layoutMasterCategoryRepository.getCategories(companyCode, layout.getStmtCode().v(), baseYM);
+		List<LayoutMasterCategory> categories = this.layoutMasterCategoryRepository.getCategories(companyCode,
+				layout.getStmtCode().v(), startYM);
 
 		// 明細書マスタ行
+		List<LayoutMasterLine> lines = this.layoutMasterLineRepository.getLines(companyCode, startYM, stmtCode);
 
-		// this.layoutMasterLineRepository.getLines(companyCode, layoutCode,
-		// startYm, autoLineId, categoryAttribute);
+		List<LayoutMasterDetail> lineDetails = this.layoutMasterDetailRepository.getDetails(companyCode, startYM,
+				stmtCode);
 
 		return null;
 	}
