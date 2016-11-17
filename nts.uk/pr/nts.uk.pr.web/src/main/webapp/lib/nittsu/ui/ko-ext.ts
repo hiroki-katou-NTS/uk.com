@@ -61,7 +61,128 @@ module nts.uk.ui.koExtentions {
             $input.val(newText);
         }
     }
+    
+    /**
+     * NumberEditor
+     */
+    class NtsNumberEditorBindingHandler implements KnockoutBindingHandler {
 
+        constraint: validation.CharType;
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var data = valueAccessor();
+            var setValue: (newText: string) => {} = data.value;
+            this.constraint = validation.getCharType(data.constraint);
+            var $input = $(element);
+
+            $input.change(function() {
+                var newText = $input.val();
+                bindingContext.$data.change(newText);
+                setValue(newText);
+            });
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data
+            var data = valueAccessor();
+            var getValue: () => string = data.value;
+            var option: any = ko.unwrap(data.option);
+            
+            var enable: boolean = ko.unwrap(option.enable);
+            var readonly: boolean = ko.unwrap(option.readonly);
+            var placeholder: string = ko.unwrap(option.placeholder);
+            var width: string = ko.unwrap(option.width);
+            var textalign: string = ko.unwrap(option.textalign);
+            
+            var $input = $(element);
+            
+            $input.attr('type', 'number');
+            if(enable !== false)
+                $input.removeAttr('disabled');
+            else
+                $input.attr('disabled','disabled');
+            if(readonly === false)
+                $input.removeAttr('readonly');
+            else
+                $input.attr('readonly','readonly');
+            $input.attr('placeholder', placeholder);
+            if(width.trim() != "")
+                $input.width(width);
+            if(textalign.trim() != "")
+                $input.css('text-align', textalign);
+            
+            var newText = getValue();
+            $input.val(newText);
+        }
+    }
+    
+    /**
+     * TimeEditor
+     */
+    class NtsTimeEditorBindingHandler implements KnockoutBindingHandler {
+
+        constraint: validation.CharType;
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var data = valueAccessor();
+            var setValue: (newText: string) => {} = data.value;
+            this.constraint = validation.getCharType(data.constraint);
+            var $input = $(element);
+
+            $input.change(function() {
+                var newText = $input.val();
+                bindingContext.$data.change(newText);
+                setValue(newText);
+            });
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data
+            var data = valueAccessor();
+            var getValue: () => string = data.value;
+            var option: any = ko.unwrap(data.option);
+            
+            var enable: boolean = ko.unwrap(option.enable);
+            var readonly: boolean = ko.unwrap(option.readonly);
+            var placeholder: string = ko.unwrap(option.placeholder);
+            var width: string = ko.unwrap(option.width);
+            var textalign: string = ko.unwrap(option.textalign);
+            
+            var $input = $(element);
+            
+            $input.attr('type', 'time');
+            if(enable !== false)
+                $input.removeAttr('disabled');
+            else
+                $input.attr('disabled','disabled');
+            if(readonly === false)
+                $input.removeAttr('readonly');
+            else
+                $input.attr('readonly','readonly');
+            $input.attr('placeholder', placeholder);
+            if(width.trim() != "")
+                $input.width(width);
+            if(textalign.trim() != "")
+                $input.css('text-align', textalign);
+            
+            var newText = getValue();
+            console.log(newText);
+            $input.val(newText);
+        }
+    }
+    
     /**
      * TextBox
      */
@@ -1027,6 +1148,8 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
+    ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
+    ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
