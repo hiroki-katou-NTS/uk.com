@@ -7,9 +7,11 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHead;
+import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHeadPK;
 
 @RequestScoped
 public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository{
@@ -80,8 +82,11 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public void remove(String companyCode, String layoutCode, int startYm) {
-		
-		
+		val objectKey = new QstmtStmtLayoutHeadPK();
+		objectKey.companyCd = companyCode;
+		objectKey.stmtCd = layoutCode;
+		objectKey.strYm = startYm;
+		this.commandProxy().remove(QstmtStmtLayoutHead.class, objectKey);
 	}
 
 	@Override

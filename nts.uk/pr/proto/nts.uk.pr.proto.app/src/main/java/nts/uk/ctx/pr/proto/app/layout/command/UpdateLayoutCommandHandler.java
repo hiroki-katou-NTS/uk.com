@@ -15,8 +15,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 public class UpdateLayoutCommandHandler extends CommandHandler<UpdateLayoutCommand> {
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateLayoutCommand> arg0) {
-		// TODO Auto-generated method stub
+	protected void handle(CommandHandlerContext<UpdateLayoutCommand> handlerContext) {
+		
 		
 	}
 
