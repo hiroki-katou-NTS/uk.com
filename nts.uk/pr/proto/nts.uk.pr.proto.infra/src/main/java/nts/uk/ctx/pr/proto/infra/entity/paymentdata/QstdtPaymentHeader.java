@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import java.util.List;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -34,7 +35,7 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
 	@Temporal(TemporalType.DATE)
-	public Date closingYMD;
+	public LocalDate standardDate;
 	
 	@Column(name = "EMPCD")
 	public String employmentCode;
@@ -86,15 +87,15 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "AGED_CONT_INSU_ATR")
-	public String ageContinuationInsureATR;
+	public int ageContinuationInsureAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "TENURE_ATR")
-	public int tenureATR;
+	public int tenureAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "TAX_ATR")
-	public int taxCaculateATR;
+	public int taxAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "PENSION_INSU_GRADE")
@@ -106,19 +107,19 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "EMPINSU_ATR")
-	public int employementInsuranceCalculateATR;
+	public int employementInsuranceAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "DEPENDENT_NUMBER")
-	public int dependentNumberPerson;
+	public int dependentNumber;
 	
 	@Basic(optional = false)
 	@Column(name = "WORK_INS_CALC_ATR")
-	public String workInsuranceCalculateATR;
+	public int workInsuranceCalculateAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "INSURED_ATR")
-	public int insuredATR;
+	public int insuredAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "BONUS_TAX_RATE")
@@ -126,7 +127,7 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "CALC_FLG")
-	public int calculateFlag;
+	public int calcFlag;
 	
 	@Basic(optional = false)
 	@Column(name = "MAKE_METHOD_FLG")
