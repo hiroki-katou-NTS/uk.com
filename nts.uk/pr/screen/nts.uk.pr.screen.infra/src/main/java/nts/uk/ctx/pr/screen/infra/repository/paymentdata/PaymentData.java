@@ -41,12 +41,17 @@ public class PaymentData extends JpaRepository implements PaymentDataQueryReposi
 													" AND d.PAY_BONUS_ATR = :PAY_BONUS_ATR" +
 													" AND d.PROCESSING_YM = :PROCESSING_YM" +
 													" AND d.CTG_ATR = :CTG_ATR" +
-													" AND d.DEDUCT_ATR = :DEDUCT_ATR";
+													" AND d.DEDUCT_ATR = :DEDUCT_ATR" +
+													" AND d.ITEM_CD = :ITEM_CD";
 	
 	@Override
-	public List<DetailItemDto> findAll(String companyCode, String personId, int payBonusAtr, int processingYM) {
+	public List<DetailItemDto> findAll(String companyCode, String personId, int payBonusAtr, int processingYm) {
 		return this.queryProxy()
 						.query(SELECT_ALL, DetailItemDto.class)
+							.setParameter("CCD", companyCode)
+							.setParameter("PID", personId)
+							.setParameter("PAY_BONUS_ATR", payBonusAtr)
+							.setParameter("PROCESSING_YM", processingYm)
 						.getList();
 	}
 
@@ -54,6 +59,11 @@ public class PaymentData extends JpaRepository implements PaymentDataQueryReposi
 	public List<DetailItemDto> findItemByCategory(String companyCode, String personId, int payBonusAtr,int processingYm, int categoryAtr) {
 		return this.queryProxy()
 				.query(SELECT_ITEM_BY_CATEGORY, DetailItemDto.class)
+					.setParameter("CCD", companyCode)
+					.setParameter("PID", personId)
+					.setParameter("PAY_BONUS_ATR", payBonusAtr)
+					.setParameter("PROCESSING_YM", processingYm)
+					.setParameter("CTG_ATR", categoryAtr)
 				.getList();
 	}
 
@@ -63,6 +73,12 @@ public class PaymentData extends JpaRepository implements PaymentDataQueryReposi
 		
 		return this.queryProxy()
 				.query(SELECT_DEDUCTION_ITEMS, DetailItemDto.class)
+					.setParameter("CCD", companyCode)
+					.setParameter("PID", personId)
+					.setParameter("PAY_BONUS_ATR", payBonusAtr)
+					.setParameter("PROCESSING_YM", processingYm)
+					.setParameter("CTG_ATR", categoryAtr)
+					.setParameter("DEDUCT_ATR", deductionAtr)
 				.getList();
 	}
 
@@ -72,6 +88,12 @@ public class PaymentData extends JpaRepository implements PaymentDataQueryReposi
 		
 		return this.queryProxy()
 				.query(SELECT_ITEM, DetailItemDto.class)
+					.setParameter("CCD", companyCode)
+					.setParameter("PID", personId)
+					.setParameter("PAY_BONUS_ATR", payBonusAtr)
+					.setParameter("PROCESSING_YM", processingYm)
+					.setParameter("CTG_ATR", categoryAtr)
+					.setParameter("ITEM_CD", itemCode)
 				.getSingle();
 	}
 	
