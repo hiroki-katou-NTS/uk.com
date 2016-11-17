@@ -6,12 +6,16 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
@@ -67,20 +71,21 @@ public class GetPaymentDataQueryProcessor {
 		}
 
 		// get layout master info
-//		LayoutMaster layout = this.layoutMasterRepository.find(companyCode, stmtCode, baseYM)
-//				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
-//		startYM = layout.getStartYM().v();
-//		
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, stmtCode, baseYM)
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
+		startYM = layout.getStartYM().v();
 
 		// 明細書マスタカテゴリ
-//		List<LayoutMasterCategory> categories = this.layoutMasterCategoryRepository.getCategories(companyCode,
-//				layout.getStmtCode().v(), startYM);
+		List<LayoutMasterCategory> categories = this.layoutMasterCategoryRepository.getCategories(companyCode,
+				layout.getStmtCode().v(), startYM);
 
 		// 明細書マスタ行
-//		List<LayoutMasterLine> lines = this.layoutMasterLineRepository.getLines(companyCode, startYM, stmtCode);
+		// List<LayoutMasterLine>C lines =
+		// this.layoutMasterLineRepository.getLines(companyCode, startYM,
+		// stmtCode);
 
-//		List<LayoutMasterDetail> lineDetails = this.layoutMasterDetailRepository.getDetails(companyCode, startYM,
-//				stmtCode);
+		List<LayoutMasterDetail> lineDetails = this.layoutMasterDetailRepository.getDetails(companyCode, stmtCode,
+				startYM);
 
 		return null;
 	}

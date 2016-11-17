@@ -18,17 +18,17 @@ public interface LayoutMasterCategoryRepository {
 	 * @param startYm
 	 * @return
 	 */
-	Optional<LayoutMasterCategory> find(String companyCode, String layoutCode, int startYm);
+/*	Optional<LayoutMasterCategory> find(String companyCode, String layoutCode, int startYm);
 
-	/**
+	*//**
 	 * find layout master category by companyCode
 	 * 
 	 * @param companyCode
 	 * @return
-	 */
+	 *//*
 	List<LayoutMasterCategory> findAll(String companyCode);
 
-	/**
+	*//**
 	 * add LayoutMasterCategory
 	 * 
 	 * @param companyCode
@@ -36,8 +36,8 @@ public interface LayoutMasterCategoryRepository {
 	 * @param startYm
 	 */
 
-	void add(String companyCode, String layoutCode, int startYm);
-
+//	void add(String companyCode, String layoutCode, int startYm);
+	void add(LayoutMasterCategory layoutMasterCategory);
 	/**
 	 * update LayoutMasterCategory
 	 * 
@@ -46,8 +46,8 @@ public interface LayoutMasterCategoryRepository {
 	 * @param startYm
 	 * @param categoryAtr
 	 */
-	void update(String companyCode, String stmtCode, int startYm, int categoryAtr);
-
+//	void update(String companyCode, String stmtCode, int startYm, int categoryAtr);
+	void update(LayoutMasterCategory layoutMasterCategory);
 	/**
 	 * delete a LayoutMasterCategory
 	 * 

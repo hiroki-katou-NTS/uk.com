@@ -15,7 +15,7 @@ public interface LayoutMasterLineRepository {
 	 * @param startYm
 	 * @param stmtCode
 	 */
-	void add(String companyCode, int startYm, String stmtCode);
+	void add(LayoutMasterLine layoutMasterLine);
 
 	/**
 	 * update a layout master line
@@ -26,7 +26,7 @@ public interface LayoutMasterLineRepository {
 	 * @param categoryAtr
 	 * @param stmtCode
 	 */
-	void update(String companyCode, int startYm, String autoLineID, String categoryAtr, String stmtCode);
+	void update(LayoutMasterLine layoutMasterLine);
 
 	/**
 	 * delete a layout master line
@@ -37,7 +37,7 @@ public interface LayoutMasterLineRepository {
 	 * @param categoryAtr
 	 * @param stmtCode
 	 */
-	void remove(String companyCode, int startYm, String autoLineID, String categoryAtr, String stmtCode);
+	void remove(String companyCode, int startYm, String autoLineID, int categoryAtr, String stmtCode);
 
 	Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId);
 

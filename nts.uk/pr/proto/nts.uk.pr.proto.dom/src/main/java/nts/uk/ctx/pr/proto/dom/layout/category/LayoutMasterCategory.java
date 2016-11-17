@@ -5,18 +5,14 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutAtr;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutName;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 
 /**
- * LayoutMasterCategory valueObject
+ * LayoutMasterCategory AggregateRoot
  * 
  * 
  *
@@ -33,36 +29,30 @@ public class LayoutMasterCategory extends AggregateRoot {
 	/** 明細書コード */
 	@Getter
 	private LayoutCode stmtCode;
+	
+	@Getter
+	private CategoryAtr ctAtr;
 
 	/** 終了年月 */
 	@Getter
 	private YearMonth endYM;
-
-	/** レイアウト区分 */
-	@Getter
-	private LayoutAtr layoutAtr;
 
 	/** 明細書名 */
 	@Getter
 	private CategoryPosition ctgPos;
 	
 	@Getter
-	private CategoryAtr ctAtr;
-	
-	@Getter
 	private List<LayoutMasterLine> layoutMasterLines;
 
-	public LayoutMasterCategory(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM,
-			LayoutAtr layoutAtr, CategoryPosition ctgPos ,CategoryAtr atr) {
+	public LayoutMasterCategory(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode,CategoryAtr categoryAtr, YearMonth endYM,
+			 CategoryPosition ctgPos ) {
 		super();
 		this.companyCode = companyCode;
 		this.startYM = startYM;
 		this.stmtCode = stmtCode;
+		this.ctAtr = categoryAtr;
 		this.endYM = endYM;
-		this.layoutAtr = layoutAtr;
 		this.ctgPos = ctgPos;
-		this.ctAtr = ctAtr;
-
 	}
 
 	/**
@@ -70,12 +60,28 @@ public class LayoutMasterCategory extends AggregateRoot {
 	 * 
 	 * @return LayoutMasterCategory
 	 */
-
 	public static LayoutMasterCategory createFromJavaType(String companyCode, int startYM,
-			String stmtCode, int endYM, int layoutAtr ,int ctgPos ,int ctgAtr) {
+			String stmtCode,int ctgAtr, int endYM,int ctgPos ) {
 		
-		return new LayoutMasterCategory(new CompanyCode(companyCode), new YearMonth(startYM), new LayoutCode(stmtCode),
-				new YearMonth(endYM), EnumAdaptor.valueOf(layoutAtr, LayoutAtr.class), new CategoryPosition(ctgPos),EnumAdaptor.valueOf(ctgAtr, CategoryAtr.class));
-
+		return new LayoutMasterCategory(new CompanyCode(companyCode), new YearMonth(startYM), 
+				new LayoutCode(stmtCode),EnumAdaptor.valueOf(ctgAtr, CategoryAtr.class),
+				new YearMonth(endYM), new CategoryPosition(ctgPos));
+	}
+	
+	/**
+	 * 
+	 * @param companyCode
+	 * @param startYm
+	 * @param stmtCode
+	 * @param categoryAtr
+	 * @param endYm
+	 * @param ctgPos
+	 * @return
+	 */
+	public static LayoutMasterCategory createFromDomain(CompanyCode companyCode,
+			YearMonth startYm, LayoutCode stmtCode, CategoryAtr categoryAtr,
+			YearMonth endYm, CategoryPosition ctgPos){
+		
+		return new LayoutMasterCategory(companyCode, startYm, stmtCode, categoryAtr, endYm, ctgPos);
 	}
 }
