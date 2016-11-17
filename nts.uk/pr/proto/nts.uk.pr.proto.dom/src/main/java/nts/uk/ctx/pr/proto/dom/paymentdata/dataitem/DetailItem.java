@@ -7,7 +7,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.DetailItemPosition;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.InsuredAtr;
 
 /**
  * 明細データ明細
@@ -66,17 +65,14 @@ public class DetailItem extends DomainObject {
 		this.socialInsuranceAtr = socialInsuranceAtr;
 		this.laborInsuranceAtr = laborInsuranceAtr;
 	}
-	
+
 	public DetailItem createFromJavaType(String itemCode, BigDecimal value, int correctFlag, int socialInsuranceAtr,
 			int laborInsuranceAtr) {
-		
-		return new DetailItem(
-					new ItemCode(itemCode),
-					value.doubleValue(),
-					EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
-					EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
-					EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class)
-				);
+
+		return new DetailItem(new ItemCode(itemCode), value.doubleValue(),
+				EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
+				EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
+				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class));
 	}
 
 }
