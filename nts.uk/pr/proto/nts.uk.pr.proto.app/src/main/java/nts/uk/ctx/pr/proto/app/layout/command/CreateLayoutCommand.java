@@ -14,16 +14,16 @@ public class CreateLayoutCommand {
 	/** startYm của Layout được copy */
 	private int startYmCopied;
 	private String stmtCode;
-	private int startYM;
+	private int startYm;
 	private int layoutAtr;
 	private String stmtName;
-	private int endYM;
+	private int endYm;
 	/**
 	 * Convert to domain object from command values
 	 * @return
 	 */
 	public LayoutMaster toDomain(){
 		return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(), 
-					this.startYM, this.stmtCode, this.endYM, this.layoutAtr, this.stmtName);
+					this.startYm, this.stmtCode, this.endYm, this.layoutAtr, this.stmtName);
 	}
 }

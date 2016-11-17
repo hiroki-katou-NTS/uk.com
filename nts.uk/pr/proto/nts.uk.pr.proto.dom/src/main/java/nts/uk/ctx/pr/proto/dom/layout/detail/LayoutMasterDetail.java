@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.layout.detail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -87,6 +88,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private PersonalWageCode personalWageCode;	
 	
 	@Getter
+	@Setter
 	private ItemName itemAbName;
 	
 	public LayoutMasterDetail(
@@ -181,6 +183,94 @@ public class LayoutMasterDetail extends AggregateRoot{
 				new PersonalWageCode(personalWageCode)
 				);
 		
+	}
+	
+	/**
+	 * with ItemAbName of ItemCode
+	 * @param companyCode
+	 * @param layoutCode
+	 * @param startYm
+	 * @param endYm
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @param autoLineId
+	 * @param displayAtr
+	 * @param sumScopeAtr
+	 * @param calculationMethod
+	 * @param distributeWay
+	 * @param distributeSet
+	 * @param personalWageCode
+	 * @param setOffItemCode
+	 * @param commuteAtr
+	 * @param isErrorUseHigh
+	 * @param errorRangeHigh
+	 * @param isErrorUserLow
+	 * @param errorRangeLow
+	 * @param isAlamUseHigh
+	 * @param alamRangeHigh
+	 * @param isAlamUseLow
+	 * @param alamRangeLow
+	 * @param itemPosColumn
+	 * @return
+	 */
+	public static LayoutMasterDetail createFromJavaTypeWithName(
+			String companyCode,
+			String layoutCode,
+			int startYm,
+			int endYm,
+			int categoryAtr,
+			String itemCode,
+			String autoLineId,
+			int displayAtr,
+			int sumScopeAtr,
+			int calculationMethod,
+			int distributeWay,
+			int distributeSet, 
+			String personalWageCode,
+			String setOffItemCode,
+			int commuteAtr,
+			int isErrorUseHigh,
+			int errorRangeHigh,
+			int isErrorUserLow,
+			int errorRangeLow,
+			int isAlamUseHigh,
+			int alamRangeHigh,
+			int isAlamUseLow,
+			int alamRangeLow,
+			int itemPosColumn,
+			String itemAbName){
+		
+		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
+		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
+		
+		LayoutMasterDetail result = new LayoutMasterDetail(
+				new CompanyCode(companyCode),
+				new LayoutCode(layoutCode),
+				YearMonth.of(startYm),
+				YearMonth.of(endYm),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				new ItemCode(itemCode), 
+				new AutoLineId(autoLineId),
+				new ItemPosColumn(itemPosColumn),
+				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
+						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
+						error), 
+				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
+				new Distribute(
+						EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
+						EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
+				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
+				new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
+						EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
+						alam),
+				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
+				new ItemCode(setOffItemCode),
+				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
+				new PersonalWageCode(personalWageCode)
+				);
+		
+		result.setItemAbName(new ItemName(itemAbName));
+		return result;
 	}
 	
 
