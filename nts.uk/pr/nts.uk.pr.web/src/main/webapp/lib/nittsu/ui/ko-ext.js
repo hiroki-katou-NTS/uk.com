@@ -786,7 +786,7 @@ var nts;
                         // Get data.
                         var data = valueAccessor();
                         // Get step list.
-                        var options = data.steps;
+                        var options = ko.unwrap(data.steps);
                         // Container.
                         var container = $(element);
                         // Create steps.
@@ -843,10 +843,10 @@ var nts;
                         container.find('.actions').hide();
                         container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
                         $.fn.begin = function () {
-                            $(this.selector).setStep(0);
+                            $(this).setStep(0);
                         };
                         $.fn.end = function () {
-                            $(this.selector).setStep(options.length - 1);
+                            $(this).setStep(options.length - 1);
                         };
                     };
                     /**

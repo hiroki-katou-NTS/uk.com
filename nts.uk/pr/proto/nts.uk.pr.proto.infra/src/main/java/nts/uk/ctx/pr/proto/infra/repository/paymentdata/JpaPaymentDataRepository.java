@@ -59,4 +59,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 }
