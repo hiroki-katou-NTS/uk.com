@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.layout.line;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLengh(36)
+@StringMaxLength(36)
 public class AutoLineId extends StringPrimitiveValue<AutoLineId>{
 
 	public AutoLineId(String rawValue) {

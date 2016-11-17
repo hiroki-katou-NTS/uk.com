@@ -88,8 +88,8 @@ subprojects {
         // servlet
         compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	    
-	    compile group: 'nts.gul', name: 'nts.gul', version: '0.6'
-	    compile group: 'nts.arc', name: 'nts.arc', version: '0.7'
+	    compile group: 'nts.gul', name: 'nts.gul', version: '0.6.2'
+	    compile group: 'nts.arc', name: 'nts.arc', version: '0.7.1.2'
 	}
 }
 
@@ -124,6 +124,9 @@ project (':proto:nts.uk.pr.proto.infra') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':proto:nts.uk.pr.proto.dom')
 	}
+}
+project (':screen') {
+	apply plugin: 'eclipse-wtp'
 }
 project ('nts.uk.pr.web') {
 	apply plugin: 'war'

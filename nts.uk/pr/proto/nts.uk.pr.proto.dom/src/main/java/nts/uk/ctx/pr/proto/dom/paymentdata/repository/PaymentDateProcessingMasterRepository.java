@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.proto.dom.paymentdata.repository;
 
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 
 public interface PaymentDateProcessingMasterRepository {
@@ -13,13 +12,13 @@ public interface PaymentDateProcessingMasterRepository {
 	 * @param processingNo
 	 * @return PaymentDateProcessingMaster
 	 */
-	Optional<PaymentDateProcessingMaster> find(CompanyCode companyCode, int paymentBonusAtribute, int processingNo);
-	
+	Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute, int processingNo);
+
 	/**
 	 * 
 	 * @param companyCode
 	 * @param paymentBonusAtribute
 	 * @return PaymentDateProcessingMaster
 	 */
-	Optional<PaymentDateProcessingMaster> find(CompanyCode companyCode, int paymentBonusAtribute);
+	Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute);
 }

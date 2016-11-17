@@ -3,24 +3,7 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
-@RequestScoped
 public interface LayoutMasterDetailRepository {
-
-	/**
-	 * find layout master detail by company code, layout code, start date,
-	 * category code
-	 * 
-	 * @param companyCode
-	 * @param layoutCode
-	 * @param startYm
-	 * @param categoryAtr
-	 * @param autoLineID
-	 * @param itemCode
-	 * @return
-	 */
-	Optional<LayoutMasterDetail> find(String companyCode, String layoutCode, int startYm, String stmtCode,
-			String categoryAtr, String autoLineID, String itemCode);
 
 	/**
 	 * add a layout master detail
@@ -29,7 +12,7 @@ public interface LayoutMasterDetailRepository {
 	 * @param startYm
 	 * @param stmtCode
 	 */
-	void add(String companyCode, int startYm, String stmtCode);
+	void add(LayoutMasterDetail layoutMasterDetail);
 
 	/**
 	 * update a layout master detail
@@ -50,7 +33,7 @@ public interface LayoutMasterDetailRepository {
 	 * @param layoutCode
 	 * @param startYm
 	 * @param categoryAtr
-	 * @param itemCode 
+	 * @param itemCode
 	 */
 	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr, String itemCode);
 
@@ -58,9 +41,30 @@ public interface LayoutMasterDetailRepository {
 	 * get Detail
 	 * 
 	 * @param companyCode
-	 * @param startYM
-	 * @param stmtCode
-	 * @return list Detail
+	 * @param layout code
+	 * @param start YM
+	 * @return category type
 	 */
-	List<LayoutMasterDetail> getDetails(String companyCode, int startYM, String stmtCode);
+	List<LayoutMasterDetail> getDetails(
+			String companyCd, 
+			String stmtCd, 
+			int startYm);
+
+	/**
+	 * get detail
+	 * 
+	 * @param companyCode
+	 * @param layoutCode
+	 * @param startYM
+	 * @param categoryAtr
+	 * @param calculationMethod
+	 * @param item code
+	 * @return
+	 */
+	Optional<LayoutMasterDetail> getDetail(
+			String companyCd, 
+			String stmtCd, 
+			int startYm, 
+			int categoryAtr,
+			String itemCd);
 }

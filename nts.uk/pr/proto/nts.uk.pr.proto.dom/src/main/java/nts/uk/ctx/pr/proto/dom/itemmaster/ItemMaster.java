@@ -92,7 +92,11 @@ public class ItemMaster extends AggregateRoot{
 		super.validate();
 	}	
 	
-	public static ItemMaster createSimpleFromJavaType(String companyCode, String itemCode, int categoryAtr, String itemName)
+	public static ItemMaster createSimpleFromJavaType(
+			String companyCode, 
+			String itemCode, 
+			int categoryAtr, 
+			String itemName)
 	{
 		return new ItemMaster(new CompanyCode(companyCode),
 				new ItemCode(itemCode),
