@@ -79,7 +79,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**個人金額コード	 */
 	@Getter
 	private PersonalWageCode personalWageCode;	
-	public LayoutMasterDetail(ItemCode itemCode,
+	public LayoutMasterDetail(
+			CategoryAtr categoryAtr,
+			ItemCode itemCode,
 			SumScopeAtr sumScopeAtr,
 			CalculationMethod calculationMethod, 
 			Distribute distribute,
@@ -87,7 +89,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 			RangeChecker error,
 			RangeChecker alarm) {
 		super();
-		
+		this.categoryAtr = categoryAtr;
 		this.itemCode = itemCode;
 		this.sumScopeAtr = sumScopeAtr;
 		this.calculationMethod = calculationMethod;		
@@ -97,7 +99,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.alarm = alarm;
 	}
 	
-	public static LayoutMasterDetail createSimpleFromJavaType(String itemCode,
+	public static LayoutMasterDetail createSimpleFromJavaType(
+			int categoryAtr,
+			String itemCode,
 			int sumScopeAtr,
 			int calculationMethod,
 			int distributeWay,
@@ -113,7 +117,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int alamRangeLow){
 				Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
 				Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
-				return new LayoutMasterDetail(new ItemCode(itemCode), 
+				return new LayoutMasterDetail(
+						EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+						new ItemCode(itemCode), 
 						EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
 						EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class), 
 						new Distribute(EnumAdaptor.valueOf(distributeWay, DistributeWay.class)
