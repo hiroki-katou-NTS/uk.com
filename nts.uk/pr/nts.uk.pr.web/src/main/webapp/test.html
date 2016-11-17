@@ -106,8 +106,52 @@ hr {
 	};
 </script>
 <script>
+			var vm;
+			//Wizard User
+        	function User(code, name) {
+                this.code = ko.observable(code);
+                this.name = ko.observable(name);
+                this.name.subscribe(function (val) { alert(val); });
+            }
+			var _wizard = function() {
+				var self = this;
+				self.stepList = ko.observableArray([
+                    new Step('step-1', '.step-1'),
+                    new Step('step-2', '.step-2'),
+                    new Step('step-3', '.step-3'),
+                    new Step('step-4', '.step-4'),
+                    new Step('step-5', '.step-5'),
+                    new Step('step-6', '.step-6')
+                ]);
+                self.stepSelected = ko.observable(new Step('step-1', '.step-1'));
+	            self.user = ko.observable(new User('U1', 'User 1'));
+                self.begin =  function () {
+                    $('#wizard').begin();
+                };
+                self.end = function () {
+                    $('#wizard').end();
+                };
+                self.next = function () {
+                    $('#wizard').steps('next');
+                    console.log("next");
+                };
+                self.previous = function () {
+                    $('#wizard').steps('previous');
+                };
+                self.getCurrentStep = function () {
+                    alert($('#wizard').steps('getCurrentIndex'));
+                };
+                self.gotoStep = function () {
+                    var index = self.stepList().indexOf(stepSelected());
+                    $('#wizard').setStep(index);
+                };
+			};
+			function Step(id, content) {
+                this.id = ko.observable(id);
+                this.content = ko.observable(content);
+        	}
 			$(function () {
-				var vm = {
+				vm = {
 					companyCode: ko.observable('0001'),
 					companyName: ko.observable('てすと会社'),
 					// TextBox ViewModel
@@ -254,54 +298,16 @@ hr {
 						}
 					},
 					//Wizard ViewModel
-					wizard: {
-						stepList: ko.observableArray([
-		                    new Step('step-1', '.step-1'),
-		                    new Step('step-2', '.step-2'),
-		                    new Step('step-3', '.step-3'),
-		                    new Step('step-4', '.step-4'),
-		                    new Step('step-5', '.step-5'),
-		                    new Step('step-6', '.step-6')
-		                ]),
-		                stepSelected: ko.observable(new Step('step-1', '.step-1')),
-		                user: ko.observable(new User('U1', 'User 1')),
-		                begin: function () {
-		                    $('#wizard').begin();
-		                },
-		                end: function () {
-		                    $('#wizard').end();
-		                },
-		                next: function () {
-		                    $('#wizard').steps('next');
-		                },
-		                previous: function () {
-		                    $('#wizard').steps('previous');
-		                },
-		                getCurrentStep: function () {
-		                    alert($('#wizard').steps('getCurrentIndex'));
-		                },
-		                gotoStep: function () {
-		                    var index = stepList.indexOf(stepSelected());
-		                    $('#wizard').setStep(index);
-		                }
-					}
+					wizard: _wizard
 				};
 				//Wizard Step
-				function Step(id, content) {
-	                this.id = ko.observable(id);
-	                this.content = ko.observable(content);
-            	}
+				
 				//checkbox item
 				function BoxModel(id,name) {
 				    this.id = ko.observable(id);
 				    this.name = ko.observable(name);
 				}
-            	//Wizard User
-            	function User(code, name) {
-	                this.code = ko.observable(code);
-	                this.name = ko.observable(name);
-	                this.name.subscribe(function (val) { alert(val); });
-	            }
+            	
 				// ListBox & ComboBox Item
 				function ItemModel(code, name) {
 					this.code = code;
@@ -500,12 +506,12 @@ hr {
 				<select data-bind="options: stepList, 
 											optionsText: 'id',
 											value: stepSelected" style="width: 200px"></select>
-				<button data-bind="click: goto">Go to Step</button><br/>
+				<button data-bind="click: gotoStep">Go to Step</button><br/>
 			<div id="wizard"
 				data-bind="ntsWizard: {steps: stepList}"
 				class="cf">
 				<div class="steps">
-					<div class="begin step-1" data-icon="./lib/nittsu/uiimages/ntsWizard/start-images.jpg">再集計</div>
+					<div class="begin step-1" data-icon="./lib/nittsu/ui/images/ntsWizard/start-images.jpg">再集計</div>
 					<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする
 					</div>
 					<div class="step-3">対象社員を選ぶ</div>
