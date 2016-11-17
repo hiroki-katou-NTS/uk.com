@@ -20,7 +20,7 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutLinesPk.linePos = :ctgAtr"
-//	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
+			// private final String SELECT_DETAIL = SELECT_ALL_DETAILS
 			+ " AND c.qstmtStmtLayoutLinesPk.autoLineId = :autoLineId";
 
 	@Override
@@ -82,6 +82,16 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	public Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void add(List<LayoutMasterLine> lines) {
+		this.commandProxy().insertAll(lines);
+	}
+
+	@Override
+	public void update(List<LayoutMasterLine> lines) {
+		this.commandProxy().updateAll(lines);
 	}
 
 }

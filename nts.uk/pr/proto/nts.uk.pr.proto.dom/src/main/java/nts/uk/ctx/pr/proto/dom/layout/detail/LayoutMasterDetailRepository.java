@@ -3,6 +3,11 @@ package nts.uk.ctx.pr.proto.dom.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
+
 public interface LayoutMasterDetailRepository {
 
 	/**
@@ -13,6 +18,12 @@ public interface LayoutMasterDetailRepository {
 	 * @param stmtCode
 	 */
 	void add(LayoutMasterDetail layoutMasterDetail);
+	
+	/**
+	 * add list details
+	 * @param details
+	 */
+	void add(List<LayoutMasterDetail> details);
 
 	/**
 	 * update a layout master detail
@@ -20,13 +31,19 @@ public interface LayoutMasterDetailRepository {
 	void update(LayoutMasterDetail layoutMasterDetail);
 
 	/**
+	 * update list details
+	 * @param details
+	 */
+	void update(List<LayoutMasterDetail> details);
+	
+	/**
 	 * delete a layout master detail
 	 */
-	void remove(String companyCode
-			, String layoutCode
-			, int startYm
+	void remove(CompanyCode companyCode
+			, LayoutCode layoutCode
+			, YearMonth startYm
 			, int categoryAtr
-			, String itemCode);
+			, ItemCode itemCode);
 
 	/**
 	 * get Detail
@@ -40,6 +57,12 @@ public interface LayoutMasterDetailRepository {
 			String companyCd, 
 			String stmtCd, 
 			int startYm);
+	
+	List<LayoutMasterDetail> getDetailsByCategory(
+			String companyCd, 
+			String stmtCd, 
+			int startYm,
+			int categoryAtr);
 
 	/**
 	 * get detail

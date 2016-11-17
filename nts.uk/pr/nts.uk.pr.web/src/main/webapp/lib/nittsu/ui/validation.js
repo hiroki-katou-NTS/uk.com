@@ -6,8 +6,12 @@ var nts;
         (function (ui) {
             var validation;
             (function (validation) {
+                /**
+                 * Type of characters
+                 */
                 var CharType = (function () {
-                    function CharType(width, validator) {
+                    function CharType(viewName, width, validator) {
+                        this.viewName = viewName;
                         this.width = width;
                         this.validator = validator;
                     }
@@ -21,6 +25,12 @@ var nts;
                         }
                         return result;
                     };
+                    CharType.prototype.buildConstraintText = function (maxLength) {
+                        return this.viewName + this.getViewLength(maxLength) + '文字';
+                    };
+                    CharType.prototype.getViewLength = function (length) {
+                        return Math.floor(length / (this.width * 2));
+                    };
                     return CharType;
                 }());
                 validation.CharType = CharType;
@@ -31,8 +41,8 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                function getCharType(primitiveValueConstraint) {
-                    var constraint = __viewContext.primitiveValueConstraints[primitiveValueConstraint];
+                function getCharType(primitiveValueName) {
+                    var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     var charType = charTypes[constraint.charType];
                     if (charType === undefined) {
                         throw new Error('invalid charTypeName: ' + constraint.charType);
@@ -41,11 +51,11 @@ var nts;
                 }
                 validation.getCharType = getCharType;
                 var charTypes = {
-                    AnyHalfWidth: new CharType(0.5, nts.uk.text.allHalf),
-                    AlphaNumeric: new CharType(0.5, nts.uk.text.allHalfAlphanumeric),
-                    Alphabet: new CharType(0.5, nts.uk.text.allHalfAlphabet),
-                    Numeric: new CharType(0.5, nts.uk.text.allHalfNumeric),
-                    Any: new CharType(1, nts.uk.util.alwaysTrue),
+                    AnyHalfWidth: new CharType('半角', 0.5, nts.uk.text.allHalf),
+                    AlphaNumeric: new CharType('半角英数字', 0.5, nts.uk.text.allHalfAlphanumeric),
+                    Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
+                    Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
+                    Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
                 };
             })(validation = ui.validation || (ui.validation = {}));
         })(ui = uk.ui || (uk.ui = {}));

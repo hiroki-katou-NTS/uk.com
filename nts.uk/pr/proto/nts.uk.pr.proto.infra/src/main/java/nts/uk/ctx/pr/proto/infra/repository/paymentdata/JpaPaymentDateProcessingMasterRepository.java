@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.proto.infra.entity.paymentdata.paymentdatemaster.QpdmtPaydayProcessing;
+import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessing;
 
 @RequestScoped
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository

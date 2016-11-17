@@ -13,5 +13,5 @@ public interface PaymentDateMasterRepository {
 	 * @param sparePayAtr
 	 * @return paymentDateMaster
 	 */
-	Optional<PaymentDateMaster> find(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr);
+	Optional<PaymentDateMaster> find(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr, int processingNo);
 }

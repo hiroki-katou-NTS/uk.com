@@ -7,6 +7,10 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
@@ -22,6 +26,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
+	
+	
 	@Override
 	public void add(LayoutMasterDetail domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -32,10 +38,10 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		entity.fromDomain(domain);
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
-		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYM().v();
+		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYm().v();
 		entity.qstmtStmtLayoutDetailPk.ctgAtr = domain.getCategoryAtr().value;
 		entity.qstmtStmtLayoutDetailPk.itemCd = domain.getItemCode().v();
-		entity.endYm = domain.getEndYM().v();
+		entity.endYm = domain.getEndYm().v();
 		entity.autoLineId = domain.getAutoLineId().v();
 		//xem lai voi qa 86
 		//entity.itemPosColumn = domain.geti
@@ -86,14 +92,22 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	
 	private static LayoutMasterDetail toDomain(QstmtStmtLayoutDetail entity) {
-		val domain = LayoutMasterDetail.createSimpleFromJavaType(
+		val domain = LayoutMasterDetail.createFromJavaType(
+				entity.qstmtStmtLayoutDetailPk.companyCd,
+				entity.qstmtStmtLayoutDetailPk.stmtCd,
+				entity.qstmtStmtLayoutDetailPk.strYm,
+				entity.endYm,
 				entity.qstmtStmtLayoutDetailPk.ctgAtr,
 				entity.qstmtStmtLayoutDetailPk.itemCd,
+				entity.autoLineId,
+				entity.dispAtr,
 				entity.sumScopeAtr, 
 				entity.calcMethod,
 				entity.distributeWay,
 				entity.distributeSet,
 				entity.pWageCd,
+				entity.setoffItemCd,
+				entity.commuteAtr,
 				entity.errRangeHighAtr,
 				entity.errRangeHigh,
 				entity.errRangeLowAtr,
@@ -101,7 +115,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeHighAtr,
 				entity.alRangeHigh,
 				entity.alRangeLowAtr,
-				entity.alRangeLow);
+				entity.alRangeLow,
+				entity.itemPosColumn);
 		entity.toDomain(domain);
 		return domain;
 	}
@@ -122,19 +137,35 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	}
 
 	@Override
-	public void remove(String companyCode,
-			String layoutCode,
-			int startYm, 
+	public void remove(CompanyCode companyCode,
+			LayoutCode layoutCode,
+			YearMonth startYm, 
 			int categoryAtr, 
-			String itemCode) {
+			ItemCode itemCode) {
 		val object = new QstmtStmtLayoutDetailPK();
-		object.companyCd = companyCode;
-		object.stmtCd = layoutCode;
-		object.strYm = startYm;
+		object.companyCd = companyCode.v();
+		object.stmtCd = layoutCode.v();
+		object.strYm = startYm.v();
 		object.ctgAtr = categoryAtr;
-		object.itemCd = itemCode;		
+		object.itemCd = itemCode.v();		
 		this.commandProxy().remove(QstmtStmtLayoutDetail.class, object);
 		
 	}
 
+	@Override
+	public void add(List<LayoutMasterDetail> details) {
+		this.commandProxy().insertAll(details);
+	}
+
+	@Override
+	public void update(List<LayoutMasterDetail> details) {
+		this.commandProxy().updateAll(details);
+	}
+
+	@Override
+	public List<LayoutMasterDetail> getDetailsByCategory(String companyCd, String stmtCd, int startYm,
+			int categoryAtr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

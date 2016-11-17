@@ -1,7 +1,7 @@
 module nts.uk.ui.koExtentions {
 
     import validation = nts.uk.ui.validation;
-
+    
     /**
      * TextEditor
      */
@@ -887,13 +887,13 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Get step list.
-            var options: Array<any> = data.steps;
+            var options: Array<any> = ko.unwrap(data.steps);
             // Container.
             var container = $(element);
 
             // Create steps.
             for (var i = 0; i < options.length; i++) {
-                var contentClass: string = options[i].content;
+                var contentClass: string = ko.unwrap(options[i].content);
                 var htmlStep = container.children('.steps').children(contentClass).html();
                 var htmlContent = container.children('.contents').children(contentClass).html();
                 container.append('<h1 class="' + contentClass + '">' + htmlStep + '</h1>');
@@ -954,11 +954,11 @@ module nts.uk.ui.koExtentions {
             container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
 
             $.fn.begin = function() {
-                $(this.selector).setStep(0);
+                $(this).setStep(0);
             }
 
             $.fn.end = function() {
-                $(this.selector).setStep(options.length - 1);
+                $(this).setStep(options.length - 1);
             }
         }
 
@@ -968,8 +968,63 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
     }
+    
+    
+    
+    /**
+     * FormLabel
+     */
+    class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
+        
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
+            var data = valueAccessor();
+            var primitiveValueName = data.constraint;
+            var isRequired = data.required === true;
+            var isInline = data.inline === true;
+            
+            var $formLabel = $(element).addClass('form-label');
+            
+            $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
+            
+            if (isRequired) {
+                $formLabel.addClass('required');
+            }
+            
+            if (primitiveValueName !== undefined) {
+                $formLabel.addClass(isInline ? 'inline' : 'broken');
+                
+                var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValueName);
+                $('<i/>').text(constraintText).appendTo($formLabel);
+            }
+        }
+        
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        }
+        
+        static buildConstraintText(primitiveValueName: string) {
+            var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
+                
+            var constraintText: string;
+            switch (constraint.valueType) {
+                case 'String':
+                    return uk.ui.validation.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
+                default:
+                    return 'ERROR';
+            }
+        }
+    }
+
+    
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
 
+    ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();

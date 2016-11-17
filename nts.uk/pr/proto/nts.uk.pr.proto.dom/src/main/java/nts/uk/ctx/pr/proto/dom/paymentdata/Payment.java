@@ -108,6 +108,9 @@ public class Payment extends AggregateRoot {
 	private MakeMethodFlag makeMethodFlag;
 
 	@Getter
+	private Comment comment;
+	
+	@Getter
 	private List<DetailItem> detailPaymentItems;
 
 	@Getter
@@ -157,7 +160,8 @@ public class Payment extends AggregateRoot {
 				InsuredAtr insuredAtr, 
 				BonusTaxRate bonusTaxRate,
 				CalcFlag calcFlag, 
-				MakeMethodFlag makeMethodFlag) {
+				MakeMethodFlag makeMethodFlag,
+				Comment comment) {
 		
 		super();
 		this.companyCode = companyCode;
@@ -184,6 +188,7 @@ public class Payment extends AggregateRoot {
 		this.bonusTaxRate = bonusTaxRate;
 		this.calcFlag = calcFlag;
 		this.makeMethodFlag = makeMethodFlag;
+		this.comment = comment;
 	}
 	
 	public static Payment createFromJavaType(
@@ -210,7 +215,9 @@ public class Payment extends AggregateRoot {
 							int insuredAtr, 
 							int bonusTaxRate,
 							int calcFlag, 
-							int makeMethodFlag){
+							int makeMethodFlag,
+							String comment
+			){
 		
 		return new Payment(
 					new CompanyCode(companyCode),
@@ -236,6 +243,41 @@ public class Payment extends AggregateRoot {
 					EnumAdaptor.valueOf(insuredAtr, InsuredAtr.class),
 					new BonusTaxRate(bonusTaxRate),
 					EnumAdaptor.valueOf(calcFlag, CalcFlag.class),
-					EnumAdaptor.valueOf(makeMethodFlag, MakeMethodFlag.class));
+					EnumAdaptor.valueOf(makeMethodFlag, MakeMethodFlag.class),
+					new Comment(comment));
+	}
+	
+	public static Payment AddOrUpdateFromJavaType(String companyCode, 
+							String personId, 
+							int processingNo, 
+							int  payBonusAtr,
+							int processingYM, 
+							int sparePayAtr, 
+							LocalDate standardDate,
+							String specificationCode, 
+							String residenceCode, 
+							String residenceName,
+							int healthInsuranceGrade, 
+							int healthInsuranceAverageEarn,
+							int ageContinuationInsureAtr, 
+							int tenureAtr, 
+							int taxAtr,
+							int pensionInsuranceGrade, 
+							int pensionAverageEarn,
+							int employmentInsuranceAtr, 
+							int dependentNumber,
+							int workInsuranceCalculateAtr, 
+							int insuredAtr, 
+							int bonusTaxRate,
+							int calcFlag, 
+							int makeMethodFlag,
+							List<DetailItem> detailPaymentItems,
+							List<DetailDeductionItem> detailDeductionItems,
+							List<DetailItem> detailPersonalTimeItems,
+							List<DetailItem> detailArticleItems
+							) {
+		
+		return null;
+		
 	}
 }

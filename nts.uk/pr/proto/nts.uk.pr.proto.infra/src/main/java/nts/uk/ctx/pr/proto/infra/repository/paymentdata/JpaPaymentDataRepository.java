@@ -49,7 +49,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 												entity.insuredAtr, 
 												entity.bonusTaxRate, 
 												entity.calcFlag, 
-												entity.makeMethodFlag);
+												entity.makeMethodFlag,
+												entity.comment);
 		entity.toDomain(domain);
 		return domain;
 	}
@@ -59,4 +60,18 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void update(Payment payment) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void insert(Payment payment) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }

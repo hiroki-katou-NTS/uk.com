@@ -18,6 +18,11 @@ public interface LayoutMasterLineRepository {
 	void add(LayoutMasterLine layoutMasterLine);
 
 	/**
+	 * add list lines
+	 * @param lines
+	 */
+	void add(List<LayoutMasterLine> lines);
+	/**
 	 * update a layout master line
 	 * 
 	 * @param companyCode
@@ -27,7 +32,11 @@ public interface LayoutMasterLineRepository {
 	 * @param stmtCode
 	 */
 	void update(LayoutMasterLine layoutMasterLine);
-
+	/**
+	 * update list lines
+	 * @param lines
+	 */
+	void update(List<LayoutMasterLine> lines);
 	/**
 	 * delete a layout master line
 	 * 

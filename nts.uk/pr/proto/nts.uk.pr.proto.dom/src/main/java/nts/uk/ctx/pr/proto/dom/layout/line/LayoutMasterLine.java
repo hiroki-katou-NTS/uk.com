@@ -70,4 +70,17 @@ public class LayoutMasterLine extends AggregateRoot {
 
 	}
 
+	public static LayoutMasterLine createFromDomain(
+			CompanyCode companyCode, 
+			YearMonth startYM, 
+			LayoutCode stmtCode,
+			YearMonth endYM, 
+			AutoLineId autoLineId,
+			CategoryAtr categoryAtr,
+			LineDispAtr lineDispayAttribute, 
+			LinePosition linePosition){
+		
+		return new LayoutMasterLine(companyCode, startYM, stmtCode, endYM, autoLineId, categoryAtr, lineDispayAttribute, linePosition);
+	}
+	
 }
