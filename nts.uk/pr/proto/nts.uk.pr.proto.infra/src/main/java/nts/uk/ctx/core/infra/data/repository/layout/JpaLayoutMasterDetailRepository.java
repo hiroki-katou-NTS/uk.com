@@ -68,17 +68,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		this.commandProxy().update(toEntity(domain));
 	}
 
-	@Override
-	public void remove(LayoutMasterDetail domain) {
-		val object = new QstmtStmtLayoutDetailPK();
-		object.companyCd = domain.getCompanyCode().v();
-		object.stmtCd = domain.getLayoutCode().v();
-		object.strYm = domain.getStartYM().v();
-		object.ctgAtr = domain.getCategoryAtr().value;
-		object.itemCd = domain.getItemCode().v();
-		
-		this.commandProxy().remove(QstmtStmtLayoutDetail.class, object);
-	}
+	
 	/**
 	 * find all layout master details
 	 */
@@ -129,6 +119,22 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				.setParameter("itemCd", itemCd)
 				.getSingle(c -> toDomain(c));
 				
+	}
+
+	@Override
+	public void remove(String companyCode,
+			String layoutCode,
+			int startYm, 
+			int categoryAtr, 
+			String itemCode) {
+		val object = new QstmtStmtLayoutDetailPK();
+		object.companyCd = companyCode;
+		object.stmtCd = layoutCode;
+		object.strYm = startYm;
+		object.ctgAtr = categoryAtr;
+		object.itemCd = itemCode;		
+		this.commandProxy().remove(QstmtStmtLayoutDetail.class, object);
+		
 	}
 
 }

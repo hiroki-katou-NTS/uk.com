@@ -22,7 +22,11 @@ public interface LayoutMasterDetailRepository {
 	/**
 	 * delete a layout master detail
 	 */
-	void remove(LayoutMasterDetail layoutMasterDetail);
+	void remove(String companyCode
+			, String layoutCode
+			, int startYm
+			, int categoryAtr
+			, String itemCode);
 
 	/**
 	 * get Detail
