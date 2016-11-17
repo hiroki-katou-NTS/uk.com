@@ -111,7 +111,14 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 								org.getPersonalWageCode());
 					}).collect(Collectors.toList());
 			
+			categoryRepo.add(categoriesNew);
+			lineRepo.add(linesNew);
+			detailRepo.add(detailsNew);
+			
 		}
+		
+		layoutOrigin.setEndYM(new YearMonth(command.getEndYmPrevious()));
+		layoutRepo.update(layoutOrigin);
 	}
 
 }

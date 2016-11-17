@@ -59,7 +59,9 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	public List<LayoutMaster> getLayouts(String companyCode, String stmtCode) {
 		
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutHead.class)
-				.setParameter("companyCd", companyCode).setParameter("stmtCode", stmtCode).getList(c -> toDomain(c));
+				.setParameter("companyCd", companyCode)
+				.setParameter("stmtCode", stmtCode)
+				.getList(c -> toDomain(c));
 		
 	}
 
