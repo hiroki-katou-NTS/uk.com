@@ -68,7 +68,8 @@ public class UpdateLayoutDetailCommand {
 	private int alamRangeLow;
 	
 	public LayoutMasterDetail toDomain(){
-		return LayoutMasterDetail.createSimpleFromJavaType(companyCode, 
+		return LayoutMasterDetail.createSimpleFromJavaType(
+				companyCode, 
 				layoutCode, 
 				startYm, 
 				endYm, 
@@ -90,6 +91,7 @@ public class UpdateLayoutDetailCommand {
 				isAlamUseHigh, 
 				alamRangeHigh, 
 				isAlamUseLow,
-				alamRangeLow);
+				alamRangeLow,
+				itemPosColumn);
 	}
 }
