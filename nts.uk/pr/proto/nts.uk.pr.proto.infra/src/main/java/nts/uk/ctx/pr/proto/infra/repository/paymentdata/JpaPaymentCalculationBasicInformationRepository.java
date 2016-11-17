@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.CcastBasicCalc;
 public class JpaPaymentCalculationBasicInformationRepository extends JpaRepository implements PaymentCalculationBasicInformationRepository {
 
 	@Override
-	public Optional<PaymentCalculationBasicInformation> find(CompanyCode companyCode) {
+	public Optional<PaymentCalculationBasicInformation> find(String companyCode) {
 		return this.queryProxy().find(companyCode, CcastBasicCalc.class).map(c -> toDomain(c));
 	}
 

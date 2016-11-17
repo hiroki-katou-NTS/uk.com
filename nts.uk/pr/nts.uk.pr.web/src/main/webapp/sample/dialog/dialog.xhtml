@@ -16,7 +16,7 @@
 		b{font-weight:bold;}
 		i{font-style: italic;display:inline-block;min-width:80px;}
 		h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
-		h3{font-size:16px;margin:3px 0;font-weight:bold;}
+		h3{margin:3px 0;font-weight:bold;}
 		hr{margin: 25px 0;}
 		table{float:left;border-collapse: collapse;margin:10px 30px 30px 0;}
 		table th, table td{padding: 5px 5px;border:1px solid #ccc;}
@@ -51,6 +51,7 @@
 		};
 	</script>
 	<script>
+		var dialog = nts.uk.ui.dialog;
 		var vm;
 		$(function () {
 			vm = {
@@ -125,7 +126,7 @@
 	<div class="container">
 		<h2><a href="../../test.html">&#9665;</a> Dialog</h2>
 		<hr/>
-		<h2>TypeScript Binding</h2>
+		<h2>HTML Binding</h2>
 		<div data-bind="with: dialogconfirm">
 			<button data-bind="click: open" class="proceed">Confirm Dialog</button>
 			<div data-bind="ntsDialog: {option: option}"></div>
@@ -141,7 +142,7 @@
 			<div data-bind="ntsDialog: {option: option}"></div>
 		</div>
 		<hr/>
-		<h2>Example</h2>
+		<h2>Javascript Example</h2>
 		<button id="testbtn">JQuery event</button>
 		<pre>
 	$('#testbtn').click(function(){
@@ -162,7 +163,55 @@
 			</colgroup>
 			<thead>
 				<tr>
-					<th><h3>Options</h3></th>
+					<th><h3>ConfirmDialogOption</h3></th>
+					<th><h3>Description</h3></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>title</td>
+					<td>
+						<b>Type:</b> string<br/>
+						<b>Default:</b> ""<br/>
+						Title for dialog
+					</td>
+				</tr>
+				<tr>
+					<td>message</td>
+					<td>
+						<b>Type:</b> string<br/>
+						<b>Default:</b> ""<br/>
+						Message content for dialog
+					</td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
+					<th><h3>DelDialogOption</h3></th>
+					<th><h3>Description</h3></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>title</td>
+					<td>
+						<b>Type:</b> string<br/>
+						<b>Default:</b> ""<br/>
+						Title for dialog
+					</td>
+				</tr>
+				<tr>
+					<td>message</td>
+					<td>
+						<b>Type:</b> string<br/>
+						<b>Default:</b> ""<br/>
+						Message content for dialog
+					</td>
+				</tr>
+			</tbody>
+			<thead>
+				<tr>
+					<th><h3>OKDialogOption</h3></th>
 					<th><h3>Description</h3></th>
 				</tr>
 			</thead>

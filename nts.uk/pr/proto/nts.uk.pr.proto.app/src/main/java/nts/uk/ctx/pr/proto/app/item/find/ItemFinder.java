@@ -19,23 +19,23 @@ public class ItemFinder {
 	/**
 	 * finder all items by company code and category type
 	 * @param companyCode
-	 * @param categoryType
+	 * @param categoryAtr
 	 * @return
 	 */
-	public List<ItemDto> findAll(String companyCode, int categoryType){
-		return this.repostirory.findAll(companyCode, categoryType).stream()
+	public List<ItemDto> getAllItems(String companyCode, int categoryAtr){
+		return this.repostirory.getAllItemMaster(companyCode, categoryAtr).stream()
 				.map(item -> ItemDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 /**
  * finder item by company code, category type, item code
  * @param companyCode
- * @param categoryType
+ * @param categoryAtr
  * @param itemCode
  * @return
  */
-	public Optional<ItemDto> find(String companyCode, int categoryType, String itemCode){
-		return this.repostirory.find(companyCode, categoryType, itemCode)
+	public Optional<ItemDto> getItem(String companyCode, int categoryAtr, String itemCode){
+		return this.repostirory.getItemMaster(companyCode, categoryAtr, itemCode)
 				.map(item->ItemDto.fromDomain(item));
 	}
 }

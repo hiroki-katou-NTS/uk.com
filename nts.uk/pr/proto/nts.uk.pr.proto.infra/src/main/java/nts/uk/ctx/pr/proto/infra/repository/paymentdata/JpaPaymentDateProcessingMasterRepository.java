@@ -18,7 +18,7 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING c WHERE c.CCD = :CCD and c.PAY_BONUS_ATR = :payBonusAtr";
 
 	@Override
-	public Optional<PaymentDateProcessingMaster> find(CompanyCode companyCode, int paymentBonusAtribute,
+	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute,
 			int processingNo) {
 		return this.queryProxy()
 				.query(SELECT_WITH_PROCESSINGNO, QpdmtPaydayProcessing.class).setParameter("CCD", companyCode)
@@ -27,7 +27,7 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<PaymentDateProcessingMaster> find(CompanyCode companyCode, int paymentBonusAtribute) {
+	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute) {
 		return this.queryProxy()
 				.query(SELECT_NOT_WITH_PROCESSINGNO, QpdmtPaydayProcessing.class).setParameter("CCD", companyCode)
 				.setParameter("payBonusAtr", paymentBonusAtribute)
