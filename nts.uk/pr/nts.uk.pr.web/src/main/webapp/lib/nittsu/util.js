@@ -67,6 +67,10 @@ var nts;
         return wrapper;
     }
     nts.buildStorage = buildStorage;
+    function sessionStorage() {
+        return nts.buildStorage(window.sessionStorage);
+    }
+    nts.sessionStorage = sessionStorage;
 })(nts || (nts = {}));
 var nts;
 (function (nts) {

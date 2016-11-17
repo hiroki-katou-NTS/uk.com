@@ -51,7 +51,7 @@
                 storage.clear();
             }
         };
-
+        
         // 開発時のローカル実行用にフェイクを作っておく
         if (storage === undefined) {
             var fake = {};
@@ -66,6 +66,9 @@
         }
 
         return wrapper;
+    }
+    export function sessionStorage() {
+        return nts.buildStorage(window.sessionStorage);
     }
 }
 module nts.uk.util {

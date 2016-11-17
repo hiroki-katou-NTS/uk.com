@@ -22,8 +22,7 @@ public class LayoutMasterDetailFinder {
 	 */
 	public List<LayoutMasterDetailDto> getDetails(String companyCd,
 			String stmtCd,
-			int startYm,
-			int categoryAtr){
+			int startYm){
 		return this.repository.getDetails(companyCd,
 				stmtCd,
 				startYm).stream()

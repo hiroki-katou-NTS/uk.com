@@ -618,7 +618,7 @@ nts.ui = window.nts.ui || {};
         };
         
         // Get SubSessionId
-		nts.sessionStorage.ifPresentParsedJson(nts.names.sessionStorage.crossPageTemp, function (crossPageTemp) {
+		nts.sessionStorage().ifPresentParsedJson(nts.names.sessionStorage.crossPageTemp, function (crossPageTemp) {
 			
 			nts.request.setBack(crossPageTemp.from);
 			
@@ -627,7 +627,7 @@ nts.ui = window.nts.ui || {};
 			// jumpで指定した宛先以外のページを開いた時点で、データを消去する
 			if (crossPageTemp.path !== nts.request.location.current.appRootRelative()) {
 				transferredData = null;
-				nts.sessionStorage.removeItem(nts.names.sessionStorage.crossPageTemp);
+				nts.sessionStorage().removeItem(nts.names.sessionStorage.crossPageTemp);
 			} else {
 				window.__viewContext.transferredData = crossPageTemp.data;
 			}
