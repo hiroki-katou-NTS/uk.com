@@ -16,26 +16,13 @@ public interface LayoutMasterDetailRepository {
 
 	/**
 	 * update a layout master detail
-	 * 
-	 * @param companyCode
-	 * @param startYm
-	 * @param stmtCode
-	 * @param categoryAtr
-	 * @param autoLineID
-	 * @param itemCode
 	 */
-	void update(String companyCode, int startYm, String stmtCode, int categoryAtr, String autoLineID, String itemCode);
+	void update(LayoutMasterDetail layoutMasterDetail);
 
 	/**
 	 * delete a layout master detail
-	 * 
-	 * @param companyCode
-	 * @param layoutCode
-	 * @param startYm
-	 * @param categoryAtr
-	 * @param itemCode
 	 */
-	void remove(String companyCode, int startYm, String stmtCode, int categoryAtr, String itemCode);
+	void remove(LayoutMasterDetail layoutMasterDetail);
 
 	/**
 	 * get Detail
