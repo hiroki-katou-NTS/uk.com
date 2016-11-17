@@ -5,7 +5,6 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var DialogOption = (function () {
     function DialogOption() {
-        this.modal = true;
         this.show = false;
     }
     return DialogOption;
@@ -15,8 +14,7 @@ var ConfirmDialogOption = (function (_super) {
     function ConfirmDialogOption(option) {
         _super.call(this);
         // Default value
-        this.title = (option && option.title) ? option.title : "";
-        this.message = (option && option.message) ? option.message : "";
+        this.modal = (option && option.modal) ? option.modal : true;
         this.buttons = [];
         // Add OK Button
         this.buttons.push({ text: "OK",
@@ -36,8 +34,7 @@ var DelDialogOption = (function (_super) {
     function DelDialogOption(option) {
         _super.call(this);
         // Default value
-        this.title = (option && option.title) ? option.title : "";
-        this.message = (option && option.message) ? option.message : "";
+        this.modal = (option && option.modal) ? option.modal : true;
         this.buttons = [];
         // Add OK Button
         this.buttons.push({ text: "はい",
@@ -67,8 +64,7 @@ var OKDialogOption = (function (_super) {
     function OKDialogOption(option) {
         _super.call(this);
         // Default value
-        this.title = (option && option.title) ? option.title : "";
-        this.message = (option && option.message) ? option.message : "";
+        this.modal = (option && option.modal) ? option.modal : true;
         this.buttons = [];
         // Add OK Button
         this.buttons.push({ text: "はい",

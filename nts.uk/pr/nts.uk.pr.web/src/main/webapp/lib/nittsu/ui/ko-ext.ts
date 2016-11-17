@@ -13,7 +13,6 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             this.constraint = validation.getCharType(data.constraint);
@@ -21,6 +20,7 @@ module nts.uk.ui.koExtentions {
 
             $input.change(function() {
                 var newText = $input.val();
+                bindingContext.$data.change(newText);
                 setValue(newText);
             });
         }
@@ -29,13 +29,35 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
+            // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
-
+            var option: any = ko.unwrap(data.option);
+            var textmode: string = ko.unwrap(option.textmode);
+            var enable: boolean = ko.unwrap(option.enable);
+            var readonly: boolean = ko.unwrap(option.readonly);
+            var placeholder: string = ko.unwrap(option.placeholder);
+            var width: string = ko.unwrap(option.width);
+            var textalign: string = ko.unwrap(option.textalign);
+            
             var $input = $(element);
+            
+            $input.attr('type',textmode);
+            if(enable !== false)
+                $input.removeAttr('disabled');
+            else
+                $input.attr('disabled','disabled');
+            if(readonly === false)
+                $input.removeAttr('readonly');
+            else
+                $input.attr('readonly','readonly');
+            $input.attr('placeholder', placeholder);
+            if(width.trim() != "")
+                $input.width(width);
+            if(textalign.trim() != "")
+                $input.css('text-align', textalign);
+            
             var newText = getValue();
-
             $input.val(newText);
         }
     }
@@ -77,7 +99,7 @@ module nts.uk.ui.koExtentions {
             $input.val(newText);
         }
     }
-    
+     
     class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
         constructor() {}
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
@@ -98,6 +120,7 @@ module nts.uk.ui.koExtentions {
         }
  
     }
+    
     /**
      * Dialog binding handler
      */
@@ -117,8 +140,8 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             var option: any = ko.unwrap(data.option);
-            var title: string = ko.unwrap(option.title);
-            var message: string = ko.unwrap(option.message);
+            var title: string = ko.unwrap(data.title);
+            var message: string = ko.unwrap(data.message);
             var modal: boolean = ko.unwrap(option.modal);
             var show: boolean = ko.unwrap(option.show);
             var buttons: any = ko.unwrap(option.buttons);

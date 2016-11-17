@@ -16,7 +16,8 @@
 		b{font-weight:bold;}
 		i{font-style: italic;display:inline-block;min-width:80px;}
 		h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
-		h3{margin:3px 0;font-weight:bold;}
+		h3{color:#00B050;font-size: 20px; margin-bottom:10px;}
+		h4{margin:3px 0;font-weight:bold;}
 		hr{margin: 25px 0;}
 		table{float:left;border-collapse: collapse;margin:10px 30px 30px 0;}
 		table th, table td{padding: 5px 5px;border:1px solid #ccc;}
@@ -57,6 +58,8 @@
 			vm = {
 				// Dialog Confirm
 				dialogconfirm: {
+					title: ko.observable(""),
+					message: ko.observable(""),
 					option: ko.mapping.fromJS(new ConfirmDialogOption()),
 					okButtonClicked: function(){},
 					cancelButtonClicked: function(){},
@@ -72,9 +75,9 @@
 				
 				// Dialog Delete
 				dialogdel: {
-					option: ko.mapping.fromJS(new DelDialogOption({
-						message: "You want a message, you get a message."})
-					),
+					title: ko.observable(""),
+					message: ko.observable("You want a message, you get a message."),
+					option: ko.mapping.fromJS(new DelDialogOption()),
 					okButtonClicked: function(){
 						alert("Ok");
 					},
@@ -93,10 +96,9 @@
 
 				// Dialog OK
 				dialogok: {
-					option: ko.mapping.fromJS(new OKDialogOption({
-						title: "A test Title",
-						message: "This is a test message created for test purpose"})
-					),
+					title: ko.observable("A test Title"),
+					message: ko.observable("This is a test message created for test purpose."),
+					option: ko.mapping.fromJS(new OKDialogOption()),
 					okButtonClicked: function(){},
 					cancelButtonClicked: function(){},
 					open: function(){
@@ -126,23 +128,23 @@
 	<div class="container">
 		<h2><a href="../../test.html">&#9665;</a> Dialog</h2>
 		<hr/>
-		<h2>HTML Binding</h2>
+		<h2>Dialog</h2>
 		<div data-bind="with: dialogconfirm">
 			<button data-bind="click: open" class="proceed">Confirm Dialog</button>
-			<div data-bind="ntsDialog: {option: option}"></div>
+			<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
 		</div>
 		<br/>
 		<div data-bind="with: dialogdel">
 			<button data-bind="click: open" class="danger">Del Dialog</button>
-			<div data-bind="ntsDialog: {option: option}"></div>
+			<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
 		</div>
 		<br/>
 		<div data-bind="with: dialogok">
 			<button data-bind="click: open" class="proceed">OK Dialog</button>
-			<div data-bind="ntsDialog: {option: option}"></div>
+			<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
 		</div>
-		<hr/>
-		<h2>Javascript Example</h2>
+		<br/>
+		<h3>Javascript Example</h3>
 		<button id="testbtn">JQuery event</button>
 		<pre>
 	$('#testbtn').click(function(){
@@ -154,82 +156,130 @@
 	function test(){
 		vm.dialogdel.open();
 	}</pre>
-		<hr/>
+		<br/>
+		<!-- ViewModel -->
+		<div class="cf">
+			<h3>Dialog ViewModel</h3>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>ViewModel</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>title</td>
+						<td>
+							<b>Type:</b> string<br/>
+						</td>
+					</tr>
+					<tr>
+						<td>message</td>
+						<td>
+							<b>Type:</b> string<br/>
+						</td>
+					</tr>
+					<tr>
+						<td>option</td>
+						<td>
+							<b>Type:</b> object<br/>
+							<b>Members:</b><br/>
+							<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
+							<i>DelDialogOption</i>: Option for delete dialog<br/>
+							<i>OKDialogOption</i>: Option for OK dialog
+						</td>
+					</tr>
+					<tr>
+						<td>open</td>
+						<td>
+							<b>Type:</b> function<br/>
+						</td>
+					</tr>
+					<tr>
+						<td>hide</td>
+						<td>
+							<b>Type:</b> function<br/>
+						</td>
+					</tr>
+					<tr>
+						<td>okButtonClicked</td>
+						<td>
+							<b>Type:</b> function<br/>
+						</td>
+					</tr>
+					<tr>
+						<td>cancelButtonClicked</td>
+						<td>
+							<b>Type:</b> function<br/>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<pre style="float:left">dialog: {
+		title: ko.observable("Dialog Title"),
+		message: ko.observable("Dialog message here"),
+		option: ko.mapping.fromJS(new ConfirmDialogOption()),
+		okButtonClicked: function(){},
+		cancelButtonClicked: function(){},
+		open: function(){},
+		hide: function(){}
+	}</pre>
+		</div>
 		<!-- API -->
-		<h2> API</h2>
+		<h3>Dialog API</h3>
 		<table>
 			<colgroup>
 				<col width="200px" />
 			</colgroup>
 			<thead>
 				<tr>
-					<th><h3>ConfirmDialogOption</h3></th>
-					<th><h3>Description</h3></th>
+					<th><h4>ConfirmDialogOption</h4></th>
+					<th><h4>Description</h4></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>title</td>
+					<td>modal</td>
 					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						Title for dialog
-					</td>
-				</tr>
-				<tr>
-					<td>message</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						Message content for dialog
+						<b>Type:</b> boolean<br/>
+						<b>Default:</b> true<br/>
+						Display dialog in modal mode
 					</td>
 				</tr>
 			</tbody>
 			<thead>
 				<tr>
-					<th><h3>DelDialogOption</h3></th>
-					<th><h3>Description</h3></th>
+					<th><h4>DelDialogOption</h4></th>
+					<th><h4>Description</h4></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>title</td>
+					<td>modal</td>
 					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						Title for dialog
-					</td>
-				</tr>
-				<tr>
-					<td>message</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						Message content for dialog
+						<b>Type:</b> boolean<br/>
+						<b>Default:</b> true<br/>
+						Display dialog in modal mode
 					</td>
 				</tr>
 			</tbody>
 			<thead>
 				<tr>
-					<th><h3>OKDialogOption</h3></th>
-					<th><h3>Description</h3></th>
+					<th><h4>OKDialogOption</h4></th>
+					<th><h4>Description</h4></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>title</td>
+					<td>modal</td>
 					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						Title for dialog
-					</td>
-				</tr>
-				<tr>
-					<td>message</td>
-					<td>
-						<b>Type:</b> string<br/>
-						<b>Default:</b> ""<br/>
-						Message content for dialog
+						<b>Type:</b> boolean<br/>
+						<b>Default:</b> true<br/>
+						Display dialog in modal mode
 					</td>
 				</tr>
 			</tbody>
@@ -240,8 +290,8 @@
 			</colgroup>
 			<thead>
 				<tr>
-					<th><h3>Methods</h3></th>
-					<th><h3>Description</h3></th>
+					<th><h4>Methods</h4></th>
+					<th><h4>Description</h4></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -265,8 +315,8 @@
 			</colgroup>
 			<thead>
 				<tr>
-					<th><h3>Events</h3></th>
-					<th><h3>Description</h3></th>
+					<th><h4>Events</h4></th>
+					<th><h4>Description</h4></th>
 				</tr>
 			</thead>
 			<tbody>

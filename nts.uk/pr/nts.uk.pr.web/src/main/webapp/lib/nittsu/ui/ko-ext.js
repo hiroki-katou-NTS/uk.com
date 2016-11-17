@@ -23,6 +23,7 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
+                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
@@ -30,9 +31,31 @@ var nts;
                      * Update
                      */
                     NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var option = ko.unwrap(data.option);
+                        var textmode = ko.unwrap(option.textmode);
+                        var enable = ko.unwrap(option.enable);
+                        var readonly = ko.unwrap(option.readonly);
+                        var placeholder = ko.unwrap(option.placeholder);
+                        var width = ko.unwrap(option.width);
+                        var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
+                        $input.attr('type', textmode);
+                        if (enable !== false)
+                            $input.removeAttr('disabled');
+                        else
+                            $input.attr('disabled', 'disabled');
+                        if (readonly === false)
+                            $input.removeAttr('readonly');
+                        else
+                            $input.attr('readonly', 'readonly');
+                        $input.attr('placeholder', placeholder);
+                        if (width.trim() != "")
+                            $input.width(width);
+                        if (textalign.trim() != "")
+                            $input.css('text-align', textalign);
                         var newText = getValue();
                         $input.val(newText);
                     };
@@ -106,8 +129,8 @@ var nts;
                         // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
-                        var title = ko.unwrap(option.title);
-                        var message = ko.unwrap(option.message);
+                        var title = ko.unwrap(data.title);
+                        var message = ko.unwrap(data.message);
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
