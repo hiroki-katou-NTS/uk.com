@@ -8,15 +8,15 @@ var nts;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
                 /**
-                 * TextBoxExtensible
+                 * TextEditor
                  */
-                var NtsTextBoxExtensibleBindingHandler = (function () {
-                    function NtsTextBoxExtensibleBindingHandler() {
+                var NtsTextEditorBindingHandler = (function () {
+                    function NtsTextEditorBindingHandler() {
                     }
                     /**
                      * Init.
                      */
-                    NtsTextBoxExtensibleBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
@@ -29,14 +29,14 @@ var nts;
                     /**
                      * Update
                      */
-                    NtsTextBoxExtensibleBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var getValue = data.value;
                         var $input = $(element);
                         var newText = getValue();
                         $input.val(newText);
                     };
-                    return NtsTextBoxExtensibleBindingHandler;
+                    return NtsTextEditorBindingHandler;
                 }());
                 /**
                  * TextBox
@@ -68,6 +68,25 @@ var nts;
                         $input.val(newText);
                     };
                     return NtsTextBoxBindingHandler;
+                }());
+                var NtsMultiCheckBoxBindingHandler = (function () {
+                    function NtsMultiCheckBoxBindingHandler() {
+                    }
+                    NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
+                        /*var childBindingContext = bindingContext.createChildContext(
+                                bindingContext.$rawData,
+                                null, // Optionally, pass a string here as an alias for the data item in descendant contexts
+                                function(context) {
+                                    ko.utils.extend(context, valueAccessor());
+                                });*/
+                        var childBindingContext = bindingContext.extend(valueAccessor);
+                        ko.applyBindingsToDescendants(childBindingContext, element);
+                        return { controlsDescendantBindings: true };
+                    };
+                    NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return NtsMultiCheckBoxBindingHandler;
                 }());
                 /**
                  * Dialog binding handler
@@ -838,7 +857,8 @@ var nts;
                     return WizardBindingHandler;
                 }());
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
-                ko.bindingHandlers['ntsTextBoxExtensible'] = new NtsTextBoxExtensibleBindingHandler();
+                ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+                ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();

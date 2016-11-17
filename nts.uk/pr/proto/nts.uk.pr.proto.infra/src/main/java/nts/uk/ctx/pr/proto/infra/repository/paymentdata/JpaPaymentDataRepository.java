@@ -54,4 +54,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		return domain;
 	}
 	
+	@Override
+	public void add(Payment payment) {
+		// TODO Auto-generated method stub
+		
+	}
 }

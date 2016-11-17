@@ -3,10 +3,11 @@ package nts.uk.ctx.pr.proto.dom.layout.category;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 
 
-@RequestScoped
 public interface LayoutMasterCategoryRepository {
 
 	/**
@@ -66,4 +67,6 @@ public interface LayoutMasterCategoryRepository {
 	 * @return List Categories
 	 */
 	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, int startYm);
+
+	
 }
