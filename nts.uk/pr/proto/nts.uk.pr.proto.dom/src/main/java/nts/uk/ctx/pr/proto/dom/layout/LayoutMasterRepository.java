@@ -23,7 +23,7 @@ public interface LayoutMasterRepository {
 	 * 
 	 * @return layout master
 	 */
-	List<LayoutMaster> getLayouts(String companyCode);
+	List<LayoutMaster> getLayouts(String companyCode, String stmtCode);
 
 	/**
 	 * Add a new layout master

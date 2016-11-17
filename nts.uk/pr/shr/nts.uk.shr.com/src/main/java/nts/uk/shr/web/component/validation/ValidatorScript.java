@@ -62,18 +62,13 @@ public class ValidatorScript extends UIComponentBase {
 	        .forEach(representationOfAnnotation -> {
 	        	String constraintName = Helper.getAnnotationName(representationOfAnnotation);
 	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
-	        	
-	        	try {
-					writeConstraints(rw, constraintName, parametersString);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				writeConstraints(rw, constraintName, parametersString);
 	        });
 		
 		rw.append("\n\t};");
 	}
 	
-	private static void writeConstraints(ResponseWriter rw, String constraintName, String parametersString) throws IOException {
+	private static void writeConstraints(ResponseWriter rw, String constraintName, String parametersString) {
 		
 		if (Helper.CONSTRAINTS_SIGNLE_PARAM.containsKey(constraintName)) {
 			String jsName = Helper.CONSTRAINTS_SIGNLE_PARAM.get(constraintName);
@@ -89,13 +84,17 @@ public class ValidatorScript extends UIComponentBase {
 		}
 	}
 
-	private static void writeConstraintParameter(ResponseWriter rw, String jsName, String jsValue) throws IOException {
+	private static void writeConstraintParameter(ResponseWriter rw, String jsName, String jsValue) {
 		
-		rw.write("\n\t\t");
-		rw.write(jsName);
-		rw.write(": ");
-		rw.write(jsValue);
-		rw.write(",");
+		try {
+			rw.write("\n\t\t");
+			rw.write(jsName);
+			rw.write(": ");
+			rw.write(jsValue);
+			rw.write(",");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

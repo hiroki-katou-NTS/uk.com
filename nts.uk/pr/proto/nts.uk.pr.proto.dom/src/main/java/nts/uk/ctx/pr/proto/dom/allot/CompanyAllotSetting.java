@@ -25,10 +25,11 @@ public class CompanyAllotSetting extends AggregateRoot {
 	@Getter
 	private PaymentDetailCode paymentDetailCode;
 
-	public CompanyAllotSetting(CompanyCode companyCode, YearMonth startDate, BonusDetailCode bonusDetailCode,PaymentDetailCode paymentDetailCode) {
+	public CompanyAllotSetting(CompanyCode companyCode, YearMonth startYearMonth, YearMonth endYearMonth, BonusDetailCode bonusDetailCode,PaymentDetailCode paymentDetailCode) {
 		super();
 		this.companyCode = companyCode;
-		this.startDate = startDate;
+		this.startDate = startYearMonth;
+		this.endDate = endYearMonth;
 		this.bonusDetailCode = bonusDetailCode;
 		this.paymentDetailCode = paymentDetailCode;
 	}
@@ -42,7 +43,7 @@ public class CompanyAllotSetting extends AggregateRoot {
 	 *            start date
 	 * @return CompanyPaymentSetting
 	 */
-	public static CompanyAllotSetting createFromJavaType(String companyCode, int startDate, String bonusDetailCode, String paymentDetailCode) {
-		return new CompanyAllotSetting(new CompanyCode(companyCode), new YearMonth(startDate), new BonusDetailCode(bonusDetailCode), new PaymentDetailCode(paymentDetailCode));
+	public static CompanyAllotSetting createFromJavaType(String companyCode, int startYearMonth, int endYearMonth, String bonusDetailCode, String paymentDetailCode) {
+		return new CompanyAllotSetting(new CompanyCode(companyCode), new YearMonth(startYearMonth), new YearMonth(endYearMonth), new BonusDetailCode(bonusDetailCode), new PaymentDetailCode(paymentDetailCode));
 	}
 }
