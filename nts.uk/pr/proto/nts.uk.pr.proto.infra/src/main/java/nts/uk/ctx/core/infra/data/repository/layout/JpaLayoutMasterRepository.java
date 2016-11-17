@@ -56,11 +56,11 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	@Override
-	public List<LayoutMaster> getLayouts(String companyCode, String stmtCode) {
+	public List<LayoutMaster> getLayouts(String companyCode) {
 		
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutHead.class)
 				.setParameter("companyCd", companyCode)
-				.setParameter("stmtCode", stmtCode)
+				
 				.getList(c -> toDomain(c));
 		
 	}

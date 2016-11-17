@@ -38,4 +38,11 @@ public class JpaPersonalWageRepository extends JpaRepository implements Personal
 		return domain;
 	}
 
+	@Override
+	public Optional<PersonalWage> find(String companyCode, String personId, int categoryAttribute, String wageCode,
+			int startYearMonth) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
