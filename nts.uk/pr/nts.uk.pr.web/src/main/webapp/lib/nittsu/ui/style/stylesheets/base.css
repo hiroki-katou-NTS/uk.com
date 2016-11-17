@@ -110,7 +110,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   *zoom: 1;
 }
 
-/* line 15, ../sass/components/_commons.scss */
+/*****************************
+  NtsFormLabel
+*****************************/
+/* line 4, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
   height: 27px;
@@ -119,32 +122,32 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 10px 10px 0 8px;
 }
-/* line 23, ../sass/components/_commons.scss */
+/* line 26, ../sass/components/_commons.scss */
 div.form-label.broken {
   padding-top: 0;
   padding-bottom: 10px;
 }
-/* line 28, ../sass/components/_commons.scss */
+/* line 31, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 18px;
   padding-top: 3px;
   padding-bottom: 2px;
 }
-/* line 34, ../sass/components/_commons.scss */
+/* line 37, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 37, ../sass/components/_commons.scss */
+/* line 40, ../sass/components/_commons.scss */
 div.form-label.required > :first-child:after {
   content: '＊';
   color: #f30;
   margin-left: 5px;
 }
-/* line 44, ../sass/components/_commons.scss */
+/* line 47, ../sass/components/_commons.scss */
 div.form-label > label {
   font-size: 14px;
 }
-/* line 48, ../sass/components/_commons.scss */
+/* line 51, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -152,18 +155,31 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 55, ../sass/components/_commons.scss */
+/* line 58, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 59, ../sass/components/_commons.scss */
+/* line 62, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 64, ../sass/components/_commons.scss */
+/* line 67, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
+}
+
+/*****************************
+  NtsLinkButton
+*****************************/
+/* line 76, ../sass/components/_commons.scss */
+div.link-button {
+  display: inline-block;
+  padding: 3px 12px;
+  background-color: #E0F59E;
+  color: #0D86D1;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */

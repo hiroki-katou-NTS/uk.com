@@ -1,18 +1,21 @@
-$_label_height: 27px;
-$_label_height_inline: 18px;
-
-$_label_ribbon_width: 5px;
-$_label_ribbon_color_normal: #97D155;
-$_label_ribbon_color_required: #FAC002;
-
-$_label_font_size: $bfs * 1.4;
-$_constraint_font_size: $bfs * 1.2;
-$_constraint_font_color: #777777;
-
-$_margin_if_single_row: $_label_height - $_label_font_size - 3px;
-$_margin_if_inline: $_label_height_inline - $_label_font_size - 1px;
-
+/*****************************
+  NtsFormLabel
+*****************************/
 div.form-label {
+	$_label_height: 27px;
+	$_label_height_inline: 18px;
+	
+	$_label_ribbon_width: 5px;
+	$_label_ribbon_color_normal: #97D155;
+	$_label_ribbon_color_required: #FAC002;
+	
+	$_label_font_size: $bfs * 1.4;
+	$_constraint_font_size: $bfs * 1.2;
+	$_constraint_font_color: #777777;
+	
+	$_margin_if_single_row: $_label_height - $_label_font_size - 3px;
+	$_margin_if_inline: $_label_height_inline - $_label_font_size - 1px;
+	
 	display: inline-block;
 	height: $_label_height;
 	border-style: solid;
@@ -65,5 +68,16 @@ div.form-label {
 		display: inline-block;
 		margin-left: 5px;
 	}
-	
+}
+
+/*****************************
+  NtsLinkButton
+*****************************/
+div.link-button {
+	display: inline-block;
+	padding: 3px 12px;
+	background-color: #E0F59E;
+	color: #0D86D1;
+	text-decoration: underline;
+	cursor: pointer;
 }

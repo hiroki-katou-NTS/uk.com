@@ -947,7 +947,6 @@ module nts.uk.ui.koExtentions {
     }
     
     
-    
     /**
      * FormLabel
      */
@@ -997,11 +996,42 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
+    
+
+    /**
+     * LinkButton
+     */
+    class NtsLinkButtonBindingHandler implements KnockoutBindingHandler {
+        
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
+            var data = valueAccessor();
+            var jump = data.jump;
+            
+            var linkText = $(element).text();
+            var $linkButton = $(element).wrap('<div/>').parent().empty()
+                .text(linkText)
+                .addClass('link-button')
+                .click(function () {
+                    alert(jump);
+                });
+        }
+        
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        }
+    }
 
     
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
 
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
+    ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
