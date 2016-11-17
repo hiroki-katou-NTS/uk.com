@@ -16,7 +16,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
 import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 import nts.gul.text.StringUtil;
 
 class Helper {
@@ -27,7 +27,7 @@ class Helper {
 	static HashMap<String, String> CONSTRAINTS_SIGNLE_PARAM = new HashMap<>();
 	static {
 		CONSTRAINTS_SIGNLE_PARAM.put(StringCharType.class.getSimpleName(), "charType");
-		CONSTRAINTS_SIGNLE_PARAM.put(StringMaxLengh.class.getSimpleName(), "maxLength");
+		CONSTRAINTS_SIGNLE_PARAM.put(StringMaxLength.class.getSimpleName(), "maxLength");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMinValue.class.getSimpleName(), "min");
 	}
