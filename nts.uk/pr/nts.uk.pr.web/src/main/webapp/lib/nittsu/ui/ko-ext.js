@@ -856,7 +856,50 @@ var nts;
                     };
                     return WizardBindingHandler;
                 }());
+                /**
+                 * FormLabel
+                 */
+                var NtsFormLabelBindingHandler = (function () {
+                    function NtsFormLabelBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var primitiveValueName = data.constraint;
+                        var isRequired = data.required === true;
+                        var isInline = data.inline === true;
+                        var $formLabel = $(element).addClass('form-label');
+                        $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
+                        if (isRequired) {
+                            $formLabel.addClass('required');
+                        }
+                        if (primitiveValueName !== undefined) {
+                            $formLabel.addClass(isInline ? 'inline' : 'broken');
+                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValueName);
+                            $('<i/>').text(constraintText).appendTo($formLabel);
+                        }
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValueName) {
+                        var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
+                        var constraintText;
+                        switch (constraint.valueType) {
+                            case 'String':
+                                return uk.ui.validation.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
+                            default:
+                                return 'ERROR';
+                        }
+                    };
+                    return NtsFormLabelBindingHandler;
+                }());
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
+                ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
