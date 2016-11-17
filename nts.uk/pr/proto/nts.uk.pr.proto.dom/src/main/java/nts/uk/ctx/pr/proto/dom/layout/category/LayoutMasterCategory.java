@@ -33,35 +33,34 @@ public class LayoutMasterCategory extends AggregateRoot {
 	/** 明細書コード */
 	@Getter
 	private LayoutCode stmtCode;
+	
+	@Getter
+	private CategoryAtr ctAtr;
 
 	/** 終了年月 */
 	@Getter
 	private YearMonth endYM;
 
-	/** レイアウト区分 */
-	@Getter
-	private LayoutAtr layoutAtr;
 
 	/** 明細書名 */
 	@Getter
 	private CategoryPosition ctgPos;
 	
-	@Getter
-	private CategoryAtr ctAtr;
+	
 	
 	@Getter
 	private List<LayoutMasterLine> layoutMasterLines;
 
-	public LayoutMasterCategory(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM,
-			LayoutAtr layoutAtr, CategoryPosition ctgPos ,CategoryAtr atr) {
+	public LayoutMasterCategory(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode,CategoryAtr ctgatr, YearMonth endYM,
+			 CategoryPosition ctgPos ) {
 		super();
 		this.companyCode = companyCode;
 		this.startYM = startYM;
 		this.stmtCode = stmtCode;
+		this.ctAtr = ctgatr;
 		this.endYM = endYM;
-		this.layoutAtr = layoutAtr;
 		this.ctgPos = ctgPos;
-		this.ctAtr = ctAtr;
+	
 
 	}
 
@@ -72,10 +71,10 @@ public class LayoutMasterCategory extends AggregateRoot {
 	 */
 
 	public static LayoutMasterCategory createFromJavaType(String companyCode, int startYM,
-			String stmtCode, int endYM, int layoutAtr ,int ctgPos ,int ctgAtr) {
+			String stmtCode,int ctgAtr, int endYM,int ctgPos ) {
 		
-		return new LayoutMasterCategory(new CompanyCode(companyCode), new YearMonth(startYM), new LayoutCode(stmtCode),
-				new YearMonth(endYM), EnumAdaptor.valueOf(layoutAtr, LayoutAtr.class), new CategoryPosition(ctgPos),EnumAdaptor.valueOf(ctgAtr, CategoryAtr.class));
+		return new LayoutMasterCategory(new CompanyCode(companyCode), new YearMonth(startYM), new LayoutCode(stmtCode),EnumAdaptor.valueOf(ctgAtr, CategoryAtr.class),
+				new YearMonth(endYM), new CategoryPosition(ctgPos));
 
 	}
 }

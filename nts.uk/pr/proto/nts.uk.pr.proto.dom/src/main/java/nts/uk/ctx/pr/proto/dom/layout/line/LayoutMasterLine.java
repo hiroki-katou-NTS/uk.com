@@ -2,10 +2,7 @@ package nts.uk.ctx.pr.proto.dom.layout.line;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutAtr;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutName;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 
 import java.util.List;
@@ -13,7 +10,6 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 
 public class LayoutMasterLine extends AggregateRoot {

@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
+import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetailPK;
 
 @RequestScoped
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
@@ -22,21 +23,61 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
 	@Override
-	public void add(LayoutMasterDetail layoutMasterDetail) {
-		//this.commandProxy().insert();
+	public void add(LayoutMasterDetail domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+	
+	private static QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
+		val entity = new QstmtStmtLayoutDetail();
+		entity.fromDomain(domain);
+		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
+		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
+		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYM().v();
+		entity.qstmtStmtLayoutDetailPk.ctgAtr = domain.getCategoryAtr().value;
+		entity.qstmtStmtLayoutDetailPk.itemCd = domain.getItemCode().v();
+		entity.endYm = domain.getEndYM().v();
+		entity.autoLineId = domain.getAutoLineId().v();
+		//xem lai voi qa 86
+		//entity.itemPosColumn = domain.geti
+		entity.dispAtr = domain.getDisplayAtr().value;
+		entity.sumScopeAtr = domain.getSumScopeAtr().value;
+		entity.calcMethod = domain.getCalculationMethod().value;
+		entity.pWageCd = domain.getPersonalWageCode().v();
+		//今回、対応対象外	↓
+		entity.formulaCd = "000";
+		entity.wageTableCd = "000";
+		entity.commonMny = 0;
+		//今回、対応対象外　↑
+		entity.setoffItemCd = domain.getSetOffItemCode().v();
+		entity.commuteAtr = domain.getCommuteAtr().value;
+		entity.distributeSet = domain.getDistribute().getSetting().value;
+		entity.distributeWay = domain.getDistribute().getMethod().value;
+		entity.errRangeLowAtr = domain.getError().getIsUseLow().value;
+		entity.errRangeLow = domain.getError().getRange().min();
+		entity.errRangeHighAtr = domain.getError().getIsUseHigh().value;
+		entity.errRangeHigh = domain.getError().getRange().max();
+		entity.alRangeLowAtr = domain.getAlarm().getIsUseLow().value;
+		entity.alRangeLow = domain.getAlarm().getRange().min();
+		entity.alRangeHighAtr = domain.getAlarm().getIsUseHigh().value;
+		entity.alRangeHigh = domain.getAlarm().getRange().max();		
+		return entity;
 	}
 
 	@Override
-	public void update(String companyCode, int startYm, String stmtCode, int categoryAtr, String autoLineID,
-			String itemCode) {
-		// TODO Auto-generated method stub
-		
+	public void update(LayoutMasterDetail domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	@Override
-	public void remove(String companyCode, int startYm, String stmtCode, int categoryAtr, String itemCode) {
-		// TODO Auto-generated method stub
+	public void remove(LayoutMasterDetail domain) {
+		val object = new QstmtStmtLayoutDetailPK();
+		object.companyCd = domain.getCompanyCode().v();
+		object.stmtCd = domain.getLayoutCode().v();
+		object.strYm = domain.getStartYM().v();
+		object.ctgAtr = domain.getCategoryAtr().value;
+		object.itemCd = domain.getItemCode().v();
 		
+		this.commandProxy().remove(QstmtStmtLayoutDetail.class, object);
 	}
 	/**
 	 * find all layout master details

@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.DistributeSet;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.DistributeWay;
+import nts.uk.ctx.pr.proto.dom.layout.line.AutoLineId;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode;
 /**
  * 
@@ -39,6 +40,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**項目CD */
 	@Getter
 	private ItemCode itemCode;
+	/**自動採番された行番号	 */
+	@Getter
+	private AutoLineId autoLineId;
 	@Getter
 	private RangeChecker alarm;
 	/**計算方法 */
