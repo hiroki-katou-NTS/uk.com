@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.screen.app.query.paymentdata.processor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -23,6 +25,8 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRepository;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataHeaderDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -64,6 +68,9 @@ public class GetPaymentDataQueryProcessor {
 
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
+
+	@Inject
+	private PaymentDataQueryRepository queryRepository;
 
 	/**
 	 * get data detail
@@ -136,7 +143,11 @@ public class GetPaymentDataQueryProcessor {
 		return payHeader.map(d -> PaymentDataHeaderDto.fromDomain(d, spcificationName, user.employeeCode()));
 	}
 
-	private void getPaymentDetails() {
+	private void getPaymentDetails(LoginUserContext user, int payBonusAtr, int processingYM) {
+
+		Map<Integer, List<DetailItemDto>> items = this.queryRepository
+				.findAll(user.companyCode(), user.personId(), payBonusAtr, processingYM).stream()
+				.collect(Collectors.groupingBy(x -> x.getCategoryAtr()));
 
 	}
 
