@@ -44,7 +44,5 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 				.setParameter("categoryType", categoryType).setParameter("itemCd", itemCode)
 				.getSingle(c -> toDomain(c));
 	}
-	
-	
 
 }

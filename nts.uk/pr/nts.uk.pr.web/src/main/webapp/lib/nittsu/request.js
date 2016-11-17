@@ -122,12 +122,8 @@ var nts;
                     dataType: options.dataType || 'json',
                     data: data
                 }).done(function (res) {
-                	if(res.businessException){
-                		dfd.reject(res);
-                	}else{
-                		dfd.resolve(res);
-                	}
-                })
+                    dfd.resolve(res);
+                });
                 return dfd.promise();
             }
             request.ajax = ajax;
