@@ -57,6 +57,12 @@ public interface LayoutMasterDetailRepository {
 			String companyCd, 
 			String stmtCd, 
 			int startYm);
+	
+	List<LayoutMasterDetail> getDetailsByCategory(
+			String companyCd, 
+			String stmtCd, 
+			int startYm,
+			int categoryAtr);
 
 	/**
 	 * get detail

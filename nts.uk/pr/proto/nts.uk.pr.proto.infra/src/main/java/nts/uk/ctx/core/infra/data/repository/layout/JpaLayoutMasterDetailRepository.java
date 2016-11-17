@@ -92,7 +92,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	
 	private static LayoutMasterDetail toDomain(QstmtStmtLayoutDetail entity) {
-		val domain = LayoutMasterDetail.createSimpleFromJavaType(
+		val domain = LayoutMasterDetail.createFromJavaType(
 				entity.qstmtStmtLayoutDetailPk.companyCd,
 				entity.qstmtStmtLayoutDetailPk.stmtCd,
 				entity.qstmtStmtLayoutDetailPk.strYm,
@@ -160,5 +160,12 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public void update(List<LayoutMasterDetail> details) {
 		this.commandProxy().updateAll(details);
+	}
+
+	@Override
+	public List<LayoutMasterDetail> getDetailsByCategory(String companyCd, String stmtCd, int startYm,
+			int categoryAtr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

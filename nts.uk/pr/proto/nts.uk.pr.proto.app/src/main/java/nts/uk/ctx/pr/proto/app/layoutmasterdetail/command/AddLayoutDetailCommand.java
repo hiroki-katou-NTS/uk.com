@@ -68,7 +68,7 @@ public class AddLayoutDetailCommand {
 	private int alamRangeLow;
 	
 	public LayoutMasterDetail toDomain(){
-		return LayoutMasterDetail.createSimpleFromJavaType(
+		return LayoutMasterDetail.createFromJavaType(
 				companyCode, 
 				layoutCode, 
 				startYm, 
