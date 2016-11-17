@@ -1,4 +1,5 @@
 package nts.uk.ctx.pr.proto.dom.layout.detail;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -21,6 +22,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode;
  * 明 細 書 マ ス タ 明 細
  *
  */
+@AllArgsConstructor
 public class LayoutMasterDetail extends AggregateRoot{
 	/**会社ＣＤ */
 	@Getter
@@ -87,41 +89,41 @@ public class LayoutMasterDetail extends AggregateRoot{
 	@Getter
 	private PersonalWageCode personalWageCode;	
 	
-	public LayoutMasterDetail(
-			CompanyCode companyCode,
-			LayoutCode layoutCode,
-			YearMonth startYm,
-			YearMonth endYm,
-			CategoryAtr categoryAtr,
-			ItemCode itemCode,
-			AutoLineId autoLineId,
-			DisplayAtr displayAtr,
-			SumScopeAtr sumScopeAtr,
-			CalculationMethod calculationMethod, 
-			Distribute distribute,
-			PersonalWageCode personalWageCode, 
-			ItemCode setOffItemCode,
-			CommuteAtr commuteAtr,
-			RangeChecker error,
-			RangeChecker alarm) {
-		super();
-		this.companyCode = companyCode;
-		this.layoutCode = layoutCode;
-		this.startYm = startYm;
-		this.endYm = endYm;
-		this.categoryAtr = categoryAtr;
-		this.itemCode = itemCode;
-		this.autoLineId = autoLineId;
-		this.displayAtr = displayAtr;
-		this.sumScopeAtr = sumScopeAtr;
-		this.calculationMethod = calculationMethod;		
-		this.distribute = distribute;
-		this.personalWageCode = personalWageCode;		
-		this.setOffItemCode = setOffItemCode;
-		this.commuteAtr = commuteAtr;
-		this.error = error;
-		this.alarm = alarm;
-	}
+//	public LayoutMasterDetail(
+//			CompanyCode companyCode,
+//			LayoutCode layoutCode,
+//			YearMonth startYm,
+//			YearMonth endYm,
+//			CategoryAtr categoryAtr,
+//			ItemCode itemCode,
+//			AutoLineId autoLineId,
+//			DisplayAtr displayAtr,
+//			SumScopeAtr sumScopeAtr,
+//			CalculationMethod calculationMethod, 
+//			Distribute distribute,
+//			PersonalWageCode personalWageCode, 
+//			ItemCode setOffItemCode,
+//			CommuteAtr commuteAtr,
+//			RangeChecker error,
+//			RangeChecker alarm) {
+//		super();
+//		this.companyCode = companyCode;
+//		this.layoutCode = layoutCode;
+//		this.startYm = startYm;
+//		this.endYm = endYm;
+//		this.categoryAtr = categoryAtr;
+//		this.itemCode = itemCode;
+//		this.autoLineId = autoLineId;
+//		this.displayAtr = displayAtr;
+//		this.sumScopeAtr = sumScopeAtr;
+//		this.calculationMethod = calculationMethod;		
+//		this.distribute = distribute;
+//		this.personalWageCode = personalWageCode;		
+//		this.setOffItemCode = setOffItemCode;
+//		this.commuteAtr = commuteAtr;
+//		this.error = error;
+//		this.alarm = alarm;
+//	}
 	
 	public static LayoutMasterDetail createSimpleFromJavaType(
 			String companyCode,
@@ -146,7 +148,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int isAlamUseHigh,
 			int alamRangeHigh,
 			int isAlamUseLow,
-			int alamRangeLow){
+			int alamRangeLow,
+			int itemPosColumn,
+			int columnPosition){
 				Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
 				Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
 				return new LayoutMasterDetail(
@@ -157,21 +161,67 @@ public class LayoutMasterDetail extends AggregateRoot{
 						EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
 						new ItemCode(itemCode), 
 						new AutoLineId(autoLineId),
-						EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
-						EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
-						EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class), 
-						new Distribute(EnumAdaptor.valueOf(distributeWay, DistributeWay.class)
-								, EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
-						new PersonalWageCode(personalWageCode),
-						new ItemCode(setOffItemCode),
-						EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
+						new ItemPosColumn(itemPosColumn),
 						new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
 								EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
 								error), 
+						EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
+						new ColumnPosition(columnPosition),
+						new Distribute(
+								EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
+								EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
+						EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
 						new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
 								EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
-								alam));
+								alam),
+						EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
+						new ItemCode(setOffItemCode),
+						EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
+						new PersonalWageCode(personalWageCode)
+						);
 		
+	}
+	
+
+	public static LayoutMasterDetail createFromDomain(
+			CompanyCode companyCode,
+			LayoutCode layoutCode,
+			YearMonth startYm,
+			YearMonth endYm,
+			CategoryAtr categoryAtr,
+			ItemCode itemCode, 
+			AutoLineId autoLineId,
+			ItemPosColumn itemPosColumn,
+			RangeChecker rangeError, 
+			CalculationMethod calculationMethod, 
+			ColumnPosition columnPosition,
+			Distribute distribute,
+			DisplayAtr displayAtr,
+			RangeChecker rangeAlarm,
+			SumScopeAtr sumScopeAtr, 
+			ItemCode setOffItemCode,
+			CommuteAtr commuteAtr, 
+			PersonalWageCode personalWageCode) {
+		
+		return new LayoutMasterDetail(
+				companyCode,
+				layoutCode,
+				startYm,
+				endYm,
+				categoryAtr,
+				itemCode, 
+				autoLineId,
+				itemPosColumn,
+				rangeError, 
+				calculationMethod, 
+				columnPosition,
+				distribute,
+				displayAtr,
+				rangeAlarm,
+				sumScopeAtr, 
+				setOffItemCode,
+				commuteAtr, 
+				personalWageCode);
 	}
 	
 }

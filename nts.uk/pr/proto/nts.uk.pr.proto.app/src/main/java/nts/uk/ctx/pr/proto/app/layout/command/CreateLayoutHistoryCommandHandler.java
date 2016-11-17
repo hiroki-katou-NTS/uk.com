@@ -60,7 +60,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		layoutNew.validate();
 		layoutRepo.add(layoutNew);
 		
-		if (command.isCopy()) {
+		if (command.isContinue()) {
 			List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartYm());
 			List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartYm());
 			List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartYm());
@@ -92,15 +92,25 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(
 					org -> {
 						return LayoutMasterDetail.createFromDomain(
-								categoryAtr, 
-								itemCode, 
-								sumScopeAtr, 
-								calculationMethod, 
-								distribute, 
-								personalWageCode, 
-								rangeCheckerError, 
-								rangeCheckerAlarm);
-					});
+								org.getCompanyCode(), 
+								org.getLayoutCode(), 
+								new YearMonth(command.getStartYm()), 
+								new YearMonth(command.getEndYm()), 
+								org.getCategoryAtr(), 
+								org.getItemCode(), 
+								org.getAutoLineId(), 
+								org.getItemPosColumn(), 
+								org.getError(), 
+								org.getCalculationMethod(), 
+								org.getColumnPosition(), 
+								org.getDistribute(), 
+								org.getDisplayAtr(), 
+								org.getAlarm(), 
+								org.getSumScopeAtr(), 
+								org.getSetOffItemCode(), 
+								org.getCommuteAtr(), 
+								org.getPersonalWageCode());
+					}).collect(Collectors.toList());
 		}
 		
 		
