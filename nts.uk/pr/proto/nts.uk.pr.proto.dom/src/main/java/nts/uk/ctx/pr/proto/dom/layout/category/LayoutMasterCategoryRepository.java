@@ -1,43 +1,23 @@
 package nts.uk.ctx.pr.proto.dom.layout.category;
 
 import java.util.List;
-import java.util.Optional;
-
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 
 
 public interface LayoutMasterCategoryRepository {
 
 	/**
-	 * find layout master category by companyCode, layoutCode ,startYm
-	 * 
-	 * @param companyCode
-	 * @param layoutCode
-	 * @param startYm
-	 * @return
-	 */
-/*	Optional<LayoutMasterCategory> find(String companyCode, String layoutCode, int startYm);
-
-	*//**
-	 * find layout master category by companyCode
-	 * 
-	 * @param companyCode
-	 * @return
-	 *//*
-	List<LayoutMasterCategory> findAll(String companyCode);
-
-	*//**
 	 * add LayoutMasterCategory
 	 * 
 	 * @param companyCode
 	 * @param layoutCode
 	 * @param startYm
 	 */
-
-//	void add(String companyCode, String layoutCode, int startYm);
 	void add(LayoutMasterCategory layoutMasterCategory);
+	/**
+	 * add list categories
+	 * @param categories
+	 */
+	void add(List<LayoutMasterCategory> categories);
 	/**
 	 * update LayoutMasterCategory
 	 * 
@@ -46,8 +26,13 @@ public interface LayoutMasterCategoryRepository {
 	 * @param startYm
 	 * @param categoryAtr
 	 */
-//	void update(String companyCode, String stmtCode, int startYm, int categoryAtr);
 	void update(LayoutMasterCategory layoutMasterCategory);
+	/**
+	 * update list categories
+	 * @param categories
+	 */
+	void update(List<LayoutMasterCategory> categories);
+	
 	/**
 	 * delete a LayoutMasterCategory
 	 * 

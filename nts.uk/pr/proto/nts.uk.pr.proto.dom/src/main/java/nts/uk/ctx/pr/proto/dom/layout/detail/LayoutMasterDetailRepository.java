@@ -19,13 +19,23 @@ public interface LayoutMasterDetailRepository {
 	 */
 	void add(LayoutMasterDetail layoutMasterDetail);
 	
-	
+	/**
+	 * add list details
+	 * @param details
+	 */
+	void add(List<LayoutMasterDetail> details);
 
 	/**
 	 * update a layout master detail
 	 */
 	void update(LayoutMasterDetail layoutMasterDetail);
 
+	/**
+	 * update list details
+	 * @param details
+	 */
+	void update(List<LayoutMasterDetail> details);
+	
 	/**
 	 * delete a layout master detail
 	 */

@@ -5,6 +5,7 @@ import java.util.List;
 import nts.arc.enums.EnumAdaptor;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -26,6 +27,7 @@ public class LayoutMaster extends AggregateRoot {
 	
 	/** 終了年月 */
 	@Getter
+	@Setter
 	private YearMonth endYM;
 	
 	/** レイアウト区分 */

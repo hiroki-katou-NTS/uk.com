@@ -31,7 +31,6 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public void add(LayoutMasterDetail domain) {
 		this.commandProxy().insert(toEntity(domain));
-		
 	}
 	
 	private static QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
@@ -153,4 +152,13 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		
 	}
 
+	@Override
+	public void add(List<LayoutMasterDetail> details) {
+		this.commandProxy().insertAll(details);
+	}
+
+	@Override
+	public void update(List<LayoutMasterDetail> details) {
+		this.commandProxy().updateAll(details);
+	}
 }
