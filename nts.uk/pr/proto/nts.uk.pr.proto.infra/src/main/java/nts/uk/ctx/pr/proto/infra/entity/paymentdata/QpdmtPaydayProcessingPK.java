@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.infra.entity.paymentdata.paymentdatemaster;
+package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

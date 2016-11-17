@@ -113,7 +113,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeHighAtr,
 				entity.alRangeHigh,
 				entity.alRangeLowAtr,
-				entity.alRangeLow);
+				entity.alRangeLow,
+				entity.itemPosColumn);
 		entity.toDomain(domain);
 		return domain;
 	}
