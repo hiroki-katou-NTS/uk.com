@@ -791,7 +791,7 @@ var nts;
                         var container = $(element);
                         // Create steps.
                         for (var i = 0; i < options.length; i++) {
-                            var contentClass = options[i].content;
+                            var contentClass = ko.unwrap(options[i].content);
                             var htmlStep = container.children('.steps').children(contentClass).html();
                             var htmlContent = container.children('.contents').children(contentClass).html();
                             container.append('<h1 class="' + contentClass + '">' + htmlStep + '</h1>');
