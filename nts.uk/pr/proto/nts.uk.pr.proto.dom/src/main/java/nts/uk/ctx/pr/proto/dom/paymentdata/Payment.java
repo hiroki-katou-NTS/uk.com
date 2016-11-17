@@ -1,10 +1,15 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EnumType;
+
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
@@ -40,69 +45,197 @@ public class Payment extends AggregateRoot {
 	private final ProcessingNo processingNo;
 
 	@Getter
-	private final PayBonusAtr payBonusAttribute;
+	private final PayBonusAtr payBonusAtr;
 
 	@Getter
 	private final YearMonth processingYM;
 
 	@Getter
-	private SparePayAtr sparePayAttribute;
+	private SparePayAtr sparePayAtr;
 
-	private Date standardDate;
+	@Getter
+	private GeneralDate standardDate;
 
+	@Getter
 	private SpecificationCode specificationCode;
 
+	@Getter
 	private ResidenceCode residenceCode;
 
+	@Getter
 	private ResidenceName residenceName;
 
+	@Getter
 	private HealthInsuranceGrade healthInsuranceGrade;
 
+	@Getter
 	private HealthInsuranceAverageEarn healthInsuranceAverageEarn;
 
+	@Getter
 	private AgeContinuationInsureAtr ageContinuationInsureAtr;
 
-	private TenureAtr tenureAttribute;
+	@Getter
+	private TenureAtr tenureAtr;
 
-	private TaxAtr taxAttribute;
+	@Getter
+	private TaxAtr taxAtr;
 
+	@Getter
 	private PensionInsuranceGrade pensionInsuranceGrade;
 
+	@Getter
 	private PensionAverageEarn pensionAverageEarn;
 
+	@Getter
 	private EmploymentInsuranceAtr employmentInsuranceAtr;
 
+	@Getter
 	private DependentNumber dependentNumber;
 
+	@Getter
 	private WorkInsuranceCalculateAtr workInsuranceCalculateAtr;
 
-	private InsuredAtr insuredAttribute;
+	@Getter
+	private InsuredAtr insuredAtr;
 
+	@Getter
 	private BonusTaxRate bonusTaxRate;
 
+	@Getter
 	private CalcFlag calcFlag;
 
+	@Getter
 	private MakeMethodFlag makeMethodFlag;
 
+	@Getter
 	private List<DetailItem> detailPaymentItems;
 
+	@Getter
 	private List<DetailDeductionItem> detailDeductionItems;
 
+	@Getter
 	private List<DetailItem> detailPersonalTimeItems;
 
+	@Getter
 	private List<DetailItem> detailArticleItems;
 
+	@Getter
 	private List<PrintPositionCategory> printCategories;
 
-	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr payBonusAttribute,
-			YearMonth processingYM, SparePayAtr sparePayAttribute) {
+	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr  payBonusAtr,
+			YearMonth processingYM, SparePayAtr sparePayAtr) {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;
 		this.processingNo = processingNo;
-		this.payBonusAttribute = payBonusAttribute;
+		this. payBonusAtr =  payBonusAtr;
 		this.processingYM = processingYM;
-		this.sparePayAttribute = sparePayAttribute;
+		this.sparePayAtr = sparePayAtr;
 	}
 
+	public Payment(
+				CompanyCode companyCode, 
+				PersonId personId, 
+				ProcessingNo processingNo, 
+				PayBonusAtr  payBonusAtr,
+				YearMonth processingYM, 
+				SparePayAtr sparePayAtr, 
+				GeneralDate standardDate,
+				SpecificationCode specificationCode, 
+				ResidenceCode residenceCode, 
+				ResidenceName residenceName,
+				HealthInsuranceGrade healthInsuranceGrade, 
+				HealthInsuranceAverageEarn healthInsuranceAverageEarn,
+				AgeContinuationInsureAtr ageContinuationInsureAtr, 
+				TenureAtr tenureAtr, 
+				TaxAtr taxAtr,
+				PensionInsuranceGrade pensionInsuranceGrade, 
+				PensionAverageEarn pensionAverageEarn,
+				EmploymentInsuranceAtr employmentInsuranceAtr, 
+				DependentNumber dependentNumber,
+				WorkInsuranceCalculateAtr workInsuranceCalculateAtr, 
+				InsuredAtr insuredAtr, 
+				BonusTaxRate bonusTaxRate,
+				CalcFlag calcFlag, 
+				MakeMethodFlag makeMethodFlag) {
+		
+		super();
+		this.companyCode = companyCode;
+		this.personId = personId;
+		this.processingNo = processingNo;
+		this. payBonusAtr =  payBonusAtr;
+		this.processingYM = processingYM;
+		this.sparePayAtr = sparePayAtr;
+		this.standardDate = standardDate;
+		this.specificationCode = specificationCode;
+		this.residenceCode = residenceCode;
+		this.residenceName = residenceName;
+		this.healthInsuranceGrade = healthInsuranceGrade;
+		this.healthInsuranceAverageEarn = healthInsuranceAverageEarn;
+		this.ageContinuationInsureAtr = ageContinuationInsureAtr;
+		this.tenureAtr = tenureAtr;
+		this.taxAtr = taxAtr;
+		this.pensionInsuranceGrade = pensionInsuranceGrade;
+		this.pensionAverageEarn = pensionAverageEarn;
+		this.employmentInsuranceAtr = employmentInsuranceAtr;
+		this.dependentNumber = dependentNumber;
+		this.workInsuranceCalculateAtr = workInsuranceCalculateAtr;
+		this.insuredAtr = insuredAtr;
+		this.bonusTaxRate = bonusTaxRate;
+		this.calcFlag = calcFlag;
+		this.makeMethodFlag = makeMethodFlag;
+	}
+	
+	public static Payment createFromJavaType(
+							String companyCode, 
+							String personId, 
+							int processingNo, 
+							int  payBonusAtr,
+							int processingYM, 
+							int sparePayAtr, 
+							LocalDate standardDate,
+							String specificationCode, 
+							String residenceCode, 
+							String residenceName,
+							int healthInsuranceGrade, 
+							int healthInsuranceAverageEarn,
+							int ageContinuationInsureAtr, 
+							int tenureAtr, 
+							int taxAtr,
+							int pensionInsuranceGrade, 
+							int pensionAverageEarn,
+							int employmentInsuranceAtr, 
+							int dependentNumber,
+							int workInsuranceCalculateAtr, 
+							int insuredAtr, 
+							int bonusTaxRate,
+							int calcFlag, 
+							int makeMethodFlag){
+		
+		return new Payment(
+					new CompanyCode(companyCode),
+					new PersonId(personId),
+					new ProcessingNo(processingNo),
+					EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
+					new YearMonth(processingYM),
+					EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
+					GeneralDate.localDate(standardDate),
+					new SpecificationCode(specificationCode),
+					new ResidenceCode(residenceCode),
+					new ResidenceName(residenceName),
+					new HealthInsuranceGrade(healthInsuranceGrade),
+					new HealthInsuranceAverageEarn(healthInsuranceAverageEarn),
+					EnumAdaptor.valueOf(ageContinuationInsureAtr, AgeContinuationInsureAtr.class),
+					EnumAdaptor.valueOf(tenureAtr, TenureAtr.class),
+					EnumAdaptor.valueOf(taxAtr, TaxAtr.class),
+					new PensionInsuranceGrade(pensionInsuranceGrade),
+					new PensionAverageEarn(pensionAverageEarn),
+					EnumAdaptor.valueOf(employmentInsuranceAtr, EmploymentInsuranceAtr.class),
+					new DependentNumber(dependentNumber),
+					EnumAdaptor.valueOf(workInsuranceCalculateAtr, WorkInsuranceCalculateAtr.class),
+					EnumAdaptor.valueOf(insuredAtr, InsuredAtr.class),
+					new BonusTaxRate(bonusTaxRate),
+					EnumAdaptor.valueOf(calcFlag, CalcFlag.class),
+					EnumAdaptor.valueOf(makeMethodFlag, MakeMethodFlag.class));
+	}
 }
