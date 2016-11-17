@@ -1,7 +1,6 @@
 package nts.uk.ctx.core.infra.data.repository.layout;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -10,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtg;
+import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtgPK;
 
 @RequestScoped
 
@@ -23,40 +23,46 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
 		LayoutMasterCategory domain = LayoutMasterCategory.createFromJavaType(entity.qstmtStmtLayoutCtgPk.companyCd,
 				entity.qstmtStmtLayoutCtgPk.strYm, entity.qstmtStmtLayoutCtgPk.stmtCd,
-				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgAtr, entity.ctgPos);
+				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgPos);
 
 		entity.toDomain(domain);
 		return domain;
 	}
 
-	@Override
-	public Optional<LayoutMasterCategory> find(String companyCode, String layoutCode, int startYm) {
-		// TODO Auto-generated method stub
-		return null;
+	private static QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
+		val entity = new QstmtStmtLayoutCtg();
+
+		entity.fromDomain(domain);
+
+		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
+		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
+		entity.qstmtStmtLayoutCtgPk.strYm = domain.getStartYM().v();
+		entity.qstmtStmtLayoutCtgPk.ctgAtr = domain.getCtAtr().value;
+		entity.endYm = domain.getEndYM().v();
+		entity.ctgPos = domain.getCtgPos().v();
+
+		return entity;
 	}
 
 	@Override
-	public List<LayoutMasterCategory> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void add(String companyCode, String layoutCode, int startYm) {
-		
+	public void add(LayoutMasterCategory layoutMasterCategory) {
+		this.commandProxy().insert(toEntity(layoutMasterCategory));
 
 	}
 
 	@Override
-	public void update(String companyCode, String stmtCode, int startYm, int categoryAtr) {
-		// TODO Auto-generated method stub
+	public void update(LayoutMasterCategory layoutMasterCategory) {
+		this.commandProxy().update(toEntity(layoutMasterCategory));
 
 	}
 
 	@Override
 	public void remove(String companyCode, String stmtCode, int startYm, int categoryAtr) {
-		// TODO Auto-generated method stub
-
+		val objectKey = new QstmtStmtLayoutCtgPK();
+		objectKey.companyCd = companyCode;
+		objectKey.stmtCd = stmtCode;
+		objectKey.strYm = startYm;
+		objectKey.ctgAtr = categoryAtr;
 	}
 
 	@Override

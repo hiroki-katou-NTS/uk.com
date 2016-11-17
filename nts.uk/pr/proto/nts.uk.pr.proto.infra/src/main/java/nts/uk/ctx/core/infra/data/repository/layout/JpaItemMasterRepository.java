@@ -15,16 +15,16 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";
-	private final String FIND_ALL_ITEMS = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode"
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode"
 			+ " AND c.qcamtItemPK.ctgAtr = :categoryType";
-	private final String FIND_ITEM = FIND_ALL_ITEMS + " AND c.qcamtItemPK.itemCd = :itemCode";
+	private final String SELECT_DETAIL = SELECT_ALL_DETAILS + " AND c.qcamtItemPK.itemCd = :itemCode";
 
 	/**
 	 * find all item master by company code, category type
 	 */
 	@Override
 	public List<ItemMaster> getAllItemMaster(String companyCode, int categoryType) {
-		return this.queryProxy().query(FIND_ALL_ITEMS, QcamtItem.class).setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SELECT_ALL_DETAILS, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).getList(c -> toDomain(c));
 	}
 
@@ -40,7 +40,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	 * find item by company code, category type, item code
 	 */
 	public Optional<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode) {
-		return this.queryProxy().query(FIND_ITEM, QcamtItem.class).setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SELECT_DETAIL, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).setParameter("itemCd", itemCode)
 				.getSingle(c -> toDomain(c));
 	}
