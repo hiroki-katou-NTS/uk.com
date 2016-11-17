@@ -23,6 +23,7 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
+                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
@@ -30,13 +31,142 @@ var nts;
                      * Update
                      */
                     NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var option = ko.unwrap(data.option);
+                        var textmode = ko.unwrap(option.textmode);
+                        var enable = ko.unwrap(option.enable);
+                        var readonly = ko.unwrap(option.readonly);
+                        var placeholder = ko.unwrap(option.placeholder);
+                        var width = ko.unwrap(option.width);
+                        var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
+                        $input.attr('type', textmode);
+                        if (enable !== false)
+                            $input.removeAttr('disabled');
+                        else
+                            $input.attr('disabled', 'disabled');
+                        if (readonly === false)
+                            $input.removeAttr('readonly');
+                        else
+                            $input.attr('readonly', 'readonly');
+                        $input.attr('placeholder', placeholder);
+                        if (width.trim() != "")
+                            $input.width(width);
+                        if (textalign.trim() != "")
+                            $input.css('text-align', textalign);
                         var newText = getValue();
                         $input.val(newText);
                     };
                     return NtsTextEditorBindingHandler;
+                }());
+                /**
+                 * NumberEditor
+                 */
+                var NtsNumberEditorBindingHandler = (function () {
+                    function NtsNumberEditorBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var setValue = data.value;
+                        this.constraint = validation.getCharType(data.constraint);
+                        var $input = $(element);
+                        $input.change(function () {
+                            var newText = $input.val();
+                            bindingContext.$data.change(newText);
+                            setValue(newText);
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsNumberEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var getValue = data.value;
+                        var option = ko.unwrap(data.option);
+                        var enable = ko.unwrap(option.enable);
+                        var readonly = ko.unwrap(option.readonly);
+                        var placeholder = ko.unwrap(option.placeholder);
+                        var width = ko.unwrap(option.width);
+                        var textalign = ko.unwrap(option.textalign);
+                        var $input = $(element);
+                        $input.attr('type', 'number');
+                        if (enable !== false)
+                            $input.removeAttr('disabled');
+                        else
+                            $input.attr('disabled', 'disabled');
+                        if (readonly === false)
+                            $input.removeAttr('readonly');
+                        else
+                            $input.attr('readonly', 'readonly');
+                        $input.attr('placeholder', placeholder);
+                        if (width.trim() != "")
+                            $input.width(width);
+                        if (textalign.trim() != "")
+                            $input.css('text-align', textalign);
+                        var newText = getValue();
+                        $input.val(newText);
+                    };
+                    return NtsNumberEditorBindingHandler;
+                }());
+                /**
+                 * TimeEditor
+                 */
+                var NtsTimeEditorBindingHandler = (function () {
+                    function NtsTimeEditorBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var setValue = data.value;
+                        this.constraint = validation.getCharType(data.constraint);
+                        var $input = $(element);
+                        $input.change(function () {
+                            var newText = $input.val();
+                            bindingContext.$data.change(newText);
+                            setValue(newText);
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsTimeEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var getValue = data.value;
+                        var option = ko.unwrap(data.option);
+                        var enable = ko.unwrap(option.enable);
+                        var readonly = ko.unwrap(option.readonly);
+                        var placeholder = ko.unwrap(option.placeholder);
+                        var width = ko.unwrap(option.width);
+                        var textalign = ko.unwrap(option.textalign);
+                        var $input = $(element);
+                        $input.attr('type', 'time');
+                        if (enable !== false)
+                            $input.removeAttr('disabled');
+                        else
+                            $input.attr('disabled', 'disabled');
+                        if (readonly === false)
+                            $input.removeAttr('readonly');
+                        else
+                            $input.attr('readonly', 'readonly');
+                        $input.attr('placeholder', placeholder);
+                        if (width.trim() != "")
+                            $input.width(width);
+                        if (textalign.trim() != "")
+                            $input.css('text-align', textalign);
+                        var newText = getValue();
+                        console.log(newText);
+                        $input.val(newText);
+                    };
+                    return NtsTimeEditorBindingHandler;
                 }());
                 /**
                  * TextBox
@@ -106,8 +236,8 @@ var nts;
                         // Get data.
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
-                        var title = ko.unwrap(option.title);
-                        var message = ko.unwrap(option.message);
+                        var title = ko.unwrap(data.title);
+                        var message = ko.unwrap(data.message);
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
@@ -930,6 +1060,8 @@ var nts;
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
+                ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
+                ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();

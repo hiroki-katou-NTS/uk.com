@@ -15,7 +15,7 @@ public class PersonalWage extends AggregateRoot {
 	/**
 	 * Person wage value.
 	 */
-	@Setter
+	@Getter
 	private BigDecimal wageValue;
 
 	/**

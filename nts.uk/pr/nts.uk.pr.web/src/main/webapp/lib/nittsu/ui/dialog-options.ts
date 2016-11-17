@@ -1,12 +1,9 @@
     interface IDialogOption {
-        title?: string, 
-        message?: string,
+        modal?: boolean
     }
     
     abstract class DialogOption {
-        title: string;
-        message: string;
-        protected modal: boolean = true;
+        modal: boolean;
         protected show: boolean = false;
         protected buttons: DialogButton[];
     }
@@ -16,8 +13,7 @@
         {
             super();
             // Default value
-            this.title = (option && option.title) ? option.title : "";
-            this.message = (option && option.message) ? option.message : "";
+            this.modal = (option && option.modal) ? option.modal : true;
             this.buttons = [];
             // Add OK Button
             this.buttons.push({text: "OK",
@@ -37,8 +33,7 @@
         {
             super();
             // Default value
-            this.title = (option && option.title) ? option.title : "";
-            this.message = (option && option.message) ? option.message : "";
+            this.modal = (option && option.modal) ? option.modal : true;
             this.buttons = [];
             // Add OK Button
             this.buttons.push({text: "はい",
@@ -68,8 +63,7 @@
         {
             super();
             // Default value
-            this.title = (option && option.title) ? option.title : "";
-            this.message = (option && option.message) ? option.message : "";
+            this.modal = (option && option.modal) ? option.modal : true;
             this.buttons = [];
             // Add OK Button
             this.buttons.push({text: "はい",

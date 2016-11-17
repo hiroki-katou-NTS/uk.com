@@ -1,15 +1,13 @@
-package nts.uk.ctx.pr.screen.app.query.paymentdata.result;
+package nts.uk.ctx.pr.proto.app.paymentdata.command;
 
-import lombok.Getter;
 import lombok.Value;
 
 @Value
-public class DetailItemDto {
+public class DetailItemCommand {
 
 	/**
 	 * category atr
 	 */
-	@Getter
 	private int categoryAtr;
 
 	/**
@@ -25,28 +23,24 @@ public class DetailItemDto {
 	/**
 	 * 値
 	 */
-	@Getter
 	private Double value;
 
 	/**
 	 * 修正フラグ
 	 */
-	@Getter
 	private int correctFlag;
 
 	/**
 	 * 社保対象区分
 	 */
-	@Getter
 	private int socialInsuranceAtr;
 
 	/**
 	 * 労保対象区分
 	 */
-	@Getter
 	private int laborInsuranceAtr;
 
-	@Getter
-	private DetailItemPositionDto itemPostion;
-	
+	private int linePostion;
+
+	private int colPosition;
 }

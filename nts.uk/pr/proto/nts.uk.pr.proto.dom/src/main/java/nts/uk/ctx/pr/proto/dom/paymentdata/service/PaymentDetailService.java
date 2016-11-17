@@ -17,5 +17,5 @@ public interface PaymentDetailService {
 	 * @param baseYearMonth base year month
 	 * @return payment value
 	 */
-	Map<CategoryAtr, DetailItem> calculatePayValue(String companyCode, PersonId personId, int baseYearMonth, HolidayPaid holiday, PersonalEmploymentContract employmentContract, PaymentCalculationBasicInformation payCalBasicInfo);
+	Map<CategoryAtr, DetailItem> calculatePayValue(PaymentDetailParam param);
 }

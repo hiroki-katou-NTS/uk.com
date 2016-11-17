@@ -16,7 +16,8 @@
 		b{font-weight:bold;}
 		i{font-style: italic;display:inline-block;min-width:80px;}
 		h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
-		h3{font-size:16px;margin:3px 0;font-weight:bold;}
+		h3{color:#00B050;font-size: 20px; margin-bottom:10px;}
+		h4{font-size:16px;margin:3px 0;font-weight:bold;}
 		hr{margin: 25px 0;}
 		table{float:left;border-collapse: collapse;margin:10px 30px 30px 0;}
 		table th, table td{padding: 5px 5px;border:1px solid #ccc;}
@@ -27,12 +28,16 @@
 	
 	<!-- Script -->
 	<script src="../../lib/generic/jquery/jquery-3.1.1.js"></script>
+	<script src="../../lib/generic/jquery/jquery.steps.js"></script>
 	<script src="../../lib/generic/jqueryui/jquery-ui.min.js"></script>
 	<script src="../../lib/generic/knockoutjs/knockout-3.4.0.js"></script>
 	<script src="../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
 	<script src="../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
+	<script src="../../lib/nittsu/util.js"></script>
+	<script src="../../lib/nittsu/text.js"></script>
+	<script src="../../lib/nittsu/ui/validation.js"></script>
 	<script src="../../lib/nittsu/ui/ko-ext.js"></script>
-	<script src="../../lib/nittsu/ui/textbox-definition.js"></script>
+	<script src="../../lib/nittsu/ui/textbox-options.js"></script>
 
 	<script>
 		var __viewContext = {
@@ -55,14 +60,77 @@
 			var vm = {
 				// TextEditor
 				texteditor: {
-					option: ko.mapping.fromJS(null),
-					enable: function(){},
-					readonly: function(){},
-					value: function(){},
-					change: function(){}
+					value: ko.observable('For Lordaeron'),
+					constraint: 'CompanyName',
+					option: ko.mapping.fromJS(new TextEditorOption()),
+					enable: function(enable){
+						var self = this;
+						self.option.enable(enable);
+					},
+					readonly: function(readonly){
+						var self = this;
+						self.option.readonly(readonly);
+					},
+					change: function(value){
+						var self = this;
+						$('#textbox-onchange').append(value + "<br/>");
+					}
+				},
+				// NumberEditor
+				numbereditor: {
+					value: ko.observable(1234),
+					constraint: 'CompanyCode',
+					option: ko.mapping.fromJS(new NumberEditorOption()),
+					enable: function(enable){
+						var self = this;
+						self.option.enable(enable);
+					},
+					readonly: function(readonly){
+						var self = this;
+						self.option.readonly(readonly);
+					},
+					change: function(value){
+						var self = this;
+						$('#numberbox-onchange').append(value + "<br/>");
+					}
+				},
+				// TimeEditor
+				timeeditor: {
+					value: ko.observable("12:00"),
+					constraint: 'CompanyCode',
+					option: ko.mapping.fromJS(new TimeEditorOption()),
+					enable: function(enable){
+						var self = this;
+						self.option.enable(enable);
+					},
+					readonly: function(readonly){
+						var self = this;
+						self.option.readonly(readonly);
+					},
+					change: function(value){
+						var self = this;
+						$('#timebox-onchange').append(value + "<br/>");
+					}
+				},
+				// MaskEditor
+				maskeditor: {
+					value: ko.observable("12:00"),
+					constraint: 'CompanyCode',
+					option: ko.mapping.fromJS(new TimeEditorOption()),
+					enable: function(enable){
+						var self = this;
+						self.option.enable(enable);
+					},
+					readonly: function(readonly){
+						var self = this;
+						self.option.readonly(readonly);
+					},
+					change: function(value){
+						var self = this;
+						$('#maskbox-onchange').append(value + "<br/>");
+					}
 				},
 			};
-			
 			ko.applyBindings(vm);
 		});
 	</script>
@@ -72,21 +140,92 @@
 		<div class="cf">
 			<h2><a href="../../test.html">&#9665;</a> Editor</h2>
 			<hr/>
-			<h2>TextEditor Binding</h2>
-			<div data-bind="texteditor">
-				<input type="text" />
+			<h2>TextEditor</h2>
+			<div data-bind="with: texteditor">
+				<input data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option}" />
+				<br/><br/>
+				<!--  Using Method -->
+				<button data-bind="click: enable.bind($data, true)">enable</button>
+				<button data-bind="click: enable.bind($data, false)">disable</button>
+				<!-- Direct Binding -->
+				<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+				<!-- Event -->
+				<pre id="textbox-onchange">Try to change value<br/></pre>
 			</div>
 			<br/>
+			<!-- ViewModel -->
+			<div class="cf">
+				<h3>TextEditor ViewModel</h3>
+				<table>
+					<colgroup>
+						<col width="200px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><h4>ViewModel</h4></th>
+							<th><h4>Description</h4></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>value</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>constraint</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>option</td>
+							<td>
+								<b>Type:</b> object<br/>
+								<b>Members:</b><br/>
+								<i>TextEditorOption</i>: Option for text editor
+							</td>
+						</tr>
+						<tr>
+							<td>enable</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>readonly</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>change</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pre style="float:left">texteditor: {
+		value: ko.observable('For Lordaeron'),
+		constraint: 'CompanyCode',
+		option: ko.mapping.fromJS(new TextEditorOption()),
+		enable: function(enable){},
+		readonly: function(readonly){},
+		change: function(value){}
+	}</pre>
+			</div>
 			<!-- API -->
-			<h2>TextEditor API</h2>
+			<h3>TextEditor API</h3>
 			<table>
 				<colgroup>
 					<col width="200px" />
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>TextEditorOption</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>TextEditorOption</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -97,8 +236,7 @@
 							<b>Default:</b> "text"<br/>
 							<b>Members:</b><br/>
 							<i>text</i>: Single line text editor type text<br/>
-							<i>password</i>: Single line text editor type password<br/>
-							<i>multiline</i>: Multi line text editor type text
+							<i>password</i>: Single line text editor type password
 						</td>
 					</tr>
 					<tr>
@@ -136,8 +274,8 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Methods</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Methods</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -161,14 +299,16 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Events</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Events</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>change()</td>
+						<td>change(value)</td>
 						<td>
+							<b>value:</b> string<br/>
+							<i>value is the control new value</i><br/>
 							Triggered when value of the control is changed
 						</td>
 					</tr>
@@ -177,21 +317,160 @@
 		</div>
 		<hr/>
 		<div class="cf">
-			<h2>NumberEditor Binding</h2>
-			<div data-bind="texteditor">
-				<input type="text" />
+			<h2>NumberEditor</h2>
+			<div data-bind="with: numbereditor">
+				<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option}" />
+				<br/><br/>
+				<!--  Using Method -->
+				<button data-bind="click: enable.bind($data, true)">enable</button>
+				<button data-bind="click: enable.bind($data, false)">disable</button>
+				<!-- Direct Binding -->
+				<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+				<!-- Event -->
+				<pre id="numberbox-onchange">Try to change value<br/></pre>
 			</div>
 			<br/>
+			<!-- ViewModel -->
+			<div class="cf">
+				<h3>NumberEditor ViewModel</h3>
+				<table>
+					<colgroup>
+						<col width="200px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><h4>ViewModel</h4></th>
+							<th><h4>Description</h4></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>value</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>constraint</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>option</td>
+							<td>
+								<b>Type:</b> object<br/>
+								<b>Members:</b><br/>
+								<i>NumberEditorOption</i>: Option for number editor<br/>
+								<i>CurrencyEditorOption</i>: Option for currency editor
+							</td>
+						</tr>
+						<tr>
+							<td>enable</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>readonly</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>change</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pre style="float:left">numbereditor: {
+		value: ko.observable('For Lordaeron'),
+		constraint: 'CompanyCode',
+		option: ko.mapping.fromJS(new NumberEditorOption()),
+		enable: function(enable){},
+		readonly: function(readonly){},
+		change: function(value){}
+	}</pre>
+			</div>
 			<!-- API -->
-			<h2>NumberEditor API</h2>
+			<h3>NumberEditor API</h3>
 			<table>
 				<colgroup>
 					<col width="200px" />
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>NumberEditorOption</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>NumberEditorOption</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>groupseperator</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ","<br/>
+							Group symbol for number
+						</td>
+					</tr>
+					<tr>
+						<td>grouplength</td>
+						<td>
+							<b>Type:</b> number<br/>
+							<b>Default:</b> 0<br/>
+							Length to group number
+						</td>
+					</tr>
+					<tr>
+						<td>decimalseperator</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "."<br/>
+							Seperator symbol for decimal
+						</td>
+					</tr>
+					<tr>
+						<td>decimallength</td>
+						<td>
+							<b>Type:</b> number<br/>
+							<b>Default:</b> 0<br/>
+							Length for decimal
+						</td>
+					</tr>
+					<tr>
+						<td>placeholder</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Hint text for the control
+						</td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> ""<br/>
+							Set width for the control
+						</td>
+					</tr>
+					<tr>
+						<td>textalign</td>
+						<td>
+							<b>Type:</b> string<br/>
+							<b>Default:</b> "right"<br/>
+							<b>Members:</b><br/>
+							<i>left</i>: Align text to left<br/>
+							<i>right</i>: Align text to right<br/>
+							<i>center</i>: Align text to center
+						</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th><h4>CurrencyEditorOption</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -244,7 +523,7 @@
 							<b>Type:</b> string<br/>
 							<b>Default:</b> depend<br/>
 							<b>Members:</b><br/>
-							<i>left</i>: Display at left. Default for JPA<br/>
+							<i>left</i>: Display at left. Default for JPY<br/>
 							<i>right</i>: Display at right. Default for USD<br/>
 							Currency position
 						</td>
@@ -284,8 +563,8 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Methods</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Methods</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -309,14 +588,16 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Events</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Events</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>change()</td>
+						<td>change(value)</td>
 						<td>
+							<b>value:</b> string<br/>
+							<i>value is the control new value</i><br/>
 							Triggered when value of the control is changed
 						</td>
 					</tr>
@@ -325,21 +606,92 @@
 		</div>
 		<hr/>
 		<div class="cf">
-			<h2>TimeEditor Binding</h2>
-			<div data-bind="texteditor">
-				<input type="text" />
+			<h2>TimeEditor</h2>
+			<div data-bind="with: timeeditor">
+				<input data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option}" />
+				<br/><br/>
+				<!--  Using Method -->
+				<button data-bind="click: enable.bind($data, true)">enable</button>
+				<button data-bind="click: enable.bind($data, false)">disable</button>
+				<!-- Direct Binding -->
+				<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+				<!-- Event -->
+				<pre id="timebox-onchange">Try to change value<br/></pre>
 			</div>
 			<br/>
+			<!-- ViewModel -->
+			<div class="cf">
+				<h3>TimeEditor ViewModel</h3>
+				<table>
+					<colgroup>
+						<col width="200px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><h4>ViewModel</h4></th>
+							<th><h4>Description</h4></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>value</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>constraint</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>option</td>
+							<td>
+								<b>Type:</b> object<br/>
+								<b>Members:</b><br/>
+								<i>TimeEditorOption</i>: Option for time editor
+							</td>
+						</tr>
+						<tr>
+							<td>enable</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>readonly</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>change</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pre style="float:left">timeeditor: {
+		value: ko.observable(1200),
+		constraint: 'CompanyCode',
+		option: ko.mapping.fromJS(new TimeEditorOption()),
+		enable: function(enable){},
+		readonly: function(readonly){},
+		change: function(value){}
+	}</pre>
+			</div>
 			<!-- API -->
-			<h2>TimeEditor API</h2>
+			<h3>TimeEditor API</h3>
 			<table>
 				<colgroup>
 					<col width="200px" />
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>TimeEditorOption</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>TimeEditorOption</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -378,8 +730,8 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Methods</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Methods</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -403,14 +755,16 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Events</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Events</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>change()</td>
+						<td>change(value)</td>
 						<td>
+							<b>value:</b> string<br/>
+							<i>value is the control new value</i><br/>
 							Triggered when value of the control is changed
 						</td>
 					</tr>
@@ -419,21 +773,93 @@
 		</div>
 		<hr/>
 		<div class="cf">
-			<h2>MaskEditor Binding</h2>
-			<div data-bind="texteditor">
-				<input type="text" />
+			<h2>MaskEditor</h2>
+			<div data-bind="with: maskeditor">
+				<input data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option}" />
+				<br/><br/>
+				<!--  Using Method -->
+				<button data-bind="click: enable.bind($data, true)">enable</button>
+				<button data-bind="click: enable.bind($data, false)">disable</button>
+				<!-- Direct Binding -->
+				<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+				<!-- Event -->
+				<pre id="maskbox-onchange">Try to change value<br/></pre>
 			</div>
 			<br/>
+			<!-- ViewModel -->
+			<div class="cf">
+				<h3>MaskEditor ViewModel</h3>
+				<table>
+					<colgroup>
+						<col width="200px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><h4>ViewModel</h4></th>
+							<th><h4>Description</h4></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>value</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>constraint</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>option</td>
+							<td>
+								<b>Type:</b> object<br/>
+								<b>Members:</b><br/>
+								<i>EmployeeCodeEditorOption</i>: Option for EmployeeCode editor<br/>
+								<i>CardEditorOption</i>: Option for CardNumber editor
+							</td>
+						</tr>
+						<tr>
+							<td>enable</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>readonly</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>change</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pre style="float:left">maskeditor: {
+		value: ko.observable(1200),
+		constraint: 'CompanyCode',
+		option: ko.mapping.fromJS(new EmployeeCodeEditorOption()),
+		enable: function(enable){},
+		readonly: function(readonly){},
+		change: function(value){}
+	}</pre>
+			</div>
 			<!-- API -->
-			<h2>MaskEditor API</h2>
+			<h3>MaskEditor API</h3>
 			<table>
 				<colgroup>
 					<col width="200px" />
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>EmployeeCodeEditorOption</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>EmployeeCodeEditorOption</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -486,8 +912,8 @@
 				</tbody>
 				<thead>
 					<tr>
-						<th><h3>CardEditorOption</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>CardEditorOption</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -526,8 +952,8 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Methods</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Methods</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -551,14 +977,16 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h3>Events</h3></th>
-						<th><h3>Description</h3></th>
+						<th><h4>Events</h4></th>
+						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>change()</td>
+						<td>change(value)</td>
 						<td>
+							<b>value:</b> string<br/>
+							<i>value is the control new value</i><br/>
 							Triggered when value of the control is changed
 						</td>
 					</tr>

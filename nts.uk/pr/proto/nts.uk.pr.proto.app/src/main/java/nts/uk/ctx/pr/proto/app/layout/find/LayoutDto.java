@@ -20,13 +20,31 @@ public class LayoutDto {
 	/**
 	 * Start Year Month
 	 */
-	int strYm;
+	int startYm;
+	
+	/**
+	 * Layout Name
+	 */
+	String stmtName;
+	
+	/**
+	 * End Year Month
+	 */
+	int endYM;
+	
+	/**
+	 * layout attribute
+	 */
+	int layoutAtr;
 
 	public static LayoutDto fromDomain(LayoutMaster domain) {
 		return new LayoutDto(
 				domain.getCompanyCode().v(), 
 				domain.getStmtCode().v(), 
-				domain.getStartYM().v());
+				domain.getStartYM().v(),
+				domain.getStmtName().v(),
+				domain.getEndYM().v(),
+				domain.getLayoutAtr().value);
 	}
 
 }

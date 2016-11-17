@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.layout.detail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -11,6 +12,7 @@ import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.enums.UseOrNot;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemName;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.Distribute;
 import nts.uk.ctx.pr.proto.dom.layout.detail.distribute.DistributeSet;
@@ -22,7 +24,6 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode;
  * 明 細 書 マ ス タ 明 細
  *
  */
-@AllArgsConstructor
 public class LayoutMasterDetail extends AggregateRoot{
 	/**会社ＣＤ */
 	@Getter
@@ -86,43 +87,49 @@ public class LayoutMasterDetail extends AggregateRoot{
 	@Getter
 	private PersonalWageCode personalWageCode;	
 	
-//	public LayoutMasterDetail(
-//			CompanyCode companyCode,
-//			LayoutCode layoutCode,
-//			YearMonth startYm,
-//			YearMonth endYm,
-//			CategoryAtr categoryAtr,
-//			ItemCode itemCode,
-//			AutoLineId autoLineId,
-//			DisplayAtr displayAtr,
-//			SumScopeAtr sumScopeAtr,
-//			CalculationMethod calculationMethod, 
-//			Distribute distribute,
-//			PersonalWageCode personalWageCode, 
-//			ItemCode setOffItemCode,
-//			CommuteAtr commuteAtr,
-//			RangeChecker error,
-//			RangeChecker alarm) {
-//		super();
-//		this.companyCode = companyCode;
-//		this.layoutCode = layoutCode;
-//		this.startYm = startYm;
-//		this.endYm = endYm;
-//		this.categoryAtr = categoryAtr;
-//		this.itemCode = itemCode;
-//		this.autoLineId = autoLineId;
-//		this.displayAtr = displayAtr;
-//		this.sumScopeAtr = sumScopeAtr;
-//		this.calculationMethod = calculationMethod;		
-//		this.distribute = distribute;
-//		this.personalWageCode = personalWageCode;		
-//		this.setOffItemCode = setOffItemCode;
-//		this.commuteAtr = commuteAtr;
-//		this.error = error;
-//		this.alarm = alarm;
-//	}
+	@Getter
+	@Setter
+	private ItemName itemAbName;
 	
-	public static LayoutMasterDetail createSimpleFromJavaType(
+	public LayoutMasterDetail(
+			CompanyCode companyCode,
+			LayoutCode layoutCode,
+			YearMonth startYm,
+			YearMonth endYm,
+			CategoryAtr categoryAtr,	
+			ItemCode itemCode,
+			AutoLineId autoLineId,
+			ItemPosColumn itemPosColumn,
+			RangeChecker alarm,
+			CalculationMethod calculationMethod,
+			Distribute distribute,
+			DisplayAtr displayAtr,
+			RangeChecker error,
+			SumScopeAtr sumScopeAtr,
+			ItemCode setOffItemCode,
+			CommuteAtr commuteAtr,
+			PersonalWageCode personalWageCode) {
+		super();
+		this.companyCode = companyCode;
+		this.layoutCode = layoutCode;
+		this.startYm = startYm;
+		this.endYm = endYm;
+		this.categoryAtr = categoryAtr;	
+		this.itemCode = itemCode;
+		this.autoLineId = autoLineId;
+		this.itemPosColumn = itemPosColumn;
+		this.alarm = alarm;
+		this.calculationMethod = calculationMethod;
+		this.distribute = distribute;
+		this.displayAtr = displayAtr;
+		this.error = error;
+		this.sumScopeAtr = sumScopeAtr;
+		this.setOffItemCode = setOffItemCode;
+		this.commuteAtr = commuteAtr;
+		this.personalWageCode = personalWageCode;
+	}
+	
+	public static LayoutMasterDetail createFromJavaType(
 			String companyCode,
 			String layoutCode,
 			int startYm,
@@ -147,34 +154,123 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int isAlamUseLow,
 			int alamRangeLow,
 			int itemPosColumn){
-				Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
-				Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
-				return new LayoutMasterDetail(
-						new CompanyCode(companyCode),
-						new LayoutCode(layoutCode),
-						YearMonth.of(startYm),
-						YearMonth.of(endYm),
-						EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-						new ItemCode(itemCode), 
-						new AutoLineId(autoLineId),
-						new ItemPosColumn(itemPosColumn),
-						new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
-								EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
-								error), 
-						EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
-						new Distribute(
-								EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
-								EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
-						EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
-						new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
-								EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
-								alam),
-						EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
-						new ItemCode(setOffItemCode),
-						EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
-						new PersonalWageCode(personalWageCode)
-						);
 		
+		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
+		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
+		return new LayoutMasterDetail(
+				new CompanyCode(companyCode),
+				new LayoutCode(layoutCode),
+				YearMonth.of(startYm),
+				YearMonth.of(endYm),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				new ItemCode(itemCode), 
+				new AutoLineId(autoLineId),
+				new ItemPosColumn(itemPosColumn),
+				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
+						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
+						error), 
+				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
+				new Distribute(
+						EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
+						EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
+				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
+				new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
+						EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
+						alam),
+				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
+				new ItemCode(setOffItemCode),
+				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
+				new PersonalWageCode(personalWageCode)
+				);
+		
+	}
+	
+	/**
+	 * with ItemAbName of ItemCode
+	 * @param companyCode
+	 * @param layoutCode
+	 * @param startYm
+	 * @param endYm
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @param autoLineId
+	 * @param displayAtr
+	 * @param sumScopeAtr
+	 * @param calculationMethod
+	 * @param distributeWay
+	 * @param distributeSet
+	 * @param personalWageCode
+	 * @param setOffItemCode
+	 * @param commuteAtr
+	 * @param isErrorUseHigh
+	 * @param errorRangeHigh
+	 * @param isErrorUserLow
+	 * @param errorRangeLow
+	 * @param isAlamUseHigh
+	 * @param alamRangeHigh
+	 * @param isAlamUseLow
+	 * @param alamRangeLow
+	 * @param itemPosColumn
+	 * @return
+	 */
+	public static LayoutMasterDetail createFromJavaTypeWithName(
+			String companyCode,
+			String layoutCode,
+			int startYm,
+			int endYm,
+			int categoryAtr,
+			String itemCode,
+			String autoLineId,
+			int displayAtr,
+			int sumScopeAtr,
+			int calculationMethod,
+			int distributeWay,
+			int distributeSet, 
+			String personalWageCode,
+			String setOffItemCode,
+			int commuteAtr,
+			int isErrorUseHigh,
+			int errorRangeHigh,
+			int isErrorUserLow,
+			int errorRangeLow,
+			int isAlamUseHigh,
+			int alamRangeHigh,
+			int isAlamUseLow,
+			int alamRangeLow,
+			int itemPosColumn,
+			String itemAbName){
+		
+		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
+		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
+		
+		LayoutMasterDetail result = new LayoutMasterDetail(
+				new CompanyCode(companyCode),
+				new LayoutCode(layoutCode),
+				YearMonth.of(startYm),
+				YearMonth.of(endYm),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				new ItemCode(itemCode), 
+				new AutoLineId(autoLineId),
+				new ItemPosColumn(itemPosColumn),
+				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
+						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
+						error), 
+				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
+				new Distribute(
+						EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
+						EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
+				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
+				new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
+						EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
+						alam),
+				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
+				new ItemCode(setOffItemCode),
+				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
+				new PersonalWageCode(personalWageCode)
+				);
+		
+		result.setItemAbName(new ItemName(itemAbName));
+		return result;
 	}
 	
 
