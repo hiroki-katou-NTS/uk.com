@@ -7,6 +7,8 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 public class CreateLayoutHistoryCommand {
 
+	/** Nếu mode trên màn hình là copy từ layout khác thì isCopy=true */
+	private boolean isCopy;
 	private String stmtCode;
 	private int startYm;
 	private int endYm;
