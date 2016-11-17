@@ -53,9 +53,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**計算方法 */
 	@Getter
 	private CalculationMethod calculationMethod;
-	/**項目位置 */
-	@Getter
-	private ColumnPosition columnPosition;
 	/** 按分設定  */
 	@Getter
 	private Distribute distribute;	
@@ -149,8 +146,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int alamRangeHigh,
 			int isAlamUseLow,
 			int alamRangeLow,
-			int itemPosColumn,
-			int columnPosition){
+			int itemPosColumn){
 				Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
 				Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
 				return new LayoutMasterDetail(
@@ -166,7 +162,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 								EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
 								error), 
 						EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
-						new ColumnPosition(columnPosition),
 						new Distribute(
 								EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
 								EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
@@ -194,7 +189,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 			ItemPosColumn itemPosColumn,
 			RangeChecker rangeError, 
 			CalculationMethod calculationMethod, 
-			ColumnPosition columnPosition,
 			Distribute distribute,
 			DisplayAtr displayAtr,
 			RangeChecker rangeAlarm,
@@ -214,7 +208,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 				itemPosColumn,
 				rangeError, 
 				calculationMethod, 
-				columnPosition,
 				distribute,
 				displayAtr,
 				rangeAlarm,

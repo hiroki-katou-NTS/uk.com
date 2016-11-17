@@ -102,7 +102,6 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 								org.getItemPosColumn(), 
 								org.getError(), 
 								org.getCalculationMethod(), 
-								org.getColumnPosition(), 
 								org.getDistribute(), 
 								org.getDisplayAtr(), 
 								org.getAlarm(), 
@@ -111,9 +110,8 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 								org.getCommuteAtr(), 
 								org.getPersonalWageCode());
 					}).collect(Collectors.toList());
+			
 		}
-		
-		
 	}
 
 }
