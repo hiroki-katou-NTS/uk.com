@@ -18,21 +18,20 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @RequestScoped
 @Transactional
-public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymentDataCommand> {
+public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymentDataCommand> {
 
 	/** CompanyRepository */
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdatePaymentDataCommand> context) {
+	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		String personId = AppContexts.user().personId();
 		Payment payment = context.getCommand().toDomain(companyCode, personId);
 		payment.validate();
 
-		this.paymentDataRepository.update(payment);
+		this.paymentDataRepository.insert(payment);
 
 	}
-
 }
