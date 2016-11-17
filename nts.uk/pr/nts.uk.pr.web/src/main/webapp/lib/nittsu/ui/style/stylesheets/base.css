@@ -117,12 +117,12 @@ div.form-label {
   border-style: solid;
   border-color: #97D155;
   border-width: 0 0 0 5px;
-  padding: 13px 10px 0 8px;
+  padding: 10px 10px 0 8px;
 }
 /* line 23, ../sass/components/_commons.scss */
 div.form-label.broken {
   padding-top: 0;
-  padding-bottom: 13px;
+  padding-bottom: 10px;
 }
 /* line 28, ../sass/components/_commons.scss */
 div.form-label.inline {
@@ -718,6 +718,11 @@ button.nts-switch-button.selected:hover {
 #functions-area {
   height: 40px;
   border-bottom: solid 1px #B1B1B1;
+}
+
+/* line 1, ../sass/frame/_contents.scss */
+#contents-area {
+  padding: 10px;
 }
 
 /* line 16, ../sass/base.scss */

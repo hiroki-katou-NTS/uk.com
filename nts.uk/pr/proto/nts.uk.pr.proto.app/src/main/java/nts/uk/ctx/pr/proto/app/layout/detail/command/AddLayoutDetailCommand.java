@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.layoutmasterdetail.command;
+package nts.uk.ctx.pr.proto.app.layout.detail.command;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 
 @Getter
 @Setter
-public class UpdateLayoutDetailCommand {
+public class AddLayoutDetailCommand {
 	/**会社ＣＤ */
 	private String companyCode;
 	/**明細書コード*/
@@ -26,7 +26,7 @@ public class UpdateLayoutDetailCommand {
 	/**計算方法 */	
 	private int calculationMethod;
 	/**項目位置 */
-	private String columnPosition;
+	private int columnPosition;
 	/** 按分設定  */
 	private int distribute;	
 	/** 表示区分 */	

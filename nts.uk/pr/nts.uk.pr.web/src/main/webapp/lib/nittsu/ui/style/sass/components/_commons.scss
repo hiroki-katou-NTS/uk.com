@@ -9,7 +9,7 @@ $_label_font_size: $bfs * 1.4;
 $_constraint_font_size: $bfs * 1.2;
 $_constraint_font_color: #777777;
 
-$_margin_if_single_row: $_label_height - $_label_font_size;
+$_margin_if_single_row: $_label_height - $_label_font_size - 3px;
 $_margin_if_inline: $_label_height_inline - $_label_font_size - 1px;
 
 div.form-label {

@@ -1,6 +1,6 @@
 ﻿module nts {
      export function buildStorage (storage) {
-        var wrapper = {
+        var wrapper: any = {
             setItem: function (key, value) {
                 if (value === undefined) {
                     return;
