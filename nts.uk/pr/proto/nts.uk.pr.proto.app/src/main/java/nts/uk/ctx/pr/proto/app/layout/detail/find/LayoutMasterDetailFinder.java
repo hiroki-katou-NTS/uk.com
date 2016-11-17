@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.layoutmasterdetail.find;
+package nts.uk.ctx.pr.proto.app.layout.detail.find;
 
 import java.util.List;
 import java.util.Optional;
