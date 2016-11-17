@@ -36,10 +36,10 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		entity.fromDomain(domain);
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
-		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYM().v();
+		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYm().v();
 		entity.qstmtStmtLayoutDetailPk.ctgAtr = domain.getCategoryAtr().value;
 		entity.qstmtStmtLayoutDetailPk.itemCd = domain.getItemCode().v();
-		entity.endYm = domain.getEndYM().v();
+		entity.endYm = domain.getEndYm().v();
 		entity.autoLineId = domain.getAutoLineId().v();
 		//xem lai voi qa 86
 		//entity.itemPosColumn = domain.geti
@@ -91,13 +91,21 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	private static LayoutMasterDetail toDomain(QstmtStmtLayoutDetail entity) {
 		val domain = LayoutMasterDetail.createSimpleFromJavaType(
+				entity.qstmtStmtLayoutDetailPk.companyCd,
+				entity.qstmtStmtLayoutDetailPk.stmtCd,
+				entity.qstmtStmtLayoutDetailPk.strYm,
+				entity.endYm,
 				entity.qstmtStmtLayoutDetailPk.ctgAtr,
 				entity.qstmtStmtLayoutDetailPk.itemCd,
+				entity.autoLineId,
+				entity.dispAtr,
 				entity.sumScopeAtr, 
 				entity.calcMethod,
 				entity.distributeWay,
 				entity.distributeSet,
 				entity.pWageCd,
+				entity.setoffItemCd,
+				entity.commuteAtr,
 				entity.errRangeHighAtr,
 				entity.errRangeHigh,
 				entity.errRangeLowAtr,
