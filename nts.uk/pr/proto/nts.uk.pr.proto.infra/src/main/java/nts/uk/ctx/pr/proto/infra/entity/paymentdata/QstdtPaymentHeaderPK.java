@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @Embeddable
 public class QstdtPaymentHeaderPK implements Serializable {
 	
@@ -20,11 +23,11 @@ public class QstdtPaymentHeaderPK implements Serializable {
 	public int processingNo;
 	
 	@Column(name = "PAY_BONUS_ATR")
-	public int payBonusAttribute;
+	public int payBonusAtr;
 	
 	@Column(name = "PROCESSING_YM")
 	public int processingYM;
 	
 	@Column(name = "SPARE_PAY_ATR")
-	public int sparePayAttribute;
+	public int sparePayAtr;
 }
