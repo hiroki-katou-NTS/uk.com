@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service.internal;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,6 +13,8 @@ import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
@@ -24,12 +26,12 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
 import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
-import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
-import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaidRepository;
 import nts.uk.shr.com.primitive.PersonId;
 
 @RequestScoped
@@ -47,73 +49,60 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private LayoutMasterLineRepository layoutLineMasterRepo;
 	@Inject
 	private LayoutMasterCategoryRepository layoutCategoryMasterRepo;
-	@Inject
-	private PersonalEmploymentContractRepository personalEmploymentContractRepo;
 	@Inject 
 	private ItemMasterRepository itemMasterRepo;
 	@Inject
-	private HolidayPaidRepository holidayPaidRepo;
+	private PaymentDateMasterRepository payDateMasterRepo;
 	
 	@Override
-	public Double calculatePayValue(CompanyCode companyCode, PersonId personId, int baseYearMonth) {
-		double payValue = 0;
-		String stmtCode = null;
-		int startYearMonth;
-		int endYearMonth;
-		
+	public Map<CategoryAtr, DetailItem> calculatePayValue(
+			String companyCode, PersonId personId, int baseYearMonth, HolidayPaid holiday, PersonalEmploymentContract employmentContract, PaymentCalculationBasicInformation payCalBasicInfo) {
+		Map<CategoryAtr, DetailItem> payDetail = new HashMap<>();
 		// get allot personal setting
-		Optional<PersonalAllotSetting> personalAllotSettingOp = personalAllotSettingRepo.find(companyCode.v(), personId.v(), baseYearMonth);
+		PersonalAllotSetting personalAllotSetting = getPersonalAllotSetting(companyCode, personId.v(), baseYearMonth);
 		
-		if (!personalAllotSettingOp.isPresent()) {
-			// get allot company setting
-			Optional<CompanyAllotSetting> companyAllotSettingOp = companyAllotSettingRepo.find(companyCode.v(), baseYearMonth);
-			stmtCode = companyAllotSettingOp.get().getPaymentDetailCode().v();
-			startYearMonth = companyAllotSettingOp.get().getStartDate().v();
-			endYearMonth = companyAllotSettingOp.get().getEndDate().v();
-		} else {
-			stmtCode = personalAllotSettingOp.get().getPaymentDetailCode().v();
-			startYearMonth = personalAllotSettingOp.get().getStartDate().v();
-			endYearMonth = personalAllotSettingOp.get().getEndDate().v();
-		}
+		String stmtCode = personalAllotSetting.getPaymentDetailCode().v();
+		int startYearMonth = personalAllotSetting.getStartDate().v();
+		int endYearMonth = personalAllotSetting.getEndDate().v();
 		
 		// get layout master
-		Optional<LayoutMaster> layoutHeadOp = layoutMasterRepo.getLayout(companyCode.v(), stmtCode, startYearMonth);
+		LayoutMaster layoutHead  = layoutMasterRepo.getLayout(companyCode, stmtCode, startYearMonth).get();
 		
-		LayoutMaster layoutHead = layoutHeadOp.get();
-		
-		// get layout ctg
-		List<LayoutMasterCategory> categories = layoutCategoryMasterRepo.getCategories(companyCode.v(), layoutHead.getStmtCode().v(), startYearMonth);
+		// get layout category
+		List<LayoutMasterCategory> categories = layoutCategoryMasterRepo.getCategories(companyCode, stmtCode, startYearMonth);
 		
 		// get layout lines
-		List<LayoutMasterLine> layoutLines = layoutLineMasterRepo.getLines(companyCode.v(), stmtCode, startYearMonth);
+		List<LayoutMasterLine> layoutLines = layoutLineMasterRepo.getLines(companyCode, stmtCode, startYearMonth);
 		
-//		// get layout detail master
-//		Optional<LayoutMasterDetail> layoutDetail = layoutDetailMasterRepo.find(companyCode.v(), layoutHead.getStmtCode().v(), startYearMonth, stmtCode, 2, autoLineID);
-//		
-//		// get item
-//		Optional<ItemMaster> itemMaster = itemMasterRepo.getItemMaster(companyCode.v(), categoryAtr, itemCode);
-//		
-//		// get PayrollSystem
-//		List<PersonalEmploymentContract> personalEmploymentContractList = personalEmploymentContractRepo.find(companyCode.v(), personIdList, baseYmd);
-//		
-//		// get holiday
-//		List<HolidayPaid> holiday = holidayPaidRepo.find(companyCode.v(), personIdList);
-//		
-//		Map<PersonId, PersonalEmploymentContract> maps = personalEmploymentContractList.stream().collect(Collectors.toMap(PersonalEmploymentContract::getPersonId, x -> x));
-//		
-//		PersonalEmploymentContract personal = maps.get(personId);
-//		
-//		// PayrollSystem == 2 || 3 
-//		if (personal.isPayrollSystemDailyOrDay()) {
-//			payValue = getPayValueByMonthlyDaily(itemCode, holiday, payDay, payCalBasic);
-//		} else if (personal.isPayrollSystemDailyOrMonthly()) { 
-//			// PayrollSystem == 0 || 1
-//			payValue = getPayValueByPayrollDayHours(itemCode, holiday);
-//		} else {
-//			throw new RuntimeException("Error system");
-//		}
+		// get layout detail master
+		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(companyCode, stmtCode, startYearMonth);
 		
-		return payValue;
+		for (LayoutMasterDetail itemLayoutMasterDetail : layoutMasterDetailList) {
+			DetailItem detail = null;
+			
+			// get item code
+			String itemCode = itemLayoutMasterDetail.getItemCode().v();
+			
+			// get item
+			ItemMaster itemMaster = itemMasterRepo.getItemMaster(companyCode, itemLayoutMasterDetail.getCategoryAtr().value, itemCode).get();
+			
+//			// get pay day
+//			payDateMasterRepo.find(companyCode, payBonusAtr, processingYm, sparePayAtr)
+//			
+//			// PayrollSystem == 2 || 3 
+//			if (employmentContract.isPayrollSystemDailyOrDay() && itemLayoutMasterDetail.getCategoryAtr().value == 2) {
+//				detail = getPayValueByMonthlyDaily(itemCode, holiday, payDay, payCalBasicInfo);
+//			} else if (employmentContract.isPayrollSystemDailyOrMonthly()) { 
+//				// PayrollSystem == 0 || 1
+//				detail = getPayValueByPayrollDayHours(itemCode, holiday);
+//			} else {
+//				throw new RuntimeException("Error system");
+//			}
+			
+			payDetail.put(itemLayoutMasterDetail.getCategoryAtr(), detail);
+		}
+		
+		return payDetail;
 	}
 	
 	/**
@@ -122,18 +111,18 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 * @param holiday
 	 * @return QSTDT_PAYMENT_DETAIL.VAL
 	 */
-	private double getPayValueByPayrollDayHours(String itemCode, HolidayPaid holiday) {
+	private DetailItem getPayValueByPayrollDayHours(String itemCode, HolidayPaid holiday) {
+		double value = 0;
+		
 		switch (itemCode) {
 		case "F206":
-			return holiday.getRemainDays().doubleValue();
+			value = holiday.getRemainDays().doubleValue();
 			
 		case "F212":
-			return holiday.getRemainTime().doubleValue();
-			
-		default:
-			return 0;
+			value = holiday.getRemainTime().doubleValue();
 		}
 		
+		return new DetailItem(new ItemCode(itemCode), value, null, null, null);
 	}
 	
 	/**
@@ -144,28 +133,54 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 * @param payCalBasic
 	 * @return QSTDT_PAYMENT_DETAIL.VAL
 	 */
-	private double getPayValueByMonthlyDaily(String itemCode, HolidayPaid holiday, PaymentDateMaster payDay, PaymentCalculationBasicInformation payCalBasic) {
-		// 	get ItemCode in CCAST_BASIC_CALC
+	private DetailItem getPayValueByMonthlyDaily(String itemCode, HolidayPaid holiday, PaymentDateMaster payDay, PaymentCalculationBasicInformation payCalBasic) {
+		double value = 0;
+		
 		switch (itemCode) {
 		case "F206":
-			return holiday.getRemainDays().doubleValue();
+			value = holiday.getRemainDays().doubleValue(); 
 			
 		case "F212":
-			return holiday.getRemainTime().doubleValue();
+			value =  holiday.getRemainTime().doubleValue();
 			
 		case "F201":
-			return payDay.getNeededWorkDay();
+			value =  payDay.getNeededWorkDay();
 			
 		case "F202":
-			return payDay.getNeededWorkDay();
+			value =  payDay.getNeededWorkDay();
 			
 		case "F203":
-			return payDay.getNeededWorkDay() * payCalBasic.getBaseHours().intValue();
-				
-		default:
-			return 0;
+			value =  payDay.getNeededWorkDay() * payCalBasic.getBaseHours().intValue();
 		}
 		
+		return new DetailItem(new ItemCode(itemCode), value, null, null, null);
+	}
+	
+	/**
+	 * Get allot setting by personal
+	 * @return
+	 */
+	private PersonalAllotSetting getPersonalAllotSetting(String companyCode, String personId, int baseYearMonth) {
+		PersonalAllotSetting result = null;
+		
+		Optional<PersonalAllotSetting> personalAllotSettingOp = personalAllotSettingRepo.find(companyCode, personId, baseYearMonth);
+		
+		if (!personalAllotSettingOp.isPresent()) {
+			// get allot company setting
+			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode, baseYearMonth).get();
+			
+			result = new PersonalAllotSetting(
+					new CompanyCode(companyCode), 
+					new PersonId(personId), 
+					companyAllotSetting.getStartDate(),
+					companyAllotSetting.getEndDate(), 
+					companyAllotSetting.getBonusDetailCode(), 
+					companyAllotSetting.getPaymentDetailCode());
+		} else {
+			result = personalAllotSettingOp.get();
+		}
+		
+		return result;
 	}
 
 }
