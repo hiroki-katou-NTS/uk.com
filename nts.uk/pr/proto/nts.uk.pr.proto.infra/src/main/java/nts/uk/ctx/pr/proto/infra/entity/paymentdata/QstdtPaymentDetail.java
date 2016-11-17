@@ -25,7 +25,7 @@ public class QstdtPaymentDetail extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "VAL")
-	public BigDecimal payValue;
+	public BigDecimal value;
 	
 	@Basic(optional = false)
 	@Column(name = "CORRECT_FLG")
