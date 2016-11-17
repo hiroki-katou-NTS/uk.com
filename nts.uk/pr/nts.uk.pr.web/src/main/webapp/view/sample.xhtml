@@ -10,6 +10,18 @@
         <ui:composition template="../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+					nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
+				</com:ValidatorScript>
+				
+				<script>
+				$(function () {
+					ko.applyBindings({});
+				});
+				</script>
             </ui:define>
             
             <ui:define name="content">
@@ -30,19 +42,29 @@
             		<button class="x-large">特大ボタン</button><br />
             		<br />
             		<button disabled="disabled">非活性</button>
+            	
+	            	<hr />
+	            	
+	            	<div class="form-label"><label>項目名</label></div><br />
+	            	<br />
+	            	<div class="form-label broken"><label>項目名</label><i>半角英字20文字</i></div><br />
+	            	<br />
+	            	<div class="form-label broken required"><label>項目名</label><i>半角英字20文字</i></div><br />
+	            	<br />
+	            	<div class="form-label inline required"><label>項目名</label><i>半角英字20文字</i></div><br />
+	            	<br />
+	            	<br />
+	            	bindings:<br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode' }">レイアウトコード</div><br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: true, required: true }">レイアウトコード</div><br />
+	            	
             	</div>
-            	
-            	<hr />
-            	
-            	<div class="form-label"><label>項目名</label></div><br />
-            	<br />
-            	<div class="form-label broken"><label>項目名</label><i>半角英字20文字</i></div><br />
-            	<br />
-            	<div class="form-label broken required"><label>項目名</label><i>半角英字20文字</i></div><br />
-            	<br />
-            	<div class="form-label inline required"><label>項目名</label><i>半角英字20文字</i></div><br />
-            	<br />
-            	
             </ui:define>
     	</ui:composition>
    	</body>

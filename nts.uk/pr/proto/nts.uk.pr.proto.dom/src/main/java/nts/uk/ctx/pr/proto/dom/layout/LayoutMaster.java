@@ -40,10 +40,10 @@ public class LayoutMaster extends AggregateRoot {
 	@Getter
 	private List<LayoutMasterCategory> layoutMasterCategories;
 
-	public LayoutMaster(CompanyCode code, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM, LayoutAtr layoutAtr,
+	public LayoutMaster(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM, LayoutAtr layoutAtr,
 			LayoutName stmtName) {
 		super();
-		this.companyCode = code;
+		this.companyCode = companyCode;
 		this.startYM = startYM;
 		this.stmtCode = stmtCode;
 		this.endYM = endYM;
