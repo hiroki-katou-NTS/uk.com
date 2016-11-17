@@ -92,7 +92,6 @@ public class AddLayoutDetailCommand {
 				alamRangeHigh, 
 				isAlamUseLow,
 				alamRangeLow,
-				itemPosColumn,
-				columnPosition);
+				itemPosColumn);
 	}
 }

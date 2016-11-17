@@ -26,9 +26,12 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
+	
+	
 	@Override
 	public void add(LayoutMasterDetail domain) {
 		this.commandProxy().insert(toEntity(domain));
+		
 	}
 	
 	private static QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
