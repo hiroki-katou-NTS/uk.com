@@ -18,6 +18,8 @@ public interface LayoutMasterDetailRepository {
 	 * @param stmtCode
 	 */
 	void add(LayoutMasterDetail layoutMasterDetail);
+	
+	
 
 	/**
 	 * update a layout master detail
