@@ -108,6 +108,9 @@ public class Payment extends AggregateRoot {
 	private MakeMethodFlag makeMethodFlag;
 
 	@Getter
+	private Comment comment;
+	
+	@Getter
 	private List<DetailItem> detailPaymentItems;
 
 	@Getter

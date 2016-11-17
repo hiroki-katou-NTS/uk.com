@@ -39,7 +39,7 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
 
 	@Basic(optional = false)
 	@Column(name ="ITEM_POS_COLUMN")
-	public String itemPosColumn;
+	public int itemPosColumn;
 
 	@Basic(optional = false)
 	@Column(name ="DISP_ATR")

@@ -21,7 +21,7 @@ public class QpdmtPaydayPK implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "PROCESSING_NO")
-	public BigDecimal processingNo;
+	public int processingNo;
 
 	@Basic(optional = false)
 	@Column(name = "PROCESSING_YM")

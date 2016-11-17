@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-@Entity
+//@Entity
 @Table(name = "QSTDT_PAYMENT_DETAIL")
 public class QstdtPaymentDetail extends AggregateTableEntity {
 	

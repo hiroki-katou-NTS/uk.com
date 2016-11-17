@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<title></title>
+<title>Test Page</title>
 <meta charset="UTF-8">
 
 <link rel="stylesheet" type="text/css"
@@ -55,24 +55,103 @@ hr {
 <script src="lib/nittsu/ui/notice.js.download"></script>
 <script src="lib/nittsu/ui/uiutil.js.download"></script>
 <script>
-			var __viewContext = {
-				primitiveValueConstraints: {
-					CompanyCode: {
-						valueType: "String",
-						charType: "Numeric",
-						maxLength: 4
-					},
-					CompanyName: {
-						valueType: "String",
-						charType: "Any",
-						maxLength: 20
-					}
-				}
-			};
-		</script>
+	var __viewContext = {
+		primitiveValueConstraints: {
+			CompanyCode: {
+				valueType: "String",
+				charType: "Numeric",
+				maxLength: 4
+			},
+			CompanyName: {
+				valueType: "String",
+				charType: "Any",
+				maxLength: 20
+			}
+		}
+	};
+</script>
 <script>
+	var __viewContext = __viewContext || {};
+	__viewContext.system = {
+		kinjirou:false,
+		installationType:1,
+		systemName:'ヘルスケアシステム',
+		programName:'会社情報登録',
+		releaseVersion:'2016.10.18',
+		requestId:'38f66a0f-7b9b-43de-8cb6-7d9a8874ee9f',
+		programId:'MnComp0102'
+	};
+	__viewContext.user = {
+		isDepartmentManager:false,
+		isConsumer:false,
+		isStressCheckConductor:false,
+		isEmployee:false,
+		isIndustrialPhysician:false,
+		isSystemAdministrator:false,
+		isCompanyManager:true,
+		companyName:'契約Ａ会社１',
+		isCompanyUser:true,
+		isPersonnelManageOfficer:false,
+		userName:'テストログイン',
+		isSpecialUser:false
+	};
+	__viewContext.companySettings = {
+		isSeparate:true,
+		showEmployment:false,
+		exporting:0,
+		showWorkPlace:false,
+		sorting:3,
+		showPosition:true,
+		showDepartment:true
+	};
+</script>
+<script>
+			var vm;
+			//Wizard User
+        	function User(code, name) {
+                this.code = ko.observable(code);
+                this.name = ko.observable(name);
+                this.name.subscribe(function (val) { alert(val); });
+            }
+			var _wizard = function() {
+				var self = this;
+				self.stepList = ko.observableArray([
+                    new Step('step-1', '.step-1'),
+                    new Step('step-2', '.step-2'),
+                    new Step('step-3', '.step-3'),
+                    new Step('step-4', '.step-4'),
+                    new Step('step-5', '.step-5'),
+                    new Step('step-6', '.step-6')
+                ]);
+                self.stepSelected = ko.observable(new Step('step-1', '.step-1'));
+	            self.user = ko.observable(new User('U1', 'User 1'));
+                self.begin =  function () {
+                    $('#wizard').begin();
+                };
+                self.end = function () {
+                    $('#wizard').end();
+                };
+                self.next = function () {
+                    $('#wizard').steps('next');
+                    console.log("next");
+                };
+                self.previous = function () {
+                    $('#wizard').steps('previous');
+                };
+                self.getCurrentStep = function () {
+                    alert($('#wizard').steps('getCurrentIndex'));
+                };
+                self.gotoStep = function () {
+                    var index = self.stepList().indexOf(stepSelected());
+                    $('#wizard').setStep(index);
+                };
+			};
+			function Step(id, content) {
+                this.id = ko.observable(id);
+                this.content = ko.observable(content);
+        	}
 			$(function () {
-				var vm = {
+				vm = {
 					companyCode: ko.observable('0001'),
 					companyName: ko.observable('てすと会社'),
 					// TextBox ViewModel
@@ -219,54 +298,16 @@ hr {
 						}
 					},
 					//Wizard ViewModel
-					wizard: {
-						stepList: ko.observableArray([
-		                    new Step('step-1', '.step-1'),
-		                    new Step('step-2', '.step-2'),
-		                    new Step('step-3', '.step-3'),
-		                    new Step('step-4', '.step-4'),
-		                    new Step('step-5', '.step-5'),
-		                    new Step('step-6', '.step-6')
-		                ]),
-		                stepSelected: ko.observable(new Step('step-1', '.step-1')),
-		                user: ko.observable(new User('U1', 'User 1')),
-		                begin: function () {
-		                    $('#wizard').begin();
-		                },
-		                end: function () {
-		                    $('#wizard').end();
-		                },
-		                next: function () {
-		                    $('#wizard').steps('next');
-		                },
-		                previous: function () {
-		                    $('#wizard').steps('previous');
-		                },
-		                getCurrentStep: function () {
-		                    alert($('#wizard').steps('getCurrentIndex'));
-		                },
-		                gotoStep: function () {
-		                    var index = stepList.indexOf(stepSelected());
-		                    $('#wizard').setStep(index);
-		                }
-					}
+					wizard: _wizard
 				};
 				//Wizard Step
-				function Step(id, content) {
-	                this.id = ko.observable(id);
-	                this.content = ko.observable(content);
-            	}
+				
 				//checkbox item
 				function BoxModel(id,name) {
 				    this.id = ko.observable(id);
 				    this.name = ko.observable(name);
 				}
-            	//Wizard User
-            	function User(code, name) {
-	                this.code = ko.observable(code);
-	                this.name = ko.observable(name);
-	                this.name.subscribe(function (val) { alert(val); });
-	            }
+            	
 				// ListBox & ComboBox Item
 				function ItemModel(code, name) {
 					this.code = code;
@@ -460,49 +501,44 @@ hr {
       </div>
       <hr />
       <h2>Wizard </h2>
-      <div id="program-body" style="top: 140px; min-width: 431px;">
-			<div id="contents-area" class="two-column-layout">
-				<div class="column right cf" data-bind="with: wizard">
-					<div>
-						<select data-bind="options: stepList, 
-													optionsText: 'id',
-													value: stepSelected" style="width: 200px"></select>
-						<button data-bind="click: goto">Go to Step</button>
-					</div><br/>
-					<div id="wizard"
-						data-bind="ntsWizard: {steps: stepList}"
-						class="cf">
-						<div class="steps">
-							<div class="begin step-1" data-icon="./lib/nittsu/uiimages/ntsWizard/start-images.jpg">再集計</div>
-							<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする
-							</div>
-							<div class="step-3">対象社員を選ぶ</div>
-							<div class="step-4">対象社員を選ぶ</div>
-							<div class="step-5">対象社員を選ぶ</div>
-							<div class="end step-6">実行</div>
-						</div>
-						<div class="contents">
-							<div class="step-1">contents step1</div>
-							<div class="step-2">contents step2</div>
-							<div class="step-3">contents step3</div>
-							<div class="step-4">
-								<div data-bind="with: user">
-									Code: <input type="text" data-bind="value: code"><br>
-									Name: <input type="text" data-bind="value: name">
-								</div>
-							</div>
-							<div class="step-5">contents step5</div>
-							<div class="step-6">contents step6</div>
+		<div class="column right cf" data-bind="with: wizard">
+			
+				<select data-bind="options: stepList, 
+											optionsText: 'id',
+											value: stepSelected" style="width: 200px"></select>
+				<button data-bind="click: gotoStep">Go to Step</button><br/>
+			<div id="wizard"
+				data-bind="ntsWizard: {steps: stepList}"
+				class="cf">
+				<div class="steps">
+					<div class="begin step-1" data-icon="./lib/nittsu/ui/images/ntsWizard/start-images.jpg">再集計</div>
+					<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする
+					</div>
+					<div class="step-3">対象社員を選ぶ</div>
+					<div class="step-4">対象社員を選ぶ</div>
+					<div class="step-5">対象社員を選ぶ</div>
+					<div class="end step-6">実行</div>
+				</div>
+				<div class="contents">
+					<div class="step-1">contents step1</div>
+					<div class="step-2">contents step2</div>
+					<div class="step-3">contents step3</div>
+					<div class="step-4">
+						<div data-bind="with: user">
+							Code: <input type="text" data-bind="value: code"><br>
+							Name: <input type="text" data-bind="value: name">
 						</div>
 					</div>
-					
-					<button data-bind="click: begin">Begin</button>
-					<button data-bind="click: end">End</button>
-					<button data-bind="click: previous">Previous</button>
-					<button data-bind="click: next">Next</button>
-					<button data-bind="click: getCurrentStep">Current Step Index</button>
+					<div class="step-5">contents step5</div>
+					<div class="step-6">contents step6</div>
 				</div>
 			</div>
+			
+			<button data-bind="click: begin">Begin</button>
+			<button data-bind="click: end">End</button>
+			<button data-bind="click: previous">Previous</button>
+			<button data-bind="click: next">Next</button>
+			<button data-bind="click: getCurrentStep">Current Step Index</button>
 		</div>
 </body>
 </html>
