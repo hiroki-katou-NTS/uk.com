@@ -2,11 +2,11 @@ package nts.uk.ctx.pr.proto.dom.itemmaster;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringCharType(CharType.NUMERIC)
-@StringMaxLengh(4)
+@StringMaxLength(4)
 public class ItemCode extends CodePrimitiveValue<ItemCode>{
 	/**
 	 * Constructor

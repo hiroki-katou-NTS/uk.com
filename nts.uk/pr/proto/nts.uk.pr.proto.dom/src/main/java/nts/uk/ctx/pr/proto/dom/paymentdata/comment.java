@@ -1,14 +1,12 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * メモ
  */
-@StringMaxLengh(2)
+@StringMaxLength(2)
 public class comment extends StringPrimitiveValue<comment> {
 
 	/** serialVersionUID */

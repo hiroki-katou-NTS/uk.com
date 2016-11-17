@@ -2,14 +2,14 @@ package nts.uk.ctx.core.dom.company;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * Code of Company
  */
 @StringCharType(CharType.NUMERIC)
-@StringMaxLengh(4)
+@StringMaxLength(4)
 public class CompanyCode extends CodePrimitiveValue<CompanyCode> {
 
 	/** serialVersionUID */
