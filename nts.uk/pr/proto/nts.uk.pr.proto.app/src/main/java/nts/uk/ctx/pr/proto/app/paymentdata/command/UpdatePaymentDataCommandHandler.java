@@ -13,10 +13,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
  */
 @RequestScoped
 @Transactional
-public class UpdatePaymentDataCommandHandler  extends CommandHandler<AddPaymentDataCommand>{
+public class UpdatePaymentDataCommandHandler  extends CommandHandler<CreatePaymentDataCommand>{
 
 	@Override
-	protected void handle(CommandHandlerContext<AddPaymentDataCommand> arg0) {
+	protected void handle(CommandHandlerContext<CreatePaymentDataCommand> arg0) {
 		// TODO Auto-generated method stub
 		
 	}

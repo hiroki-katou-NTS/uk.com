@@ -1,6 +1,12 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import java.util.Map;
+
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
+import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.shr.com.primitive.PersonId;
 
 public interface PaymentDetailService {
@@ -11,5 +17,5 @@ public interface PaymentDetailService {
 	 * @param baseYearMonth base year month
 	 * @return payment value
 	 */
-	Double calculatePayValue(CompanyCode companyCode, PersonId personId, int baseYearMonth);
+	Map<CategoryAtr, DetailItem> calculatePayValue(String companyCode, PersonId personId, int baseYearMonth, HolidayPaid holiday, PersonalEmploymentContract employmentContract, PaymentCalculationBasicInformation payCalBasicInfo);
 }
