@@ -74,4 +74,14 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public void add(List<LayoutMasterCategory> categories) {
+		this.commandProxy().insertAll(categories);
+	}
+
+	@Override
+	public void update(List<LayoutMasterCategory> categories) {
+		this.commandProxy().updateAll(categories);
+	}
+
 }

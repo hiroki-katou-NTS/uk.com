@@ -174,7 +174,7 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	public String printPositionCategoryLines5;
 	
 	@Column(name = "MEMO")
-	public String memoText;
+	public String comment;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy = "qstdtPaymentHeader")
 	private List<QstdtPaymentDetail> qstdtPaymentDetailCollection;

@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRep
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
 
 @RequestScoped
-public class PaymentData extends JpaRepository implements PaymentDataQueryRepository {
+public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
 	private String SELECT_ALL = " SELECT d, i.ITEM_NAME" +
 								" FROM QSTDT_PAYMENT_DETAIL d JOIN QCAMT_ITEM i ON d.CCD = i.CCD" +

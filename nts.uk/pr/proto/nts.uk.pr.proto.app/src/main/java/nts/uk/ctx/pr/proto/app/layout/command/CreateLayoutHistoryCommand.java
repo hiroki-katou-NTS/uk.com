@@ -12,6 +12,7 @@ public class CreateLayoutHistoryCommand {
 	private String stmtCode;
 	private int startYm;
 	private int endYm;
+	private int endYmPrevious;
 
 	/**
 	 * Convert to domain object from command values

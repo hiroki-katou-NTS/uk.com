@@ -18,6 +18,8 @@ import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
  */
 @FacesComponent(tagName = "ValidatorScript", createTag = true)
 public class ValidatorScript extends UIComponentBase {
+	
+	private static final String JS_VAR_NAME = "__viewContext.primitiveValueConstraints";
 
 	@Override
 	public String getFamily() {
@@ -30,7 +32,11 @@ public class ValidatorScript extends UIComponentBase {
         val rw = context.getResponseWriter();
         
         rw.write("<script>");
-        rw.write("\t__viewContext.primitiveValueConstraint = __viewContext.primitiveValueConstraint || {};");
+        rw.write("\t");
+        rw.write(JS_VAR_NAME);
+        rw.write(" = ");
+        rw.write(JS_VAR_NAME);
+        rw.write(" || {};");
 
         val primitives = Helper.getPrimitiveValueNames(this.getChildren().get(0).toString());
         for(String fqnOfPrimitiveValueClass : primitives) {
@@ -48,7 +54,9 @@ public class ValidatorScript extends UIComponentBase {
 		val pvClass = Helper.findClass(fqnOfPrimitiveValueClass);
 		String pvName = pvClass.getSimpleName();
 		
-		rw.append("\n\t__viewContext.primitiveValueConstraint.");
+		rw.append("\n\t");
+        rw.write(JS_VAR_NAME);
+        rw.write(".");
 		rw.append(pvName);
 		rw.append(" = {");
 		

@@ -84,4 +84,14 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		return null;
 	}
 
+	@Override
+	public void add(List<LayoutMasterLine> lines) {
+		this.commandProxy().insertAll(lines);
+	}
+
+	@Override
+	public void update(List<LayoutMasterLine> lines) {
+		this.commandProxy().updateAll(lines);
+	}
+
 }
