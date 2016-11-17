@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 
 @RequestScoped
-public class LayoutFinder {
+public class LayoutMasterFinder {
 	@Inject
 	private LayoutMasterRepository repository;
 
@@ -18,11 +18,10 @@ public class LayoutFinder {
 	 * finder all layout by company code and layout code
 	 * 
 	 * @param companyCode
-	 * @param stmtCode
 	 * @return
 	 */
-	public List<LayoutDto> getAllLayout(String companyCode, String stmtCode) {
-		return this.repository.getLayouts(companyCode, stmtCode).stream().map(layout -> LayoutDto.fromDomain(layout))
+	public List<LayoutDto> getAllLayout(String companyCode) {
+		return this.repository.getLayouts(companyCode).stream().map(layout -> LayoutDto.fromDomain(layout))
 				.collect(Collectors.toList());
 	}
 
@@ -34,8 +33,8 @@ public class LayoutFinder {
 	 * @param strYm
 	 * @return
 	 */
-	public Optional<LayoutDto> getLayout(String companyCode, String stmtCode, int strYm) {
-		return this.repository.getLayout(companyCode, stmtCode, strYm).map(layout -> LayoutDto.fromDomain(layout));
+	public Optional<LayoutDto> getLayout(String companyCode, String stmtCode, int startYm) {
+		return this.repository.getLayout(companyCode, stmtCode, startYm).map(layout -> LayoutDto.fromDomain(layout));
 	}
 
 }
