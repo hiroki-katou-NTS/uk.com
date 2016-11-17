@@ -144,13 +144,13 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			value =  holiday.getRemainTime().doubleValue();
 			
 		case "F201":
-			value =  payDay.getNeededWorkDay();
+			value =  payDay.getNeededWorkDay().doubleValue();
 			
 		case "F202":
-			value =  payDay.getNeededWorkDay();
+			value =  payDay.getNeededWorkDay().doubleValue();
 			
 		case "F203":
-			value =  payDay.getNeededWorkDay() * payCalBasic.getBaseHours().intValue();
+			value =  payDay.getNeededWorkDay().doubleValue() * payCalBasic.getBaseHours().doubleValue();
 		}
 		
 		return new DetailItem(new ItemCode(itemCode), value, null, null, null);
