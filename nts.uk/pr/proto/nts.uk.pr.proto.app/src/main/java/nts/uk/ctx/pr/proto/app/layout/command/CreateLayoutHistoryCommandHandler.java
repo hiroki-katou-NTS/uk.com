@@ -88,6 +88,19 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 								org.getLineDispayAttribute(), 
 								org.getLinePosition());
 					}).collect(Collectors.toList());
+			
+			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(
+					org -> {
+						return LayoutMasterDetail.createFromDomain(
+								categoryAtr, 
+								itemCode, 
+								sumScopeAtr, 
+								calculationMethod, 
+								distribute, 
+								personalWageCode, 
+								rangeCheckerError, 
+								rangeCheckerAlarm);
+					});
 		}
 		
 		

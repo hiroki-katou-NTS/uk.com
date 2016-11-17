@@ -103,7 +103,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.alarm = alarm;
 	}
 	
-	public static LayoutMasterDetail createSimpleFromJavaType(
+	public static LayoutMasterDetail createFromJavaType(
 			int categoryAtr,
 			String itemCode,
 			int sumScopeAtr,
@@ -136,6 +136,21 @@ public class LayoutMasterDetail extends AggregateRoot{
 								EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
 								alam));
 		
+	}
+	
+	public static LayoutMasterDetail createFromDomain(
+			CategoryAtr categoryAtr,
+			ItemCode itemCode, 
+			SumScopeAtr sumScopeAtr, 
+			CalculationMethod calculationMethod,  
+			Distribute distribute, 
+			PersonalWageCode personalWageCode,
+			RangeChecker rangeCheckerError, 
+		    RangeChecker rangeCheckerAlarm) {
+		
+		return new LayoutMasterDetail(
+				categoryAtr, itemCode, sumScopeAtr, calculationMethod, 
+				distribute, personalWageCode, rangeCheckerError, rangeCheckerAlarm);
 	}
 	
 }
