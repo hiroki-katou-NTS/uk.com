@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.fomula;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLengh(3)
+@StringMaxLength(3)
 public class FormulaCode extends StringPrimitiveValue<FormulaCode> {
 
 	public FormulaCode(String rawValue) {

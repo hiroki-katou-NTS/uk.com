@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.layout;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLengh(20)
+@StringMaxLength(20)
 public class LayoutName extends StringPrimitiveValue<LayoutName> {
 
 	/** serialVersionUID */

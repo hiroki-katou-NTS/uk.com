@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.wagetable;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLengh(3)
+@StringMaxLength(3)
 public class WageTableCode extends StringPrimitiveValue<WageTableCode>{
 
 	public WageTableCode(String rawValue) {

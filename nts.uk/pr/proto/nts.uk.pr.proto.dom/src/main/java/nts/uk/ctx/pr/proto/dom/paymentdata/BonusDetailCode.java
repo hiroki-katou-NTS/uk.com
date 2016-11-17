@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLengh(2)
+@StringMaxLength(2)
 public class BonusDetailCode extends StringPrimitiveValue<BonusDetailCode> {
 
 	/** serialVersionUID */
