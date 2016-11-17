@@ -21,14 +21,17 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
-			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
+			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
+	
+	
 	@Override
 	public void add(LayoutMasterDetail domain) {
 		this.commandProxy().insert(toEntity(domain));
+		
 	}
 	
 	private static QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
@@ -113,7 +116,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeHighAtr,
 				entity.alRangeHigh,
 				entity.alRangeLowAtr,
-				entity.alRangeLow);
+				entity.alRangeLow,
+				entity.itemPosColumn);
 		entity.toDomain(domain);
 		return domain;
 	}

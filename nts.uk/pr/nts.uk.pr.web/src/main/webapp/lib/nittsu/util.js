@@ -1,5 +1,75 @@
 var nts;
 (function (nts) {
+    function buildStorage(storage) {
+        var wrapper = {
+            setItem: function (key, value) {
+                if (value === undefined) {
+                    return;
+                }
+                storage.setItem(key, value);
+            },
+            setItemStringifyJson: function (key, value) {
+                wrapper.setItem(key, JSON.stringify(value));
+            },
+            containsKey: function (key) {
+                return this.getItem(key) !== null;
+            },
+            getItem: function (key) {
+                var value = storage.getItem(key);
+                if (value === null || value === undefined || value === 'undefined') {
+                    return null;
+                }
+                return value;
+            },
+            getItemParsedJson: function (key) {
+                var json = wrapper.getItem(key);
+                if (json !== null) {
+                    return JSON.parse(json);
+                }
+                else {
+                    return null;
+                }
+            },
+            getItemAndRemove: function (key) {
+                var item = this.getItem(key);
+                this.removeItem(key);
+                return item;
+            },
+            ifPresent: function (key, consumer) {
+                var value = wrapper.getItem(key);
+                if (value !== null) {
+                    consumer(value);
+                }
+            },
+            ifPresentParsedJson: function (key, consumer) {
+                wrapper.ifPresent(key, function (json) {
+                    consumer(JSON.parse(json));
+                });
+            },
+            removeItem: function (key) {
+                storage.removeItem(key);
+            },
+            clear: function () {
+                storage.clear();
+            }
+        };
+        // 開発時のローカル実行用にフェイクを作っておく
+        if (storage === undefined) {
+            var fake = {};
+            for (var key in wrapper) {
+                if (wrapper.hasOwnProperty(key) && typeof wrapper[key] === 'function') {
+                    fake[key] = function () {
+                    };
+                }
+            }
+            wrapper = fake;
+        }
+        return wrapper;
+    }
+    nts.buildStorage = buildStorage;
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
     var uk;
     (function (uk) {
         var util;

@@ -26,7 +26,7 @@ public class AddLayoutDetailCommand {
 	/**計算方法 */	
 	private int calculationMethod;
 	/**項目位置 */
-	private String columnPosition;
+	private int columnPosition;
 	/** 按分設定  */
 	private int distribute;	
 	/** 表示区分 */	
@@ -68,7 +68,8 @@ public class AddLayoutDetailCommand {
 	private int alamRangeLow;
 	
 	public LayoutMasterDetail toDomain(){
-		return LayoutMasterDetail.createSimpleFromJavaType(companyCode, 
+		return LayoutMasterDetail.createSimpleFromJavaType(
+				companyCode, 
 				layoutCode, 
 				startYm, 
 				endYm, 
@@ -90,6 +91,7 @@ public class AddLayoutDetailCommand {
 				isAlamUseHigh, 
 				alamRangeHigh, 
 				isAlamUseLow,
-				alamRangeLow);
+				alamRangeLow,
+				itemPosColumn);
 	}
 }
