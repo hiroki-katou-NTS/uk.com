@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
@@ -19,7 +20,9 @@ public class PersonalWageNameMaster extends AggregateRoot {
 	@Getter
 	private PersonalWageName personalWageName;
 
-	public PersonalWageNameMaster(CompanyCode companyCode, CategoryAtr categoryAtr, PersonalWageCode personalWageCode,
+	public PersonalWageNameMaster(CompanyCode companyCode
+			, CategoryAtr categoryAtr
+			, PersonalWageCode personalWageCode,
 			PersonalWageName personalWageName) {
 		super();
 		this.companyCode = companyCode;
@@ -28,4 +31,15 @@ public class PersonalWageNameMaster extends AggregateRoot {
 		this.personalWageName = personalWageName;
 	}
 
+	public static PersonalWageNameMaster createFromJavaType(
+			String companyCode,
+			int categoryAtr,
+			String personalWageCode,
+			String personalWageName){
+		return new PersonalWageNameMaster(
+				new CompanyCode(companyCode),
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				new PersonalWageCode(personalWageCode),
+				new PersonalWageName(personalWageName));
+	}
 }
