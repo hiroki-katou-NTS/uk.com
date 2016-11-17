@@ -1,9 +1,9 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLengh;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLengh(40)
+@StringMaxLength(40)
 public class PersonalWageName extends StringPrimitiveValue<PersonalWageName> {
 	public PersonalWageName(String rawValue) {
 		super(rawValue);

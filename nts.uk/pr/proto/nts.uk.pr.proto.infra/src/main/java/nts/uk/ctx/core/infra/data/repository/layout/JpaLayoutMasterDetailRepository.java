@@ -56,6 +56,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	private static LayoutMasterDetail toDomain(QstmtStmtLayoutDetail entity) {
 		val domain = LayoutMasterDetail.createSimpleFromJavaType(
+				entity.qstmtStmtLayoutDetailPk.ctgAtr,
 				entity.qstmtStmtLayoutDetailPk.itemCd,
 				entity.sumScopeAtr, 
 				entity.calcMethod,
