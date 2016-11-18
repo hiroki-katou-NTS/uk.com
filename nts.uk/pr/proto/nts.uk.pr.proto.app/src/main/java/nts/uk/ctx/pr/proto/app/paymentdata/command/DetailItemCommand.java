@@ -43,4 +43,6 @@ public class DetailItemCommand {
 	private int linePostion;
 
 	private int colPosition;
+	
+	
 }

@@ -28,6 +28,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.query.PaymentDataQuery;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.LayoutMasterCategoryDto;
@@ -86,27 +87,27 @@ public class GetPaymentDataQueryProcessor {
 	 *            code
 	 * @return PaymentDataResult
 	 */
-	public PaymentDataResult find(int baseYM) {
+	public PaymentDataResult find(PaymentDataQuery query) {
 		PaymentDataResult result = new PaymentDataResult();
 		String companyCode = AppContexts.user().companyCode();
-		String personId = AppContexts.user().personId();
 		int startYM;
 		String stmtCode = "";
 
 		// Pay date master
 		PaymentDateProcessingMaster payDateMaster = this.payDateMasterRepository.find(companyCode, PAY_BONUS_ATR).get();
+		startYM = payDateMaster.getCurrentProcessingYm().v();
 
 		// get stmtCode
-		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, personId,
+		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, query.getPersonId(),
 				payDateMaster.getCurrentProcessingYm().v());
 		if (optpersonalPS.isPresent()) {
 			stmtCode = optpersonalPS.get().getPaymentDetailCode().v();
 		} else {
-			stmtCode = this.companyAllotSettingRepository.find(companyCode, baseYM).get().getPaymentDetailCode().v();
+			stmtCode = this.companyAllotSettingRepository.find(companyCode, startYM).get().getPaymentDetailCode().v();
 		}
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, stmtCode, baseYM)
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, stmtCode, startYM)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
 		startYM = layout.getStartYM().v();
 
@@ -130,14 +131,18 @@ public class GetPaymentDataQueryProcessor {
 			// get 明細書マスタ行
 			List<LayoutMasterLine> lines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
 
-			List<LayoutMasterDetail> lineDetails = this.layoutMasterDetailRepository.getDetails(companyCode, stmtCode,
-					startYM);
-
+			Map<String, List<LayoutMasterDetail>> lineDetails = this.layoutMasterDetailRepository
+					.getDetails(companyCode, stmtCode, startYM).stream()
+					.collect(Collectors.groupingBy(x -> x.getAutoLineId().v()));
+			
+			
 			for (LayoutMasterCategory category : categories) {
+				int categoryAtr = category.getCtAtr().value;
 				List<DetailItemDto> items = new ArrayList<>();
-				List<ItemMaster> itemsMaster = this.itemMasterRepository.getAllItemMaster(companyCode,
-						category.getCtAtr().value);
-				
+				for (Map.Entry<String, List<LayoutMasterDetail>> line : lineDetails.entrySet()) {
+					LayoutMasterLine masterLine = lines.stream().filter(x-> x.getCategoryAtr().value = categoryAtr && x.getAutoLineId().equals(line.getKey())).findFirst().get();
+					DetailItemDto.fromDomain(categoryAtr, , );
+				}
 				
 
 			}

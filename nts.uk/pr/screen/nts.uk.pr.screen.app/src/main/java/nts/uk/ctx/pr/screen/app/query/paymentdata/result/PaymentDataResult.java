@@ -9,6 +9,6 @@ public class PaymentDataResult {
 
 	private PaymentDataHeaderDto paymenHeader;
 
-	private List<LayoutMasterCategoryDto> categories;
+	private List<CategoryDto> categories;
 
 }

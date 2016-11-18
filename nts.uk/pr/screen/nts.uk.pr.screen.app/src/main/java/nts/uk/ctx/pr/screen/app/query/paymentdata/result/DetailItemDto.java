@@ -9,7 +9,6 @@ public class DetailItemDto {
 	/**
 	 * category atr
 	 */
-	@Getter
 	private int categoryAtr;
 
 	/**
@@ -25,28 +24,29 @@ public class DetailItemDto {
 	/**
 	 * 値
 	 */
-	@Getter
 	private Double value;
 
 	/**
 	 * 修正フラグ
 	 */
-	@Getter
 	private int correctFlag;
 
 	/**
 	 * 社保対象区分
 	 */
-	@Getter
 	private int socialInsuranceAtr;
 
 	/**
 	 * 労保対象区分
 	 */
-	@Getter
 	private int laborInsuranceAtr;
 
-	@Getter
 	private DetailItemPositionDto itemPostion;
-	
+
+	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, ) {
+		return new DetailItemDto(categoryAtr, itemCode, itemName, value, correctFlag, socialInsuranceAtr,
+				laborInsuranceAtr, itemPostion);
+
+	}
+
 }
