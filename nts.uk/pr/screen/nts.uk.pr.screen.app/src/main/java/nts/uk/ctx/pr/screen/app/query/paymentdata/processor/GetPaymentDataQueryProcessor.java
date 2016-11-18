@@ -189,7 +189,9 @@ public class GetPaymentDataQueryProcessor {
 						DetailItemPositionDto
 								.fromDomain(
 										mLine.getLinePosition().v(), 
-										item.getItemPosColumn().v()));
+										item.getItemPosColumn().v()),
+						Objects.isNull(value)? false: true		
+						);
 				
 				items.add(detailItem);
 			}

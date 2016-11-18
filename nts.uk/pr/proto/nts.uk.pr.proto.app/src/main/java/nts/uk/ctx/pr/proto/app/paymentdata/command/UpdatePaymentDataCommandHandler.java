@@ -36,41 +36,22 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	protected void handle(CommandHandlerContext<UpdatePaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		String personId = context.getCommand().getPersonId();
-		int baseYM  = context.getCommand().getProcessingYM();
-		
+		int baseYM = context.getCommand().getProcessingYM();
+
 		Payment payment = context.getCommand().toDomain(companyCode);
 		payment.validate();
 
-		boolean isExistHeader = this.paymentDataRepository.isExistHeader(companyCode,
-				personId, PAY_BONUS_ATR, baseYM);
+		boolean isExistHeader = this.paymentDataRepository.isExistHeader(companyCode, personId, PAY_BONUS_ATR, baseYM);
 		if (isExistHeader) {
-			this.updateDeductionItem(context.getCommand().getDetailDeductionItems().get(0).getCategoryAtr(), payment.getDetailDeductionItems());
-			this.updateWithoutDeductionItem(context.getCommand().getDetailPaymentItems().get(0).getCategoryAtr(), payment.getDetailPaymentItems());
-			this.updateWithoutDeductionItem(context.getCommand().getDetailPersonalTimeItems().get(0).getCategoryAtr(), payment.getDetailPersonalTimeItems());
-			this.updateWithoutDeductionItem(context.getCommand().getDetailArticleItems().get(0).getCategoryAtr(), payment.getDetailArticleItems());
-			
-		}else {
+			this.isExistWithoutDeductionItem(companyCode, personId, baseYM, payment.getDetailPaymentItems());
+			this.isExistWithoutDeductionItem(companyCode, personId, baseYM, payment.getDetailPersonalTimeItems());
+			this.isExistWithoutDeductionItem(companyCode, personId, baseYM, payment.getDetailArticleItems());
+			this.isExistDeductionItem(companyCode, personId, baseYM, payment.getDetailDeductionItems());
+		} else {
 			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
 		}
 		this.paymentDataRepository.update(payment);
 
-	}
-	
-	/**
-	 * update deduction detail items
-	 * 
-	 * @param categoryAtr
-	 * @param items
-	 */
-	private void updateDeductionItem(int categoryAtr, List<DetailDeductionItem> items) {
-//		boolean isExistDeductionDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM, context.getCommand().getDetailDeductionItems().get(0).getCategoryAtr());
-		boolean isExistDeductionDetails = true;
-		if (isExistDeductionDetails) {
-			this.paymentDataRepository.updateDeductionDetails(categoryAtr, items);	
-		}else {
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
-		}
-		
 	}
 
 	/**
@@ -79,13 +60,30 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 * @param categoryAtr
 	 * @param items
 	 */
-	private void updateWithoutDeductionItem(int categoryAtr, List<DetailItem> items) {
-//		boolean isExistDeductionDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM, context.getCommand().getDetailDeductionItems().get(0).getCategoryAtr());
-		boolean isExistDetails = true;
-		if (isExistDetails) {
-			this.paymentDataRepository.updateDetails(categoryAtr, items);	
-		}else {
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+	private void isExistWithoutDeductionItem(String companyCode, String personId, int baseYM, List<DetailItem> items) {
+		for (DetailItem item : items) {
+			boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
+					item.getCategoryAttribute().value, item.getItemCode().v());
+			if (!isExistDetails) {
+				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+			}
+		}
+	}
+
+	/**
+	 * update deduction detail items
+	 * 
+	 * @param categoryAtr
+	 * @param items
+	 */
+	private void isExistDeductionItem(String companyCode, String personId, int baseYM,
+			List<DetailDeductionItem> items) {
+		for (DetailDeductionItem item : items) {
+			boolean isExistDeductionDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
+					item.getCategoryAttribute().value, item.getItemCode().v());
+			if (!isExistDeductionDetails) {
+				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+			}
 		}
 	}
 
