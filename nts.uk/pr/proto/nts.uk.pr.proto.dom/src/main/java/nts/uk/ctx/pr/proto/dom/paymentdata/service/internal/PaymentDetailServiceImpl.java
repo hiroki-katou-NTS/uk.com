@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
@@ -33,6 +34,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailParam;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFee;
+import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWage;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWageRepository;
@@ -57,6 +59,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private ItemMasterRepository itemMasterRepo;
 	@Inject
 	private PersonalWageRepository personalWageRepo;
+	@Inject
+	private PersonalCommuteFeeRepository personalCommuteRepo;
 
 	@Override
 	public Map<CategoryAtr, DetailItem> calculatePayValue(PaymentDetailParam param) {
@@ -82,10 +86,10 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		// get layout detail master
 		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(param.getCompanyCode(),
 				stmtCode, startYearMonth);
-
+		
 		// get personal commute
-		PersonalCommuteFee personalCommute = param.getPersonalCommute();
-
+		PersonalCommuteFee commute = personalCommuteRepo.find(param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth()).get();
+					
 		for (LayoutMasterDetail itemLayoutMasterDetail : layoutMasterDetailList) {
 			DetailItem detail = null;
 
@@ -96,50 +100,93 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			ItemMaster itemMaster = itemMasterRepo
 					.getItemMaster(param.getCompanyCode(), itemLayoutMasterDetail.getCategoryAtr().value, itemCode)
 					.get();
-
-			// PayrollSystem == 2 || 3
-			if (param.getEmploymentContract().isPayrollSystemDailyOrDay()
-					&& itemLayoutMasterDetail.getCategoryAtr().value == 2) {
-				detail = getPayValueByMonthlyDaily(itemCode, param.getHoliday(), param.getPaymentDateMaster(),
-						param.getPayCalBasicInfo());
-			} else if (param.getEmploymentContract().isPayrollSystemDailyOrMonthly()
-					&& itemLayoutMasterDetail.getCategoryAtr().value == 2) {
-				// PayrollSystem == 0 || 1
-				detail = getPayValueByPayrollDayHours(itemCode, param.getHoliday());
+			
+			//
+			// LAYOUT_DETAIL with CTR_ATR = 2
+			//
+			
+			if (CategoryAtr.PERSONAL_TIME == itemLayoutMasterDetail.getCategoryAtr()) {
+				// PayrollSystem == 2 || 3
+				if (param.getEmploymentContract().isPayrollSystemDailyOrDay()) {
+					detail = getPayValueByMonthlyDaily(itemCode, param.getHoliday(), param.getPaymentDateMaster(),
+							param.getPayCalBasicInfo());
+				} else if (param.getEmploymentContract().isPayrollSystemDailyOrMonthly()) {
+					// PayrollSystem == 0 || 1
+					detail = getPayValueByPayrollDayHours(itemCode, param.getHoliday());
+				}
 			}
 			
-			// get calculate method
-			CalculationMethod calculationMethod = itemLayoutMasterDetail.getCalculationMethod();
-			if ((calculationMethod == CalculationMethod.MANUAL_ENTRY 
-					|| calculationMethod == CalculationMethod.FORMULA 
-					|| calculationMethod == CalculationMethod.WAGE_TABLE 
-					|| calculationMethod == CalculationMethod.COMMON_AMOUNT_MONEY)
-				 && CategoryAtr.PAYMENT == itemLayoutMasterDetail.getCategoryAtr()) {
-				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
-			} else if (calculationMethod == CalculationMethod.PERSONAL_INFORMATION) {
-				if (itemMaster.getCategoryAtr() == CategoryAtr.PAYMENT && itemMaster.getItemCode() == itemLayoutMasterDetail.getItemCode()) {
-					// check tax attribute
-					if (itemMaster.getTaxAtr() == TaxAtr.TAXATION || itemMaster.getTaxAtr() == TaxAtr.TAX_FREE_LIMIT || itemMaster.getTaxAtr() == TaxAtr.TAX_FREE_UN_LIMIT) {
-						// get personal wage
-						PersonalWage personalWage = personalWageRepo.find(param.getCompanyCode(), param.getPersonId().v(), itemMaster.getCategoryAtr().value, itemCode, startYearMonth).get();
-						
-						detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null);
-					} else if (itemMaster.getTaxAtr() == TaxAtr.COMMUTING_COST || itemMaster.getTaxAtr() == TaxAtr.COMMUTING_EXPENSE) {
-						//
-						
-						
-						
-						
-					} else {
-						throw new RuntimeException("Error system");
+			//
+			// LAYOUT_DETAIL with CTR_ATR = 0
+			//
+			
+			if (CategoryAtr.PAYMENT == itemLayoutMasterDetail.getCategoryAtr()) {
+				// get calculate method
+				if (itemLayoutMasterDetail.isCalculationMethodManualOrFormulaOrWageTableOrCommon()) {
+					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
+				} else if (itemLayoutMasterDetail.isCalculationMethodPesonalInfomation()) {
+					if (itemMaster.getCategoryAtr() == CategoryAtr.PAYMENT && itemMaster.getItemCode() == itemLayoutMasterDetail.getItemCode()) {
+						// calculate pay value by tax
+						detail = getPayValueByTax(param, startYearMonth, itemLayoutMasterDetail, detail, itemCode,
+								itemMaster, commute);
 					}
 				}
+			}
+			
+			//
+			// LAYOUT_DETAIL with CTR_ATR = 1
+			//
+			
+			if (CategoryAtr.DEDUCTION == itemLayoutMasterDetail.getCategoryAtr()) {
+				// sum
+				double sumCommuteAllowance = commute.sumCommuteAllowance(param.getCurrentProcessingYearMonth());
+				if (itemLayoutMasterDetail.isCalculationMethodPesonalInfomation() && CategoryAtr.DEDUCTION == itemLayoutMasterDetail.getCategoryAtr()) {
+					// get personal wage
+					PersonalWage personalWage = personalWageRepo.find(param.getCompanyCode(), param.getPersonId().v(), itemMaster.getCategoryAtr().value, itemCode, param.getCurrentProcessingYearMonth()).get();
+					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null);
+				} 
+				
+				//
 			}
 
 			payDetail.put(itemLayoutMasterDetail.getCategoryAtr(), detail);
 		}
 
 		return payDetail;
+	}
+
+	/**
+	 * Calculate value by tax
+	 * @param param
+	 * @param startYearMonth
+	 * @param itemLayoutMasterDetail
+	 * @param detail
+	 * @param itemCode
+	 * @param itemMaster
+	 * @return pay detail
+	 */
+	private DetailItem getPayValueByTax(PaymentDetailParam param, int startYearMonth,
+			LayoutMasterDetail itemLayoutMasterDetail, DetailItem detail, String itemCode, ItemMaster itemMaster, PersonalCommuteFee commute) {
+		// check tax attribute
+		if (itemMaster.isTaxTaxationOrTaxFreeLimitOrTaxFreeUnLimit()) { // tax_atr = 0 || 1 || 2
+			// get personal wage
+			PersonalWage personalWage = personalWageRepo.find(param.getCompanyCode(), param.getPersonId().v(), itemMaster.getCategoryAtr().value, itemCode, param.getCurrentProcessingYearMonth()).get();
+			
+			detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null);
+		} else if (itemMaster.isTaxCommutingoCostOrCommutingExpense()) { // tax_atr = 3 || 4
+			
+			// check commute_attr
+			if (CommuteAtr.TRANSPORTATION_EQUIPMENT == itemLayoutMasterDetail.getCommuteAtr()) { // = 0
+				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), commute.sumCommuteAllowance(CommuteAtr.TRANSPORTATION_EQUIPMENT, param.getCurrentProcessingYearMonth()), null, null, null);
+			} else { // = 1
+				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), commute.sumCommuteAllowance(CommuteAtr.TRANSPORTTION_FACILITIES, param.getCurrentProcessingYearMonth()), null, null, null);				
+			}
+			
+		} else {
+			throw new RuntimeException("Error system");
+		}
+		
+		return detail;
 	}
 
 	/**

@@ -313,4 +313,22 @@ public class LayoutMasterDetail extends AggregateRoot{
 				personalWageCode);
 	}
 	
+	/**
+	 * CalculationMethod = PERSONAL_INFORMATION
+	 * @return
+	 */
+	public boolean isCalculationMethodPesonalInfomation() {
+		return CalculationMethod.PERSONAL_INFORMATION == this.calculationMethod;
+	}
+	
+	/**
+	 * CalculationMethod = MANUAL_ENTRY || FORMULA || WAGE_TABLE || COMMON_AMOUNT_MONEY
+	 * @return
+	 */
+	public boolean isCalculationMethodManualOrFormulaOrWageTableOrCommon() {
+		return this.calculationMethod == CalculationMethod.MANUAL_ENTRY 
+				|| this.calculationMethod == CalculationMethod.FORMULA 
+				|| this.calculationMethod == CalculationMethod.WAGE_TABLE 
+				|| this.calculationMethod == CalculationMethod.COMMON_AMOUNT_MONEY;
+	}
 }

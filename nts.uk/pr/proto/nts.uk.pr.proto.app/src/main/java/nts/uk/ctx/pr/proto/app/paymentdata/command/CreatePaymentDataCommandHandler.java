@@ -92,7 +92,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				baseYearMonth.v());
 		// get personal commute
 		Map<String, PersonalCommuteFee> personalCommutes = getPersonalCommute(loginInfo.companyCode(), command.getPersonIdList(),
-				currentDate.date());
+				command.getProcessingYearMonth());
 		
 		// calculate personal
 		for (String personId : command.getPersonIdList()) {
@@ -100,7 +100,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			HolidayPaid holiday = holidays.get(personId);
 
 			PaymentDetailParam param = new PaymentDetailParam(loginInfo.companyCode(), new PersonId(personId),
-					baseYearMonth.v());
+					baseYearMonth.v(), command.getProcessingYearMonth());
 			param.setHoliday(holiday);
 			param.setPayCalBasicInfo(payCalBasicInfo);
 			param.setEmploymentContract(employmentContract);
@@ -174,12 +174,12 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * 
 	 * @param companyCode
 	 * @param personIdList
-	 * @param date
+	 * @param currentProcessingYearMonth
 	 * @return
 	 */
 	private Map<String, PersonalCommuteFee> getPersonalCommute(String companyCode, List<String> personIdList,
-			Date date) {
-		List<PersonalCommuteFee> commuteList = personalCommuteRepo.findAll(companyCode, personIdList, date);
+			int currentProcessingYearMonth) {
+		List<PersonalCommuteFee> commuteList = personalCommuteRepo.findAll(companyCode, personIdList, currentProcessingYearMonth);
 
 		return commuteList.stream().collect(Collectors.toMap(x -> {
 			return x.getPersonId().v();
