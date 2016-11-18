@@ -35,7 +35,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		String companyCode = AppContexts.user().companyCode();
 		
 		//Validate by EAP: 02.明細レイアウトの作成-登録時チェック処理
-		LayoutMaster layoutOrg = layoutRepo.getLayout(companyCode, layoutCommand.getStmtCode(), layoutCommand.getStartYm())
+		LayoutMaster layoutOrg = layoutRepo.getLayout(companyCode, layoutCommand.getStartYm(), layoutCommand.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")));
 		
 		LayoutMaster layoutRegister = layoutCommand.toDomain(layoutOrg.getLayoutAtr().value);
@@ -49,7 +49,9 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 				List<LayoutMasterLine> linesDelete = lineRepo.getLines(companyCode, layoutCommand.getStmtCode(), layoutCommand.getStartYm(), categoryAtr);
 				lineRepo.remove(linesDelete);
 				
-				//List<LayoutMasterDetail> detailsDelete = detailRepo.getDetails(companyCd, stmtCd, startYm)
+				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
+						companyCode, layoutCommand.getStmtCode(), layoutCommand.getStartYm(), categoryAtr);
+				
 			}
 		}
 	}
