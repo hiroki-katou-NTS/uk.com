@@ -7,7 +7,7 @@
 
     <body>
 
-        <ui:composition template="../master/base.xhtml">
+        <ui:composition template="../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	
@@ -17,24 +17,7 @@
 					nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
 				</com:ValidatorScript>
 				
-				<script>
-				$(function () {
-					$('#popup-area').ntsPopup({
-						position: {
-							my: 'left top',
-							at: 'left bottom',
-							of: $('#show-popup')
-						}
-					});
-					
-					$('#show-popup').click(function () {
-						$('#popup-area').ntsPopup('show');
-					});
-
-					
-					ko.applyBindings({});
-					
-				});
+				<script src="start.js">
 				</script>
             </ui:define>
             
