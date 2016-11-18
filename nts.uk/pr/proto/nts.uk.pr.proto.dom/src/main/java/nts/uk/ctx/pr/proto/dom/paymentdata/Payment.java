@@ -11,7 +11,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
@@ -276,13 +275,12 @@ public class Payment extends AggregateRoot {
 	 * Calculate total payment
 	 * @return
 	 */
-	public double calculateTotalPayment(ItemCode itemCode) {
+	public double calculateTotalPayment() {
 		if (this.detailPaymentItems == null) {
 			return 0.0;
 		}
 		
 		return this.detailPaymentItems.stream()
-				.filter(x -> x.getItemCode() == itemCode)
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -290,13 +288,12 @@ public class Payment extends AggregateRoot {
 	 * Calculate deduction total payment
 	 * @return
 	 */
-	public double calculateDeductionTotalPayment(ItemCode itemCode) {
+	public double calculateDeductionTotalPayment() {
 		if (this.detailDeductionItems == null) {
 			return 0.0;
 		}
 		
 		return this.detailDeductionItems.stream()
-				.filter(x -> x.getItemCode() == itemCode)
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -304,7 +301,7 @@ public class Payment extends AggregateRoot {
 	 * calculate amount of payment
 	 * @return
 	 */
-	public double amountOfPay(ItemCode itemCode) {
-		return this.calculateTotalPayment(itemCode) - this.calculateDeductionTotalPayment(itemCode);
+	public double amountOfPay() {
+		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
 	}
 }
