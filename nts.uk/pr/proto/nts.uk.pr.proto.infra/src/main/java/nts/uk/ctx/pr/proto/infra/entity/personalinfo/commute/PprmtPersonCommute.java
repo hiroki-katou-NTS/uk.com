@@ -47,7 +47,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	@Column(name ="USE_OR_NOT1")
 	public int useOrNot1;
 	
-	@Column(name ="COMMUTE_CYCLE1")
+	@Column(name ="COMMU_CYCLE1")
 	public int commuteCycle1;
 	
 	@Column(name ="PAY_START_YM1")
@@ -81,7 +81,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	@Column(name ="USE_OR_NOT2")
 	public int useOrNot2;
 	
-	@Column(name ="COMMUTE_CYCLE2")
+	@Column(name ="COMMU_CYCLE2")
 	public int commuteCycle2;
 	
 	@Column(name ="PAY_START_YM2")
@@ -115,7 +115,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	@Column(name ="USE_OR_NOT3")
 	public int useOrNot3;
 	
-	@Column(name ="COMMUTE_CYCLE3")
+	@Column(name ="COMMU_CYCLE3")
 	public int commuteCycle3;
 	
 	@Column(name ="PAY_START_YM3")
@@ -149,7 +149,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	@Column(name ="USE_OR_NOT4")
 	public int useOrNot4;
 	
-	@Column(name ="COMMUTE_CYCLE4")
+	@Column(name ="COMMU_CYCLE4")
 	public int commuteCycle4;
 	
 	@Column(name ="PAY_START_YM4")
@@ -183,7 +183,7 @@ public class PprmtPersonCommute extends AggregateTableEntity {
 	@Column(name ="USE_OR_NOT5")
 	public int useOrNot5;
 	
-	@Column(name ="COMMUTE_CYCLE5")
+	@Column(name ="COMMU_CYCLE5")
 	public int commuteCycle5;
 	
 	@Column(name ="PAY_START_YM5")

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
@@ -17,7 +18,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
-		
 		return this.queryProxy().find(new QstdtPaymentHeaderPK(companyCode, personId, processingNo, payBonusAttribute, 
 									processingYM, sparePayAttribute), QstdtPaymentHeader.class)
 				.map(c -> toDomain(c));
@@ -71,6 +71,12 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	public void insert(Payment payment) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<Payment> find(String companyCode, String personId, int payBonusAttribute, int processingYM) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
