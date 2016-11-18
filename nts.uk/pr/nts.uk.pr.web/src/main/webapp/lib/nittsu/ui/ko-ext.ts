@@ -373,9 +373,7 @@ module nts.uk.ui.koExtentions {
             var displayrows: number = ko.unwrap(option.displayrows);
             var maxrows: number = ko.unwrap(option.maxrows);
             var autoclose: boolean = ko.unwrap(option.autoclose);
-            var modal: boolean = ko.unwrap(option.modal);
             var show: boolean = ko.unwrap(option.show);
-            var buttons: any = ko.unwrap(option.buttons);
             
             var $dialog = $("#ntsErrorDialog");
             
@@ -390,6 +388,7 @@ module nts.uk.ui.koExtentions {
             // Create Error Table
             // TODO: Fixed Header, scrollbar inside Body => calculate Header.width = Body.width + scrollbar.width
             var $errorboard = $("<div id='error-board'></div>");
+            // TODO: Percise calculate ErrorBoard height base on ErrorLine height & Errors < 10
             $errorboard.outerHeight((displayrows+1)*24 + 1);
             var $errortable = $("<table></table>");
             // Header
