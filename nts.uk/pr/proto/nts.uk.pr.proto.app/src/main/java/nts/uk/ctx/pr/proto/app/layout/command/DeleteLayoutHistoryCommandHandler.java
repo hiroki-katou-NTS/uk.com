@@ -22,6 +22,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<RemoveComp
 	protected void handle(CommandHandlerContext<RemoveCompanyCommandHandler> context) {
 
 		
+		
 	}
 
 }

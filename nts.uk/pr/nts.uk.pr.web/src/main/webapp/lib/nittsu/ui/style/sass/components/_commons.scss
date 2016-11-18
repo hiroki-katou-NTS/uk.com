@@ -70,6 +70,7 @@ div.form-label {
 	}
 }
 
+
 /*****************************
   NtsLinkButton
 *****************************/
@@ -81,3 +82,18 @@ div.link-button {
 	text-decoration: underline;
 	cursor: pointer;
 }
+
+
+/*****************************
+  NtsPopupPanel
+*****************************/
+div.popup-panel {
+	position: absolute;
+	background-color: #fff;
+	border: solid 1px #aaa;
+	@include box-shadow(1px 1px 5px 1px #888);
+	padding: 5px;
+}
+
+
+

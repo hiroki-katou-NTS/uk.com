@@ -353,9 +353,7 @@ var nts;
                         var displayrows = ko.unwrap(option.displayrows);
                         var maxrows = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
-                        var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
-                        var buttons = ko.unwrap(option.buttons);
                         var $dialog = $("#ntsErrorDialog");
                         if (autoclose === true && errors.length == 0)
                             show = false;
@@ -368,6 +366,7 @@ var nts;
                         // Create Error Table
                         // TODO: Fixed Header, scrollbar inside Body => calculate Header.width = Body.width + scrollbar.width
                         var $errorboard = $("<div id='error-board'></div>");
+                        // TODO: Percise calculate ErrorBoard height base on ErrorLine height & Errors < 10
                         $errorboard.outerHeight((displayrows + 1) * 24 + 1);
                         var $errortable = $("<table></table>");
                         // Header
@@ -1065,6 +1064,7 @@ var nts;
                                 container.children('.steps').children('ul').children('.current').addClass('step-current');
                                 container.children('.steps').children('ul').children('.done').addClass('step-prev');
                                 container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                                return true;
                             }
                         });
                         // Add default class.

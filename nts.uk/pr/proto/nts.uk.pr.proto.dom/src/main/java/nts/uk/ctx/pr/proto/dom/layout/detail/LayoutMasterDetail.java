@@ -157,6 +157,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		
 		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
 		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
+		
 		return new LayoutMasterDetail(
 				new CompanyCode(companyCode),
 				new LayoutCode(layoutCode),
@@ -239,35 +240,12 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int alamRangeLow,
 			int itemPosColumn,
 			String itemAbName){
-		
-		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
-		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
-		
-		LayoutMasterDetail result = new LayoutMasterDetail(
-				new CompanyCode(companyCode),
-				new LayoutCode(layoutCode),
-				YearMonth.of(startYm),
-				YearMonth.of(endYm),
-				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				new ItemCode(itemCode), 
-				new AutoLineId(autoLineId),
-				new ItemPosColumn(itemPosColumn),
-				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
-						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
-						error), 
-				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
-				new Distribute(
-						EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
-						EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
-				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
-				new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
-						EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
-						alam),
-				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
-				new ItemCode(setOffItemCode),
-				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
-				new PersonalWageCode(personalWageCode)
-				);
+				
+		LayoutMasterDetail result = createFromJavaType(companyCode, layoutCode, startYm, endYm, categoryAtr, itemCode, 
+				autoLineId, displayAtr, sumScopeAtr, calculationMethod, distributeWay, 
+				distributeSet, personalWageCode, setOffItemCode, commuteAtr, isErrorUseHigh, 
+				errorRangeHigh, isErrorUserLow, errorRangeLow, isAlamUseHigh, alamRangeHigh, 
+				isAlamUseLow, alamRangeLow, itemPosColumn);		
 		
 		result.setItemAbName(new ItemName(itemAbName));
 		return result;

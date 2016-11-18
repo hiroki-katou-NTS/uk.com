@@ -19,6 +19,9 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS + " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
+	
+//	private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM QstmtStmtLayoutHead e "
+//			+ "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
 
 	private final LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
 		val domain = LayoutMaster.createFromJavaType(entity.qstmtStmtLayoutHeadPK.companyCd,
@@ -99,5 +102,19 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+//	@Override
+//	public Optional<LayoutMaster> getPreviosTarget(String companyCode, String stmtCode) {
+//		List<QstmtStmtLayoutHead> resultList =  this.queryProxy().query(SELECT_PREVIOUS_TARGET, QstmtStmtLayoutHead.class)
+//		.setParameter("companyCd", companyCode)
+//		.setParameter("stmtCode", stmtCode)
+//		.getList();
+//		if(resultList.size() > 0){
+//			QstmtStmtLayoutHead qstmtStmtLayoutHead = resultList.get(1);
+//			LayoutMaster layoutMaster = toDomain(qstmtStmtLayoutHead);
+//			return Optional.ofNullable(layoutMaster);
+//		}
+//		return Optional.empty();
+//	}
 
 }
