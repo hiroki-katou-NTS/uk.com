@@ -14,8 +14,6 @@ import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
@@ -28,8 +26,10 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.query.PaymentDataQuery;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemPositionDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.LayoutMasterCategoryDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataHeaderDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
@@ -76,9 +76,6 @@ public class GetPaymentDataQueryProcessor {
 	@Inject
 	private PaymentDataQueryRepository queryRepository;
 
-	@Inject
-	private ItemMasterRepository itemMasterRepository;
-
 	/**
 	 * get data detail
 	 * 
@@ -86,27 +83,27 @@ public class GetPaymentDataQueryProcessor {
 	 *            code
 	 * @return PaymentDataResult
 	 */
-	public PaymentDataResult find(int baseYM) {
+	public PaymentDataResult find(PaymentDataQuery query) {
 		PaymentDataResult result = new PaymentDataResult();
 		String companyCode = AppContexts.user().companyCode();
-		String personId = AppContexts.user().personId();
 		int startYM;
 		String stmtCode = "";
 
 		// Pay date master
 		PaymentDateProcessingMaster payDateMaster = this.payDateMasterRepository.find(companyCode, PAY_BONUS_ATR).get();
+		startYM = payDateMaster.getCurrentProcessingYm().v();
 
 		// get stmtCode
-		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, personId,
+		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, query.getPersonId(),
 				payDateMaster.getCurrentProcessingYm().v());
 		if (optpersonalPS.isPresent()) {
 			stmtCode = optpersonalPS.get().getPaymentDetailCode().v();
 		} else {
-			stmtCode = this.companyAllotSettingRepository.find(companyCode, baseYM).get().getPaymentDetailCode().v();
+			stmtCode = this.companyAllotSettingRepository.find(companyCode, startYM).get().getPaymentDetailCode().v();
 		}
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, baseYM, stmtCode)
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, startYM, stmtCode)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
 		startYM = layout.getStartYM().v();
 
@@ -121,10 +118,8 @@ public class GetPaymentDataQueryProcessor {
 					stmtCode, startYM));
 
 		} else { // Case 「No Data」
-			List<LayoutMasterCategoryDto> categoryDtos = new ArrayList<>();
-
 			// get 明細書マスタカテゴリ
-			List<LayoutMasterCategory> categories = this.layoutMasterCategoryRepository.getCategories(companyCode,
+			List<LayoutMasterCategory> masterCategories = this.layoutMasterCategoryRepository.getCategories(companyCode,
 					layout.getStmtCode().v(), startYM);
 
 			// get 明細書マスタ行
@@ -133,15 +128,22 @@ public class GetPaymentDataQueryProcessor {
 			List<LayoutMasterDetail> lineDetails = this.layoutMasterDetailRepository.getDetails(companyCode, stmtCode,
 					startYM);
 
-			for (LayoutMasterCategory category : categories) {
+			List<LayoutMasterCategoryDto> categories = new ArrayList<>();
+			for (LayoutMasterCategory category : masterCategories) {
+				int categoryAtr = category.getCtAtr().value;
 				List<DetailItemDto> items = new ArrayList<>();
-				List<ItemMaster> itemsMaster = this.itemMasterRepository.getAllItemMaster(companyCode,
-						category.getCtAtr().value);
-				
-				
 
+				for (LayoutMasterDetail item : lineDetails) {
+					LayoutMasterLine masterLine = lines.stream().filter(x -> x.getCategoryAtr().value == categoryAtr
+							&& x.getAutoLineId().equals(item.getAutoLineId())).findFirst().get();
+					DetailItemDto detailItem = DetailItemDto.fromDomain(categoryAtr, item.getItemCode().v(),
+							item.getItemAbName().v(), null, 0, 0, 0, DetailItemPositionDto
+									.fromDomain(masterLine.getLinePosition().v(), item.getItemPosColumn().v()));
+					items.add(detailItem);
+				}
+				categories.add(LayoutMasterCategoryDto.fromDomain(categoryAtr, category.getCtgPos().v(), items));
 			}
-
+			result.setCategories(categories);
 		}
 		return result;
 	}

@@ -89,6 +89,29 @@ var OKDialogOption = (function (_super) {
     }
     return OKDialogOption;
 }(DialogOption));
+var ErrorDialogOption = (function (_super) {
+    __extends(ErrorDialogOption, _super);
+    function ErrorDialogOption(option) {
+        _super.call(this);
+        // Default value
+        this.modal = (option && option.modal) ? option.modal : false;
+        this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+        this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
+        this.autoclose = (option && option.autoclose) ? option.autoclose : true;
+        this.buttons = [];
+        // Add Close Button
+        this.buttons.push({ text: "閉じる",
+            "class": "yes ",
+            size: "large",
+            color: "",
+            click: function (viewmodel, ui) {
+                viewmodel.closeButtonClicked();
+                ui.dialog("close");
+            }
+        });
+    }
+    return ErrorDialogOption;
+}(DialogOption));
 var DialogButton = (function () {
     function DialogButton() {
     }
