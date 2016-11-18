@@ -39,11 +39,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		return domain;
 	}
 
-	@Override
-	public void add(Payment payment) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public void update(Payment payment) {
@@ -61,6 +56,18 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	public List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute,
 			int processingYM) {
 		return this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void importHeader(Payment payment) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importDetails(Payment payment) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

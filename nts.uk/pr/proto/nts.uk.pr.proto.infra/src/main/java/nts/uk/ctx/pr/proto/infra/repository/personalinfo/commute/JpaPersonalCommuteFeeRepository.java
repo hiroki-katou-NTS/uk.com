@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.proto.infra.repository.personalinfo.commute;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,15 +16,16 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommute;
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
 	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PPRMT_PERSON_COMMUTE c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_YM <= :BASEYM and c.END_YM >= :BASEYM";
+	private final String SELECT_BY_CCD_PID_STRYM = "SELECT c FROM PPRMT_PERSON_COMMUTE c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_YM = :strYm";
 
 	@Override
-	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIdList, Date baseYM) {
+	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIdList, int baseYM) {
 		List<PersonalCommuteFee> lstPersonalCommuteFee = new ArrayList<>();
 		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<PersonalCommuteFee> tmpPersonalCommuteFee = this
-					.queryProxy().query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class)
-					.setParameter("CCD", companyCode).setParameter("PID", personIdList.get(i))
-					.setParameter("BASEYM", baseYM).getSingle(c -> toDomain(c));
+			Optional<PersonalCommuteFee> tmpPersonalCommuteFee = this.queryProxy()
+					.query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class).setParameter("CCD", companyCode)
+					.setParameter("PID", personIdList.get(i)).setParameter("BASEYM", baseYM)
+					.getSingle(c -> toDomain(c));
 			if (tmpPersonalCommuteFee.isPresent()) {
 				lstPersonalCommuteFee.add(tmpPersonalCommuteFee.get());
 			}
@@ -53,8 +53,9 @@ public class JpaPersonalCommuteFeeRepository extends JpaRepository implements Pe
 
 	@Override
 	public Optional<PersonalCommuteFee> find(String companyCode, String personId, int startYearMonth) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_BY_CCD_PID_STRYM, PprmtPersonCommute.class)
+				.setParameter("CCD", companyCode).setParameter("PID", personId).setParameter("strYm", startYearMonth)
+				.getSingle(c -> toDomain(c));
 	}
 
 }
