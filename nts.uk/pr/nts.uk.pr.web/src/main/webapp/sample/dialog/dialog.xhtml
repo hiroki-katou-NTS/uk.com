@@ -88,7 +88,6 @@
 		};
 	</script>
 	<script>
-		var dialog = nts.uk.ui.dialog;
 		var vm;
 		$(function () {
 			vm = {
@@ -171,13 +170,6 @@
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
 					]),
 					option: ko.mapping.fromJS(new ErrorDialogOption({maxrows: 25})),
@@ -209,6 +201,11 @@
 		function test(){
 			vm.dialogdel.open();
 		}
+
+		function testRemoveErrors(){
+			vm.errordialog.errors.shift();
+		}
+		
 	</script>
 </head>
 <body>
@@ -430,7 +427,8 @@
 			<h2>Error Dialog</h2>
 			<div data-bind="with: errordialog">
 				<button data-bind="click: open">Open</button>
-				<button data-bind="click: hide">Hide</button>
+				<button data-bind="click: hide">Hide</button><br/>
+				<button data-bind="click: testRemoveErrors">Remove Error</button>
 				<div data-bind="ntsErrorDialog: {title: title, headers: headers, errors: errors, option: option}"></div>
 			</div>
 			<br/>
@@ -457,7 +455,7 @@
 						<tr>
 							<td>headers</td>
 							<td>
-								<b>Type:</b> array<br/>
+								<b>Type:</b> array&lt;ErrorHeader&gt;<br/>
 								Header definition<br/>
 								<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
 								<i>text</i>: Display text for header<br/>
@@ -467,8 +465,9 @@
 						<tr>
 							<td>errors</td>
 							<td>
-								<b>Type:</b> array<br/>
+								<b>Type:</b> array&lt;object&gt;<br/>
 								List error for display<br/>
+								<b>object{key1: "value1", [key2: "value2", key3: "value3"...]}</b><br/>
 								<i>key</i>: Unique key for error. Column will be displayed correctly following header name<br/>
 								<i>value</i>: Display text for column<br/>
 							</td>
