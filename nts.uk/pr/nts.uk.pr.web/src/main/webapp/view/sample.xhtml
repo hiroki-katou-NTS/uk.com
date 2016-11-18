@@ -19,7 +19,21 @@
 				
 				<script>
 				$(function () {
+					$('#popup-area').ntsPopup({
+						position: {
+							my: 'left top',
+							at: 'left bottom',
+							of: $('#show-popup')
+						}
+					});
+					
+					$('#show-popup').click(function () {
+						$('#popup-area').ntsPopup('show');
+					});
+
+					
 					ko.applyBindings({});
+					
 				});
 				</script>
             </ui:define>
@@ -33,6 +47,15 @@
             	</div>
             	
             	<div id="contents-area">
+            		
+            		<div id="show-popup" style="border: solid 1px #000; display: inline-block; background-color: #fcc">click here</div>
+            		<div id="popup-area" style="display: none;">
+            			this is pop up panel<br />
+            			this is pop up panel<br />
+            			this is pop up panel<br />
+            		</div>
+            	
+            		<hr />
             	
             		<a data-bind="ntsLinkButton: { jump: 'dest.xhtml' }">リンク</a>
             	
