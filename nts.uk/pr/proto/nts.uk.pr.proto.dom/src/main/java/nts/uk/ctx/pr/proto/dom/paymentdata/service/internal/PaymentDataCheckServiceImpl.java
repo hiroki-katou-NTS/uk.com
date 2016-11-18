@@ -1,25 +1,26 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service.internal;
 
-import javax.enterprise.context.RequestScoped;
+import java.util.List;
 
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
-import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.proto.dom.layout.detail.CalculationMethod;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDataCheckService;
-import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PayrollSystem;
-import nts.uk.shr.com.primitive.PersonId;
 
 @RequestScoped
 public class PaymentDataCheckServiceImpl implements PaymentDataCheckService {
-
+	@Inject
+	private PaymentDataRepository paymentDataRepo;
+	
 	@Override
-	public boolean isExists(CompanyCode companyCode, PersonId personId, PayBonusAtr payBonusAtr,
-			YearMonth processingYearMonth) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isExists(String companyCode, String personId, PayBonusAtr payBonusAtr,
+			int processingYearMonth) {
+		List<Payment> paymentHeaders = paymentDataRepo.findPaymentHeader(companyCode, personId, payBonusAtr.value, processingYearMonth);
+		
+		return paymentHeaders.size() > 0;
 	}
 
 

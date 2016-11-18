@@ -2,8 +2,10 @@ package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -108,9 +110,11 @@ public class Payment extends AggregateRoot {
 	private Comment comment;
 	
 	@Getter
+	@Setter
 	private List<DetailItem> detailPaymentItems;
 
 	@Getter
+	@Setter
 	private List<DetailDeductionItem> detailDeductionItems;
 
 	@Getter
@@ -121,17 +125,6 @@ public class Payment extends AggregateRoot {
 
 	@Getter
 	private List<PrintPositionCategory> printCategories;
-
-	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr  payBonusAtr,
-			YearMonth processingYM, SparePayAtr sparePayAtr) {
-		super();
-		this.companyCode = companyCode;
-		this.personId = personId;
-		this.processingNo = processingNo;
-		this.payBonusAtr =  payBonusAtr;
-		this.processingYM = processingYM;
-		this.sparePayAtr = sparePayAtr;
-	}
 
 	public Payment(
 				CompanyCode companyCode, 
@@ -276,5 +269,39 @@ public class Payment extends AggregateRoot {
 		
 		return null;
 		
+	}
+	
+	/**
+	 * Calculate total payment
+	 * @return
+	 */
+	public double calculateTotalPayment() {
+		if (this.detailPaymentItems == null) {
+			return 0.0;
+		}
+		
+		return this.detailPaymentItems.stream()
+				.collect(Collectors.summingDouble(x -> x.getValue()));
+	}
+	
+	/**
+	 * Calculate deduction total payment
+	 * @return
+	 */
+	public double calculateDeductionTotalPayment() {
+		if (this.detailDeductionItems == null) {
+			return 0.0;
+		}
+		
+		return this.detailDeductionItems.stream()
+				.collect(Collectors.summingDouble(x -> x.getValue()));
+	}
+	
+	/**
+	 * calculate amount of payment
+	 * @return
+	 */
+	public double amountOfPay() {
+		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
 	}
 }

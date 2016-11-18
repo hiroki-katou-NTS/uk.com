@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentHeaderPK;
 @RequestScoped
 public class JpaPaymentDataRepository extends JpaRepository implements PaymentDataRepository {
 
-	private final String SELECT_HEADER = "SELECT c FROM QSTDT_PAYMENT_HEADER WHERE c.CCD = :ccd and c.PID = :pid c.PAY_BONUS_ATR = c:payBonusAtr and c.PROCESSING_YM = c:processingYm";
+	private final String SELECT_HEADER = "SELECT c FROM QstdtPaymentHeader WHERE c.qstdtPaymentHeaderPK.companyCode = :ccd and c.qstdtPaymentHeaderPK.personId = :pid c.qstdtPaymentHeaderPK.payBonusAtr = c:payBonusAtr and c.qstdtPaymentHeaderPK.processingYm = c:processingYm";
 
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
@@ -59,13 +59,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
-	public void importHeader(Payment payment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void importDetails(Payment payment) {
+	public void importPayment(Payment payment) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -31,4 +30,14 @@ public class QpdmtPaydayPK implements Serializable {
 	@Column(name = "SPARE_PAY_ATR")
 	public int sparePayAtr;
 
+	public QpdmtPaydayPK(String ccd, int payBonusAtr, int processingNo, int processingYM, int sparePayAtr) {
+		super();
+		this.ccd = ccd;
+		this.payBonusAtr = payBonusAtr;
+		this.processingNo = processingNo;
+		this.processingYM = processingYM;
+		this.sparePayAtr = sparePayAtr;
+	}
+
+	
 }

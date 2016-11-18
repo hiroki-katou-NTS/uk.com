@@ -22,4 +22,12 @@ public class QpdmtPaydayProcessingPK implements Serializable {
 	
 	@Column(name = "PROCESSING_NO")
 	public int processingNo;
+
+	public QpdmtPaydayProcessingPK(String ccd, int payBonusAtr, int processingNo) {
+		super();
+		this.ccd = ccd;
+		this.payBonusAtr = payBonusAtr;
+		this.processingNo = processingNo;
+	}
+	
 }

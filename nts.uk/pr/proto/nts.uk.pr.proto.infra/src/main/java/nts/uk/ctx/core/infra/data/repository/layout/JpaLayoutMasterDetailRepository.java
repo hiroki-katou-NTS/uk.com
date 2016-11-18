@@ -8,10 +8,6 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
@@ -34,6 +30,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr := ctgAtr";
 	private final String SELECT_ALL_DETAILS_BY_LINE = SELECT_NO_WHERE
 			+ " WHERE c.autoLineId := autoLineId";
+	private final String SELECT_DETAILS_WITH_SUMSCOPEATR = SELECT_ALL_DETAILS
+			   + " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr" + " AND c.sumScopeAtr = :sumScopeAtr";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
@@ -181,12 +179,6 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				.getList(c -> toDomain(c));
 	}
 
-	@Override
-	public Optional<LayoutMasterDetail> getDetail(String companyCode, String stmtCode, int startYearMonth,
-			int categoryAttribute, String itemCode, int sumScopeAtr) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void remove(List<LayoutMasterDetail> details) {
@@ -203,4 +195,11 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				.setParameter("autoLineId", autoLineId)
 				.getList(c -> toDomain(c));
 	}
+	
+	 @Override
+	 public List<LayoutMasterDetail> getDetailsWithSumScopeAtr(String companyCode, String stmtCode, int startYearMonth,
+	   int categoryAttribute, int sumScopeAtr) {
+	  return this.queryProxy().query(SELECT_DETAILS_WITH_SUMSCOPEATR, QstmtStmtLayoutDetail.class)
+	    .getList(c -> toDomain(c));
+	 }
 }
