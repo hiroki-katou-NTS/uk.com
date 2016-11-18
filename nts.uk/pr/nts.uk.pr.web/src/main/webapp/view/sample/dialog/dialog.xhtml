@@ -5,10 +5,10 @@
 	<title>Dialog Sample</title>
 	
 	<!-- CSS -->
-	<link rel="stylesheet" type="text/css" href="../../lib/generic/jqueryui/jquery-ui.css" />
-	<link rel="stylesheet" type="text/css" href="../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
-	<link rel="stylesheet" type="text/css" href="../../lib/generic/igniteui/css/structure/infragistics.css" />
-	<link rel="stylesheet" type="text/css" href="../../lib/nittsu/ui/style/stylesheets/base.css" />
+	<link rel="stylesheet" type="text/css" href="../../../lib/generic/jqueryui/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="../../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+	<link rel="stylesheet" type="text/css" href="../../../lib/generic/igniteui/css/structure/infragistics.css" />
+	<link rel="stylesheet" type="text/css" href="../../../lib/nittsu/ui/style/stylesheets/base.css" />
 	<style>
 		html, body{position: relative;}
 		.container{padding:25px 40px;}
@@ -63,13 +63,13 @@
 	</style>
 	
 	<!-- Script -->
-	<script src="../../lib/generic/jquery/jquery-3.1.1.js"></script>
-	<script src="../../lib/generic/jqueryui/jquery-ui.min.js"></script>
-	<script src="../../lib/generic/knockoutjs/knockout-3.4.0.js"></script>
-	<script src="../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
-	<script src="../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
-	<script src="../../lib/nittsu/ui/ko-ext.js"></script>
-	<script src="../../lib/nittsu/ui/dialog-options.js"></script>
+	<script src="../../../lib/generic/jquery/jquery-3.1.1.js"></script>
+	<script src="../../../lib/generic/jqueryui/jquery-ui.min.js"></script>
+	<script src="../../../lib/generic/knockoutjs/knockout-3.4.0.js"></script>
+	<script src="../../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
+	<script src="../../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
+	<script src="../../../lib/nittsu/ui/ko-ext.js"></script>
+	<script src="../../../lib/nittsu/ui/dialog-options.js"></script>
 
 	<script>
 		var __viewContext = {
@@ -210,7 +210,7 @@
 </head>
 <body>
 	<div class="container">
-		<h2><a href="../../test.html">&#9665;</a> Dialog</h2>
+		<h2><a href="../../../test.html">&#9665;</a> Dialog</h2>
 		<hr/>
 		<!-- Normal Dialog -->
 		<div class="cf">
@@ -427,7 +427,7 @@
 			<h2>Error Dialog</h2>
 			<div data-bind="with: errordialog">
 				<button data-bind="click: open">Open</button>
-				<button data-bind="click: hide">Hide</button><br/>
+				<button data-bind="click: hide">Hide</button><br/><br/>
 				<button data-bind="click: testRemoveErrors">Remove Error</button>
 				<div data-bind="ntsErrorDialog: {title: title, headers: headers, errors: errors, option: option}"></div>
 			</div>

@@ -19,8 +19,11 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
-			+ " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm"
-			+ "AND c.qstmtStmtLayoutCtgPK.ctgAtr = :ctgAtr";
+			+ " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm";
+	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
+			+ " AND c.endYm = :endYm";
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
 		LayoutMasterCategory domain = LayoutMasterCategory.createFromJavaType(entity.qstmtStmtLayoutCtgPk.companyCd,
@@ -71,7 +74,9 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	@Override
 	public List<LayoutMasterCategory> getCategories(String companyCd, String stmtCd, int startYm) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
-				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("startYM", startYm)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("startYM", startYm)
 				.getList(c -> toDomain(c));
 	}
 
@@ -86,12 +91,12 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	}
 
 	@Override
-	public void removeAllCategory(String companyCode, String stmtCode, int startYm) {
-		val objectKey = new QstmtStmtLayoutCtgPK();
-		objectKey.companyCd = companyCode;
-		objectKey.stmtCd = stmtCode;
-		objectKey.strYm = startYm;
-		this.commandProxy().remove(QstmtStmtLayoutCtg.class, objectKey);
+	public List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm) {
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutCtg.class)
+				.setParameter("companyCd", companyCode)
+				.setParameter("stmtCd", stmtCode)
+				.setParameter("endYm", endYm)
+				.getList(c -> toDomain(c));
 	}
 
 }

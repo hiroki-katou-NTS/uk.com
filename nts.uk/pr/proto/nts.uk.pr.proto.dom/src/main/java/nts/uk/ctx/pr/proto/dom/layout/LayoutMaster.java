@@ -21,6 +21,7 @@ public class LayoutMaster extends AggregateRoot {
 	
 	/** 開始年月 */
 	@Getter
+	@Setter
 	private YearMonth startYM;
 	
 	/** 明細書コード */
@@ -72,15 +73,6 @@ public class LayoutMaster extends AggregateRoot {
 				new YearMonth(endYM),
 				EnumAdaptor.valueOf(layoutAtr, LayoutAtr.class), 
 				new LayoutName(stmtName));
-	}
-	
-	public LayoutMaster cloneWithDifferentStartYM(int startYM){
-		this.startYM = new YearMonth(startYM);
-		return this;
-	}
-	public LayoutMaster cloneWithDifferentEndYM(int endYM){
-		this.endYM = new YearMonth(endYM);
-		return this;
 	}
 	
 }

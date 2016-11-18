@@ -16,9 +16,14 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHeadPK;
 public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd";
-	private final String SELECT_DETAIL = SELECT_ALL_DETAILS + " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
+	private final String SELECT_ALL = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
+	private final String SELECT_DETAIL = SELECT_ALL + " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
+	private final String SELECT_LAYOUT_BEFORE = "SELECT TOP 1 c FROM QstmtStmtLayoutHead c" 
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutHeadPK.strYm < :strYm"
+			+ " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
 	
 //	private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM QstmtStmtLayoutHead e "
 //			+ "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
@@ -60,7 +65,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int strYm) {
-		return this.queryProxy().query(SELECT_DETAIL, QstmtStmtLayoutHead.class)
+		return this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
 				.setParameter("companyCd", companyCode)
 				.setParameter("stmtCode", stmtCode)
 				.setParameter("strYm", strYm)
@@ -70,7 +75,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	@Override
 	public List<LayoutMaster> getLayouts(String companyCode) {
 		
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutHead.class)
+		return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHead.class)
 				.setParameter("companyCd", companyCode)
 				
 				.getList(c -> toDomain(c));

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 
@@ -22,8 +23,8 @@ public class DetailDeductionItem extends DetailItem {
 	 * @param deductAttribute
 	 */
 	public DetailDeductionItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
-			InsuranceAtr laborInsuranceAtr, DeductionAtr deductAttribute ) {
-		super(itemCode, value, correctFlag, socialInsuranceAtr, laborInsuranceAtr);
+			InsuranceAtr laborInsuranceAtr, DeductionAtr deductAttribute, CategoryAtr categoryAttribute ) {
+		super(itemCode, value, correctFlag, socialInsuranceAtr, laborInsuranceAtr, categoryAttribute);
 		this.deductAttribute = deductAttribute;
 	}
 

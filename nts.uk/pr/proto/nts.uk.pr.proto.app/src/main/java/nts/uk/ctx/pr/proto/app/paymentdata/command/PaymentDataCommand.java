@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
@@ -131,7 +132,9 @@ public abstract class PaymentDataCommand {
 				c.getValue(), 
 				c.getCorrectFlag(), 
 				c.getSocialInsuranceAtr(), 
-				c.getLaborInsuranceAtr());
+				c.getLaborInsuranceAtr(),
+				c.getCategoryAtr()
+				);
 				}).collect(Collectors.toList());
 	}
 	
@@ -148,7 +151,9 @@ public abstract class PaymentDataCommand {
 				EnumAdaptor.valueOf(c.getCorrectFlag(), CorrectFlag.class), 
 				EnumAdaptor.valueOf(c.getSocialInsuranceAtr(), InsuranceAtr.class), 
 				EnumAdaptor.valueOf(c.getLaborInsuranceAtr(), InsuranceAtr.class),
-				EnumAdaptor.valueOf(c.getDeductionAtr(), DeductionAtr.class));
+				EnumAdaptor.valueOf(c.getDeductionAtr(), DeductionAtr.class),
+				EnumAdaptor.valueOf(c.getCategoryAtr(), CategoryAtr.class)
+					);
 				}
 		).collect(Collectors.toList());
 	}

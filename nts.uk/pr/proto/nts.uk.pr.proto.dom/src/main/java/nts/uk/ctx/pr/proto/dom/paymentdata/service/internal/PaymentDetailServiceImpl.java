@@ -89,10 +89,10 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				// PayrollSystem == 2 || 3
 				if (param.getEmploymentContract().isPayrollSystemDailyOrDay()) {
 					detail = getPayValueByMonthlyDaily(itemCode, param.getHoliday(), param.getPaymentDateMaster(),
-							param.getPayCalBasicInfo());
+							param.getPayCalBasicInfo(), itemLayoutMasterDetail.getCategoryAtr());
 				} else if (param.getEmploymentContract().isPayrollSystemDailyOrMonthly()) {
 					// PayrollSystem == 0 || 1
-					detail = getPayValueByPayrollDayHours(itemCode, param.getHoliday());
+					detail = getPayValueByPayrollDayHours(itemCode, param.getHoliday(), itemLayoutMasterDetail.getCategoryAtr());
 				}
 			}
 			
@@ -103,7 +103,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			if (itemLayoutMasterDetail.isCategoryPayment()) {
 				// get calculate method
 				if (itemLayoutMasterDetail.isCalMethodManualOrFormulaOrWageOrCommon()) {
-					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
+					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null, itemLayoutMasterDetail.getCategoryAtr());
 				} else if (itemLayoutMasterDetail.isCalMethodPesonalInfomation()) {
 					if (itemMaster.getItemCode() == itemLayoutMasterDetail.getItemCode()) {
 						// calculate pay value by tax
@@ -123,9 +123,9 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				if (itemLayoutMasterDetail.isCalMethodPesonalInfomation()) {
 					// get personal wage
 					PersonalWage personalWage = personalWageRepo.find(param.getCompanyCode(), param.getPersonId().v(), itemMaster.getCategoryAtr().value, itemCode, param.getCurrentProcessingYearMonth()).get();
-					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null);
+					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null, itemLayoutMasterDetail.getCategoryAtr());
 				} else if (itemLayoutMasterDetail.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
-					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
+					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null, itemLayoutMasterDetail.getCategoryAtr());
 				} else {
 					throw new RuntimeException("Error system");
 				}
@@ -136,7 +136,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			//
 			
 			if (itemLayoutMasterDetail.isCategoryArticlesOrOther()) {
-				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
+				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null, itemLayoutMasterDetail.getCategoryAtr());
 			}
 
 			// check exists
@@ -169,14 +169,14 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// get personal wage
 			PersonalWage personalWage = personalWageRepo.find(param.getCompanyCode(), param.getPersonId().v(), itemMaster.getCategoryAtr().value, itemCode, param.getCurrentProcessingYearMonth()).get();
 			
-			detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null);
+			detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null, itemLayoutMasterDetail.getCategoryAtr());
 		} else if (itemMaster.isTaxCommutingoCostOrCommutingExpense()) { // tax_atr = 3 || 4
 			
 			// check commute_attr
 			if (CommuteAtr.TRANSPORTATION_EQUIPMENT == itemLayoutMasterDetail.getCommuteAtr()) { // = 0
-				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), commute.sumCommuteAllowance(CommuteAtr.TRANSPORTATION_EQUIPMENT, param.getCurrentProcessingYearMonth()), null, null, null);
+				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), commute.sumCommuteAllowance(CommuteAtr.TRANSPORTATION_EQUIPMENT, param.getCurrentProcessingYearMonth()), null, null, null, itemLayoutMasterDetail.getCategoryAtr());
 			} else { // = 1
-				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), commute.sumCommuteAllowance(CommuteAtr.TRANSPORTTION_FACILITIES, param.getCurrentProcessingYearMonth()), null, null, null);				
+				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), commute.sumCommuteAllowance(CommuteAtr.TRANSPORTTION_FACILITIES, param.getCurrentProcessingYearMonth()), null, null, null, itemLayoutMasterDetail.getCategoryAtr());				
 			}
 			
 		} else {
@@ -193,7 +193,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 * @param holiday
 	 * @return QSTDT_PAYMENT_DETAIL.VAL
 	 */
-	private DetailItem getPayValueByPayrollDayHours(String itemCode, HolidayPaid holiday) {
+	private DetailItem getPayValueByPayrollDayHours(String itemCode, HolidayPaid holiday, CategoryAtr categoryAttribute) {
 		double value = 0;
 
 		switch (itemCode) {
@@ -204,7 +204,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			value = holiday.getRemainTime().doubleValue();
 		}
 
-		return new DetailItem(new ItemCode(itemCode), value, null, null, null);
+		return new DetailItem(new ItemCode(itemCode), value, null, null, null, categoryAttribute);
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 * @return QSTDT_PAYMENT_DETAIL.VAL
 	 */
 	private DetailItem getPayValueByMonthlyDaily(String itemCode, HolidayPaid holiday, PaymentDateMaster payDay,
-			PaymentCalculationBasicInformation payCalBasic) {
+			PaymentCalculationBasicInformation payCalBasic, CategoryAtr categoryAttribute) {
 		double value = 0;
 
 		switch (itemCode) {
@@ -237,7 +237,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			value = payDay.getNeededWorkDay().doubleValue() * payCalBasic.getBaseHours().doubleValue();
 		}
 
-		return new DetailItem(new ItemCode(itemCode), value, null, null, null);
+		return new DetailItem(new ItemCode(itemCode), value, null, null, null, categoryAttribute);
 	}
 
 }
