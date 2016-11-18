@@ -48,7 +48,7 @@ public interface LayoutMasterCategoryRepository {
  * @param stmtCode
  * @param startYm
  */
-	void removeAllCategory(String companyCode, String stmtCode, int startYm);
+	void removeAllCategory(List<LayoutMasterCategory> categories);
 	/**
 	 * get Categories
 	 * 

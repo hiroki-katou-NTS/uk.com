@@ -1,6 +1,7 @@
 package nts.uk.ctx.core.infra.data.repository.layout;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -98,5 +99,15 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 				.setParameter("endYm", endYm)
 				.getList(c -> toDomain(c));
 	}
+
+	@Override
+	public void removeAllCategory(List<LayoutMasterCategory> categories) {
+		List<QstmtStmtLayoutCtg> categoryEntity = categories.stream().map(
+				category -> {
+					return this.toEntity(category);
+				}).collect(Collectors.toList());
+		this.commandProxy().removeAll(categoryEntity);
+	}
+
 
 }
