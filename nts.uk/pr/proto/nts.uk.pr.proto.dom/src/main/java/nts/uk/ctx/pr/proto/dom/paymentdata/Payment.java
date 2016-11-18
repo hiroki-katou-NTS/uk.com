@@ -118,9 +118,11 @@ public class Payment extends AggregateRoot {
 	private List<DetailDeductionItem> detailDeductionItems;
 
 	@Getter
+	@Setter
 	private List<DetailItem> detailPersonalTimeItems;
 
 	@Getter
+	@Setter
 	private List<DetailItem> detailArticleItems;
 
 	@Getter

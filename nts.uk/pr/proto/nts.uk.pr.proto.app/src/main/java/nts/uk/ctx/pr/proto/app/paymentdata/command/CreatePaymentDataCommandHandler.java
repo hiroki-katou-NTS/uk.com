@@ -150,7 +150,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			param.setPersonalAllotSetting(personalAllotSetting);
 
 			// calculate payment detail
-			Map<CategoryAtr, DetailItem> payDetail = paymentDetailService.calculatePayValue(param);
+			Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
 
 			// get layout master detail
 			List<LayoutMasterDetail> layoutDetailMasterList = layoutDetailMasterRepo.getDetailsWithSumScopeAtr(loginInfo.companyCode(),
@@ -162,21 +162,27 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 			for (LayoutMasterDetail item : layoutDetailMasterList) {
 				// calculate total payment
-				DetailItem detailPaymentItem = payDetail.get(CategoryAtr.PAYMENT);
-				if (detailPaymentItem.getItemCode() == item.getItemCode()) {
-					detailPaymentList.add(detailPaymentItem);
+				List<DetailItem> detailPaymentItems = payDetail.get(CategoryAtr.PAYMENT).stream()
+						.filter(x -> item.getItemCode().equals(x.getItemCode())).collect(Collectors.toList());
+				
+				if (detailPaymentItems.size() > 0) {
+					detailPaymentList.addAll(detailPaymentItems);
 				}
 
 				// calculate deduction total payment
-				DetailDeductionItem detailDeductionItem = this.toDetailDeductionItem(payDetail.get(CategoryAtr.DEDUCTION)); 
-				if (detailDeductionItem.getItemCode() == item.getItemCode()) {
-					detailDeductionList.add(detailDeductionItem);
+				List<DetailDeductionItem> detailDeductionItems = payDetail.get(CategoryAtr.DEDUCTION).stream()
+						.filter(x -> item.getItemCode().equals(x.getItemCode()))
+						.map(x -> this.toDetailDeductionItem(x)).collect(Collectors.toList());
+				if (detailDeductionItems.size() > 0) {
+					detailDeductionList.addAll(detailDeductionItems);
 				}
 			}
 
 			Payment paymentHead = this.toDomain(loginInfo.companyCode(), personId, command);
 			paymentHead.setDetailPaymentItems(detailPaymentList);
 			paymentHead.setDetailDeductionItems(detailDeductionList);
+			paymentHead.setDetailPersonalTimeItems(payDetail.get(CategoryAtr.PERSONAL_TIME));
+			paymentHead.setDetailArticleItems(payDetail.get(CategoryAtr.ARTICLES));
 			
 			paymentDataRepo.importPayment(paymentHead);
 		}
