@@ -121,4 +121,13 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public void removeAllLineOfHistory(String companyCd, String stmtCd, int strYm) {
+		val objectKey = new QstmtStmtLayoutLinesPK();
+		objectKey.companyCd = companyCd;
+		objectKey.stmtCd = stmtCd;
+		objectKey.strYm = strYm;
+		this.commandProxy().remove(QstmtStmtLayoutLines.class, objectKey);
+	}
+
 }

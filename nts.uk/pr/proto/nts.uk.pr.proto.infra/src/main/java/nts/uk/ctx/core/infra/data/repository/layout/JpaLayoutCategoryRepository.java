@@ -16,8 +16,10 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtgPK;
 public class JpaLayoutCategoryRepository extends JpaRepository implements LayoutMasterCategoryRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutCtgPK c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm"
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm"
 			+ "AND c.qstmtStmtLayoutCtgPK.ctgAtr = :ctgAtr";
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
@@ -81,6 +83,15 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	@Override
 	public void update(List<LayoutMasterCategory> categories) {
 		this.commandProxy().updateAll(categories);
+	}
+
+	@Override
+	public void removeAllCategory(String companyCode, String stmtCode, int startYm) {
+		val objectKey = new QstmtStmtLayoutCtgPK();
+		objectKey.companyCd = companyCode;
+		objectKey.stmtCd = stmtCode;
+		objectKey.strYm = startYm;
+		this.commandProxy().remove(QstmtStmtLayoutCtg.class, objectKey);
 	}
 
 }

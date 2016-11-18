@@ -55,5 +55,11 @@ public interface LayoutMasterLineRepository {
 	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm);
 	
 	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm, int categoryAtr);
-
+	/**
+	 * 明細書の履歴の行を全て削除する
+	 * @param companyCd
+	 * @param stmtCd
+	 * @param strYm
+	 */
+	void removeAllLineOfHistory(String companyCd, String stmtCd, int strYm);
 }

@@ -21,6 +21,11 @@ public class DeleteLayoutHistoryCommand {
 	
 	public LayoutMaster toDomain(int endYm, int layoutAtr, String stmtName){
 		return LayoutMaster.createFromJavaType(
-				AppContexts.user().companyCode(), this.startYM, this.stmtCode, endYm, layoutAtr, stmtName);
+				AppContexts.user().companyCode(), 
+				this.startYM, 
+				this.stmtCode, 
+				endYm, 
+				layoutAtr, 
+				stmtName);
 	}
 }
