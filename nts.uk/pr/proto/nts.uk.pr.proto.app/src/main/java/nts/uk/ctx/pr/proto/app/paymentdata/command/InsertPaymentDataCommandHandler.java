@@ -34,33 +34,6 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 		Payment payment = context.getCommand().toDomain(companyCode);
 		payment.validate();
 
-		this.paymentDataRepository.insertHeader(payment);
-		
-		this.insertDeductionItem(context.getCommand().getDetailDeductionItems().get(0).getCategoryAtr(), payment.getDetailDeductionItems());
-		this.insertWithoutDeductionItem(context.getCommand().getDetailPaymentItems().get(0).getCategoryAtr(), payment.getDetailPaymentItems());
-		this.insertWithoutDeductionItem(context.getCommand().getDetailPersonalTimeItems().get(0).getCategoryAtr(), payment.getDetailPersonalTimeItems());
-		this.insertWithoutDeductionItem(context.getCommand().getDetailArticleItems().get(0).getCategoryAtr(), payment.getDetailArticleItems());
-		
-
-	}
-	
-	/**
-	 * insert deduction detail items
-	 * 
-	 * @param categoryAtr
-	 * @param items
-	 */
-	private void insertDeductionItem(int categoryAtr, List<DetailDeductionItem> items) {
-		this.paymentDataRepository.insertDeductionDetails(categoryAtr, items);
-	}
-
-	/**
-	 * insert detail item without deduction
-	 * 
-	 * @param categoryAtr
-	 * @param items
-	 */
-	private void insertWithoutDeductionItem(int categoryAtr, List<DetailItem> items) {
-		this.paymentDataRepository.insertDetails(categoryAtr, items);
+		this.paymentDataRepository.insert(payment);
 	}
 }

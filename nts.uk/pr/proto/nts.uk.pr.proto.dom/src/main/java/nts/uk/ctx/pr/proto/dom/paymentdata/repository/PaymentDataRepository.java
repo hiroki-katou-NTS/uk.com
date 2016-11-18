@@ -70,26 +70,18 @@ public interface PaymentDataRepository {
 	 * 
 	 * @param payment
 	 */
-	void insertHeader(Payment payment);
+	void insert(Payment payment);
 
 	/**
-	 * insert deduction detail items
+	 * check detail item is exsit
 	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param baseYM
 	 * @param categoryAtr
-	 * @param items
+	 * @param itemCode
+	 * @return
 	 */
-	void insertDeductionDetails(int categoryAtr, List<DetailDeductionItem> items);
-
-	/**
-	 * insert detail item without deduction
-	 * 
-	 * @param categoryAtr
-	 * @param items
-	 */
-	void insertDetails(int categoryAtr, List<DetailItem> items);
-
-	void updateDetails(int categoryAtr, List<DetailItem> items);
-
-	void updateDeductionDetails(int categoryAtr, List<DetailDeductionItem> items);
+	boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode);
 
 }

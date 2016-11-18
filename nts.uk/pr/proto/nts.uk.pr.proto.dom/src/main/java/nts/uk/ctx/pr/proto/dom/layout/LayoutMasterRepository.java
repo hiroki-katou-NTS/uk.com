@@ -56,4 +56,8 @@ public interface LayoutMasterRepository {
 	 * @return
 	 */
 	boolean isExist(String companyCode, String stmtCode);
+
+//	Optional<LayoutMaster> getPreviosTarget(String companyCode, String stmtCode);
+	
+	
 }

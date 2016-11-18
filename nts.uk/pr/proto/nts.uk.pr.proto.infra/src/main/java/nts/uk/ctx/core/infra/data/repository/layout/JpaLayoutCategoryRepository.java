@@ -16,9 +16,14 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtgPK;
 public class JpaLayoutCategoryRepository extends JpaRepository implements LayoutMasterCategoryRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutCtgPK c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm"
-			+ "AND c.qstmtStmtLayoutCtgPK.ctgAtr = :ctgAtr";
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm";
+	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
+			+ " AND c.endYm = :endYm";
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
 		LayoutMasterCategory domain = LayoutMasterCategory.createFromJavaType(entity.qstmtStmtLayoutCtgPk.companyCd,
@@ -69,7 +74,9 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	@Override
 	public List<LayoutMasterCategory> getCategories(String companyCd, String stmtCd, int startYm) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
-				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("startYM", startYm)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("startYM", startYm)
 				.getList(c -> toDomain(c));
 	}
 
@@ -81,6 +88,15 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	@Override
 	public void update(List<LayoutMasterCategory> categories) {
 		this.commandProxy().updateAll(categories);
+	}
+
+	@Override
+	public List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm) {
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutCtg.class)
+				.setParameter("companyCd", companyCode)
+				.setParameter("stmtCd", stmtCode)
+				.setParameter("endYm", endYm)
+				.getList(c -> toDomain(c));
 	}
 
 }

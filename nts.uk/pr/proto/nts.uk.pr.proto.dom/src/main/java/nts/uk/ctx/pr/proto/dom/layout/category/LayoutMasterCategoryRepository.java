@@ -53,5 +53,5 @@ public interface LayoutMasterCategoryRepository {
 	 */
 	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, int startYm);
 
-	
+	List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm);
 }

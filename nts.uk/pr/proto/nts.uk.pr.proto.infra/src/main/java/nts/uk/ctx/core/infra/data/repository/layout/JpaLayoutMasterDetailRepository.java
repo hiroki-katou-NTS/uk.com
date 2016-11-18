@@ -32,6 +32,10 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " WHERE c.autoLineId := autoLineId";
 	private final String SELECT_DETAILS_WITH_SUMSCOPEATR = SELECT_ALL_DETAILS
 			   + " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr" + " AND c.sumScopeAtr = :sumScopeAtr";
+	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
+			+ " AND c.endYm := endYm";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
@@ -202,4 +206,13 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	  return this.queryProxy().query(SELECT_DETAILS_WITH_SUMSCOPEATR, QstmtStmtLayoutDetail.class)
 	    .getList(c -> toDomain(c));
 	 }
+
+	@Override
+	public List<LayoutMasterDetail> getDetailsBefore(String companyCd, String stmtCd, int endYm) {
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutDetail.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("endYm", endYm)
+				.getList(c -> toDomain(c));
+	}
 }

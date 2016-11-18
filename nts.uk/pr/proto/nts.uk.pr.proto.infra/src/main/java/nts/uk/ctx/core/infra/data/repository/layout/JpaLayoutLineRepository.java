@@ -29,6 +29,11 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 			+ " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutLinesPk.ctgAtr = :ctgAtr";
 	
+	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
+			+ " AND c.endYm = :endYm";
+	
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutLines.class)
@@ -118,6 +123,15 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 				.setParameter("stmtCd", stmtCd)
 				.setParameter("strYm", strYm)
 				.setParameter("ctgAtr", categoryAtr)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd, int endYm) {
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("strYm", endYm)
 				.getList(c -> toDomain(c));
 	}
 

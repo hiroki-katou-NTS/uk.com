@@ -60,6 +60,11 @@ public interface LayoutMasterDetailRepository {
 			String stmtCd, 
 			int startYm);
 	
+	List<LayoutMasterDetail> getDetailsBefore(
+			String companyCd, 
+			String stmtCd, 
+			int endYm);
+	
 	List<LayoutMasterDetail> getDetailsByCategory(
 			String companyCd, 
 			String stmtCd, 
