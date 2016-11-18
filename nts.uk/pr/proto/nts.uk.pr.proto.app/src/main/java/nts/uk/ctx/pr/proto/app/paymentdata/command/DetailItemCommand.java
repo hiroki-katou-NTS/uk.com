@@ -39,6 +39,10 @@ public class DetailItemCommand {
 	 * 労保対象区分
 	 */
 	private int laborInsuranceAtr;
+	
+	
+	private int deductionAtr;
+	
 
 	private int linePostion;
 

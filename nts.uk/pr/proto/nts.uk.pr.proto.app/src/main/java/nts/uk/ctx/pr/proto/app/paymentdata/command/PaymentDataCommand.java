@@ -1,29 +1,19 @@
 package nts.uk.ctx.pr.proto.app.paymentdata.command;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate;
-import nts.uk.ctx.pr.proto.dom.paymentdata.CalcFlag;
-import nts.uk.ctx.pr.proto.dom.paymentdata.Comment;
-import nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber;
-import nts.uk.ctx.pr.proto.dom.paymentdata.MakeMethodFlag;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
-import nts.uk.ctx.pr.proto.dom.paymentdata.SpecificationCode;
-import nts.uk.ctx.pr.proto.dom.paymentdata.TenureAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.EmploymentInsuranceAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceAverageEarn;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceGrade;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.InsuredAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.PensionAverageEarn;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.PensionInsuranceGrade;
-import nts.uk.ctx.pr.proto.dom.paymentdata.insure.WorkInsuranceCalculateAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode;
-import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceName;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.CorrectFlag;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.InsuranceAtr;
 
 /**
  * 
@@ -34,6 +24,8 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceName;
 @Setter
 public abstract class PaymentDataCommand {
 
+	private String personId;
+	
 	private  int processingNo;
 
 	private  int payBonusAtr;
@@ -80,21 +72,21 @@ public abstract class PaymentDataCommand {
 
 	private String comment;
 
-	// private List<DetailItemCommand> detailPaymentItems;
-	//
-	// private List<DetailItemCommand> detailDeductionItems;
-	//
-	// private List<DetailItemCommand> detailPersonalTimeItems;
-	//
-	// private List<DetailItemCommand> detailArticleItems;
+	private List<DetailItemCommand> detailPaymentItems;
+
+	private List<DetailItemCommand> detailDeductionItems;
+
+	private List<DetailItemCommand> detailPersonalTimeItems;
+
+	private List<DetailItemCommand> detailArticleItems;
 
 	/**
 	 * Convert to domain object.
 	 * 
 	 * @return domain
 	 */
-	public Payment toDomain(String companyCode, String personId) {
-		return Payment.createFromJavaType(
+	public Payment toDomain(String companyCode) {
+		Payment payment =  Payment.createFromJavaType(
 				companyCode, 
 				personId, 
 				this.processingNo, 
@@ -120,5 +112,44 @@ public abstract class PaymentDataCommand {
 				this.calcFlag, 
 				this.makeMethodFlag,
 				this.comment);
+		
+		payment.setDetailPaymentItems(this.setDetailItems(this.detailPaymentItems));
+		payment.setDetailDeductionItems(this.setDudectionDetailItems(this.detailDeductionItems));
+		payment.setDetailArticleItems(this.setDetailItems(this.detailArticleItems));
+		payment.setDetailPersonalTimeItems(this.setDetailItems(this.detailPaymentItems));
+		return payment;
+	}
+	
+	/**
+	 * convert data from command to value object detail item
+	 * @param items
+	 * @return
+	 */
+	private List<DetailItem> setDetailItems(List<DetailItemCommand> items) {
+		return items.stream().map(c-> {return DetailItem.createFromJavaType(
+				c.getItemCode(), 
+				c.getValue(), 
+				c.getCorrectFlag(), 
+				c.getSocialInsuranceAtr(), 
+				c.getLaborInsuranceAtr());
+				}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * convert data from command to value object deduction detail item
+	 * @param items
+	 * @return
+	 */
+	private List<DetailDeductionItem> setDudectionDetailItems(List<DetailItemCommand> items) {
+		return items.stream().map(c-> {
+			return new DetailDeductionItem(
+				new ItemCode(c.getItemCode()), 
+				c.getValue(), 
+				EnumAdaptor.valueOf(c.getCorrectFlag(), CorrectFlag.class), 
+				EnumAdaptor.valueOf(c.getSocialInsuranceAtr(), InsuranceAtr.class), 
+				EnumAdaptor.valueOf(c.getLaborInsuranceAtr(), InsuranceAtr.class),
+				EnumAdaptor.valueOf(c.getDeductionAtr(), DeductionAtr.class));
+				}
+		).collect(Collectors.toList());
 	}
 }
