@@ -7,7 +7,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 public class PaymentDataHeaderDto {
 
 	/** 扶養人数（その月時点） */
-	private int dependentNumber;
+	private Integer dependentNumber;
 
 	/** 明細書コード */
 	private String specificationCode;
@@ -16,7 +16,7 @@ public class PaymentDataHeaderDto {
 	private String specificationName;
 
 	/** 作成方法フラグ */
-	private int makeMethodFlag;
+	private Integer makeMethodFlag;
 
 	/** 社員コード */
 	private String employeeCode;
@@ -24,22 +24,15 @@ public class PaymentDataHeaderDto {
 	/** memo */
 	private String comment;
 
-	/**
-	 * Create DTO from domain object.
-	 * 
-	 * @param domain
-	 *            domain
-	 * @return DTO
-	 */
-	public static PaymentDataHeaderDto fromDomain(Payment domain, String specificationName, String employeeCode) {
-		return new PaymentDataHeaderDto(
-				domain.getDependentNumber().v(), 
-				domain.getSpecificationCode().v(),
-				specificationName,
-				domain.getMakeMethodFlag().value,
-				employeeCode,
-				domain.getComment().v()
-				);
+	public PaymentDataHeaderDto(Integer dependentNumber, String specificationCode, String specificationName,
+			Integer makeMethodFlag, String employeeCode, String comment) {
+		super();
+		this.dependentNumber = dependentNumber;
+		this.specificationCode = specificationCode;
+		this.specificationName = specificationName;
+		this.makeMethodFlag = makeMethodFlag;
+		this.employeeCode = employeeCode;
+		this.comment = comment;
 	}
 
 }

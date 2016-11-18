@@ -23,4 +23,11 @@ public class PprmtPersonCommutePK implements Serializable {
 	@Column(name = "STR_YM")
 	public int strYm;
 
+	public PprmtPersonCommutePK(String ccd, String pId, int strYm) {
+		super();
+		this.ccd = ccd;
+		this.pId = pId;
+		this.strYm = strYm;
+	}
+
 }

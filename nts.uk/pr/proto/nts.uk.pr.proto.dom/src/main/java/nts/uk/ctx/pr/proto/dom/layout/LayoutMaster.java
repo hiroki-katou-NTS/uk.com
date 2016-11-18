@@ -3,8 +3,10 @@ package nts.uk.ctx.pr.proto.dom.layout;
 import java.util.List;
 
 import nts.arc.enums.EnumAdaptor;
-
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -59,6 +61,10 @@ public class LayoutMaster extends AggregateRoot {
 	 */
 	public static LayoutMaster createFromJavaType(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
 			String stmtName){
+		if (stmtName.isEmpty()) {
+			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		}
+		
 		return new LayoutMaster(
 				new CompanyCode(companyCode), 
 				new YearMonth(startYM), 

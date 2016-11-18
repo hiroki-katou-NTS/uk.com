@@ -2,15 +2,12 @@ package nts.uk.ctx.core.infra.data.repository.layout;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutCode;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
@@ -26,14 +23,22 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
-	
+	private final String SELECT_ALL_DETAILS_BY_CATEGORY = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm"
+			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr := ctgAtr";
+	private final String SELECT_ALL_DETAILS_BY_LINE = SELECT_NO_WHERE
+			+ " WHERE c.autoLineId := autoLineId";
+	private final String SELECT_DETAILS_WITH_SUMSCOPEATR = SELECT_ALL_DETAILS
+			   + " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr" + " AND c.sumScopeAtr = :sumScopeAtr";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 	
-	private static QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
+	private QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
 		val entity = new QstmtStmtLayoutDetail();
 		entity.fromDomain(domain);
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
@@ -137,18 +142,18 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	}
 
 	@Override
-	public void remove(CompanyCode companyCode,
-			LayoutCode layoutCode,
-			YearMonth startYm, 
-			int categoryAtr, 
-			ItemCode itemCode) {
-		val object = new QstmtStmtLayoutDetailPK();
-		object.companyCd = companyCode.v();
-		object.stmtCd = layoutCode.v();
-		object.strYm = startYm.v();
-		object.ctgAtr = categoryAtr;
-		object.itemCd = itemCode.v();		
-		this.commandProxy().remove(QstmtStmtLayoutDetail.class, object);
+	public void remove(String companyCode
+			, String layoutCode
+			, int startYm
+			, int categoryAtr
+			, String itemCode) {
+		val objectKey = new QstmtStmtLayoutDetailPK();
+		objectKey.companyCd = companyCode;
+		objectKey.stmtCd = layoutCode;
+		objectKey.strYm = startYm;
+		objectKey.ctgAtr = categoryAtr;
+		objectKey.itemCd = itemCode;		
+		this.commandProxy().remove(QstmtStmtLayoutDetail.class, objectKey);
 		
 	}
 
@@ -165,7 +170,36 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public List<LayoutMasterDetail> getDetailsByCategory(String companyCd, String stmtCd, int startYm,
 			int categoryAtr) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BY_CATEGORY, QstmtStmtLayoutDetail.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("startYM", startYm)
+				.setParameter("ctgAtr", categoryAtr)
+				.getList(c -> toDomain(c));
 	}
+
+
+	@Override
+	public void remove(List<LayoutMasterDetail> details) {
+		List<QstmtStmtLayoutDetail> detailEntities = details.stream().map(
+					detail -> {return this.toEntity(detail);}
+				).collect(Collectors.toList());
+		this.commandProxy().removeAll(QstmtStmtLayoutDetail.class, detailEntities);
+	}
+
+	@Override
+	public List<LayoutMasterDetail> getDetailsByLine(String autoLineId) {
+
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BY_LINE, QstmtStmtLayoutDetail.class)
+				.setParameter("autoLineId", autoLineId)
+				.getList(c -> toDomain(c));
+	}
+	
+	 @Override
+	 public List<LayoutMasterDetail> getDetailsWithSumScopeAtr(String companyCode, String stmtCode, int startYearMonth,
+	   int categoryAttribute, int sumScopeAtr) {
+	  return this.queryProxy().query(SELECT_DETAILS_WITH_SUMSCOPEATR, QstmtStmtLayoutDetail.class)
+	    .getList(c -> toDomain(c));
+	 }
 }

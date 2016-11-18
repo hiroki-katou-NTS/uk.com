@@ -3,10 +3,9 @@ package nts.uk.ctx.pr.screen.app.query.paymentdata.query;
 import lombok.Data;
 
 @Data
-public class PaymemtDataQuery {
-	private int personId;
+public class PaymentDataQuery {
 	
-	private int baseYM;
+	private String personId;
 	
-	
+	private String employeeCode;
 }

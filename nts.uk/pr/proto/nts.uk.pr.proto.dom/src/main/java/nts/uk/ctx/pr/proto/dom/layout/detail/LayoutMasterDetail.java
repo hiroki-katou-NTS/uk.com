@@ -157,6 +157,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		
 		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
 		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
+		
 		return new LayoutMasterDetail(
 				new CompanyCode(companyCode),
 				new LayoutCode(layoutCode),
@@ -239,35 +240,12 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int alamRangeLow,
 			int itemPosColumn,
 			String itemAbName){
-		
-		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
-		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
-		
-		LayoutMasterDetail result = new LayoutMasterDetail(
-				new CompanyCode(companyCode),
-				new LayoutCode(layoutCode),
-				YearMonth.of(startYm),
-				YearMonth.of(endYm),
-				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				new ItemCode(itemCode), 
-				new AutoLineId(autoLineId),
-				new ItemPosColumn(itemPosColumn),
-				new RangeChecker(EnumAdaptor.valueOf(isErrorUseHigh, UseOrNot.class),
-						EnumAdaptor.valueOf(isErrorUserLow, UseOrNot.class),
-						error), 
-				EnumAdaptor.valueOf(calculationMethod, CalculationMethod.class),
-				new Distribute(
-						EnumAdaptor.valueOf(distributeWay, DistributeWay.class), 
-						EnumAdaptor.valueOf(distributeSet, DistributeSet.class)),
-				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
-				new RangeChecker(EnumAdaptor.valueOf(isAlamUseHigh, UseOrNot.class),
-						EnumAdaptor.valueOf(isAlamUseLow, UseOrNot.class), 
-						alam),
-				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
-				new ItemCode(setOffItemCode),
-				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
-				new PersonalWageCode(personalWageCode)
-				);
+				
+		LayoutMasterDetail result = createFromJavaType(companyCode, layoutCode, startYm, endYm, categoryAtr, itemCode, 
+				autoLineId, displayAtr, sumScopeAtr, calculationMethod, distributeWay, 
+				distributeSet, personalWageCode, setOffItemCode, commuteAtr, isErrorUseHigh, 
+				errorRangeHigh, isErrorUserLow, errorRangeLow, isAlamUseHigh, alamRangeHigh, 
+				isAlamUseLow, alamRangeLow, itemPosColumn);		
 		
 		result.setItemAbName(new ItemName(itemAbName));
 		return result;
@@ -317,7 +295,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 	 * CalculationMethod = PERSONAL_INFORMATION
 	 * @return
 	 */
-	public boolean isCalculationMethodPesonalInfomation() {
+	public boolean isCalMethodPesonalInfomation() {
 		return CalculationMethod.PERSONAL_INFORMATION == this.calculationMethod;
 	}
 	
@@ -325,10 +303,51 @@ public class LayoutMasterDetail extends AggregateRoot{
 	 * CalculationMethod = MANUAL_ENTRY || FORMULA || WAGE_TABLE || COMMON_AMOUNT_MONEY
 	 * @return
 	 */
-	public boolean isCalculationMethodManualOrFormulaOrWageTableOrCommon() {
+	public boolean isCalMethodManualOrFormulaOrWageOrCommon() {
 		return this.calculationMethod == CalculationMethod.MANUAL_ENTRY 
 				|| this.calculationMethod == CalculationMethod.FORMULA 
 				|| this.calculationMethod == CalculationMethod.WAGE_TABLE 
 				|| this.calculationMethod == CalculationMethod.COMMON_AMOUNT_MONEY;
+	}
+	
+	/**
+	 * CalculationMethod = MANUAL_ENTRY || FORMULA || WAGE_TABLE || COMMON_AMOUNT_MONEY || PAYMENT_CANCELED
+	 * @return
+	 */
+	public boolean isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled() {
+		return this.isCalMethodManualOrFormulaOrWageOrCommon() 
+				|| this.calculationMethod == CalculationMethod.PAYMENT_CANCELED;
+	}
+	
+	/**
+	 * Check Category = PERSONAL_TIME
+	 * @return
+	 */
+	public boolean isCategoryPersonalTime() {
+		return CategoryAtr.PERSONAL_TIME == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = PAYMENT
+	 * @return
+	 */
+	public boolean isCategoryPayment() {
+		return CategoryAtr.PAYMENT == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = DEDUCTION
+	 * @return
+	 */
+	public boolean isCategoryDeduction() {
+		return CategoryAtr.DEDUCTION == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = ARTICLES || OTHER
+	 * @return
+	 */
+	public boolean isCategoryArticlesOrOther() {
+		return CategoryAtr.ARTICLES == this.categoryAtr || CategoryAtr.OTHER == this.categoryAtr;
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.layout.detail.command;
+package nts.uk.ctx.pr.proto.app.layout.register.command;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -27,7 +27,7 @@ public class RemoveLayoutDetailCommandHandler extends CommandHandler<RemoveLayou
 		val startYm = new YearMonth(context.getCommand().getStartYm());
 		int categoryAtr = context.getCommand().getCategoryAtr();
 		val itemCode = new ItemCode(context.getCommand().getItemCode());
-		this.repository.remove(companyCode, layoutCode, startYm, categoryAtr, itemCode);
+		//this.repository.remove(companyCode, layoutCode, startYm, categoryAtr, itemCode);
 	}
 
 }
