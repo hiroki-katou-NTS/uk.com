@@ -171,7 +171,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	@Override
 	public Optional<LayoutMasterDetail> getDetail(String companyCode, String stmtCode, int startYearMonth,
-			int categoryAttribute, String itemCode, int sumScopeAtr) {
+			int categoryAttribute, int sumScopeAtr) {
 		// TODO Auto-generated method stub
 		return null;
 	}
