@@ -195,13 +195,13 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 */
 	private Payment toDomain(String companyCode, String personId, CreatePaymentDataCommand command) {
 		Payment payment = new Payment(new CompanyCode(companyCode), new PersonId(personId),
-				new ProcessingNo(command.getProcessingNo()), PayBonusAtr.SALARY, // ??
+				new ProcessingNo(command.getProcessingNo()), PayBonusAtr.SALARY, 
 				new YearMonth(command.getProcessingYearMonth()), SparePayAtr.NORMAL, // ??
 				GeneralDate.today(), // ??
 				null, null, null, null, null, AgeContinuationInsureAtr.NOT_TARGET, TenureAtr.CHILDCARE_LEAVE,
-				TaxAtr.COMMUTING_COST, null, null, EmploymentInsuranceAtr.A, null,
+				TaxAtr.TAXATION, null, null, EmploymentInsuranceAtr.A, null,
 				WorkInsuranceCalculateAtr.FULL_TIME_EMPLOYEE, InsuredAtr.GENERAL_INSURED_PERSON, null,
-				CalcFlag.CALCULATED, MakeMethodFlag.INITIAL_DATA, null);
+				CalcFlag.UN_CALCULATION, MakeMethodFlag.INITIAL_DATA, null);
 
 		return payment;
 	}
@@ -213,7 +213,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 */
 	private DetailDeductionItem toDetailDeductionItem(DetailItem detailItem) {
 		return new DetailDeductionItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
-				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION);
+				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION, detailItem.getCategoryAttribute());
 	}
 
 	/**
