@@ -14,6 +14,7 @@ public class PaymentDetailParam {
 	private String companyCode;
 	private PersonId personId;
 	private int baseYearMonth;
+	private int currentProcessingYearMonth;
 	private HolidayPaid holiday;
 	private PersonalEmploymentContract employmentContract;
 	private PaymentCalculationBasicInformation payCalBasicInfo;
@@ -21,11 +22,12 @@ public class PaymentDetailParam {
 	private PersonalWage personalWage;
 	private PersonalCommuteFee personalCommute;
 	
-	public PaymentDetailParam(String companyCode, PersonId personId, int baseYearMonth) {
+	public PaymentDetailParam(String companyCode, PersonId personId, int baseYearMonth, int currentProcessingYearMonth) {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;
 		this.baseYearMonth = baseYearMonth;
+		this.currentProcessingYearMonth = currentProcessingYearMonth;
 	}
 	
 }

@@ -16,8 +16,9 @@ public interface LayoutMasterRepository {
 	 * @param strYm
 	 * @return
 	 */
-	Optional<LayoutMaster> getLayout(String companyCode, String stmtCode, int startYm);
-
+	Optional<LayoutMaster> getLayout(String companyCode, int startYm, String stmtCode);
+	
+	Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int startYm);
 	/**
 	 * find all layout master by company code, start date
 	 * 

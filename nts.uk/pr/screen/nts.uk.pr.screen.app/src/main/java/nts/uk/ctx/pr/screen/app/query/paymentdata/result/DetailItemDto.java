@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.screen.app.query.paymentdata.result;
 
-import lombok.Getter;
 import lombok.Value;
 
 @Value
@@ -41,12 +40,12 @@ public class DetailItemDto {
 	 */
 	private int laborInsuranceAtr;
 
-	private DetailItemPositionDto itemPostion;
+	private DetailItemPositionDto itemPosition;
 
-	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, ) {
+	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, Double value,
+			int correctFlag, int socialInsuranceAtr, int laborInsuranceAtr, DetailItemPositionDto itemPosition) {
 		return new DetailItemDto(categoryAtr, itemCode, itemName, value, correctFlag, socialInsuranceAtr,
-				laborInsuranceAtr, itemPostion);
+				laborInsuranceAtr, itemPosition);
 
 	}
-
 }

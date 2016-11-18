@@ -14,8 +14,6 @@ import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
@@ -31,6 +29,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMaste
 import nts.uk.ctx.pr.screen.app.query.paymentdata.query.PaymentDataQuery;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemPositionDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.LayoutMasterCategoryDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataHeaderDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
@@ -77,9 +76,6 @@ public class GetPaymentDataQueryProcessor {
 	@Inject
 	private PaymentDataQueryRepository queryRepository;
 
-	@Inject
-	private ItemMasterRepository itemMasterRepository;
-
 	/**
 	 * get data detail
 	 * 
@@ -107,7 +103,7 @@ public class GetPaymentDataQueryProcessor {
 		}
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, stmtCode, startYM)
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, startYM, stmtCode)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
 		startYM = layout.getStartYM().v();
 
@@ -122,31 +118,32 @@ public class GetPaymentDataQueryProcessor {
 					stmtCode, startYM));
 
 		} else { // Case 「No Data」
-			List<LayoutMasterCategoryDto> categoryDtos = new ArrayList<>();
-
 			// get 明細書マスタカテゴリ
-			List<LayoutMasterCategory> categories = this.layoutMasterCategoryRepository.getCategories(companyCode,
+			List<LayoutMasterCategory> masterCategories = this.layoutMasterCategoryRepository.getCategories(companyCode,
 					layout.getStmtCode().v(), startYM);
 
 			// get 明細書マスタ行
 			List<LayoutMasterLine> lines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
 
-			Map<String, List<LayoutMasterDetail>> lineDetails = this.layoutMasterDetailRepository
-					.getDetails(companyCode, stmtCode, startYM).stream()
-					.collect(Collectors.groupingBy(x -> x.getAutoLineId().v()));
-			
-			
-			for (LayoutMasterCategory category : categories) {
+			List<LayoutMasterDetail> lineDetails = this.layoutMasterDetailRepository.getDetails(companyCode, stmtCode,
+					startYM);
+
+			List<LayoutMasterCategoryDto> categories = new ArrayList<>();
+			for (LayoutMasterCategory category : masterCategories) {
 				int categoryAtr = category.getCtAtr().value;
 				List<DetailItemDto> items = new ArrayList<>();
-				for (Map.Entry<String, List<LayoutMasterDetail>> line : lineDetails.entrySet()) {
-					LayoutMasterLine masterLine = lines.stream().filter(x-> x.getCategoryAtr().value = categoryAtr && x.getAutoLineId().equals(line.getKey())).findFirst().get();
-					DetailItemDto.fromDomain(categoryAtr, , );
+
+				for (LayoutMasterDetail item : lineDetails) {
+					LayoutMasterLine masterLine = lines.stream().filter(x -> x.getCategoryAtr().value == categoryAtr
+							&& x.getAutoLineId().equals(item.getAutoLineId())).findFirst().get();
+					DetailItemDto detailItem = DetailItemDto.fromDomain(categoryAtr, item.getItemCode().v(),
+							item.getItemAbName().v(), null, 0, 0, 0, DetailItemPositionDto
+									.fromDomain(masterLine.getLinePosition().v(), item.getItemPosColumn().v()));
+					items.add(detailItem);
 				}
-				
-
+				categories.add(LayoutMasterCategoryDto.fromDomain(categoryAtr, category.getCtgPos().v(), items));
 			}
-
+			result.setCategories(categories);
 		}
 		return result;
 	}

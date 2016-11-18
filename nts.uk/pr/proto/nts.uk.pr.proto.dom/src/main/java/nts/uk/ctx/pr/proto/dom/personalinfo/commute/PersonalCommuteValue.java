@@ -22,7 +22,7 @@ public class PersonalCommuteValue {
 	 * Commute allowance
 	 */
 	@Getter
-	private BigDecimal commuteAllowance;
+	private double commuteAllowance;
 
 	/**
 	 * Commute means attribute
@@ -46,7 +46,7 @@ public class PersonalCommuteValue {
 			int payStartYm, UseOrNot useOrNot) {
 		super();
 		this.commuteCycle = commuteCycle;
-		this.commuteAllowance = commuteAllowance;
+		this.commuteAllowance = commuteAllowance.doubleValue();
 		this.commuteMeansAttribute = commuteMeansAttribute;
 		this.payStartYm = payStartYm;
 		this.useOrNot = useOrNot;
