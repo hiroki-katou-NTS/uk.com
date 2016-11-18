@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
@@ -20,5 +21,5 @@ public interface PaymentDateProcessingMasterRepository {
 	 * @param paymentBonusAtribute
 	 * @return PaymentDateProcessingMaster
 	 */
-	Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute);
+	List<PaymentDateProcessingMaster> findAll(String companyCode, int paymentBonusAtribute);
 }

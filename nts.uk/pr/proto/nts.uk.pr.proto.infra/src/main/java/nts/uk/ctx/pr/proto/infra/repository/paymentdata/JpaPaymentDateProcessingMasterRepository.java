@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessing;
@@ -25,11 +25,11 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute) {
+	public List<PaymentDateProcessingMaster> findAll(String companyCode, int paymentBonusAtribute) {
 		return this.queryProxy()
 				.query(SELECT_NOT_WITH_PROCESSINGNO, QpdmtPaydayProcessing.class).setParameter("CCD", companyCode)
 				.setParameter("payBonusAtr", paymentBonusAtribute)
-				.getSingle(c -> toDomain(c));
+				.getList(c -> toDomain(c));
 	}
 
 	private static PaymentDateProcessingMaster toDomain(QpdmtPaydayProcessing entity) {
