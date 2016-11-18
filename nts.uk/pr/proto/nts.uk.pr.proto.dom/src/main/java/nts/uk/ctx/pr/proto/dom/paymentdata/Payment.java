@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
@@ -110,15 +110,19 @@ public class Payment extends AggregateRoot {
 	private Comment comment;
 	
 	@Getter
+	@Setter
 	private List<DetailItem> detailPaymentItems;
 
 	@Getter
+	@Setter
 	private List<DetailDeductionItem> detailDeductionItems;
 
 	@Getter
+	@Setter
 	private List<DetailItem> detailPersonalTimeItems;
 
 	@Getter
+	@Setter
 	private List<DetailItem> detailArticleItems;
 
 	@Getter
@@ -259,27 +263,58 @@ public class Payment extends AggregateRoot {
 							int bonusTaxRate,
 							int calcFlag, 
 							int makeMethodFlag,
+							String comment,
 							List<DetailItem> detailPaymentItems,
 							List<DetailDeductionItem> detailDeductionItems,
 							List<DetailItem> detailPersonalTimeItems,
 							List<DetailItem> detailArticleItems
 							) {
 		
-		return null;
+		Payment payment =  new Payment(
+				new CompanyCode(companyCode),
+				new PersonId(personId),
+				new ProcessingNo(processingNo),
+				EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
+				new YearMonth(processingYM),
+				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
+				GeneralDate.localDate(standardDate),
+				new SpecificationCode(specificationCode),
+				new ResidenceCode(residenceCode),
+				new ResidenceName(residenceName),
+				new HealthInsuranceGrade(healthInsuranceGrade),
+				new HealthInsuranceAverageEarn(healthInsuranceAverageEarn),
+				EnumAdaptor.valueOf(ageContinuationInsureAtr, AgeContinuationInsureAtr.class),
+				EnumAdaptor.valueOf(tenureAtr, TenureAtr.class),
+				EnumAdaptor.valueOf(taxAtr, TaxAtr.class),
+				new PensionInsuranceGrade(pensionInsuranceGrade),
+				new PensionAverageEarn(pensionAverageEarn),
+				EnumAdaptor.valueOf(employmentInsuranceAtr, EmploymentInsuranceAtr.class),
+				new DependentNumber(dependentNumber),
+				EnumAdaptor.valueOf(workInsuranceCalculateAtr, WorkInsuranceCalculateAtr.class),
+				EnumAdaptor.valueOf(insuredAtr, InsuredAtr.class),
+				new BonusTaxRate(bonusTaxRate),
+				EnumAdaptor.valueOf(calcFlag, CalcFlag.class),
+				EnumAdaptor.valueOf(makeMethodFlag, MakeMethodFlag.class),
+				new Comment(comment));
 		
+		payment.setDetailPaymentItems(detailPaymentItems);
+		payment.setDetailDeductionItems(detailDeductionItems);
+		payment.setDetailPersonalTimeItems(detailPersonalTimeItems);
+		payment.setDetailPersonalTimeItems(detailPersonalTimeItems);
+		
+		return payment;
 	}
 	
 	/**
 	 * Calculate total payment
 	 * @return
 	 */
-	public double calculateTotalPayment(ItemCode itemCode) {
+	public double calculateTotalPayment() {
 		if (this.detailPaymentItems == null) {
 			return 0.0;
 		}
 		
 		return this.detailPaymentItems.stream()
-				.filter(x -> x.getItemCode() == itemCode)
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -287,13 +322,20 @@ public class Payment extends AggregateRoot {
 	 * Calculate deduction total payment
 	 * @return
 	 */
-	public double calculateDeductionTotalPayment(ItemCode itemCode) {
+	public double calculateDeductionTotalPayment() {
 		if (this.detailDeductionItems == null) {
 			return 0.0;
 		}
 		
 		return this.detailDeductionItems.stream()
-				.filter(x -> x.getItemCode() == itemCode)
 				.collect(Collectors.summingDouble(x -> x.getValue()));
+	}
+	
+	/**
+	 * calculate amount of payment
+	 * @return
+	 */
+	public double amountOfPay() {
+		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
 	}
 }

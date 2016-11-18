@@ -1064,6 +1064,7 @@ var nts;
                                 container.children('.steps').children('ul').children('.current').addClass('step-current');
                                 container.children('.steps').children('ul').children('.done').addClass('step-prev');
                                 container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                                return true;
                             }
                         });
                         // Add default class.

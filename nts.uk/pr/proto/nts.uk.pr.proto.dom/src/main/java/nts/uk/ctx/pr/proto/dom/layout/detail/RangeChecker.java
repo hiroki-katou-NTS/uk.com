@@ -21,6 +21,13 @@ public class RangeChecker extends DomainObject {
 		this.isUseHigh = isUseHigh;
 		this.isUseLow = isUseLow;
 		this.range = range;
+		Integer defaultValue = new Integer(0);
+		if (isUseHigh == UseOrNot.DO_NOT_USE) {
+			this.range = Range.between(defaultValue, range.min()); 
+		}
+		if (isUseLow == UseOrNot.DO_NOT_USE) {
+			this.range = Range.between(range.max(), defaultValue);
+		}
 	}
 	
 }

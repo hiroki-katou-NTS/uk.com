@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private PersonalCommuteFeeRepository personalCommuteRepo;
 
 	@Override
-	public Map<CategoryAtr, DetailItem> calculatePayValue(PaymentDetailParam param) {
-		Map<CategoryAtr, DetailItem> payDetail = new HashMap<>();
+	public Map<CategoryAtr, List<DetailItem>> calculatePayValue(PaymentDetailParam param) {
+		Map<CategoryAtr, List<DetailItem>> payDetail = new HashMap<>();
 		
 		// get personal allot setting
 		String stmtCode = param.getPersonalAllotSetting().getPaymentDetailCode().v();
@@ -69,6 +70,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		PersonalCommuteFee commute = personalCommuteRepo.find(param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth()).get();
 					
 		for (LayoutMasterDetail itemLayoutMasterDetail : layoutMasterDetailList) {
+			List<DetailItem> details = new ArrayList<>();
 			DetailItem detail = null;
 
 			// get item code
@@ -137,7 +139,14 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
 			}
 
-			payDetail.put(itemLayoutMasterDetail.getCategoryAtr(), detail);
+			// check exists
+			if (payDetail.containsKey(itemLayoutMasterDetail.getCategoryAtr())) {
+				List<DetailItem> detailItems = payDetail.get(itemLayoutMasterDetail.getCategoryAtr());
+				detailItems.add(detail);
+				payDetail.remove(itemLayoutMasterDetail.getCategoryAtr());
+			} 
+			
+			payDetail.put(itemLayoutMasterDetail.getCategoryAtr(), details);
 		}
 
 		return payDetail;

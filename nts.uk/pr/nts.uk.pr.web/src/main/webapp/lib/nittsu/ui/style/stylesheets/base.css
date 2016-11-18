@@ -172,7 +172,7 @@ div.form-label.inline > i {
 /*****************************
   NtsLinkButton
 *****************************/
-/* line 76, ../sass/components/_commons.scss */
+/* line 77, ../sass/components/_commons.scss */
 div.link-button {
   display: inline-block;
   padding: 3px 12px;
@@ -180,6 +180,20 @@ div.link-button {
   color: #0D86D1;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/*****************************
+  NtsPopupPanel
+*****************************/
+/* line 90, ../sass/components/_commons.scss */
+div.popup-panel {
+  position: absolute;
+  background-color: #fff;
+  border: solid 1px #aaa;
+  -webkit-box-shadow: 1px 1px 5px 1px #888;
+  -moz-box-shadow: 1px 1px 5px 1px #888;
+  box-shadow: 1px 1px 5px 1px #888;
+  padding: 5px;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */

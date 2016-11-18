@@ -25,27 +25,11 @@ public class DetailItemDto {
 	 */
 	private Double value;
 
-	/**
-	 * 修正フラグ
-	 */
-	private int correctFlag;
-
-	/**
-	 * 社保対象区分
-	 */
-	private int socialInsuranceAtr;
-
-	/**
-	 * 労保対象区分
-	 */
-	private int laborInsuranceAtr;
-
 	private DetailItemPositionDto itemPosition;
 
 	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, Double value,
-			int correctFlag, int socialInsuranceAtr, int laborInsuranceAtr, DetailItemPositionDto itemPosition) {
-		return new DetailItemDto(categoryAtr, itemCode, itemName, value, correctFlag, socialInsuranceAtr,
-				laborInsuranceAtr, itemPosition);
+			DetailItemPositionDto itemPosition) {
+		return new DetailItemDto(categoryAtr, itemCode, itemName, value, itemPosition);
 
 	}
 }

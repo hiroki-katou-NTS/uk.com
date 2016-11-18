@@ -31,6 +31,7 @@ public class ScriptFile extends UIComponentBase {
             "/lib/nittsu/ui/jquery-ext.js",
             "/lib/nittsu/ui/ko-ext.js",
             "/lib/nittsu/ui/ui.js",
+            "/lib/nittsu/ui/init.js",
     }));
     
     @SuppressWarnings("serial")

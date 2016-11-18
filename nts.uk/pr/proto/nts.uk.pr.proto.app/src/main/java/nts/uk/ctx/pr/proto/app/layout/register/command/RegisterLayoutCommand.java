@@ -13,7 +13,11 @@ public class RegisterLayoutCommand {
 	private List<LayoutDetailCommand> detailCommand;
 	
 	private List<Integer> listCategoryAtrDeleted;
-	private List<String> listAutoLineIdDeleted;
-	private List<String> listItemCodeDeleted;
+	
+	//Chỉ cần trường autoLineId và categoryAtr
+	private List<LayoutLineCommand> listAutoLineIdDeleted;
+	
+	//Chỉ cần trường itemCode và categoryAtr
+	private List<LayoutDetailCommand> listItemCodeDeleted;
 	
 }
