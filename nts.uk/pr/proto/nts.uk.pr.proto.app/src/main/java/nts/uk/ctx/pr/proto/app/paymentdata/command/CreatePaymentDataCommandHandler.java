@@ -213,7 +213,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 */
 	private DetailDeductionItem toDetailDeductionItem(DetailItem detailItem) {
 		return new DetailDeductionItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
-				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION);
+				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION, detailItem.getCategoryAttribute());
 	}
 
 	/**
