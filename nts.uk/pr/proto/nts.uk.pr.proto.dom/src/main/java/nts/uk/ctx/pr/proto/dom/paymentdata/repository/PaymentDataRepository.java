@@ -19,7 +19,7 @@ public interface PaymentDataRepository {
 	Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute);
 
-	List<Payment> find(String companyCode, String personId, int payBonusAttribute, int processingYM);
+	List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute, int processingYM);
 	/**
 	 * Add new data payment
 	 * 

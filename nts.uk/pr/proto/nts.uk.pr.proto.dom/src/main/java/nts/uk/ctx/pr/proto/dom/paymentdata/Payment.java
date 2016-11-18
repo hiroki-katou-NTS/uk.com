@@ -1,10 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-
-import javax.persistence.EnumType;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -131,7 +128,7 @@ public class Payment extends AggregateRoot {
 		this.companyCode = companyCode;
 		this.personId = personId;
 		this.processingNo = processingNo;
-		this. payBonusAtr =  payBonusAtr;
+		this.payBonusAtr =  payBonusAtr;
 		this.processingYM = processingYM;
 		this.sparePayAtr = sparePayAtr;
 	}
