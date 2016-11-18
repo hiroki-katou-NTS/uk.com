@@ -106,7 +106,7 @@ public class GetPaymentDataQueryProcessor {
 		}
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, stmtCode, baseYM)
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, baseYM, stmtCode)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
 		startYM = layout.getStartYM().v();
 

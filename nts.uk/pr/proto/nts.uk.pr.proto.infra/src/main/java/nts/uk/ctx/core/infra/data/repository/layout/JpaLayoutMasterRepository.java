@@ -46,7 +46,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	@Override
-	public Optional<LayoutMaster> getLayout(String companyCode, String stmtCode, int strYm) {
+	public Optional<LayoutMaster> getLayout(String companyCode, int strYm, String stmtCode) {
 		return this.queryProxy().query(SELECT_DETAIL, QstmtStmtLayoutHead.class)
 				.setParameter("companyCd", companyCode)
 				.setParameter("stmtCode", stmtCode)
@@ -55,6 +55,15 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 		
 	}
 
+	@Override
+	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int strYm) {
+		return this.queryProxy().query(SELECT_DETAIL, QstmtStmtLayoutHead.class)
+				.setParameter("companyCd", companyCode)
+				.setParameter("stmtCode", stmtCode)
+				.setParameter("strYm", strYm)
+				.getSingle(c -> toDomain(c));
+		
+	}
 	@Override
 	public List<LayoutMaster> getLayouts(String companyCode) {
 		

@@ -73,7 +73,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		int startYearMonth = personalAllotSetting.getStartDate().v();
 
 		// get layout master
-		LayoutMaster layoutHead = layoutMasterRepo.getLayout(param.getCompanyCode(), stmtCode, startYearMonth).get();
+		LayoutMaster layoutHead = layoutMasterRepo.getLayout(param.getCompanyCode(), startYearMonth, stmtCode).get();
 
 		// get layout category
 		List<LayoutMasterCategory> categories = layoutCategoryMasterRepo.getCategories(param.getCompanyCode(), stmtCode,
