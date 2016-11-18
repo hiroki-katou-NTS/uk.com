@@ -89,7 +89,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		// get personal wage
 		Map<String, PersonalWage> personalWages = getPersonalWages(loginInfo.companyCode(), command.getPersonIdList(),
-				currentDate.date());
+				baseYearMonth.v());
 		// get personal commute
 		Map<String, PersonalCommuteFee> personalCommutes = getPersonalCommute(loginInfo.companyCode(), command.getPersonIdList(),
 				currentDate.date());
@@ -161,7 +161,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * @param date
 	 * @return
 	 */
-	private Map<String, PersonalWage> getPersonalWages(String companyCode, List<String> personIdList, Date date) {
+	private Map<String, PersonalWage> getPersonalWages(String companyCode, List<String> personIdList, int date) {
 		List<PersonalWage> wageList = personalWageRepo.findAll(companyCode, personIdList, date);
 
 		return wageList.stream().collect(Collectors.toMap(x -> {
