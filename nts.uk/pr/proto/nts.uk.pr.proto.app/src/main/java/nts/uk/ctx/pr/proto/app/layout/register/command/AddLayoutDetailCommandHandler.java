@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.layout.detail.command;
+package nts.uk.ctx.pr.proto.app.layout.register.command;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -10,12 +10,12 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 
 @RequestScoped
 @Transactional
-public class AddLayoutDetailCommandHandler extends CommandHandler<AddLayoutDetailCommand> {
+public class AddLayoutDetailCommandHandler extends CommandHandler<LayoutDetailCommand> {
 	@Inject
 	private LayoutMasterDetailRepository repository;
 	@Override
-	protected void handle(CommandHandlerContext<AddLayoutDetailCommand> context) {
-		this.repository.add(context.getCommand().toDomain());
+	protected void handle(CommandHandlerContext<LayoutDetailCommand> context) {
+		//this.repository.add(context.getCommand().toDomain());
 	}
 
 		
