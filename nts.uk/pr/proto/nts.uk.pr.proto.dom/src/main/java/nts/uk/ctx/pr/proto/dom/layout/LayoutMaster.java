@@ -68,4 +68,13 @@ public class LayoutMaster extends AggregateRoot {
 				new LayoutName(stmtName));
 	}
 	
+	public LayoutMaster cloneWithDifferentStartYM(int startYM){
+		this.startYM = new YearMonth(startYM);
+		return this;
+	}
+	public LayoutMaster cloneWithDifferentEndYM(int endYM){
+		this.endYM = new YearMonth(endYM);
+		return this;
+	}
+	
 }
