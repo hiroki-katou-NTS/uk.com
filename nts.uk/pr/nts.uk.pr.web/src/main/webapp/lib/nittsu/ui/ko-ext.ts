@@ -220,7 +220,10 @@ module nts.uk.ui.koExtentions {
             $input.val(newText);
         }
     }
-     
+    
+    /**
+     * Multi Checkbox
+     */
     class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
         constructor() {}
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
@@ -304,6 +307,117 @@ module nts.uk.ui.koExtentions {
         }
     }
 
+    /**
+     * Error Dialog binding handler
+     */
+    class NtsErrorDialogBindingHandler implements KnockoutBindingHandler {
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var option: any = ko.unwrap(data.option);
+            var title: string = ko.unwrap(data.title);
+            var headers: Array<any> = ko.unwrap(data.headers);
+            var errors: Array<any> = ko.unwrap(data.errors);
+            var displayrows: number = ko.unwrap(option.displayrows);
+            var maxrows: number = ko.unwrap(option.maxrows);
+            var autoclose: boolean = ko.unwrap(option.autoclose);
+            var modal: boolean = ko.unwrap(option.modal);
+            var show: boolean = ko.unwrap(option.show);
+            var buttons: any = ko.unwrap(option.buttons);
+            
+            var $dialog = $("<div id='ntsErrorDialog'></div>");
+            
+            $('body').append($dialog);
+            // Create Buttons
+            var dialogbuttons = [];
+            for (let button of buttons) {
+                dialogbuttons.push({
+                    text: ko.unwrap(button.text),
+                    "class": ko.unwrap(button.class) + ko.unwrap(button.size) + " " + ko.unwrap(button.color),
+                    click: function() { button.click(bindingContext.$data, $dialog) }
+                });
+            }
+            // Create dialog
+            $dialog.dialog({
+                title: title,
+                modal: modal,
+                autoOpen: show,
+                closeOnEscape: false,
+                width: 550,
+                buttons: dialogbuttons,
+                open: function() {
+                    $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
+                    $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
+                    $('.ui-widget-overlay').last().css('z-index', 120000);
+                },
+                close: function(event) {
+                    bindingContext.$data.option.show(false);
+                }
+            });
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            var option: any = ko.unwrap(data.option);
+            var title: string = ko.unwrap(data.title);
+            var headers: Array<any> = ko.unwrap(data.headers);
+            var errors: Array<any> = ko.unwrap(data.errors);
+            var displayrows: number = ko.unwrap(option.displayrows);
+            var maxrows: number = ko.unwrap(option.maxrows);
+            var autoclose: boolean = ko.unwrap(option.autoclose);
+            var modal: boolean = ko.unwrap(option.modal);
+            var show: boolean = ko.unwrap(option.show);
+            var buttons: any = ko.unwrap(option.buttons);
+            
+            var $dialog = $("#ntsErrorDialog");
+            
+            if(autoclose === true && errors.length == 0)
+                show = false;
+            if (show == true) {
+                $dialog.dialog("open");
+            }
+            else {
+                $dialog.dialog("close");            
+            }
+            // Create Error Table
+            // TODO: Fixed Header, scrollbar inside Body => calculate Header.width = Body.width + scrollbar.width
+            var $errorboard = $("<div id='error-board'></div>");
+            $errorboard.outerHeight((displayrows+1)*24 + 1);
+            var $errortable = $("<table></table>");
+            // Header
+            var $header = $("<thead><tr></tr></thead>");
+            $header.find("tr").append("<th></th>");
+            headers.forEach(function(header,index) {
+                if (header.visible)
+                    $header.find("tr").append("<th data-name='" + header.name + "'>" + header.text + "</th>");
+            });
+            $errortable.append($header);
+            // Body
+            var $body = $("<tbody></tbody>");
+            errors.forEach(function(error,index) {
+                // TODO: Get Header.name and error attributes. Render text if match
+                if(index < maxrows)
+                    $body.append("<tr><td>" + (index + 1) + "</td><td>" + error.tab + "</td><td>" + error.location + "</td><td>" + error.message + "</td></tr>");
+            });
+            $errortable.append($body);
+            $errorboard.append($errortable);
+            // Over Size message
+            var $message = $("<div></div>");
+            if(errors.length > maxrows)
+                $message.text("Showing " + maxrows + " in total " + errors.length + " errors");
+            $dialog.html("");
+            $dialog.append($errorboard).append($message);
+        }
+    }
+    
     /**
      * Switch button binding handler
      */
@@ -1104,14 +1218,19 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             
             var data = valueAccessor();
-            var primitiveValueName = data.constraint;
-            var isRequired = data.required === true;
-            var isInline = data.inline === true;
-            
+            var primitiveValueName = ko.unwrap(data.constraint);
+            var isRequired = ko.unwrap(data.required) === true;
+            var isInline = ko.unwrap(data.inline) === true;
+            var isEnable = ko.unwrap(data.enable) !== false;
+            console.log(isEnable);
             var $formLabel = $(element).addClass('form-label');
             
             $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
-            
+            if(!isEnable) {
+                $formLabel.addClass('disabled');
+            } else {
+                $formLabel.removeClass('disabled');
+            }
             if (isRequired) {
                 $formLabel.addClass('required');
             }
@@ -1184,6 +1303,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
     ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
+    ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();

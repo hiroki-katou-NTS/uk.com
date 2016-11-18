@@ -5,7 +5,10 @@ package nts.uk.ctx.pr.proto.dom.enums;
  *
  */
 public enum CommuteAtr {
-	TRANSPORTATION_EQUIPMENT(1), TRANSPORTTION_FACILITIES(2);
+	/** 0 - **/
+	TRANSPORTATION_EQUIPMENT(0), 
+	/** 1 - **/
+	TRANSPORTTION_FACILITIES(1);
 
 	public final int value;
 

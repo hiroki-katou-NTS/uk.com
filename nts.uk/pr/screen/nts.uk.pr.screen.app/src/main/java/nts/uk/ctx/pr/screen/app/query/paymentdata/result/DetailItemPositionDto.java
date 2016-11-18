@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.screen.app.query.paymentdata.result;
 
 import lombok.Getter;
+import lombok.Value;
 
+@Value
 public class DetailItemPositionDto {
-	
+
 	/**
 	 * 行
 	 */
@@ -14,4 +16,8 @@ public class DetailItemPositionDto {
 	 */
 	@Getter
 	private int columnPosition;
+
+	public static DetailItemPositionDto fromDomain(int linePosition, int columnPosition) {
+		return new DetailItemPositionDto(linePosition, columnPosition);
+	}
 }

@@ -60,6 +60,7 @@ var CurrencyEditorOption = (function (_super) {
         this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
         this.currencyformat = (option && option.currencyformat) ? option.currencyformat : "JPY";
         this.currencyposition = (option && option.currencyposition) ? option.currencyposition : "";
+        // TODO: Write ()=> to return instead of check
         switch (this.currencyformat) {
             case "JPY":
                 this.currencyposition = "left";

@@ -6,7 +6,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <body>
-
+		
         <ui:composition template="../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
@@ -69,11 +69,11 @@
 	            	<br />
 	            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br />
 	            	<br />
-	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode' }">レイアウトコード</div><br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br />
 	            	<br />
 	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br />
 	            	<br />
-	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: true, required: true }">レイアウトコード</div><br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: true, required: true, enable: true}">レイアウトコード</div><br />
 	            	
             	</div>
             </ui:define>

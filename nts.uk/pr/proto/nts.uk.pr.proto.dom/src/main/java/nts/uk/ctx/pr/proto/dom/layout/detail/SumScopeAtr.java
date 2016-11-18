@@ -11,7 +11,11 @@ public enum SumScopeAtr {
 	/** 0:対象外*/
 	EXCLUDED(0),
 	/** 1:対象内*/
-	INCLUDED(1);
+	INCLUDED(1),
+	/**2:対象外（現物）	 */
+	EXCLUDED_ACTUAL(2),
+	/**3:対象内（現物）	 */
+	INCLUDED_ACTUAL(3);
 	
 	public final int value;	
 }

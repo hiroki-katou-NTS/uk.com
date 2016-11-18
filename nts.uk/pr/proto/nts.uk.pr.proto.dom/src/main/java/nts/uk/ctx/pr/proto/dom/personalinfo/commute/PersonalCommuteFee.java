@@ -1,9 +1,12 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.commute;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.UseOrNot;
 import nts.uk.shr.com.primitive.PersonId;
 
 /**
@@ -24,19 +27,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	private BigDecimal commuteNoTaxLimitPublishNo;
 
 	@Getter
-	private PersonalCommuteValue commute1;
-
-	@Getter
-	private PersonalCommuteValue commute2;
-
-	@Getter
-	private PersonalCommuteValue commute3;
-
-	@Getter
-	private PersonalCommuteValue commute4;
-
-	@Getter
-	private PersonalCommuteValue commute5;
+	private List<PersonalCommuteValue> commutes;
 
 	/**
 	 * Personal Id
@@ -61,11 +52,11 @@ public class PersonalCommuteFee extends AggregateRoot {
 		super();
 		this.commuteNoTaxLimitPrivateNo = commuteNoTaxLimitPrivateNo;
 		this.commuteNoTaxLimitPublishNo = commuteNoTaxLimitPublishNo;
-		this.commute1 = commute1;
-		this.commute2 = commute2;
-		this.commute3 = commute3;
-		this.commute4 = commute4;
-		this.commute5 = commute5;
+		addCommute(commute1);
+		addCommute(commute2);
+		addCommute(commute3);
+		addCommute(commute4);
+		addCommute(commute5);
 		this.personId = personId;
 	}
 
@@ -82,4 +73,50 @@ public class PersonalCommuteFee extends AggregateRoot {
 				commute3, commute4, commute5, new PersonId(personId));
 	}
 
+	/**
+	 * Calculate sum commute allowance
+	 * @param currentProcessingYm currentProcessing Year month
+	 * @return
+	 */
+	public double sumCommuteAllowance(CommuteAtr commuteAttribute, int currentProcessingYm) {
+		double sum = 0;
+		for (int i = 0; i < 5; i++) {
+			PersonalCommuteValue commute = commutes.get(i);
+			boolean match = (commuteAttribute == commute.getCommuteMeansAttribute())
+				&& (UseOrNot.USE == commute.getUseOrNot())
+				&& ( (currentProcessingYm - commute.getPayStartYm() ) % commute.getCommuteCycle() ) == 0;
+				
+			if (match) {
+				sum += commute.getCommuteAllowance();
+			}
+		}
+		
+		return sum;
+	}
+	
+	/**
+	 * Calculate sum commute allowance not where Commute Means Attribute
+	 * @param currentProcessingYm currentProcessing Year month
+	 * @return
+	 */
+	public double sumCommuteAllowance(int currentProcessingYm) {
+		double sum = 0;
+		for (int i = 0; i < 5; i++) {
+			PersonalCommuteValue commute = commutes.get(i);
+				
+			sum += commute.getCommuteAllowance();
+		}
+		
+		return sum;
+	}
+	
+	/**
+	 * Add commute to list
+	 * @param commute
+	 */
+	private void addCommute(PersonalCommuteValue commute) {
+		if (commute != null) {
+			this.commutes.add(commute);
+		}
+	}
 }

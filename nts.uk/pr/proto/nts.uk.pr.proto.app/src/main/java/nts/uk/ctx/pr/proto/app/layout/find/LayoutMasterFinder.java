@@ -34,7 +34,7 @@ public class LayoutMasterFinder {
 	 * @return
 	 */
 	public Optional<LayoutDto> getLayout(String companyCode, String stmtCode, int startYm) {
-		return this.repository.getLayout(companyCode, stmtCode, startYm).map(layout -> LayoutDto.fromDomain(layout));
+		return this.repository.getLayout(companyCode, startYm, stmtCode).map(layout -> LayoutDto.fromDomain(layout));
 	}
 
 }

@@ -19,5 +19,8 @@ public class CreatePaymentDataCommand {
 	
 	private int processingNo;
 	
+	/**
+	 * Current processing year month
+	 */
 	private int processingYearMonth;
 }
