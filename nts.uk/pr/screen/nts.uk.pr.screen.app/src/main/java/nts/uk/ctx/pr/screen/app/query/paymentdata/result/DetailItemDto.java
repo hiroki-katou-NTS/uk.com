@@ -24,12 +24,14 @@ public class DetailItemDto {
 	 * 値
 	 */
 	private Double value;
-
+	
 	private DetailItemPositionDto itemPosition;
+	
+	private boolean isCreated;
 
 	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, Double value,
-			DetailItemPositionDto itemPosition) {
-		return new DetailItemDto(categoryAtr, itemCode, itemName, value, itemPosition);
+			DetailItemPositionDto itemPosition, boolean isCreated) {
+		return new DetailItemDto(categoryAtr, itemCode, itemName, value, itemPosition, isCreated);
 
 	}
 }
