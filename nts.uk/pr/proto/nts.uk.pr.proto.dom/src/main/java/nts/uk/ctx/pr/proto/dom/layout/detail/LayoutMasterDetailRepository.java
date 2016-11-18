@@ -81,4 +81,17 @@ public interface LayoutMasterDetailRepository {
 			int startYm, 
 			int categoryAtr,
 			String itemCd);
+	
+	/**
+	 * get detail
+	 * 
+	 * @param companyCode
+	 * @param layoutCode
+	 * @param startYearMonth
+	 * @param categoryAttribute
+	 * @param calculationMethod
+	 * @param item code
+	 * @return
+	 */
+	List<LayoutMasterDetail> getDetails(String companyCode, String stmtCode, int startYearMonth, int categoryAttribute, int sumScopeAtr);
 }

@@ -63,12 +63,11 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		objectKey.stmtCd = stmtCode;
 		objectKey.strYm = startYm;
 		objectKey.ctgAtr = categoryAtr;
+		this.commandProxy().remove(QstmtStmtLayoutCtg.class, objectKey);
 	}
 
 	@Override
 	public List<LayoutMasterCategory> getCategories(String companyCd, String stmtCd, int startYm) {
-		// TODO Auto-generated method stub
-
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
 				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("startYM", startYm)
 				.getList(c -> toDomain(c));

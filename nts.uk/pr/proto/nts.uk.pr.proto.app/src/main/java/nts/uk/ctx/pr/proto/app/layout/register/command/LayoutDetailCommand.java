@@ -1,20 +1,13 @@
-package nts.uk.ctx.pr.proto.app.layout.detail.command;
+package nts.uk.ctx.pr.proto.app.layout.register.command;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
+import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
-public class UpdateLayoutDetailCommand {
-	/**会社ＣＤ */
-	private String companyCode;
-	/**明細書コード*/
-	private String layoutCode;
-	/**開始年月*/
-	private int startYm;
-	/** 終了年月 */
-	private int endYm;
+public class LayoutDetailCommand {
 	/**カテゴリ区分 */
 	private int categoryAtr;	
 	/**項目CD */
@@ -26,7 +19,7 @@ public class UpdateLayoutDetailCommand {
 	/**計算方法 */	
 	private int calculationMethod;
 	/**項目位置 */
-	private String columnPosition;
+	private int columnPosition;
 	/** 按分設定  */
 	private int distribute;	
 	/** 表示区分 */	
@@ -67,31 +60,32 @@ public class UpdateLayoutDetailCommand {
 	/**アラーム範囲下限	 */
 	private int alamRangeLow;
 	
-	public LayoutMasterDetail toDomain(){
+	public LayoutMasterDetail toDomain(String layoutCode, int startYm, int endYm){
+		
 		return LayoutMasterDetail.createFromJavaType(
-				companyCode, 
+				AppContexts.user().companyCode(), 
 				layoutCode, 
 				startYm, 
 				endYm, 
-				categoryAtr, 
-				itemCode, 
-				autoLineId, 
-				displayAtr, 
-				sumScopeAtr, 
-				calculationMethod, 
-				distributeWay, 
-				distributeSet,
-				personalWageCode, 
-				setOffItemCode,
-				commuteAtr,
-				isErrorUseHigh, 
-				errorRangeHigh, 
-				isErrorUserLow, 
-				errorRangeLow,
-				isAlamUseHigh, 
-				alamRangeHigh, 
-				isAlamUseLow,
-				alamRangeLow,
-				itemPosColumn);
+				this.categoryAtr, 
+				this.itemCode, 
+				this.autoLineId, 
+				this.displayAtr, 
+				this.sumScopeAtr, 
+				this.calculationMethod, 
+				this.distributeWay, 
+				this.distributeSet,
+				this.personalWageCode, 
+				this.setOffItemCode,
+				this.commuteAtr,
+				this.isErrorUseHigh, 
+				this.errorRangeHigh, 
+				this.isErrorUserLow, 
+				this.errorRangeLow,
+				this.isAlamUseHigh, 
+				this.alamRangeHigh, 
+				this.isAlamUseLow,
+				this.alamRangeLow,
+				this.itemPosColumn);
 	}
 }

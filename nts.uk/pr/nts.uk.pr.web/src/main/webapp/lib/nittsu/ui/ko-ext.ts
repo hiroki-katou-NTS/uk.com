@@ -1198,14 +1198,19 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             
             var data = valueAccessor();
-            var primitiveValueName = data.constraint;
-            var isRequired = data.required === true;
-            var isInline = data.inline === true;
-            
+            var primitiveValueName = ko.unwrap(data.constraint);
+            var isRequired = ko.unwrap(data.required) === true;
+            var isInline = ko.unwrap(data.inline) === true;
+            var isEnable = ko.unwrap(data.enable) !== false;
+            console.log(isEnable);
             var $formLabel = $(element).addClass('form-label');
             
             $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
-            
+            if(!isEnable) {
+                $formLabel.addClass('disabled');
+            } else {
+                $formLabel.removeClass('disabled');
+            }
             if (isRequired) {
                 $formLabel.addClass('required');
             }

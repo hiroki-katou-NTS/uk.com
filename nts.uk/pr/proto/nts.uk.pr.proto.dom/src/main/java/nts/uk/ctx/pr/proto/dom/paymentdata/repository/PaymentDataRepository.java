@@ -18,14 +18,29 @@ public interface PaymentDataRepository {
 	 */
 	Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute);
-
-	List<Payment> find(String companyCode, String personId, int payBonusAttribute, int processingYM);
+	
 	/**
-	 * Add new data payment
 	 * 
-	 * @param payment
+	 * @param companyCode
+	 * @param personId
+	 * @param payBonusAttribute
+	 * @param processingYM
+	 * @return payment header
 	 */
-	void add(Payment payment);
+	List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute, int processingYM);
+	/**
+	 * import new data payment header
+	 * 
+	 * @param payment (contains header)
+	 */
+	void importHeader(Payment payment);
+	
+	/**
+	 * import new data payment detail
+	 * 
+	 * @param payment (contains detail)
+	 */
+	void importDetails(Payment payment);
 
 	/**
 	 * Update
