@@ -50,7 +50,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 			this.updateWithoutDeductionItem(context.getCommand().getDetailArticleItems().get(0).getCategoryAtr(), payment.getDetailArticleItems());
 			
 		}else {
-			throw new BusinessException(new RawErrorMessage("ER026"));
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
 		}
 		this.paymentDataRepository.update(payment);
 
@@ -68,7 +68,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		if (isExistDeductionDetails) {
 			this.paymentDataRepository.updateDeductionDetails(categoryAtr, items);	
 		}else {
-			throw new BusinessException(new RawErrorMessage("ER026"));
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
 		}
 		
 	}
@@ -85,7 +85,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		if (isExistDetails) {
 			this.paymentDataRepository.updateDetails(categoryAtr, items);	
 		}else {
-			throw new BusinessException(new RawErrorMessage("ER026"));
+			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
 		}
 	}
 

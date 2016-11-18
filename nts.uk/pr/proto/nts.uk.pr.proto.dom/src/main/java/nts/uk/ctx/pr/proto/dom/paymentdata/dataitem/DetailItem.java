@@ -71,7 +71,7 @@ public class DetailItem extends DomainObject {
 		this.laborInsuranceAtr = laborInsuranceAtr;
 	}
 
-	public DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
+	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
 			int laborInsuranceAtr, int categoryAttribute) {
 
 		return new DetailItem(new ItemCode(itemCode), value.doubleValue(),
