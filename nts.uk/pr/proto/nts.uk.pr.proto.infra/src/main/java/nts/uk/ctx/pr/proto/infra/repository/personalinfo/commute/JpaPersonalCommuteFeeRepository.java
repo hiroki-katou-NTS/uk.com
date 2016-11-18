@@ -51,4 +51,10 @@ public class JpaPersonalCommuteFeeRepository extends JpaRepository implements Pe
 		return domain;
 	}
 
+	@Override
+	public Optional<PersonalCommuteFee> find(String companyCode, String personId, int startYearMonth) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
