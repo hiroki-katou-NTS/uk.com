@@ -93,5 +93,5 @@ public interface LayoutMasterDetailRepository {
 	 * @param item code
 	 * @return
 	 */
-	List<LayoutMasterDetail> getDetails(String companyCode, String stmtCode, int startYearMonth, int categoryAttribute, int sumScopeAtr);
+	List<LayoutMasterDetail> getDetailsWithSumScopeAtr(String companyCode, String stmtCode, int startYearMonth, int categoryAttribute, int sumScopeAtr);
 }

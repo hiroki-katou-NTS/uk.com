@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPer
 @RequestScoped
 public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		implements PersonalEmploymentContractRepository {
-	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PCLMT_PERSON_EMP_CONTRACT c WHERE c.CCD = :CCD and c.PID = :PID and c.STR_D <= :BASEYMD and c.END_D >= :BASEYMD";
+	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract WHERE c.pclmtPersonEmpContractPK.ccd = :CCD and c.pclmtPersonEmpContractPK.pId = :PID and c.pclmtPersonEmpContractPK.strD <= :BASEYMD and c.endD >= :BASEYMD";
 
 	@Override
 	public List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIdList, Date baseYmd) {

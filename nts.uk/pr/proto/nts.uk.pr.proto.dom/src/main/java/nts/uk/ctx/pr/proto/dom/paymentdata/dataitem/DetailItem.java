@@ -19,6 +19,7 @@ public class DetailItem extends DomainObject {
 	/**
 	 * 項目コード
 	 */
+	@Getter
 	private final ItemCode itemCode;
 
 	/**

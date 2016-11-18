@@ -52,9 +52,11 @@ public interface PaymentDataRepository {
 	 * import new data payment detail
 	 * 
 	 * @param payment
-	 *            (contains detail)
+	 *            (contains detail) /** Import data for payment include payment
+	 *            head and payment detail
+	 * @param payment
 	 */
-	void importDetails(Payment payment);
+	void importPayment(Payment payment);
 
 	/**
 	 * Update

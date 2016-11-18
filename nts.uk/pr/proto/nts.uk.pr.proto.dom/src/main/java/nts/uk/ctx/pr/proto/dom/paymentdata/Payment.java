@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -302,5 +303,39 @@ public class Payment extends AggregateRoot {
 		payment.setDetailPersonalTimeItems(detailPersonalTimeItems);
 		
 		return payment;
+	}
+	
+	/**
+	 * Calculate total payment
+	 * @return
+	 */
+	public double calculateTotalPayment() {
+		if (this.detailPaymentItems == null) {
+			return 0.0;
+		}
+		
+		return this.detailPaymentItems.stream()
+				.collect(Collectors.summingDouble(x -> x.getValue()));
+	}
+	
+	/**
+	 * Calculate deduction total payment
+	 * @return
+	 */
+	public double calculateDeductionTotalPayment() {
+		if (this.detailDeductionItems == null) {
+			return 0.0;
+		}
+		
+		return this.detailDeductionItems.stream()
+				.collect(Collectors.summingDouble(x -> x.getValue()));
+	}
+	
+	/**
+	 * calculate amount of payment
+	 * @return
+	 */
+	public double amountOfPay() {
+		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
 	}
 }

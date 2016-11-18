@@ -46,6 +46,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetPaymentDataQueryProcessor {
 
 	private static final int PAY_BONUS_ATR = 0;
+	
+	private static final int PROCESSING_NO = 0;
 
 	/** PersonalPaymentSettingRepository */
 	@Inject
@@ -90,7 +92,7 @@ public class GetPaymentDataQueryProcessor {
 		String stmtCode = "";
 
 		// get 処理年月マスタ
-		PaymentDateProcessingMaster payDateMaster = this.payDateMasterRepository.find(companyCode, PAY_BONUS_ATR).get();
+		PaymentDateProcessingMaster payDateMaster = this.payDateMasterRepository.find(companyCode, PAY_BONUS_ATR, PROCESSING_NO).get();
 		startYM = payDateMaster.getCurrentProcessingYm().v();
 
 		// get stmtCode
