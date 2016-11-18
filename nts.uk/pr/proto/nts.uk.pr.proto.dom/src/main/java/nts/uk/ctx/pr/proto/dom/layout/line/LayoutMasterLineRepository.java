@@ -47,21 +47,13 @@ public interface LayoutMasterLineRepository {
 	 * @param stmtCode
 	 */
 	void remove(String companyCode, int startYm, String autoLineID, int categoryAtr, String stmtCode);
+	
+	void remove(List<LayoutMasterLine> lines);
 
 	Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId);
 
 	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm);
-
-
-
-	/**
-	 * get Line
-	 * 
-	 * @param companyCode
-	 * @param startYM
-	 * @param stmtCode
-	 * @return list Line
-	 */
 	
+	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm, int categoryAtr);
 
 }

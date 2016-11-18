@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service;
 
 import lombok.Data;
+import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFee;
@@ -21,6 +22,7 @@ public class PaymentDetailParam {
 	private PaymentDateMaster paymentDateMaster;
 	private PersonalWage personalWage;
 	private PersonalCommuteFee personalCommute;
+	private PersonalAllotSetting personalAllotSetting;
 	
 	public PaymentDetailParam(String companyCode, PersonId personId, int baseYearMonth, int currentProcessingYearMonth) {
 		super();

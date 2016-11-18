@@ -38,10 +38,6 @@ public class QstmtStmtLayoutCtg extends AggregateTableEntity implements Serializ
 	@Column(name = "CTG_POS")
 	public int ctgPos;
 	
-	@Basic(optional = false)
-	@Column(name = "CTG_ATR")
-	public int ctgAtr;
-
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "STMT_CD", referencedColumnName = "STMT_CD", insertable = false, updatable = false),

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.layout.detail.command;
+package nts.uk.ctx.pr.proto.app.layout.register.command;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

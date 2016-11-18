@@ -2,6 +2,7 @@ package nts.uk.ctx.core.infra.data.repository.layout;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -17,16 +18,23 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutLinesPK;
 public class JpaLayoutLineRepository extends JpaRepository implements LayoutMasterLineRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutLines c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm"
-			+ " AND c.qstmtStmtLayoutLinesPk.linePos = :ctgAtr"
-			// private final String SELECT_DETAIL = SELECT_ALL_DETAILS
-			+ " AND c.qstmtStmtLayoutLinesPk.autoLineId = :autoLineId";
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm";
 
+	private final String SELECT_ALL_LINE_BY_CATEGORY = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm"
+			+ " AND c.qstmtStmtLayoutLinesPk.ctgAtr = :ctgAtr";
+	
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutLines.class)
-				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("strYm", strYm)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("strYm", strYm)
 				.getList(c -> toDomain(c));
 	}
 
@@ -40,7 +48,7 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		return domain;
 	}
 
-	private static QstmtStmtLayoutLines toEntity(LayoutMasterLine domain) {
+	private QstmtStmtLayoutLines toEntity(LayoutMasterLine domain) {
 		val entity = new QstmtStmtLayoutLines();
 
 		entity.fromDomain(domain);
@@ -75,7 +83,7 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		objectKey.autoLineId = autoLineID;
 		objectKey.ctgAtr = categoryAtr;
 		objectKey.stmtCd = stmtCode;
-
+		this.commandProxy().remove(QstmtStmtLayoutLines.class, objectKey);
 	}
 
 	@Override
@@ -92,6 +100,25 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	@Override
 	public void update(List<LayoutMasterLine> lines) {
 		this.commandProxy().updateAll(lines);
+	}
+
+	@Override
+	public void remove(List<LayoutMasterLine> lines) {
+		List<QstmtStmtLayoutLines> linesEntity = lines.stream().map(
+				line -> {
+							return this.toEntity(line); 
+						}).collect(Collectors.toList());
+		this.commandProxy().removeAll(linesEntity);
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm, int categoryAtr) {
+		return this.queryProxy().query(SELECT_ALL_LINE_BY_CATEGORY, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("strYm", strYm)
+				.setParameter("ctgAtr", categoryAtr)
+				.getList(c -> toDomain(c));
 	}
 
 }

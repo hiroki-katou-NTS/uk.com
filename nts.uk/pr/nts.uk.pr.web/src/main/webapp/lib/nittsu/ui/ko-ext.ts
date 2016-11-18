@@ -1105,7 +1105,8 @@ module nts.uk.ui.koExtentions {
             var primitiveValueName = ko.unwrap(data.constraint);
             var isRequired = ko.unwrap(data.required) === true;
             var isInline = ko.unwrap(data.inline) === true;
-            var isEnable = ko.unwrap(data.enable) === true;
+            var isEnable = ko.unwrap(data.enable) !== false;
+            console.log(isEnable);
             var $formLabel = $(element).addClass('form-label');
             
             $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
