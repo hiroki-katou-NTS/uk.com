@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.app.paymentdata.command;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -20,16 +23,32 @@ import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
+import nts.uk.ctx.pr.proto.dom.layout.detail.SumScopeAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.CalcFlag;
+import nts.uk.ctx.pr.proto.dom.paymentdata.MakeMethodFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
+import nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.TenureAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.EmploymentInsuranceAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.InsuredAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.WorkInsuranceCalculateAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentCalculationBasicInformationRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDataCheckService;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailParam;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
 import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
@@ -53,6 +72,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	@Inject
 	private PaymentDetailService paymentDetailService;
 	@Inject
+	private PaymentDataCheckService paymentDataCheckService;
+	@Inject
 	private PersonalAllotSettingRepository personalAllotSettingRepo;
 	@Inject
 	private CompanyAllotSettingRepository companyAllotSettingRepo;
@@ -66,6 +87,11 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	private LayoutMasterRepository layoutMasterRepo;
 	@Inject
 	private PaymentDateMasterRepository payDateMasterRepo;
+	@Inject
+	private LayoutMasterDetailRepository layoutDetailMasterRepo;
+	@Inject
+	private PaymentDataRepository paymentDataRepo;
+	
 
 	@Override
 	protected void handle(CommandHandlerContext<CreatePaymentDataCommand> context) {
@@ -78,7 +104,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// get base date
 		GeneralDate currentDate = GeneralDate.today();
 		YearMonth baseYearMonth = YearMonth.of(currentDate.year(), currentDate.month());
-
+				
 		// get PayrollSystem
 		Map<String, PersonalEmploymentContract> employmentContracts = getPersonalEmploymentContract(
 				loginInfo.companyCode(), command.getPersonIdList(), currentDate.date());
@@ -95,6 +121,15 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		// calculate personal
 		for (String personId : command.getPersonIdList()) {
+			// check exists
+			boolean isExists = paymentDataCheckService.isExists(loginInfo.companyCode(), personId, PayBonusAtr.SALARY, command.getProcessingYearMonth());
+			if (!isExists) {
+				throw new BusinessException(new RawErrorMessage("既にデータが存在します。"));
+			}
+			
+			//
+			// Start calculate payment
+			//
 			PersonalEmploymentContract employmentContract = employmentContracts.get(personId);
 			HolidayPaid holiday = holidays.get(personId);
 
@@ -103,8 +138,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 					command.getProcessingYearMonth());
 
 			// get layout master
-			LayoutMaster layoutHead = layoutMasterRepo
-					.getLayout(loginInfo.companyCode(), command.getProcessingYearMonth(), personalAllotSetting.getPaymentDetailCode().v()).get();
+			LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
+					command.getProcessingYearMonth(), personalAllotSetting.getPaymentDetailCode().v()).get();
 
 			PaymentDetailParam param = new PaymentDetailParam(loginInfo.companyCode(), new PersonId(personId),
 					baseYearMonth.v(), command.getProcessingYearMonth());
@@ -114,9 +149,36 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			param.setPaymentDateMaster(payDay);
 			param.setPersonalAllotSetting(personalAllotSetting);
 
+			// calculate payment detail
 			Map<CategoryAtr, DetailItem> payDetail = paymentDetailService.calculatePayValue(param);
+
+			// get layout master detail
+			List<LayoutMasterDetail> layoutDetailMasterList = layoutDetailMasterRepo.getDetailsWithSumScopeAtr(loginInfo.companyCode(),
+					layoutHead.getStmtCode().v(), layoutHead.getStartYM().v(), CategoryAtr.PAYMENT.value,
+					SumScopeAtr.INCLUDED.value);
+
+			List<DetailItem> detailPaymentList = new ArrayList<>();
+			List<DetailDeductionItem> detailDeductionList = new ArrayList<>();
+
+			for (LayoutMasterDetail item : layoutDetailMasterList) {
+				// calculate total payment
+				DetailItem detailPaymentItem = payDetail.get(CategoryAtr.PAYMENT);
+				if (detailPaymentItem.getItemCode() == item.getItemCode()) {
+					detailPaymentList.add(detailPaymentItem);
+				}
+
+				// calculate deduction total payment
+				DetailDeductionItem detailDeductionItem = this.toDetailDeductionItem(payDetail.get(CategoryAtr.DEDUCTION)); 
+				if (detailDeductionItem.getItemCode() == item.getItemCode()) {
+					detailDeductionList.add(detailDeductionItem);
+				}
+			}
+
+			Payment paymentHead = this.toDomain(loginInfo.companyCode(), personId, command);
+			paymentHead.setDetailPaymentItems(detailPaymentList);
+			paymentHead.setDetailDeductionItems(detailDeductionList);
 			
-			
+			paymentDataRepo.importPayment(paymentHead);
 		}
 	}
 
@@ -125,8 +187,27 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * 
 	 * @return domain
 	 */
-	private Payment toDomain() {
-		return null;
+	private Payment toDomain(String companyCode, String personId, CreatePaymentDataCommand command) {
+		Payment payment = new Payment(new CompanyCode(companyCode), new PersonId(personId),
+				new ProcessingNo(command.getProcessingNo()), PayBonusAtr.SALARY, // ??
+				new YearMonth(command.getProcessingYearMonth()), SparePayAtr.NORMAL, // ??
+				GeneralDate.today(), // ??
+				null, null, null, null, null, AgeContinuationInsureAtr.NOT_TARGET, TenureAtr.CHILDCARE_LEAVE,
+				TaxAtr.COMMUTING_COST, null, null, EmploymentInsuranceAtr.A, null,
+				WorkInsuranceCalculateAtr.FULL_TIME_EMPLOYEE, InsuredAtr.GENERAL_INSURED_PERSON, null,
+				CalcFlag.CALCULATED, MakeMethodFlag.INITIAL_DATA, null);
+
+		return payment;
+	}
+
+	/**
+	 * Convert to detail deduction
+	 * @param detailItem
+	 * @return
+	 */
+	private DetailDeductionItem toDetailDeductionItem(DetailItem detailItem) {
+		return new DetailDeductionItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
+				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION);
 	}
 
 	/**

@@ -28,19 +28,12 @@ public interface PaymentDataRepository {
 	 * @return payment header
 	 */
 	List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute, int processingYM);
+
 	/**
-	 * import new data payment header
-	 * 
-	 * @param payment (contains header)
+	 * Import data for payment include payment head and payment detail
+	 * @param payment
 	 */
-	void importHeader(Payment payment);
-	
-	/**
-	 * import new data payment detail
-	 * 
-	 * @param payment (contains detail)
-	 */
-	void importDetails(Payment payment);
+	void importPayment(Payment payment);
 
 	/**
 	 * Update

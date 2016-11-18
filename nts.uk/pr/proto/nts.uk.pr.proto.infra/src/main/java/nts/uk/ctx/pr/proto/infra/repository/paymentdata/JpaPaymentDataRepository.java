@@ -59,13 +59,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
-	public void importHeader(Payment payment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void importDetails(Payment payment) {
+	public void importPayment(Payment payment) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -16,8 +16,8 @@ import nts.uk.shr.com.primitive.PersonId;
 public class PaymentDataCheckServiceImpl implements PaymentDataCheckService {
 
 	@Override
-	public boolean isExists(CompanyCode companyCode, PersonId personId, PayBonusAtr payBonusAtr,
-			YearMonth processingYearMonth) {
+	public boolean isExists(String companyCode, String personId, PayBonusAtr payBonusAtr,
+			int processingYearMonth) {
 		// TODO Auto-generated method stub
 		return false;
 	}

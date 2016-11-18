@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -110,9 +111,11 @@ public class Payment extends AggregateRoot {
 	private Comment comment;
 	
 	@Getter
+	@Setter
 	private List<DetailItem> detailPaymentItems;
 
 	@Getter
+	@Setter
 	private List<DetailDeductionItem> detailDeductionItems;
 
 	@Getter
@@ -295,5 +298,13 @@ public class Payment extends AggregateRoot {
 		return this.detailDeductionItems.stream()
 				.filter(x -> x.getItemCode() == itemCode)
 				.collect(Collectors.summingDouble(x -> x.getValue()));
+	}
+	
+	/**
+	 * calculate amount of payment
+	 * @return
+	 */
+	public double amountOfPay(ItemCode itemCode) {
+		return this.calculateTotalPayment(itemCode) - this.calculateDeductionTotalPayment(itemCode);
 	}
 }
