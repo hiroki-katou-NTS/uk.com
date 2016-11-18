@@ -124,17 +124,6 @@ public class Payment extends AggregateRoot {
 	@Getter
 	private List<PrintPositionCategory> printCategories;
 
-	public Payment(CompanyCode companyCode, PersonId personId, ProcessingNo processingNo, PayBonusAtr  payBonusAtr,
-			YearMonth processingYM, SparePayAtr sparePayAtr) {
-		super();
-		this.companyCode = companyCode;
-		this.personId = personId;
-		this.processingNo = processingNo;
-		this.payBonusAtr =  payBonusAtr;
-		this.processingYM = processingYM;
-		this.sparePayAtr = sparePayAtr;
-	}
-
 	public Payment(
 				CompanyCode companyCode, 
 				PersonId personId, 
