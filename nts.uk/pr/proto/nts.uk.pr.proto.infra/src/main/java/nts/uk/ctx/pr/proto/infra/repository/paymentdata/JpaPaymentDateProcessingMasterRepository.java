@@ -9,21 +9,19 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessing;
+import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
 
 @RequestScoped
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		implements PaymentDateProcessingMasterRepository {
 
-	private final String SELECT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING c WHERE c.CCD = :CCD and c.PAY_BONUS_ATR = :payBonusAtr and c.PROCESSING_NO = :processingNo";
-	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING c WHERE c.CCD = :CCD and c.PAY_BONUS_ATR = :payBonusAtr";
+	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr";
 
 	@Override
 	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute,
 			int processingNo) {
 		return this.queryProxy()
-				.query(SELECT_WITH_PROCESSINGNO, QpdmtPaydayProcessing.class).setParameter("CCD", companyCode)
-				.setParameter("payBonusAtr", paymentBonusAtribute).setParameter("processingNo", processingNo)
-				.getSingle(c -> toDomain(c));
+				.find(new QpdmtPaydayProcessingPK(companyCode, paymentBonusAtribute, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
 	}
 
 	@Override
