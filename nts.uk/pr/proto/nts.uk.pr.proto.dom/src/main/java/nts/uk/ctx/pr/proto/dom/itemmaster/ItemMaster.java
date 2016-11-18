@@ -104,4 +104,22 @@ public class ItemMaster extends AggregateRoot{
 				new ItemName(itemName));
 		
 	}
+	
+	/**
+	 * Check tax = COMMUTING_COST || COMMUTING_EXPENSE
+	 * (using for calculate payment create data)
+	 * @return
+	 */
+	public boolean isTaxCommutingoCostOrCommutingExpense() {
+		return this.taxAtr == TaxAtr.COMMUTING_COST || this.taxAtr == TaxAtr.COMMUTING_EXPENSE;
+	}
+	
+	/**
+	 * Check tax = TAXATION || TAX_FREE_LIMIT || TAX_FREE_UN_LIMIT
+	 * (using for calculate payment create data)
+	 * @return
+	 */
+	public boolean isTaxTaxationOrTaxFreeLimitOrTaxFreeUnLimit() {
+		return this.taxAtr ==  TaxAtr.TAXATION || this.taxAtr == TaxAtr.TAX_FREE_LIMIT || this.taxAtr == TaxAtr.TAX_FREE_UN_LIMIT;
+	}
 }

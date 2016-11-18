@@ -21,6 +21,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentCalculationBasicInformationRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailParam;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
@@ -60,6 +61,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	private PersonalWageRepository personalWageRepo;
 	@Inject
 	private PersonalCommuteFeeRepository personalCommuteRepo;
+	@Inject
+	private PaymentDataRepository paymentDataRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreatePaymentDataCommand> context) {
@@ -87,12 +90,6 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		PaymentDateMaster payDay = payDateMasterRepo.find(loginInfo.companyCode(), PayBonusAtr.SALARY.value,
 				command.getProcessingYearMonth(), SparePayAtr.NORMAL.value, command.getProcessingNo()).get();
 
-		// get personal wage
-		Map<String, PersonalWage> personalWages = getPersonalWages(loginInfo.companyCode(), command.getPersonIdList(),
-				currentDate.date());
-		// get personal commute
-		Map<String, PersonalCommuteFee> personalCommutes = getPersonalCommute(loginInfo.companyCode(), command.getPersonIdList(),
-				currentDate.date());
 		
 		// calculate personal
 		for (String personId : command.getPersonIdList()) {
@@ -100,15 +97,15 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			HolidayPaid holiday = holidays.get(personId);
 
 			PaymentDetailParam param = new PaymentDetailParam(loginInfo.companyCode(), new PersonId(personId),
-					baseYearMonth.v());
+					baseYearMonth.v(), command.getProcessingYearMonth());
 			param.setHoliday(holiday);
 			param.setPayCalBasicInfo(payCalBasicInfo);
 			param.setEmploymentContract(employmentContract);
 			param.setPaymentDateMaster(payDay);
-			param.setPersonalWage(personalWages.get(personId));
-			param.setPersonalCommute(personalCommutes.get(personId));
 
 			Map<CategoryAtr, DetailItem> payDetail = paymentDetailService.calculatePayValue(param);
+			
+			
 		}
 	}
 
@@ -153,36 +150,5 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		}, x -> x));
 	}
 
-	/**
-	 * Get group personal wage
-	 * 
-	 * @param companyCode
-	 * @param personIdList
-	 * @param date
-	 * @return
-	 */
-	private Map<String, PersonalWage> getPersonalWages(String companyCode, List<String> personIdList, Date date) {
-		List<PersonalWage> wageList = personalWageRepo.findAll(companyCode, personIdList, date);
 
-		return wageList.stream().collect(Collectors.toMap(x -> {
-			return x.getPersonId().v();
-		}, x -> x));
-	}
-
-	/**
-	 * Get group personal commute
-	 * 
-	 * @param companyCode
-	 * @param personIdList
-	 * @param date
-	 * @return
-	 */
-	private Map<String, PersonalCommuteFee> getPersonalCommute(String companyCode, List<String> personIdList,
-			Date date) {
-		List<PersonalCommuteFee> commuteList = personalCommuteRepo.findAll(companyCode, personIdList, date);
-
-		return commuteList.stream().collect(Collectors.toMap(x -> {
-			return x.getPersonId().v();
-		}, x -> x));
-	}
 }

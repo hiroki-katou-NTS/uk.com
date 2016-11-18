@@ -1,7 +1,6 @@
 package nts.uk.ctx.core.dom.company;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**

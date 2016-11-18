@@ -29,4 +29,15 @@ public class PprmtPersonWagePK implements Serializable {
 	@Column(name = "STR_YM")
 	public int strYm;
 
+	public PprmtPersonWagePK(String ccd, String pId, int ctgAtr, String pWageCd, int strYm) {
+		super();
+		this.ccd = ccd;
+		this.pId = pId;
+		this.ctgAtr = ctgAtr;
+		this.pWageCd = pWageCd;
+		this.strYm = strYm;
+	}
+	
+	
+
 }

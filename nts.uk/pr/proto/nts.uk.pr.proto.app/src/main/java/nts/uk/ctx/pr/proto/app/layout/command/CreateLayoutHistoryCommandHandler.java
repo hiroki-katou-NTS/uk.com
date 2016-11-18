@@ -45,7 +45,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		CreateLayoutHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
-		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStmtCode(), command.getStartYm())
+		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartYm(), command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		
 		LayoutMaster layoutNew = command.toDomain(layoutOrigin.getLayoutAtr().value, layoutOrigin.getStmtName().v());
