@@ -24,6 +24,42 @@
 		table th{background:#eee;border-bottom-width:2px;}
 		table td:first-child{background:#fafafa;}
 		pre{background:#eff0f1;padding:10px 5px;color:#333;margin:10px 0;}
+		
+		/* Import for test */		
+		#error-board {
+			overflow: auto;
+		}
+		
+		#error-board table {
+			border-collapse: collapse;
+			width: 100%;
+			margin: 0;
+		}
+		
+		#error-board table tr:hover {
+			background: #C5F1F7;
+		}
+		
+		#error-board table th{
+		}
+		
+		#error-board table th,
+		#error-board table td {
+			border: solid 1px #bbb;
+			white-space: nowrap;
+			padding: 3px;
+			font-family: "Meiryo UI";
+			font-size: 13px;
+		}
+		
+		#error-board table th,
+		#error-board table td:first-child {
+			background-color:#A4EEB0;
+		}
+		
+		#error-board table td {
+			
+		}
 	</style>
 	
 	<!-- Script -->
@@ -110,11 +146,62 @@
 						self.option.show(false);
 					}
 				},
+
+				// Error Dialog
+				errordialog: {
+					title: ko.observable("Error Dialog title"),
+					headers: ko.observableArray([
+						new ErrorHeader("tab", "タブ", true),
+						new ErrorHeader("location", "エラー箇所", true),
+						new ErrorHeader("message", "エラー詳細", true)
+					]),
+					errors: ko.observableArray([
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
+					]),
+					option: ko.mapping.fromJS(new ErrorDialogOption({maxrows: 25})),
+					closeButtonClicked: function(){},
+					open: function(){
+						var self = this;
+						self.option.show(true);
+					},
+					hide: function(){
+						var self = this;
+						self.option.show(false);
+					}
+				}
+			};
+
+			function ErrorHeader(nane, text, visible){
+				this.name = name;
+				this.text = text;
+				this.visible = visible;
 			};
 			
 			ko.applyBindings(vm);
 			
-			$('#testbtn').click(function(){
+			$('#dialog-open').click(function(){
 				vm.dialogconfirm.open();
 			})
 		});
@@ -128,98 +215,100 @@
 	<div class="container">
 		<h2><a href="../../test.html">&#9665;</a> Dialog</h2>
 		<hr/>
-		<h2>Dialog</h2>
-		<div data-bind="with: dialogconfirm">
-			<button data-bind="click: open" class="proceed">Confirm Dialog</button>
-			<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
-		</div>
-		<br/>
-		<div data-bind="with: dialogdel">
-			<button data-bind="click: open" class="danger">Del Dialog</button>
-			<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
-		</div>
-		<br/>
-		<div data-bind="with: dialogok">
-			<button data-bind="click: open" class="proceed">OK Dialog</button>
-			<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
-		</div>
-		<br/>
-		<h3>Javascript Example</h3>
-		<button id="testbtn">JQuery event</button>
-		<pre>
-	$('#testbtn').click(function(){
+		<!-- Normal Dialog -->
+		<div class="cf">
+			<h2>Dialog</h2>
+			<div data-bind="with: dialogconfirm">
+				<button data-bind="click: open" class="proceed">Confirm Dialog</button>
+				<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
+			</div>
+			<br/>
+			<div data-bind="with: dialogdel">
+				<button data-bind="click: open" class="danger">Del Dialog</button>
+				<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
+			</div>
+			<br/>
+			<div data-bind="with: dialogok">
+				<button data-bind="click: open" class="proceed">OK Dialog</button>
+				<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
+			</div>
+			<br/>
+			<h3>Javascript Example</h3>
+			<button id="dialog-open">JQuery event</button>
+			<pre>
+	$('#dialog-open').click(function(){
 		vm.dialogconfirm.open();
 	})</pre>
-		<br/>
-		<button onclick="test()">Javascript Function</button>
-		<pre>
+			<br/>
+			<button onclick="test()">Javascript Function</button>
+			<pre>
 	function test(){
 		vm.dialogdel.open();
 	}</pre>
-		<br/>
-		<!-- ViewModel -->
-		<div class="cf">
-			<h3>Dialog ViewModel</h3>
-			<table>
-				<colgroup>
-					<col width="200px" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th><h4>ViewModel</h4></th>
-						<th><h4>Description</h4></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>title</td>
-						<td>
-							<b>Type:</b> string<br/>
-						</td>
-					</tr>
-					<tr>
-						<td>message</td>
-						<td>
-							<b>Type:</b> string<br/>
-						</td>
-					</tr>
-					<tr>
-						<td>option</td>
-						<td>
-							<b>Type:</b> object<br/>
-							<b>Members:</b><br/>
-							<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
-							<i>DelDialogOption</i>: Option for delete dialog<br/>
-							<i>OKDialogOption</i>: Option for OK dialog
-						</td>
-					</tr>
-					<tr>
-						<td>open</td>
-						<td>
-							<b>Type:</b> function<br/>
-						</td>
-					</tr>
-					<tr>
-						<td>hide</td>
-						<td>
-							<b>Type:</b> function<br/>
-						</td>
-					</tr>
-					<tr>
-						<td>okButtonClicked</td>
-						<td>
-							<b>Type:</b> function<br/>
-						</td>
-					</tr>
-					<tr>
-						<td>cancelButtonClicked</td>
-						<td>
-							<b>Type:</b> function<br/>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<pre style="float:left">dialog: {
+			<br/>
+			<!-- ViewModel -->
+			<div class="cf">
+				<h3>Dialog ViewModel</h3>
+				<table>
+					<colgroup>
+						<col width="200px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><h4>ViewModel</h4></th>
+							<th><h4>Description</h4></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>title</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>message</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>option</td>
+							<td>
+								<b>Type:</b> object<br/>
+								<b>Members:</b><br/>
+								<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
+								<i>DelDialogOption</i>: Option for delete dialog<br/>
+								<i>OKDialogOption</i>: Option for OK dialog
+							</td>
+						</tr>
+						<tr>
+							<td>open</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>hide</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>okButtonClicked</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>cancelButtonClicked</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pre style="float:left">dialog: {
 		title: ko.observable("Dialog Title"),
 		message: ko.observable("Dialog message here"),
 		option: ko.mapping.fromJS(new ConfirmDialogOption()),
@@ -228,112 +317,317 @@
 		open: function(){},
 		hide: function(){}
 	}</pre>
+			</div>
+			<!-- API -->
+			<h3>Dialog API</h3>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>ConfirmDialogOption</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>modal</td>
+						<td>
+							<b>Type:</b> boolean<br/>
+							<b>Default:</b> true<br/>
+							Display dialog in modal mode
+						</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th><h4>DelDialogOption</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>modal</td>
+						<td>
+							<b>Type:</b> boolean<br/>
+							<b>Default:</b> true<br/>
+							Display dialog in modal mode
+						</td>
+					</tr>
+				</tbody>
+				<thead>
+					<tr>
+						<th><h4>OKDialogOption</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>modal</td>
+						<td>
+							<b>Type:</b> boolean<br/>
+							<b>Default:</b> true<br/>
+							Display dialog in modal mode
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>Methods</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>open()</td>
+						<td>
+							Show dialog
+						</td>
+					</tr>
+					<tr>
+						<td>hide()</td>
+						<td>
+							Hide dialog
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>Events</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>okButtonClicked()</td>
+						<td>
+							Triggered when OK button is clicked
+						</td>
+					</tr>
+					<tr>
+						<td>cancelButtonClicked()</td>
+						<td>
+							Triggered when cancel button is clicked
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<!-- API -->
-		<h3>Dialog API</h3>
-		<table>
-			<colgroup>
-				<col width="200px" />
-			</colgroup>
-			<thead>
-				<tr>
-					<th><h4>ConfirmDialogOption</h4></th>
-					<th><h4>Description</h4></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>modal</td>
-					<td>
-						<b>Type:</b> boolean<br/>
-						<b>Default:</b> true<br/>
-						Display dialog in modal mode
-					</td>
-				</tr>
-			</tbody>
-			<thead>
-				<tr>
-					<th><h4>DelDialogOption</h4></th>
-					<th><h4>Description</h4></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>modal</td>
-					<td>
-						<b>Type:</b> boolean<br/>
-						<b>Default:</b> true<br/>
-						Display dialog in modal mode
-					</td>
-				</tr>
-			</tbody>
-			<thead>
-				<tr>
-					<th><h4>OKDialogOption</h4></th>
-					<th><h4>Description</h4></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>modal</td>
-					<td>
-						<b>Type:</b> boolean<br/>
-						<b>Default:</b> true<br/>
-						Display dialog in modal mode
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<table>
-			<colgroup>
-				<col width="200px" />
-			</colgroup>
-			<thead>
-				<tr>
-					<th><h4>Methods</h4></th>
-					<th><h4>Description</h4></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>open()</td>
-					<td>
-						Show dialog
-					</td>
-				</tr>
-				<tr>
-					<td>hide()</td>
-					<td>
-						Hide dialog
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<table>
-			<colgroup>
-				<col width="200px" />
-			</colgroup>
-			<thead>
-				<tr>
-					<th><h4>Events</h4></th>
-					<th><h4>Description</h4></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>okButtonClicked()</td>
-					<td>
-						Triggered when OK button is clicked
-					</td>
-				</tr>
-				<tr>
-					<td>cancelButtonClicked()</td>
-					<td>
-						Triggered when cancel button is clicked
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<hr/>
+		<!-- Error Dialog -->
+		<div class="cf">
+			<h2>Error Dialog</h2>
+			<div data-bind="with: errordialog">
+				<button data-bind="click: open">Open</button>
+				<button data-bind="click: hide">Hide</button>
+				<div data-bind="ntsErrorDialog: {title: title, headers: headers, errors: errors, option: option}"></div>
+			</div>
+			<br/>
+			<!-- ViewModel -->
+			<div class="cf">
+				<h3>Dialog ViewModel</h3>
+				<table>
+					<colgroup>
+						<col width="200px" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th><h4>ViewModel</h4></th>
+							<th><h4>Description</h4></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>title</td>
+							<td>
+								<b>Type:</b> string<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>headers</td>
+							<td>
+								<b>Type:</b> array<br/>
+								Header definition<br/>
+								<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
+								<i>text</i>: Display text for header<br/>
+								<i>visible</i>: Set display for this header. Header will not be rendered on DOM
+							</td>
+						</tr>
+						<tr>
+							<td>errors</td>
+							<td>
+								<b>Type:</b> array<br/>
+								List error for display<br/>
+								<i>key</i>: Unique key for error. Column will be displayed correctly following header name<br/>
+								<i>value</i>: Display text for column<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>option</td>
+							<td>
+								<b>Type:</b> object<br/>
+								<b>Members:</b><br/>
+								<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
+								<i>DelDialogOption</i>: Option for delete dialog<br/>
+								<i>OKDialogOption</i>: Option for OK dialog
+							</td>
+						</tr>
+						<tr>
+							<td>open</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>hide</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>closeButtonClicked</td>
+							<td>
+								<b>Type:</b> function<br/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<pre style="float:left">errordialog: {
+	title: ko.observable("Error Dialog title"),
+	headers: ko.observableArray([
+		new ErrorHeader("tab", "タブ", true),
+		new ErrorHeader("location", "エラー箇所", true),
+		new ErrorHeader("message", "エラー詳細", true)
+	]),
+	errors: ko.observableArray([
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
+	]),
+	option: ko.mapping.fromJS(new ErrorDialogOption()),
+	closeButtonClicked: function(){},
+	open: function(){
+		var self = this;
+		self.option.show(true);
+	},
+	hide: function(){
+		var self = this;
+		self.option.show(false);
+	}
+}
+
+function ErrorHeader(nane, text, visible){
+	this.name = name;
+	this.text = text;
+	this.visible = visible;
+}</pre>
+			</div>
+			<!-- API -->
+			<h3>Dialog API</h3>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>ConfirmDialogOption</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>modal</td>
+						<td>
+							<b>Type:</b> boolean<br/>
+							<b>Default:</b> true<br/>
+							Display dialog in modal mode
+						</td>
+					</tr>
+					<tr>
+						<td>displayrows</td>
+						<td>
+							<b>Type:</b> number<br/>
+							<b>Default:</b> 10<br/>
+							Number of errors display at one
+						</td>
+					</tr>
+					<tr>
+						<td>maxrows</td>
+						<td>
+							<b>Type:</b> number<br/>
+							<b>Default:</b> 1000<br/>
+							Maximum errors can be display. Greater than this will show a message
+						</td>
+					</tr>
+					<tr>
+						<td>autoclose</td>
+						<td>
+							<b>Type:</b> boolean<br/>
+							<b>Default:</b> true<br/>
+							Wherever auto close dialog if number of errors reduce to 0
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>Methods</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>open()</td>
+						<td>
+							Show dialog
+						</td>
+					</tr>
+					<tr>
+						<td>hide()</td>
+						<td>
+							Hide dialog
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<colgroup>
+					<col width="200px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th><h4>Events</h4></th>
+						<th><h4>Description</h4></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>closeButtonClicked()</td>
+						<td>
+							Triggered when Close button is clicked
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </body>
 </html>
