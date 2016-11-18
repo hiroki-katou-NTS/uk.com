@@ -317,7 +317,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 	 * CalculationMethod = PERSONAL_INFORMATION
 	 * @return
 	 */
-	public boolean isCalculationMethodPesonalInfomation() {
+	public boolean isCalMethodPesonalInfomation() {
 		return CalculationMethod.PERSONAL_INFORMATION == this.calculationMethod;
 	}
 	
@@ -325,10 +325,51 @@ public class LayoutMasterDetail extends AggregateRoot{
 	 * CalculationMethod = MANUAL_ENTRY || FORMULA || WAGE_TABLE || COMMON_AMOUNT_MONEY
 	 * @return
 	 */
-	public boolean isCalculationMethodManualOrFormulaOrWageTableOrCommon() {
+	public boolean isCalMethodManualOrFormulaOrWageOrCommon() {
 		return this.calculationMethod == CalculationMethod.MANUAL_ENTRY 
 				|| this.calculationMethod == CalculationMethod.FORMULA 
 				|| this.calculationMethod == CalculationMethod.WAGE_TABLE 
 				|| this.calculationMethod == CalculationMethod.COMMON_AMOUNT_MONEY;
+	}
+	
+	/**
+	 * CalculationMethod = MANUAL_ENTRY || FORMULA || WAGE_TABLE || COMMON_AMOUNT_MONEY || PAYMENT_CANCELED
+	 * @return
+	 */
+	public boolean isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled() {
+		return this.isCalMethodManualOrFormulaOrWageOrCommon() 
+				|| this.calculationMethod == CalculationMethod.PAYMENT_CANCELED;
+	}
+	
+	/**
+	 * Check Category = PERSONAL_TIME
+	 * @return
+	 */
+	public boolean isCategoryPersonalTime() {
+		return CategoryAtr.PERSONAL_TIME == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = PAYMENT
+	 * @return
+	 */
+	public boolean isCategoryPayment() {
+		return CategoryAtr.PAYMENT == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = DEDUCTION
+	 * @return
+	 */
+	public boolean isCategoryDeduction() {
+		return CategoryAtr.DEDUCTION == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = ARTICLES || OTHER
+	 * @return
+	 */
+	public boolean isCategoryArticlesOrOther() {
+		return CategoryAtr.ARTICLES == this.categoryAtr || CategoryAtr.OTHER == this.categoryAtr;
 	}
 }

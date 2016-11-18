@@ -18,12 +18,10 @@ import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
-import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
-import nts.uk.ctx.pr.proto.dom.layout.detail.CalculationMethod;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
@@ -105,7 +103,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// LAYOUT_DETAIL with CTR_ATR = 2
 			//
 			
-			if (CategoryAtr.PERSONAL_TIME == itemLayoutMasterDetail.getCategoryAtr()) {
+			if (itemLayoutMasterDetail.isCategoryPersonalTime()) {
 				// PayrollSystem == 2 || 3
 				if (param.getEmploymentContract().isPayrollSystemDailyOrDay()) {
 					detail = getPayValueByMonthlyDaily(itemCode, param.getHoliday(), param.getPaymentDateMaster(),
@@ -120,12 +118,12 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// LAYOUT_DETAIL with CTR_ATR = 0
 			//
 			
-			if (CategoryAtr.PAYMENT == itemLayoutMasterDetail.getCategoryAtr()) {
+			if (itemLayoutMasterDetail.isCategoryPayment()) {
 				// get calculate method
-				if (itemLayoutMasterDetail.isCalculationMethodManualOrFormulaOrWageTableOrCommon()) {
+				if (itemLayoutMasterDetail.isCalMethodManualOrFormulaOrWageOrCommon()) {
 					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
-				} else if (itemLayoutMasterDetail.isCalculationMethodPesonalInfomation()) {
-					if (itemMaster.getCategoryAtr() == CategoryAtr.PAYMENT && itemMaster.getItemCode() == itemLayoutMasterDetail.getItemCode()) {
+				} else if (itemLayoutMasterDetail.isCalMethodPesonalInfomation()) {
+					if (itemMaster.getItemCode() == itemLayoutMasterDetail.getItemCode()) {
 						// calculate pay value by tax
 						detail = getPayValueByTax(param, startYearMonth, itemLayoutMasterDetail, detail, itemCode,
 								itemMaster, commute);
@@ -137,16 +135,26 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// LAYOUT_DETAIL with CTR_ATR = 1
 			//
 			
-			if (CategoryAtr.DEDUCTION == itemLayoutMasterDetail.getCategoryAtr()) {
+			if (itemLayoutMasterDetail.isCategoryDeduction()) {
 				// sum
-				double sumCommuteAllowance = commute.sumCommuteAllowance(param.getCurrentProcessingYearMonth());
-				if (itemLayoutMasterDetail.isCalculationMethodPesonalInfomation() && CategoryAtr.DEDUCTION == itemLayoutMasterDetail.getCategoryAtr()) {
+				//double sumCommuteAllowance = commute.sumCommuteAllowance(param.getCurrentProcessingYearMonth());
+				if (itemLayoutMasterDetail.isCalMethodPesonalInfomation()) {
 					// get personal wage
 					PersonalWage personalWage = personalWageRepo.find(param.getCompanyCode(), param.getPersonId().v(), itemMaster.getCategoryAtr().value, itemCode, param.getCurrentProcessingYearMonth()).get();
 					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), null, null, null);
-				} 
-				
-				//
+				} else if (itemLayoutMasterDetail.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
+					detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
+				} else {
+					throw new RuntimeException("Error system");
+				}
+			}
+			
+			//
+			// LAYOUT_DETAIL with CTR_ATR = 3 || 9
+			//
+			
+			if (itemLayoutMasterDetail.isCategoryArticlesOrOther()) {
+				detail = new DetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, null, null, null);
 			}
 
 			payDetail.put(itemLayoutMasterDetail.getCategoryAtr(), detail);
