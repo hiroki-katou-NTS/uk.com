@@ -27,7 +27,7 @@ public class RemoveLayoutDetailCommandHandler extends CommandHandler<RemoveLayou
 		val startYm = new YearMonth(context.getCommand().getStartYm());
 		int categoryAtr = context.getCommand().getCategoryAtr();
 		val itemCode = new ItemCode(context.getCommand().getItemCode());
-		this.repository.remove(companyCode, layoutCode, startYm, categoryAtr, itemCode);
+		//this.repository.remove(companyCode, layoutCode, startYm, categoryAtr, itemCode);
 	}
 
 }
