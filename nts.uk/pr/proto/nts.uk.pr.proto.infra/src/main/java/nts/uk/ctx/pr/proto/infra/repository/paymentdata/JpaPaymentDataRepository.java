@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
+import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentHeader;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentHeaderPK;
 
@@ -20,6 +21,14 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 										 		" AND c.qstdtPaymentHeaderPK.personId = :PID" + 
 										 		" AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR" + 
 										 		" AND c.qstdtPaymentHeaderPK.processingYm = :PROCESSING_YM";
+	
+	private String SELECT_ITEM = " SELECT d" +
+								 " FROM QstdtPaymentDetail d" +
+								 " WHERE d.QstdtPaymentDetailPK.companyCode = :CCD"+
+										" AND d.QstdtPaymentDetailPK.personId = :PID" +
+										" AND d.QstdtPaymentDetailPK.processingYM = :PROCESSING_YM" +
+										" AND d.QstdtPaymentDetailPK.categoryATR = :CTG_ATR" +
+										" AND d.QstdtPaymentDetailPK.itemCode = :ITEM_CD";
 
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
@@ -41,6 +50,48 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 					.getList(c -> toDomain(c));
 	}
 
+	private static Payment toDomain(QstdtPaymentHeader entity) {
+		val domain = Payment.createFromJavaType(entity.qstdtPaymentHeaderPK.companyCode,
+												entity.qstdtPaymentHeaderPK.personId, 
+												entity.qstdtPaymentHeaderPK.processingNo,
+												entity.qstdtPaymentHeaderPK.payBonusAtr, 
+												entity.qstdtPaymentHeaderPK.processingYM,
+												entity.qstdtPaymentHeaderPK.sparePayAtr, 
+												entity.standardDate, 
+												entity.specificationCode,
+												entity.residenceCode, 
+												entity.residenceName, 
+												entity.healthInsuranceGrade,
+												entity.healthInsuranceAverageEarn, 
+												entity.ageContinuationInsureAtr, 
+												entity.tenureAtr, 
+												entity.taxAtr,
+												entity.pensionInsuranceGrade, 
+												entity.pensionAverageEarn, 
+												entity.employementInsuranceAtr,
+												entity.dependentNumber, 
+												entity.workInsuranceCalculateAtr, 
+												entity.insuredAtr, 
+												entity.bonusTaxRate,
+												entity.calcFlag, 
+												entity.makeMethodFlag, 
+												entity.comment);
+		entity.toDomain(domain);
+		return domain;
+	}
+	
+	@Override
+	public void importHeader(Payment payment) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void importPayment(Payment payment) {
+		// TODO Auto-generated method stub
+
+	}
+	
 	@Override
 	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
 		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList();
@@ -49,38 +100,19 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
+	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
+		List<QstdtPaymentDetail> paymentItems = this.queryProxy().query(SELECT_ITEM, QstdtPaymentDetail.class).getList();
+		
+		return !paymentItems.isEmpty();
+	}
+	
+	@Override
 	public void update(Payment payment) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
-	public void importHeader(Payment payment) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private static Payment toDomain(QstdtPaymentHeader entity) {
-		val domain = Payment.createFromJavaType(entity.qstdtPaymentHeaderPK.companyCode,
-				entity.qstdtPaymentHeaderPK.personId, entity.qstdtPaymentHeaderPK.processingNo,
-				entity.qstdtPaymentHeaderPK.payBonusAtr, entity.qstdtPaymentHeaderPK.processingYM,
-				entity.qstdtPaymentHeaderPK.sparePayAtr, entity.standardDate, entity.specificationCode,
-				entity.residenceCode, entity.residenceName, entity.healthInsuranceGrade,
-				entity.healthInsuranceAverageEarn, entity.ageContinuationInsureAtr, entity.tenureAtr, entity.taxAtr,
-				entity.pensionInsuranceGrade, entity.pensionAverageEarn, entity.employementInsuranceAtr,
-				entity.dependentNumber, entity.workInsuranceCalculateAtr, entity.insuredAtr, entity.bonusTaxRate,
-				entity.calcFlag, entity.makeMethodFlag, entity.comment);
-		entity.toDomain(domain);
-		return domain;
-	}
-
 	public void updateDetails(int categoryAtr, List<DetailItem> items) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void importPayment(Payment payment) {
 		// TODO Auto-generated method stub
 
 	}
@@ -91,10 +123,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	}
 
-	@Override
-	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }
