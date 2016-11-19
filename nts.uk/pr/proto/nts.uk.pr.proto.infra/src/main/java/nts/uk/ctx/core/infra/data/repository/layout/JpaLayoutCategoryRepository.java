@@ -35,7 +35,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		return domain;
 	}
 
-	private static QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
+	private QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
 		val entity = new QstmtStmtLayoutCtg();
 
 		entity.fromDomain(domain);
