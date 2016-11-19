@@ -9,5 +9,6 @@ __viewContext.ready(function () {
     $('#show-popup').click(function () {
         $('#popup-area').ntsPopup('show');
     });
-    ko.applyBindings({});
+    var vm = {}; // developer's view model
+    this.bind(vm);
 });

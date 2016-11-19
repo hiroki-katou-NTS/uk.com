@@ -6,14 +6,20 @@ var nts;
         (function (ui) {
             var init;
             (function (init) {
-                var start;
+                var _start;
                 __viewContext.ready = function (callback) {
-                    start = callback;
+                    _start = callback;
+                };
+                __viewContext.bind = function (viewModel) {
+                    ui._viewModel = {
+                        content: viewModel // developer's view model
+                    };
                 };
                 $(function () {
-                    start();
+                    _start.call(__viewContext);
+                    ko.applyBindings(ui._viewModel);
                 });
-            })(init = ui.init || (ui.init = {}));
+            })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
