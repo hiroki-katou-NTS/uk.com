@@ -5,4 +5,5 @@ interface ViewContext {
     primitiveValueConstraints: { [key: string]: any };
     
     ready: (callback: () => void) => void;
+    bind: (viewModel: any) => void;
 }

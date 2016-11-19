@@ -7,17 +7,17 @@ import lombok.Getter;
 @Getter
 public class RegisterLayoutCommand {
 
-	private LayoutCommand layoutCommand;
-	private List<LayoutCategoryCommand> categoryCommand;
-	private List<LayoutLineCommand> lineCommand;
-	private List<LayoutDetailCommand> detailCommand;
+	private Layout layoutCommand;
+	private List<LayoutCategory> categoryCommand;
+	private List<LayoutLine> lineCommand;
+	private List<LayoutDetail> detailCommand;
 	
 	private List<Integer> listCategoryAtrDeleted;
 	
 	//Chỉ cần trường autoLineId và categoryAtr
-	private List<LayoutLineCommand> listAutoLineIdDeleted;
+	private List<LayoutLine> listAutoLineIdDeleted;
 	
 	//Chỉ cần trường itemCode và categoryAtr
-	private List<LayoutDetailCommand> listItemCodeDeleted;
+	private List<LayoutDetail> listItemCodeDeleted;
 	
 }

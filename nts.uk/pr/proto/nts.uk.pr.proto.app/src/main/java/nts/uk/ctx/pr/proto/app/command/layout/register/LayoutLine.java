@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.app.command.layout.register;
 import lombok.Getter;
 
 @Getter
-public class LayoutLineCommand {
+public class LayoutLine {
 
 	private int categoryAtr;
 	private String autoLineId;

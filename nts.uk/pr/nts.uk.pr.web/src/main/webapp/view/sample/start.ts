@@ -12,7 +12,7 @@ __viewContext.ready(function () {
         $('#popup-area').ntsPopup('show');
     });
 
-    
-    ko.applyBindings({});
+    var vm = {}; // developer's view model
+    this.bind(vm);
     
 });

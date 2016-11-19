@@ -5,7 +5,7 @@ import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
-public class LayoutCommand {
+public class Layout {
 
 	private String stmtCode;
 	private int startYm;

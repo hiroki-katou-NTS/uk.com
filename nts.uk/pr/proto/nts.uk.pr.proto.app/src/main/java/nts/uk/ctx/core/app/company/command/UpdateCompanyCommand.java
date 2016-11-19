@@ -9,7 +9,7 @@ import nts.uk.ctx.core.dom.company.Company;
  */
 @Getter
 @Setter
-public class UpdateCompanyCommand extends CompanyCommand {
+public class UpdateCompanyCommand extends CompanyCommandBase {
 
 	/** version */
 	private long version;
