@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.infra.data.repository.personalinfo.wage.wagename;
+package nts.uk.ctx.pr.proto.infra.repository.personalinfo.wage.wagename;
 
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
