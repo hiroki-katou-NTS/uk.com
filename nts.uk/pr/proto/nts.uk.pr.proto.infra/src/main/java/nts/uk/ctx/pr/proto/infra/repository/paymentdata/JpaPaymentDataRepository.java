@@ -114,13 +114,19 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	@Override
 	public void insert(Payment payment) {
-		// TODO Auto-generated method stub
+		QstdtPaymentHeader paymentHeaderEntity = toPaymentHeaderEntity(payment);
+		this.commandProxy().insert(paymentHeaderEntity);
 	}
 	
 	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain){
 		QstdtPaymentHeader entity = new QstdtPaymentHeader();
 		entity.fromDomain(domain);
-		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), domain.getPersonId().v(), domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value, domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value);
+		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), 
+																domain.getPersonId().v(), 
+																domain.getProcessingNo().v().intValue(), 
+																domain.getPayBonusAtr().value, 
+																domain.getProcessingYM().v().intValue(), 
+																domain.getSparePayAtr().value);
 		entity.standardDate = domain.getStandardDate().localDate();
 		entity.specificationCode = domain.getSpecificationCode().v();
 		entity.residenceCode = domain.getResidenceCode().v();
