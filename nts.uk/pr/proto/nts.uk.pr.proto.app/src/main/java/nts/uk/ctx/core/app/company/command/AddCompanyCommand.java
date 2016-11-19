@@ -8,6 +8,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class AddCompanyCommand extends CompanyCommand {
+public class AddCompanyCommand extends CompanyCommandBase {
 
 }

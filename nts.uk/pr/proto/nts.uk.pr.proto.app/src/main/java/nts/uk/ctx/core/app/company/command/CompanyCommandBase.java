@@ -9,7 +9,7 @@ import nts.uk.ctx.core.dom.company.Company;
  */
 @Getter
 @Setter
-public abstract class CompanyCommand {
+public abstract class CompanyCommandBase {
 	
 	/** code */
 	private String companyCode;
