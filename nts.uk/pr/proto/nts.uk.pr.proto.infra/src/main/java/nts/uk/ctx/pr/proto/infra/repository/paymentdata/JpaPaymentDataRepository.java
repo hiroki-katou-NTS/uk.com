@@ -17,14 +17,48 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentHeaderPK;
 
 @RequestScoped
 public class JpaPaymentDataRepository extends JpaRepository implements PaymentDataRepository {
-
-	private final String SELECT_HEADER = "SELECT c FROM QstdtPaymentHeader WHERE c.qstdtPaymentHeaderPK.companyCode = :ccd and c.qstdtPaymentHeaderPK.personId = :pid c.qstdtPaymentHeaderPK.payBonusAtr = c:payBonusAtr and c.qstdtPaymentHeaderPK.processingYm = c:processingYm";
+	private final String SELECT_HEADER = " SELECT c FROM QstdtPaymentHeader c " +
+										 " WHERE c.qstdtPaymentHeaderPK.companyCode = :CCD" + 
+										 		" AND c.qstdtPaymentHeaderPK.personId = :PID" + 
+										 		" AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR" + 
+										 		" AND c.qstdtPaymentHeaderPK.processingYm = :PROCESSING_YM";
 
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
 		return this.queryProxy().find(new QstdtPaymentHeaderPK(companyCode, personId, processingNo, payBonusAttribute,
 				processingYM, sparePayAttribute), QstdtPaymentHeader.class).map(c -> toDomain(c));
+
+	}
+
+	@Override
+	public List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAtr,
+			int processingYm) {
+		return this.queryProxy()
+					.query(SELECT_HEADER, QstdtPaymentHeader.class)
+						.setParameter("CCD", companyCode)
+						.setParameter("PID", personId)
+						.setParameter("PAY_BONUS_ATR", payBonusAtr)
+						.setParameter("PROCESSING_YM", processingYm)
+					.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
+		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList();
+
+		return !pHeader.isEmpty();
+	}
+
+	@Override
+	public void update(Payment payment) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void importHeader(Payment payment) {
+		// TODO Auto-generated method stub
 
 	}
 
@@ -42,9 +76,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		return domain;
 	}
 
-
-	@Override
-	public void update(Payment payment) {
+	public void updateDetails(int categoryAtr, List<DetailItem> items) {
 		// TODO Auto-generated method stub
 
 	}
@@ -53,12 +85,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	public void insert(Payment payment) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public List<Payment> findPaymentHeader(String companyCode, String personId, int payBonusAttribute,
-			int processingYM) {
-		return this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList(c -> toDomain(c));
 	}
 	
 	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain){
@@ -86,7 +112,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		return entity;
 	}
 	
-	private static QstdtPaymentDetail toPaymentDetailEntity(Payment domain, DetailItem detail){
+	private QstdtPaymentDetail toPaymentDetailEntity(Payment domain, DetailItem detail){
 //		QstdtPaymentDetail entity = new QstdtPaymentDetail();
 //		entity.fromDomain(domain);
 //		entity.qstdtPaymentDetailPK = new QstdtPaymentDetailPK(domain.getCompanyCode().v(), domain.getPersonId().v(), domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value, domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value, detail.getCategoryAttribute(), detail.getItemCode());
@@ -95,12 +121,17 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	@Override
 	public void importPayment(Payment payment) {
-//		// TODO Auto-generated method stub
-//		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
-//		
-//		for (DetailItem iterable_element : payment.getDetailPaymentItems()) {
-//			QstdtPaymentDetail detail = 
-//		}
+		// TODO Auto-generated method stub
+		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
+		
+		for (DetailItem item : payment.getDetailPaymentItems()) {
+			QstdtPaymentDetail detail = toPaymentDetailEntity(payment, item);
+		}
+	}
+
+	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

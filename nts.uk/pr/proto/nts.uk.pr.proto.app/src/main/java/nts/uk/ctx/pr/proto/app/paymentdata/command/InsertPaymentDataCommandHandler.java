@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.proto.app.paymentdata.command;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -7,6 +9,8 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,11 +31,9 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	@Override
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		String personId = AppContexts.user().personId();
-		Payment payment = context.getCommand().toDomain(companyCode, personId);
+		Payment payment = context.getCommand().toDomain(companyCode);
 		payment.validate();
 
 		this.paymentDataRepository.insert(payment);
-
 	}
 }

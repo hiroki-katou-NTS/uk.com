@@ -21,8 +21,8 @@ public class InsertPaymentDataCommand extends PaymentDataCommand{
 	 * @return domain
 	 */
 	@Override
-	public Payment toDomain(String companyCode, String personId) {
-		Payment domain = super.toDomain(companyCode, personId);
+	public Payment toDomain(String companyCode) {
+		Payment domain = super.toDomain(companyCode);
 		return domain;
 	}
 }

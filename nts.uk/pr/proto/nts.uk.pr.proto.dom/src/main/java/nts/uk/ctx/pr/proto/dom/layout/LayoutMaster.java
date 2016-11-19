@@ -21,6 +21,7 @@ public class LayoutMaster extends AggregateRoot {
 	
 	/** 開始年月 */
 	@Getter
+	@Setter
 	private YearMonth startYM;
 	
 	/** 明細書コード */

@@ -39,12 +39,14 @@ public interface LayoutMasterDetailRepository {
 	/**
 	 * delete a layout master detail
 	 */
-	void remove(CompanyCode companyCode
-			, LayoutCode layoutCode
-			, YearMonth startYm
+	void remove(String companyCode
+			, String layoutCode
+			, int startYm
 			, int categoryAtr
-			, ItemCode itemCode);
+			, String itemCode);
 
+	void remove(List<LayoutMasterDetail> details);
+	
 	/**
 	 * get Detail
 	 * 
@@ -58,12 +60,20 @@ public interface LayoutMasterDetailRepository {
 			String stmtCd, 
 			int startYm);
 	
+	List<LayoutMasterDetail> getDetailsBefore(
+			String companyCd, 
+			String stmtCd, 
+			int endYm);
+	
 	List<LayoutMasterDetail> getDetailsByCategory(
 			String companyCd, 
 			String stmtCd, 
 			int startYm,
 			int categoryAtr);
 
+	List<LayoutMasterDetail> getDetailsByLine(
+			String autoLineId);
+	
 	/**
 	 * get detail
 	 * 

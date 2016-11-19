@@ -6,4 +6,6 @@ import lombok.Data;
 public class PaymentDataQuery {
 	
 	private String personId;
+	
+	private String employeeCode;
 }

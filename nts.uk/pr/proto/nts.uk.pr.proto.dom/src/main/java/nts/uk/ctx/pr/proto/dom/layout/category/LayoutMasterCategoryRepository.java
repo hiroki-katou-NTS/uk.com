@@ -42,7 +42,13 @@ public interface LayoutMasterCategoryRepository {
 	 * @param categoryAtr
 	 */
 	void remove(String companyCode, String stmtCode, int startYm, int categoryAtr);
-
+/**
+ * 
+ * @param companyCode
+ * @param stmtCode
+ * @param startYm
+ */
+	void removeAllCategory(List<LayoutMasterCategory> categories);
 	/**
 	 * get Categories
 	 * 
@@ -53,5 +59,5 @@ public interface LayoutMasterCategoryRepository {
 	 */
 	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, int startYm);
 
-	
+	List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm);
 }

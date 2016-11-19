@@ -12,21 +12,21 @@ import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
 	private String SELECT_ALL = " SELECT d, i.ITEM_NAME" +
-								" FROM QSTDT_PAYMENT_DETAIL d JOIN QCAMT_ITEM i ON d.CCD = i.CCD" +
-																	" AND d.CTG_ATR = i.CTG_ATR AND" +
-																	" AND d.ITEM_CD = i.ITEM_CD" +
-								" WHERE d.CCD = :CCD AND d.PID = :PID" +
-										" AND d.PAY_BONUS_ATR = :PAY_BONUS_ATR" +
-										" AND d.PROCESSING_YM = :PROCESSING_YM";
+								" FROM QstdtPaymentDetail d JOIN QcamtItem i ON d.QstdtPaymentDetailPK.companyCode = i.QcamtItemPK.ccd" +
+																	" AND d.QstdtPaymentDetailPK.categoryATR = i.QcamtItemPK.ctgAtr" +
+																	" AND d.QstdtPaymentDetailPK.itemCode = i.QcamtItemPK.itemCd" +
+								" WHERE d.QstdtPaymentDetailPK.CCD = :CCD AND d.PID = :PID" +
+										" AND d.QstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR" +
+										" AND d.QstdtPaymentDetailPK.processingYM = :PROCESSING_YM";
 	
 	
-	private String SELECT_ITEM_BY_CATEGORY = " SELECT d, i.ITEM_NAME" +
-											" FROM QSTDT_PAYMENT_DETAIL d JOIN QCAMT_ITEM i ON d.CCD = i.CCD" +
-																							" AND d.CTG_ATR = i.CTG_ATR AND" +
-																							" AND d.ITEM_CD = i.ITEM_CD" +
-											" WHERE d.CCD = :CCD AND d.PID = :PID" +
-													" AND d.PAY_BONUS_ATR = :PAY_BONUS_ATR" +
-													" AND d.PROCESSING_YM = :PROCESSING_YM" +
+	private String SELECT_ITEM_BY_CATEGORY = " SELECT d, i.itemName" +
+											" FROM QstdtPaymentDetail d JOIN QcamtItem i ON d.CCD = i.QcamtItemPK.ccd" +
+																							" AND d.CTG_ATR = i.QcamtItemPK.ctgAtr" +
+																							" AND d.ITEM_CD = i.QcamtItemPK.itemCd" +
+											" WHERE d.QstdtPaymentDetailPK.CCD = :CCD AND d.PID = :PID" +
+													" AND d.QstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR" +
+													" AND d.QstdtPaymentDetailPK.processingYM = :PROCESSING_YM" +
 													" AND d.CTG_ATR = :CTG_ATR";
 
 	
