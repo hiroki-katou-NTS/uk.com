@@ -67,7 +67,10 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		layoutRepo.update(layoutOrigin);
 	
 		updateCurrentObject(command, companyCode);
-		
+		if (layoutBefore.isPresent()) {
+			layoutBefore.get().setEndYM(new YearMonth(command.getStartYmNew() - 1));
+			layoutRepo.update(layoutBefore.get());
+		}
 		updatePreviousObject(command, companyCode, layoutOrigin);
 		
 	}
