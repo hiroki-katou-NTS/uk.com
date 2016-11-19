@@ -81,4 +81,19 @@ public class DetailItem extends DomainObject {
 				EnumAdaptor.valueOf(categoryAttribute, CategoryAtr.class));
 	}
 
+	/**
+	 * Create data for detail item
+	 * (using for create data)
+	 * @param itemCode
+	 * @param value
+	 * @param categoryAttribute
+	 * @return
+	 */
+	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
+		return new DetailItem(itemCode, value.doubleValue(),
+				CorrectFlag.NO_MODIFY,
+				InsuranceAtr.UN_SUBJECT,
+				InsuranceAtr.UN_SUBJECT,
+				categoryAttribute);
+	}
 }
