@@ -81,18 +81,33 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	@Override
 	public void update(Payment payment) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
+	
 	public void updateDetails(int categoryAtr, List<DetailItem> items) {
-
+		
 	}
+	
+	@Override
+	public void updateDetail(Payment payment,DetailItem item){
+		QstdtPaymentDetail paymentDetail = toPaymentDetailEntity(payment, item);
+		
+		this.commandProxy().update(paymentDetail);
+	}
+	
+	@Override
+	public void insertDetail(Payment payment,DetailItem item){
+		QstdtPaymentDetail paymentDetail = toPaymentDetailEntity(payment, item);
+		
+		this.commandProxy().insert(paymentDetail);
+	}
+	
+	
 
 	@Override
-	public void insert(Payment payment) {
-		QstdtPaymentHeader paymentHeaderEntity = toPaymentHeaderEntity(payment);
-		this.commandProxy().insert(paymentHeaderEntity);
+	public void insert(Payment payment) {	
+		importPayment(payment);
 	}
 
 	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain) {
@@ -167,5 +182,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			this.commandProxy().insert(detail);
 		}
 	}
+
+	
 
 }

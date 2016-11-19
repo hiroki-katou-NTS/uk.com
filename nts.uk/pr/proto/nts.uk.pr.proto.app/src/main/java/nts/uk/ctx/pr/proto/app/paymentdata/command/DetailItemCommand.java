@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.app.paymentdata.command;
 
 import lombok.Value;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
 @Value
 public class DetailItemCommand {
@@ -48,5 +49,6 @@ public class DetailItemCommand {
 
 	private int colPosition;
 	
+	private boolean isCreated;
 	
 }
