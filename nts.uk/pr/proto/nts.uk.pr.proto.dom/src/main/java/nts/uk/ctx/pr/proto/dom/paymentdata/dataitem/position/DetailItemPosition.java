@@ -14,6 +14,7 @@ public class DetailItemPosition extends DomainObject {
 	/**
 	 * 行
 	 */
+	@Getter
 	private final LinePosition linePosition;
 
 	/**

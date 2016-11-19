@@ -61,7 +61,7 @@ public class QstdtPaymentDetail extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "ITEM_ATR")
-	public int itemCode;
+	public int itemAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_ALLOW_TAX_IMPOSE")
