@@ -88,7 +88,6 @@ public class LayoutMasterDetail extends AggregateRoot{
 	private PersonalWageCode personalWageCode;	
 	
 	@Getter
-	@Setter
 	private ItemName itemAbName;
 	
 	public LayoutMasterDetail(
@@ -247,7 +246,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 				errorRangeHigh, isErrorUserLow, errorRangeLow, isAlamUseHigh, alamRangeHigh, 
 				isAlamUseLow, alamRangeLow, itemPosColumn);		
 		
-		result.setItemAbName(new ItemName(itemAbName));
+		result.setItemAbName(itemAbName);
 		return result;
 	}
 	
@@ -291,6 +290,9 @@ public class LayoutMasterDetail extends AggregateRoot{
 				personalWageCode);
 	}
 	
+	public void setItemAbName(String itemAbName) {
+		this.itemAbName = new ItemName(itemAbName);
+	}
 	/**
 	 * CalculationMethod = PERSONAL_INFORMATION
 	 * @return

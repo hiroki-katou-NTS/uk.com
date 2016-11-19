@@ -16,8 +16,11 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetailPK;
 @RequestScoped
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
+	private final String SELECT_NO_WHERE = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE
+			+ " INNER JOIN JpaItemMasterRepository i"
+			+ " ON i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
+			+ "  AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
@@ -126,6 +129,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeLowAtr,
 				entity.alRangeLow,
 				entity.itemPosColumn);
+		
+		domain.setItemAbName(entity.itemAbName);
 		entity.toDomain(domain);
 		return domain;
 	}

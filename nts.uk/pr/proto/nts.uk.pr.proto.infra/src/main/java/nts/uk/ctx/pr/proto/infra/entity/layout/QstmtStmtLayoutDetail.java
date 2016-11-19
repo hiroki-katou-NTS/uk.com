@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,9 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
 	@EmbeddedId
 	public QstmtStmtLayoutDetailPK qstmtStmtLayoutDetailPk;
 
+	@Transient
+	public String itemAbName;
+	
 	@Basic(optional = false)
 	@Column(name ="END_YM")
 	public int endYm;
