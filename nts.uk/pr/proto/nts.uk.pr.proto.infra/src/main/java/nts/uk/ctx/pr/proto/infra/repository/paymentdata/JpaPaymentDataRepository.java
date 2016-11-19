@@ -18,10 +18,16 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentHeaderPK;
 
 @RequestScoped
 public class JpaPaymentDataRepository extends JpaRepository implements PaymentDataRepository {
+
 	private final String SELECT_HEADER = " SELECT c FROM QstdtPaymentHeader c "
 			+ " WHERE c.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND c.qstdtPaymentHeaderPK.personId = :PID"
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
 			+ " AND c.qstdtPaymentHeaderPK.processingYm = :PROCESSING_YM";
+
+	private String SELECT_ITEM = " SELECT d" + " FROM QstdtPaymentDetail d"
+			+ " WHERE d.QstdtPaymentDetailPK.companyCode = :CCD" + " AND d.QstdtPaymentDetailPK.personId = :PID"
+			+ " AND d.QstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
+			+ " AND d.QstdtPaymentDetailPK.categoryATR = :CTG_ATR" + " AND d.QstdtPaymentDetailPK.itemCode = :ITEM_CD";
 
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
@@ -38,25 +44,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				.setParameter("PROCESSING_YM", processingYm).getList(c -> toDomain(c));
 	}
 
-	@Override
-	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
-		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList();
-
-		return !pHeader.isEmpty();
-	}
-
-	@Override
-	public void update(Payment payment) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void importHeader(Payment payment) {
-		// TODO Auto-generated method stub
-
-	}
-
 	private static Payment toDomain(QstdtPaymentHeader entity) {
 		val domain = Payment.createFromJavaType(entity.qstdtPaymentHeaderPK.companyCode,
 				entity.qstdtPaymentHeaderPK.personId, entity.qstdtPaymentHeaderPK.processingNo,
@@ -71,15 +58,40 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		return domain;
 	}
 
-	public void updateDetails(int categoryAtr, List<DetailItem> items) {
+	@Override
+	public void importHeader(Payment payment) {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
+		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList();
+
+		return !pHeader.isEmpty();
+	}
+
+	@Override
+	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
+		List<QstdtPaymentDetail> paymentItems = this.queryProxy().query(SELECT_ITEM, QstdtPaymentDetail.class)
+				.getList();
+
+		return !paymentItems.isEmpty();
+	}
+
+	@Override
+	public void update(Payment payment) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void updateDetails(int categoryAtr, List<DetailItem> items) {
 
 	}
 
 	@Override
 	public void insert(Payment payment) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain) {
@@ -150,11 +162,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 			this.commandProxy().insert(detail);
 		}
-	}
-
-	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }
