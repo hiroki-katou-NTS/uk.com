@@ -1,4 +1,4 @@
-package nts.uk.ctx.core.infra.data.repository.layout;
+package nts.uk.ctx.pr.proto.infra.repository.layout;
 
 import java.util.List;
 import java.util.Optional;
