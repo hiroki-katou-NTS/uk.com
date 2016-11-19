@@ -32,7 +32,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 	@Override
 	protected void handle(CommandHandlerContext<RegisterLayoutCommand> context) {
 		RegisterLayoutCommand command = context.getCommand();
-		LayoutCommand layoutCommand = context.getCommand().getLayoutCommand();
+		Layout layoutCommand = context.getCommand().getLayoutCommand();
 		String companyCode = AppContexts.user().companyCode();
 		String stmtCode = layoutCommand.getStmtCode();
 		int startYm = layoutCommand.getStartYm();
@@ -53,16 +53,16 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		detailProcess(command, layoutCommand, companyCode, stmtCode, startYm);
 	}
 
-	private void detailProcess(RegisterLayoutCommand command, LayoutCommand layoutCommand, String companyCode,
+	private void detailProcess(RegisterLayoutCommand command, Layout layoutCommand, String companyCode,
 			String stmtCode, int startYm) {
 		if (command.getListItemCodeDeleted().size() > 0) {
-			for(LayoutDetailCommand detailDeleteCommand : command.getListItemCodeDeleted()){
+			for(LayoutDetail detailDeleteCommand : command.getListItemCodeDeleted()){
 				detailRepo.remove(companyCode, stmtCode, startYm, detailDeleteCommand.getCategoryAtr(), detailDeleteCommand.getItemCode());
 			}
 		}
 
 		List<LayoutMasterDetail> detailsFromDB = detailRepo.getDetails(companyCode, stmtCode, startYm);
-		for(LayoutDetailCommand detailCommand : command.getDetailCommand()){
+		for(LayoutDetail detailCommand : command.getDetailCommand()){
 			if (detailsFromDB.stream().filter(c ->
 						c.getItemCode().v().equals(detailCommand.getItemCode())
 						&& c.getCategoryAtr().value == detailCommand.getCategoryAtr()).findAny().isPresent()) {
@@ -93,10 +93,10 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		}
 	}
 
-	private void lineProcess(RegisterLayoutCommand command, LayoutCommand layoutCommand, String companyCode,
+	private void lineProcess(RegisterLayoutCommand command, Layout layoutCommand, String companyCode,
 			String stmtCode, int startYm) {
 		if (command.getListAutoLineIdDeleted().size() > 0) {
-			for(LayoutLineCommand lineDeleteCommand : command.getListAutoLineIdDeleted()){
+			for(LayoutLine lineDeleteCommand : command.getListAutoLineIdDeleted()){
 				lineRepo.remove(companyCode, startYm, lineDeleteCommand.getAutoLineId(), 
 						lineDeleteCommand.getCategoryAtr(), stmtCode);
 								
@@ -106,7 +106,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		}
 
 		List<LayoutMasterLine> linesFromDB = lineRepo.getLines(companyCode, stmtCode, startYm);
-		for(LayoutLineCommand lineCommand : command.getLineCommand()){
+		for(LayoutLine lineCommand : command.getLineCommand()){
 			if (linesFromDB.stream().filter(c ->
 						c.getAutoLineId().v().equals(lineCommand.getAutoLineId())
 						&& c.getCategoryAtr().value == lineCommand.getCategoryAtr()).findAny().isPresent()) {
@@ -129,7 +129,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		}
 	}
 
-	private void categoryProcess(RegisterLayoutCommand command, LayoutCommand layoutCommand, String companyCode,
+	private void categoryProcess(RegisterLayoutCommand command, Layout layoutCommand, String companyCode,
 			String stmtCode, int startYm) {
 		if (command.getListCategoryAtrDeleted().size() > 0) {
 			for(Integer categoryAtr : command.getListCategoryAtrDeleted()){
@@ -146,7 +146,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		}
 		
 		List<LayoutMasterCategory> categoriesFromDB = categoryRepo.getCategories(companyCode, stmtCode, startYm);
-		for(LayoutCategoryCommand categoryCommand : command.getCategoryCommand()){
+		for(LayoutCategory categoryCommand : command.getCategoryCommand()){
 			if (categoriesFromDB.stream().filter(c -> 
 						c.getCtAtr().value == categoryCommand.getCategoryAtr()).findAny().isPresent()) {
 				categoryRepo.update(LayoutMasterCategory.createFromJavaType(

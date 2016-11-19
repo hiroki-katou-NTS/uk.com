@@ -7,7 +7,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Getter
 @Setter
-public class LayoutDetailCommand {
+public class LayoutDetail {
 	/**カテゴリ区分 */
 	private int categoryAtr;	
 	/**項目CD */
