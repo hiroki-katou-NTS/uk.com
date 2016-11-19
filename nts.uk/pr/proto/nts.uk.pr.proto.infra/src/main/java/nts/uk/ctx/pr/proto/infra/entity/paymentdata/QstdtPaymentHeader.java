@@ -107,7 +107,7 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	
 	@Basic(optional = false)
 	@Column(name = "EMPINSU_ATR")
-	public int employementInsuranceAtr;
+	public int employmentInsuranceAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "DEPENDENT_NUMBER")

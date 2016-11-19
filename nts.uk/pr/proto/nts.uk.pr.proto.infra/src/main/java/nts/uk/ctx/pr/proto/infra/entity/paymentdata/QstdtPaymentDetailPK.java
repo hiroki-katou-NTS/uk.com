@@ -28,5 +28,17 @@ public class QstdtPaymentDetailPK {
 	
 	@Column(name = "ITEM_CD")
 	public String itemCode;
-	
+
+	public QstdtPaymentDetailPK(String companyCode, String personId, int processingNo, int payBonusAttribute,
+			int processingYM, int sparePayAttribute, int categoryATR, String itemCode) {
+		super();
+		this.companyCode = companyCode;
+		this.personId = personId;
+		this.processingNo = processingNo;
+		this.payBonusAttribute = payBonusAttribute;
+		this.processingYM = processingYM;
+		this.sparePayAttribute = sparePayAttribute;
+		this.categoryATR = categoryATR;
+		this.itemCode = itemCode;
+	}
 }

@@ -68,7 +68,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 												entity.taxAtr,
 												entity.pensionInsuranceGrade, 
 												entity.pensionAverageEarn, 
-												entity.employementInsuranceAtr,
+												entity.employmentInsuranceAtr,
 												entity.dependentNumber, 
 												entity.workInsuranceCalculateAtr, 
 												entity.insuredAtr, 
@@ -85,17 +85,11 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public void importPayment(Payment payment) {
-		// TODO Auto-generated method stub
-
-	}
 	
 	@Override
 	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
 		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList();
-
+		
 		return !pHeader.isEmpty();
 	}
 
@@ -112,17 +106,57 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	}
 
-	public void updateDetails(int categoryAtr, List<DetailItem> items) {
-		// TODO Auto-generated method stub
 
+	public void updateDetails(int categoryAtr, List<DetailItem> items) {
+		
 	}
+	
 
 	@Override
 	public void insert(Payment payment) {
 		// TODO Auto-generated method stub
-
+	}
+	
+	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain){
+		QstdtPaymentHeader entity = new QstdtPaymentHeader();
+		entity.fromDomain(domain);
+		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), domain.getPersonId().v(), domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value, domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value);
+		entity.standardDate = domain.getStandardDate().localDate();
+		entity.specificationCode = domain.getSpecificationCode().v();
+		entity.residenceCode = domain.getResidenceCode().v();
+		entity.residenceName = domain.getResidenceName().v();
+		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceGrade().v().intValue();
+		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceAverageEarn().v().intValue();
+		entity.ageContinuationInsureAtr = domain.getAgeContinuationInsureAtr().value;
+		entity.tenureAtr = domain.getTenureAtr().value;
+		entity.taxAtr = domain.getTaxAtr().value;
+		entity.pensionAverageEarn = domain.getPensionAverageEarn().v().intValue();
+		entity.employmentInsuranceAtr = domain.getEmploymentInsuranceAtr().value;
+		entity.dependentNumber = domain.getDependentNumber().v().intValue();
+		entity.workInsuranceCalculateAtr = domain.getWorkInsuranceCalculateAtr().value;
+		entity.insuredAtr = domain.getInsuredAtr().value;
+		entity.bonusTaxRate = domain.getBonusTaxRate().v().intValue();
+		entity.calcFlag = domain.getCalcFlag().value;
+		entity.makeMethodFlag = domain.getMakeMethodFlag().value;
+		entity.comment = domain.getComment().v();
+		return entity;
+	}
+	
+	private QstdtPaymentDetail toPaymentDetailEntity(Payment domain, DetailItem detail){
+//		QstdtPaymentDetail entity = new QstdtPaymentDetail();
+//		entity.fromDomain(domain);
+//		entity.qstdtPaymentDetailPK = new QstdtPaymentDetailPK(domain.getCompanyCode().v(), domain.getPersonId().v(), domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value, domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value, detail.getCategoryAttribute(), detail.getItemCode());
+		return null;
 	}
 
-	
+	@Override
+	public void importPayment(Payment payment) {
+		// TODO Auto-generated method stub
+		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
+		
+		for (DetailItem item : payment.getDetailPaymentItems()) {
+			QstdtPaymentDetail detail = toPaymentDetailEntity(payment, item);
+		}
+	}
 
 }
