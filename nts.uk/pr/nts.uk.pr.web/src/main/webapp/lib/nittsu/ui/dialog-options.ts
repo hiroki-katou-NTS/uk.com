@@ -1,16 +1,17 @@
-   
+module nts.uk.ui.koExtentions {
+    
     abstract class DialogOption {
         modal: boolean;
         show: boolean = false;
-        protected buttons: DialogButton[];
+        buttons: DialogButton[];
     }
     
     // Normal Dialog
-    interface IDialogOption {
+    export interface IDialogOption {
         modal?: boolean
     }
     
-    class ConfirmDialogOption extends DialogOption {
+    export class ConfirmDialogOption extends DialogOption {
         constructor(option?: IDialogOption)
         {
             super();
@@ -30,7 +31,7 @@
         }
     }
     
-    class DelDialogOption extends DialogOption {
+    export class DelDialogOption extends DialogOption {
         constructor(option?: IDialogOption)
         {
             super();
@@ -60,7 +61,7 @@
         }
     }
     
-    class OKDialogOption extends DialogOption {
+    export class OKDialogOption extends DialogOption {
         constructor(option?: IDialogOption)
         {
             super();
@@ -91,14 +92,14 @@
     }
     
     // Error Dialog
-    interface IErrorDialogOption {
+    export interface IErrorDialogOption {
         modal?: boolean,
         displayrows?: number,
         maxrows?: number,
         autoclose?: boolean
     }
     
-    class ErrorDialogOption extends DialogOption {
+    export class ErrorDialogOption extends DialogOption {
         displayrows: number;
         maxrows: number;
         autoclose: boolean;
@@ -135,3 +136,5 @@
         color: ButtonColor;
         click(viewmodel, ui): void {};
     }
+    
+}
