@@ -30,6 +30,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
 
+	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;
 
 	@Override
@@ -37,10 +38,12 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		String companyCode = AppContexts.user().companyCode();
 		String personId = context.getCommand().getPersonId();
 		int baseYM = context.getCommand().getProcessingYM();
-
+		
+		
 		Payment payment = context.getCommand().toDomain(companyCode);
 		payment.validate();
 
+		// check data
 		boolean isExistHeader = this.paymentDataRepository.isExistHeader(companyCode, personId, PAY_BONUS_ATR, baseYM);
 		if (isExistHeader) {
 			this.isNotExistItem(companyCode, personId, baseYM,
@@ -57,6 +60,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		// update payment header
 		this.paymentDataRepository.update(payment);
 
+		// update detail
 		this.registerDetail(payment, context.getCommand().getDetailPaymentItems());
 		this.registerDetail(payment, context.getCommand().getDetailArticleItems());
 		this.registerDetail(payment, context.getCommand().getDetailDeductionItems());
