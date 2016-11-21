@@ -1,8 +1,9 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.command;
+package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.base.PaymentDataCommandBase;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 
 /**
@@ -14,7 +15,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 @Getter
 @Setter
 @AllArgsConstructor
-public class InsertPaymentDataCommand extends PaymentDataCommand{
+public class InsertPaymentDataCommand extends PaymentDataCommandBase{
 	/**
 	 * Convert to domain object.
 	 * 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.find;
+package nts.uk.ctx.pr.proto.app.find.paymentdata;
 
 import lombok.Value;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;

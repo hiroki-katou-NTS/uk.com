@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.command;
+package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
 import java.util.List;
 import java.util.Locale.Category;
@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.base.DetailItemCommandBase;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
@@ -58,7 +59,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		}
 		this.paymentDataRepository.update(payment);
 		
-		for (DetailItemCommand item : context.getCommand().getDetailPaymentItems()) {
+		for (DetailItemCommandBase item : context.getCommand().getDetailPaymentItems()) {
 			
 			DetailItem detailItem = toDetailItemDomain(item.getItemCode(), 
 														item.getValue().doubleValue(),

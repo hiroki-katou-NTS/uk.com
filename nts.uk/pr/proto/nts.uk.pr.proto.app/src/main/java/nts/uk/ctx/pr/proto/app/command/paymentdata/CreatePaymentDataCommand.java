@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.command;
+package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
 import java.util.List;
 

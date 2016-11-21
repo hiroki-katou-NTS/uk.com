@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.command;
+package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.InsuranceAtr;
  */
 @Getter
 @Setter
-public abstract class PaymentDataCommand {
+public abstract class PaymentDataCommandBase {
 
 	private String personId;
 	
@@ -73,13 +73,13 @@ public abstract class PaymentDataCommand {
 
 	private String comment;
 
-	private List<DetailItemCommand> detailPaymentItems;
+	private List<DetailItemCommandBase> detailPaymentItems;
 
-	private List<DetailItemCommand> detailDeductionItems;
+	private List<DetailItemCommandBase> detailDeductionItems;
 
-	private List<DetailItemCommand> detailPersonalTimeItems;
+	private List<DetailItemCommandBase> detailPersonalTimeItems;
 
-	private List<DetailItemCommand> detailArticleItems;
+	private List<DetailItemCommandBase> detailArticleItems;
 
 	/**
 	 * Convert to domain object.
@@ -126,7 +126,7 @@ public abstract class PaymentDataCommand {
 	 * @param items
 	 * @return
 	 */
-	private List<DetailItem> setDetailItems(List<DetailItemCommand> items) {
+	private List<DetailItem> setDetailItems(List<DetailItemCommandBase> items) {
 		return items.stream().map(c-> {return DetailItem.createFromJavaType(
 				c.getItemCode(), 
 				c.getValue(), 
@@ -143,7 +143,7 @@ public abstract class PaymentDataCommand {
 	 * @param items
 	 * @return
 	 */
-	private List<DetailDeductionItem> setDudectionDetailItems(List<DetailItemCommand> items) {
+	private List<DetailDeductionItem> setDudectionDetailItems(List<DetailItemCommandBase> items) {
 		return items.stream().map(c-> {
 			return new DetailDeductionItem(
 				new ItemCode(c.getItemCode()), 

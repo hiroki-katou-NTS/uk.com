@@ -6,12 +6,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.proto.app.paymentdata.command.CreatePaymentDataCommand;
-import nts.uk.ctx.pr.proto.app.paymentdata.command.CreatePaymentDataCommandHandler;
-import nts.uk.ctx.pr.proto.app.paymentdata.command.InsertPaymentDataCommand;
-import nts.uk.ctx.pr.proto.app.paymentdata.command.InsertPaymentDataCommandHandler;
-import nts.uk.ctx.pr.proto.app.paymentdata.command.UpdatePaymentDataCommand;
-import nts.uk.ctx.pr.proto.app.paymentdata.command.UpdatePaymentDataCommandHandler;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.CreatePaymentDataCommand;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.CreatePaymentDataCommandHandler;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.InsertPaymentDataCommand;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.InsertPaymentDataCommandHandler;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.UpdatePaymentDataCommand;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.UpdatePaymentDataCommandHandler;
 
 @Path("/ctx/pr/proto/paymentdata")
 @Produces("application/json")

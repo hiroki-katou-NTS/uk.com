@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.proto.app.paymentdata.find.PaymentDateProcessingMasterDto;
-import nts.uk.ctx.pr.proto.app.paymentdata.find.PaymentDateProcessingMasterFinder;
+import nts.uk.ctx.pr.proto.app.find.paymentdata.PaymentDateProcessingMasterDto;
+import nts.uk.ctx.pr.proto.app.find.paymentdata.PaymentDateProcessingMasterFinder;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 
 /**

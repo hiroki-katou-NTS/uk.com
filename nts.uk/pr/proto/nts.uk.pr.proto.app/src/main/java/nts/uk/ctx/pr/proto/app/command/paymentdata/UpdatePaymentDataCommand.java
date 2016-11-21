@@ -1,7 +1,8 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.command;
+package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.base.PaymentDataCommandBase;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 
 /**
@@ -12,7 +13,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
  */
 @Getter
 @Setter
-public class UpdatePaymentDataCommand extends PaymentDataCommand {
+public class UpdatePaymentDataCommand extends PaymentDataCommandBase {
 	/** version */
 	private long version;
 

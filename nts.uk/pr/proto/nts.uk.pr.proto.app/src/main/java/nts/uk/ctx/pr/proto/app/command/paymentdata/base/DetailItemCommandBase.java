@@ -1,10 +1,9 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.command;
+package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import lombok.Value;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
 @Value
-public class DetailItemCommand {
+public class DetailItemCommandBase {
 
 	/**
 	 * category atr
@@ -40,15 +39,13 @@ public class DetailItemCommand {
 	 * 労保対象区分
 	 */
 	private int laborInsuranceAtr;
-	
-	
+
 	private int deductionAtr;
-	
 
 	private int linePostion;
 
 	private int colPosition;
-	
+
 	private boolean isCreated;
-	
+
 }

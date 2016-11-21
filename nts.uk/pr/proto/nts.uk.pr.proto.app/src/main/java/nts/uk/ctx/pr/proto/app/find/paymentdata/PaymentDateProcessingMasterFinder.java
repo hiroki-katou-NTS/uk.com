@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.proto.app.paymentdata.find;
+package nts.uk.ctx.pr.proto.app.find.paymentdata;
 
 import java.util.List;
 import java.util.Optional;
