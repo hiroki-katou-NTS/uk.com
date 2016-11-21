@@ -24,6 +24,11 @@ public class InsertPaymentDataCommand extends PaymentDataCommandBase{
 	@Override
 	public Payment toDomain(String companyCode) {
 		Payment domain = super.toDomain(companyCode);
+		domain.setDetailPaymentItems(this.setDetailItems(this.getDetailPaymentItems()));
+		domain.setDetailDeductionItems(this.setDudectionDetailItems(this.getDetailDeductionItems()));
+		domain.setDetailArticleItems(this.setDetailItems(this.getDetailDeductionItems()));
+		domain.setDetailPersonalTimeItems(this.setDetailItems(this.getDetailPersonalTimeItems()));
+		
 		return domain;
 	}
 }

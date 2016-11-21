@@ -184,7 +184,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			paymentHead.setDetailPersonalTimeItems(payDetail.get(CategoryAtr.PERSONAL_TIME));
 			paymentHead.setDetailArticleItems(payDetail.get(CategoryAtr.ARTICLES));
 			
-			paymentDataRepo.importPayment(paymentHead);
+			paymentDataRepo.add(paymentHead);
 		}
 	}
 

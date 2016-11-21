@@ -114,10 +114,6 @@ public abstract class PaymentDataCommandBase {
 				this.makeMethodFlag,
 				this.comment);
 		
-		payment.setDetailPaymentItems(this.setDetailItems(this.detailPaymentItems));
-		payment.setDetailDeductionItems(this.setDudectionDetailItems(this.detailDeductionItems));
-		payment.setDetailArticleItems(this.setDetailItems(this.detailArticleItems));
-		payment.setDetailPersonalTimeItems(this.setDetailItems(this.detailPaymentItems));
 		return payment;
 	}
 	
@@ -126,7 +122,7 @@ public abstract class PaymentDataCommandBase {
 	 * @param items
 	 * @return
 	 */
-	private List<DetailItem> setDetailItems(List<DetailItemCommandBase> items) {
+	public List<DetailItem> setDetailItems(List<DetailItemCommandBase> items) {
 		return items.stream().map(c-> {return DetailItem.createFromJavaType(
 				c.getItemCode(), 
 				c.getValue(), 
@@ -143,7 +139,7 @@ public abstract class PaymentDataCommandBase {
 	 * @param items
 	 * @return
 	 */
-	private List<DetailDeductionItem> setDudectionDetailItems(List<DetailItemCommandBase> items) {
+	public List<DetailDeductionItem> setDudectionDetailItems(List<DetailItemCommandBase> items) {
 		return items.stream().map(c-> {
 			return new DetailDeductionItem(
 				new ItemCode(c.getItemCode()), 

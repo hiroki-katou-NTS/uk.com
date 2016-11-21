@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -49,10 +47,10 @@ public class DetailItem extends DomainObject {
 
 	@Getter
 	private DetailItemPosition itemPostion;
-	
+
 	@Getter
 	private CategoryAtr categoryAttribute;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -82,18 +80,15 @@ public class DetailItem extends DomainObject {
 	}
 
 	/**
-	 * Create data for detail item
-	 * (using for create data)
+	 * Create data for detail item (using for create data)
+	 * 
 	 * @param itemCode
 	 * @param value
 	 * @param categoryAttribute
 	 * @return
 	 */
 	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
-		return new DetailItem(itemCode, value.doubleValue(),
-				CorrectFlag.NO_MODIFY,
-				InsuranceAtr.UN_SUBJECT,
-				InsuranceAtr.UN_SUBJECT,
-				categoryAttribute);
+		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
+				InsuranceAtr.UN_SUBJECT, categoryAttribute);
 	}
 }
