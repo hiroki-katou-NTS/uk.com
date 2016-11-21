@@ -80,7 +80,7 @@
 				numbereditor: {
 					value: ko.observable(1234),
 					constraint: 'CompanyCode',
-					option: ko.mapping.fromJS(new NumberEditorOption()),
+					option: ko.mapping.fromJS(new NumberEditorOption({grouplength: 3, decimallength: 2})),
 					enable: function(enable){
 						var self = this;
 						self.option.enable(enable);
@@ -408,27 +408,11 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>groupseperator</td>
-						<td>
-							<b>Type:</b> string<br/>
-							<b>Default:</b> ","<br/>
-							Group symbol for number
-						</td>
-					</tr>
-					<tr>
 						<td>grouplength</td>
 						<td>
 							<b>Type:</b> number<br/>
 							<b>Default:</b> 0<br/>
 							Length to group number
-						</td>
-					</tr>
-					<tr>
-						<td>decimalseperator</td>
-						<td>
-							<b>Type:</b> string<br/>
-							<b>Default:</b> "."<br/>
-							Seperator symbol for decimal
 						</td>
 					</tr>
 					<tr>
@@ -475,27 +459,11 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>groupseperator</td>
-						<td>
-							<b>Type:</b> string<br/>
-							<b>Default:</b> ","<br/>
-							Group symbol for number
-						</td>
-					</tr>
-					<tr>
 						<td>grouplength</td>
 						<td>
 							<b>Type:</b> number<br/>
 							<b>Default:</b> 0<br/>
 							Length to group number
-						</td>
-					</tr>
-					<tr>
-						<td>decimalseperator</td>
-						<td>
-							<b>Type:</b> string<br/>
-							<b>Default:</b> "."<br/>
-							Seperator symbol for decimal
 						</td>
 					</tr>
 					<tr>

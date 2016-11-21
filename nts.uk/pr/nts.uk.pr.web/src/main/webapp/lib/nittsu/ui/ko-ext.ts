@@ -178,7 +178,6 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
             
             var newText = getValue();
-            console.log(newText);
             $input.val(newText);
         }
     }
@@ -381,39 +380,51 @@ module nts.uk.ui.koExtentions {
                 show = false;
             if (show == true) {
                 $dialog.dialog("open");
+                // Create Error Table
+                var $errorboard = $("<div id='error-board'></div>");
+                var $errortable = $("<table></table>");
+                // Header
+                var $header = $("<thead><tr></tr></thead>");
+                $header.find("tr").append("<th style='width: 35px'></th>");
+                headers.forEach(function(header,index) {
+                    if (header.visible) {
+                        let $headerElement = $("<th>" + header.text + "</th>").width(header.width);
+                        $header.find("tr").append($headerElement);
+                    }
+                });
+                $errortable.append($header);
+                // Body
+                var $body = $("<tbody></tbody>");
+                errors.forEach(function(error, index) {
+                    if(index < maxrows) {
+                        // Row
+                        let $row = $("<tr></tr>");
+                        $row.append("<td style='width:35px'>" + (index + 1) + "</td>");
+                        headers.forEach(function(header){
+                            if (header.visible)
+                                if (error.hasOwnProperty(header.name)) {
+                                    // TD
+                                    let $column = $("<td>" + error[header.name] + "</td>").width(header.width);
+                                    $row.append($column);
+                                }
+                        });
+                        $body.append($row);
+                    }
+                });
+                $errortable.append($body);
+                $errorboard.append($errortable);
+                // Errors over maxrows message
+                var $message = $("<div></div>");
+                if(errors.length > maxrows)
+                    $message.text("Showing " + maxrows + " in total " + errors.length + " errors");
+                $dialog.html("");
+                $dialog.append($errorboard).append($message);
+                // Calculate body height base on displayrow
+                $body.height(displayrows * $(">:first-child", $body).outerHeight() + 1);
             }
             else {
                 $dialog.dialog("close");            
             }
-            // Create Error Table
-            // TODO: Fixed Header, scrollbar inside Body => calculate Header.width = Body.width + scrollbar.width
-            var $errorboard = $("<div id='error-board'></div>");
-            // TODO: Percise calculate ErrorBoard height base on ErrorLine height & Errors < 10
-            $errorboard.outerHeight((displayrows+1)*24 + 1);
-            var $errortable = $("<table></table>");
-            // Header
-            var $header = $("<thead><tr></tr></thead>");
-            $header.find("tr").append("<th></th>");
-            headers.forEach(function(header,index) {
-                if (header.visible)
-                    $header.find("tr").append("<th data-name='" + header.name + "'>" + header.text + "</th>");
-            });
-            $errortable.append($header);
-            // Body
-            var $body = $("<tbody></tbody>");
-            errors.forEach(function(error,index) {
-                // TODO: Get Header.name and error attributes. Render text if match
-                if(index < maxrows)
-                    $body.append("<tr><td>" + (index + 1) + "</td><td>" + error.tab + "</td><td>" + error.location + "</td><td>" + error.message + "</td></tr>");
-            });
-            $errortable.append($body);
-            $errorboard.append($errortable);
-            // Over Size message
-            var $message = $("<div></div>");
-            if(errors.length > maxrows)
-                $message.text("Showing " + maxrows + " in total " + errors.length + " errors");
-            $dialog.html("");
-            $dialog.append($errorboard).append($message);
         }
     }
     

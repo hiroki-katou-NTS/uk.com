@@ -27,20 +27,14 @@
 		
 		/* Import for test */		
 		#error-board {
-			overflow: auto;
+			overflow: hidden;
 		}
 		
 		#error-board table {
 			border-collapse: collapse;
 			width: 100%;
+			min-width: 510px;
 			margin: 0;
-		}
-		
-		#error-board table tr:hover {
-			background: #C5F1F7;
-		}
-		
-		#error-board table th{
 		}
 		
 		#error-board table th,
@@ -48,8 +42,10 @@
 			border: solid 1px #bbb;
 			white-space: nowrap;
 			padding: 3px;
+			height: 24px;
 			font-family: "Meiryo UI";
 			font-size: 13px;
+			box-sizing: border-box;
 		}
 		
 		#error-board table th,
@@ -57,9 +53,16 @@
 			background-color:#A4EEB0;
 		}
 		
-		#error-board table td {
-			
+		#error-board table thead tr{
+			display: block;
+			position: relative;
 		}
+		
+		#error-board table tbody {
+			float:left;
+			display: block;
+			overflow: auto;
+		}		
 	</style>
 	
 	<!-- Script -->
@@ -150,9 +153,9 @@
 				errordialog: {
 					title: ko.observable("Error Dialog title"),
 					headers: ko.observableArray([
-						new ErrorHeader("tab", "タブ", true),
-						new ErrorHeader("location", "エラー箇所", true),
-						new ErrorHeader("message", "エラー詳細", true)
+						new ErrorHeader("tab", "タブ", 90, true),
+						new ErrorHeader("location", "エラー箇所", 115, true),
+						new ErrorHeader("message", "エラー詳細", 250, true)
 					]),
 					errors: ko.observableArray([
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
@@ -185,9 +188,10 @@
 				}
 			};
 
-			function ErrorHeader(nane, text, visible){
+			function ErrorHeader(name, text, width, visible){
 				this.name = name;
 				this.text = text;
+				this.width = width;
 				this.visible = visible;
 			};
 			
@@ -543,7 +547,7 @@ function ErrorHeader(nane, text, visible){
 				</colgroup>
 				<thead>
 					<tr>
-						<th><h4>ConfirmDialogOption</h4></th>
+						<th><h4>ErrorDialogOption</h4></th>
 						<th><h4>Description</h4></th>
 					</tr>
 				</thead>
@@ -552,7 +556,7 @@ function ErrorHeader(nane, text, visible){
 						<td>modal</td>
 						<td>
 							<b>Type:</b> boolean<br/>
-							<b>Default:</b> true<br/>
+							<b>Default:</b> false<br/>
 							Display dialog in modal mode
 						</td>
 					</tr>

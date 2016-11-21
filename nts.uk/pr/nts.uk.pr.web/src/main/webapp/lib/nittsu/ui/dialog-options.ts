@@ -5,6 +5,7 @@
         protected buttons: DialogButton[];
     }
     
+    // Normal Dialog
     interface IDialogOption {
         modal?: boolean
     }

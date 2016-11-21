@@ -46,6 +46,14 @@ var NumberEditorOption = (function (_super) {
         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
         this.width = (option && option.width) ? option.width : "";
         this.textalign = (option && option.textalign) ? option.textalign : "left";
+        // Regex: /^-?\d+(\,\d{3})*([.]\d+)?$/
+        this.regex = "/^-?\\d+";
+        if (this.grouplength > 0)
+            this.regex += "(\\" + this.groupseperator + "\\d{" + this.grouplength + "})*";
+        if (this.decimallength > 0)
+            this.regex += "([" + this.decimalseperator + "]\\d+)?";
+        this.regex += "$/";
+        console.log(this.regex);
     }
     return NumberEditorOption;
 }(EditorOptionBase));
@@ -60,7 +68,7 @@ var CurrencyEditorOption = (function (_super) {
         this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
         this.currencyformat = (option && option.currencyformat) ? option.currencyformat : "JPY";
         this.currencyposition = (option && option.currencyposition) ? option.currencyposition : "";
-        // TODO: Write ()=> to return instead of check
+        // TODO: Write ()=> to return string instead of check
         switch (this.currencyformat) {
             case "JPY":
                 this.currencyposition = "left";
