@@ -16,21 +16,13 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommuteP
 @RequestScoped
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
-	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute WHERE c.pprmtPersonCommutePK.ccd = :CCD and c.pprmtPersonCommutePK.pId = :PID and c.pprmtPersonCommutePK.strYm <= :BASEYM and c.endYm >= :BASEYM";
+	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute WHERE c.pprmtPersonCommutePK.ccd = :CCD and c.pprmtPersonCommutePK.pId IN (:PID) and c.pprmtPersonCommutePK.strYm <= :BASEYM and c.endYm >= :BASEYM";
 
 	@Override
 	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIdList, int baseYM) {
-		List<PersonalCommuteFee> lstPersonalCommuteFee = new ArrayList<>();
-		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<PersonalCommuteFee> tmpPersonalCommuteFee = this.queryProxy()
-					.query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class).setParameter("CCD", companyCode)
-					.setParameter("PID", personIdList.get(i)).setParameter("BASEYM", baseYM)
-					.getSingle(c -> toDomain(c));
-			if (tmpPersonalCommuteFee.isPresent()) {
-				lstPersonalCommuteFee.add(tmpPersonalCommuteFee.get());
-			}
-		}
-		return lstPersonalCommuteFee;
+		return this.queryProxy().query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class)
+				.setParameter("CCD", companyCode).setParameter("PID", personIdList)
+				.setParameter("BASEYM", baseYM).getList(c -> toDomain(c));
 	}
 
 	private static PersonalCommuteFee toDomain(PprmtPersonCommute entity) {
