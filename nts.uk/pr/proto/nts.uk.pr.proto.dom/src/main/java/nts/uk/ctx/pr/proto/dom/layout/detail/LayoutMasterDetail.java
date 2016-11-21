@@ -349,7 +349,15 @@ public class LayoutMasterDetail extends AggregateRoot{
 	 * Check Category = ARTICLES || OTHER
 	 * @return
 	 */
-	public boolean isCategoryArticlesOrOther() {
-		return CategoryAtr.ARTICLES == this.categoryAtr || CategoryAtr.OTHER == this.categoryAtr;
+	public boolean isCategoryArticles() {
+		return CategoryAtr.ARTICLES == this.categoryAtr;
+	}
+	
+	/**
+	 * Check Category = OTHER
+	 * @return
+	 */
+	public boolean isCategoryOther() {
+		return CategoryAtr.OTHER == this.categoryAtr;
 	}
 }
