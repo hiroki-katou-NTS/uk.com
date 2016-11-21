@@ -156,12 +156,13 @@ var nts;
                         var then = $.noop;
                         setTimeout(function () {
                             var $this = createNoticeDialog(text, [
-                                $('<button/>').addClass('large')
-                                    .text("OK")
-                                    .click(function () {
-                                    $this.dialog('close');
-                                    then();
-                                })
+                                { text: "はい",
+                                    "class": "large",
+                                    click: function () {
+                                        $this.dialog('close');
+                                        then();
+                                    }
+                                }
                             ]);
                         }, 0);
                         return {

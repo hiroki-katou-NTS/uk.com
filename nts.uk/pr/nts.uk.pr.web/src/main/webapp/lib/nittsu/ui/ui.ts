@@ -182,12 +182,13 @@
                     var $this = createNoticeDialog(
                         text,
                         [
-                            $('<button/>').addClass('large')
-                                .text("OK")
-                                .click(function () {
+                            {text: "はい",
+                               "class": "large",
+                               click: function(){
                                     $this.dialog('close');
                                     then();
-                                })
+                               }
+                             }
                         ]);
                 }, 0);
                 
