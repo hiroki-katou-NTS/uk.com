@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.screen.app.query.paymentdata.repository;
+package nts.uk.ctx.pr.screen.app.query.paymentdata;
 
 import java.util.List;
 import java.util.Optional;

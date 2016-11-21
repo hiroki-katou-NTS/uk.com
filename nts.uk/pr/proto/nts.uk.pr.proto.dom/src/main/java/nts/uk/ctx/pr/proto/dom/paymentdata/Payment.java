@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -110,23 +111,19 @@ public class Payment extends AggregateRoot {
 	private Comment comment;
 	
 	@Getter
-	@Setter
-	private List<DetailItem> detailPaymentItems;
+	private List<DetailItem> detailPaymentItems = new ArrayList<>();
 
 	@Getter
-	@Setter
-	private List<DetailDeductionItem> detailDeductionItems;
+	private List<DetailDeductionItem> detailDeductionItems = new ArrayList<>();
 
 	@Getter
-	@Setter
-	private List<DetailItem> detailPersonalTimeItems;
+	private List<DetailItem> detailPersonalTimeItems = new ArrayList<>();
 
 	@Getter
-	@Setter
-	private List<DetailItem> detailArticleItems;
+	private List<DetailItem> detailArticleItems = new ArrayList<>();
 
 	@Getter
-	private List<PrintPositionCategory> printCategories;
+	private List<PrintPositionCategory> printCategories = new ArrayList<>();
 
 	public Payment(
 				CompanyCode companyCode, 
@@ -300,9 +297,29 @@ public class Payment extends AggregateRoot {
 		payment.setDetailPaymentItems(detailPaymentItems);
 		payment.setDetailDeductionItems(detailDeductionItems);
 		payment.setDetailPersonalTimeItems(detailPersonalTimeItems);
-		payment.setDetailPersonalTimeItems(detailPersonalTimeItems);
+		payment.setDetailArticleItems(detailArticleItems);
 		
 		return payment;
+	}
+	
+	public void setDetailPaymentItems(List<DetailItem> items) {
+		this.detailPaymentItems.clear();
+		this.detailPaymentItems.addAll(items);
+	}
+	
+	public void setDetailDeductionItems(List<DetailDeductionItem> items) {
+		this.detailDeductionItems.clear();
+		this.detailDeductionItems.addAll(items);
+	}
+	
+	public void setDetailPersonalTimeItems(List<DetailItem> items) {
+		this.detailPersonalTimeItems.clear();
+		this.detailPersonalTimeItems.addAll(items);
+	}
+	
+	public void setDetailArticleItems(List<DetailItem> items) {
+		this.detailArticleItems.clear();
+		this.detailArticleItems.addAll(items);
 	}
 	
 	/**

@@ -118,23 +118,6 @@ public abstract class PaymentDataCommandBase {
 	}
 	
 	/**
-	 * convert data from command to value object detail item
-	 * @param items
-	 * @return
-	 */
-	public List<DetailItem> setDetailItems(List<DetailItemCommandBase> items) {
-		return items.stream().map(c-> {return DetailItem.createFromJavaType(
-				c.getItemCode(), 
-				c.getValue(), 
-				c.getCorrectFlag(), 
-				c.getSocialInsuranceAtr(), 
-				c.getLaborInsuranceAtr(),
-				c.getCategoryAtr()
-				);
-				}).collect(Collectors.toList());
-	}
-	
-	/**
 	 * convert data from command to value object deduction detail item
 	 * @param items
 	 * @return

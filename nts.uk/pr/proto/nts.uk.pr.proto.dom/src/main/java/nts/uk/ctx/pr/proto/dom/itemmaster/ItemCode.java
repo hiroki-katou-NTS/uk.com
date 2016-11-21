@@ -21,4 +21,19 @@ public class ItemCode extends CodePrimitiveValue<ItemCode>{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	public boolean isRemainDaysOfHoliday() {
+		return this.v().equals("F206");
+	}
+	
+	public boolean isRemainTimeOfHoliday() {
+		return this.v().equals("F212");
+	}
+	
+	public boolean isNeededWorkDays() {
+		return this.v().equals("F201") || this.v().equals("F202");
+	}
+	
+	public boolean isNeededWorkTime() {
+		return this.v().equals("F203");
+	}
 }

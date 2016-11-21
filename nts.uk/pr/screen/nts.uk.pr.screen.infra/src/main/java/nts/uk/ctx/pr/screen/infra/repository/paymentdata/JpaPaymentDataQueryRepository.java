@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRepository;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.PaymentDataQueryRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
 
 @RequestScoped

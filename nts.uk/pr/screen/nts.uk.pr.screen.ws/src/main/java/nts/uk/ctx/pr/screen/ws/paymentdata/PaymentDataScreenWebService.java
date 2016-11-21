@@ -5,10 +5,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.pr.screen.app.query.paymentdata.processor.GetPaymentDataQueryProcessor;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.query.PaymentDataQuery;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.GetPaymentDataQueryProcessor;
+import nts.uk.ctx.pr.screen.app.query.paymentdata.PaymentDataQuery;
 
-@Path("/ctx/pr/screen/paymentdata")
+@Path("/screen/pr/qpp005/paymentdata")
 @Produces("application/json")
 public class PaymentDataScreenWebService {
 	@Inject

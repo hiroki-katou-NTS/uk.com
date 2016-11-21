@@ -1,12 +1,15 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.holiday;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author hungnm
  *
  */
 public interface HolidayPaidRepository {
+	
+	Optional<HolidayPaid> find(String companyCode, String personId);
 	
 	/**
 	 * 

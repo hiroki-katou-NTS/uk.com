@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.dom.paymentdata;
 import lombok.AllArgsConstructor;
 
 /**
- * 予備月区分
+ * 在職区分
  * 
  * @author vunv
  *

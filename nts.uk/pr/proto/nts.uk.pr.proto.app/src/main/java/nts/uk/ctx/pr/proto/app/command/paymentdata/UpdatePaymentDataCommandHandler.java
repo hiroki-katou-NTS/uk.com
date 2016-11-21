@@ -46,13 +46,13 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		// check data
 		boolean isExistHeader = this.paymentDataRepository.isExistHeader(companyCode, personId, PAY_BONUS_ATR, baseYM);
 		if (isExistHeader) {
-			this.isNotExistItem(companyCode, personId, baseYM,
+			this.checkIfAllItemsExist(companyCode, personId, baseYM,
 					context.getCommand().getDetailPaymentItems());
-			this.isNotExistItem(companyCode, personId, baseYM,
+			this.checkIfAllItemsExist(companyCode, personId, baseYM,
 					context.getCommand().getDetailPersonalTimeItems());
-			this.isNotExistItem(companyCode, personId, baseYM,
+			this.checkIfAllItemsExist(companyCode, personId, baseYM,
 					context.getCommand().getDetailArticleItems());
-			this.isNotExistItem(companyCode, personId, baseYM, context.getCommand().getDetailDeductionItems());
+			this.checkIfAllItemsExist(companyCode, personId, baseYM, context.getCommand().getDetailDeductionItems());
 		} else {
 			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
 		}
@@ -73,7 +73,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 * @param categoryAtr
 	 * @param items
 	 */
-	private void isNotExistItem(String companyCode, String personId, int baseYM, List<DetailItemCommandBase> items) {
+	private void checkIfAllItemsExist(String companyCode, String personId, int baseYM, List<DetailItemCommandBase> items) {
 		for (DetailItemCommandBase item : items) {
 			boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
 					item.getCategoryAtr(), item.getItemCode());

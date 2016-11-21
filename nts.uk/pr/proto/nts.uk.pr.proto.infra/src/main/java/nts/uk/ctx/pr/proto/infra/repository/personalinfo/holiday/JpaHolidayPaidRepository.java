@@ -38,4 +38,10 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 		return domain;
 	}
 
+	@Override
+	public Optional<HolidayPaid> find(String companyCode, String personId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

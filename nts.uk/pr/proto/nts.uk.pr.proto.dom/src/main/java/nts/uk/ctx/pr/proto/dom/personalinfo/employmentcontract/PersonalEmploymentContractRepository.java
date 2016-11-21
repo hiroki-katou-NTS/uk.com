@@ -1,9 +1,14 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface PersonalEmploymentContractRepository {
+	
+	Optional<PersonalEmploymentContract> find(String companyCode, String personId, LocalDate baseYmd);
+	
 	/**
 	 * 
 	 * @param companyCode

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import lombok.Value;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
 @Value
 public class DetailItemCommandBase {
@@ -48,4 +49,14 @@ public class DetailItemCommandBase {
 
 	private boolean isCreated;
 
+	public DetailItem toDomain() {
+		return DetailItem.createFromJavaType(
+				getItemCode(), 
+				getValue(), 
+				getCorrectFlag(), 
+				getSocialInsuranceAtr(), 
+				getLaborInsuranceAtr(),
+				getCategoryAtr()
+				);
+	}
 }

@@ -66,23 +66,16 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		this.commandProxy().insert(paymentHeader);
 
 		for (DetailItem item : payment.getDetailPaymentItems()) {
-			QstdtPaymentDetail detail = toPaymentDetailEntity(payment, item);
-			this.commandProxy().insert(detail);
+			this.insertDetail(payment, item);
 		}
 		for (DetailItem item : payment.getDetailDeductionItems()) {
-			QstdtPaymentDetail detail = toPaymentDetailEntity(payment, item);
-
-			this.commandProxy().insert(detail);
+			this.insertDetail(payment, item);
 		}
 		for (DetailItem item : payment.getDetailPersonalTimeItems()) {
-			QstdtPaymentDetail detail = toPaymentDetailEntity(payment, item);
-
-			this.commandProxy().insert(detail);
+			this.insertDetail(payment, item);
 		}
 		for (DetailItem item : payment.getDetailArticleItems()) {
-			QstdtPaymentDetail detail = toPaymentDetailEntity(payment, item);
-
-			this.commandProxy().insert(detail);
+			this.insertDetail(payment, item);
 		}
 	}
 

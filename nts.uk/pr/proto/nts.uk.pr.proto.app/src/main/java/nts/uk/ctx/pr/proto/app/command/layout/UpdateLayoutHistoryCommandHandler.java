@@ -51,6 +51,23 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		
 		//Validate by EA: 12.履歴の編集-登録時チェック処理
 		Optional<LayoutMaster> layoutBefore = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartYmOriginal());
+		validateHistorySpan(command, layoutOrigin, layoutBefore);
+		
+		layoutOrigin.setStartYM(new YearMonth(command.getStartYmNew()));
+		layoutRepo.update(layoutOrigin);
+	
+		updateCurrentObject(command, companyCode);
+		
+		layoutBefore.ifPresent(lb -> {
+			lb.adjustForNextHistory(layoutOrigin);
+			layoutRepo.update(lb);
+		});
+		
+		updatePreviousObject(command, companyCode, layoutOrigin);
+	}
+
+	private void validateHistorySpan(UpdateLayoutHistoryCommand command, LayoutMaster layoutOrigin,
+			Optional<LayoutMaster> layoutBefore) {
 		if (layoutBefore.isPresent()) {
 			//直前の[明細書マスタ]の開始年月　＜　入力した開始年月　≦　終了年月　の場合
 			if (command.getStartYmNew() < layoutBefore.get().getStartYM().v()
@@ -62,17 +79,6 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 				throw new BusinessException(new RawErrorMessage("履歴の期間が重複しています。"));
 			}
 		}
-		
-		layoutOrigin.setStartYM(new YearMonth(command.getStartYmNew()));
-		layoutRepo.update(layoutOrigin);
-	
-		updateCurrentObject(command, companyCode);
-		if (layoutBefore.isPresent()) {
-			layoutBefore.get().setEndYM(new YearMonth(command.getStartYmNew() - 1));
-			layoutRepo.update(layoutBefore.get());
-		}
-		updatePreviousObject(command, companyCode, layoutOrigin);
-		
 	}
 
 	private void updatePreviousObject(UpdateLayoutHistoryCommand command, String companyCode,

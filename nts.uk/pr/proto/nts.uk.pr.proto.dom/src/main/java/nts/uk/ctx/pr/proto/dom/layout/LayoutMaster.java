@@ -75,4 +75,7 @@ public class LayoutMaster extends AggregateRoot {
 				new LayoutName(stmtName));
 	}
 	
+	public void adjustForNextHistory(LayoutMaster nextHistory) {
+		//this.endYM = nextHistory.getStartYM().previousMonth();
+	}
 }

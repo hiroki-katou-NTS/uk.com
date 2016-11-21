@@ -106,11 +106,11 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		YearMonth baseYearMonth = YearMonth.of(currentDate.year(), currentDate.month());
 				
 		// get PayrollSystem
-		Map<String, PersonalEmploymentContract> employmentContracts = getPersonalEmploymentContract(
-				loginInfo.companyCode(), command.getPersonIdList(), currentDate.date());
+		//Map<String, PersonalEmploymentContract> employmentContracts = getPersonalEmploymentContract(
+		//		loginInfo.companyCode(), command.getPersonIdList(), currentDate.date());
 
 		// get holiday
-		Map<String, HolidayPaid> holidays = getHoliday(loginInfo.companyCode(), command.getPersonIdList());
+		//Map<String, HolidayPaid> holidays = getHoliday(loginInfo.companyCode(), command.getPersonIdList());
 
 		// get basic calculate
 		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode()).get();
@@ -121,71 +121,73 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		// calculate personal
 		for (String personId : command.getPersonIdList()) {
-			// check exists
-			boolean isExists = paymentDataCheckService.isExists(loginInfo.companyCode(), personId, PayBonusAtr.SALARY, command.getProcessingYearMonth());
-			if (!isExists) {
-				throw new RuntimeException("既にデータが存在します。");
-			}
-			
-			//
-			// Start calculate payment
-			//
-			PersonalEmploymentContract employmentContract = employmentContracts.get(personId);
-			HolidayPaid holiday = holidays.get(personId);
-
-			// get allot personal setting
-			PersonalAllotSetting personalAllotSetting = getPersonalAllotSetting(loginInfo.companyCode(), personId,
-					command.getProcessingYearMonth());
-
-			// get layout master
-			LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
-					command.getProcessingYearMonth(), personalAllotSetting.getPaymentDetailCode().v()).get();
-
-			PaymentDetailParam param = new PaymentDetailParam(loginInfo.companyCode(), new PersonId(personId),
-					baseYearMonth.v(), command.getProcessingYearMonth());
-			param.setHoliday(holiday);
-			param.setPayCalBasicInfo(payCalBasicInfo);
-			param.setEmploymentContract(employmentContract);
-			param.setPaymentDateMaster(payDay);
-			param.setPersonalAllotSetting(personalAllotSetting);
-
-			// calculate payment detail
-			Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
-
-			// get layout master detail
-			List<LayoutMasterDetail> layoutDetailMasterList = layoutDetailMasterRepo.getDetailsWithSumScopeAtr(loginInfo.companyCode(),
-					layoutHead.getStmtCode().v(), layoutHead.getStartYM().v(), CategoryAtr.PAYMENT.value,
-					SumScopeAtr.INCLUDED.value);
-
-			List<DetailItem> detailPaymentList = new ArrayList<>();
-			List<DetailDeductionItem> detailDeductionList = new ArrayList<>();
-
-			for (LayoutMasterDetail item : layoutDetailMasterList) {
-				// calculate total payment
-				List<DetailItem> detailPaymentItems = payDetail.get(CategoryAtr.PAYMENT).stream()
-						.filter(x -> item.getItemCode().equals(x.getItemCode())).collect(Collectors.toList());
-				
-				if (detailPaymentItems.size() > 0) {
-					detailPaymentList.addAll(detailPaymentItems);
-				}
-
-				// calculate deduction total payment
-				List<DetailDeductionItem> detailDeductionItems = payDetail.get(CategoryAtr.DEDUCTION).stream()
-						.filter(x -> item.getItemCode().equals(x.getItemCode()))
-						.map(x -> this.toDetailDeductionItem(x)).collect(Collectors.toList());
-				if (detailDeductionItems.size() > 0) {
-					detailDeductionList.addAll(detailDeductionItems);
-				}
-			}
-
-			Payment paymentHead = this.toDomain(loginInfo.companyCode(), personId, command);
-			paymentHead.setDetailPaymentItems(detailPaymentList);
-			paymentHead.setDetailDeductionItems(detailDeductionList);
-			paymentHead.setDetailPersonalTimeItems(payDetail.get(CategoryAtr.PERSONAL_TIME));
-			paymentHead.setDetailArticleItems(payDetail.get(CategoryAtr.ARTICLES));
-			
-			paymentDataRepo.add(paymentHead);
+			calculatePersonalPayment(
+					loginInfo,
+					YearMonth.of(command.getProcessingYearMonth()),
+					command.getProcessingNo(),
+					baseYearMonth,
+					payCalBasicInfo,
+					payDay,
+					personId);
 		}
+	}
+
+	private void calculatePersonalPayment(
+			LoginUserContext loginInfo,
+			YearMonth processingYearMonth,
+			int processingNo,
+			YearMonth baseYearMonth,
+			PaymentCalculationBasicInformation payCalBasicInfo,
+			PaymentDateMaster payDay,
+			String personId) {
+		// check exists
+		boolean isExists = paymentDataCheckService.isExists(loginInfo.companyCode(), personId, PayBonusAtr.SALARY, processingYearMonth.v());
+		if (!isExists) {
+			throw new RuntimeException("既にデータが存在します。");
+		}
+		
+		//
+		// Start calculate payment
+		//
+		PersonalEmploymentContract employmentContract = personalEmploymentContractRepo.find(
+				loginInfo.companyCode(), personId, GeneralDate.today().localDate()).get();
+		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId).get();
+
+		// get allot personal setting
+		PersonalAllotSetting personalAllotSetting = getPersonalAllotSetting(loginInfo.companyCode(), personId,
+				processingYearMonth.v());
+
+		// get layout master
+		LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
+				processingYearMonth.v(), personalAllotSetting.getPaymentDetailCode().v()).get();
+
+		PaymentDetailParam param = new PaymentDetailParam(
+				loginInfo.companyCode(),
+				new PersonId(personId),
+				baseYearMonth,
+				processingYearMonth,
+				holiday,
+				employmentContract,
+				payCalBasicInfo,
+				payDay,
+				personalAllotSetting);
+
+		// calculate payment detail
+		Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
+
+		// get layout master detail
+		List<LayoutMasterDetail> layoutDetailMasterList = layoutDetailMasterRepo.getDetailsWithSumScopeAtr(loginInfo.companyCode(),
+				layoutHead.getStmtCode().v(), layoutHead.getStartYM().v(), CategoryAtr.PAYMENT.value,
+				SumScopeAtr.INCLUDED.value);
+
+		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutDetailMasterList);
+		List<DetailDeductionItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutDetailMasterList);
+
+		Payment paymentHead = this.toDomain(
+				loginInfo.companyCode(), personId, processingNo, processingYearMonth,
+				detailPaymentList, detailDeductionList, payDetail);
+		
+		paymentDataRepo.add(paymentHead);
 	}
 
 	/**
@@ -193,27 +195,24 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * 
 	 * @return domain
 	 */
-	private Payment toDomain(String companyCode, String personId, CreatePaymentDataCommand command) {
+	private Payment toDomain(String companyCode, String personId, int processingNo, YearMonth processingYearMonth,
+			List<DetailItem> detailPaymentList, List<DetailDeductionItem> detailDeductionList,
+			Map<CategoryAtr, List<DetailItem>> payDetail) {
 		Payment payment = new Payment(new CompanyCode(companyCode), new PersonId(personId),
-				new ProcessingNo(command.getProcessingNo()), PayBonusAtr.SALARY, 
-				new YearMonth(command.getProcessingYearMonth()), SparePayAtr.NORMAL, // ??
+				new ProcessingNo(processingNo), PayBonusAtr.SALARY, 
+				processingYearMonth, SparePayAtr.NORMAL, // ??
 				GeneralDate.today(), // ??
 				null, null, null, null, null, AgeContinuationInsureAtr.NOT_TARGET, TenureAtr.CHILDCARE_LEAVE,
 				TaxAtr.TAXATION, null, null, EmploymentInsuranceAtr.A, null,
 				WorkInsuranceCalculateAtr.FULL_TIME_EMPLOYEE, InsuredAtr.GENERAL_INSURED_PERSON, null,
 				CalcFlag.UN_CALCULATION, MakeMethodFlag.INITIAL_DATA, null);
 
+		payment.setDetailPaymentItems(detailPaymentList);
+		payment.setDetailDeductionItems(detailDeductionList);
+		payment.setDetailPersonalTimeItems(payDetail.get(CategoryAtr.PERSONAL_TIME));
+		payment.setDetailArticleItems(payDetail.get(CategoryAtr.ARTICLES));
+		
 		return payment;
-	}
-
-	/**
-	 * Convert to detail deduction
-	 * @param detailItem
-	 * @return
-	 */
-	private DetailDeductionItem toDetailDeductionItem(DetailItem detailItem) {
-		return new DetailDeductionItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
-				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION, detailItem.getCategoryAttribute());
 	}
 
 	/**

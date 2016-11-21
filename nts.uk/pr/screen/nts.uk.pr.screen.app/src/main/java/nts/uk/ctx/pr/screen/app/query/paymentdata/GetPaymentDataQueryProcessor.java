@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.screen.app.query.paymentdata.processor;
+package nts.uk.ctx.pr.screen.app.query.paymentdata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,6 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.query.PaymentDataQuery;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.repository.PaymentDataQueryRepository;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemPositionDto;
 import nts.uk.ctx.pr.screen.app.query.paymentdata.result.LayoutMasterCategoryDto;
@@ -88,26 +86,23 @@ public class GetPaymentDataQueryProcessor {
 	public PaymentDataResult find(PaymentDataQuery query) {
 		PaymentDataResult result = new PaymentDataResult();
 		String companyCode = AppContexts.user().companyCode();
-		int startYM;
-		String stmtCode = "";
 
 		// get 処理年月マスタ
 		PaymentDateProcessingMaster payDateMaster = this.payDateMasterRepository.find(companyCode, PAY_BONUS_ATR, PROCESSING_NO).get();
-		startYM = payDateMaster.getCurrentProcessingYm().v();
+		int processingYM = payDateMaster.getCurrentProcessingYm().v();
 
 		// get stmtCode
-		Optional<PersonalAllotSetting> optpersonalPS = this.personalPSRepository.find(companyCode, query.getPersonId(),
-				payDateMaster.getCurrentProcessingYm().v());
-		if (optpersonalPS.isPresent()) {
-			stmtCode = optpersonalPS.get().getPaymentDetailCode().v();
-		} else {
-			stmtCode = this.companyAllotSettingRepository.find(companyCode, startYM).get().getPaymentDetailCode().v();
-		}
+		String stmtCode = this.personalPSRepository.find(companyCode, query.getPersonId(),
+				payDateMaster.getCurrentProcessingYm().v())
+				.map(o -> o.getPaymentDetailCode().v())
+				.orElseGet(() -> {
+					return this.companyAllotSettingRepository.find(companyCode, processingYM).get().getPaymentDetailCode().v();
+				});
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, startYM, stmtCode)
+		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, processingYM, stmtCode)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
-		startYM = layout.getStartYM().v();
+		int startYM = layout.getStartYM().v();
 
 		// get 明細書マスタカテゴリ
 		List<LayoutMasterCategory> mCates = this.layoutMasterCategoryRepository.getCategories(companyCode,
@@ -124,7 +119,16 @@ public class GetPaymentDataQueryProcessor {
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(),
 				payDateMaster.getProcessingNo().v(), PAY_BONUS_ATR, payDateMaster.getCurrentProcessingYm().v(), 0);
 		
-		List<DetailItemDto> detailItems = null;
+		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, payDateMaster, layout, optPHeader);
+		
+		result.setCategories(mergeDataToLayout(mCates, lines, lDetails, detailItems));
+		return result;
+	}
+
+
+	private List<DetailItemDto> getDetailItems(PaymentDataQuery query, PaymentDataResult result, String companyCode,
+			PaymentDateProcessingMaster payDateMaster, LayoutMaster layout, Optional<Payment> optPHeader) {
+		
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
 			result.setPaymenHeader(new PaymentDataHeaderDto
@@ -137,8 +141,8 @@ public class GetPaymentDataQueryProcessor {
 					    payment.getComment().v())
 					);
 			
-			detailItems = this.queryRepository
-			.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, payDateMaster.getCurrentProcessingYm().v());
+			return this.queryRepository
+					.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, payDateMaster.getCurrentProcessingYm().v());
 
 		} else { 
 			result.setPaymenHeader(new PaymentDataHeaderDto
@@ -150,10 +154,10 @@ public class GetPaymentDataQueryProcessor {
 			    query.getEmployeeCode(), 
 			    null
 			));
+			
+			return new ArrayList<>();
 		}
-		
-		result.setCategories(this.mergeDataToLayout(mCates, lines, lDetails, detailItems));
-		return result;
+
 	}
 
 	
@@ -166,37 +170,48 @@ public class GetPaymentDataQueryProcessor {
 	 * @param datas
 	 * @return
 	 */
-	private List<LayoutMasterCategoryDto> mergeDataToLayout(
-			List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines, List<LayoutMasterDetail> details, List<DetailItemDto> datas) {
+	private static List<LayoutMasterCategoryDto> mergeDataToLayout(
+			List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines,
+			List<LayoutMasterDetail> details, List<DetailItemDto> datas) {
+		
 		List<LayoutMasterCategoryDto> categories = new ArrayList<>();
+		
 		for (LayoutMasterCategory category : mCates) {
 			int ctAtr = category.getCtAtr().value;
 			List<DetailItemDto> items = new ArrayList<>();
 			for (LayoutMasterDetail item : details) {
-				LayoutMasterLine mLine = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr
-						&& x.getAutoLineId().equals(item.getAutoLineId())).findFirst().get();
-				Optional<DetailItemDto> optItemDto = datas.stream().filter(x-> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(item.getItemCode().v())).findFirst();
-				
-				Double value = null;
-				if (optItemDto.isPresent()) {
-					value = optItemDto.get().getValue();
-				}
-				
-				DetailItemDto detailItem = DetailItemDto.fromDomain(
-						ctAtr, item.getItemCode().v(),
-						item.getItemAbName().v(), 
-						value,
-						DetailItemPositionDto
-								.fromDomain(
-										mLine.getLinePosition().v(), 
-										item.getItemPosColumn().v()),
-						Objects.isNull(value)? false: true		
-						);
-				
+				DetailItemDto detailItem = createDetailItemDto(lines, datas, ctAtr, item);
 				items.add(detailItem);
 			}
+			
 			categories.add(LayoutMasterCategoryDto.fromDomain(ctAtr, category.getCtgPos().v(), items));
 		}
+		
 		return categories;
+	}
+
+
+	private static DetailItemDto createDetailItemDto(List<LayoutMasterLine> lines, List<DetailItemDto> datas, int ctAtr,
+			LayoutMasterDetail item) {
+		LayoutMasterLine mLine = lines.stream()
+				.filter(x -> x.getCategoryAtr().value == ctAtr && x.getAutoLineId().equals(item.getAutoLineId()))
+				.findFirst().get();
+		
+		Double value = datas.stream()
+				.filter(x-> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(item.getItemCode().v()))
+				.findFirst()
+				.map(d -> d.getValue())
+				.orElse(null);
+		
+		DetailItemDto detailItem = DetailItemDto.fromDomain(
+				ctAtr, item.getItemCode().v(),
+				item.getItemAbName().v(), 
+				value,
+				DetailItemPositionDto.fromDomain(
+						mLine.getLinePosition().v(), 
+						item.getItemPosColumn().v()),
+				value != null
+				);
+		return detailItem;
 	}
 }
