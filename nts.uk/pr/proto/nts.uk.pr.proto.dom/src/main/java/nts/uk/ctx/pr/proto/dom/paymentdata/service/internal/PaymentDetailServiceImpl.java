@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service.internal;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +10,13 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.InsuranceAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailParam;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
@@ -69,64 +65,34 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				.collect(Collectors.toList());
 		
 		// LAYOUT_DETAIL with CTR_ATR = 2
-
-
+		val detailsOfCategoryPersonalTime = layoutMasterDetailList.stream()
+				.filter(l -> l.isCategoryPersonalTime())
+				.map(l -> createDetailOfCategoryPersonalTime(param, l))
+				.collect(Collectors.toList());
+		
+		// LAYOUT_DETAIL with CTR_ATR = 3
+		val detailsOfCategoryArticles = layoutMasterDetailList.stream()
+				.filter(l -> l.isCategoryArticles())
+				.map(l -> createDetailOfCategoryArticlesOrOther(l))
+				.collect(Collectors.toList());
+		
+		// LAYOUT_DETAIL with CTR_ATR = 9
+		val detailsOfCategoryOther = layoutMasterDetailList.stream()
+				.filter(l -> l.isCategoryOther())
+				.map(l -> createDetailOfCategoryArticlesOrOther(l))
+				.collect(Collectors.toList());
+		
 		Map<CategoryAtr, List<DetailItem>> payDetail = new HashMap<>();
 		payDetail.put(CategoryAtr.PAYMENT, detailsOfCategoryPayment);
+		payDetail.put(CategoryAtr.DEDUCTION, detailsOfCategoryDeduction);
+		payDetail.put(CategoryAtr.PERSONAL_TIME, detailsOfCategoryPersonalTime);
+		payDetail.put(CategoryAtr.ARTICLES, detailsOfCategoryArticles);
+		payDetail.put(CategoryAtr.OTHER, detailsOfCategoryOther);
 		
 		return payDetail;
-		/*
-		for (LayoutMasterDetail itemLayoutMasterDetail : layoutMasterDetailList) {
-			List<DetailItem> details = new ArrayList<>();
-			DetailItem detail = null;
-
-			// get item code
-			String itemCode = itemLayoutMasterDetail.getItemCode().v();
-
-			// get item
-			ItemMaster itemMaster = itemMasterRepo
-					.getItemMaster(param.getCompanyCode(), itemLayoutMasterDetail.getCategoryAtr().value, itemCode)
-					.get();
-			
-			//
-			// LAYOUT_DETAIL with CTR_ATR = 2
-			//
-			
-			if (itemLayoutMasterDetail.isCategoryPersonalTime()) {
-
-			}
-			
-			//
-			// LAYOUT_DETAIL with CTR_ATR = 1
-			//
-			
-			if (itemLayoutMasterDetail.isCategoryDeduction()) {
-
-			}
-			
-			//
-			// LAYOUT_DETAIL with CTR_ATR = 3 || 9
-			//
-			
-			if (itemLayoutMasterDetail.isCategoryArticlesOrOther()) {
-				detail = DetailItem.createDataDetailItem(itemLayoutMasterDetail.getItemCode(), 0.0, itemLayoutMasterDetail.getCategoryAtr());
-			}
-
-			// check exists
-			if (payDetail.containsKey(itemLayoutMasterDetail.getCategoryAtr())) {
-				List<DetailItem> detailItems = payDetail.get(itemLayoutMasterDetail.getCategoryAtr());
-				detailItems.add(detail);
-				payDetail.remove(itemLayoutMasterDetail.getCategoryAtr());
-			} 
-			
-			payDetail.put(itemLayoutMasterDetail.getCategoryAtr(), details);
-		}
-
-		return payDetail;
-		*/
 	}
 	
-
+	/** Create data detail with Layout.Category = 0 **/
 	private DetailItem createDetailOfCategoryPayment(
 			PaymentDetailParam param,
 			LayoutMasterDetail layout,
@@ -147,6 +113,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		}
 	}
 
+	/** Create data detail with Layout.Category = 1 **/
 	private DetailItem createDetailOfCategoryDeduction(
 			PaymentDetailParam param,
 			LayoutMasterDetail layout) {
@@ -165,10 +132,11 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
 			return DetailItem.createDataDetailItem(layout.getItemCode(), 0.0, layout.getCategoryAtr());
 		} else {
-			throw new RuntimeException("Error system");
+			throw new RuntimeException("システムエラー");
 		}
 	}
 	
+	/** Create data detail with Layout.Category = 2 **/
 	private DetailItem createDetailOfCategoryPersonalTime(
 			PaymentDetailParam param,
 			LayoutMasterDetail layout) {
@@ -183,13 +151,18 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// PayrollSystem == 0 || 1
 			value = getPayValueByPayrollDayHours(layout.getItemCode(), param.getHoliday());
 		} else {
-			throw new RuntimeException("Error system");
+			throw new RuntimeException("システムエラー");
 		}
 		
 		return DetailItem.createDataDetailItem(layout.getItemCode(), value, layout.getCategoryAtr());
 	}
+	
+	/** Create data detail with Layout.Category = 3 || 9 **/
+	private DetailItem createDetailOfCategoryArticlesOrOther(LayoutMasterDetail layout) {
+		return DetailItem.createDataDetailItem(layout.getItemCode(), 0.0, layout.getCategoryAtr());
+	}
 
-
+	/** Get item master **/
 	private ItemMaster getItemMaster(PaymentDetailParam param, LayoutMasterDetail layout) {
 		ItemMaster itemMaster = itemMasterRepo
 				.getItemMaster(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
