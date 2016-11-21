@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.screen.app.query.paymentdata;
+package nts.uk.ctx.pr.screen.app.query.qpp005;
 
 import lombok.Data;
 

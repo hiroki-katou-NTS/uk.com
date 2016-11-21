@@ -1,11 +1,8 @@
-package nts.uk.ctx.pr.screen.app.query.paymentdata;
+package nts.uk.ctx.pr.screen.app.query.qpp005;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
-import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
@@ -27,11 +23,11 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemPositionDto;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.LayoutMasterCategoryDto;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataHeaderDto;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.PaymentDataResult;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemPositionDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.LayoutMasterCategoryDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataHeaderDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataResult;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
