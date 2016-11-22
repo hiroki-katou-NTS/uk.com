@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.proto.app.command.paymentdata.InsertPaymentDataCommandHandl
 import nts.uk.ctx.pr.proto.app.command.paymentdata.UpdatePaymentDataCommand;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.UpdatePaymentDataCommandHandler;
 
-@Path("/ctx/pr/proto/paymentdata")
+@Path("pr/proto/paymentdata")
 @Produces("application/json")
 public class PaymentDataWebService extends WebService {
 	@Inject
