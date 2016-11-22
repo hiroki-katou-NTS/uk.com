@@ -114,9 +114,9 @@
 				},
 				// MaskEditor
 				maskeditor: {
-					value: ko.observable("12:00"),
+					value: ko.observable("0001"),
 					constraint: 'CompanyCode',
-					option: ko.mapping.fromJS(new TimeEditorOption()),
+					option: ko.mapping.fromJS(new MaskEditorOption()),
 					enable: function(enable){
 						var self = this;
 						self.option.enable(enable);
@@ -743,7 +743,7 @@
 		<div class="cf">
 			<h2>MaskEditor</h2>
 			<div data-bind="with: maskeditor">
-				<input data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option}" />
+				<input data-bind="ntsMaskEditor: {value: value, constraint: constraint, option: option}" />
 				<br/><br/>
 				<!--  Using Method -->
 				<button data-bind="click: enable.bind($data, true)">enable</button>

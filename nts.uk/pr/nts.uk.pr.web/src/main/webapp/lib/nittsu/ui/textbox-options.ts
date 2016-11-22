@@ -41,6 +41,17 @@
         }
     }
 
+    class MaskEditorOption extends EditorOptionBase {
+        constructor(option?: ITextEditorOption) {
+            super();
+            // Default value
+            this.textmode = (option && option.textmode) ? option.textmode : "text";
+            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
+            this.width = (option && option.width) ? option.width : "";
+            this.textalign = (option && option.textalign) ? option.textalign : "left";
+        }
+    }
+
     
     // Number Editor Option
     interface INumberEditorOption{

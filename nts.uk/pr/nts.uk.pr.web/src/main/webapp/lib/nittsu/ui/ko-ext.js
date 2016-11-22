@@ -168,6 +168,60 @@ var nts;
                     return NtsTimeEditorBindingHandler;
                 }());
                 /**
+                 * TextEditor
+                 */
+                var NtsMaskEditorBindingHandler = (function () {
+                    function NtsMaskEditorBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsMaskEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var setValue = data.value;
+                        this.constraint = validation.getCharType(data.constraint);
+                        var $input = $(element);
+                        $input.change(function () {
+                            var newText = $input.val();
+                            bindingContext.$data.change(newText);
+                            setValue(newText);
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsMaskEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var getValue = data.value;
+                        var option = ko.unwrap(data.option);
+                        var textmode = ko.unwrap(option.textmode);
+                        var enable = ko.unwrap(option.enable);
+                        var readonly = ko.unwrap(option.readonly);
+                        var placeholder = ko.unwrap(option.placeholder);
+                        var width = ko.unwrap(option.width);
+                        var textalign = ko.unwrap(option.textalign);
+                        var $input = $(element);
+                        $input.attr('type', textmode);
+                        if (enable !== false)
+                            $input.removeAttr('disabled');
+                        else
+                            $input.attr('disabled', 'disabled');
+                        if (readonly === false)
+                            $input.removeAttr('readonly');
+                        else
+                            $input.attr('readonly', 'readonly');
+                        $input.attr('placeholder', placeholder);
+                        if (width.trim() != "")
+                            $input.width(width);
+                        if (textalign.trim() != "")
+                            $input.css('text-align', textalign);
+                        var newText = getValue();
+                        $input.val(newText);
+                    };
+                    return NtsMaskEditorBindingHandler;
+                }());
+                /**
                  * TextBox
                  */
                 var NtsTextBoxBindingHandler = (function () {
@@ -1195,6 +1249,7 @@ var nts;
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
+                ko.bindingHandlers['ntsMaskEditor'] = new NtsMaskEditorBindingHandler();
                 ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();

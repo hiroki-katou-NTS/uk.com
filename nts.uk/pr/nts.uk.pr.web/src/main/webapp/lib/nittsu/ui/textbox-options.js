@@ -34,6 +34,18 @@ var TimeEditorOption = (function (_super) {
     }
     return TimeEditorOption;
 }(EditorOptionBase));
+var MaskEditorOption = (function (_super) {
+    __extends(MaskEditorOption, _super);
+    function MaskEditorOption(option) {
+        _super.call(this);
+        // Default value
+        this.textmode = (option && option.textmode) ? option.textmode : "text";
+        this.placeholder = (option && option.placeholder) ? option.placeholder : "";
+        this.width = (option && option.width) ? option.width : "";
+        this.textalign = (option && option.textalign) ? option.textalign : "left";
+    }
+    return MaskEditorOption;
+}(EditorOptionBase));
 var NumberEditorOption = (function (_super) {
     __extends(NumberEditorOption, _super);
     function NumberEditorOption(option) {
