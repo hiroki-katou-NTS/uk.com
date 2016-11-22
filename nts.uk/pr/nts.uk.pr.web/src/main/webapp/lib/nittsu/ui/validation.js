@@ -36,13 +36,15 @@ var nts;
                 validation.CharType = CharType;
                 var ValidationResult = (function () {
                     function ValidationResult() {
-                        this.errorMessage = 'error';
+                        this.errorMessage = 'error message';
                     }
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
                 function getCharType(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
+                    if (constraint.charType === undefined)
+                        constraint.charType = "Any";
                     var charType = charTypes[constraint.charType];
                     if (charType === undefined) {
                         throw new Error('invalid charTypeName: ' + constraint.charType);
