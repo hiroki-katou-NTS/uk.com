@@ -1,0 +1,53 @@
+html, body{position: relative;}
+.container{padding:25px 40px;}
+a{color:#00B050;text-decoration: none;}
+b{font-weight:bold;}
+i{font-style: italic;display:inline-block;min-width:80px;}
+h2{color:#00B050;font-size: 25px; margin-bottom:20px;}
+h3{color:#00B050;font-size: 20px; margin-bottom:10px;}
+h4{margin:3px 0;font-weight:bold;}
+hr{margin: 25px 0;}
+table{float:left;border-collapse: collapse;margin:10px 30px 30px 0;}
+table th, table td{padding: 5px 5px;border:1px solid #ccc;}
+table th{background:#eee;border-bottom-width:2px;}
+table td:first-child{background:#fafafa;}
+pre{background:#eff0f1;padding:10px 5px;color:#333;margin:10px 0;}
+
+/* Import for test */		
+#error-board {
+	overflow: hidden;
+}
+
+#error-board table {
+	border-collapse: collapse;
+	width: 100%;
+	min-width: 510px;
+	margin: 0;
+}
+
+#error-board table th,
+#error-board table td {
+	border: solid 1px #bbb;
+	white-space: nowrap;
+	padding: 3px;
+	height: 24px;
+	font-family: "Meiryo UI";
+	font-size: 13px;
+	box-sizing: border-box;
+}
+
+#error-board table th,
+#error-board table td:first-child {
+	background-color:#A4EEB0;
+}
+
+#error-board table thead tr{
+	display: block;
+	position: relative;
+}
+
+#error-board table tbody {
+	float:left;
+	display: block;
+	overflow: auto;
+}	
