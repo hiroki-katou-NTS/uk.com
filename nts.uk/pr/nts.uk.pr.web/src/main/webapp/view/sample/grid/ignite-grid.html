@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
+	<meta charset="UTF-8"></meta>
 	<title>Ignite Grid Sample</title>
 	
 	<!-- CSS -->
@@ -30,6 +30,7 @@
 	    $(function () {
 	        for (var i = 0; i < northwindProducts.length; i++) {
 	            northwindProducts[i].ImageUrl = "http://lorempixel.com/50/50/food/" + (i % 10) + "/";
+	            console.log(northwindProducts[i].ImageUrl);
 	        }
 	        
 	        $("#ig-grid").igGrid({
@@ -37,7 +38,7 @@
 	            width: '100%',
 	            columns: [
 	                { headerText: "Product ID", key: "ProductID", dataType: "number", width: "15%", hidden: true },
-	                { headerText: "Image", key: "ImageUrl", dataType: "string", width: "15%", template: "<img src=\"${ImageUrl}\"/>" },
+                    { headerText: "Image", key: "ImageUrl", dataType: "string", width: "15%", template: "<img src=\"${ImageUrl}\"/>" },
 	                { headerText: "Product Name", key: "ProductName", dataType: "string", width: "25%" },
 	                { headerText: "Category", key: "CategoryName", dataType: "string", width: "25%" },
 	                { headerText: "Units In Stock", key: "InStock", dataType: "number", width: "35%" }
@@ -83,14 +84,14 @@
 	        });
 	        $("#ig-grid tbody").selectable({
 	        	stop: customSelectRow,
-	        	distance: 30
+	        	distance: 30,
+	        	filter: "tr"
 	        });
 	        function customSelectRow(){
 		        $grid = $('#ig-grid');
 	        	$grid.igGridSelection("clearSelection");
-		        var cells = $grid.find('tr.ui-selected');
-		        console.log(cells);
-		        cells.each(function(index){
+		        var rows = $grid.find('.ui-selected');
+		        rows.each(function(index){
 		        	$grid.igGridSelection("selectRow", ($grid.igGrid("getElementInfo", $(this)).rowIndex));
 		        })
 	        }
