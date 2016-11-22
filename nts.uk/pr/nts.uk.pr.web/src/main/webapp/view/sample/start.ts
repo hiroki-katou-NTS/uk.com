@@ -12,7 +12,9 @@ __viewContext.ready(function () {
         $('#popup-area').ntsPopup('show');
     });
 
-    var vm = {}; // developer's view model
+    var vm = {
+        hoge: ko.observable('aaa')
+    }; // developer's view model
     this.bind(vm);
     
 });

@@ -22,7 +22,9 @@
     
     	<div id="header">ゆーけー！</div>
         
-        <ui:insert name="content" />
+        <div data-bind="with: content">
+        	<ui:insert name="content" />
+        </div>
 
     </h:body>
 
