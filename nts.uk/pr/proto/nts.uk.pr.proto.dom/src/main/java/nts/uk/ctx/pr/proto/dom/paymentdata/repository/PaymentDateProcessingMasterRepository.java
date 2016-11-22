@@ -16,7 +16,7 @@ public interface PaymentDateProcessingMasterRepository {
 	Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute, int processingNo);
 
 	/**
-	 * 
+	 * Get list payment date processing with condition display = 1
 	 * @param companyCode
 	 * @param paymentBonusAtribute
 	 * @return PaymentDateProcessingMaster

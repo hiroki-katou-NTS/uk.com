@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessing;
@@ -15,7 +16,8 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		implements PaymentDateProcessingMasterRepository {
 
-	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr";
+	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING "
+			+ "WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr and c.dispAtr = :dispAtr ";
 
 	@Override
 	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute,
@@ -29,6 +31,7 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		return this.queryProxy()
 				.query(SELECT_NOT_WITH_PROCESSINGNO, QpdmtPaydayProcessing.class).setParameter("CCD", companyCode)
 				.setParameter("payBonusAtr", paymentBonusAtribute)
+				.setParameter("dispAtr", DisplayAtr.DISPLAY.value)
 				.getList(c -> toDomain(c));
 	}
 
