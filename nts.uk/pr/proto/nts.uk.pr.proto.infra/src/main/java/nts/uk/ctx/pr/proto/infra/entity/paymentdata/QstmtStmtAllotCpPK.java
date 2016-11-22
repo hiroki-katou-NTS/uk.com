@@ -17,4 +17,6 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "STR_YM")
 	public int startDate;
+	
+	public QstmtStmtAllotCpPK() {}
 }
