@@ -19,24 +19,14 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPer
 public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		implements PersonalEmploymentContractRepository {
 	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract"
-			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :CCD"
-			+ " and c.pclmtPersonEmpContractPK.pId = :PID"
-			+ " and c.pclmtPersonEmpContractPK.strD <= :BASEYMD"
-			+ " and c.endD >= :BASEYMD";
+			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :CCD" + " and c.pclmtPersonEmpContractPK.pId IN (:PID)"
+			+ " and c.pclmtPersonEmpContractPK.strD <= :BASEYMD" + " and c.endD >= :BASEYMD";
 
 	@Override
 	public List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIdList, Date baseYmd) {
-		List<PersonalEmploymentContract> lstPersonalEmploymentContract = new ArrayList<>();
-		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<PersonalEmploymentContract> tmpPersonalEmploymentContract = this
-					.queryProxy().query(SELECT_BY_CCD_PID_STRD_ENDD, PclmtPersonEmpContract.class)
-					.setParameter("CCD", companyCode).setParameter("PID", personIdList.get(i))
-					.setParameter("BASEYMD", baseYmd).getSingle(c -> toDomain(c));
-			if (tmpPersonalEmploymentContract.isPresent()) {
-				lstPersonalEmploymentContract.add(tmpPersonalEmploymentContract.get());
-			}
-		}
-		return lstPersonalEmploymentContract;
+		return this.queryProxy().query(SELECT_BY_CCD_PID_STRD_ENDD, PclmtPersonEmpContract.class)
+				.setParameter("CCD", companyCode).setParameter("PID", personIdList).setParameter("BASEYMD", baseYmd)
+				.getList(c -> toDomain(c));
 	}
 
 	private static PersonalEmploymentContract toDomain(PclmtPersonEmpContract entity) {

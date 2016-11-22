@@ -1,8 +1,9 @@
-package nts.uk.ctx.pr.screen.app.query.paymentdata;
+package nts.uk.ctx.pr.screen.app.query.qpp005;
 
 import java.util.List;
 import java.util.Optional;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
+
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
 
 public interface PaymentDataQueryRepository {
 	

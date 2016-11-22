@@ -14,26 +14,18 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.holiday.PhldtHolidayPaid;
 
 @RequestScoped
 public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPaidRepository {
-	
-	private final String SELECT_BY_CCD_AND_PID = "SELECT c FROM PhldtHolidayPaid WHERE c.phldtHolidayPaidPK.ccd = :CCD and c.phldtHolidayPaidPK.pId = :PID";
+
+	private final String SELECT_BY_CCD_AND_PID = "SELECT c FROM PhldtHolidayPaid WHERE c.phldtHolidayPaidPK.ccd = :CCD and c.phldtHolidayPaidPK.pId IN (:PID)";
 
 	@Override
 	public List<HolidayPaid> findAll(String companyCode, List<String> personIdList) {
-		List<HolidayPaid> lstHolidayPaid = new ArrayList<>();
-		for (int i = 0; i < personIdList.size(); i++) {
-			Optional<HolidayPaid> tmpHolidayPaid = (Optional<HolidayPaid>) this.queryProxy().query(SELECT_BY_CCD_AND_PID, PhldtHolidayPaid.class)
-					.setParameter("CCD", companyCode)
-					.setParameter("PID", personIdList.get(i))
-					.getSingle(c -> toDomain(c));
-			if(tmpHolidayPaid.isPresent()){
-				lstHolidayPaid.add(tmpHolidayPaid.get());
-			}
-		}
-		return lstHolidayPaid;
+		return this.queryProxy().query(SELECT_BY_CCD_AND_PID, PhldtHolidayPaid.class).setParameter("CCD", companyCode)
+				.setParameter("PID", personIdList).getList(c -> toDomain(c));
 	}
-	
-	private static HolidayPaid toDomain(PhldtHolidayPaid entity){
-		val domain = HolidayPaid.createFromJavaType(entity.remainDays, entity.remainTime, entity.phldtHolidayPaidPK.pId.toString());
+
+	private static HolidayPaid toDomain(PhldtHolidayPaid entity) {
+		val domain = HolidayPaid.createFromJavaType(entity.remainDays, entity.remainTime,
+				entity.phldtHolidayPaidPK.pId.toString());
 		entity.toDomain(domain);
 		return domain;
 	}

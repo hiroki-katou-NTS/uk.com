@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.PaymentDataQueryRepository;
-import nts.uk.ctx.pr.screen.app.query.paymentdata.result.DetailItemDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.PaymentDataQueryRepository;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
 
 @RequestScoped
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {

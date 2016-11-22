@@ -71,6 +71,8 @@
 	<script src="../../../lib/generic/knockoutjs/knockout-3.4.0.js"></script>
 	<script src="../../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
 	<script src="../../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
+	<script src="../../../lib/nittsu/util.js"></script>
+	<script src="../../../lib/nittsu/ui/ui.js"></script>
 	<script src="../../../lib/nittsu/ui/ko-ext.js"></script>
 	<script src="../../../lib/nittsu/ui/dialog-options.js"></script>
 
@@ -92,13 +94,14 @@
 	</script>
 	<script>
 		var vm;
+		var koExtentions = nts.uk.ui.koExtentions;
 		$(function () {
 			vm = {
 				// Dialog Confirm
 				dialogconfirm: {
 					title: ko.observable(""),
 					message: ko.observable(""),
-					option: ko.mapping.fromJS(new ConfirmDialogOption()),
+					option: ko.mapping.fromJS(new koExtentions.ConfirmDialogOption()),
 					okButtonClicked: function(){},
 					cancelButtonClicked: function(){},
 					open: function(){
@@ -115,7 +118,7 @@
 				dialogdel: {
 					title: ko.observable(""),
 					message: ko.observable("You want a message, you get a message."),
-					option: ko.mapping.fromJS(new DelDialogOption()),
+					option: ko.mapping.fromJS(new koExtentions.DelDialogOption()),
 					okButtonClicked: function(){
 						alert("Ok");
 					},
@@ -136,7 +139,7 @@
 				dialogok: {
 					title: ko.observable("A test Title"),
 					message: ko.observable("This is a test message created for test purpose."),
-					option: ko.mapping.fromJS(new OKDialogOption()),
+					option: ko.mapping.fromJS(new koExtentions.OKDialogOption()),
 					okButtonClicked: function(){},
 					cancelButtonClicked: function(){},
 					open: function(){
@@ -175,7 +178,7 @@
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
 						{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
 					]),
-					option: ko.mapping.fromJS(new ErrorDialogOption({maxrows: 25})),
+					option: ko.mapping.fromJS(new koExtentions.ErrorDialogOption({maxrows: 25})),
 					closeButtonClicked: function(){},
 					open: function(){
 						var self = this;
@@ -200,6 +203,8 @@
 			$('#dialog-open').click(function(){
 				vm.dialogconfirm.open();
 			})
+			
+			$("#tabs").tabs();
 		});
 		
 		function test(){
@@ -247,6 +252,10 @@
 		vm.dialogdel.open();
 	}</pre>
 			<br/>
+			<br/>
+			<h3>Function Wrap</h3>
+			<p>Paste following code to console:</p>
+			<pre>nts.uk.ui.dialog.confirm("test").ifYes(function () { alert('yes') }).ifNo(function () { alert('no'); })</pre>
 			<!-- ViewModel -->
 			<div class="cf">
 				<h3>Dialog ViewModel</h3>

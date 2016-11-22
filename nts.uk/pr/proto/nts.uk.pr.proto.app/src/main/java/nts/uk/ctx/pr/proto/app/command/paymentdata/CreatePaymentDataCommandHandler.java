@@ -1,18 +1,13 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -23,7 +18,6 @@ import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
@@ -105,13 +99,6 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		GeneralDate currentDate = GeneralDate.today();
 		YearMonth baseYearMonth = YearMonth.of(currentDate.year(), currentDate.month());
 				
-		// get PayrollSystem
-		//Map<String, PersonalEmploymentContract> employmentContracts = getPersonalEmploymentContract(
-		//		loginInfo.companyCode(), command.getPersonIdList(), currentDate.date());
-
-		// get holiday
-		//Map<String, HolidayPaid> holidays = getHoliday(loginInfo.companyCode(), command.getPersonIdList());
-
 		// get basic calculate
 		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode()).get();
 
@@ -132,6 +119,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		}
 	}
 
+	/**
+	 * Calculate personal payment. 
+	 */
 	private void calculatePersonalPayment(
 			LoginUserContext loginInfo,
 			YearMonth processingYearMonth,
@@ -213,38 +203,6 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		payment.setDetailArticleItems(payDetail.get(CategoryAtr.ARTICLES));
 		
 		return payment;
-	}
-
-	/**
-	 * Get group holiday by person id
-	 * 
-	 * @return
-	 */
-	private Map<String, HolidayPaid> getHoliday(String companyCode, List<String> personIdList) {
-		// get holiday
-		List<HolidayPaid> holidayList = holidayPaidRepo.findAll(companyCode, personIdList);
-
-		return holidayList.stream().collect(Collectors.toMap(x -> {
-			return x.getPersonId().v();
-		}, x -> x));
-	}
-
-	/**
-	 * Get group personal employment contract.
-	 * 
-	 * @param companyCode
-	 * @param personIdList
-	 * @param date
-	 * @return
-	 */
-	private Map<String, PersonalEmploymentContract> getPersonalEmploymentContract(String companyCode,
-			List<String> personIdList, Date date) {
-		List<PersonalEmploymentContract> personalEmploymentContractList = personalEmploymentContractRepo
-				.findAll(companyCode, personIdList, date);
-
-		return personalEmploymentContractList.stream().collect(Collectors.toMap(x -> {
-			return x.getPersonId().v();
-		}, x -> x));
 	}
 
 	/**
