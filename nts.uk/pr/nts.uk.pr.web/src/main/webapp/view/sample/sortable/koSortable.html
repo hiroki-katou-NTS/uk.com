@@ -146,7 +146,7 @@
         	
             this.selectedItem(item);
             this.itemForEditing(new Item(ko.toJS(item)));
-            $('#item-dialog').dialog();
+            $('#item-dialog').dialog({modal: true});
         },
         
         acceptItem: function(item) {
