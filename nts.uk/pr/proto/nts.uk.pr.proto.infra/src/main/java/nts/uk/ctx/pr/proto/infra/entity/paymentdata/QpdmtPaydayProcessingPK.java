@@ -30,4 +30,5 @@ public class QpdmtPaydayProcessingPK implements Serializable {
 		this.processingNo = processingNo;
 	}
 	
+	public QpdmtPaydayProcessingPK() {}
 }
