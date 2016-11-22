@@ -41,7 +41,8 @@ public class GetPaymentDataQueryProcessor {
 
 	private static final int PAY_BONUS_ATR = 0;
 	
-	private static final int PROCESSING_NO = 0;
+	/** 雇用区分マスタ]の処理日番号*/
+	private static final int PROCESSING_NO = 1;
 
 	/** PersonalPaymentSettingRepository */
 	@Inject
@@ -89,7 +90,7 @@ public class GetPaymentDataQueryProcessor {
 
 		// get stmtCode
 		String stmtCode = this.personalPSRepository.find(companyCode, query.getPersonId(),
-				payDateMaster.getCurrentProcessingYm().v())
+				processingYM)
 				.map(o -> o.getPaymentDetailCode().v())
 				.orElseGet(() -> {
 					return this.companyAllotSettingRepository.find(companyCode, processingYM).get().getPaymentDetailCode().v();
@@ -113,17 +114,28 @@ public class GetPaymentDataQueryProcessor {
 
 		// get header of payment
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(),
-				payDateMaster.getProcessingNo().v(), PAY_BONUS_ATR, payDateMaster.getCurrentProcessingYm().v(), 0);
+				PROCESSING_NO, PAY_BONUS_ATR, processingYM, 0);
 		
-		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, payDateMaster, layout, optPHeader);
+		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, layout, optPHeader);
 		
 		result.setCategories(mergeDataToLayout(mCates, lines, lDetails, detailItems));
 		return result;
 	}
 
 
+	/**
+	 * 項目明細を取得
+	 * 
+	 * @param query
+	 * @param result
+	 * @param companyCode
+	 * @param payDateMaster
+	 * @param layout
+	 * @param optPHeader
+	 * @return
+	 */
 	private List<DetailItemDto> getDetailItems(PaymentDataQuery query, PaymentDataResult result, String companyCode,
-			PaymentDateProcessingMaster payDateMaster, LayoutMaster layout, Optional<Payment> optPHeader) {
+		 int processingYM, LayoutMaster layout, Optional<Payment> optPHeader) {
 		
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
@@ -138,7 +150,7 @@ public class GetPaymentDataQueryProcessor {
 					);
 			
 			return this.queryRepository
-					.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, payDateMaster.getCurrentProcessingYm().v());
+					.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else { 
 			result.setPaymenHeader(new PaymentDataHeaderDto
