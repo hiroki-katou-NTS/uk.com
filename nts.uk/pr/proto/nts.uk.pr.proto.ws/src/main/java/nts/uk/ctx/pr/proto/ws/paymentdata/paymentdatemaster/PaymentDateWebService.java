@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
  * @author chinhbv
  *
  */
-@Path("/ctx/pr/proto/paymentdatemaster")
+@Path("pr/proto/paymentdatemaster")
 @Produces("application/json")
 public class PaymentDateWebService extends WebService {
 	@Inject
