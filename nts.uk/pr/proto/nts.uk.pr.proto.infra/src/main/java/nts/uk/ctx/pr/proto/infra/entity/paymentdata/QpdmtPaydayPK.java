@@ -6,6 +6,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
+
 @Embeddable
 public class QpdmtPaydayPK implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,5 +41,5 @@ public class QpdmtPaydayPK implements Serializable {
 		this.sparePayAtr = sparePayAtr;
 	}
 
-	
+	public QpdmtPaydayPK() {}
 }
