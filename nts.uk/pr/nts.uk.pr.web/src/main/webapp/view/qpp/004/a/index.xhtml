@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
+            	
+            	<link rel="stylesheet" type="text/css" href="style.css" />
+				<script src="start.js" />
+				<script src="viewmodel.js" />
+				<script src="service.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	
+            	<div id="functions-area">
+            	</div>
+            	
+            	<div id="contents-area">
+            		<div class="notification-area">
+            			<label>通知エリア</label>
+	            		<br/>
+	            		<label>
+	            		→雇用変更による複数回明細発行対象者等を通知するエリアとして利用する
+	            		</label>
+            		</div>
+            		
+            		<div>
+            			<label>行いたい操作を選んでください。</label>
+            		</div>
+            		
+            		<div class="form-label inline required">
+            			<label>対象となる処理区分を選択</label>
+            			<div id="combo-box"
+							data-bind="ntsComboBox: {options: paymentDateProcessingList,
+											optionsValue: 'processingNo',
+											value: selectedPaymetnProcessing,
+											optionsText: 'processingName',
+											columns: [
+												{ prop: 'processingNo', length: 4 },
+												{ prop: 'processingName', length: 10 },
+											]}"
+							class="cf"></div>
+            		</div>
+            		
+            		<div class="current-year-month">
+            			<img src="img/icon_calendar.PNG" />
+            			<div class="lbl-year-month">
+	            			<label class="lbl-1">処理する給与明細書の年月</label>
+	            			<label class="lbl-2">2016/04</label>
+            			</div>
+            		</div>
+            		
+            		<div class="action-btn">
+            			<a class="btn-1" data-bind="click: redirectToCreateData"><img src="img/a_btn_001.PNG" /></a>
+            			<a class="btn-2" ><img src="img/a_btn_002.PNG" /></a>
+            			<a class="btn-3" >再集計はどんな時にやるのか。<br/>
+							やる際の注意点とかを記載する。
+            			</a>
+            		</div>
+            	</div>
+            	
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>
