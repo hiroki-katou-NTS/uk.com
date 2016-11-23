@@ -20,7 +20,7 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPer
 @RequestScoped
 public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		implements PersonalEmploymentContractRepository {
-	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract"
+	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract c"
 			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :ccd" + " and c.pclmtPersonEmpContractPK.pId IN :pIds"
 			+ " and c.pclmtPersonEmpContractPK.strD <= :baseYmd" + " and c.endD >= :baseYmd";
 
