@@ -81,7 +81,7 @@
                     $dialog.dialog('option', {
                         width: dialogGlobal.dialogSize.width,
                         height: dialogGlobal.dialogSize.height,
-                        title: 'dialog',
+                        title: options.title || "dialog",
                         beforeClose: function () {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
