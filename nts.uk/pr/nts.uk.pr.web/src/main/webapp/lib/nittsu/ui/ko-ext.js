@@ -20,6 +20,7 @@ var nts;
                         var data = valueAccessor();
                         var setValue = data.value;
                         this.constraint = validation.getCharType(data.constraint);
+                        console.log(this.constraint);
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -41,6 +42,7 @@ var nts;
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
+                        this.constraint = validation.getCharType(data.constraint);
                         var $input = $(element);
                         $input.attr('type', textmode);
                         if (enable !== false)
@@ -57,6 +59,7 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
+                        var isError = this.constraint.validate(newText);
                         $input.val(newText);
                     };
                     return NtsTextEditorBindingHandler;
@@ -823,14 +826,14 @@ var nts;
                         }));
                         // Create method.
                         $.fn.deselectAll = function () {
-                            $(this).data('value', '');
-                            $(this).find('.nts-list-box > li').removeClass("ui-selected");
-                            $(this).find('.nts-list-box > li > div').removeClass("ui-selected");
-                            $(this).trigger("selectionChange");
+                            $(this.selector).data('value', '');
+                            $(this.selector + ' > .nts-list-box > li').removeClass("ui-selected");
+                            $(this.selector + ' > .nts-list-box > li > div').removeClass("ui-selected");
+                            $(this.selector).trigger("selectionChange");
                         };
                         $.fn.selectAll = function () {
-                            $(this).find('.nts-list-box > li').addClass("ui-selected");
-                            $(this).find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+                            $(this.selector + ' > .nts-list-box > li').addClass("ui-selected");
+                            $(this.selector + ' > .nts-list-box').data("ui-selectable")._mouseStop(null);
                         };
                         $.fn.ntsListBox = function (method) {
                             switch (method) {

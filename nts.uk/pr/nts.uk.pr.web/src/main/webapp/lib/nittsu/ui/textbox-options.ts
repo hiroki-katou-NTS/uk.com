@@ -1,4 +1,5 @@
-
+module nts.uk.ui.koExtentions {
+    
     abstract class EditorOptionBase {
         textmode: TextMode;
         enable: boolean = true;
@@ -19,7 +20,7 @@
         textalign?: string;
     }
 
-    class TextEditorOption extends EditorOptionBase {
+    export class TextEditorOption extends EditorOptionBase {
         constructor(option?: ITextEditorOption) {
             super();
             // Default value
@@ -30,18 +31,30 @@
         }
     }
 
-    class TimeEditorOption extends EditorOptionBase {
-        constructor(option?: ITextEditorOption) {
+    // Text Editor Option
+    interface ITimeEditorOption{
+        inputFormat?: string;
+        enable?: boolean;
+        readonly?: boolean;
+        placeholder?: string;
+        width?: string;
+        textalign?: string;
+    }
+    
+    export class TimeEditorOption extends EditorOptionBase {
+        inputFormat: string;
+        
+        constructor(option?: ITimeEditorOption) {
             super();
             // Default value
-            this.textmode = (option && option.textmode) ? option.textmode : "text";
+            this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "date";
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
     }
 
-    class MaskEditorOption extends EditorOptionBase {
+    export class MaskEditorOption extends EditorOptionBase {
         constructor(option?: ITextEditorOption) {
             super();
             // Default value
@@ -68,7 +81,7 @@
         textalign?: string;
     }
 
-    class NumberEditorOption extends EditorOptionBase {
+    export class NumberEditorOption extends EditorOptionBase {
         groupseperator: string;
         grouplength: number;
         decimalseperator: string;
@@ -96,7 +109,7 @@
         }
     }
 
-    class CurrencyEditorOption extends NumberEditorOption {
+    export class CurrencyEditorOption extends NumberEditorOption {
         currencyformat: Currency;
         currencyposition: string;
         
@@ -124,3 +137,4 @@
 
     type TextMode = "text" | "password";
     type Currency = "JPY" | "USD";
+}
