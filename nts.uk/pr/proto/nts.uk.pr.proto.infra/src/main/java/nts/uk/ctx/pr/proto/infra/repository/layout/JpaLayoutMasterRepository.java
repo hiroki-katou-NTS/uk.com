@@ -25,6 +25,14 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 			+ " AND c.qstmtStmtLayoutHeadPK.strYm < :strYm"
 			+ " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
 	
+	private final String SELECT_MAX_START = "SELECT c.qstmtStmtLayoutHeadPK.stmtCd,"
+			+ " c.stmtName,"
+			+ " MAX(c.qstmtStmtLayoutHeadPK.strYm),"
+			+ " c.endYm,"
+			+ " c.layoutAtr"
+			+ " FROM QstmtStmtLayoutHead c"
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
+	
 //	private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM QstmtStmtLayoutHead e "
 //			+ "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
 
@@ -106,6 +114,13 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	public boolean isExist(String companyCode, String stmtCode) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode) {
+		return this.queryProxy().query(SELECT_MAX_START, QstmtStmtLayoutHead.class)
+				.setParameter("companyCd", companyCode)				
+				.getList(c -> toDomain(c));
 	}
 
 //	@Override

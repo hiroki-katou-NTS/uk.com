@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.proto.dom.paymentdata.Comment
+			</com:ValidatorScript>
+<!-- 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" /> -->
+<!-- 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" /> -->
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="functions-area">
+				<button class="proceed">計算/登録</button>
+				<button>計算結果の確認</button>
+				<button>印刷プレビュー</button>
+				<button>データ修正ログ</button>
+				<button class="danger">削除</button>
+
+				<label style="float: right">支給入力（社員ごと）</label>
+			</div>
+
+			<div id="contents-area">
+				<div id="content-header">
+					<ui:include src="header-area.xhtml" />
+				</div>
+
+				<div id="events">
+					<div data-bind="ntsFormLabel: {}">支給入力</div>
+					<button>↰</button>
+					<button>↱</button>
+					<button>計算しなおすメニュー</button>
+					<button>変更のあったマスタを表示</button>
+					<button>入力欄の背景色について</button>
+					<div id="chk-hand-input"
+						data-bind="ntsCheckBox: {checked: isHandInput, text: '手入力項目のみ移動'}"
+						class="cf"></div>
+				</div>
+
+				<div id="grid-contents">
+					<div id="categories">
+						<div id="swb-categories"
+							data-bind="ntsSwitchButton: {
+							options: categorires,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedCode }"
+							class="cf"></div>
+					</div>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

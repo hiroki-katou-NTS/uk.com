@@ -8,26 +8,26 @@ public class DetailItemDto {
 	/**
 	 * category atr
 	 */
-	private int categoryAtr;
+	int categoryAtr;
 
 	/**
 	 * 項目コード
 	 */
-	private String itemCode;
+	String itemCode;
 
 	/**
 	 * 項目名
 	 */
-	private String itemName;
+	String itemName;
 
 	/**
 	 * 値
 	 */
-	private Double value;
-	
-	private DetailItemPositionDto itemPosition;
-	
-	private boolean isCreated;
+	Double value;
+
+	DetailItemPositionDto itemPosition;
+
+	boolean isCreated;
 
 	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, Double value,
 			DetailItemPositionDto itemPosition, boolean isCreated) {

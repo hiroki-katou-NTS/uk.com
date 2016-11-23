@@ -58,6 +58,11 @@ public interface LayoutMasterRepository {
 	boolean isExist(String companyCode, String stmtCode);
 
 //	Optional<LayoutMaster> getPreviosTarget(String companyCode, String stmtCode);
-	
+	/**
+	 * find all layouts with max startYM
+	 * @param companyCode
+	 * @return
+	 */
+	List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode);
 	
 }
