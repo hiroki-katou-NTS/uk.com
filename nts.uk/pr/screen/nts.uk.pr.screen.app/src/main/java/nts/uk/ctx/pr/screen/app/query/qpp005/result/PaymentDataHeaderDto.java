@@ -7,22 +7,22 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 public class PaymentDataHeaderDto {
 
 	/** 扶養人数（その月時点） */
-	private Integer dependentNumber;
+	Integer dependentNumber;
 
 	/** 明細書コード */
-	private String specificationCode;
+	String specificationCode;
 
 	/** 明細書名 */
-	private String specificationName;
+	String specificationName;
 
 	/** 作成方法フラグ */
-	private Integer makeMethodFlag;
+	Integer makeMethodFlag;
 
 	/** 社員コード */
-	private String employeeCode;
+	String employeeCode;
 
 	/** memo */
-	private String comment;
+	String comment;
 
 	public PaymentDataHeaderDto(Integer dependentNumber, String specificationCode, String specificationName,
 			Integer makeMethodFlag, String employeeCode, String comment) {
