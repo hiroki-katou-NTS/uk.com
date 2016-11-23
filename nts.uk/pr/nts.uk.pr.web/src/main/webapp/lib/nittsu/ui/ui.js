@@ -68,7 +68,7 @@ var nts;
                             $dialog.dialog('option', {
                                 width: dialogGlobal.dialogSize.width,
                                 height: dialogGlobal.dialogSize.height,
-                                title: 'dialog',
+                                title: options.title || "dialog",
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }
@@ -256,6 +256,22 @@ var nts;
                 dialog.confirm = confirm;
                 ;
             })(dialog = ui.dialog || (ui.dialog = {}));
+            var DirtyChecker = (function () {
+                function DirtyChecker(targetViewModelObservable) {
+                    this.targetViewModel = targetViewModelObservable;
+                }
+                DirtyChecker.prototype.getCurrentState = function () {
+                    return ko.mapping.toJSON(this.targetViewModel());
+                };
+                DirtyChecker.prototype.reset = function () {
+                    this.initialState = this.getCurrentState();
+                };
+                DirtyChecker.prototype.isDirty = function () {
+                    return this.initialState !== this.getCurrentState();
+                };
+                return DirtyChecker;
+            }());
+            ui.DirtyChecker = DirtyChecker;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

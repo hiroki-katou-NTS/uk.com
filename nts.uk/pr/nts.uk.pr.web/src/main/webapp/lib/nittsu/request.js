@@ -114,7 +114,7 @@ var nts;
                 if (typeof data === 'object') {
                     data = JSON.stringify(data);
                 }
-                var webserviceLocator = new Locator(request.location.ajaxRoot).mergeRelativePath(path);
+                var webserviceLocator = location.ajaxRoot.mergeRelativePath(path);
                 $.ajax({
                     type: options.method || 'POST',
                     contentType: options.contentType || 'application/json',
@@ -127,13 +127,24 @@ var nts;
                 return dfd.promise();
             }
             request.ajax = ajax;
-            var currentLocator = new Locator(window.location.href);
-            var applicationRootPath = currentLocator.mergeRelativePath(__viewContext.rootPath).rawUrl;
-            request.location = {
-                current: currentLocator,
-                appRoot: applicationRootPath,
-                ajaxRoot: applicationRootPath + 'webapi/'
-            };
+            function jump(path) {
+                var destination;
+                if (path.charAt(0) === '/') {
+                    destination = location.appRoot.mergeRelativePath(path);
+                }
+                else {
+                    destination = location.current.mergeRelativePath(path);
+                }
+                window.location.href = destination.rawUrl;
+            }
+            request.jump = jump;
+            var location;
+            (function (location) {
+                location.current = new Locator(window.location.href);
+                location.appRoot = location.current.mergeRelativePath(__viewContext.rootPath);
+                location.ajaxRoot = location.appRoot.mergeRelativePath('webapi/');
+            })(location = request.location || (request.location = {}));
+            ;
         })(request = uk.request || (uk.request = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

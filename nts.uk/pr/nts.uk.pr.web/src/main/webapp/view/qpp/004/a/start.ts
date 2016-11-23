@@ -1,7 +1,8 @@
 __viewContext.ready(function() {
-    var screenModel = new qpp004.viewmodel.ScreenModel();
+    var screenModel = new qpp004.a.viewmodel.ScreenModel();
 
     screenModel.startPage().done(function() {
-        this.bind(screenModel);
+        __viewContext.bind(screenModel);
     });
+    
 });
