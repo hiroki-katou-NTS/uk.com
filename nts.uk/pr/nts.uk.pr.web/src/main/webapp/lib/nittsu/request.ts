@@ -136,7 +136,7 @@
             data = JSON.stringify(data);
         }
 
-        var webserviceLocator = new Locator(location.ajaxRoot).mergeRelativePath(path);
+        var webserviceLocator = location.ajaxRoot.mergeRelativePath(path);
 
         $.ajax({
             type: options.method || 'POST',
@@ -150,14 +150,23 @@
 
         return dfd.promise();
     }
-
-    var currentLocator = new Locator(window.location.href);
-    var applicationRootPath = currentLocator.mergeRelativePath(__viewContext.rootPath).rawUrl;
     
-    export var location = {
-        current: currentLocator,
-        appRoot: applicationRootPath,
-        ajaxRoot: applicationRootPath + 'webapi/'
+    export function jump(path: string) {
+        
+        var destination: Locator;
+        if (path.charAt(0) === '/') {
+            destination = location.appRoot.mergeRelativePath(path);
+        } else {
+            destination = location.current.mergeRelativePath(path);
+        }
+        
+        window.location.href = destination.rawUrl;
+    }
+    
+    export module location {
+        export var current = new Locator(window.location.href);
+        export var appRoot = current.mergeRelativePath(__viewContext.rootPath);
+        export var ajaxRoot = appRoot.mergeRelativePath('webapi/')
     };
 
 }
