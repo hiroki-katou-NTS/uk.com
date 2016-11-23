@@ -1,4 +1,4 @@
-module qpp004.viewmodel {
+module qpp004.a.viewmodel {
     export class ScreenModel {
         
         paymentDateProcessingList: KnockoutObservableArray<any>;
@@ -37,7 +37,7 @@ module qpp004.viewmodel {
             var dfd = $.Deferred();
             
             // Resolve start page dfd after load all data.
-            $.when(qpp004.service.getPaymentDateProcessingMaster()).done(function(data) {
+            $.when(qpp004.a.service.getPaymentDateProcessingMaster()).done(function(data) {
                 
                 self.paymentDateProcessingList(data);
                 
