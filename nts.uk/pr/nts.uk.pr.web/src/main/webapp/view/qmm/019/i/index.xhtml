@@ -22,18 +22,19 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="form-label required " data-bind="ntsFormLabel: {}">行の設定</div>
+				<div class="form-label required " data-bind="ntsFormLabel: {}">追加する行の種類を選択</div>
 				<br />
 			</div>
 			<form>
 				<div>
 					<fieldset>
-					  <div data-bind="foreach: boxes">
+						<legend></legend>
+					    <div data-bind="foreach: boxes">
 					        <label><input class="radio-1" type="radio" name="selection" /><span data-bind="text: text"></span></label><br /> 
 				        </div>
-					<!-- 	<input class="radio-1" type="radio" name="selection"/>明細書に印字する行<br /> 
-						<input class="radio-2" type="radio" name="selection"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）<br /> 
-						<input class="radio-3" type="radio" checked="checked" name="selection"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）<br /> -->
+<!-- 						<input class="radio-1" type="radio" checked="checked" name="selection"/>明細書に印字する行<br />  -->
+<!-- 						<input class="radio-2" type="radio" name="selection"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）<br />  -->
+						
 					</fieldset>
 				</div>
 			</form>

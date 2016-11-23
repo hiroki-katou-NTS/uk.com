@@ -1,29 +1,29 @@
 var qmmm019;
 (function (qmmm019) {
-    var j;
-    (function (j) {
+    var k;
+    (function (k) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel1 = (function () {
+            var ScreenModel2 = (function () {
                 /**
                  * Init screen model.
                  */
-                function ScreenModel1() {
+                function ScreenModel2() {
                     var self = this;
                     this.boxes = [];
                     this.boxes.push({ id: 1, text: "明細書に印字する行" });
                     this.boxes.push({ id: 2, text: "明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）" });
                     this.boxes.push({ id: 3, text: "レイアウトから行を削除（登録処理を行うまでは元に戻せます）" });
                 }
-                return ScreenModel1;
+                return ScreenModel2;
             }());
-            viewmodel.ScreenModel1 = ScreenModel1;
-            var BoxModel1 = (function () {
-                function BoxModel1() {
+            viewmodel.ScreenModel2 = ScreenModel2;
+            var BoxModel2 = (function () {
+                function BoxModel2() {
                 }
-                return BoxModel1;
+                return BoxModel2;
             }());
-            viewmodel.BoxModel1 = BoxModel1;
-        })(viewmodel = j.viewmodel || (j.viewmodel = {}));
-    })(j = qmmm019.j || (qmmm019.j = {}));
+            viewmodel.BoxModel2 = BoxModel2;
+        })(viewmodel = k.viewmodel || (k.viewmodel = {}));
+    })(k = qmmm019.k || (qmmm019.k = {}));
 })(qmmm019 || (qmmm019 = {}));

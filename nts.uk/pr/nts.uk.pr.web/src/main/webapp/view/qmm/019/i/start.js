@@ -1,5 +1,5 @@
 __viewContext.ready(function () {
-    var screenModel = new qmmm019.k.viewmodel.ScreenModel2();
+    var screenModel = new qmmm019.i.viewmodel.ScreenModel();
     var vm = screenModel;
     console.log(vm);
     this.bind(vm);

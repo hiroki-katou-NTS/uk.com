@@ -28,9 +28,12 @@
 			<form>
 				<div>
 					<fieldset>
-						<input class="radio-1" type="radio" name="selection"/>明細書に印字する行<br /> 
+					   <div data-bind="foreach: boxes">
+					        <label><input class="radio-1" type="radio" name="selection" /><span data-bind="text: text"></span></label><br /> 
+				        </div>
+						<!-- <input class="radio-1" type="radio" name="selection"/>明細書に印字する行<br /> 
 						<input class="radio-2" type="radio" name="selection"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）<br /> 
-						<input class="radio-3" type="radio" checked="checked" name="selection"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）<br />
+						<input class="radio-3" type="radio" checked="checked" name="selection"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）<br /> -->
 					</fieldset>
 				</div>
 			</form>

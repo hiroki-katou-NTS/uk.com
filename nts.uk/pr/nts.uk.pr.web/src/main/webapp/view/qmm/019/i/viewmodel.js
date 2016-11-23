@@ -1,7 +1,7 @@
 var qmmm019;
 (function (qmmm019) {
-    var a;
-    (function (a) {
+    var i;
+    (function (i) {
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
@@ -23,6 +23,6 @@ var qmmm019;
                 return BoxModel;
             }());
             viewmodel.BoxModel = BoxModel;
-        })(viewmodel = a.viewmodel || (a.viewmodel = {}));
-    })(a = qmmm019.a || (qmmm019.a = {}));
+        })(viewmodel = i.viewmodel || (i.viewmodel = {}));
+    })(i = qmmm019.i || (qmmm019.i = {}));
 })(qmmm019 || (qmmm019 = {}));
