@@ -5,16 +5,24 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:com="http://xmlns.jcp.org/jsf/component">
+
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
         <com:stylefile set="BASIC" />
+        
         <com:viewcontext />
-        <com:scriptfile set="BASIC" />        
+        
+        <com:scriptfile set="BASIC" />
+
         <ui:insert name="htmlHead" />
     </h:head>
-    <h:body style="visibility: hidden;" class="noheader">
+
+    <h:body>        
         <div data-bind="with: content">
         	<ui:insert name="content" />
         </div>
+
     </h:body>
+
 </html>

@@ -128,7 +128,7 @@
         }
     }
     
-    export function ajax(path: string, data: any, options: any) {
+    export function ajax(path: string, data?: any, options?: any) {
         var dfd = $.Deferred();
         options = options || {};
 
