@@ -955,7 +955,12 @@ var nts;
                                 totalWidth += length * maxWidthCharacter + 20;
                                 i++;
                             });
-                            totalWidth += 50;
+                            var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
+                            var padding = 10;
+                            if (ntsCommonPadding) {
+                                padding = parseInt(ntsCommonPadding);
+                            }
+                            totalWidth += 50 + padding * columns.length;
                             $('.nts-list-box > li').css({ 'min-width': totalWidth });
                             $('.nts-list-box').css({ 'min-width': totalWidth });
                             container.css({ 'min-width': totalWidth });
