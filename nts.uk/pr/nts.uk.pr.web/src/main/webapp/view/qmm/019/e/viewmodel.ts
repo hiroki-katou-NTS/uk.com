@@ -1,4 +1,4 @@
-module qmm019.g.viewmodel {
+module qmm019.e.viewmodel {
     
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;

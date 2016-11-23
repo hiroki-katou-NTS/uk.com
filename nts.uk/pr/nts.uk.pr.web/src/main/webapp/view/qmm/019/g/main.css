@@ -1,0 +1,33 @@
+#LBL_007{
+	padding-right: 20px;
+}
+#LBL_005{
+	padding-right: 100px;
+}
+#INP_003, #INP_001{
+	width: 50px;
+}
+#LBL_004{
+	padding-right: 93px;
+}
+.layoutSelect{
+	display: flex;
+	height: 45px;
+	margin-left: 20px;
+}
+#SEL_002{
+	margin-left: 50px;
+}
+#LBL_002{
+	margin-left: 10px;
+}
+.selectDrop{
+	margin-top: 15px;
+}
+.bottomStype{
+	margin-top: 20px;
+	margin-left: 200px;
+}
+#BTN_001{
+	margin-right: 20px;
+}

@@ -1,5 +1,5 @@
 __viewContext.ready(function () {
-    var screenModel = new qmm019.g.viewmodel.ScreenModel();
+    var screenModel = new qmm019.d.viewmodel.ScreenModel();
     var vm = screenModel;
     
 //    screenModel.startPage().done(function() {

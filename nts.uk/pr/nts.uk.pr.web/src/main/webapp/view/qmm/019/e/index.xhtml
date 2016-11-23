@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition template="../../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<link rel="stylesheet" type="text/css" href="main.css" />
+				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
+            	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+				<script src="start.js" />
+				<script src="viewmodel.js" />
+				<script src="service.js" />
+			    <script>var dialogSize = { width: 600, height: 700 };</script>
+			    <style>.nts-list-box *{box-sizing: border-box} </style>
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div class="cf">
+						<div class="form-label inline">
+							<label id="LBL_001">対象データ</label>
+							<label id="LBL_002">01</label>
+							<label id="LBL_003">正社員用明細書</label>
+							<label id="LBL_004">2016/04　～　</label>
+							<label id="LBL_005">2018/03</label>
+						</div><br />
+						<br />
+						<div class = "form-label inline">
+							<label id="LBL_006">編集方法の選択</label>
+						</div>
+						<br/><br/>
+						<div class = "selectStyle">
+							<div id="SEL_001">
+								<input type="radio" name="layoutSelect" value="layoutDetele" /> 履歴を削除する<br /><br />
+				  				<input type="radio" name="layoutSelect" value="layoutUpdate" /> 履歴を修正する<br />
+							</div>							
+							<div>
+								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/><br />
+								<label id="LBL_008">開始年月</label>
+								<input  id = "INP_001" ></input>
+								<label id = "LBL_009">　～　2018/03</label>
+							</div>
+						</div>
+						<br /><br />
+						<hr></hr>
+						<div class = "bottomStype">
+							<button class="x-large proceed" id = "BTN_001">決定</button>
+							<button class="large" id="BTN_002">キャンセル</button><br />
+						</div>
+					</div>
+	           	</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>
