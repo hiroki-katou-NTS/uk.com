@@ -22,4 +22,8 @@ public class QpdmtPaydayProcessing {
 
 	@Column(name = "PROCESSING_NAME")
 	public String processingName;
+
+	public QpdmtPaydayProcessing() {
+	}
+
 }

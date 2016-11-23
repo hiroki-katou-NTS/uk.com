@@ -1,18 +1,18 @@
 var qpp004;
 (function (qpp004) {
-    var a;
-    (function (a) {
+    var l;
+    (function (l) {
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/findall"
+                createpaymentdata: "pr/proto/paymentdate/add"
             };
             /**
              * Get list payment date processing.
              */
-            function getPaymentDateProcessingMaster() {
+            function createPaymentData(param) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessing)
+                nts.uk.request.ajax(paths.createpaymentdata, param)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -21,7 +21,7 @@ var qpp004;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingMaster = getPaymentDateProcessingMaster;
-        })(service = a.service || (a.service = {}));
-    })(a = qpp004.a || (qpp004.a = {}));
+            service.createPaymentData = createPaymentData;
+        })(service = l.service || (l.service = {}));
+    })(l = qpp004.l || (qpp004.l = {}));
 })(qpp004 || (qpp004 = {}));

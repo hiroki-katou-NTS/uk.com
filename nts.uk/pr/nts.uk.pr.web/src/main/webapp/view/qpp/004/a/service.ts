@@ -1,6 +1,6 @@
 module qpp004.a.service {
-    paths = {
-        getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/find"
+    var paths = {
+        getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/findall"
     }
     
     /**
