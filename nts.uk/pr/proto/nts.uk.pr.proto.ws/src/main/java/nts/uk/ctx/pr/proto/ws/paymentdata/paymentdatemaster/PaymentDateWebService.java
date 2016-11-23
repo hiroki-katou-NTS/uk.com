@@ -24,9 +24,17 @@ public class PaymentDateWebService extends WebService {
 	@Inject
 	private PaymentDateProcessingMasterFinder paymentDateProcessingFinder;
 	
+	
 	@POST
 	@Path("processing/find")
-	public List<PaymentDateProcessingMasterDto> find() {
+	public PaymentDateProcessingMasterDto find() {
+		return this.paymentDateProcessingFinder.find(PayBonusAtr.SALARY.value, 1).get();
+	}
+	
+
+	@POST
+	@Path("processing/findall")
+	public List<PaymentDateProcessingMasterDto> findAll() {
 		return this.paymentDateProcessingFinder.findAll(PayBonusAtr.SALARY.value);
 	}
 }
