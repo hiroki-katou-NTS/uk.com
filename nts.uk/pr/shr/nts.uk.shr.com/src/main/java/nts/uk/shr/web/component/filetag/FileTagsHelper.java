@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component;
+package nts.uk.shr.web.component.filetag;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
