@@ -10,6 +10,16 @@ var qpp004;
                 var self = this;
                 self.paymentDateProcessingList = ko.observableArray([]);
                 self.selectedPaymetnProcessing = ko.observable(null);
+                self.displayCurrentYearMonthProcessing = ko.observable(null);
+                self.selectedPaymetnProcessing.subscribe(function (newValue) {
+                    var currentDateMaster = _.find(self.paymentDateProcessingList(), function (item) {
+                        return item.processingNo == newValue;
+                    });
+                    var currentYearMonth = currentDateMaster.currentProcessingYm + "";
+                    var year = currentYearMonth.substring(0, 4);
+                    var month = currentYearMonth.substring(4, 6);
+                    self.displayCurrentYearMonthProcessing(year + "/" + month);
+                });
             }
             /**
              * Start page.
@@ -31,7 +41,7 @@ var qpp004;
              * Redirect to page process create data
              */
             ScreenModel.prototype.redirectToCreateData = function () {
-                alert('aaa');
+                nts.uk.request.jump("/view/qpp/004/b/index.xhtml");
             };
             return ScreenModel;
         }());

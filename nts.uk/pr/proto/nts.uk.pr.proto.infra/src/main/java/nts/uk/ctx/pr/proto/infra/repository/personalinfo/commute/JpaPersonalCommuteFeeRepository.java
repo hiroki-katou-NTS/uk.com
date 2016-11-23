@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommuteP
 @RequestScoped
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
-	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
+	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
 
 	@Override
 	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIds, int baseYM) {

@@ -15,7 +15,9 @@
 				nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
 			</com:ValidatorScript>
 			
+			<!-- Do not include this CSS -->
 			<link rel="stylesheet" type="text/css" href="dialog.css" />
+			
 			<script src="../../../lib/nittsu/ui/dialog-options.js"></script>
 			<script src="start.js"></script>
           </ui:define>
@@ -26,9 +28,21 @@
           	</div>
           	
           	<div id="contents-area">
-				<div class="container">
+				<div class="cf">
 					<h2><a href="../../../test.html">&#9665;</a> Dialog</h2>
 					<hr/>
+					<!-- SubWindows -->
+					<div class="cf">
+						<h2>SubWindow</h2>
+						<h3>Javascript Call</h3>
+						<button id="testSubWindows" onclick="nts.uk.ui.windows.sub.modal('http://localhost:8080/nts.uk.pr.web/view/sample/editor/editor.xhtml');">Click me!</button>
+						<pre>
+nts.uk.ui.windows.sub.modal("url"); // Modal SubWindow
+nts.uk.ui.windows.sub.modeless("url"); // Modeless SubWindow</pre>
+						<b>Note:</b> in dialog page must have following script:
+						<pre>var dialogSize = { width: 300, height: 200 };</pre>
+					</div>
+					<hr/> 
 					<!-- Normal Dialog -->
 					<div class="cf">
 						<h2>Dialog</h2>
@@ -50,9 +64,9 @@
 						<h3>Javascript Example</h3>
 						<button id="dialog-open">JQuery event</button>
 						<pre>
-				$('#dialog-open').click(function(){
-					vm.dialogconfirm.open();
-				})</pre>
+$('#dialog-open').click(function(){
+	vm.dialogconfirm.open();
+})</pre>
 						<br/>
 						<h3>Function Wrap</h3>
 						<p>Paste following code to console:</p>
@@ -120,14 +134,14 @@
 								</tbody>
 							</table>
 							<pre style="float:left">dialog: {
-					title: ko.observable("Dialog Title"),
-					message: ko.observable("Dialog message here"),
-					option: ko.mapping.fromJS(new ConfirmDialogOption()),
-					okButtonClicked: function(){},
-					cancelButtonClicked: function(){},
-					open: function(){},
-					hide: function(){}
-				}</pre>
+	title: ko.observable("Dialog Title"),
+	message: ko.observable("Dialog message here"),
+	option: ko.mapping.fromJS(new ConfirmDialogOption()),
+	okButtonClicked: function(){},
+	cancelButtonClicked: function(){},
+	open: function(){},
+	hide: function(){}
+}</pre>
 						</div>
 						<!-- API -->
 						<h3>Dialog API</h3>
@@ -317,37 +331,37 @@
 								</tbody>
 							</table>
 							<pre style="float:left">errordialog: {
-				title: ko.observable("Error Dialog title"),
-				headers: ko.observableArray([
-					new ErrorHeader("tab", "タブ", true),
-					new ErrorHeader("location", "エラー箇所", true),
-					new ErrorHeader("message", "エラー詳細", true)
-				]),
-				errors: ko.observableArray([
-					{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-					{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-					{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-					{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-					{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-					{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
-				]),
-				option: ko.mapping.fromJS(new ErrorDialogOption()),
-				closeButtonClicked: function(){},
-				open: function(){
-					var self = this;
-					self.option.show(true);
-				},
-				hide: function(){
-					var self = this;
-					self.option.show(false);
-				}
-			}
-			
-			function ErrorHeader(nane, text, visible){
-				this.name = name;
-				this.text = text;
-				this.visible = visible;
-			}</pre>
+	title: ko.observable("Error Dialog title"),
+	headers: ko.observableArray([
+		new ErrorHeader("tab", "タブ", true),
+		new ErrorHeader("location", "エラー箇所", true),
+		new ErrorHeader("message", "エラー詳細", true)
+	]),
+	errors: ko.observableArray([
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
+	]),
+	option: ko.mapping.fromJS(new ErrorDialogOption()),
+	closeButtonClicked: function(){},
+	open: function(){
+		var self = this;
+		self.option.show(true);
+	},
+	hide: function(){
+		var self = this;
+		self.option.show(false);
+	}
+}
+
+function ErrorHeader(nane, text, visible){
+	this.name = name;
+	this.text = text;
+	this.visible = visible;
+}</pre>
 						</div>
 						<!-- API -->
 						<h3>Dialog API</h3>
