@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWage;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWageRepository;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.PprmtPersonWage;
@@ -15,13 +17,18 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.PprmtPersonWagePK;
 @RequestScoped
 public class JpaPersonalWageRepository extends JpaRepository implements PersonalWageRepository {
 
-	private final String SELECT_LIST_BY_YEAR_MONTH = "SELECT c FROM PprmtPersonWage WHERE c.pprmtPersonWagePK.ccd = :CCD and c.pprmtPersonWagePK.pId IN (:PID) and c.pprmtPersonWagePK.strYm <= :BASEYM and c.endYm >= :BASEYM";
+	private final String SELECT_LIST_BY_YEAR_MONTH = "SELECT c FROM PprmtPersonWage WHERE c.pprmtPersonWagePK.ccd = :ccd and c.pprmtPersonWagePK.pId IN :pIds and c.pprmtPersonWagePK.strYm <= :baseYm and c.endYm >= :baseYm";
 
 	@Override
-	public List<PersonalWage> findAll(String companyCode, List<String> personIdList, int baseYm) {
-		return this.queryProxy().query(SELECT_LIST_BY_YEAR_MONTH, PprmtPersonWage.class)
-				.setParameter("CCD", companyCode).setParameter("PID", personIdList).setParameter("BASEYM", baseYm)
-				.getList(c -> toDomain(c));
+	public List<PersonalWage> findAll(String companyCode, List<String> personIds, int baseYm) {
+		List<PersonalWage> results = new ArrayList<>();
+		ListUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
+			this.queryProxy().query(SELECT_LIST_BY_YEAR_MONTH, PprmtPersonWage.class)
+			.setParameter("ccd", companyCode).setParameter("pIds", personIdList).setParameter("baseYm", baseYm)
+			.getList().stream().forEach(e -> results.add(toDomain(e)));
+		});
+		
+		return results;
 
 	}
 

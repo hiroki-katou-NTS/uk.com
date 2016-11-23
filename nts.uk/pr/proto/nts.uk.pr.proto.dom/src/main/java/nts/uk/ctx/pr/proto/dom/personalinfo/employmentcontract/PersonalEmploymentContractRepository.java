@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,5 +15,5 @@ public interface PersonalEmploymentContractRepository {
 	 * @param baseYmd
 	 * @return list employment contract of list person with base times.
 	 */
-	List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIdList, Date baseYmd);
+	List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIdList, LocalDate baseYmd);
 }

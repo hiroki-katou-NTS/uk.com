@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,13 +18,13 @@ public class PclmtPersonEmpContract extends AggregateTableEntity {
 	public PclmtPersonEmpContractPK pclmtPersonEmpContractPK;
 	
 	@Column(name ="END_D")
-	public Date endD;
+	public LocalDate endD;
 	
 	@Column(name ="EXP_D")
-	public Date expD;
+	public LocalDate expD;
 	
 	@Column(name ="ISSUE_DATE")
-	public Date issueDate;
+	public LocalDate issueDate;
 	
 	@Column(name ="ISSUE_STS")
 	public int issueSts;
@@ -83,5 +84,5 @@ public class PclmtPersonEmpContract extends AggregateTableEntity {
 	public int autoContractRenewal;
 	
 	@Column(name ="FIRING_PRE_PAYDATE")
-	public Date firingPrePaydate;
+	public LocalDate firingPrePaydate;
 }

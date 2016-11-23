@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFee;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteValue;
@@ -16,13 +18,17 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommuteP
 @RequestScoped
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
-	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute WHERE c.pprmtPersonCommutePK.ccd = :CCD and c.pprmtPersonCommutePK.pId IN (:PID) and c.pprmtPersonCommutePK.strYm <= :BASEYM and c.endYm >= :BASEYM";
+	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
 
 	@Override
-	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIdList, int baseYM) {
-		return this.queryProxy().query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class)
-				.setParameter("CCD", companyCode).setParameter("PID", personIdList)
-				.setParameter("BASEYM", baseYM).getList(c -> toDomain(c));
+	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIds, int baseYM) {
+		List<PersonalCommuteFee> results = new ArrayList<>();
+		ListUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
+			this.queryProxy().query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class)
+			.setParameter("ccd", companyCode).setParameter("pIds", personIdList).setParameter("baseYm", baseYM)
+			.getList().stream().forEach(e -> results.add(toDomain(e)));
+		});
+		return results;
 	}
 
 	private static PersonalCommuteFee toDomain(PprmtPersonCommute entity) {

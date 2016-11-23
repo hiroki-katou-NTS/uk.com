@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -21,5 +21,5 @@ public class PclmtPersonEmpContractPK implements Serializable {
 	public String pId;
 	
 	@Column(name = "STR_D")
-	public Date strD;
+	public LocalDate strD;
 }
