@@ -40,12 +40,14 @@
 
     export class ValidationResult {
         isValid: boolean;
-        errorMessage = 'error';
+        errorMessage = 'error message';
     }
 
     export function getCharType(primitiveValueName: string): CharType {
         var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-
+        
+        if(constraint.charType === undefined)
+            constraint.charType = "Any";
         var charType = charTypes[constraint.charType];
         if (charType === undefined) {
             throw new Error('invalid charTypeName: ' + constraint.charType);
@@ -75,5 +77,6 @@
             '全角',
             1,
             nts.uk.util.alwaysTrue),
+        
     };
 }

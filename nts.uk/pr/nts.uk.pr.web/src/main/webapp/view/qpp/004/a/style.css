@@ -1,0 +1,67 @@
+#contents-area > div {
+   margin-top: 20px;
+}
+
+.notification-area {
+	background-color: #eee;
+	padding: 15px 7px;
+    font-size: 16px;
+    width: 880px;
+}
+
+.current-year-month {
+	border: 1px solid #a79c9c;
+	border-radius: 4px;
+    padding: 4px 4px;
+    height: 30px;
+    width: 612px;
+}
+
+.current-year-month img {
+	float: left;	
+}
+
+.current-year-month .lbl-year-month {
+    padding: 6px;
+}
+
+.current-year-month .lbl-year-month .lbl-1 {
+	background-color: #E2F79F;
+	padding: 6px;
+}
+
+.current-year-month .lbl-year-month .lbl-2 {
+	margin-left: 12px;
+}
+
+.current-year-month .lbl-year-month label {
+}
+
+.action-btn > a {
+	float: left;
+}
+
+.action-btn img {
+	border: 1px solid #a79c9c;
+	border-radius: 10px;
+	height: 284px;
+	width: 291px;
+}
+
+.action-btn a.btn-1 {
+	margin-right: 35px;
+	z-index: 100;
+	cursor: pointer;
+}
+
+.action-btn a.btn-2 {
+	z-index: 100;
+	cursor: pointer;
+}
+
+.action-btn a.btn-3 {
+	background-color: #eee;
+	z-index: 99;
+	margin-top: 22px;
+    padding: 102px 46px
+}

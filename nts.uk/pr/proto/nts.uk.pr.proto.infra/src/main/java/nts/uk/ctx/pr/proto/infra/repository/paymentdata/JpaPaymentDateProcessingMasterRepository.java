@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		implements PaymentDateProcessingMasterRepository {
 
-	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QPDMT_PAYDAY_PROCESSING "
+	private final String SELECT_NOT_WITH_PROCESSINGNO = "SELECT c FROM QpdmtPaydayProcessing c "
 			+ "WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr and c.dispAtr = :dispAtr ";
 
 	@Override
@@ -39,7 +39,7 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		PaymentDateProcessingMaster domain = PaymentDateProcessingMaster.createFromJavaType(
 				entity.qpdmtPaydayProcessingPK.payBonusAtr, entity.qpdmtPaydayProcessingPK.processingNo,
 				entity.processingName, entity.currentProcessingYm, entity.dispAtr);
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 

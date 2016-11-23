@@ -20,4 +20,6 @@ public class QstmtStmtAllotPsPK implements Serializable {
 	
 	@Column(name = "STR_YM")
 	public int startDate;
+	
+	public QstmtStmtAllotPsPK() {}
 }

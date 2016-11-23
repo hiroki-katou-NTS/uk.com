@@ -7,9 +7,9 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name = "QPDMT_PAYDAY_PROCESSING")
-public class QpdmtPaydayProcessing extends AggregateTableEntity {
+public class QpdmtPaydayProcessing {
 
 	@EmbeddedId
 	public QpdmtPaydayProcessingPK qpdmtPaydayProcessingPK;
