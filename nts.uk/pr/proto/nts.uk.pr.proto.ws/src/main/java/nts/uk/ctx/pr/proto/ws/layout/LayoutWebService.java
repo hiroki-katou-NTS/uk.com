@@ -34,12 +34,12 @@ public class LayoutWebService {
 	private LayoutMasterFinder find;
 	
 	@POST
-	@Path("findAllLayout/{companyCode}")
+	@Path("findalllayout/{companyCode}")
 	public List<LayoutDto> getAllLayout(@PathParam("companyCode") String companyCode){
 		return this.find.getAllLayout(companyCode);		
 	}
 	@POST
-	@Path("findLayout/{companyCode, stmtCode, startYm}")
+	@Path("findlayout/{companyCode, stmtCode, startYm}")
 	public LayoutDto getLayout(@PathParam("companyCode") String companyCode,
 			@PathParam("stmtCode") String stmtCode,
 			@PathParam("startYm") int startYm){
@@ -47,28 +47,28 @@ public class LayoutWebService {
 	}
 	
 	@POST
-	@Path("findAllLayoutWithMaxStartYm/{companyCode}")
+	@Path("findalllayoutwithmaxstartym/{companyCode}")
 	public List<LayoutDto> getLayoutsWithMaxStartYm(@PathParam("companyCode") String companyCode){
 		return this.find.getLayoutsWithMaxStartYm(companyCode);
 	}
 	
 	@POST
-	@Path("createLayout")
+	@Path("createlayout")
 	public void createLayout(CreateLayoutCommand command){
 		this.createLayoutData.handle(command);
 	}
 	@POST
-	@Path("createLayoutHistory")
+	@Path("createlayouthistory")
 	public void createLayoutHistory(CreateLayoutHistoryCommand command){
 		this.createHistoryData.handle(command);
 	}
 	@POST
-	@Path("updateData")
+	@Path("updatedata")
 	public void updateData(UpdateLayoutHistoryCommand command){
 		this.updateData.handle(command);
 	}
 	@POST
-	@Path("deleteData")
+	@Path("deletedata")
 	public void deleteData(DeleteLayoutHistoryCommand command){
 		this.deleteData.handle(command);
 	}
