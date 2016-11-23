@@ -322,6 +322,7 @@ var nts;
                                 modal: modal,
                                 closeOnEscape: false,
                                 buttons: dialogbuttons,
+                                dialogClass: "no-close",
                                 open: function () {
                                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
@@ -386,6 +387,7 @@ var nts;
                             closeOnEscape: false,
                             width: 550,
                             buttons: dialogbuttons,
+                            dialogClass: "no-close",
                             open: function () {
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');

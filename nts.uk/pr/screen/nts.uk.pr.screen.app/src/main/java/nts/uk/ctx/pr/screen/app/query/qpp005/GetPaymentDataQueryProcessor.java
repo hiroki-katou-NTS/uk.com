@@ -184,6 +184,7 @@ public class GetPaymentDataQueryProcessor {
 		
 		List<LayoutMasterCategoryDto> categories = new ArrayList<>();
 		
+		mCates.sort((x, y) -> x.getCtgPos().compareTo(y.getCtgPos())); 
 		for (LayoutMasterCategory category : mCates) {
 			int ctAtr = category.getCtAtr().value;
 			List<DetailItemDto> items = new ArrayList<>();
