@@ -5,7 +5,7 @@ var qpp004;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/find"
+                getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/findall"
             };
             /**
              * Get list payment date processing.
