@@ -1,1 +1,23 @@
 @CHARSET "UTF-8";
+
+
+.nts-left-content{
+	float: left;
+}
+
+.nts-right-content{
+	float: left;
+    border-radius: 7px;
+    border: 2px solid #cdd0c9;
+    padding: 20px;
+    width: 972px;
+}
+
+.form-label {
+	margin-bottom: 10px;
+}
+
+#A_BTN_007 {
+	margin-right: 154px;
+	margin-bottom: 5px;
+}
