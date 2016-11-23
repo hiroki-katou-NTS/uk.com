@@ -1,4 +1,6 @@
 ﻿module nts.uk.request {
+    
+    export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
 
     export class QueryString {
 
@@ -151,7 +153,9 @@
         return dfd.promise();
     }
     
-    export function jump(path: string) {
+    export function jump(path: string, data: any) {
+        
+        uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
         
         var destination: Locator;
         if (path.charAt(0) === '/') {

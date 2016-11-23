@@ -17,6 +17,9 @@
         }
         
         $(function () {
+            __viewContext.transferred = uk.sessionStorage.getItemAndRemove(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                .map(v => JSON.parse(v));
+            
             _start.call(__viewContext);
         });
     }
