@@ -10,14 +10,14 @@ var nts;
                 __viewContext.ready = function (callback) {
                     _start = callback;
                 };
-                __viewContext.bind = function (viewModel) {
-                    ui._viewModel = {
-                        content: viewModel // developer's view model
+                __viewContext.bind = function (contentViewModel) {
+                    var viewModel = {
+                        content: contentViewModel // developer's view model
                     };
+                    ko.applyBindings(viewModel);
                 };
                 $(function () {
                     _start.call(__viewContext);
-                    ko.applyBindings(ui._viewModel);
                 });
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
