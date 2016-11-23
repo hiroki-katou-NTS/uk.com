@@ -36,5 +36,16 @@ public class LayoutMasterFinder {
 	public Optional<LayoutDto> getLayout(String companyCode, String stmtCode, int startYm) {
 		return this.repository.getLayout(companyCode, startYm, stmtCode).map(layout -> LayoutDto.fromDomain(layout));
 	}
+	/**
+	 * find all layouts with max startYM
+	 * @param companyCode
+	 * @return
+	 */
+	public List<LayoutDto> getLayoutsWithMaxStartYm(String companyCode)
+	{
+		return this.repository.getLayoutsWithMaxStartYm(companyCode).stream()
+				.map(layout -> LayoutDto.fromDomain(layout))
+				.collect(Collectors.toList());
+	}
 
 }
