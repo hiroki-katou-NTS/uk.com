@@ -284,4 +284,27 @@
             return handlers;
         };
     }
+    
+    
+    export class DirtyChecker {
+        
+        targetViewModel: KnockoutObservable<any>;
+        initialState: string;
+        
+        constructor(targetViewModelObservable: KnockoutObservable<any>) {
+            this.targetViewModel = targetViewModelObservable;
+        }
+        
+        getCurrentState() {
+            return ko.mapping.toJSON(this.targetViewModel());
+        }
+        
+        reset() {
+            this.initialState = this.getCurrentState();
+        }
+        
+        isDirty() {
+            return this.initialState !== this.getCurrentState();
+        }
+    }
 }

@@ -2,7 +2,8 @@ module qpp004.viewmodel {
     export class ScreenModel {
         
         paymentDateProcessingList: KnockoutObservableArray<any>;
-        selectedPaymetnProcessing: any;
+        selectedPaymetnProcessing: KnockoutObservable<any>;
+        displayCurrentYearMonthProcessing: KnockoutObservable<string>;
         
         /**
          * Init screen model.
@@ -12,6 +13,16 @@ module qpp004.viewmodel {
             
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymetnProcessing = ko.observable(null);
+            self.displayCurrentYearMonthProcessing = ko.observable(null);
+            
+            self.selectedPaymetnProcessing.subscribe(function(newValue) {
+                var currentDateMaster = _.find(self.paymentDateProcessingList(), function(item) {
+                    return item.processingNo == newValue;
+                });
+//                var year = currentDateMaster.currentProcessingYm.substring(0, 3);
+//                var month = currentDateMaster.currentProcessingYm.substring(4, 5);
+                self.displayCurrentYearMonthProcessing(currentDateMaster.currentProcessingYm);
+            });
         }
         
         /**
@@ -25,7 +36,7 @@ module qpp004.viewmodel {
             var dfd = $.Deferred();
             
             // Resolve start page dfd after load all data.
-            $.when(service.getPaymentDateProcessingMaster()).done(function(data) {
+            $.when(qpp004.service.getPaymentDateProcessingMaster()).done(function(data) {
                 
                 self.paymentDateProcessingList(data);
                 
@@ -42,7 +53,7 @@ module qpp004.viewmodel {
          * Redirect to page process create data
          */
         redirectToCreateData(): any {
-            alert('aaa');
+            nts.uk.request.jump("view/qmm/qpp/004/b/index.xhtml");
         }
     }
 }
