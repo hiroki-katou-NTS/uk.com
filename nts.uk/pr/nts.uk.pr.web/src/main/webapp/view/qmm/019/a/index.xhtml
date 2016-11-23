@@ -16,6 +16,7 @@
             	<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
                 <com:scriptfile path="viewmodel.js" />
             	<com:scriptfile path="start.js" />
+            	<com:scriptfile path="service.js" />
                 <com:stylefile path="main.css" />
             </ui:define>
 
@@ -41,12 +42,12 @@
 							<button id="A_BTN_007">履歴追加</button>
 							<button id="A_BTN_008">履歴編集</button>
 						</div>
-						<div data-bind="with: treegrid">
+						<div >
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
 								   	width: 303,
 									height: 500,
-									options: items2,
+									options: itemList,
 									value: singleSelectedCode,
 									optionsValue: 'code',
 									optionsChild: 'childs',
@@ -63,8 +64,8 @@
             				<div data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
 	            				<label id="A_LBL_002">コード/名称</label>
 	           				</div>
-	           				<label id="A_LBL_003">01</label>
-	           				<input id="A_INP_002" type="text" />
+	           				<label id="A_LBL_003" data-bind="text: singleSelectedCode">01</label>
+	           				<input id="A_INP_002" data-bind="value: singleSelectedCode" type="text" />
 	           				<label id="A_LBL_004">（　レーザープリンター　A4　縦向き　最大３人　）</label>
             			</div>
             			<div>
