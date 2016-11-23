@@ -42,6 +42,7 @@ var nts;
                     function ScreenWindowContainer() {
                         this.windows = {};
                         this.windows[windows.selfId] = ScreenWindow.createMainWindow();
+                        this.shared = {};
                     }
                     /**
                      * All dialog object is in MainWindow.
@@ -75,6 +76,13 @@ var nts;
                             }).dialog('open');
                         });
                         dialogGlobal.location.href = path;
+                        return subWindow;
+                    };
+                    ScreenWindowContainer.prototype.getShared = function (key) {
+                        return this.shared[key];
+                    };
+                    ScreenWindowContainer.prototype.setShared = function (key, data) {
+                        this.shared[key] = data;
                     };
                     return ScreenWindowContainer;
                 }());
@@ -87,6 +95,14 @@ var nts;
                     windows.selfId = MAIN_WINDOW_ID;
                     windows.container = new ScreenWindowContainer();
                 }
+                function getShared(key) {
+                    return windows.container.getShared(key);
+                }
+                windows.getShared = getShared;
+                function setShared(key, data) {
+                    windows.container.setShared(key, data);
+                }
+                windows.setShared = setShared;
                 var sub;
                 (function (sub) {
                     function modal(path, options) {
