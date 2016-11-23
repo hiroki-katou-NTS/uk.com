@@ -81,7 +81,7 @@
                     $dialog.dialog('option', {
                         width: dialogGlobal.dialogSize.width,
                         height: dialogGlobal.dialogSize.height,
-                        title: 'dialog',
+                        title: options.title || "dialog",
                         beforeClose: function () {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
@@ -283,5 +283,28 @@
         
             return handlers;
         };
+    }
+    
+    
+    export class DirtyChecker {
+        
+        targetViewModel: KnockoutObservable<any>;
+        initialState: string;
+        
+        constructor(targetViewModelObservable: KnockoutObservable<any>) {
+            this.targetViewModel = targetViewModelObservable;
+        }
+        
+        getCurrentState() {
+            return ko.mapping.toJSON(this.targetViewModel());
+        }
+        
+        reset() {
+            this.initialState = this.getCurrentState();
+        }
+        
+        isDirty() {
+            return this.initialState !== this.getCurrentState();
+        }
     }
 }

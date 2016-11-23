@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class CreatePaymentDataCommand {
-	private List<String> personIdList;
+	private String personId;
 	
 	private int processingNo;
 	

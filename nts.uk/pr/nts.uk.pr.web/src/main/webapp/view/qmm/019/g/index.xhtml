@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition template="../../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<link rel="stylesheet" type="text/css" href="main.css" />
+				<script src="start.js" />
+				<script src="viewmodel.js" />
+				<script src="service.js" />
+			    <script>var dialogSize = { width: 600, height: 700 };</script>
+			    <style>.nts-list-box *{box-sizing: border-box} </style>
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div class="cf">
+						<div class="form-label"><label id="LBL_001">項目名</label></div><br />
+						<br />
+						<div id="SEL_001">
+							<input type="radio" name="layoutCreate" value="newCreate" /> 新規に作成<br />
+			  				<input type="radio" name="layoutCreate" value="copyCreate" /> 既存のレイアウトをコピーして作成<br />
+						</div>
+						<div>
+<!-- 							<div id="SEL_002" -->
+<!-- 							data-bind="ntsComboBox: {options: itemList, -->
+<!-- 											optionsValue: 'code', -->
+<!-- 											value: selectedCode, -->
+<!-- 											optionsText: 'name', -->
+<!-- 											editable: isEditable(), -->
+<!-- 											enable: isEnable(), -->
+<!-- 											columns: [ -->
+<!-- 												{ prop: 'code', length: 2 }, -->
+<!-- 												{ prop: 'name', length: 20 }, -->
+<!-- 											]}" -->
+<!-- 							class="cf"> -->
+<!-- 							</div> -->
+							<!-- 明細書マスタ一覧で選択した項目のレイアウトパターンを表記 (レイアウト区分)-->
+							<div><label id = "LBL_002"></label></div>
+						</div>
+						<div><label id = "LBL_003">※選択した明細レイアウトの最新の履歴からコピーします。</label></div>
+						<div>
+							<div class ="form-label inline required">
+								<label id = "LBL_004" >コード/名称</label>
+<!-- 								<input data-bind="value: layoutCode" id = "INP_001" ></input> -->
+<!-- 								<input data-bind="value: layoutName" id = "INP_002"></input> -->
+							</div><br/>
+							<div class ="form-label inline required">
+								<label id = "LBL_005">開始年月</label>
+<!-- 								<input data-bind = "ntsTimeEditor: {startYm}" id = "INP_003"></input> -->
+								<!-- 入力した開始年月を和暦で表記 -->
+								<label id = "LBL_006"></label>
+							</div><br/>
+							<div class ="form-label inline required">
+								<label id = "LBL_007">レイアウトパターンの選択</label>
+								<label id = "LBL_008">※コピーして作成する場合、コピー元のレイアウトより表示項目が少ない項目は選択できません。</label>
+							</div>
+						</div>
+						<div>
+						<div id = "LST_001"
+							data-bind="ntsListBox: {options: itemList,
+										optionsValue: '',
+										optionsText: 'numberDisplayItems',
+										multiple: false,
+										value: selectedCodes,
+										enable: isEnable(),
+										columns: [
+											{ prop: 'stt', length: 20 },
+											{ prop: 'printType', length: 20 },
+											{ prop: 'paperType', length: 20 },
+											{ prop: 'direction', length: 20 },
+											{ prop: 'numberPeople', length: 20 },
+											{ prop: 'numberDisplayItems', length: 20 },
+											{ prop: 'reference', length: 20 }
+										]}"
+						class="cf"></div></div>
+						<br/>
+						<br/>
+						<hr></hr>
+					</div>
+	           	</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

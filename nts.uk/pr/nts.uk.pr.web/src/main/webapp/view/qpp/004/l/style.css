@@ -1,0 +1,17 @@
+.container > div {
+   margin-top: 20px;
+}
+
+table, table th, table td {
+	border: 1px solid #dcd7d7;
+	padding: 3px 36px;
+}
+
+table th {
+	background-color: #E0F59E;
+}
+
+table td {
+	text-align: left;
+}
+

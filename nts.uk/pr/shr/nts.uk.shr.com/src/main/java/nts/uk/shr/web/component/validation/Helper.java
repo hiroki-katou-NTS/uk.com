@@ -1,11 +1,8 @@
 package nts.uk.shr.web.component.validation;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.primitive.DecimalPrimitiveValue;
@@ -17,7 +14,6 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.gul.text.StringUtil;
 
 class Helper {
 	
@@ -46,23 +42,6 @@ class Helper {
 		CHARTYPE_NAMES_MAP.put(CharType.ALPHA_NUMERIC.name(), "AlphaNumeric");
 		CHARTYPE_NAMES_MAP.put(CharType.ALPHABET.name(), "Alphabet");
 		CHARTYPE_NAMES_MAP.put(CharType.NUMERIC.name(), "Numeric");
-	}
-	
-	static List<String> getPrimitiveValueNames(String contentsString) {
-        return Arrays.asList(contentsString.split("\n")).stream()
-	        .filter(s -> !StringUtil.isNullOrEmpty(s, true))
-	        .map(s -> s.trim())
-	        .collect(Collectors.toList());
-	}
-	
-	static Class<?> findClass(String className) {
-		Class<?> inputClass = null;
-		try {
-			inputClass = Class.forName(className);
-		} catch (ClassNotFoundException ex) {
-			throw new RuntimeException("PrimitiveValue class not found: " + className);
-		}
-		return inputClass;
 	}
 	
 	static String getValueType(Class<?> inputClass) {

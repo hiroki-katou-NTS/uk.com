@@ -9,6 +9,10 @@
     width: 880px;
 }
 
+.payment-date-processing div.lbl-1 {
+	float: left;
+}
+
 .current-year-month {
 	border: 1px solid #a79c9c;
 	border-radius: 4px;
