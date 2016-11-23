@@ -10,6 +10,7 @@ import javax.faces.context.ResponseWriter;
 
 import lombok.val;
 import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
+import nts.uk.shr.web.component.internal.TagContentsUtil;
 
 /**
  * ValidatorScript
@@ -38,7 +39,7 @@ public class ValidatorScript extends UIComponentBase {
         rw.write(JS_VAR_NAME);
         rw.write(" || {};");
 
-        val primitives = Helper.getPrimitiveValueNames(this.getChildren().get(0).toString());
+        val primitives = TagContentsUtil.readMultipleLinesString(this.getChildren().get(0).toString());
         for(String fqnOfPrimitiveValueClass : primitives) {
         	writePrimitiveValueConstraints(rw, fqnOfPrimitiveValueClass);
         }
@@ -51,7 +52,7 @@ public class ValidatorScript extends UIComponentBase {
 	
 	private static void writePrimitiveValueConstraints(ResponseWriter rw, String fqnOfPrimitiveValueClass) throws IOException {
 		
-		val pvClass = Helper.findClass(fqnOfPrimitiveValueClass);
+		val pvClass = TagContentsUtil.findClass(fqnOfPrimitiveValueClass).get();
 		String pvName = pvClass.getSimpleName();
 		
 		rw.append("\n\t");
