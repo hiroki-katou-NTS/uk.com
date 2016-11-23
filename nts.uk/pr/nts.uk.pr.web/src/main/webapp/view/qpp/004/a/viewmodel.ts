@@ -19,9 +19,10 @@ module qpp004.viewmodel {
                 var currentDateMaster = _.find(self.paymentDateProcessingList(), function(item) {
                     return item.processingNo == newValue;
                 });
-//                var year = currentDateMaster.currentProcessingYm.substring(0, 3);
-//                var month = currentDateMaster.currentProcessingYm.substring(4, 5);
-                self.displayCurrentYearMonthProcessing(currentDateMaster.currentProcessingYm);
+                var currentYearMonth = currentDateMaster.currentProcessingYm + "";
+                var year = currentYearMonth.substring(0, 4);
+                var month = currentYearMonth.substring(4, 6);
+                self.displayCurrentYearMonthProcessing(year + "/" + month);
             });
         }
         
@@ -53,7 +54,7 @@ module qpp004.viewmodel {
          * Redirect to page process create data
          */
         redirectToCreateData(): any {
-            nts.uk.request.jump("view/qmm/qpp/004/b/index.xhtml");
+            nts.uk.request.jump("/view/qpp/004/b/index.xhtml");
         }
     }
 }
