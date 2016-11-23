@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+
+			<link rel="stylesheet" type="text/css" href="style.css" />
+			<script src="../../../../lib/nittsu/ui/dialog-options.js"></script>
+			<script src="start.js"></script>
+			<script src="viewmodel.js"></script>
+			<script src="service.js"></script>
+			<script src="countup.js"></script>
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="functions-area"></div>
+
+			<div id="contents-area">
+				<div class="container">
+					<div class="info-create">
+						<label>データ作成</label>
+						<table id="tbl-info-create">
+							<tbody>
+								<tr>
+									<th>経過時間</th>
+									<td id="timer"></td>
+								</tr>
+								<tr>
+									<th>処理状態</th>
+									<td>完了</td>
+								</tr>
+								<tr>
+									<th>エラー件数</th>
+									<td><span data-bind="text: countError"></span>件</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="info-setting">
+						<label>設定情報</label>
+						<table id="tbl-info-setting">
+							<tbody>
+								<tr>
+									<th>処理方法</th>
+									<td>初期データ作成</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="error-list">
+						<table id="tbl-error">
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>処理状態</th>
+									<th>区分</th>
+									<th>内容</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>１</td>
+									<td>初期データ作成</td>
+									<td>初期データ作成</td>
+									<td>初期データ作成</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

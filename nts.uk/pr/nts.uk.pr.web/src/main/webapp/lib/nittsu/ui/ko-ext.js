@@ -322,6 +322,7 @@ var nts;
                                 modal: modal,
                                 closeOnEscape: false,
                                 buttons: dialogbuttons,
+                                dialogClass: "no-close",
                                 open: function () {
                                     $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                     $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
@@ -386,6 +387,7 @@ var nts;
                             closeOnEscape: false,
                             width: 550,
                             buttons: dialogbuttons,
+                            dialogClass: "no-close",
                             open: function () {
                                 $(this).parent().find('.ui-dialog-buttonset > button.yes').focus();
                                 $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
@@ -955,7 +957,12 @@ var nts;
                                 totalWidth += length * maxWidthCharacter + 20;
                                 i++;
                             });
-                            totalWidth += 50;
+                            var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
+                            var padding = 10;
+                            if (ntsCommonPadding) {
+                                padding = parseInt(ntsCommonPadding);
+                            }
+                            totalWidth += 50 + padding * columns.length;
                             $('.nts-list-box > li').css({ 'min-width': totalWidth });
                             $('.nts-list-box').css({ 'min-width': totalWidth });
                             container.css({ 'min-width': totalWidth });

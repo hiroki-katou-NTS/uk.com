@@ -1,0 +1,25 @@
+@CHARSET "UTF-8";
+
+.separate-1{
+	margin-top: 5px;
+	margin-right: 10px;	
+	margin-bottom: 5px;
+}
+
+.fit-space{
+	height: 100%;
+	width:  100%;
+	white-space: nowrap;
+}
+
+.green-div{
+	display: inline-block;
+    padding: 3px 12px;
+    background-color: #E0F59E;
+    color: #0D86D1;
+    cursor: pointer;
+}
+.round-border{
+	border: 1px solid black;
+    border-radius: 5px;
+}

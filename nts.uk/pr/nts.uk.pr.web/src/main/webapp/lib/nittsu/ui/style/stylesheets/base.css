@@ -139,7 +139,7 @@ div.form-label.required {
 }
 /* line 40, ../sass/components/_commons.scss */
 div.form-label.required > :first-child:after {
-  content: '＊';
+  content: '*';
   color: #f30;
   margin-left: 5px;
 }
@@ -194,6 +194,14 @@ div.popup-panel {
   -moz-box-shadow: 1px 1px 5px 1px #888;
   box-shadow: 1px 1px 5px 1px #888;
   padding: 5px;
+}
+
+/*****************************
+  NtsEditor
+*****************************/
+/* line 102, ../sass/components/_commons.scss */
+input[type="text"].error {
+  border: 1px solid #f33;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
@@ -698,7 +706,7 @@ button.nts-switch-button.selected:hover {
   border-radius: 0px;
 }
 /* line 18, ../sass/components/_dialog.scss */
-.ui-dialog .ui-dialog-titlebar-close {
+.ui-dialog.no-close .ui-dialog-titlebar-close {
   display: none;
 }
 /* line 22, ../sass/components/_dialog.scss */
