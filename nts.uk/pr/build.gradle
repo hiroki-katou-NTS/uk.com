@@ -163,6 +163,9 @@ project ('nts.uk.pr.web') {
 		runtime project (':proto:nts.uk.pr.proto.app')
 		runtime project (':proto:nts.uk.pr.proto.dom')
 		runtime project (':proto:nts.uk.pr.proto.infra')
+		runtime project (':screen:nts.uk.pr.screen.ws')
+		runtime project (':screen:nts.uk.pr.screen.app')
+		runtime project (':screen:nts.uk.pr.screen.infra')
 	}
 }
 project (':screen:nts.uk.pr.screen.ws') {
