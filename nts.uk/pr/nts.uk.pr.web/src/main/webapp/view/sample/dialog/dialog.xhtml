@@ -18,7 +18,6 @@
 			<!-- Do not include this CSS -->
 			<link rel="stylesheet" type="text/css" href="dialog.css" />
 			
-<!-- 			<script src="../../../lib/nittsu/ui/dialog-options.js"></script> -->
 			<script src="start.js"></script>
           </ui:define>
           
@@ -257,7 +256,7 @@ $('#dialog-open').click(function(){
 							<button data-bind="click: open">Open</button>
 							<button data-bind="click: hide">Hide</button><br/><br/>
 							<button id="removeErrors">Remove Error</button>
-							<div data-bind="ntsErrorDialog: {title: title, headers: headers, errors: errors, option: option}"></div>
+							<div data-bind="ntsErrorDialog: {title: title, errors: errors, option: option}"></div>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -278,17 +277,6 @@ $('#dialog-open').click(function(){
 										<td>title</td>
 										<td>
 											<b>Type:</b> string<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>headers</td>
-										<td>
-											<b>Type:</b> array&lt;ErrorHeader&gt;<br/>
-											Header definition<br/>
-											<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
-											<i>text</i>: Display text for header<br/>
-											<i>width</i>: Width for header<br/>
-											<i>visible</i>: Set display for this header. Hidden Header will not be rendered on DOM
 										</td>
 									</tr>
 									<tr>
@@ -330,37 +318,22 @@ $('#dialog-open').click(function(){
 								</tbody>
 							</table>
 							<pre style="float:left">errordialog: {
-	title: ko.observable("Error Dialog title"),
-	headers: ko.observableArray([
-	    new ErrorHeader("tab", "タブ", 90, true),
-	    new ErrorHeader("location", "エラー箇所", 115, true),
-	    new ErrorHeader("message", "エラー詳細", 250, true)
-	]),
-	errors: ko.observableArray([
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
-	]),
-	option: ko.mapping.fromJS(new ErrorDialogOption()),
-	closeButtonClicked: function(){},
-	open: function(){
-		var self = this;
-		self.option.show(true);
-	},
-	hide: function(){
-		var self = this;
-		self.option.show(false);
-	}
-}
-
-function ErrorHeader(name, text, width, visible){
-    this.name = name;
-    this.text = text;
-    this.width = width;
-    this.visible = visible;
+    title: ko.observable("Error Dialog title"),
+    errors: ko.observableArray([
+        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
+    ]),
+    option: ko.mapping.fromJS(new option.ErrorDialogWithTabOption()),
+    closeButtonClicked: function(){},
+    open: function(){
+        var self = this;
+        self.option.show(true);
+    },
+    hide: function(){
+        var self = this;
+        self.option.show(false);
+    }
 };</pre>
 						</div>
 						<!-- API -->
@@ -376,6 +349,75 @@ function ErrorHeader(name, text, width, visible){
 								</tr>
 							</thead>
 							<tbody>
+								<tr>
+									<td>headers</td>
+									<td>
+										<b>Type:</b> array&lt;ErrorHeader&gt;<br/>
+										<b>Default:</b><br/>
+				                        [new ErrorHeader("location", "エラー箇所", 115, true),<br/>
+				                        new ErrorHeader("message", "エラー詳細", 250, true)]<br/>
+										<b>Header definition</b><br/>
+										<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
+										<i>text</i>: Display text for header<br/>
+										<i>width</i>: Width for header<br/>
+										<i>visible</i>: Set display for this header. Hidden Header will not be rendered on DOM
+									</td>
+								</tr>
+								<tr>
+									<td>modal</td>
+									<td>
+										<b>Type:</b> boolean<br/>
+										<b>Default:</b> false<br/>
+										Display dialog in modal mode
+									</td>
+								</tr>
+								<tr>
+									<td>displayrows</td>
+									<td>
+										<b>Type:</b> number<br/>
+										<b>Default:</b> 10<br/>
+										Number of errors display at one
+									</td>
+								</tr>
+								<tr>
+									<td>maxrows</td>
+									<td>
+										<b>Type:</b> number<br/>
+										<b>Default:</b> 1000<br/>
+										Maximum errors can be display. Greater than this will show a message
+									</td>
+								</tr>
+								<tr>
+									<td>autoclose</td>
+									<td>
+										<b>Type:</b> boolean<br/>
+										<b>Default:</b> true<br/>
+										Wherever auto close dialog if number of errors reduce to 0
+									</td>
+								</tr>
+							</tbody>
+							<thead>
+								<tr>
+									<th><h4>ErrorDialogWithTabOption</h4></th>
+									<th><h4>Description</h4></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>headers</td>
+									<td>
+										<b>Type:</b> array&lt;ErrorHeader&gt;<br/>
+										<b>Default:</b><br/>
+				                        [new ErrorHeader("tab", "タブ", 90, true),<br/>
+				                        new ErrorHeader("location", "エラー箇所", 115, true),<br/>
+				                        new ErrorHeader("message", "エラー詳細", 250, true)]<br/>
+										<b>Header definition</b><br/>
+										<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
+										<i>text</i>: Display text for header<br/>
+										<i>width</i>: Width for header<br/>
+										<i>visible</i>: Set display for this header. Hidden Header will not be rendered on DOM
+									</td>
+								</tr>
 								<tr>
 									<td>modal</td>
 									<td>

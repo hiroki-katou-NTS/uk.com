@@ -2,16 +2,11 @@ module nts.uk.ui.errors {
     
     export class ErrorsViewModel {
         title: string;
-        headers: KnockoutObservableArray<ErrorHeader>;
         errors: KnockoutObservableArray<ErrorListItem>;
         option: any;
         
         constructor() {
             this.title = "エラー一覧"
-            this.headers = ko.observableArray([
-                new ErrorHeader("tab", "タブ", 90, true),
-                new ErrorHeader("location", "エラー箇所", 115, true),
-                new ErrorHeader("message", "エラー詳細", 250, true)]);
             this.errors = ko.observableArray([]);
             this.option = ko.mapping.fromJS(new option.ErrorDialogOption());
         }

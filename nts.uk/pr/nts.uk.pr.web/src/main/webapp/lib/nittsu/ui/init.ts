@@ -1,4 +1,4 @@
-﻿module nts.uk.ui {
+module nts.uk.ui {
      
     import option = nts.uk.ui.option;
     export var _viewModel: any;

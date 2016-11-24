@@ -18,8 +18,9 @@ import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
+import nts.uk.shr.com.context.AppContexts;
 
-@Path("/ctx/pr/proto/layout")
+@Path("pr/proto/layout")
 @Produces("application/json")
 public class LayoutWebService {
 	@Inject
@@ -34,9 +35,9 @@ public class LayoutWebService {
 	private LayoutMasterFinder find;
 	
 	@POST
-	@Path("findalllayout/{companyCode}")
-	public List<LayoutDto> getAllLayout(@PathParam("companyCode") String companyCode){
-		return this.find.getAllLayout(companyCode);		
+	@Path("findalllayout")
+	public List<LayoutDto> getAllLayout(){
+		return this.find.getAllLayout(AppContexts.user().companyCode());		
 	}
 	@POST
 	@Path("findlayout/{companyCode, stmtCode, startYm}")

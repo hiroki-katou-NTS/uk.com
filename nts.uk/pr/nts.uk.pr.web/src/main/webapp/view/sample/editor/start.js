@@ -1,6 +1,5 @@
 var option = nts.uk.ui.option;
 __viewContext.ready(function () {
-    console.log(option);
     var vm = {
         // TextEditor
         texteditor: {

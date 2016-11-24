@@ -15,12 +15,13 @@ var qmm019;
                     new NodeTest('0002', '開発部', [])
                 ]);
                 self.singleSelectedCode = ko.observable(null);
+                self.layouts = ko.observableArray([]);
             }
             // start function
             ScreenModel.prototype.start = function () {
                 var self = this;
                 var dfd = $.Deferred();
-                a.service.getAllLayout("1").done(function (layouts) {
+                a.service.getAllLayout().done(function (layouts) {
                     self.layouts(layouts);
                     dfd.resolve(null);
                 }).fail(function (res) {
@@ -35,10 +36,10 @@ var qmm019;
         a.ScreenModel = ScreenModel;
         var NodeTest = (function () {
             function NodeTest(code, name, children) {
-                this.layoutCode = code;
+                this.code = code;
                 this.name = name;
                 this.childs = children;
-                this.nodeText = this.layoutCode + ' ' + this.name;
+                this.nodeText = this.code + ' ' + this.name;
             }
             return NodeTest;
         }());

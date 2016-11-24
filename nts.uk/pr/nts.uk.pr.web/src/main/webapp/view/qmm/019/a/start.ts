@@ -7,4 +7,6 @@ __viewContext.ready(function () {
     screenModel.start().done(function() {
         __viewContext.bind(screenModel);
     });
+//    __viewContext.bind(screenModel);
+////    this.bind(screenModel);
 });

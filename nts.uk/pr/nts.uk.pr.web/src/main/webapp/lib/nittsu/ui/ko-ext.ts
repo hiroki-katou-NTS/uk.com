@@ -383,11 +383,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var option: any = ko.unwrap(data.option);
             var title: string = ko.unwrap(data.title);
-            var headers: Array<any> = ko.unwrap(data.headers);
-            var errors: Array<any> = ko.unwrap(data.errors);
-            var displayrows: number = ko.unwrap(option.displayrows);
-            var maxrows: number = ko.unwrap(option.maxrows);
-            var autoclose: boolean = ko.unwrap(option.autoclose);
+            var headers: Array<any> = ko.unwrap(option.headers);
             var modal: boolean = ko.unwrap(option.modal);
             var show: boolean = ko.unwrap(option.show);
             var buttons: any = ko.unwrap(option.buttons);
@@ -404,13 +400,20 @@ module nts.uk.ui.koExtentions {
                     click: function() { button.click(bindingContext.$data, $dialog) }
                 });
             }
+            // Calculate width
+            var dialogWidth:number = 40 + 35 + 17;
+            headers.forEach(function(header,index) {
+                if (ko.unwrap(header.visible)) {
+                    dialogWidth += ko.unwrap(header.width);
+                }
+            });
             // Create dialog
             $dialog.dialog({
                 title: title,
                 modal: modal,
                 autoOpen: show,
                 closeOnEscape: false,
-                width: 550,
+                width: dialogWidth,
                 buttons: dialogbuttons,
                 dialogClass: "no-close",
                 open: function() {
@@ -432,8 +435,8 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var option: any = ko.unwrap(data.option);
             var title: string = ko.unwrap(data.title);
-            var headers: Array<any> = ko.unwrap(data.headers);
             var errors: Array<any> = ko.unwrap(data.errors);
+            var headers: Array<any> = ko.unwrap(option.headers);
             var displayrows: number = ko.unwrap(option.displayrows);
             var maxrows: number = ko.unwrap(option.maxrows);
             var autoclose: boolean = ko.unwrap(option.autoclose);
@@ -452,8 +455,8 @@ module nts.uk.ui.koExtentions {
                 var $header = $("<thead><tr></tr></thead>");
                 $header.find("tr").append("<th style='width: 35px'></th>");
                 headers.forEach(function(header,index) {
-                    if (header.visible) {
-                        let $headerElement = $("<th>" + header.text + "</th>").width(header.width);
+                    if (ko.unwrap(header.visible)) {
+                        let $headerElement = $("<th>" + ko.unwrap(header.text) + "</th>").width(ko.unwrap(header.width));
                         $header.find("tr").append($headerElement);
                     }
                 });
@@ -466,10 +469,10 @@ module nts.uk.ui.koExtentions {
                         let $row = $("<tr></tr>");
                         $row.append("<td style='width:35px'>" + (index + 1) + "</td>");
                         headers.forEach(function(header){
-                            if (header.visible)
-                                if (error.hasOwnProperty(header.name)) {
+                            if (ko.unwrap(header.visible))
+                                if (error.hasOwnProperty(ko.unwrap(header.name))) {
                                     // TD
-                                    let $column = $("<td>" + error[header.name] + "</td>").width(header.width);
+                                    let $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>").width(ko.unwrap(header.width));
                                     $row.append($column);
                                 }
                         });
@@ -1302,7 +1305,6 @@ module nts.uk.ui.koExtentions {
             var isRequired = ko.unwrap(data.required) === true;
             var isInline = ko.unwrap(data.inline) === true;
             var isEnable = ko.unwrap(data.enable) !== false;
-            console.log(isEnable);
             var $formLabel = $(element).addClass('form-label');
             
             $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());

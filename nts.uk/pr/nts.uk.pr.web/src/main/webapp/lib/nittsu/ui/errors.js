@@ -9,10 +9,6 @@ var nts;
                 var ErrorsViewModel = (function () {
                     function ErrorsViewModel() {
                         this.title = "エラー一覧";
-                        this.headers = ko.observableArray([
-                            new ErrorHeader("tab", "タブ", 90, true),
-                            new ErrorHeader("location", "エラー箇所", 115, true),
-                            new ErrorHeader("message", "エラー詳細", 250, true)]);
                         this.errors = ko.observableArray([]);
                         this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
                     }

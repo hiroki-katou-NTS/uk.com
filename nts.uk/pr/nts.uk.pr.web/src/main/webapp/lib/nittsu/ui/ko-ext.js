@@ -356,11 +356,7 @@ var nts;
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
-                        var headers = ko.unwrap(data.headers);
-                        var errors = ko.unwrap(data.errors);
-                        var displayrows = ko.unwrap(option.displayrows);
-                        var maxrows = ko.unwrap(option.maxrows);
-                        var autoclose = ko.unwrap(option.autoclose);
+                        var headers = ko.unwrap(option.headers);
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
@@ -379,13 +375,20 @@ var nts;
                             var button = buttons_2[_i];
                             _loop_2(button);
                         }
+                        // Calculate width
+                        var dialogWidth = 40 + 35 + 17;
+                        headers.forEach(function (header, index) {
+                            if (ko.unwrap(header.visible)) {
+                                dialogWidth += ko.unwrap(header.width);
+                            }
+                        });
                         // Create dialog
                         $dialog.dialog({
                             title: title,
                             modal: modal,
                             autoOpen: show,
                             closeOnEscape: false,
-                            width: 550,
+                            width: dialogWidth,
                             buttons: dialogbuttons,
                             dialogClass: "no-close",
                             open: function () {
@@ -406,8 +409,8 @@ var nts;
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
-                        var headers = ko.unwrap(data.headers);
                         var errors = ko.unwrap(data.errors);
+                        var headers = ko.unwrap(option.headers);
                         var displayrows = ko.unwrap(option.displayrows);
                         var maxrows = ko.unwrap(option.maxrows);
                         var autoclose = ko.unwrap(option.autoclose);
@@ -424,8 +427,8 @@ var nts;
                             var $header = $("<thead><tr></tr></thead>");
                             $header.find("tr").append("<th style='width: 35px'></th>");
                             headers.forEach(function (header, index) {
-                                if (header.visible) {
-                                    var $headerElement = $("<th>" + header.text + "</th>").width(header.width);
+                                if (ko.unwrap(header.visible)) {
+                                    var $headerElement = $("<th>" + ko.unwrap(header.text) + "</th>").width(ko.unwrap(header.width));
                                     $header.find("tr").append($headerElement);
                                 }
                             });
@@ -438,10 +441,10 @@ var nts;
                                     var $row_1 = $("<tr></tr>");
                                     $row_1.append("<td style='width:35px'>" + (index + 1) + "</td>");
                                     headers.forEach(function (header) {
-                                        if (header.visible)
-                                            if (error.hasOwnProperty(header.name)) {
+                                        if (ko.unwrap(header.visible))
+                                            if (error.hasOwnProperty(ko.unwrap(header.name))) {
                                                 // TD
-                                                var $column = $("<td>" + error[header.name] + "</td>").width(header.width);
+                                                var $column = $("<td>" + error[ko.unwrap(header.name)] + "</td>").width(ko.unwrap(header.width));
                                                 $row_1.append($column);
                                             }
                                     });
@@ -1190,7 +1193,6 @@ var nts;
                         var isRequired = ko.unwrap(data.required) === true;
                         var isInline = ko.unwrap(data.inline) === true;
                         var isEnable = ko.unwrap(data.enable) !== false;
-                        console.log(isEnable);
                         var $formLabel = $(element).addClass('form-label');
                         $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
                         if (!isEnable) {
