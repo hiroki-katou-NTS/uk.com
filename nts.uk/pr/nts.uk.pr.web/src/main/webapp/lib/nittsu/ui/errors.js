@@ -24,7 +24,7 @@ var nts;
                         this.errors.push(error);
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var removeds = _.filter(this.errors(), function (e) { return e.$control === $element; });
+                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
                         this.errors.removeAll(removeds);
                     };
                     return ErrorsViewModel;

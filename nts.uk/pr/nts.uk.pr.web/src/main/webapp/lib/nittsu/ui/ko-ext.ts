@@ -488,7 +488,7 @@ module nts.uk.ui.koExtentions {
                 $dialog.html("");
                 $dialog.append($errorboard).append($message);
                 // Calculate body height base on displayrow
-                $body.height(displayrows * $(">:first-child", $body).outerHeight() + 1);
+                $body.height(Math.min(displayrows, errors.length) * $(">:first-child", $body).outerHeight() + 1);
             }
             else {
                 $dialog.dialog("close");            
