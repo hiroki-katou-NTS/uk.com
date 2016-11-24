@@ -6,8 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class QstdtPaymentHeaderPK implements Serializable {
 	
