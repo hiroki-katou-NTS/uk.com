@@ -13,7 +13,7 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name = "QSTMT_STMT_ALLOT_PS")
-public class QstmtStmtAllotPs extends AggregateTableEntity {
+public class QstmtStmtAllotPs {
 	
 	@EmbeddedId
 	public QstmtStmtAllotPsPK qstmtStmtAllotPsPK;
