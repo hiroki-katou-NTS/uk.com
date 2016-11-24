@@ -22,7 +22,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	private final String SELECT_HEADER = " SELECT c FROM QstdtPaymentHeader c "
 			+ " WHERE c.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND c.qstdtPaymentHeaderPK.personId = :PID"
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
-			+ " AND c.qstdtPaymentHeaderPK.processingYm = :PROCESSING_YM";
+			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
 	private String SELECT_ITEM = " SELECT d" + " FROM QstdtPaymentDetail d"
 			+ " WHERE d.QstdtPaymentDetailPK.companyCode = :CCD" + " AND d.QstdtPaymentDetailPK.personId = :PID"
@@ -32,9 +32,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
-		return this.queryProxy().find(new QstdtPaymentHeaderPK(companyCode, personId, processingNo, payBonusAttribute,
-				processingYM, sparePayAttribute), QstdtPaymentHeader.class).map(c -> toDomain(c));
-
+			return this.queryProxy().find(new QstdtPaymentHeaderPK(companyCode, personId, processingNo, payBonusAttribute,
+					processingYM, sparePayAttribute), QstdtPaymentHeader.class).map(c -> toDomain(c));
 	}
 
 	@Override
@@ -114,7 +113,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				entity.pensionInsuranceGrade, entity.pensionAverageEarn, entity.employmentInsuranceAtr,
 				entity.dependentNumber, entity.workInsuranceCalculateAtr, entity.insuredAtr, entity.bonusTaxRate,
 				entity.calcFlag, entity.makeMethodFlag, entity.comment);
-		entity.toDomain(domain);
+//		entity.toDomain(domain);
 		return domain;
 	}
 
@@ -126,7 +125,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	 */
 	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain) {
 		QstdtPaymentHeader entity = new QstdtPaymentHeader();
-		entity.fromDomain(domain);
+//		entity.fromDomain(domain);
 		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
 				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value);

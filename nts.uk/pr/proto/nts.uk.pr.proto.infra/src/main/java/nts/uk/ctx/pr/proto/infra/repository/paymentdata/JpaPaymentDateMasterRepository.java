@@ -24,7 +24,7 @@ public class JpaPaymentDateMasterRepository extends JpaRepository implements Pay
 		PaymentDateMaster domain = PaymentDateMaster.createFromJavaType(entity.neededWorkDay,
 				entity.qpdmtPaydayPK.processingNo, entity.qpdmtPaydayPK.processingYM, entity.qpdmtPaydayPK.sparePayAtr,
 				entity.qpdmtPaydayPK.payBonusAtr);
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 

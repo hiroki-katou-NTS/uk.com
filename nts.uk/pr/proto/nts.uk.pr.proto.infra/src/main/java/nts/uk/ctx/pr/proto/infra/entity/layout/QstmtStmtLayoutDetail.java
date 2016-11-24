@@ -30,9 +30,9 @@ public class QstmtStmtLayoutDetail implements Serializable {
 	@EmbeddedId
 	public QstmtStmtLayoutDetailPK qstmtStmtLayoutDetailPk;
 
-	@Transient
-	public String itemAbName;
-	
+//	@Transient
+//	public String itemAbName;
+//	
 	@Basic(optional = false)
 	@Column(name ="END_YM")
 	public int endYm;

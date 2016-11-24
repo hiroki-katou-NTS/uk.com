@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.screen.app.query.qpp005;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -174,7 +173,9 @@ public class GetPaymentDataQueryProcessor {
 			List<DetailItemDto> items = new ArrayList<>();
 			for (LayoutMasterDetail item : details) {
 				DetailItemDto detailItem = createDetailItemDto(lines, datas, ctAtr, item);
-				items.add(detailItem);
+				if (detailItem != null) {
+					items.add(detailItem);
+				}
 			}
 
 			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
@@ -187,16 +188,20 @@ public class GetPaymentDataQueryProcessor {
 
 	private static DetailItemDto createDetailItemDto(List<LayoutMasterLine> lines, List<DetailItemDto> datas, int ctAtr,
 			LayoutMasterDetail item) {
-		LayoutMasterLine mLine = lines.stream()
+		Optional<LayoutMasterLine> mLine = lines.stream()
 				.filter(x -> x.getCategoryAtr().value == ctAtr && x.getAutoLineId().equals(item.getAutoLineId()))
-				.findFirst().get();
+				.findFirst();
+
+		if (mLine.isPresent()) {
+			return null;
+		}
 
 		Double value = datas.stream()
 				.filter(x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(item.getItemCode().v())).findFirst()
 				.map(d -> d.getValue()).orElse(null);
 
 		DetailItemDto detailItem = DetailItemDto.fromDomain(ctAtr, item.getItemCode().v(), item.getItemAbName().v(),
-				value, DetailItemPositionDto.fromDomain(mLine.getLinePosition().v(), item.getItemPosColumn().v()),
+				value, DetailItemPositionDto.fromDomain(mLine.get().getLinePosition().v(), item.getItemPosColumn().v()),
 				value != null);
 		return detailItem;
 	}
