@@ -26,8 +26,8 @@ module nts.uk.ui.errors {
             this.errors.push(error);
         }
         
-        removeErrorByElementId(elementId: string) {
-            var removeds = _.filter(this.errors(), e => e.elementId === elementId);
+        removeErrorByElement($element: JQuery) {
+            var removeds = _.filter(this.errors(), e => e.$control === $element);
             this.errors.removeAll(removeds);
         }
     }
@@ -36,7 +36,7 @@ module nts.uk.ui.errors {
         tab?: string;
         location: string;
         message: string;
-        elementId?: string;
+        $control?: JQuery;
     }
     
     export class ErrorHeader {
@@ -69,7 +69,7 @@ module nts.uk.ui.errors {
         errorsViewModel().addError(error);
     }
     
-    export function removeById(elementId: string) {
-        errorsViewModel().removeErrorByElementId(elementId);
+    export function removeByElement($control: JQuery) {
+        errorsViewModel().removeErrorByElement($control);
     }
 }

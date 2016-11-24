@@ -23,16 +23,16 @@ var nts;
                 var ntsError;
                 (function (ntsError) {
                     $.fn.ntsError = function (action, message) {
-                        var $element = $(this);
+                        var $control = $(this);
                         if (action === "set") {
                             ui.errors.add({
-                                location: $element.data('name'),
+                                location: $control.data('name'),
                                 message: message,
-                                elementId: $element.attr('id')
+                                $control: $control
                             });
                         }
                         if (action === "clear") {
-                            ui.errors.removeById($element.attr('id'));
+                            ui.errors.removeByElement($control);
                         }
                         return this;
                     };
