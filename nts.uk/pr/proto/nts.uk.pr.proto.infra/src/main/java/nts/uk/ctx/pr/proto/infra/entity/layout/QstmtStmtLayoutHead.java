@@ -15,11 +15,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name="QSTMT_STMT_LAYOUT_HEAD")
 @AllArgsConstructor
 @NoArgsConstructor
-public class QstmtStmtLayoutHead extends AggregateTableEntity implements Serializable {
+public class QstmtStmtLayoutHead implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
 
@@ -37,6 +37,6 @@ public class QstmtStmtLayoutHead extends AggregateTableEntity implements Seriali
 	@Column(name ="LAYOUT_ATR")
 	public int layoutAtr;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutHead")
-	public List<QstmtStmtLayoutCtg> layoutCategories;
+//	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutHead")
+//	public List<QstmtStmtLayoutCtg> layoutCategories;
 }

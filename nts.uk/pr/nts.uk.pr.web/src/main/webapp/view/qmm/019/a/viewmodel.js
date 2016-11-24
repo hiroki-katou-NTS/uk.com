@@ -20,13 +20,13 @@ var qmm019;
             ScreenModel.prototype.start = function () {
                 var self = this;
                 var dfd = $.Deferred();
-                //            service.getAllLayout("1").done(function(layouts: Array<service.model.LayoutMasterDto>) {
-                //                self.layouts(layouts);
-                dfd.resolve(null);
-                //            }).fail(function(res) {
-                //                // Alert message
-                //                alert(res);
-                //            });
+                a.service.getAllLayout().done(function (layouts) {
+                    self.layouts(layouts);
+                    dfd.resolve(null);
+                }).fail(function (res) {
+                    // Alert message
+                    alert(res);
+                });
                 // Return.
                 return dfd.promise();
             };

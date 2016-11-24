@@ -5,14 +5,14 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getAllLayout: "/ctx/pr/proto/layout/findalllayout"
+                getAllLayout: "pr/proto/layout/findalllayout"
             };
             /**
              * Get list payment date processing.
              */
-            function getAllLayout(id) {
+            function getAllLayout() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getAllLayout + "/" + id)
+                nts.uk.request.ajax(paths.getAllLayout)
                     .done(function (res) {
                     dfd.resolve(res);
                 })

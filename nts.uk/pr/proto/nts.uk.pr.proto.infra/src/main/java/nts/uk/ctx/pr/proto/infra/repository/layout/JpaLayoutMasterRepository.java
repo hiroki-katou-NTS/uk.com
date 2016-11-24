@@ -41,15 +41,11 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 				entity.qstmtStmtLayoutHeadPK.strYm, entity.qstmtStmtLayoutHeadPK.stmtCd, entity.endYm, entity.layoutAtr,
 				entity.stmtName);
 
-		entity.toDomain(domain);
-
 		return domain;
 	}
 
 	private static QstmtStmtLayoutHead toEntity(LayoutMaster domain) {
 		val entity = new QstmtStmtLayoutHead();
-
-		entity.fromDomain(domain);
 
 		entity.qstmtStmtLayoutHeadPK.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutHeadPK.stmtCd = domain.getStmtCode().v();
