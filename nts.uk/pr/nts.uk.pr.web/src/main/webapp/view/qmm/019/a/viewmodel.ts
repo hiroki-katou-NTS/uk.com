@@ -26,27 +26,27 @@ module qmm019.a {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            service.getAllLayout("1").done(function(layouts: Array<service.model.LayoutMasterDto>) {
-                self.layouts(layouts);
+//            service.getAllLayout("1").done(function(layouts: Array<service.model.LayoutMasterDto>) {
+//                self.layouts(layouts);
                 dfd.resolve(null);
-            }).fail(function(res) {
-                // Alert message
-                alert(res);
-            });
+//            }).fail(function(res) {
+//                // Alert message
+//                alert(res);
+//            });
             // Return.
             return dfd.promise();
         }
     }
     export class NodeTest {
-        layoutCode: string;
+        code: string;
         name: string;
         childs: Array<NodeTest>;
         nodeText: any;
         constructor(code: string, name: string, children: Array<NodeTest>) {
-            this.layoutCode = code;
+            this.code = code;
             this.name = name;
             this.childs = children;
-            this.nodeText = this.layoutCode + ' ' + this.name;
+            this.nodeText = this.code + ' ' + this.name;
         }
 
     }
