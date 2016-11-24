@@ -1,4 +1,4 @@
-module nts.uk.ui.koExtentions {
+module nts.uk.ui.option {
     
     abstract class DialogOption {
         modal: boolean;

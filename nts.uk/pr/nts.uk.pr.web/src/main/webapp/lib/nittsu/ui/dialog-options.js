@@ -9,8 +9,8 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui_1) {
-            var koExtentions;
-            (function (koExtentions) {
+            var option;
+            (function (option_1) {
                 var DialogOption = (function () {
                     function DialogOption() {
                         this.show = false;
@@ -37,7 +37,7 @@ var nts;
                     }
                     return ConfirmDialogOption;
                 }(DialogOption));
-                koExtentions.ConfirmDialogOption = ConfirmDialogOption;
+                option_1.ConfirmDialogOption = ConfirmDialogOption;
                 var DelDialogOption = (function (_super) {
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
@@ -68,7 +68,7 @@ var nts;
                     }
                     return DelDialogOption;
                 }(DialogOption));
-                koExtentions.DelDialogOption = DelDialogOption;
+                option_1.DelDialogOption = DelDialogOption;
                 var OKDialogOption = (function (_super) {
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
@@ -99,7 +99,7 @@ var nts;
                     }
                     return OKDialogOption;
                 }(DialogOption));
-                koExtentions.OKDialogOption = OKDialogOption;
+                option_1.OKDialogOption = OKDialogOption;
                 var ErrorDialogOption = (function (_super) {
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
@@ -123,7 +123,7 @@ var nts;
                     }
                     return ErrorDialogOption;
                 }(DialogOption));
-                koExtentions.ErrorDialogOption = ErrorDialogOption;
+                option_1.ErrorDialogOption = ErrorDialogOption;
                 var DialogButton = (function () {
                     function DialogButton() {
                     }
@@ -131,7 +131,7 @@ var nts;
                     ;
                     return DialogButton;
                 }());
-            })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
+            })(option = ui_1.option || (ui_1.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -20,6 +20,17 @@ var nts;
                         return null;
                     }
                 })(ntsTextBox || (ntsTextBox = {}));
+                var ntsError;
+                (function (ntsError) {
+                    $.fn.ntsError = function (action, message) {
+                        if (action === "set") {
+                            nts.uk.ui._viewModel.kiban.errorDialogViewModel.errors.push({ tab: "N/A", location: $(this).attr('id'), message: message });
+                        }
+                        if (action === "remove") {
+                        }
+                        return this;
+                    };
+                })(ntsError || (ntsError = {}));
                 var ntsPopup;
                 (function (ntsPopup) {
                     var DATA_INSTANCE_NAME = 'nts-popup-panel';

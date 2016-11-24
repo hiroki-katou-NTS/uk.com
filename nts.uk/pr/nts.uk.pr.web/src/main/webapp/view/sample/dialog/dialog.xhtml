@@ -18,7 +18,7 @@
 			<!-- Do not include this CSS -->
 			<link rel="stylesheet" type="text/css" href="dialog.css" />
 			
-			<script src="../../../lib/nittsu/ui/dialog-options.js"></script>
+<!-- 			<script src="../../../lib/nittsu/ui/dialog-options.js"></script> -->
 			<script src="start.js"></script>
           </ui:define>
           
@@ -262,7 +262,7 @@ $('#dialog-open').click(function(){
 						<br/>
 						<!-- ViewModel -->
 						<div class="cf">
-							<h3>Dialog ViewModel</h3>
+							<h3>Error Dialog ViewModel</h3>
 							<table>
 								<colgroup>
 									<col width="200px" />
@@ -287,7 +287,8 @@ $('#dialog-open').click(function(){
 											Header definition<br/>
 											<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
 											<i>text</i>: Display text for header<br/>
-											<i>visible</i>: Set display for this header. Header will not be rendered on DOM
+											<i>width</i>: Width for header<br/>
+											<i>visible</i>: Set display for this header. Hidden Header will not be rendered on DOM
 										</td>
 									</tr>
 									<tr>
@@ -305,9 +306,7 @@ $('#dialog-open').click(function(){
 										<td>
 											<b>Type:</b> object<br/>
 											<b>Members:</b><br/>
-											<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
-											<i>DelDialogOption</i>: Option for delete dialog<br/>
-											<i>OKDialogOption</i>: Option for OK dialog
+											<i>ErrorDialogOption</i>: Option for error dialog
 										</td>
 									</tr>
 									<tr>
@@ -333,9 +332,9 @@ $('#dialog-open').click(function(){
 							<pre style="float:left">errordialog: {
 	title: ko.observable("Error Dialog title"),
 	headers: ko.observableArray([
-		new ErrorHeader("tab", "タブ", true),
-		new ErrorHeader("location", "エラー箇所", true),
-		new ErrorHeader("message", "エラー詳細", true)
+	    new ErrorHeader("tab", "タブ", 90, true),
+	    new ErrorHeader("location", "エラー箇所", 115, true),
+	    new ErrorHeader("message", "エラー詳細", 250, true)
 	]),
 	errors: ko.observableArray([
 		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
@@ -357,14 +356,15 @@ $('#dialog-open').click(function(){
 	}
 }
 
-function ErrorHeader(nane, text, visible){
-	this.name = name;
-	this.text = text;
-	this.visible = visible;
-}</pre>
+function ErrorHeader(name, text, width, visible){
+    this.name = name;
+    this.text = text;
+    this.width = width;
+    this.visible = visible;
+};</pre>
 						</div>
 						<!-- API -->
-						<h3>Dialog API</h3>
+						<h3>Error Dialog API</h3>
 						<table>
 							<colgroup>
 								<col width="200px" />

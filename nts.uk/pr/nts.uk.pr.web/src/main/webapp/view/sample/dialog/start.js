@@ -1,4 +1,4 @@
-var koExtentions = nts.uk.ui.koExtentions;
+var option = nts.uk.ui.option;
 __viewContext.ready(function () {
     $('#dialog-open').click(function () {
         vm.dialogconfirm.open();
@@ -18,7 +18,7 @@ __viewContext.ready(function () {
         dialogconfirm: {
             title: ko.observable(""),
             message: ko.observable(""),
-            option: ko.mapping.fromJS(new koExtentions.ConfirmDialogOption()),
+            option: ko.mapping.fromJS(new option.ConfirmDialogOption()),
             okButtonClicked: function () { },
             cancelButtonClicked: function () { },
             open: function () {
@@ -34,7 +34,7 @@ __viewContext.ready(function () {
         dialogdel: {
             title: ko.observable(""),
             message: ko.observable("You want a message, you get a message."),
-            option: ko.mapping.fromJS(new koExtentions.DelDialogOption()),
+            option: ko.mapping.fromJS(new option.DelDialogOption()),
             okButtonClicked: function () {
                 alert("Ok");
             },
@@ -54,7 +54,7 @@ __viewContext.ready(function () {
         dialogok: {
             title: ko.observable("A test Title"),
             message: ko.observable("This is a test message created for test purpose."),
-            option: ko.mapping.fromJS(new koExtentions.OKDialogOption()),
+            option: ko.mapping.fromJS(new option.OKDialogOption()),
             okButtonClicked: function () { },
             cancelButtonClicked: function () { },
             open: function () {
@@ -92,7 +92,7 @@ __viewContext.ready(function () {
                 { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
                 { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }
             ]),
-            option: ko.mapping.fromJS(new koExtentions.ErrorDialogOption({ maxrows: 25 })),
+            option: ko.mapping.fromJS(new option.ErrorDialogOption({ maxrows: 25 })),
             closeButtonClicked: function () { },
             open: function () {
                 var self = this;
