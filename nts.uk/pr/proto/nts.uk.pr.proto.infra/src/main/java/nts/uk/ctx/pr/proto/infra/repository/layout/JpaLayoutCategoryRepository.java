@@ -16,14 +16,14 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtgPK;
 
 public class JpaLayoutCategoryRepository extends JpaRepository implements LayoutMasterCategoryRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutCtgPK c";
+	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutCtg c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
-			+ " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm";
+			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutCtgPk.strYm = :startYm";
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
+			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
 			+ " AND c.endYm = :endYm";
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {

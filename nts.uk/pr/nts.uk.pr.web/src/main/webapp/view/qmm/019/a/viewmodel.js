@@ -16,6 +16,7 @@ var qmm019;
                 ]);
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
+                self.layoutsMax = ko.observableArray([]);
             }
             // start function
             ScreenModel.prototype.start = function () {
@@ -23,13 +24,28 @@ var qmm019;
                 var dfd = $.Deferred();
                 a.service.getAllLayout().done(function (layouts) {
                     self.layouts(layouts);
-                    dfd.resolve(null);
+                    a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
+                        self.layoutsMax(layoutsMax);
+                        self.buildTreeDataSource();
+                        dfd.resolve();
+                    });
                 }).fail(function (res) {
                     // Alert message
                     alert(res);
                 });
                 // Return.
                 return dfd.promise();
+            };
+            ScreenModel.prototype.buildTreeDataSource = function () {
+                var self = this;
+                self.itemList.removeAll();
+                _.forEach(self.layoutsMax(), function (layoutMax) {
+                    //self.itemList.push(new NodeTest())
+                    //let childLayouts = ko.observableArray([]);
+                    var childLayouts = _.filter(self.layouts, function (layout) {
+                        return layout.stmtCode() === layoutMax.stmtCode();
+                    });
+                });
             };
             return ScreenModel;
         }());

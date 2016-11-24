@@ -17,7 +17,8 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
 	private final String SELECT_ALL = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
+			+ " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
 	private final String SELECT_DETAIL = SELECT_ALL + " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
 	private final String SELECT_LAYOUT_BEFORE = "SELECT TOP 1 c FROM QstmtStmtLayoutHead c" 
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
@@ -31,6 +32,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 			+ " c.endYm,"
 			+ " c.layoutAtr"
 			+ " FROM QstmtStmtLayoutHead c"
+			+ " GROUP BY "
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
 	
 //	private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM QstmtStmtLayoutHead e "

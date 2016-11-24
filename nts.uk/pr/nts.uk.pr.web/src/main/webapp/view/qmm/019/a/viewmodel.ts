@@ -7,7 +7,8 @@ module qmm019.a {
         singleSelectedCode: any;
         selectedCode: KnockoutObservableArray<NodeTest>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
-        
+        layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
+
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
@@ -20,8 +21,9 @@ module qmm019.a {
             ]);
             self.singleSelectedCode = ko.observable(null);
             self.layouts = ko.observableArray([]);
+            self.layoutsMax = ko.observableArray([]);
         }
-        
+
         // start function
         start(): JQueryPromise<any> {
             var self = this;
@@ -29,13 +31,30 @@ module qmm019.a {
 
             service.getAllLayout().done(function(layouts: Array<service.model.LayoutMasterDto>) {
                 self.layouts(layouts);
-                dfd.resolve(null);
+                service.getLayoutsWithMaxStartYm().done(function(layoutsMax: Array<service.model.LayoutMasterDto>) {
+                    self.layoutsMax(layoutsMax);
+                    self.buildTreeDataSource();
+                    dfd.resolve();
+                });
             }).fail(function(res) {
                 // Alert message
                 alert(res);
             });
             // Return.
             return dfd.promise();
+        }
+
+        buildTreeDataSource(): any {
+            var self = this;
+            self.itemList.removeAll();
+            _.forEach(self.layoutsMax(), function(layoutMax) {
+                //self.itemList.push(new NodeTest())
+                //let childLayouts = ko.observableArray([]);
+
+                let childLayouts = _.filter(self.layouts, function(layout) {
+                    return layout.stmtCode() === layoutMax.stmtCode();
+                })
+            });
         }
     }
     export class NodeTest {
