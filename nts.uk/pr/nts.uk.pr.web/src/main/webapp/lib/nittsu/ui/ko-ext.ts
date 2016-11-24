@@ -383,6 +383,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var option: any = ko.unwrap(data.option);
             var title: string = ko.unwrap(data.title);
+            var headers: Array<any> = ko.unwrap(option.headers);
             var modal: boolean = ko.unwrap(option.modal);
             var show: boolean = ko.unwrap(option.show);
             var buttons: any = ko.unwrap(option.buttons);
@@ -399,13 +400,20 @@ module nts.uk.ui.koExtentions {
                     click: function() { button.click(bindingContext.$data, $dialog) }
                 });
             }
+            // Calculate width
+            var dialogWidth:number = 40 + 35 + 17;
+            headers.forEach(function(header,index) {
+                if (ko.unwrap(header.visible)) {
+                    dialogWidth += ko.unwrap(header.width);
+                }
+            });
             // Create dialog
             $dialog.dialog({
                 title: title,
                 modal: modal,
                 autoOpen: show,
                 closeOnEscape: false,
-                width: 550,
+                width: dialogWidth,
                 buttons: dialogbuttons,
                 dialogClass: "no-close",
                 open: function() {

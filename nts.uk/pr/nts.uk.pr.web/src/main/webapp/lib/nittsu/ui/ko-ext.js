@@ -356,6 +356,7 @@ var nts;
                         var data = valueAccessor();
                         var option = ko.unwrap(data.option);
                         var title = ko.unwrap(data.title);
+                        var headers = ko.unwrap(option.headers);
                         var modal = ko.unwrap(option.modal);
                         var show = ko.unwrap(option.show);
                         var buttons = ko.unwrap(option.buttons);
@@ -374,13 +375,20 @@ var nts;
                             var button = buttons_2[_i];
                             _loop_2(button);
                         }
+                        // Calculate width
+                        var dialogWidth = 40 + 35 + 17;
+                        headers.forEach(function (header, index) {
+                            if (ko.unwrap(header.visible)) {
+                                dialogWidth += ko.unwrap(header.width);
+                            }
+                        });
                         // Create dialog
                         $dialog.dialog({
                             title: title,
                             modal: modal,
                             autoOpen: show,
                             closeOnEscape: false,
-                            width: 550,
+                            width: dialogWidth,
                             buttons: dialogbuttons,
                             dialogClass: "no-close",
                             open: function () {
