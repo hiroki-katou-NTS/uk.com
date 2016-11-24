@@ -10,9 +10,9 @@ var qpp004;
             /**
              * Get list payment date processing.
              */
-            function createPaymentData(param) {
+            function processCreatePaymentData(options) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.createpaymentdata, param)
+                nts.uk.request.ajax(paths.createpaymentdata, options)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -21,7 +21,7 @@ var qpp004;
                 });
                 return dfd.promise();
             }
-            service.createPaymentData = createPaymentData;
+            service.processCreatePaymentData = processCreatePaymentData;
         })(service = l.service || (l.service = {}));
     })(l = qpp004.l || (qpp004.l = {}));
 })(qpp004 || (qpp004 = {}));

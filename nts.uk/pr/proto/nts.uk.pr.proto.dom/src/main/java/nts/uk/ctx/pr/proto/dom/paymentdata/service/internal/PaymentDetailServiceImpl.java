@@ -50,7 +50,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		
 		// get personal commute
 		PersonalCommuteFee commute = personalCommuteRepo.find(
-				param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth().v()).get();
+				param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth().v())
+					.orElseThrow(() -> new RuntimeException("PersonalCommuteFee not found"));
 		
 		// LAYOUT_DETAIL with CTR_ATR = 0
 		val detailsOfCategoryPayment = layoutMasterDetailList.stream()

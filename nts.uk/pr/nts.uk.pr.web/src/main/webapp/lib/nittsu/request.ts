@@ -156,7 +156,11 @@
     export function jump(path: string, data: any) {
         
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
-        
+       
+        window.location.href = resolvePath(path);
+    }
+     
+    export function resolvePath(path: string) {
         var destination: Locator;
         if (path.charAt(0) === '/') {
             destination = location.appRoot.mergeRelativePath(path);
@@ -164,7 +168,7 @@
             destination = location.current.mergeRelativePath(path);
         }
         
-        window.location.href = destination.rawUrl;
+        return destination.rawUrl;
     }
     
     export module location {

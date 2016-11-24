@@ -93,7 +93,7 @@ module nts.uk.ui.option {
     
     // Error Dialog
     export interface IErrorDialogOption {
-        headers?: ErrorHeader[],
+        headers?: errors.ErrorHeader[],
         modal?: boolean,
         displayrows?: number,
         maxrows?: number,
@@ -101,7 +101,7 @@ module nts.uk.ui.option {
     }
     
     export class ErrorDialogOption extends DialogOption {
-        headers: ErrorHeader[];
+        headers: errors.ErrorHeader[];
         displayrows: number;
         maxrows: number;
         autoclose: boolean;
@@ -111,8 +111,8 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.headers = (option && option.headers) ? option.headers : [
-                        new ErrorHeader("location", "エラー箇所", 115, true),
-                        new ErrorHeader("message", "エラー詳細", 250, true)
+                        new errors.ErrorHeader("location", "エラー箇所", 115, true),
+                        new errors.ErrorHeader("message", "エラー詳細", 250, true)
                     ];
             this.modal = (option && option.modal !== undefined) ? option.modal : false;
             this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -140,9 +140,9 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.headers = (option && option.headers) ? option.headers : [
-                        new ErrorHeader("tab", "タブ", 90, true),
-                        new ErrorHeader("location", "エラー箇所", 115, true),
-                        new ErrorHeader("message", "エラー詳細", 250, true)
+                        new errors.ErrorHeader("tab", "タブ", 90, true),
+                        new errors.ErrorHeader("location", "エラー箇所", 115, true),
+                        new errors.ErrorHeader("message", "エラー詳細", 250, true)
                     ];
             this.modal = (option && option.modal !== undefined) ? option.modal : false;
             this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -166,19 +166,6 @@ module nts.uk.ui.option {
     type ButtonSize = "x-large" | "large" | "medium" | "small";
     type ButtonColor = "" | "danger" | "proceed";
     
-    class ErrorHeader{
-        name: string;
-        text: string;
-        width: number;
-        visible: boolean;
-        
-        constructor(name:string, text: string, width: number, visible: boolean) {
-            this.name = name;
-            this.text = text;
-            this.width = width;
-            this.visible = visible;
-        }
-    }
     
     class DialogButton{
         text: string;

@@ -106,8 +106,8 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ErrorHeader("location", "エラー箇所", 115, true),
-                            new ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_1.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -134,9 +134,9 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ErrorHeader("tab", "タブ", 90, true),
-                            new ErrorHeader("location", "エラー箇所", 115, true),
-                            new ErrorHeader("message", "エラー詳細", 250, true)
+                            new ui_1.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_1.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -157,15 +157,6 @@ var nts;
                     return ErrorDialogWithTabOption;
                 }(ErrorDialogOption));
                 option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
-                var ErrorHeader = (function () {
-                    function ErrorHeader(name, text, width, visible) {
-                        this.name = name;
-                        this.text = text;
-                        this.width = width;
-                        this.visible = visible;
-                    }
-                    return ErrorHeader;
-                }());
                 var DialogButton = (function () {
                     function DialogButton() {
                     }
