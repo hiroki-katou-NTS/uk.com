@@ -27,7 +27,7 @@ module nts.uk.ui.errors {
         }
         
         removeErrorByElement($element: JQuery) {
-            var removeds = _.filter(this.errors(), e => e.$control === $element);
+            var removeds = _.filter(this.errors(), e => e.$control.is($element));
             this.errors.removeAll(removeds);
         }
     }
