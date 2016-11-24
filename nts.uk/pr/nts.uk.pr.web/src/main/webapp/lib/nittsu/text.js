@@ -230,32 +230,25 @@ var nts;
             text_1.charPadding = charPadding;
             function formatYearMonth(yearMonth) {
                 var result;
-                var num = parseInt("" + yearMonth);
-                result = "" + num / 100 + "/" + num % 100;
+                var num = parseInt(String(yearMonth));
+                var year = String(Math.floor(num / 100));
+                var month = charPadding(String(num % 100), '0', true, 2);
+                result = year + '/' + month;
                 return result;
             }
             text_1.formatYearMonth = formatYearMonth;
             function formatSeconds(seconds, formatOption) {
-                var result;
-                var fullstr;
-                var hourminstr;
-                var num = parseInt("" + seconds);
-                var milisec = parseInt("" + ((seconds - num) * 1000));
-                var milistr = padLeft("" + milisec, "0", 3);
-                var sec = num % 60;
-                var secstr = padLeft("" + sec, "0", 2);
-                var min = (num / 60) % 60;
-                var minstr = padLeft("" + min, "0", 2);
-                var hour = num / 3600;
-                var hourstr = padLeft("" + hour, "0", 2);
-                hourminstr = "" + hourstr + ":" + minstr;
-                result = hourminstr + ":" + secstr;
-                fullstr = result + ":" + milistr;
-                if (formatOption === "hh:mm:ss:ms")
-                    return fullstr;
-                if (formatOption === "hh:mm")
-                    return hourminstr;
-                return result;
+                seconds = parseInt(String(seconds));
+                var ss = padLeft(String(seconds % 60), '0', 2);
+                var minutes = Math.floor(seconds / 60);
+                var mm = padLeft(String(minutes % 60), '0', 2);
+                var hours = Math.floor(seconds / 60 / 60);
+                var h = String(hours);
+                // TODO: use formatOption
+                return "h:mm:ss"
+                    .replace(/h/g, h)
+                    .replace(/mm/g, mm)
+                    .replace(/ss/g, ss);
             }
             text_1.formatSeconds = formatSeconds;
         })(text = uk.text || (uk.text = {}));
