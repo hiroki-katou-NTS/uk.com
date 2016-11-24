@@ -18,27 +18,29 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	private final String SELECT_NO_WHERE = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE
-			+ " INNER JOIN JpaItemMasterRepository i"
-			+ " ON i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
-			+ "  AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr"
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
+			+ " INNER JOIN QcamtItem i"
+			+ " ON ("
+			+ " i.qcamtItemPK.ccd = c.qstmtStmtLayoutDetailPk.companyCd"
+			+ " AND i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
+			+ " AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr)"
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
-			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
+			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
 	private final String SELECT_ALL_DETAILS_BY_CATEGORY = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm"
-			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr := ctgAtr";
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm"
+			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr";
 	private final String SELECT_ALL_DETAILS_BY_LINE = SELECT_NO_WHERE
-			+ " WHERE c.autoLineId := autoLineId";
+			+ " WHERE c.autoLineId = :autoLineId";
 	private final String SELECT_DETAILS_WITH_SUMSCOPEATR = SELECT_ALL_DETAILS
 			   + " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr" + " AND c.sumScopeAtr = :sumScopeAtr";
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.endYm := endYm";
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.endYm = :endYm";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
@@ -93,11 +95,16 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	public List<LayoutMasterDetail> getDetails(String companyCd, 
 			String stmtCd, 
 			int startYm) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutDetail.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
-				.getList(c -> toDomain(c));
+		try {
+			return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutDetail.class)
+					.setParameter("companyCd", companyCd)
+					.setParameter("stmtCd", stmtCd)
+					.setParameter("strYm", startYm)
+					.getList(c -> toDomain(c));
+		} catch (Exception e) {
+			throw e;
+		}
+		
 	}
 
 	
