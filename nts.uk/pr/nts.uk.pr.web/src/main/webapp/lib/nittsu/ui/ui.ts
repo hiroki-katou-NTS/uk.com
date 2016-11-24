@@ -90,7 +90,7 @@
                     }).dialog('open');
                 });
                 
-                dialogGlobal.location.href = path;
+                dialogGlobal.location.href = request.resolvePath(path);
                 
                 return subWindow;
             }

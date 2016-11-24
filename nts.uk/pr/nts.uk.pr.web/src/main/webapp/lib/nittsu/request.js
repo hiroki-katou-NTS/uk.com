@@ -130,6 +130,10 @@ var nts;
             request.ajax = ajax;
             function jump(path, data) {
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
+                window.location.href = resolvePath(path);
+            }
+            request.jump = jump;
+            function resolvePath(path) {
                 var destination;
                 if (path.charAt(0) === '/') {
                     destination = location.appRoot.mergeRelativePath(path);
@@ -137,9 +141,9 @@ var nts;
                 else {
                     destination = location.current.mergeRelativePath(path);
                 }
-                window.location.href = destination.rawUrl;
+                return destination.rawUrl;
             }
-            request.jump = jump;
+            request.resolvePath = resolvePath;
             var location;
             (function (location) {
                 location.current = new Locator(window.location.href);

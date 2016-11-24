@@ -75,7 +75,7 @@ var nts;
                                 }
                             }).dialog('open');
                         });
-                        dialogGlobal.location.href = path;
+                        dialogGlobal.location.href = uk.request.resolvePath(path);
                         return subWindow;
                     };
                     ScreenWindowContainer.prototype.getShared = function (key) {
