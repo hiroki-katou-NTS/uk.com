@@ -107,16 +107,14 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				command.getProcessingYearMonth(), SparePayAtr.NORMAL.value, command.getProcessingNo()).get();
 
 		// calculate personal
-		for (String personId : command.getPersonIdList()) {
-			calculatePersonalPayment(
-					loginInfo,
-					YearMonth.of(command.getProcessingYearMonth()),
-					command.getProcessingNo(),
-					baseYearMonth,
-					payCalBasicInfo,
-					payDay,
-					personId);
-		}
+		calculatePersonalPayment(
+				loginInfo,
+				YearMonth.of(command.getProcessingYearMonth()),
+				command.getProcessingNo(),
+				baseYearMonth,
+				payCalBasicInfo,
+				payDay,
+				command.getPersonId());
 	}
 
 	/**

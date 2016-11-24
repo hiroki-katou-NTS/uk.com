@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
 
-@Path("pr/proto/layout")
+@Path("/ctx/pr/proto/layout")
 @Produces("application/json")
 public class LayoutWebService {
 	@Inject
@@ -47,7 +47,7 @@ public class LayoutWebService {
 	}
 	
 	@POST
-	@Path("findalllayoutwithmaxstartym/{companyCode}")
+	@Path("findlayoutwithmaxstartym/{companyCode}")
 	public List<LayoutDto> getLayoutsWithMaxStartYm(@PathParam("companyCode") String companyCode){
 		return this.find.getLayoutsWithMaxStartYm(companyCode);
 	}

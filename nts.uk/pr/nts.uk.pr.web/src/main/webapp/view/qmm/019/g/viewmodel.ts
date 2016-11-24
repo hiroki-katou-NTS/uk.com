@@ -1,4 +1,4 @@
-module qmm019.viewmodel {
+module qmm019.g.viewmodel {
     
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
@@ -7,7 +7,8 @@ module qmm019.viewmodel {
         selectedLayoutAtr: KnockoutObservable<number>;
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
-        
+        comboboxList: KnockoutObservableArray<ItemCombobox>;
+        selectLayoutCode: KnockoutObservable<string>;
         /**
          * Init screen model.
          */
@@ -35,54 +36,25 @@ module qmm019.viewmodel {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
             
-            
-        }
-        
-//        /**
-//         * Add options.
-//         */
-//        addOptions() {
+            self.comboboxList = ko.observableArray([
+                new ItemCombobox('001', "layout 001"),
+                new ItemCombobox('002', "layout 002"),
+                new ItemCombobox('003', "layout 003"),
+            ]); 
+            self.selectLayoutCode = ko.observable("001");           
+        } 
+//        startPage(): JQueryPromise<any> {
 //            var self = this;
-//            var newLayoutAtr = self.selectedLayoutAtr
-//            var layoutAtr = newLayoutAtr.toString();
-//            var codeLength = layoutAtr.length;
-//            while (codeLength < 4) {
-//                itemCode = '0' + itemCode;
-//                codeLength++;
-//            }
-//            self.itemList.push(new ItemModel(itemCode, self.itemName()));
-//            self.currentLayoutAtr(newCode);
-//        }
-//        
-//        deselectAll() {
-//            $('#combo-box').ntsListBox('deselectAll');
-//        }
-//        
-//        selectAll() {
-//            $('#combo-box').ntsListBox('selectAll');
-//        }
-//        
-//        /**
-//         * Clear options.
-//         */
-//        clearOptions() {
-//            this.itemList([]);
-//        }
-//        
-//        /**
-//         * Remove item by code;
-//         */
-//        remove() {
-//            var self = this;
-//            
-//            // Remove by code.
-//            var selected: ItemModel = self.itemList().filter(item => item.code == self.selectedLayoutAtr())[0];
-//            self.itemList.remove(selected);
-//            
-//            // Remove by codes
-//            var selecteds: ItemModel[] = self.itemList().filter(item => self.selectedCodes().indexOf(item.code) != -1);
-//            self.itemList.removeAll(selecteds);
-//        }
+//            // Page load dfd.
+//            var dfd = $.Deferred();
+//            $.when(qmm019.g.service.getLayoutWithMaxStartYm()).done(function(data){
+//                self.comboboxList(data);
+//                dfd.resolve();   
+//            }).fail(function res() {
+//                    
+//            });
+//            return dfd.promise();
+//        }       
     }
     
         /**
@@ -106,6 +78,16 @@ module qmm019.viewmodel {
             this.numberPeople = numberPeople;
             this.numberDisplayItems = numberDisplayItems;
             this.reference = reference;
+        }
+    }
+    
+    export class ItemCombobox{
+        layoutCode: string;
+        layoutName: string;
+        
+        constructor(layoutCode: string, layoutName: string){
+            this.layoutCode = layoutCode;
+            this.layoutName = layoutName;    
         }
     }
 }

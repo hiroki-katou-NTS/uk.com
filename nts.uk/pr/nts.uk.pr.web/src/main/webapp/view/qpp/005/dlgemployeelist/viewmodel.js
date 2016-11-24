@@ -8,7 +8,7 @@ ScreenModel.prototype.start = function() {
 	var self = this;
 	services.getEmployeeList().done(function(res) {
 		var employeeList = _.map(res.employeeList, function(employee) {
-			return new Employee(employee.value, employee.text);
+			return new Employee(employee.code, employee.name);
 		});
 		self.employees().items(employeeList);
 	});
@@ -18,11 +18,11 @@ function EmployeeList() {
 	var self = this;
 
 	self.items = ko.observableArray([]);
-	self.Selected = ko.observable();
+	self.selectedCodes = ko.observable();
 }
-function Employee(value, name) {
+function Employee(code, name) {
 	var self = this;
 
-	self.value = ko.observable(value);
+	self.code = ko.observable(code);
 	self.name = ko.observable(name);
 }
