@@ -222,8 +222,10 @@
     }
     export function formatYearMonth(yearMonth: number) {
         var result: string;
-        var num = parseInt(""+yearMonth);
-        result = "" + num/100 + "/" + num%100;
+        var num = parseInt(String(yearMonth));
+        var year = String(Math.floor(num / 100));
+        var month = charPadding(String(num % 100), '0', true, 2);
+        result = year + '/' + month;
         return result;
     }
     export function formatSeconds(seconds: number, formatOption: string) {
