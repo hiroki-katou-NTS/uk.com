@@ -31,14 +31,11 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 				entity.qstmtStmtLayoutCtgPk.strYm, entity.qstmtStmtLayoutCtgPk.stmtCd,
 				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgPos);
 
-		entity.toDomain(domain);
 		return domain;
 	}
 
 	private QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
 		val entity = new QstmtStmtLayoutCtg();
-
-		entity.fromDomain(domain);
 
 		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();

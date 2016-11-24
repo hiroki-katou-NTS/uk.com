@@ -7,6 +7,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -17,13 +18,12 @@ import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
+@Entity
 @Table(name="QSTMT_STMT_LAYOUT_DETAIL")
-public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Serializable {
+public class QstmtStmtLayoutDetail implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
 
@@ -118,24 +118,24 @@ public class QstmtStmtLayoutDetail extends AggregateTableEntity implements Seria
 	@Column(name ="AL_RANGE_HIGH")
 	public int alRangeHigh;
 	
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="layoutDetail")
-	public List<QstmtStmtLayoutLines> layoutLines;
-	
-	@OneToOne(optional=false)
-	@JoinColumns({
-		@JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
-        @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
-        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
-    })
-	public List<QcamtItem> items;
-	
-	@ManyToOne
-	@JoinColumns({
-        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
-        @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
-        @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
-        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false),
-        @JoinColumn(name="AUTO_LINE_ID", referencedColumnName="AUTO_LINE_ID", insertable = false, updatable = false)
-    })
-	public QstmtStmtLayoutLines layoutLine;
+//	@OneToMany(cascade=CascadeType.ALL,mappedBy="layoutDetail")
+//	public List<QstmtStmtLayoutLines> layoutLines;
+//	
+//	@OneToOne(optional=false)
+//	@JoinColumns({
+//		@JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
+//        @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
+//        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+//    })
+//	public List<QcamtItem> items;
+//	
+//	@ManyToOne
+//	@JoinColumns({
+//        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
+//        @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
+//        @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
+//        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false),
+//        @JoinColumn(name="AUTO_LINE_ID", referencedColumnName="AUTO_LINE_ID", insertable = false, updatable = false)
+//    })
+//	public QstmtStmtLayoutLines layoutLine;
 }

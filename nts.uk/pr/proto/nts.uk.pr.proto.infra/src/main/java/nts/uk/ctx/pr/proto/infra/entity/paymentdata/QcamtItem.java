@@ -13,9 +13,9 @@ import javax.persistence.Table;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
 
-//@Entity
+@Entity
 @Table(name="QCAMT_ITEM")
-public class QcamtItem extends AggregateTableEntity {
+public class QcamtItem {
 
 	@EmbeddedId
     public QcamtItemPK qcamtItemPK;
@@ -92,11 +92,11 @@ public class QcamtItem extends AggregateTableEntity {
 	@Column(name = "WORK_DAYS_SCOPE_ATR")
 	public int workDaysScopeAtr;
 	
-	@OneToOne
-	@JoinColumns({
-        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
-        @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
-        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
-    })
-	public QstmtStmtLayoutDetail layoutDetail;
+//	@OneToOne
+//	@JoinColumns({
+//        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
+//        @JoinColumn(name="ITEM_CD", referencedColumnName="ITEM_CD", insertable = false, updatable = false),
+//        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+//    })
+//	public QstmtStmtLayoutDetail layoutDetail;
 }

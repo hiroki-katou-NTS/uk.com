@@ -106,8 +106,8 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_1.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -134,9 +134,9 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_1.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
-                            new ui_1.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                            new errors.ErrorHeader("tab", "タブ", 90, true),
+                            new errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
