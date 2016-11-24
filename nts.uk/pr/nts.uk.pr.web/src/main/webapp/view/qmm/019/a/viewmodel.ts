@@ -11,14 +11,15 @@ module qmm019.a {
 
         constructor() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new NodeTest('0001', 'サービス部', [
-                    new NodeTest('0001-1', 'サービス部1', []),
-                    new NodeTest('0001-2', 'サービス部2', []),
-                    new NodeTest('0001-3', 'サービス部3', []),
-                    new NodeTest('0001-4', 'サービス部4', [])]),
-                new NodeTest('0002', '開発部', [])
-            ]);
+//            self.itemList = ko.observableArray([
+//                new NodeTest('0001', 'サービス部', [
+//                    new NodeTest('0001-1', 'サービス部1', []),
+//                    new NodeTest('0001-2', 'サービス部2', []),
+//                    new NodeTest('0001-3', 'サービス部3', []),
+//                    new NodeTest('0001-4', 'サービス部4', [])]),
+//                new NodeTest('0002', '開発部', [])
+//            ]);
+            self.itemList = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.layouts = ko.observableArray([]);
             self.layoutsMax = ko.observableArray([]);
@@ -48,12 +49,15 @@ module qmm019.a {
             var self = this;
             self.itemList.removeAll();
             _.forEach(self.layoutsMax(), function(layoutMax) {
-                //self.itemList.push(new NodeTest())
-                //let childLayouts = ko.observableArray([]);
-
-                let childLayouts = _.filter(self.layouts, function(layout) {
-                    return layout.stmtCode() === layoutMax.stmtCode();
-                })
+                var children = [];
+                
+                var childLayouts = _.filter(self.layouts(), function(layout) {
+                    return layout.stmtCode === layoutMax.stmtCode;
+                });
+                _.forEach(childLayouts, function(child) {
+                    children.push(new NodeTest(child.stmtCode + 1, child.stmtName, [], child.startYm + " ~ " + child.endYM));
+                });
+                self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
             });
         }
     }
@@ -62,11 +66,11 @@ module qmm019.a {
         name: string;
         childs: Array<NodeTest>;
         nodeText: any;
-        constructor(code: string, name: string, children: Array<NodeTest>) {
+        constructor(code: string, name: string, children: Array<NodeTest>, nodeText: string) {
             this.code = code;
             this.name = name;
             this.childs = children;
-            this.nodeText = this.code + ' ' + this.name;
+            this.nodeText = nodeText;
         }
 
     }

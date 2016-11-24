@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.infra.repository.layout;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,11 +30,14 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	private final String SELECT_MAX_START = "SELECT c.qstmtStmtLayoutHeadPK.stmtCd,"
 			+ " c.stmtName,"
 			+ " MAX(c.qstmtStmtLayoutHeadPK.strYm),"
-			+ " c.endYm,"
+			+ " 999912 endYm,"
 			+ " c.layoutAtr"
 			+ " FROM QstmtStmtLayoutHead c"
-			+ " GROUP BY "
-			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode"
+			+ " GROUP BY c.qstmtStmtLayoutHeadPK.companyCd,"
+			+ " c.qstmtStmtLayoutHeadPK.stmtCd,"
+			+ " c.stmtName,"
+			+ " c.layoutAtr";
 	
 //	private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM QstmtStmtLayoutHead e "
 //			+ "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
@@ -116,9 +120,28 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode) {
-		return this.queryProxy().query(SELECT_MAX_START, QstmtStmtLayoutHead.class)
-				.setParameter("companyCd", companyCode)				
-				.getList(c -> toDomain(c));
+		try {
+			
+			@SuppressWarnings("unchecked")
+			List<Object[]> listObject = this.queryProxy().getEntityManager().createQuery(SELECT_MAX_START)
+					.setParameter("companyCode", companyCode)				
+					.getResultList();
+			List<LayoutMaster> results = new ArrayList<>();
+			for (Object[] resultData : listObject) {
+				val entity = new QstmtStmtLayoutHead();
+				entity.qstmtStmtLayoutHeadPK = new QstmtStmtLayoutHeadPK();
+				entity.qstmtStmtLayoutHeadPK.companyCd = companyCode;
+				entity.qstmtStmtLayoutHeadPK.stmtCd = (String) resultData[0];
+				entity.qstmtStmtLayoutHeadPK.strYm = (int) resultData[2];
+				entity.endYm = 999912;
+				entity.layoutAtr = (int) resultData[4];
+				entity.stmtName = (String) resultData[1];
+				results.add(toDomain(entity));
+			}
+			return results;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 //	@Override

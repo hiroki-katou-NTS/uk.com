@@ -6,14 +6,15 @@ var qmm019;
         var ScreenModel = (function () {
             function ScreenModel() {
                 var self = this;
-                self.itemList = ko.observableArray([
-                    new NodeTest('0001', 'サービス部', [
-                        new NodeTest('0001-1', 'サービス部1', []),
-                        new NodeTest('0001-2', 'サービス部2', []),
-                        new NodeTest('0001-3', 'サービス部3', []),
-                        new NodeTest('0001-4', 'サービス部4', [])]),
-                    new NodeTest('0002', '開発部', [])
-                ]);
+                //            self.itemList = ko.observableArray([
+                //                new NodeTest('0001', 'サービス部', [
+                //                    new NodeTest('0001-1', 'サービス部1', []),
+                //                    new NodeTest('0001-2', 'サービス部2', []),
+                //                    new NodeTest('0001-3', 'サービス部3', []),
+                //                    new NodeTest('0001-4', 'サービス部4', [])]),
+                //                new NodeTest('0002', '開発部', [])
+                //            ]);
+                self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
@@ -40,22 +41,25 @@ var qmm019;
                 var self = this;
                 self.itemList.removeAll();
                 _.forEach(self.layoutsMax(), function (layoutMax) {
-                    //self.itemList.push(new NodeTest())
-                    //let childLayouts = ko.observableArray([]);
-                    var childLayouts = _.filter(self.layouts, function (layout) {
-                        return layout.stmtCode() === layoutMax.stmtCode();
+                    var children = [];
+                    var childLayouts = _.filter(self.layouts(), function (layout) {
+                        return layout.stmtCode === layoutMax.stmtCode;
                     });
+                    _.forEach(childLayouts, function (child) {
+                        children.push(new NodeTest(child.stmtCode + 1, child.stmtName, [], child.startYm + " ~ " + child.endYM));
+                    });
+                    self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
                 });
             };
             return ScreenModel;
         }());
         a.ScreenModel = ScreenModel;
         var NodeTest = (function () {
-            function NodeTest(code, name, children) {
+            function NodeTest(code, name, children, nodeText) {
                 this.code = code;
                 this.name = name;
                 this.childs = children;
-                this.nodeText = this.code + ' ' + this.name;
+                this.nodeText = nodeText;
             }
             return NodeTest;
         }());
