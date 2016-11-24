@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script
+				src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
+
+			<link rel="stylesheet" type="text/css" href="style.css" />
+			<script src="start.js" />
+			<script src="viewmodel.js" />
+			<script src="service.js" />
+			<script>var dialogSize = { width: 550, height: 300 };</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="form-label required " data-bind="ntsFormLabel: {}">行の設定</div>
+				<br />
+			</div>
+			<form>
+				<div>
+					<fieldset>
+					  <div data-bind="foreach: boxes">
+					        <label><input class="radio-1" type="radio" name="selection" /><span data-bind="text: text"></span></label><br /> 
+				        </div>
+					<!-- 	<input class="radio-1" type="radio" name="selection"/>明細書に印字する行<br /> 
+						<input class="radio-2" type="radio" name="selection"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）<br /> 
+						<input class="radio-3" type="radio" checked="checked" name="selection"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）<br /> -->
+					</fieldset>
+				</div>
+			</form>
+			<hr></hr>
+			<div>
+				<button class="x-large">決定</button>
+				<button class="large">キャンセル</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

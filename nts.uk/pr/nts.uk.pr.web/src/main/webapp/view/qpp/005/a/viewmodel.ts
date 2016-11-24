@@ -10,7 +10,7 @@ module nts.uk.pr.view.qpp._005 {
                 self.isHandInput = ko.observable(true);
                 self.paymentDataResult = ko.observable<service.model.PaymentDataResult>();
             }
-            public startPage(): JQueryPromise<any> {
+            startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
 

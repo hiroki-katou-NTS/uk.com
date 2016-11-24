@@ -14,71 +14,128 @@
 					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
 					nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
 			</com:ValidatorScript>
-			<link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/jquery.steps.css" />
+			<link rel="stylesheet" type="text/css"
+				href="../../../../lib/nittsu/ui/style/stylesheets/jquery.steps.css" />
+			<link rel="stylesheet" type="text/css" href="style.css" />
 			<script src="../../../../lib/generic/jquery/jquery.steps.js"></script>
+
+			<link rel="stylesheet" type="text/css"
+				href="../../../../lib/generic/jqueryui/jquery-ui.css" />
+			<link rel="stylesheet" type="text/css"
+				href="../../../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+			<link rel="stylesheet" type="text/css"
+				href="../../../../lib/generic/igniteui/css/structure/infragistics.css" />
+			<link rel="stylesheet" type="text/css"
+				href="../../../../lib/nittsu/ui/style/stylesheets/base.css" />
+			<link rel="stylesheet" type="text/css"
+				href="../../../../lib/nittsu/ui/style/stylesheets/jquery.steps.css" />
+			<script src="../../../../lib/generic/jquery/jquery-3.1.1.js"></script>
+			<script src="../../../../lib/generic/jquery/jquery.steps.js"></script>
+			<script src="../../../../lib/generic/jqueryui/jquery-ui.min.js"></script>
+			<script src="../../../../lib/generic/knockoutjs/knockout-3.4.0.js"></script>
+			<script
+				src="../../../../lib/generic/knockoutjs/knockout.mapping-2.4.1.js"></script>
+			<script src="../../../../lib/generic/lodash/lodash-4.16.6.min.js"></script>
+			<script
+				src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
+			<script
+				src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js"></script>
+			<script
+				src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+			<script src="../../../../lib/nittsu/util.js"></script>
+			<script src="../../../../lib/nittsu/text.js"></script>
+			<script src="../../../../lib/nittsu/ui/notify.js"></script>
+			<script src="../../../../lib/nittsu/ui/validation.js"></script>
+			<script src="../../../../lib/nittsu/ui/jquery-ext.js"></script>
+			<script src="../../../../lib/nittsu/ui/ko-ext.js"></script>
+			<script src="../../../../lib/nittsu/ui/ui.js"></script>
 			<script src="start.js"></script>
 		</ui:define>
 
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<a data-bind="ntsLinkButton: { jump: 'dest.xhtml' }">操作選択に戻る</a>
-				<button>移送項目設定</button>
-				<button>実行ログ</button>
-
+				<div class="separate-1 green-div">操作選択に戻る</div>
+				<button class="separate-1">移送項目設定</button>
+				<button class="separate-1">実行ログ</button>
 			</div>
-			<div id="program-body" style="top: 140px; min-width: 431px;">
-				<div id="contents-area" class="two-column-layout">
-					<div class="column right cf">
-					<div id="program-body" style="top: 140px; min-width: 431px;" data-bind="with: wizard">
-						<div id="contents-area" class="two-column-layout">
-							<div class="column right cf">
-								<div>
-									<select data-bind="options: stepList, 
-																optionsText: 'id',
-																value: stepSelected" style="width: 200px"></select>
-									<button data-bind="click: gotoStep">Go to Step</button>
-								</div><br/>
-								<div id="wizard"
-									data-bind="ntsWizard: {steps: stepList}"
-									class="cf">
-									<div class="steps">
-										<div class="begin step-1" data-icon="../../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg">再集計</div>
-										<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする
-										</div>
-										<div class="step-3">対象社員を選ぶ</div>
-										<div class="step-4">対象社員を選ぶ</div>
-										<div class="step-5">対象社員を選ぶ</div>
-										<div class="end step-6">実行</div>
-									</div>
-									<div class="contents">
-										<div class="step-1">contents step1</div>
-										<div class="step-2">contents step2</div>
-										<div class="step-3">contents step3</div>
-										<div class="step-4">
-											<div>
-												Code: <input type="text" /><br/>
-												Name: <input type="text" />
-											</div>
-										</div>
-										<div class="step-5">contents step5</div>
-										<div class="step-6">contents step6</div>
-									</div>
+			<div id="contents-area">
+				<div id="program-body" style="top: 140px; min-width: 431px;"
+					data-bind="with: wizard">
+					<div id="wizard" data-bind="ntsWizard: {steps: stepList}">
+						<div class="steps">
+							<div class="begin step-1"
+								data-icon="../../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg">データ作成</div>
+							<div class="step-2">
+								<div class="fit-space" data-bind="click: step2">
+									<span>処理方法を選ぶ</span><br /> └詳細設定をする
 								</div>
-								
-								<button data-bind="click: begin">Begin</button>
-								<button data-bind="click: end">End</button>
-								<button data-bind="click: previous">Previous</button>
-								<button data-bind="click: next">Next</button>
-								<button data-bind="click: getCurrentStep">Current Step Index</button>
+							</div>
+							<div class="step-3">対象社員を選ぶ</div>
+							<div class="end step-4">実行</div>
+						</div>
+						<div class="contents">
+							<div class="step-1"></div>
+							<div class="step-2">
+								<div class="round-border">
+									<div class="separate-1 green-div">操作選択に戻る</div>
+									<a data-bind="text: currentProcessingYearMonth"></a>
+								</div>
+								<br /> <br /> <br /> <br /> <span>処理方法を選んでください</span><br />
+								<br />
+								<button class="large">就業の月別実績を連動する。</button>
+								<br /> <br />
+								<button class="large" data-bind="click: next">初期値データの作成</button>
+								<br /> <br />
+								<button class="large">外部（CSV）データの実績を取り込む。</button>
+								<br /> <br />
+							</div>
+							<div class="step-3">
+								<div class="round-border">
+									<div class="separate-1 green-div">操作選択に戻る</div>
+									<a data-bind="text: currentProcessingYearMonth"></a>
+								</div>
+								<br />
+								<div data-bind="with: $root.content.grid" class="cf">
+									<table id="gridPerson"
+										data-bind="ntsTreeGridView:{
+											   	width: 500,
+												height: '100%',
+												options: items1,
+												selectedValues: selectedCode,
+												optionsValue: 'code',
+												optionsChild: 'childs',
+												optionsText: 'nodeText',
+												multiple: true,
+												enable: true,
+												showCheckBox: true}"
+										class="cf">
+									</table>
+								</div>
+								<br/>
+								<button data-bind="click: previous">← 処理方法へ戻る</button>
+								<button data-bind="click: next" class="proceed x-large">次　へ  →</button>
+							</div>
+							<div class="step-4">
+								<div class="round-border">
+									<div class="separate-1 green-div">操作選択に戻る</div>
+									<a data-bind="text: currentProcessingYearMonth"></a>
+								</div>
+								<br />
+								<span>以下の設定で処理を行います。</span> <br/><br/>
+								<div class="form-label">処理方法</div> <a>初期値データの作成</a> <br/><br/>
+								<div class="form-label">対象人数</div> <a data-bind="text: $root.content.grid.selectedCode().length"></a><br /><br/>
+								<button data-bind="click: previous">← 処理方法へ戻る</button>
+								<button data-bind="click: next" class="proceed x-large">実行する</button>
 							</div>
 						</div>
-						<hr/>
 					</div>
+					<br />
 				</div>
 			</div>
-		</div>
-		<hr />
+			<hr />
+			<hr />
 		</ui:define>
 	</ui:composition>
 </body>

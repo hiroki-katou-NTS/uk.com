@@ -26,7 +26,7 @@ public class PaymentDateProcessingMasterFinder {
 	 * @param processingNo
 	 * @return PaymentDateProcessingMaster
 	 */
-	public Optional<PaymentDateProcessingMasterDto> find(String companyCode, int paymentBonusAtribute,
+	public Optional<PaymentDateProcessingMasterDto> find(int paymentBonusAtribute,
 			int processingNo) {
 		LoginUserContext login = AppContexts.user();
 		return this.repository.find(login.companyCode(), paymentBonusAtribute, processingNo)
