@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
 
-@Path("/ctx/pr/proto/layout")
+@Path("pr/proto/layout")
 @Produces("application/json")
 public class LayoutWebService {
 	@Inject
