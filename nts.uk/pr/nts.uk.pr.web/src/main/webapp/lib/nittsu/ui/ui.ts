@@ -44,10 +44,12 @@
          */
         export class ScreenWindowContainer {
             windows: { [key: string]: ScreenWindow };
+            shared: { [key: string]: any };
 
             constructor() {
                 this.windows = {};
                 this.windows[selfId] = ScreenWindow.createMainWindow();
+                this.shared = {};
             }
 
             /**
@@ -89,6 +91,16 @@
                 });
                 
                 dialogGlobal.location.href = path;
+                
+                return subWindow;
+            }
+            
+            getShared(key: string): any {
+                return this.shared[key];
+            }
+            
+            setShared(key: string, data: any) {
+                this.shared[key] = data;
             }
         }
 
@@ -103,6 +115,13 @@
             container = new ScreenWindowContainer();
         }
 
+        export function getShared(key: string): any {
+            return container.getShared(key);
+        }
+            
+        export function setShared(key: string, data: any) {
+            container.setShared(key, data);
+        }
 
         export module sub {
 

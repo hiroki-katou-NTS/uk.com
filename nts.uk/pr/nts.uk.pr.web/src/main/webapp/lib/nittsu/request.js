@@ -4,6 +4,7 @@ var nts;
     (function (uk) {
         var request;
         (function (request) {
+            request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
             var QueryString = (function () {
                 function QueryString() {
                     this.items = {};
@@ -127,7 +128,8 @@ var nts;
                 return dfd.promise();
             }
             request.ajax = ajax;
-            function jump(path) {
+            function jump(path, data) {
+                uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
                 var destination;
                 if (path.charAt(0) === '/') {
                     destination = location.appRoot.mergeRelativePath(path);

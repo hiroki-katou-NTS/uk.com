@@ -4,6 +4,7 @@ module qpp004.a.viewmodel {
         paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymetnProcessing: KnockoutObservable<any>;
         displayCurrentYearMonthProcessing: KnockoutObservable<string>;
+        currentPaymentDateProcessing: KnockoutObservable<any>;
         
         /**
          * Init screen model.
@@ -14,11 +15,15 @@ module qpp004.a.viewmodel {
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymetnProcessing = ko.observable(null);
             self.displayCurrentYearMonthProcessing = ko.observable(null);
+            self.currentPaymentDateProcessing = ko.observable(null);
             
             self.selectedPaymetnProcessing.subscribe(function(newValue) {
                 var currentDateMaster = _.find(self.paymentDateProcessingList(), function(item) {
                     return item.processingNo == newValue;
                 });
+                
+                self.currentPaymentDateProcessing(currentDateMaster);
+                
                 var currentYearMonth = currentDateMaster.currentProcessingYm + "";
                 var year = currentYearMonth.substring(0, 4);
                 var month = currentYearMonth.substring(4, 6);
@@ -54,7 +59,11 @@ module qpp004.a.viewmodel {
          * Redirect to page process create data
          */
         redirectToCreateData(): any {
-            nts.uk.request.jump("/view/qpp/004/b/index.xhtml");
+            var self = this;
+            var data = self.currentPaymentDateProcessing();
+            data["displayCurrentProcessingYm"] = self.displayCurrentYearMonthProcessing();
+            
+            nts.uk.request.jump("/view/qpp/004/b/index.xhtml", data);
         }
     }
 }

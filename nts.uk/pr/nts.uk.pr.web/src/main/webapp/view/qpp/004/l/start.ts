@@ -10,5 +10,4 @@ __viewContext.ready(function() {
         __viewContext.bind(screenModel);
     });
 
-    $('#timer').countup();
 });

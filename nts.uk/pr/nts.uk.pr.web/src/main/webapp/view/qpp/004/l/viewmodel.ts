@@ -50,14 +50,7 @@ module qpp004.l.viewmodel {
             
             return dfd.promise();
         }
-        
-        /**
-         * Redirect to page process create data
-         */
-        redirectToCreateData(): any {
-            nts.uk.request.jump("/view/qpp/004/b/index.xhtml");
-        }
-        
+                
         
     }
 }

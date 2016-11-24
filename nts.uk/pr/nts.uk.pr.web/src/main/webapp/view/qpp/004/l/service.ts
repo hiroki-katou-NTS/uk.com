@@ -1,6 +1,6 @@
 module qpp004.l.service {
     var paths = {
-        createpaymentdata: "pr/proto/paymentdate/add"
+        createpaymentdata: "pr/proto/paymentdata/add"
     };
     
     /**
