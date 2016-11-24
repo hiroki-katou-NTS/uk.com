@@ -34,7 +34,7 @@ var qpp004;
                     // Page load dfd.
                     var dfd = $.Deferred();
                     // Resolve start page dfd after load all data.
-                    $.when(qpp004.a.service.getPaymentDateProcessingMaster()).done(function (data) {
+                    $.when(qpp004.a.service.getPaymentDateProcessingMasterList()).done(function (data) {
                         self.paymentDateProcessingList(data);
                         dfd.resolve();
                     }).fail(function (res) {
