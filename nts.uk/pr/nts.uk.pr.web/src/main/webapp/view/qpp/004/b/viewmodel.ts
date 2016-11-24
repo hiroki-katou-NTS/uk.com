@@ -27,7 +27,6 @@ module qpp004.b.viewmodel {
         selectedCode: KnockoutObservable<any>;
         isEnable: KnockoutObservable<any>;
         selectedCodes: KnockoutObservableArray<any>;
-        selectedPersonIdList: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -48,15 +47,6 @@ module qpp004.b.viewmodel {
             self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
-            
-            var result = [];
-            _.forEach(self.itemList(), function(item) {
-                  if (self.selectedCodes().indexOf(item.id) >= 0) {
-                    result.push(item);
-                  }
-            }); 
-            
-            self.selectedPersonIdList = ko.observableArray(result);
         }
     }
 
@@ -122,8 +112,16 @@ module qpp004.b.viewmodel {
         }
         processCreateData(): any {
             var self = this;
+            
+            var result = [];
+            _.forEach(self.listbox.itemList(), function(item) {
+                  if (self.listbox.selectedCodes().indexOf(item.id) >= 0) {
+                    result.push(item);
+                  }
+            }); 
+            
             var data = {
-                personIdList: self.listbox.selectedPersonIdList(), // list id person
+                personIdList: result, // list id person
                 processingNo: self.processingNo(),
                 processingYearMonth: self.processingYM()
             };

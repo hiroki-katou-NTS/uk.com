@@ -42,13 +42,6 @@ var qpp004;
                     self.selectedCode = ko.observable(null);
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
-                    var result = [];
-                    _.forEach(self.itemList(), function (item) {
-                        if (self.selectedCodes().indexOf(item.id) >= 0) {
-                            result.push(item);
-                        }
-                    });
-                    self.selectedPersonIdList = ko.observableArray(result);
                 }
                 return Listbox;
             }());
@@ -102,8 +95,14 @@ var qpp004;
                 }
                 ScreenModel.prototype.processCreateData = function () {
                     var self = this;
+                    var result = [];
+                    _.forEach(self.listbox.itemList(), function (item) {
+                        if (self.listbox.selectedCodes().indexOf(item.id) >= 0) {
+                            result.push(item);
+                        }
+                    });
                     var data = {
-                        personIdList: self.listbox.selectedPersonIdList(),
+                        personIdList: result,
                         processingNo: self.processingNo(),
                         processingYearMonth: self.processingYM()
                     };

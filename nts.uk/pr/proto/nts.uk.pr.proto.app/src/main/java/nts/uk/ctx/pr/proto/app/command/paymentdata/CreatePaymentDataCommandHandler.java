@@ -132,7 +132,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			String personId) {
 		// check exists
 		boolean isExists = paymentDataCheckService.isExists(loginInfo.companyCode(), personId, PayBonusAtr.SALARY, processingYearMonth.v());
-		if (!isExists) {
+		if (isExists) {
 			throw new RuntimeException("既にデータが存在します。");
 		}
 		
