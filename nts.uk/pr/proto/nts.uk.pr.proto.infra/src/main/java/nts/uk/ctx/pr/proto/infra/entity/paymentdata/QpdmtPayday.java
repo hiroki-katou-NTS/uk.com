@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name = "QPDMT_PAYDAY")
-public class QpdmtPayday extends AggregateTableEntity {
+public class QpdmtPayday {
 	@EmbeddedId
 	public QpdmtPaydayPK qpdmtPaydayPK;
 

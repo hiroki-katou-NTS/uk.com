@@ -7,10 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name="CCAST_BASIC_CALC")
+@AllArgsConstructor
+@NoArgsConstructor
 public class CcastBasicCalc {
 
 	@Id

@@ -19,11 +19,4 @@ public class QPP005WebService {
 	public void find(PaymentDataQuery query) {
 		this.getPaymentDataQueryProcessor.find(query);
 	}
-	
-	@POST
-	@Path("test")
-	public void test() {
-		int x = 0;
-		x++;
-	}
 }

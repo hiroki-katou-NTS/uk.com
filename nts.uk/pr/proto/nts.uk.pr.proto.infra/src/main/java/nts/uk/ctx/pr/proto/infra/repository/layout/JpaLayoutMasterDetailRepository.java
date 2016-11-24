@@ -95,19 +95,24 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	public List<LayoutMasterDetail> getDetails(String companyCd, 
 			String stmtCd, 
 			int startYm) {
-		try {
-			return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutDetail.class)
+			@SuppressWarnings("unchecked")
+			List<Object[]> objects =  this.queryProxy().getEntityManager().createQuery(SELECT_ALL_DETAILS)
 					.setParameter("companyCd", companyCd)
 					.setParameter("stmtCd", stmtCd)
 					.setParameter("strYm", startYm)
-					.getList(c -> toDomain(c));
-		} catch (Exception e) {
-			throw e;
-		}
-		
+					.getResultList();
+			
+			return objects.stream().map(c -> 
+				toDomainJoin(String.valueOf(c[0]), (QstmtStmtLayoutDetail) c[1])
+			).collect(Collectors.toList());
 	}
 
-	
+	private static LayoutMasterDetail toDomainJoin(String itemAbName, QstmtStmtLayoutDetail entity) {
+		val domain = toDomain(entity);
+		domain.setItemAbName(itemAbName);
+		
+		return domain;
+	}
 	
 	private static LayoutMasterDetail toDomain(QstmtStmtLayoutDetail entity) {
 		val domain = LayoutMasterDetail.createFromJavaType(
@@ -136,7 +141,6 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeLow,
 				entity.itemPosColumn);
 		
-		domain.setItemAbName(entity.itemAbName);
 		return domain;
 	}
 

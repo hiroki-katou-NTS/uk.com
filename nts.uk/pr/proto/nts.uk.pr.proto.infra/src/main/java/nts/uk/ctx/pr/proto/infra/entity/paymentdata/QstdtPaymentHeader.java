@@ -1,24 +1,20 @@
 package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 
-import java.util.List;
 import java.time.LocalDate;
-import java.util.Date;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name = "QSTDT_PAYMENT_HEADER")
-public class QstdtPaymentHeader extends AggregateTableEntity {
+public class QstdtPaymentHeader {
 	
 	@EmbeddedId
 	public QstdtPaymentHeaderPK qstdtPaymentHeaderPK;
@@ -175,8 +171,4 @@ public class QstdtPaymentHeader extends AggregateTableEntity {
 	
 	@Column(name = "MEMO")
 	public String comment;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy = "qstdtPaymentHeader")
-	private List<QstdtPaymentDetail> qstdtPaymentDetailCollection;
-	
 }
