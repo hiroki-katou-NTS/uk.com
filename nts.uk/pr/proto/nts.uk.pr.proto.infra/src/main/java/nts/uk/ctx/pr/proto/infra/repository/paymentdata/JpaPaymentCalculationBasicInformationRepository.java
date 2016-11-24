@@ -16,13 +16,15 @@ public class JpaPaymentCalculationBasicInformationRepository extends JpaReposito
 
 	@Override
 	public Optional<PaymentCalculationBasicInformation> find(String companyCode) {
-		return this.queryProxy().find(companyCode, CcastBasicCalc.class).map(c -> toDomain(c));
+		
+		Optional<PaymentCalculationBasicInformation> result = this.queryProxy().find(companyCode, CcastBasicCalc.class).map(c -> toDomain(c));
+		return result;
 	}
 
 	private static PaymentCalculationBasicInformation toDomain(CcastBasicCalc entity) {
 		val domain = PaymentCalculationBasicInformation.createFromJavaType(entity.ccd, entity.baseDays,
 				entity.baseHours);
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 }

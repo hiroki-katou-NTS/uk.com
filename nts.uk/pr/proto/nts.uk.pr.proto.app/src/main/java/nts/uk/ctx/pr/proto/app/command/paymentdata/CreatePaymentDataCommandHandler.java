@@ -100,11 +100,13 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		YearMonth baseYearMonth = YearMonth.of(currentDate.year(), currentDate.month());
 				
 		// get basic calculate
-		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode()).get();
-
+		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode())
+				.orElseThrow(() -> new RuntimeException("PaymentCalculationBasicInformation not found"));
+		
 		// get pay day
 		PaymentDateMaster payDay = payDateMasterRepo.find(loginInfo.companyCode(), PayBonusAtr.SALARY.value,
-				command.getProcessingYearMonth(), SparePayAtr.NORMAL.value, command.getProcessingNo()).get();
+				command.getProcessingYearMonth(), SparePayAtr.NORMAL.value, command.getProcessingNo())
+					.orElseThrow(() -> new RuntimeException("PaymentDateMaster not found"));
 
 		// calculate personal
 		calculatePersonalPayment(
@@ -138,8 +140,10 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// Start calculate payment
 		//
 		PersonalEmploymentContract employmentContract = personalEmploymentContractRepo.find(
-				loginInfo.companyCode(), personId, GeneralDate.today().localDate()).get();
-		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId).get();
+				loginInfo.companyCode(), personId, GeneralDate.today().localDate())
+					.orElseThrow(() -> new RuntimeException("PersonalEmploymentContract not found"));
+		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId)
+					.orElseThrow(() -> new RuntimeException("HolidayPaid not found"));
 
 		// get allot personal setting
 		PersonalAllotSetting personalAllotSetting = getPersonalAllotSetting(loginInfo.companyCode(), personId,
@@ -147,7 +151,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		// get layout master
 		LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
-				processingYearMonth.v(), personalAllotSetting.getPaymentDetailCode().v()).get();
+				processingYearMonth.v(), personalAllotSetting.getPaymentDetailCode().v())
+					.orElseThrow(() -> new RuntimeException("LayoutMaster not found"));
 
 		PaymentDetailParam param = new PaymentDetailParam(
 				loginInfo.companyCode(),
