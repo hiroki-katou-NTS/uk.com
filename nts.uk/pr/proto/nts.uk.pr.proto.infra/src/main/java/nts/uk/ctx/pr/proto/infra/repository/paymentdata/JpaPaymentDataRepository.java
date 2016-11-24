@@ -22,7 +22,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	private final String SELECT_HEADER = " SELECT c FROM QstdtPaymentHeader c "
 			+ " WHERE c.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND c.qstdtPaymentHeaderPK.personId = :PID"
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
-			+ " AND c.qstdtPaymentHeaderPK.processingYm = :PROCESSING_YM";
+			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
 	private String SELECT_ITEM = " SELECT d" + " FROM QstdtPaymentDetail d"
 			+ " WHERE d.QstdtPaymentDetailPK.companyCode = :CCD" + " AND d.QstdtPaymentDetailPK.personId = :PID"
