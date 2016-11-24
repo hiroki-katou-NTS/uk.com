@@ -1,0 +1,34 @@
+#LBL_007{
+	padding-right: 20px;
+}
+#LBL_005{
+	padding-right: 100px;
+}
+#LBL_002{
+	margin-right: 50px;
+}
+#LBL_003{
+	padding-right: 20px;
+}
+#INP_001{
+	width: 50px;
+}
+.inlineInfor{
+	display: flex;
+}
+
+#SEL_001{
+	margin-left: 20px;
+	margin-top: 5px;
+}
+.label009{
+	margin-left: 150px;
+}
+
+.bottomStype{
+	margin-top: 20px;
+	margin-left: 200px;
+}
+#BTN_001{
+	margin-right: 20px;
+}

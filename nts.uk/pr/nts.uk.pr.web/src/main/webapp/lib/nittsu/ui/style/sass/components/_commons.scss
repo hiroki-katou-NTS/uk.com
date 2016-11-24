@@ -38,7 +38,7 @@ div.form-label {
 		border-color: $_label_ribbon_color_required;
 		
 		> :first-child:after {
-			content: 'Åñ';
+			content: '*';
 			color: #f30;
 			margin-left: 5px;
 		}
@@ -95,5 +95,13 @@ div.popup-panel {
 	padding: 5px;
 }
 
+/*****************************
+  NtsEditor
+*****************************/
+input[type="text"]{
+	&.error{
+		border:1px solid #f33;
+	}
+}
 
 

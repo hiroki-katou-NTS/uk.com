@@ -1,6 +1,10 @@
 ﻿module nts.uk.ui {
-    
+     
+    import option = nts.uk.ui.option;
+    export var _viewModel: any;
+
     module init {
+        
         var _start: any;
         
         __viewContext.ready = function (callback: () => void) {
@@ -8,12 +12,11 @@
         };
         
         __viewContext.bind = function (contentViewModel: any) {
-            var viewModel = {
-                content: contentViewModel // developer's view model
-                //kiban: ... kiban's view model
+            _viewModel = {
+                content: contentViewModel, // developer's view model
+                kiban: new KibanViewModel() // Kiban's view model
             };
-            
-            ko.applyBindings(viewModel);
+            ko.applyBindings(_viewModel);
         }
         
         $(function () {
@@ -22,5 +25,45 @@
             
             _start.call(__viewContext);
         });
+        
+        // Kiban ViewModel
+        class KibanViewModel {
+            errorDialogViewModel: any;
+            
+            constructor(){
+                var self = this;
+                self.errorDialogViewModel = {
+                    title: ko.observable("Error Dialog title"),
+                    errors: ko.observableArray([
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
+                        {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
+                    ]),
+                    option: ko.mapping.fromJS(new option.ErrorDialogWithTabOption()),
+                    closeButtonClicked: function(){},
+                    open: function(){
+                        var self = this;
+                        self.option.show(true);
+                    },
+                    hide: function(){
+                        var self = this;
+                        self.option.show(false);
+                    }
+                }
+            }
+        }
     }
 }

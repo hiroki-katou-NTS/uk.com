@@ -20,6 +20,20 @@ module nts.uk.ui.jqueryExtentions {
         }
     }
     
+    module ntsError {
+        $.fn.ntsError = function (action: string, message: string) {
+            if (action === "set") {
+                nts.uk.ui._viewModel.kiban.errorDialogViewModel.errors.push({tab: "N/A",　location: $(this).attr('id'), message: message});
+            }
+            
+            if (action === "remove") {
+                // TODO: Remove Error by input ID
+            }
+            
+            return this;
+        }
+    }
+    
     module ntsPopup {
         let DATA_INSTANCE_NAME = 'nts-popup-panel';
         

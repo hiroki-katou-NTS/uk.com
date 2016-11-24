@@ -1,4 +1,4 @@
-module nts.uk.ui.koExtentions {
+module nts.uk.ui.option {
     
     abstract class DialogOption {
         modal: boolean;
@@ -93,6 +93,7 @@ module nts.uk.ui.koExtentions {
     
     // Error Dialog
     export interface IErrorDialogOption {
+        headers?: ErrorHeader[],
         modal?: boolean,
         displayrows?: number,
         maxrows?: number,
@@ -100,6 +101,7 @@ module nts.uk.ui.koExtentions {
     }
     
     export class ErrorDialogOption extends DialogOption {
+        headers: ErrorHeader[];
         displayrows: number;
         maxrows: number;
         autoclose: boolean;
@@ -108,6 +110,40 @@ module nts.uk.ui.koExtentions {
         {
             super();
             // Default value
+            this.headers = (option && option.headers) ? option.headers : [
+                        new ErrorHeader("location", "エラー箇所", 115, true),
+                        new ErrorHeader("message", "エラー詳細", 250, true)
+                    ];
+            this.modal = (option && option.modal !== undefined) ? option.modal : false;
+            this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+            this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
+            this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
+            
+            this.buttons = [];
+            // Add Close Button
+            this.buttons.push({text: "閉じる",
+                               "class": "yes ",
+                               size: "large",
+                               color: "",
+                               click: function(viewmodel, ui){
+                                   viewmodel.closeButtonClicked();
+                                   ui.dialog("close");
+                               }
+                             });
+        }
+    }
+    
+    export class ErrorDialogWithTabOption extends ErrorDialogOption {
+                
+        constructor(option?: IErrorDialogOption)
+        {
+            super();
+            // Default value
+            this.headers = (option && option.headers) ? option.headers : [
+                        new ErrorHeader("tab", "タブ", 90, true),
+                        new ErrorHeader("location", "エラー箇所", 115, true),
+                        new ErrorHeader("message", "エラー詳細", 250, true)
+                    ];
             this.modal = (option && option.modal !== undefined) ? option.modal : false;
             this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
             this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
@@ -129,6 +165,21 @@ module nts.uk.ui.koExtentions {
     
     type ButtonSize = "x-large" | "large" | "medium" | "small";
     type ButtonColor = "" | "danger" | "proceed";
+    
+    class ErrorHeader{
+        name: string;
+        text: string;
+        width: number;
+        visible: boolean;
+        
+        constructor(name:string, text: string, width: number, visible: boolean) {
+            this.name = name;
+            this.text = text;
+            this.width = width;
+            this.visible = visible;
+        }
+    }
+    
     class DialogButton{
         text: string;
         "class": string;

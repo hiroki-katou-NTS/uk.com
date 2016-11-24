@@ -1,7 +1,7 @@
 var qmm019;
 (function (qmm019) {
-    var g;
-    (function (g) {
+    var d;
+    (function (d) {
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
@@ -64,6 +64,6 @@ var qmm019;
                 return ItemCombobox;
             }());
             viewmodel.ItemCombobox = ItemCombobox;
-        })(viewmodel = g.viewmodel || (g.viewmodel = {}));
-    })(g = qmm019.g || (qmm019.g = {}));
+        })(viewmodel = d.viewmodel || (d.viewmodel = {}));
+    })(d = qmm019.d || (qmm019.d = {}));
 })(qmm019 || (qmm019 = {}));

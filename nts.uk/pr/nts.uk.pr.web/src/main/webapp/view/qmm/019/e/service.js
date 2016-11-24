@@ -1,7 +1,7 @@
 var qmm019;
 (function (qmm019) {
-    var g;
-    (function (g) {
+    var e;
+    (function (e) {
         var service;
         (function (service) {
             var paths = {
@@ -22,6 +22,6 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
-        })(service = g.service || (g.service = {}));
-    })(g = qmm019.g || (qmm019.g = {}));
+        })(service = e.service || (e.service = {}));
+    })(e = qmm019.e || (qmm019.e = {}));
 })(qmm019 || (qmm019 = {}));

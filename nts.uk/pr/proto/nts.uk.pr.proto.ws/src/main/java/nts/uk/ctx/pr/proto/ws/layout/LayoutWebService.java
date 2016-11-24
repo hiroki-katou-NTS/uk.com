@@ -47,7 +47,7 @@ public class LayoutWebService {
 	}
 	
 	@POST
-	@Path("findalllayoutwithmaxstartym/{companyCode}")
+	@Path("findlayoutwithmaxstartym/{companyCode}")
 	public List<LayoutDto> getLayoutsWithMaxStartYm(@PathParam("companyCode") String companyCode){
 		return this.find.getLayoutsWithMaxStartYm(companyCode);
 	}

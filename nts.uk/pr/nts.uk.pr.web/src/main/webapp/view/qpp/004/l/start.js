@@ -8,5 +8,4 @@ __viewContext.ready(function () {
     screenModel.startPage(data).done(function () {
         __viewContext.bind(screenModel);
     });
-    $('#timer').countup();
 });
