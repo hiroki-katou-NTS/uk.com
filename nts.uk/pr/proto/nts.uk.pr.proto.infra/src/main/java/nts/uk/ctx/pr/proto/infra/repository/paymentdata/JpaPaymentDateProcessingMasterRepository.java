@@ -22,8 +22,14 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 	@Override
 	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute,
 			int processingNo) {
-		return this.queryProxy()
-				.find(new QpdmtPaydayProcessingPK(companyCode, paymentBonusAtribute, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
+		try {
+			return this.queryProxy()
+					.find(new QpdmtPaydayProcessingPK(companyCode, paymentBonusAtribute, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw e;
+		}
+		
 	}
 
 	@Override
