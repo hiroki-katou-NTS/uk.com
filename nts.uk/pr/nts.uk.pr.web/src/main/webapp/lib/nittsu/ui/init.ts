@@ -34,11 +34,6 @@
                 var self = this;
                 self.errorDialogViewModel = {
                     title: ko.observable("Error Dialog title"),
-                    headers: ko.observableArray([
-                        new ErrorHeader("tab", "タブ", 90, true),
-                        new ErrorHeader("location", "エラー箇所", 115, true),
-                        new ErrorHeader("message", "エラー詳細", 250, true)
-                    ]),
                     errors: ko.observableArray([
                         {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
                         {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
@@ -57,7 +52,7 @@
                         {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
                         {tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
                     ]),
-                    option: ko.mapping.fromJS(new option.ErrorDialogOption()),
+                    option: ko.mapping.fromJS(new option.ErrorDialogWithTabOption()),
                     closeButtonClicked: function(){},
                     open: function(){
                         var self = this;
@@ -68,20 +63,6 @@
                         self.option.show(false);
                     }
                 }
-            }
-        }
-        
-        class ErrorHeader{
-            name: string;
-            text: string;
-            width: number;
-            visible: boolean;
-            
-            constructor(name:string, text: string, width: number, visible: boolean) {
-                this.name = name;
-                this.text = text;
-                this.width = width;
-                this.visible = visible;
             }
         }
     }
