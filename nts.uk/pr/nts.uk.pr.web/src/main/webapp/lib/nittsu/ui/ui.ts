@@ -125,19 +125,19 @@
 
         export module sub {
 
-            export function modal(path: string, options: any) {
+            export function modal(path: string, options?: any) {
                 options = options || {};
                 options.modal = true;
                 return open(path, options);
             }
 
-            export function modeless(path: string, options: any) {
+            export function modeless(path: string, options?: any) {
                 options = options || {};
                 options.modal = false;
                 return open(path, options);
             }
 
-            export function open(path: string, options: any) {
+            export function open(path: string, options?: any) {
                 return windows.container.createDialog(path, options, selfId);
             }
         }
