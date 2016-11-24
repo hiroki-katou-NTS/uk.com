@@ -74,7 +74,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
+				.setParameter("strYm", startYm)
 				.getList(c -> toDomain(c));
 	}
 
