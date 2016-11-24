@@ -111,8 +111,8 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.headers = (option && option.headers) ? option.headers : [
-                        new errors.ErrorHeader("location", "エラー箇所", 115, true),
-                        new errors.ErrorHeader("message", "エラー詳細", 250, true)
+                        new nts.uk.ui.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                        new nts.uk.ui.errors.ErrorHeader("message", "エラー詳細", 250, true)
                     ];
             this.modal = (option && option.modal !== undefined) ? option.modal : false;
             this.displayrows = (option && option.displayrows) ? option.displayrows : 10;

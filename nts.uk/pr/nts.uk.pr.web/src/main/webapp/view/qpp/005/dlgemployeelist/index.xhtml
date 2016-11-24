@@ -9,7 +9,9 @@
 
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:dialogSetting width="800" height="530" />
+			<script>
+				var dialogSize = { width: 400, height: 600 };
+			</script>
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />

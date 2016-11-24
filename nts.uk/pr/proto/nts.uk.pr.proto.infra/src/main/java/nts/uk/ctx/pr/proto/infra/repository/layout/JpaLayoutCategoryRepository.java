@@ -71,11 +71,17 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	@Override
 	public List<LayoutMasterCategory> getCategories(String companyCd, String stmtCd, int startYm) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
-				.getList(c -> toDomain(c));
+		try {
+			return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
+					.setParameter("companyCd", companyCd)
+					.setParameter("stmtCd", stmtCd)
+					.setParameter("startYm", startYm)
+					.getList(c -> toDomain(c));
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw e;
+		}
+		
 	}
 
 	@Override

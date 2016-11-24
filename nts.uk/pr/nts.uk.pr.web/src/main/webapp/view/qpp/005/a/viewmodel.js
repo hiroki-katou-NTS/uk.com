@@ -21,7 +21,7 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    _005.service.getPaymentData("A0001", "A001").done(function (paymentResult) {
+                                    _005.service.getPaymentData("1", "1").done(function (paymentResult) {
                                         self.paymentDataResult(paymentResult);
                                         dfd.resolve(null);
                                     }).fail(function (res) {
@@ -30,6 +30,9 @@ var nts;
                                     });
                                     // Return.
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.openEmployeeList = function () {
+                                    nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml');
                                 };
                                 return ScreenModel;
                             }());
