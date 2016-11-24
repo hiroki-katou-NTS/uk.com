@@ -43,12 +43,6 @@ var qpp004;
                     });
                     return dfd.promise();
                 };
-                /**
-                 * Redirect to page process create data
-                 */
-                ScreenModel.prototype.redirectToCreateData = function () {
-                    nts.uk.request.jump("/view/qpp/004/b/index.xhtml");
-                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
