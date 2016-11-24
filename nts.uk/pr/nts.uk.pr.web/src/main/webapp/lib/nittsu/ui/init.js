@@ -4,7 +4,6 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var option = nts.uk.ui.option;
             var init;
             (function (init) {
                 var _start;
@@ -27,53 +26,12 @@ var nts;
                 var KibanViewModel = (function () {
                     function KibanViewModel() {
                         var self = this;
-                        self.errorDialogViewModel = {
-                            title: ko.observable("Error Dialog title"),
-                            headers: ko.observableArray([
-                                new ErrorHeader("tab", "タブ", 90, true),
-                                new ErrorHeader("location", "エラー箇所", 115, true),
-                                new ErrorHeader("message", "エラー詳細", 250, true)
-                            ]),
-                            errors: ko.observableArray([
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }
-                            ]),
-                            option: ko.mapping.fromJS(new option.ErrorDialogOption()),
-                            closeButtonClicked: function () { },
-                            open: function () {
-                                var self = this;
-                                self.option.show(true);
-                            },
-                            hide: function () {
-                                var self = this;
-                                self.option.show(false);
-                            }
-                        };
+                        self.errorDialogViewModel = new ui.errors.ErrorsViewModel();
+                        for (var i = 0; i < 20; i++) {
+                            self.errorDialogViewModel.errors.push({ tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" });
+                        }
                     }
                     return KibanViewModel;
-                }());
-                var ErrorHeader = (function () {
-                    function ErrorHeader(name, text, width, visible) {
-                        this.name = name;
-                        this.text = text;
-                        this.width = width;
-                        this.visible = visible;
-                    }
-                    return ErrorHeader;
                 }());
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
