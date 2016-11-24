@@ -9,9 +9,9 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name="CCAST_BASIC_CALC")
-public class CcastBasicCalc extends AggregateTableEntity {
+public class CcastBasicCalc {
 
 	@Id
 	@Column(name = "CCD")

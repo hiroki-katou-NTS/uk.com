@@ -1,14 +1,14 @@
 module qpp004.a.service {
     var paths = {
-        getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/findall"
+        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
     }
     
     /**
      * Get list payment date processing.
      */
-    export function getPaymentDateProcessingMaster(): JQueryPromise<Array<PaymentDateProcessingMasterModel>> {
+    export function getPaymentDateProcessingMasterList(): JQueryPromise<Array<PaymentDateProcessingMasterModel>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessing)
+        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
             .done(function(res: Array<any>){
                 dfd.resolve(res);
             })

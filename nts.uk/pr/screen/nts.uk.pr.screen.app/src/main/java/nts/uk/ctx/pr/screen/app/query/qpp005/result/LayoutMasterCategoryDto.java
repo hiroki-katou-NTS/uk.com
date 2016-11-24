@@ -8,15 +8,17 @@ import lombok.Value;
 public class LayoutMasterCategoryDto {
 
 	/** カテゴリ区分 */
-	 int categoryAttribute;
+	int categoryAttribute;
 
 	/** カテゴリ表示位置 */
-	 int categoryPosition;
+	int categoryPosition;
 
-	 List<DetailItemDto> details;
+	int lineCounts;
 
-	public static LayoutMasterCategoryDto fromDomain(int categoryAttribute, int categoryPosition,
+	List<DetailItemDto> details;
+
+	public static LayoutMasterCategoryDto fromDomain(int categoryAttribute, int categoryPosition, int lineCounts,
 			List<DetailItemDto> details) {
-		return new LayoutMasterCategoryDto(categoryAttribute, categoryPosition, details);
+		return new LayoutMasterCategoryDto(categoryAttribute, categoryPosition, lineCounts, details);
 	}
 }

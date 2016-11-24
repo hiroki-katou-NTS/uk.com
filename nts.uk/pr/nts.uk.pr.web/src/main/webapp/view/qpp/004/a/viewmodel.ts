@@ -42,7 +42,7 @@ module qpp004.a.viewmodel {
             var dfd = $.Deferred();
             
             // Resolve start page dfd after load all data.
-            $.when(qpp004.a.service.getPaymentDateProcessingMaster()).done(function(data) {
+            $.when(qpp004.a.service.getPaymentDateProcessingMasterList()).done(function(data) {
                 
                 self.paymentDateProcessingList(data);
                 

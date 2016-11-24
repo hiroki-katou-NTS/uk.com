@@ -49,14 +49,11 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 				entity.qstmtStmtLayoutLinesPk.ctgAtr, entity.qstmtStmtLayoutLinesPk.autoLineId, entity.endYm,
 				entity.linePos, entity.lineDispAtr);
 
-		entity.toDomain(domain);
 		return domain;
 	}
 
 	private QstmtStmtLayoutLines toEntity(LayoutMasterLine domain) {
 		val entity = new QstmtStmtLayoutLines();
-
-		entity.fromDomain(domain);
 
 		entity.qstmtStmtLayoutLinesPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutLinesPk.stmtCd = domain.getStmtCode().v();

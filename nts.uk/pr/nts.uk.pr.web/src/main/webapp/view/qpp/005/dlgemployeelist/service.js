@@ -2,7 +2,7 @@
 
 var services = (function () {
 
-    var __employeeList = [
+    var employeeList = [
         {code: 'A000000000001', name: '日通　社員1'},
         {code: 'A000000000002', name: '日通　社員2'},
         {code: 'A000000000003', name: '日通　社員3'},
@@ -15,29 +15,14 @@ var services = (function () {
         {code: 'A0000000000010', name: '日通　社員10'}
     ];
 
-    var servicePath = {
-    	getEmployeeList: 'getEmployeeList',
-    };
-
-    nts.request.ajaxmock().set({
-        req: function (path, options) {
-            return path === servicePath.getEmployeeList;
-        },
-        res: function () {
-            return {employeeList: __employeeList};
-        }
-    });
+//    var servicePath = {
+//    	getEmployeeList: 'getEmployeeList',
+//    };
 
     var services = {};
 
     services.getEmployeeList = function () {
-        var dfd = $.Deferred();
-
-        nts.request.ajax(servicePath.getEmployeeList).done(function (res) {
-            dfd.resolve(res);
-        });
-
-        return dfd.promise();
+       return employeeList;
     };
    
     return services;

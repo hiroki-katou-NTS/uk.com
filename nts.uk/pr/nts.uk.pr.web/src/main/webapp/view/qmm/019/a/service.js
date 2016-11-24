@@ -5,7 +5,8 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getAllLayout: "pr/proto/layout/findalllayout"
+                getAllLayout: "pr/proto/layout/findalllayout",
+                getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym"
             };
             /**
              * Get list payment date processing.
@@ -22,6 +23,21 @@ var qmm019;
                 return dfd.promise();
             }
             service.getAllLayout = getAllLayout;
+            /**
+             * Get list payment date processing.
+             */
+            function getLayoutsWithMaxStartYm() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getLayoutsWithMaxStartYm)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getLayoutsWithMaxStartYm = getLayoutsWithMaxStartYm;
             /**
                * Model namespace.
             */

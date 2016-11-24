@@ -1,12 +1,6 @@
-/* global ko, nts, _, rootPath */
-window.startPage = function() {
+__viewContext.ready(function() {
 
-	// Screen model binding.
-	var screenModel = new ScreenModel(carePlanCode, carePlanName, subjects);
+	var vm = new ScreenModel(); 
+	this.bind(vm);
 
-	// binding screen Model
-	ko.applyBindings(screenModel);
-
-	// trigger start function
-	screenModel.start();
-};
+});
