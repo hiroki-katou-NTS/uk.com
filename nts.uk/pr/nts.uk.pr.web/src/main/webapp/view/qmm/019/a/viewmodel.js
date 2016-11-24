@@ -15,6 +15,7 @@ var qmm019;
                     new NodeTest('0002', '開発部', [])
                 ]);
                 self.singleSelectedCode = ko.observable(null);
+                self.layouts = ko.observableArray([]);
             }
             // start function
             ScreenModel.prototype.start = function () {

@@ -19,6 +19,7 @@ module qmm019.a {
                 new NodeTest('0002', '開発部', [])
             ]);
             self.singleSelectedCode = ko.observable(null);
+            self.layouts = ko.observableArray([]);
         }
         
         // start function
