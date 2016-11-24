@@ -1038,9 +1038,9 @@ module nts.uk.ui.koExtentions {
                 var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
                 var padding = 10;
                 if(ntsCommonPadding){
-                    padding = parseInt(ntsCommonPadding);
+                    padding = parseInt(ntsCommonPadding)*2;
                 }
-                totalWidth += 50 + padding*columns.length;
+                totalWidth += padding*(columns.length + 1);// + 50;
                 $('.nts-list-box > li').css({'min-width': totalWidth});
                 $('.nts-list-box').css({'min-width': totalWidth});
                 container.css({'min-width': totalWidth});

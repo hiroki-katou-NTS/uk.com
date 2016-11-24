@@ -19,6 +19,7 @@
 				
 				<script src="start.js">
 				</script>
+				<com:scriptfile path="/lib/nittsu/ui/sharedvm/timer.js"/>
             </ui:define>
             
             <ui:define name="content">
@@ -48,12 +49,12 @@
             		<br />
             		<button>中ボタン</button><br/>
             		<br />
-            		<button class="large">大ボタン</button><br />
+            		<button class="large" data-bind="click: start">大ボタン</button><br />
             		<br />
-            		<button class="x-large">特大ボタン</button><br />
+            		<button class="x-large" data-bind="click: end">特大ボタン</button><br />
             		<br />
             		<button disabled="disabled">非活性</button>
-            	
+            		<span id="test"></span>
 	            	<hr />
 	            	
 	            	<div class="form-label"><label>項目名</label></div><br />
