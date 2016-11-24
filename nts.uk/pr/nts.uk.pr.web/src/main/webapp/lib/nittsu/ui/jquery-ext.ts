@@ -22,12 +22,18 @@ module nts.uk.ui.jqueryExtentions {
     
     module ntsError {
         $.fn.ntsError = function (action: string, message: string) {
+            var $element = $(this);
+            
             if (action === "set") {
-                nts.uk.ui._viewModel.kiban.errorDialogViewModel.errors.push({tab: "N/A",　location: $(this).attr('id'), message: message});
+                ui.errors.add({
+                    location: $element.data('name'),
+                    message: message,
+                    elementId: $element.attr('id')
+                });
             }
             
-            if (action === "remove") {
-                // TODO: Remove Error by input ID
+            if (action === "clear") {
+                ui.errors.removeById($element.attr('id'));
             }
             
             return this;

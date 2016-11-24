@@ -23,10 +23,16 @@ var nts;
                 var ntsError;
                 (function (ntsError) {
                     $.fn.ntsError = function (action, message) {
+                        var $element = $(this);
                         if (action === "set") {
-                            nts.uk.ui._viewModel.kiban.errorDialogViewModel.errors.push({ tab: "N/A", location: $(this).attr('id'), message: message });
+                            ui.errors.add({
+                                location: $element.data('name'),
+                                message: message,
+                                elementId: $element.attr('id')
+                            });
                         }
-                        if (action === "remove") {
+                        if (action === "clear") {
+                            ui.errors.removeById($element.attr('id'));
                         }
                         return this;
                     };

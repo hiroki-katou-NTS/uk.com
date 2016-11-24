@@ -20,6 +20,13 @@ var nts;
                     ErrorsViewModel.prototype.hide = function () {
                         this.option.show(false);
                     };
+                    ErrorsViewModel.prototype.addError = function (error) {
+                        this.errors.push(error);
+                    };
+                    ErrorsViewModel.prototype.removeErrorByElementId = function (elementId) {
+                        var removeds = _.filter(this.errors(), function (e) { return e.elementId === elementId; });
+                        this.errors.removeAll(removeds);
+                    };
                     return ErrorsViewModel;
                 }());
                 errors.ErrorsViewModel = ErrorsViewModel;
@@ -45,8 +52,13 @@ var nts;
                 }
                 errors.hide = hide;
                 function add(error) {
+                    errorsViewModel().addError(error);
                 }
                 errors.add = add;
+                function removeById(elementId) {
+                    errorsViewModel().removeErrorByElementId(elementId);
+                }
+                errors.removeById = removeById;
             })(errors = ui.errors || (ui.errors = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
