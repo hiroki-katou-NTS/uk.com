@@ -204,9 +204,9 @@ hr {
 				 	// ListBox ViewModel
 					listbox: {
 						itemList: ko.observableArray([
-							new ItemModel('基本給2', '基本給'),
-							new ItemModel('基本給1', '役職手当'),
-							new ItemModel('基本給3', '基本給')
+							new ItemModel('基本給2', '基本給', "Test dest 1"),
+							new ItemModel('基本給1', '役職手当', "Test dest 2"),
+							new ItemModel('基本給3', '基本給', "Test dest 3")
 						]),
 						itemName: ko.observable(''),
 						currentCode: ko.observable(3),
@@ -222,7 +222,7 @@ hr {
 								itemCode = '0' + itemCode;
 								codeLength++;
 							}
-							self.itemList.push(new ItemModel(itemCode, self.itemName()));
+							self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
 							self.currentCode(newCode);
 						},
 						deselectAll: function () {
@@ -297,9 +297,10 @@ hr {
 				}
             	
 				// ListBox & ComboBox Item
-				function ItemModel(code, name) {
+				function ItemModel(code, name, dest) {
 					this.code = code;
 					this.name = name;
+					this.dest = dest;
 				}
 				
 				// TreeGrid Node
@@ -409,7 +410,8 @@ hr {
 							enable: isEnable(),
 							columns: [
 								{ prop: 'code', length: 4 },
-								{ prop: 'name', length: 10 }
+								{ prop: 'name', length: 10 },
+								{ prop: 'dest', length: 10 }
 							]}"
 			class="cf"></div>
 		<button data-bind="click: remove">Remove Item</button>

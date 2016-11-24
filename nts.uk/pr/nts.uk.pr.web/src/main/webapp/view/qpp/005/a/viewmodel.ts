@@ -14,7 +14,7 @@ module nts.uk.pr.view.qpp._005 {
                 var self = this;
                 var dfd = $.Deferred<any>();
 
-                service.getPaymentData("A0001", "A001").done(function(paymentResult: service.model.PaymentDataResult) {
+                service.getPaymentData("1", "1").done(function(paymentResult: service.model.PaymentDataResult) {
                     self.paymentDataResult(paymentResult);
                     dfd.resolve(null);
                 }).fail(function(res) {
@@ -23,6 +23,10 @@ module nts.uk.pr.view.qpp._005 {
                 });
                 // Return.
                 return dfd.promise();
+            }
+
+            public openEmployeeList() {
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml');
             }
         };
 

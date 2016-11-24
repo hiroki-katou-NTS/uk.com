@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<script>var dialogSize = { width: 650, height: 500 };</script>
 
 			<link rel="stylesheet" type="text/css" href="style.css" />
 			<script src="../../../../lib/nittsu/ui/dialog-options.js"></script>
@@ -19,61 +19,65 @@
 
 		<ui:define name="content">
 
-			<div id="functions-area"></div>
-
 			<div id="contents-area">
 				<div class="container">
-					<div class="info-create">
-						<label>データ作成</label>
-						<table id="tbl-info-create">
-							<tbody>
-								<tr>
-									<th>経過時間</th>
-									<td id="timer"></td>
-								</tr>
-								<tr>
-									<th>処理状態</th>
-									<td>完了</td>
-								</tr>
-								<tr>
-									<th>エラー件数</th>
-									<td><span data-bind="text: countError"></span>件</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="dlg-body">
+						<div class="info-create">
+							<label>データ作成</label>
+							<table id="tbl-info-create">
+								<tbody>
+									<tr>
+										<th>経過時間</th>
+										<td id="timer"></td>
+									</tr>
+									<tr>
+										<th>処理状態</th>
+										<td>完了</td>
+									</tr>
+									<tr>
+										<th>エラー件数</th>
+										<td><span data-bind="text: countError"></span>件</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="info-setting">
+							<label>設定情報</label>
+							<table id="tbl-info-setting">
+								<tbody>
+									<tr>
+										<th>処理方法</th>
+										<td>初期データ作成</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="error-list" data-bind="if: visibleErrorList">
+							<table id="tbl-error">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>処理状態</th>
+										<th>区分</th>
+										<th>内容</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>１</td>
+										<td>初期データ作成</td>
+										<td>初期データ作成</td>
+										<td>初期データ作成</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 					
-					<div class="info-setting">
-						<label>設定情報</label>
-						<table id="tbl-info-setting">
-							<tbody>
-								<tr>
-									<th>処理方法</th>
-									<td>初期データ作成</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					
-					<div class="error-list">
-						<table id="tbl-error">
-							<thead>
-								<tr>
-									<th>No</th>
-									<th>処理状態</th>
-									<th>区分</th>
-									<th>内容</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>１</td>
-									<td>初期データ作成</td>
-									<td>初期データ作成</td>
-									<td>初期データ作成</td>
-								</tr>
-							</tbody>
-						</table>
+					<div class="dlg-footer">
+						<button data-bind="text: buttonText"></button>
 					</div>
 				</div>
 			</div>

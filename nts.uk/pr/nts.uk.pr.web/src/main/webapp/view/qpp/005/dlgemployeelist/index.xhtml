@@ -7,9 +7,11 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:dialogSetting width="1000" height="630" />
+			<script>
+				var dialogSize = { width: 400, height: 600 };
+			</script>
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -17,46 +19,19 @@
 		</ui:define>
 
 		<ui:define name="content">
-
-			<div id="functions-area">
-				<button class="proceed">計算/登録</button>
-				<button>計算結果の確認</button>
-				<button>印刷プレビュー</button>
-				<button>データ修正ログ</button>
-				<button class="danger">削除</button>
-
-				<label style="float: right">支給入力（社員ごと）</label>
-			</div>
-
-			<div id="contents-area">
-				<div id="content-header">
-					<ui:include src="header-area.xhtml" />
-				</div>
-
-				<div id="events">
-					<div data-bind="ntsFormLabel: {}">支給入力</div>
-					<button>↰</button>
-					<button>↱</button>
-					<button>計算しなおすメニュー</button>
-					<button>変更のあったマスタを表示</button>
-					<button>入力欄の背景色について</button>
-					<div id="chk-hand-input"
-						data-bind="ntsCheckBox: {checked: isHandInput, text: '手入力項目のみ移動'}"
-						class="cf"></div>
-				</div>
-
-				<div id="grid-contents">
-					<div id="categories">
-						<div id="swb-categories"
-							data-bind="ntsSwitchButton: {
-							options: categorires,
+			<div id="contents-area" data-bind="with: employeeList">
+				<div id="list-box"
+					data-bind="ntsListBox: {options: items,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: selectedCode }"
-							class="cf"></div>
-					</div>
-				</div>
-
+							multiple: false,
+							value: selectedCodes,
+							enable: true,
+							columns: [
+								{ prop: 'code', length: 4 },
+								{ prop: 'name', length: 10 }
+							]}"
+					class="cf"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

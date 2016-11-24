@@ -745,6 +745,44 @@ button.nts-switch-button.selected:hover {
   width: 80px;
   font-family: "Meiryo UI";
 }
+/* line 58, ../sass/components/_dialog.scss */
+.ui-dialog #error-board {
+  overflow: hidden;
+}
+/* line 61, ../sass/components/_dialog.scss */
+.ui-dialog #error-board table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 510px;
+  margin: 0;
+}
+/* line 68, ../sass/components/_dialog.scss */
+.ui-dialog #error-board table th,
+.ui-dialog #error-board table td {
+  border: solid 1px #bbb;
+  white-space: nowrap;
+  padding: 3px;
+  height: 24px;
+  font-family: "Meiryo UI";
+  font-size: 13px;
+  box-sizing: border-box;
+}
+/* line 79, ../sass/components/_dialog.scss */
+.ui-dialog #error-board table th,
+.ui-dialog #error-board table td:first-child {
+  background-color: #A4EEB0;
+}
+/* line 84, ../sass/components/_dialog.scss */
+.ui-dialog #error-board table thead tr {
+  display: block;
+  position: relative;
+}
+/* line 89, ../sass/components/_dialog.scss */
+.ui-dialog #error-board table tbody {
+  float: left;
+  display: block;
+  overflow: auto;
+}
 
 /* line 1, ../sass/frame/_header.scss */
 #header {

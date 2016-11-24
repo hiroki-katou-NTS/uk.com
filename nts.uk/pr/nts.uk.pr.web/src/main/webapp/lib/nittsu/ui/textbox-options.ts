@@ -1,4 +1,4 @@
-module nts.uk.ui.koExtentions {
+module nts.uk.ui.option {
     
     abstract class EditorOptionBase {
         textmode: TextMode;
@@ -31,7 +31,7 @@ module nts.uk.ui.koExtentions {
         }
     }
 
-    // Text Editor Option
+    // Time Editor Option
     interface ITimeEditorOption{
         inputFormat?: string;
         enable?: boolean;
@@ -53,12 +53,25 @@ module nts.uk.ui.koExtentions {
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
     }
+    
+    // Mask Editor Option
+    interface IMaskEditorOption{
+        mask?: string;
+        enable?: boolean;
+        readonly?: boolean;
+        placeholder?: string;
+        width?: string;
+        textalign?: string;
+    }
+
 
     export class MaskEditorOption extends EditorOptionBase {
-        constructor(option?: ITextEditorOption) {
+        mask: string;
+        
+        constructor(option?: IMaskEditorOption) {
             super();
             // Default value
-            this.textmode = (option && option.textmode) ? option.textmode : "text";
+            this.mask = (option && option.mask) ? option.mask : "";
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -105,7 +118,6 @@ module nts.uk.ui.koExtentions {
             if (this.decimallength > 0)
                 this.regex += "([" + this.decimalseperator + "]\\d+)?";
             this.regex += "$/";
-            console.log(this.regex);
         }
     }
 

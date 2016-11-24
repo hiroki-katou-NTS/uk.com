@@ -21,4 +21,6 @@ public class CreatePaymentDataCommand {
 	 * Current processing year month
 	 */
 	private int processingYearMonth;
+	
+	public CreatePaymentDataCommand() {}
 }

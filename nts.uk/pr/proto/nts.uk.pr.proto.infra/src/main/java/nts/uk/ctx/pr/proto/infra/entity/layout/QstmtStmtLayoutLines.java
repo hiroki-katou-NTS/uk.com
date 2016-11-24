@@ -7,6 +7,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
@@ -15,12 +16,11 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
+@Entity
 @Table(name="QSTMT_STMT_LAYOUT_LINES")
-public class QstmtStmtLayoutLines extends AggregateTableEntity implements Serializable {
+public class QstmtStmtLayoutLines implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 
@@ -39,15 +39,15 @@ public class QstmtStmtLayoutLines extends AggregateTableEntity implements Serial
 	@Column(name ="LINE_DISP_ATR")
 	public int lineDispAtr;
 	
-	@ManyToOne
-	@JoinColumns({
-        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
-        @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
-        @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
-        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
-    })
-	public QstmtStmtLayoutCtg layoutCategory;
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutLine")
-	public List<QstmtStmtLayoutDetail> layoutDetails;
+//	@ManyToOne
+//	@JoinColumns({
+//        @JoinColumn(name="CCD", referencedColumnName="CCD", insertable = false, updatable = false),
+//        @JoinColumn(name="STMT_CD", referencedColumnName="STMT_CD", insertable = false, updatable = false),
+//        @JoinColumn(name="STR_YM", referencedColumnName="STR_YM", insertable = false, updatable = false),
+//        @JoinColumn(name="CTG_ATR", referencedColumnName="CTG_ATR", insertable = false, updatable = false)
+//    })
+//	public QstmtStmtLayoutCtg layoutCategory;
+//	
+//	@OneToMany(cascade=CascadeType.ALL, mappedBy="layoutLine")
+//	public List<QstmtStmtLayoutDetail> layoutDetails;
 }

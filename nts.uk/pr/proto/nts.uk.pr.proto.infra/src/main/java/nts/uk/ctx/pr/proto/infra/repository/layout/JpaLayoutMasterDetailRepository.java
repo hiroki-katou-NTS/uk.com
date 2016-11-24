@@ -18,27 +18,29 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	private final String SELECT_NO_WHERE = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE
-			+ " INNER JOIN JpaItemMasterRepository i"
-			+ " ON i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
-			+ "  AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr"
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm";
+			+ " INNER JOIN QcamtItem i"
+			+ " ON ("
+			+ " i.qcamtItemPK.ccd = c.qstmtStmtLayoutDetailPk.companyCd"
+			+ " AND i.qcamtItemPK.itemCd = c.qstmtStmtLayoutDetailPk.itemCd"
+			+ " AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr)"
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
 	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
-			+ " AND c.qstmtStmtLayoutDetailPk.itemCd := itemCd";
+			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
 	private final String SELECT_ALL_DETAILS_BY_CATEGORY = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm := strYm"
-			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr := ctgAtr";
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm"
+			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr";
 	private final String SELECT_ALL_DETAILS_BY_LINE = SELECT_NO_WHERE
-			+ " WHERE c.autoLineId := autoLineId";
+			+ " WHERE c.autoLineId = :autoLineId";
 	private final String SELECT_DETAILS_WITH_SUMSCOPEATR = SELECT_ALL_DETAILS
 			   + " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr" + " AND c.sumScopeAtr = :sumScopeAtr";
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd := companyCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd := stmtCd"
-			+ " AND c.endYm := endYm";
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.endYm = :endYm";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
@@ -47,7 +49,6 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	private QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
 		val entity = new QstmtStmtLayoutDetail();
-		entity.fromDomain(domain);
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
 		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYm().v();
@@ -94,14 +95,24 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	public List<LayoutMasterDetail> getDetails(String companyCd, 
 			String stmtCd, 
 			int startYm) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutDetail.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
-				.getList(c -> toDomain(c));
+			@SuppressWarnings("unchecked")
+			List<Object[]> objects =  this.queryProxy().getEntityManager().createQuery(SELECT_ALL_DETAILS)
+					.setParameter("companyCd", companyCd)
+					.setParameter("stmtCd", stmtCd)
+					.setParameter("strYm", startYm)
+					.getResultList();
+			
+			return objects.stream().map(c -> 
+				toDomainJoin(String.valueOf(c[0]), (QstmtStmtLayoutDetail) c[1])
+			).collect(Collectors.toList());
 	}
 
-	
+	private static LayoutMasterDetail toDomainJoin(String itemAbName, QstmtStmtLayoutDetail entity) {
+		val domain = toDomain(entity);
+		domain.setItemAbName(itemAbName);
+		
+		return domain;
+	}
 	
 	private static LayoutMasterDetail toDomain(QstmtStmtLayoutDetail entity) {
 		val domain = LayoutMasterDetail.createFromJavaType(
@@ -130,8 +141,6 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeLow,
 				entity.itemPosColumn);
 		
-		domain.setItemAbName(entity.itemAbName);
-		entity.toDomain(domain);
 		return domain;
 	}
 

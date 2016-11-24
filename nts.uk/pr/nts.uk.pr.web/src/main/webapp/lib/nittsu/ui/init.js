@@ -11,14 +11,25 @@ var nts;
                     _start = callback;
                 };
                 __viewContext.bind = function (contentViewModel) {
-                    var viewModel = {
-                        content: contentViewModel // developer's view model
+                    ui._viewModel = {
+                        content: contentViewModel,
+                        kiban: new KibanViewModel() // Kiban's view model
                     };
-                    ko.applyBindings(viewModel);
+                    ko.applyBindings(ui._viewModel);
                 };
                 $(function () {
+                    __viewContext.transferred = uk.sessionStorage.getItemAndRemove(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                        .map(function (v) { return JSON.parse(v); });
                     _start.call(__viewContext);
                 });
+                // Kiban ViewModel
+                var KibanViewModel = (function () {
+                    function KibanViewModel() {
+                        var self = this;
+                        self.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
+                    }
+                    return KibanViewModel;
+                }());
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

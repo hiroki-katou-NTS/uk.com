@@ -1,0 +1,33 @@
+#LBL_002{
+	margin-left: 50px;
+}
+#LBL_003{
+	margin-left: 15px;
+}
+#LBL_004{
+	margin-left: 10px;	
+}
+
+.selectStyle{
+	display: flex;
+	margin-left: 30px;
+}
+.caution{
+	margin-left: 30px;
+	background-color: #FAEBD7;
+	padding: 5px;
+}
+#LBL_008{
+	margin-left: 30px;
+}
+#INP_001{
+	width: 60px;
+}
+
+.bottomStype{
+	margin-top: 20px;
+	margin-left: 200px;
+}
+#BTN_001{
+	margin-right: 20px;
+}

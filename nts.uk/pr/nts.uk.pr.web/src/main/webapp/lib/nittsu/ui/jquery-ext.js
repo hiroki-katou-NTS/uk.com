@@ -20,6 +20,23 @@ var nts;
                         return null;
                     }
                 })(ntsTextBox || (ntsTextBox = {}));
+                var ntsError;
+                (function (ntsError) {
+                    $.fn.ntsError = function (action, message) {
+                        var $control = $(this);
+                        if (action === "set") {
+                            ui.errors.add({
+                                location: $control.data('name') || "",
+                                message: message,
+                                $control: $control
+                            });
+                        }
+                        if (action === "clear") {
+                            ui.errors.removeByElement($control);
+                        }
+                        return this;
+                    };
+                })(ntsError || (ntsError = {}));
                 var ntsPopup;
                 (function (ntsPopup) {
                     var DATA_INSTANCE_NAME = 'nts-popup-panel';

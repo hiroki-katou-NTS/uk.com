@@ -18,7 +18,6 @@
 			<!-- Do not include this CSS -->
 			<link rel="stylesheet" type="text/css" href="dialog.css" />
 			
-			<script src="../../../lib/nittsu/ui/dialog-options.js"></script>
 			<script src="start.js"></script>
           </ui:define>
           
@@ -35,7 +34,7 @@
 					<div class="cf">
 						<h2>SubWindow</h2>
 						<h3>Javascript Call</h3>
-						<button id="testSubWindows" onclick="nts.uk.ui.windows.sub.modal('http://localhost:8080/nts.uk.pr.web/view/sample/editor/editor.xhtml');">Click me!</button>
+						<button id="testSubWindows" onclick="nts.uk.ui.windows.sub.modal('/view/sample/editor/editor.xhtml');">Click me!</button>
 						<pre>
 nts.uk.ui.windows.sub.modal("url"); // Modal SubWindow
 nts.uk.ui.windows.sub.modeless("url"); // Modeless SubWindow</pre>
@@ -253,205 +252,49 @@ $('#dialog-open').click(function(){
 					<!-- Error Dialog -->
 					<div class="cf">
 						<h2>Error Dialog</h2>
-						<div data-bind="with: errordialog">
-							<button data-bind="click: open">Open</button>
-							<button data-bind="click: hide">Hide</button><br/><br/>
-							<button id="removeErrors">Remove Error</button>
-							<div data-bind="ntsErrorDialog: {title: title, headers: headers, errors: errors, option: option}"></div>
-						</div>
+						<input type="text" id="testInput" value="Error message" />
+						<button onclick="$('#testInput').ntsError('set', $('#testInput').val())">Add</button>
+						<button onclick="$('#testInput').ntsError('clear')">Clear</button><br/>
+						<button data-bind="click: nts.uk.ui.errors.show">Open</button>
+						<button data-bind="click: nts.uk.ui.errors.hide">Hide</button><br/><br/>
 						<br/>
-						<!-- ViewModel -->
-						<div class="cf">
-							<h3>Dialog ViewModel</h3>
-							<table>
-								<colgroup>
-									<col width="200px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th><h4>ViewModel</h4></th>
-										<th><h4>Description</h4></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>title</td>
-										<td>
-											<b>Type:</b> string<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>headers</td>
-										<td>
-											<b>Type:</b> array&lt;ErrorHeader&gt;<br/>
-											Header definition<br/>
-											<i>name</i>: Unique name for header. Error list will display text correctly by this name<br/>
-											<i>text</i>: Display text for header<br/>
-											<i>visible</i>: Set display for this header. Header will not be rendered on DOM
-										</td>
-									</tr>
-									<tr>
-										<td>errors</td>
-										<td>
-											<b>Type:</b> array&lt;object&gt;<br/>
-											List error for display<br/>
-											<b>object{key1: "value1", [key2: "value2", key3: "value3"...]}</b><br/>
-											<i>key</i>: Unique key for error. Column will be displayed correctly following header name<br/>
-											<i>value</i>: Display text for column<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>option</td>
-										<td>
-											<b>Type:</b> object<br/>
-											<b>Members:</b><br/>
-											<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
-											<i>DelDialogOption</i>: Option for delete dialog<br/>
-											<i>OKDialogOption</i>: Option for OK dialog
-										</td>
-									</tr>
-									<tr>
-										<td>open</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>hide</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>closeButtonClicked</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<pre style="float:left">errordialog: {
-	title: ko.observable("Error Dialog title"),
-	headers: ko.observableArray([
-		new ErrorHeader("tab", "タブ", true),
-		new ErrorHeader("location", "エラー箇所", true),
-		new ErrorHeader("message", "エラー詳細", true)
-	]),
-	errors: ko.observableArray([
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"},
-		{tab: "基本情報",　location: "メールアドレス", message: "メールアドレスは必須項目です"}
-	]),
-	option: ko.mapping.fromJS(new ErrorDialogOption()),
-	closeButtonClicked: function(){},
-	open: function(){
-		var self = this;
-		self.option.show(true);
-	},
-	hide: function(){
-		var self = this;
-		self.option.show(false);
-	}
-}
-
-function ErrorHeader(nane, text, visible){
-	this.name = name;
-	this.text = text;
-	this.visible = visible;
-}</pre>
-						</div>
 						<!-- API -->
-						<h3>Dialog API</h3>
+						<h3>Error Dialog API</h3>
 						<table>
 							<colgroup>
-								<col width="200px" />
+								<col width="400px" />
 							</colgroup>
 							<thead>
 								<tr>
-									<th><h4>ErrorDialogOption</h4></th>
+									<th><h4>Functions</h4></th>
 									<th><h4>Description</h4></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>modal</td>
+									<td>nts.uk.ui.errors.show()</td>
 									<td>
-										<b>Type:</b> boolean<br/>
-										<b>Default:</b> false<br/>
-										Display dialog in modal mode
+										Show error dialog
 									</td>
 								</tr>
 								<tr>
-									<td>displayrows</td>
+									<td>nts.uk.ui.errors.hide()</td>
 									<td>
-										<b>Type:</b> number<br/>
-										<b>Default:</b> 10<br/>
-										Number of errors display at one
+										Hide error dialog
 									</td>
 								</tr>
 								<tr>
-									<td>maxrows</td>
+									<td>$('#ControlID').ntsError("set","Error message")</td>
 									<td>
-										<b>Type:</b> number<br/>
-										<b>Default:</b> 1000<br/>
-										Maximum errors can be display. Greater than this will show a message
+										Add an error to control
 									</td>
 								</tr>
 								<tr>
-									<td>autoclose</td>
+									<td>$('#ControlID').ntsError("clear")</td>
 									<td>
-										<b>Type:</b> boolean<br/>
-										<b>Default:</b> true<br/>
-										Wherever auto close dialog if number of errors reduce to 0
+										Remove errors from control
 									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table>
-							<colgroup>
-								<col width="200px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>Methods</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>open()</td>
-									<td>
-										Show dialog
-									</td>
-								</tr>
-								<tr>
-									<td>hide()</td>
-									<td>
-										Hide dialog
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table>
-							<colgroup>
-								<col width="200px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>Events</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>closeButtonClicked()</td>
-									<td>
-										Triggered when Close button is clicked
-									</td>
-								</tr>
+								</tr>								
 							</tbody>
 						</table>
 					</div>

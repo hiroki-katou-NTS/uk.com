@@ -34,7 +34,7 @@
 					<div class="cf">
 						<h2>TextEditor</h2>
 						<div data-bind="with: texteditor">
-							<input class="error" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option}" />
+							<input id="testPushError" class="error" data-name="テスト" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option}" />
 							<br/><br/>
 							<!--  Using Method -->
 							<button data-bind="click: enable.bind($data, true)">enable</button>

@@ -16,14 +16,14 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtgPK;
 
 public class JpaLayoutCategoryRepository extends JpaRepository implements LayoutMasterCategoryRepository {
 
-	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutCtgPK c";
+	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutCtg c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
-			+ " AND c.qstmtStmtLayoutCtgPK.strYm = :strYm";
+			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutCtgPk.strYm = :startYm";
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutCtgPK.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutCtgPK.stmtCd = :stmtCd" 
+			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
 			+ " AND c.endYm = :endYm";
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
@@ -31,14 +31,11 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 				entity.qstmtStmtLayoutCtgPk.strYm, entity.qstmtStmtLayoutCtgPk.stmtCd,
 				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgPos);
 
-		entity.toDomain(domain);
 		return domain;
 	}
 
 	private QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
 		val entity = new QstmtStmtLayoutCtg();
-
-		entity.fromDomain(domain);
 
 		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
@@ -74,11 +71,17 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	@Override
 	public List<LayoutMasterCategory> getCategories(String companyCd, String stmtCd, int startYm) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
-				.getList(c -> toDomain(c));
+		try {
+			return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutCtg.class)
+					.setParameter("companyCd", companyCd)
+					.setParameter("stmtCd", stmtCd)
+					.setParameter("startYm", startYm)
+					.getList(c -> toDomain(c));
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw e;
+		}
+		
 	}
 
 	@Override

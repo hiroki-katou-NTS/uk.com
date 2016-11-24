@@ -9,8 +9,8 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
+            var option;
+            (function (option_1) {
                 var EditorOptionBase = (function () {
                     function EditorOptionBase() {
                         this.enable = true;
@@ -30,7 +30,7 @@ var nts;
                     }
                     return TextEditorOption;
                 }(EditorOptionBase));
-                koExtentions.TextEditorOption = TextEditorOption;
+                option_1.TextEditorOption = TextEditorOption;
                 var TimeEditorOption = (function (_super) {
                     __extends(TimeEditorOption, _super);
                     function TimeEditorOption(option) {
@@ -43,20 +43,20 @@ var nts;
                     }
                     return TimeEditorOption;
                 }(EditorOptionBase));
-                koExtentions.TimeEditorOption = TimeEditorOption;
+                option_1.TimeEditorOption = TimeEditorOption;
                 var MaskEditorOption = (function (_super) {
                     __extends(MaskEditorOption, _super);
                     function MaskEditorOption(option) {
                         _super.call(this);
                         // Default value
-                        this.textmode = (option && option.textmode) ? option.textmode : "text";
+                        this.mask = (option && option.mask) ? option.mask : "";
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
                     }
                     return MaskEditorOption;
                 }(EditorOptionBase));
-                koExtentions.MaskEditorOption = MaskEditorOption;
+                option_1.MaskEditorOption = MaskEditorOption;
                 var NumberEditorOption = (function (_super) {
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
@@ -76,11 +76,10 @@ var nts;
                         if (this.decimallength > 0)
                             this.regex += "([" + this.decimalseperator + "]\\d+)?";
                         this.regex += "$/";
-                        console.log(this.regex);
                     }
                     return NumberEditorOption;
                 }(EditorOptionBase));
-                koExtentions.NumberEditorOption = NumberEditorOption;
+                option_1.NumberEditorOption = NumberEditorOption;
                 var CurrencyEditorOption = (function (_super) {
                     __extends(CurrencyEditorOption, _super);
                     function CurrencyEditorOption(option) {
@@ -107,8 +106,8 @@ var nts;
                     }
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
-                koExtentions.CurrencyEditorOption = CurrencyEditorOption;
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                option_1.CurrencyEditorOption = CurrencyEditorOption;
+            })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -5,14 +5,14 @@ var qpp004;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessing: "pr/proto/paymentdatemaster/processing/find"
+                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
             };
             /**
              * Get list payment date processing.
              */
-            function getPaymentDateProcessingMaster() {
+            function getPaymentDateProcessingMasterList() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessing)
+                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -21,7 +21,7 @@ var qpp004;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingMaster = getPaymentDateProcessingMaster;
+            service.getPaymentDateProcessingMasterList = getPaymentDateProcessingMasterList;
         })(service = a.service || (a.service = {}));
     })(a = qpp004.a || (qpp004.a = {}));
 })(qpp004 || (qpp004 = {}));

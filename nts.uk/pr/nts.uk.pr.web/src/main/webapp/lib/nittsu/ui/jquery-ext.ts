@@ -20,6 +20,26 @@ module nts.uk.ui.jqueryExtentions {
         }
     }
     
+    module ntsError {
+        $.fn.ntsError = function (action: string, message: string) {
+            var $control = $(this);
+            
+            if (action === "set") {
+                ui.errors.add({
+                    location: $control.data('name') || "",
+                    message: message,
+                    $control: $control
+                });
+            }
+            
+            if (action === "clear") {
+                ui.errors.removeByElement($control);
+            }
+            
+            return this;
+        }
+    }
+    
     module ntsPopup {
         let DATA_INSTANCE_NAME = 'nts-popup-panel';
         

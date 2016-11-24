@@ -13,10 +13,12 @@ var qpp004;
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymetnProcessing = ko.observable(null);
                     self.displayCurrentYearMonthProcessing = ko.observable(null);
+                    self.currentPaymentDateProcessing = ko.observable(null);
                     self.selectedPaymetnProcessing.subscribe(function (newValue) {
                         var currentDateMaster = _.find(self.paymentDateProcessingList(), function (item) {
                             return item.processingNo == newValue;
                         });
+                        self.currentPaymentDateProcessing(currentDateMaster);
                         var currentYearMonth = currentDateMaster.currentProcessingYm + "";
                         var year = currentYearMonth.substring(0, 4);
                         var month = currentYearMonth.substring(4, 6);
@@ -32,7 +34,7 @@ var qpp004;
                     // Page load dfd.
                     var dfd = $.Deferred();
                     // Resolve start page dfd after load all data.
-                    $.when(qpp004.a.service.getPaymentDateProcessingMaster()).done(function (data) {
+                    $.when(qpp004.a.service.getPaymentDateProcessingMasterList()).done(function (data) {
                         self.paymentDateProcessingList(data);
                         dfd.resolve();
                     }).fail(function (res) {
@@ -43,7 +45,10 @@ var qpp004;
                  * Redirect to page process create data
                  */
                 ScreenModel.prototype.redirectToCreateData = function () {
-                    nts.uk.request.jump("/view/qpp/004/b/index.xhtml");
+                    var self = this;
+                    var data = self.currentPaymentDateProcessing();
+                    data["displayCurrentProcessingYm"] = self.displayCurrentYearMonthProcessing();
+                    nts.uk.request.jump("/view/qpp/004/b/index.xhtml", data);
                 };
                 return ScreenModel;
             }());

@@ -36,27 +36,29 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutLines.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("strYm", strYm)
-				.getList(c -> toDomain(c));
+			return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutLines.class)
+					.setParameter("companyCd", companyCd)
+					.setParameter("stmtCd", stmtCd)
+					.setParameter("strYm", strYm)
+					.getList(c -> toDomain(c));
+	
 	}
 
 	private static LayoutMasterLine toDomain(QstmtStmtLayoutLines entity) {
 		val domain = LayoutMasterLine.createFromJavaType(entity.qstmtStmtLayoutLinesPk.companyCd,
 				entity.qstmtStmtLayoutLinesPk.strYm, entity.qstmtStmtLayoutLinesPk.stmtCd,
-				entity.qstmtStmtLayoutLinesPk.ctgAtr, entity.qstmtStmtLayoutLinesPk.autoLineId, entity.endYm,
-				entity.linePos, entity.lineDispAtr);
+				entity.endYm,
+				entity.qstmtStmtLayoutLinesPk.autoLineId,
+				entity.lineDispAtr,
+				entity.linePos,
+				entity.qstmtStmtLayoutLinesPk.ctgAtr 
+				);
 
-		entity.toDomain(domain);
 		return domain;
 	}
 
 	private QstmtStmtLayoutLines toEntity(LayoutMasterLine domain) {
 		val entity = new QstmtStmtLayoutLines();
-
-		entity.fromDomain(domain);
 
 		entity.qstmtStmtLayoutLinesPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutLinesPk.stmtCd = domain.getStmtCode().v();

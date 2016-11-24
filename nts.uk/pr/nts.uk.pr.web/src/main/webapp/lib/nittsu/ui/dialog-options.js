@@ -9,8 +9,8 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui_1) {
-            var koExtentions;
-            (function (koExtentions) {
+            var option;
+            (function (option_1) {
                 var DialogOption = (function () {
                     function DialogOption() {
                         this.show = false;
@@ -37,7 +37,7 @@ var nts;
                     }
                     return ConfirmDialogOption;
                 }(DialogOption));
-                koExtentions.ConfirmDialogOption = ConfirmDialogOption;
+                option_1.ConfirmDialogOption = ConfirmDialogOption;
                 var DelDialogOption = (function (_super) {
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
@@ -68,7 +68,7 @@ var nts;
                     }
                     return DelDialogOption;
                 }(DialogOption));
-                koExtentions.DelDialogOption = DelDialogOption;
+                option_1.DelDialogOption = DelDialogOption;
                 var OKDialogOption = (function (_super) {
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
@@ -99,12 +99,16 @@ var nts;
                     }
                     return OKDialogOption;
                 }(DialogOption));
-                koExtentions.OKDialogOption = OKDialogOption;
+                option_1.OKDialogOption = OKDialogOption;
                 var ErrorDialogOption = (function (_super) {
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         _super.call(this);
                         // Default value
+                        this.headers = (option && option.headers) ? option.headers : [
+                            new nts.uk.ui.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new nts.uk.ui.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                        ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
                         this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
@@ -123,7 +127,36 @@ var nts;
                     }
                     return ErrorDialogOption;
                 }(DialogOption));
-                koExtentions.ErrorDialogOption = ErrorDialogOption;
+                option_1.ErrorDialogOption = ErrorDialogOption;
+                var ErrorDialogWithTabOption = (function (_super) {
+                    __extends(ErrorDialogWithTabOption, _super);
+                    function ErrorDialogWithTabOption(option) {
+                        _super.call(this);
+                        // Default value
+                        this.headers = (option && option.headers) ? option.headers : [
+                            new ui_1.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_1.errors.ErrorHeader("message", "エラー詳細", 250, true)
+                        ];
+                        this.modal = (option && option.modal !== undefined) ? option.modal : false;
+                        this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+                        this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
+                        this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
+                        this.buttons = [];
+                        // Add Close Button
+                        this.buttons.push({ text: "閉じる",
+                            "class": "yes ",
+                            size: "large",
+                            color: "",
+                            click: function (viewmodel, ui) {
+                                viewmodel.closeButtonClicked();
+                                ui.dialog("close");
+                            }
+                        });
+                    }
+                    return ErrorDialogWithTabOption;
+                }(ErrorDialogOption));
+                option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
                 var DialogButton = (function () {
                     function DialogButton() {
                     }
@@ -131,7 +164,7 @@ var nts;
                     ;
                     return DialogButton;
                 }());
-            })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
+            })(option = ui_1.option || (ui_1.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
