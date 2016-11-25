@@ -30,7 +30,7 @@ public class LayoutDto {
 	/**
 	 * End Year Month
 	 */
-	int endYM;
+	int endYm;
 	
 	/**
 	 * layout attribute

@@ -150,7 +150,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							new YearMonth(command.getStartYmNew()), 
 							org.getStmtCode(), 
 							org.getCtAtr(), 
-							org.getEndYM(), 
+							org.getEndYm(), 
 							org.getCtgPos());
 				}).collect(Collectors.toList());
 		

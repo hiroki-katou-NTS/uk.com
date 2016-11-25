@@ -35,7 +35,7 @@ public class LayoutMasterCategory extends AggregateRoot {
 
 	/** 終了年月 */
 	@Getter
-	private YearMonth endYM;
+	private YearMonth endYm;
 
 	/** 明細書名 */
 	@Getter
@@ -44,14 +44,14 @@ public class LayoutMasterCategory extends AggregateRoot {
 	@Getter
 	private List<LayoutMasterLine> layoutMasterLines;
 
-	public LayoutMasterCategory(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode,CategoryAtr categoryAtr, YearMonth endYM,
+	public LayoutMasterCategory(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode,CategoryAtr categoryAtr, YearMonth endYm,
 			 CategoryPosition ctgPos ) {
 		super();
 		this.companyCode = companyCode;
 		this.startYM = startYM;
 		this.stmtCode = stmtCode;
 		this.ctAtr = categoryAtr;
-		this.endYM = endYM;
+		this.endYm = endYm;
 		this.ctgPos = ctgPos;
 	}
 
@@ -61,11 +61,11 @@ public class LayoutMasterCategory extends AggregateRoot {
 	 * @return LayoutMasterCategory
 	 */
 	public static LayoutMasterCategory createFromJavaType(String companyCode, int startYM,
-			String stmtCode,int ctgAtr, int endYM,int ctgPos ) {
+			String stmtCode,int ctgAtr, int endYm,int ctgPos ) {
 		
 		return new LayoutMasterCategory(new CompanyCode(companyCode), new YearMonth(startYM), 
 				new LayoutCode(stmtCode),EnumAdaptor.valueOf(ctgAtr, CategoryAtr.class),
-				new YearMonth(endYM), new CategoryPosition(ctgPos));
+				new YearMonth(endYm), new CategoryPosition(ctgPos));
 	}
 	
 	/**
