@@ -87,7 +87,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 			
 		}
 		
-		layoutOrigin.setEndYM(new YearMonth(999912));
+		layoutOrigin.setEndYm(new YearMonth(999912));
 		layoutRepository.update(layoutOrigin);
 		
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する

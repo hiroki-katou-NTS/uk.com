@@ -31,7 +31,7 @@ public class LayoutMaster extends AggregateRoot {
 	/** 終了年月 */
 	@Getter
 	@Setter
-	private YearMonth endYM;
+	private YearMonth endYm;
 	
 	/** レイアウト区分 */
 	@Getter
@@ -45,13 +45,13 @@ public class LayoutMaster extends AggregateRoot {
 	@Getter
 	private List<LayoutMasterCategory> layoutMasterCategories;
 
-	public LayoutMaster(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM, LayoutAtr layoutAtr,
+	public LayoutMaster(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYm, LayoutAtr layoutAtr,
 			LayoutName stmtName) {
 		super();
 		this.companyCode = companyCode;
 		this.startYM = startYM;
 		this.stmtCode = stmtCode;
-		this.endYM = endYM;
+		this.endYm = endYm;
 		this.layoutAtr = layoutAtr;
 		this.stmtName = stmtName;
 	}
@@ -60,7 +60,7 @@ public class LayoutMaster extends AggregateRoot {
 	 * create From Java Type
 	 * @return LayoutMaster
 	 */
-	public static LayoutMaster createFromJavaType(String companyCode, int startYM, String stmtCode, int endYM, int layoutAtr,
+	public static LayoutMaster createFromJavaType(String companyCode, int startYM, String stmtCode, int endYm, int layoutAtr,
 			String stmtName){
 		if (stmtName.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
@@ -70,12 +70,12 @@ public class LayoutMaster extends AggregateRoot {
 				new CompanyCode(companyCode), 
 				new YearMonth(startYM), 
 				new LayoutCode(stmtCode), 
-				new YearMonth(endYM),
+				new YearMonth(endYm),
 				EnumAdaptor.valueOf(layoutAtr, LayoutAtr.class), 
 				new LayoutName(stmtName));
 	}
 	
 	public void adjustForNextHistory(LayoutMaster nextHistory) {
-		this.endYM = nextHistory.getStartYM().previousMonth();
+		this.endYm = nextHistory.getStartYM().previousMonth();
 	}
 }

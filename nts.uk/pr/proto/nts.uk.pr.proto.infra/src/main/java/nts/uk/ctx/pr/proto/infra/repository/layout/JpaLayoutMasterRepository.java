@@ -55,7 +55,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 		entity.qstmtStmtLayoutHeadPK.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutHeadPK.stmtCd = domain.getStmtCode().v();
 		entity.qstmtStmtLayoutHeadPK.strYm = domain.getStartYM().v();
-		entity.endYm = domain.getEndYM().v();
+		entity.endYm = domain.getEndYm().v();
 		entity.layoutAtr = domain.getLayoutAtr().value;
 		entity.stmtName = domain.getStmtName().v();
 
