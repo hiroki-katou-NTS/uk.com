@@ -910,8 +910,16 @@ module nts.uk.ui.koExtentions {
             var selectListBoxContainer = container.find('.nts-list-box');
             var maxWidthCharacter = 15;
             
+            var getOptionValue = item => {
+                if (optionValue === undefined) {
+                    return item;
+                } else {
+                    return item[optionValue];
+                }
+            };
+            
             // Check selected code.
-            if (!isMultiSelect && options.filter(item => item[optionValue] == selectedValue).length == 0) {
+            if (!isMultiSelect && options.filter(item => getOptionValue(item) === selectedValue).length == 0) {
                 selectedValue = '';
             } 
             
@@ -920,7 +928,7 @@ module nts.uk.ui.koExtentions {
                 var optValue = $(option).data('value');
                 // Check if btn is contained in options.
                 var foundFlag = _.findIndex(options, function(opt) {
-                    return opt[optionValue] == optValue;
+                    return getOptionValue(opt) == optValue;
                 }) != -1;
                 if (!foundFlag) {
                     
@@ -939,7 +947,7 @@ module nts.uk.ui.koExtentions {
                 var targetOption : JQuery;
                 $('li', container).each(function(index, opt) {
                     var optValue = $(opt).data('value');
-                    if (optValue == item[optionValue]) {
+                    if (optValue == getOptionValue(item)) {
                         targetOption = $(opt); 
                         return;
                     }
@@ -948,9 +956,9 @@ module nts.uk.ui.koExtentions {
                 // Check option is Selected.
                 var isSelected: boolean = false;
                 if (isMultiSelect) {
-                    isSelected = (<Array<string>>selectedValue).indexOf(item[optionValue]) != -1;
+                    isSelected = (<Array<string>>selectedValue).indexOf(getOptionValue(item)) != -1;
                 } else {
-                    isSelected = selectedValue == item[optionValue];
+                    isSelected = selectedValue == getOptionValue(item);
                 }
                 
                 if (!targetOption) {
@@ -967,7 +975,13 @@ module nts.uk.ui.koExtentions {
                     } else {
                         itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
                     }
-                    selectListBoxContainer.append('<li data-value="' + item[optionValue] + '" class="' + selectedClass + '"> ' + itemTemplate + ' </li>');
+                    
+                    $('<li/>')
+                        .addClass(selectedClass)
+                        .html(itemTemplate)
+                        .data('value', getOptionValue(item))
+                        .appendTo(selectListBoxContainer);
+                    
                 } else {
                     if (isSelected) {
                         targetOption.addClass('ui-selected');
