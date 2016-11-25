@@ -2,8 +2,8 @@ module nts.uk.ui.option {
     
     abstract class EditorOptionBase {
         textmode: TextMode;
-        enable: boolean = true;
-        readonly: boolean = false;
+        enable: boolean;
+        readonly: boolean;
         placeholder: string;
         width: string;
         textalign: string;
@@ -25,6 +25,8 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.textmode = (option && option.textmode) ? option.textmode : "text";
+            this.enable = (option && option.enable !== undefined) ? option.enable : true;
+            this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -48,6 +50,8 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "date";
+            this.enable = (option && option.enable !== undefined) ? option.enable : true;
+            this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -72,6 +76,8 @@ module nts.uk.ui.option {
             super();
             // Default value
             this.mask = (option && option.mask) ? option.mask : "";
+            this.enable = (option && option.enable !== undefined) ? option.enable : true;
+            this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -108,6 +114,8 @@ module nts.uk.ui.option {
             this.grouplength = (option && option.grouplength) ? option.grouplength : 0;
             this.decimalseperator = (option && option.decimalseperator) ? option.decimalseperator : ".";
             this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
+            this.enable = (option && option.enable !== undefined) ? option.enable : true;
+            this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -141,6 +149,8 @@ module nts.uk.ui.option {
                 case "USD":
                     this.currencyposition = "right"; break;
             }
+            this.enable = (option && option.enable !== undefined) ? option.enable : true;
+            this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";

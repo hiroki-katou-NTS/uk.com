@@ -5,11 +5,8 @@ __viewContext.ready(function() {
 
     this.bind(screenModel);
 
-    screenModel.startPage(data).done(function() {
-    });
-
-
-    $("#timer").html(nts.uk.text.formatSeconds(0, "hh:mm:ss:ms"));
+    screenModel.timer.start();
+    screenModel.startPage(data);
 
 
 });
