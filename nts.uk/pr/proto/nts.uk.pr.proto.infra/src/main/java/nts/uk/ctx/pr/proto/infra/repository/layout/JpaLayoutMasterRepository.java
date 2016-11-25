@@ -55,7 +55,7 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 		entity.qstmtStmtLayoutHeadPK.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutHeadPK.stmtCd = domain.getStmtCode().v();
 		entity.qstmtStmtLayoutHeadPK.strYm = domain.getStartYM().v();
-		entity.endYm = domain.getEndYM().v();
+		entity.endYm = domain.getEndYm().v();
 		entity.layoutAtr = domain.getLayoutAtr().value;
 		entity.stmtName = domain.getStmtName().v();
 
@@ -64,16 +64,22 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public Optional<LayoutMaster> getLayout(String companyCode, int strYm, String stmtCode) {
-		return this.queryProxy().find(new QstmtStmtLayoutHeadPK(companyCode, stmtCode, strYm), 
-				QstmtStmtLayoutHead.class)
-				.map(c -> toDomain(c));
+		try {
+			return this.queryProxy().find(new QstmtStmtLayoutHeadPK(companyCode, stmtCode, strYm), 
+					QstmtStmtLayoutHead.class)
+					.map(c -> toDomain(c));	
+		} catch (Exception e) {
+			throw e;
+		}
 		
 	}
 
 	@Override
 	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int strYm) {
 		return this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
-				.setParameter("companyCd", companyCode).setParameter("stmtCode", stmtCode).setParameter("strYm", strYm)
+				.setParameter("companyCd", companyCode)
+				.setParameter("stmtCode", stmtCode)
+				.setParameter("strYm", strYm)
 				.getSingle(c -> toDomain(c));
 
 	}

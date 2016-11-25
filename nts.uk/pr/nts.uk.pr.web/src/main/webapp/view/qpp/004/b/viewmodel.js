@@ -53,7 +53,6 @@ var qpp004;
                         new qpp004.b.viewmodel.Step('step-1', '.step-1'),
                         new qpp004.b.viewmodel.Step('step-2', '.step-2'),
                         new qpp004.b.viewmodel.Step('step-3', '.step-3'),
-                        new qpp004.b.viewmodel.Step('step-4', '.step-4')
                     ]);
                     self.stepSelected = ko.observable(new Step('step-2', '.step-2'));
                 }
@@ -77,9 +76,6 @@ var qpp004;
                 };
                 Wizard.prototype.step3 = function () {
                     $('#wizard').setStep(2);
-                };
-                Wizard.prototype.step4 = function () {
-                    $('#wizard').setStep(3);
                 };
                 return Wizard;
             }());
@@ -107,7 +103,7 @@ var qpp004;
                         processingYearMonth: self.processingYM()
                     };
                     nts.uk.ui.windows.setShared("data", data);
-                    nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成" });
+                    nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成", dialogClass: "no-close" });
                 };
                 return ScreenModel;
             }());

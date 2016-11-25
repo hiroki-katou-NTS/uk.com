@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.proto.dom.layout.LayoutName
+			</com:ValidatorScript>
+			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
+			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div style="margin-left: 20px;" class="left-content">
+					<div class="form-label">
+						<label>項目区分</label> <a>支給項目</a>
+					</div>
+					<br /> <br />
+					<div class="form-label">
+						<label>コード/名称</label><input style="margin-left: 20px;" type="text" />
+						<button style="width: 68px;">検索</button>
+					</div>
+					<br /> <br />
+					<div data-bind="with: listBox">
+						<div id="list-box"
+							data-bind="ntsListBox: {options: itemList,
+											   optionsValue: 'id',
+											   optionsText: 'name',
+											   multiple: false,
+											   value: selectedCode,
+											   enable: true,
+											   rows: 15,
+											   columns: [
+													{ prop: 'id', length: 3 },
+													{ prop: 'name', length: 5 }
+											   ]}"
+							class="cf"></div>
+					</div>
+					<br />
+					<button style="width: 300px;" class="disabled">↑項目名の登録を行う</button>
+				</div>
+				<div class="right-content">
+					<div class="form-label">
+						<label>コード/名称</label> <a data-bind="text: listBox.selectedCode()">コード</a>
+						<a data-bind="text: listBox.selectedName()">名称</a>
+					</div>
+					<br /> <br />
+					<div data-bind="with: comboBox" class="form-label required">
+						<label>内訳項目</label>
+						<div style="margin-left: 30px; float: right" id="combo-box1"
+							data-bind="ntsComboBox: {
+							options: itemListSumScopeAtr,
+							optionsValue: 'id',
+							value: selectedCode,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"
+							class="cf"></div>
+					</div>
+					<br /> <br />
+					<div style="margin-bottom: 5px;" data-bind="with: comboBox"
+						class="form-label required">
+						<label>計算方法</label>
+						<div style="margin-left: 30px; float: right" id="combo-box2"
+							data-bind="ntsComboBox: {
+							options: itemListCalcMethod0,
+							optionsValue: 'id',
+							value: selectedCode,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"
+							class="cf"></div>
+					</div>
+
+					<hr />
+					<div class="form-label">
+						<label style="float: left;">按分設定</label>
+						<div style="float: left; margin-left: 45px;"
+							data-bind="with: switchButton">
+							<div id="switchButtonTest"
+								data-bind="ntsSwitchButton: {
+									options: distributeSet,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode }"
+								class="cf"></div>
+						</div>
+					</div>
+					<br />
+					<div style="margin-left: 115px;" data-bind="with: comboBox">
+						<div id="combo-box3"
+							data-bind="ntsComboBox: {
+							options: itemListDistributeWay,
+							optionsValue: 'id',
+							value: selectedCode,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"
+							class="cf"></div>
+					</div>
+					<br />
+					<div class="form-label">
+						<label>上限チェック</label> <a style="float: right;">を超える場合</a> <input
+							style="float: right; margin-left: 20px;" type="text" />
+						<div style="float: right; margin-left: 45px;"
+							data-bind="with: checkBox">
+							<div id="checkBoxErrRangeHigh"
+								data-bind="ntsCheckBox: { checked: errRangeHighAtr, text: 'エラー'}"
+								class="cf"></div>
+						</div>
+						<br /> <br />
+						<div style="float: left; margin-left: 115px;"
+							data-bind="with: checkBox">
+							<div id="checkBoxAlRangeHigh"
+								data-bind="ntsCheckBox: { checked: alRangeHighAtr, text: 'アラーム'}"
+								class="cf"></div>
+						</div>
+						<input style="float: left; margin-left: 9px;" type="text" /> <a
+							style="float: left;">を超える場合</a>
+					</div>
+					<br /> <br /> <br />
+					<div class="form-label">
+						<label>下限チェック</label> <a style="float: right;">未満の場合</a> <input
+							style="float: right; margin-left: 20px;" type="text" />
+						<div style="float: right; margin-left: 45px;"
+							data-bind="with: checkBox">
+							<div id="checkBoxErrRangeLowAtr"
+								data-bind="ntsCheckBox: { checked: errRangeLowAtr, text: 'エラー'}"
+								class="cf"></div>
+						</div>
+						<br /> <br />
+						<div style="float: left; margin-left: 115px;"
+							data-bind="with: checkBox">
+							<div id="checkBoxAlRangeHigh"
+								data-bind="ntsCheckBox: { checked: alRangeLowAtr, text: 'アラーム'}"
+								class="cf"></div>
+						</div>
+						<input style="float: left; margin-left: 9px;" type="text" /> <a
+							style="float: left;">未満の場合</a>
+					</div>
+					<br /> <br/> <br/> <br />
+					<span>※エラーの場合は、データ登録されません。</span> <br/><br/>
+					<span style="margin-left: 15px;">アラームの場合は、メッセージが表示されます。（データは登録されます） </span>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

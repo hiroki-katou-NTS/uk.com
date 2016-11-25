@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.infra.repository.personalinfo.holiday;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaidRepository;
+import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContractPK;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.holiday.PhldtHolidayPaid;
 
 @RequestScoped
@@ -33,14 +35,15 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 	private static HolidayPaid toDomain(PhldtHolidayPaid entity) {
 		val domain = HolidayPaid.createFromJavaType(entity.remainDays, entity.remainTime,
 				entity.phldtHolidayPaidPK.pId.toString());
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 
 	@Override
-	public Optional<HolidayPaid> find(String companyCode, String personId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<HolidayPaid> find(String companyCode, String personId, LocalDate startDate) {
+		return this.queryProxy()
+				.find(new PclmtPersonEmpContractPK(companyCode, personId, startDate), PhldtHolidayPaid.class)
+				.map(c -> toDomain(c));
 	}
 
 }

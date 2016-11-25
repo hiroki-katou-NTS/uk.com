@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.proto.infra.repository.personalinfo.employmentcontract;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +14,9 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
 import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContractRepository;
+import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommute;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
+import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContractPK;
 
 @RequestScoped
 public class JpaPersonalEmploymentContractRepository extends JpaRepository
@@ -23,6 +24,11 @@ public class JpaPersonalEmploymentContractRepository extends JpaRepository
 	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract c"
 			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :ccd" + " and c.pclmtPersonEmpContractPK.pId IN :pIds"
 			+ " and c.pclmtPersonEmpContractPK.strD <= :baseYmd" + " and c.endD >= :baseYmd";
+	
+	private final String SEL_2 = "SELECT c FROM PclmtPersonEmpContract c"
+			+ " WHERE c.pclmtPersonEmpContractPK.ccd = :ccd" + " and c.pclmtPersonEmpContractPK.pId IN :pIds"
+			+ " and c.pclmtPersonEmpContractPK.strD <= :baseYmd" + " and c.endD >= :baseYmd";
+	
 
 	@Override
 	public List<PersonalEmploymentContract> findAll(String companyCode, List<String> personIds, LocalDate baseYmd) {
@@ -39,14 +45,15 @@ public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		val domain = PersonalEmploymentContract.createFromJavaType(entity.payrollSystem,
 				entity.pclmtPersonEmpContractPK.pId, entity.pclmtPersonEmpContractPK.pId,
 				GeneralDate.localDate(entity.pclmtPersonEmpContractPK.strD), GeneralDate.localDate(entity.endD));
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 
 	@Override
 	public Optional<PersonalEmploymentContract> find(String companyCode, String personId, LocalDate baseYmd) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy()
+				.find(new PclmtPersonEmpContractPK(companyCode, personId, baseYmd), PclmtPersonEmpContract.class)
+				.map(c -> toDomain(c));
 	}
 
 }

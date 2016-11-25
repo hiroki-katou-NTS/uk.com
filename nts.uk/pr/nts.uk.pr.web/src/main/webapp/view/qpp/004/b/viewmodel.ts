@@ -60,7 +60,6 @@ module qpp004.b.viewmodel {
                 new qpp004.b.viewmodel.Step('step-1', '.step-1'),
                 new qpp004.b.viewmodel.Step('step-2', '.step-2'),
                 new qpp004.b.viewmodel.Step('step-3', '.step-3'),
-                new qpp004.b.viewmodel.Step('step-4', '.step-4')
             ]);
             self.stepSelected = ko.observable(new Step('step-2', '.step-2'));
         }
@@ -89,9 +88,6 @@ module qpp004.b.viewmodel {
         }
         step3(): any {
             $('#wizard').setStep(2);
-        }
-        step4(): any {
-            $('#wizard').setStep(3);
         }
     }
 
@@ -127,7 +123,7 @@ module qpp004.b.viewmodel {
             };
 
             nts.uk.ui.windows.setShared("data", data);
-            nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成" });
+            nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成", dialogClass: "no-close" });
         }
     }
 }

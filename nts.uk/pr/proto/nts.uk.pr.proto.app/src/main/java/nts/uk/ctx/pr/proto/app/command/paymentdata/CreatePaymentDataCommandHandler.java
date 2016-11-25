@@ -142,7 +142,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		PersonalEmploymentContract employmentContract = personalEmploymentContractRepo.find(
 				loginInfo.companyCode(), personId, GeneralDate.today().localDate())
 					.orElseThrow(() -> new RuntimeException("PersonalEmploymentContract not found"));
-		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId)
+		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId, GeneralDate.today().localDate())
 					.orElseThrow(() -> new RuntimeException("HolidayPaid not found"));
 
 		// get allot personal setting
