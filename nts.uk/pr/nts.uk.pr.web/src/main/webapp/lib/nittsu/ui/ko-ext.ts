@@ -16,7 +16,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
             var $input = $(element);
-            this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");    
+            this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
 
             $input.change(function() {
                 var newText = $input.val();
@@ -133,7 +133,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
-            this.constraint = validation.getCharType(data.constraint);
+            this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");    
             var $input = $(element);
 
             $input.change(function() {
@@ -150,8 +150,7 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
-            var option: any = ko.unwrap(data.option);
-            
+            var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
             var enable: boolean = ko.unwrap(option.enable);
             var readonly: boolean = ko.unwrap(option.readonly);
             var placeholder: string = ko.unwrap(option.placeholder);
@@ -193,7 +192,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
             var setValue: (newText: string) => {} = data.value;
-            this.constraint = validation.getCharType(data.constraint);
+            this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");    
             var $input = $(element);
 
             $input.change(function() {
@@ -210,7 +209,7 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
-            var option: any = ko.unwrap(data.option);
+            var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
             var textmode: string = ko.unwrap(option.textmode);
             var enable: boolean = ko.unwrap(option.enable);
             var readonly: boolean = ko.unwrap(option.readonly);
@@ -236,44 +235,6 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
             
             var newText = getValue();
-            $input.val(newText);
-        }
-    }
-    
-    /**
-     * TextBox
-     */
-    class NtsTextBoxBindingHandler implements KnockoutBindingHandler {
-
-        constraint: validation.CharType;
-
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
-            var data = valueAccessor();
-            var setValue: (newText: string) => {} = data.value;
-            this.constraint = validation.getCharType(data.constraint);
-            var $input = $(element);
-
-            $input.change(function() {
-                var newText = $input.val();
-                setValue(newText);
-            });
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
-            var data = valueAccessor();
-            var getValue: () => string = data.value;
-
-            var $input = $(element);
-            var newText = getValue();
-
             $input.val(newText);
         }
     }
@@ -1381,7 +1342,6 @@ module nts.uk.ui.koExtentions {
 
     
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
-
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
@@ -1389,7 +1349,6 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
     ko.bindingHandlers['ntsMaskEditor'] = new NtsMaskEditorBindingHandler();
-    ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
