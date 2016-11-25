@@ -11,7 +11,7 @@ var qmm019;
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
                 self.category1 = ko.observable(new Category(ko.observableArray([
-                    new Line(ko.observableArray([
+                    new Line("categoryId-1", ko.observableArray([
                         new ItemDetail("1", "123", false, 1),
                         new ItemDetail("2", "12323", false, 2),
                         new ItemDetail("3", "+", false, 3),
@@ -22,7 +22,7 @@ var qmm019;
                         new ItemDetail("8", "235", false, 8),
                         new ItemDetail("9", "itemName", false, 9)
                     ]), "lineId-1", true, true, 1),
-                    new Line(ko.observableArray([
+                    new Line("categoryId-1", ko.observableArray([
                         new ItemDetail("1", "23", false, 1),
                         new ItemDetail("2", "7863", false, 2),
                         new ItemDetail("3", "+", false, 3),
@@ -35,7 +35,7 @@ var qmm019;
                     ]), "lineId-2", true, true, 2)
                 ]), "categoryId-1", "categoryName-1", false));
                 self.category2 = ko.observable(new Category(ko.observableArray([
-                    new Line(ko.observableArray([
+                    new Line("categoryId-2", ko.observableArray([
                         new ItemDetail("1", "itemAb12", false, 1),
                         new ItemDetail("2", "itemAme3", false, 2),
                         new ItemDetail("3", "+", false, 3),
@@ -46,7 +46,7 @@ var qmm019;
                         new ItemDetail("8", "itemNe16", false, 8),
                         new ItemDetail("9", "item17", true, 9)
                     ]), "lineId-1", true, true, 1),
-                    new Line(ko.observableArray([
+                    new Line("categoryId-2", ko.observableArray([
                         new ItemDetail("1", "現在使用行数", false, 1),
                         new ItemDetail("2", "現在使用行数", false, 2),
                         new ItemDetail("3", "+", false, 3),
@@ -59,7 +59,7 @@ var qmm019;
                     ]), "lineId-2", true, true, 2)
                 ]), "categoryId-2", "categoryName-2", false));
                 self.category3 = ko.observable(new Category(ko.observableArray([
-                    new Line(ko.observableArray([
+                    new Line("categoryId-3", ko.observableArray([
                         new ItemDetail("1", "item1x", false, 1),
                         new ItemDetail("2", "item1z", false, 2),
                         new ItemDetail("3", "+", false, 3),
@@ -70,7 +70,7 @@ var qmm019;
                         new ItemDetail("8", "item1d", false, 8),
                         new ItemDetail("9", "item1g", false, 9)
                     ]), "lineId-1", true, true, 1),
-                    new Line(ko.observableArray([
+                    new Line("categoryId-3", ko.observableArray([
                         new ItemDetail("1", "itemv1", false, 1),
                         new ItemDetail("2", "item1h", false, 2),
                         new ItemDetail("3", "+", false, 3),
@@ -111,13 +111,13 @@ var qmm019;
                 $(".row").sortable({
                     items: "span:not(.ui-state-disabled)"
                 });
-                $(".line").sortable({
+                $(".all-line").sortable({
                     items: ".row"
                 });
             };
             ScreenModel.prototype.destroySortable = function () {
                 $(".row").sortable("destroy");
-                $(".line").sortable("destroy");
+                $(".all-line").sortable("destroy");
             };
             // start function
             ScreenModel.prototype.start = function () {
@@ -176,7 +176,7 @@ var qmm019;
             };
             Category.prototype.addLine = function () {
                 var self = this;
-                self.lines.push(new Line(ko.observableArray([
+                self.lines.push(new Line(self.categoryId, ko.observableArray([
                     new ItemDetail("1", "itemv1", false, 1),
                     new ItemDetail("2", "item1h", false, 2),
                     new ItemDetail("3", "+", false, 3),
@@ -195,13 +195,17 @@ var qmm019;
         }());
         a.Category = Category;
         var Line = (function () {
-            function Line(itemDetails, autoLineId, isDisplayOnPrint, hasRequiredItem, linePosition) {
+            function Line(categoryId, itemDetails, autoLineId, isDisplayOnPrint, hasRequiredItem, linePosition) {
                 this.itemDetails = itemDetails;
                 this.autoLineId = autoLineId;
                 this.isDisplayOnPrint = isDisplayOnPrint;
                 this.hasRequiredItem = hasRequiredItem;
                 this.linePosition = linePosition;
+                this.categoryId = categoryId;
             }
+            Line.prototype.lineClick = function (data, event) {
+                $("#" + data.autoLineId + data.categoryId).addClass("ground-gray");
+            };
             return Line;
         }());
         a.Line = Line;

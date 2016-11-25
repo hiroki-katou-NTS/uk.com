@@ -46,7 +46,7 @@ module qmm019.a {
             self.category1 = ko.observable(
                 new Category(
                     ko.observableArray([
-                        new Line(ko.observableArray([
+                        new Line("categoryId-1", ko.observableArray([
                             new ItemDetail("1", "123", false, 1),
                             new ItemDetail("2", "12323", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -57,7 +57,7 @@ module qmm019.a {
                             new ItemDetail("8", "235", false, 8),
                             new ItemDetail("9", "itemName", false, 9)
                         ]), "lineId-1", true, true, 1),
-                        new Line(ko.observableArray([
+                        new Line("categoryId-1", ko.observableArray([
                             new ItemDetail("1", "23", false, 1),
                             new ItemDetail("2", "7863", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -73,7 +73,7 @@ module qmm019.a {
             self.category2 = ko.observable(
                 new Category(
                     ko.observableArray([
-                        new Line(ko.observableArray([
+                        new Line("categoryId-2", ko.observableArray([
                             new ItemDetail("1", "itemAb12", false, 1),
                             new ItemDetail("2", "itemAme3", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -84,7 +84,7 @@ module qmm019.a {
                             new ItemDetail("8", "itemNe16", false, 8),
                             new ItemDetail("9", "item17", true, 9)
                         ]), "lineId-1", true, true, 1),
-                        new Line(ko.observableArray([
+                        new Line("categoryId-2", ko.observableArray([
                             new ItemDetail("1", "現在使用行数", false, 1),
                             new ItemDetail("2", "現在使用行数", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -100,7 +100,7 @@ module qmm019.a {
             self.category3 = ko.observable(
                 new Category(
                     ko.observableArray([
-                        new Line(ko.observableArray([
+                        new Line("categoryId-3", ko.observableArray([
                             new ItemDetail("1", "item1x", false, 1),
                             new ItemDetail("2", "item1z", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -111,7 +111,7 @@ module qmm019.a {
                             new ItemDetail("8", "item1d", false, 8),
                             new ItemDetail("9", "item1g", false, 9)
                         ]), "lineId-1", true, true, 1),
-                        new Line(ko.observableArray([
+                        new Line("categoryId-3", ko.observableArray([
                             new ItemDetail("1", "itemv1", false, 1),
                             new ItemDetail("2", "item1h", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -134,13 +134,13 @@ module qmm019.a {
             $(".row").sortable({
                 items: "span:not(.ui-state-disabled)"    
             });
-            $(".line").sortable({
+            $(".all-line").sortable({
                 items: ".row"    
             });
         }
         destroySortable() {
             $(".row").sortable("destroy");
-            $(".line").sortable("destroy");    
+            $(".all-line").sortable("destroy");    
         }
         
 
@@ -209,7 +209,7 @@ module qmm019.a {
         }
         addLine(){
             var self = this;
-            self.lines.push(new Line(ko.observableArray([
+            self.lines.push(new Line(self.categoryId, ko.observableArray([
                             new ItemDetail("1", "itemv1", false, 1),
                             new ItemDetail("2", "item1h", false, 2),
                             new ItemDetail("3", "+", false, 3),
@@ -228,18 +228,23 @@ module qmm019.a {
     }
 
     export class Line {
+        categoryId: string;
         itemDetails: KnockoutObservableArray<ItemDetail>;
         autoLineId: string;
         isDisplayOnPrint: boolean;
         hasRequiredItem: boolean;
         linePosition: number;
-        constructor(itemDetails: KnockoutObservableArray<ItemDetail>, autoLineId: string,
+        constructor(categoryId: string, itemDetails: KnockoutObservableArray<ItemDetail>, autoLineId: string,
             isDisplayOnPrint: boolean, hasRequiredItem: boolean, linePosition: number) {
             this.itemDetails = itemDetails;
             this.autoLineId = autoLineId;
             this.isDisplayOnPrint = isDisplayOnPrint;
             this.hasRequiredItem = hasRequiredItem;
             this.linePosition = linePosition;
+            this.categoryId = categoryId;
+        }
+        lineClick(data, event) {
+            $("#" + data.autoLineId + data.categoryId).addClass("ground-gray");    
         }
     }
 
