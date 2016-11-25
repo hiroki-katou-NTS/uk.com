@@ -125,7 +125,7 @@ var nts;
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
+                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -140,7 +140,7 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = ko.unwrap(data.option);
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
@@ -178,7 +178,7 @@ var nts;
                     NtsMaskEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
+                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -193,7 +193,7 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = ko.unwrap(data.option);
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
                         var textmode = ko.unwrap(option.textmode);
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
@@ -219,37 +219,6 @@ var nts;
                         $input.val(newText);
                     };
                     return NtsMaskEditorBindingHandler;
-                }());
-                /**
-                 * TextBox
-                 */
-                var NtsTextBoxBindingHandler = (function () {
-                    function NtsTextBoxBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsTextBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
-                        var $input = $(element);
-                        $input.change(function () {
-                            var newText = $input.val();
-                            setValue(newText);
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsTextBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var getValue = data.value;
-                        var $input = $(element);
-                        var newText = getValue();
-                        $input.val(newText);
-                    };
-                    return NtsTextBoxBindingHandler;
                 }());
                 /**
                  * Multi Checkbox
@@ -1269,7 +1238,6 @@ var nts;
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
                 ko.bindingHandlers['ntsMaskEditor'] = new NtsMaskEditorBindingHandler();
-                ko.bindingHandlers['ntsTextBox'] = new NtsTextBoxBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();

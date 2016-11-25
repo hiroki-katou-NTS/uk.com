@@ -10,14 +10,6 @@ __viewContext.ready(function () {
                 enable: function(enable){
                     var self = this;
                     self.option.enable(enable);
-                },
-                readonly: function(readonly){
-                    var self = this;
-                    self.option.readonly(readonly);
-                },
-                change: function(value){
-                    var self = this;
-                    $('#textbox-onchange').append(value + "<br/>");
                 }
             },
             // NumberEditor
@@ -28,14 +20,6 @@ __viewContext.ready(function () {
                 enable: function(enable){
                     var self = this;
                     self.option.enable(enable);
-                },
-                readonly: function(readonly){
-                    var self = this;
-                    self.option.readonly(readonly);
-                },
-                change: function(value){
-                    var self = this;
-                    $('#numberbox-onchange').append(value + "<br/>");
                 }
             },
             // TimeEditor
@@ -46,14 +30,6 @@ __viewContext.ready(function () {
                 enable: function(enable){
                     var self = this;
                     self.option.enable(enable);
-                },
-                readonly: function(readonly){
-                    var self = this;
-                    self.option.readonly(readonly);
-                },
-                change: function(value){
-                    var self = this;
-                    $('#timebox-onchange').append(value + "<br/>");
                 }
             },
             // MaskEditor
@@ -64,14 +40,6 @@ __viewContext.ready(function () {
                 enable: function(enable){
                     var self = this;
                     self.option.enable(enable);
-                },
-                readonly: function(readonly){
-                    var self = this;
-                    self.option.readonly(readonly);
-                },
-                change: function(value){
-                    var self = this;
-                    $('#maskbox-onchange').append(value + "<br/>");
                 }
             },
         };

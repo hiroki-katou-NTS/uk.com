@@ -2,7 +2,7 @@ module nts.uk.ui.sharedvm {
 
     export class KibanTimer {
         elapsedSeconds: number;
-        fomatted: KnockoutObservable<string>;
+        formatted: KnockoutObservable<string>;
         targetComponent: string;
         isTimerStart: KnockoutObservable<boolean>;
         oldDated: KnockoutObservable<Date>;
@@ -11,10 +11,11 @@ module nts.uk.ui.sharedvm {
         constructor(target: string) {
             var self = this;
             self.elapsedSeconds = 0;
-            self.fomatted = ko.observable(nts.uk.text.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
+            self.formatted = ko.observable(nts.uk.text.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
             self.targetComponent = target;
             self.isTimerStart = ko.observable(false);
             self.oldDated = ko.observable(undefined);
+            document.getElementById(self.targetComponent).innerHTML = self.formatted(); 
         }
         run() {
 //            var x = self.getTime(new Date()) - self.getTime(self.oldDated());
