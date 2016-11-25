@@ -21,18 +21,13 @@ var qpp004;
                     self.visibleErrorList = ko.observable(false);
                     self.processingState = ko.observable(null);
                     self.processingStateText = ko.observable(null);
-                    self.processingPersonIndex = ko.observable(0);
                     self.numberOfPerson = ko.observable(0);
-                    self.displayProcessingNumberOfPerson = ko.computed(function () {
-                        return nts.uk.text.format("{0}/{1}人", self.processingPersonIndex(), self.numberOfPerson());
-                    });
+                    self.processingNumberOfPerson = ko.observable(0);
                     self.stopProcess = function () {
                         var self = this;
                         var status = self.buttonStatus().status;
                         if (status == 1) {
-                            self.timer.end();
-                            self.buttonStatus({ status: 0, displayText: "閉じる" });
-                            self.buttonText("閉じる");
+                            self.stopTimer();
                         }
                         else {
                         }
@@ -44,34 +39,45 @@ var qpp004;
                  */
                 ScreenModel.prototype.startPage = function (data) {
                     var self = this;
-                    var index = 0;
+                    var index = ko.observable(0);
                     self.numberOfPerson(data.personIdList.length);
                     if (data.personIdList.length > 0) {
+                        self.buttonStatus({ status: 1, displayText: "中止" });
+                        self.buttonText("中止");
                         self.processingState(0);
                         self.processingStateText("データの作成中");
                     }
                     _.forEach(data.personIdList, function (personId) {
-                        index = index + 1;
-                        self.processingPersonIndex(index);
-                        self.buttonStatus({ status: 1, displayText: "中止" });
-                        self.buttonText("中止");
-                        // Resolve start page dfd after load all data.
-                        $.when(self.createPaymentData(personId, data)).done(function (res) {
-                            self.errorList.push(res);
-                        });
+                        if (self.buttonStatus().status == 1) {
+                            index(index() + 1);
+                            // Resolve start page dfd after load all data.
+                            $.when(self.createPaymentData(personId, data, index())).done(function (res) {
+                                self.errorList.push(res);
+                                self.processingNumberOfPerson(index());
+                            }).fail(function () {
+                                self.stopTimer();
+                            });
+                        }
                     });
-                    if (index == data.personIdList.length) {
-                        self.timer.end();
-                        self.buttonStatus({ status: 0, displayText: "閉じる" });
-                        self.buttonText("閉じる");
-                        self.processingState(1);
-                        self.processingStateText("完了");
-                    }
+                    index.subscribe(function (value) {
+                        console.log(value);
+                        if (value == data.personIdList.length) {
+                            self.stopTimer();
+                        }
+                    });
+                };
+                ScreenModel.prototype.stopTimer = function () {
+                    var self = this;
+                    self.timer.end();
+                    self.buttonStatus({ status: 0, displayText: "閉じる" });
+                    self.buttonText("閉じる");
+                    self.processingState(1);
+                    self.processingStateText("完了");
                 };
                 /**
                  * Request create data payment
                  */
-                ScreenModel.prototype.createPaymentData = function (personId, data) {
+                ScreenModel.prototype.createPaymentData = function (personId, data, index) {
                     var self = this;
                     var dfd = $.Deferred();
                     var parameter = {
@@ -85,6 +91,7 @@ var qpp004;
                         self.visibleErrorList(true);
                         var error = {};
                         error = {
+                            index: index,
                             personId: personId.id,
                             personName: personId.name,
                             errorMessage: res.message,
