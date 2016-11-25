@@ -1,60 +1,80 @@
 module qmm019.d.viewmodel {
     
     export class ScreenModel {
+        selectLayoutAtr: KnockoutObservable<string>;
         itemList: KnockoutObservableArray<ItemModel>;
-        itemName: KnockoutObservable<string>;
-        currentLayoutAtr: KnockoutObservable<number>
-        selectedLayoutAtr: KnockoutObservable<number>;
-        selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
-        comboboxList: KnockoutObservableArray<ItemCombobox>;
-        selectLayoutCode: KnockoutObservable<string>;
+        layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
+        selectStmtCode : KnockoutObservable<string>;
+        selectStmtName : KnockoutObservable<string>;
+        selectStartYm: KnockoutObservable<string>;
+        layoutSelect:  KnockoutObservable<string>;
         /**
          * Init screen model.
          */
         constructor() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('0','レーザープリンタ', 'Ａ４', '縦向き','1人','最大　30行ｘ9別まで設定可能','a'),
-                new ItemModel('1','レーザープリンタ', 'Ａ４', '縦向き','最大2人','最大　17行ｘ9別まで設定可能','a'),
-                new ItemModel('2','レーザープリンタ', 'Ａ４', '縦向き','最大3人','最大　10行ｘ9別まで設定可能','a'),
-                new ItemModel('3','レーザープリンタ', 'Ａ４', '横向き','最大2人','最大　10行ｘ9別まで設定可能','a'),
-                new ItemModel('4','レーザー（圧着式）', 'Ａ４', '縦向き','1人','最大　17行ｘ9別まで設定可能','圧着式：　Ｚ折り'),
-                new ItemModel('5','レーザー（圧着式）', 'Ａ４', '横向き','1人','支給、控除、勤怠各52項目','圧着式：　はがき'),
-                new ItemModel('6','ドットプリンタ', '連続用紙', '―','1人','支給、控除、勤怠各27項目','a')
-            ]);
-            self.itemName = ko.observable('');
-            self.currentLayoutAtr = ko.observable(3);
-            self.selectedLayoutAtr = ko.observable(null)
+            self.selectLayoutAtr = ko.observable("2");
+            self.itemList = ko.observableArray([]);
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
-            
-            $('#SEL_002').on('selectionChanging', function(event) {
+            self.layouts = ko.observableArray([]);
+            self.selectStmtCode = ko.observable(null);
+            self.selectStmtName = ko.observable(null);
+            self.selectStartYm =  ko.observable(null);
+            //sau nay gan lai
+            self.layoutSelect = ko.observable("1");
+        } 
+        
+        start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();    
+            //list data
+            self.buildItemList();
+            $('#LST_001').on('selectionChanging', function(event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
             })
-            $('#SEL_002').on('selectionChanged', function(event: any) {
+            $('#LST_001').on('selectionChanged', function(event: any) {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
+            //fill data to dialog
+            service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
+                self.layouts(layout);
+                self.startDialog();
+            });
             
-            self.comboboxList = ko.observableArray([
-                new ItemCombobox('001', "layout 001"),
-                new ItemCombobox('002', "layout 002"),
-                new ItemCombobox('003', "layout 003"),
-            ]); 
-            self.selectLayoutCode = ko.observable("001");           
-        } 
-//        startPage(): JQueryPromise<any> {
-//            var self = this;
-//            // Page load dfd.
-//            var dfd = $.Deferred();
-//            $.when(qmm019.g.service.getLayoutWithMaxStartYm()).done(function(data){
-//                self.comboboxList(data);
-//                dfd.resolve();   
-//            }).fail(function res() {
-//                    
-//            });
-//            return dfd.promise();
-//        }       
+             dfd.resolve();
+            // Return.
+            return dfd.promise();    
+        }
+        
+        buildItemList(): any{
+            var self = this;
+            self.itemList.removeAll();
+            self.itemList.push(new ItemModel('0','レーザープリンタ', 'Ａ４', '縦向き','1人','最大　30行ｘ9別まで設定可能',''));
+            self.itemList.push(new ItemModel('1','レーザープリンタ', 'Ａ４', '縦向き','最大2人','最大　17行ｘ9別まで設定可能',''));
+            self.itemList.push(new ItemModel('2','レーザープリンタ', 'Ａ４', '縦向き','最大3人','最大　10行ｘ9別まで設定可能',''));
+            self.itemList.push(new ItemModel('3','レーザープリンタ', 'Ａ４', '横向き','最大2人','最大　10行ｘ9別まで設定可能',''));
+            self.itemList.push(new ItemModel('4','レーザー（圧着式）', 'Ａ４', '縦向き','1人','最大　17行ｘ9別まで設定可能','圧着式：　Ｚ折り'));
+            self.itemList.push(new ItemModel('5','レーザー（圧着式）', 'Ａ４', '横向き','1人','支給、控除、勤怠各52項目','圧着式：　はがき'));
+            self.itemList.push(new ItemModel('6','ドットプリンタ', '連続用紙', '―','1人','支給、控除、勤怠各27項目',''));
+        }
+        
+        startDialog() : any{
+            var self = this;
+            _.forEach(self.layouts(), function(layout){
+                var stmtCode = layout.stmtCode.trim();
+                if(stmtCode == self.layoutSelect()){
+                    self.selectStmtCode(stmtCode);
+                    self.selectStmtName(layout.stmtName);
+                    self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm + 1));
+                    return false;                    
+                }
+            });     
+        }
+        
+       createHistoryLayout(): any{
+           
+       }
     }
     
         /**
