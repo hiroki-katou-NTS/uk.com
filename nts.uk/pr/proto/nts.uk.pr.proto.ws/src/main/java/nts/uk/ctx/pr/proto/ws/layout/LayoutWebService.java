@@ -23,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Path("pr/proto/layout")
 @Produces("application/json")
 public class LayoutWebService {
+
 	@Inject
 	private CreateLayoutCommandHandler createLayoutData;
 	@Inject
@@ -71,4 +72,6 @@ public class LayoutWebService {
 	public void deleteData(DeleteLayoutHistoryCommand command){
 		this.deleteData.handle(command);
 	}
+	
+	
 }

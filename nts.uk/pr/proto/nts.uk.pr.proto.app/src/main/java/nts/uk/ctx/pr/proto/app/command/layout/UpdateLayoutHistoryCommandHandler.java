@@ -71,7 +71,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		if (layoutBefore.isPresent()) {
 			//直前の[明細書マスタ]の開始年月　＜　入力した開始年月　≦　終了年月　の場合
 			if (command.getStartYmNew() < layoutBefore.get().getStartYM().v()
-					&& command.getStartYmNew() > layoutOrigin.getEndYM().v()) {
+					&& command.getStartYmNew() > layoutOrigin.getEndYm().v()) {
 				throw new BusinessException(new RawErrorMessage("履歴の期間が重複しています。"));
 			}
 		} else {
@@ -83,9 +83,9 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 
 	private void updatePreviousObject(UpdateLayoutHistoryCommand command, String companyCode,
 			LayoutMaster layoutOrigin) {
-		List<LayoutMasterCategory> categoriesBefore = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYM().v() - 1);
-		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYM().v() - 1);
-		List<LayoutMasterDetail> detailsBefore = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYM().v() - 1);
+		List<LayoutMasterCategory> categoriesBefore = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
+		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
+		List<LayoutMasterDetail> detailsBefore = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
 		
 		List<LayoutMasterCategory> categoriesUpdate = categoriesBefore.stream().map(
 				org -> {
