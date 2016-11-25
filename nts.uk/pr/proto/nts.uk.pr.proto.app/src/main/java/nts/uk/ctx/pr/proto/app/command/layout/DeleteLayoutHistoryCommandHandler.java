@@ -48,14 +48,14 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		//データベース削除[明細書マスタ.DEL-1]を実施する
 		this.layoutRepository.remove(command.getCompanyCode(),
 				command.getStmtCode(),
-				command.getStartYM());
+				command.getStartYm());
 		//1件成功した場合以外の場合
 		//bo sung them
 		
 		//データベース削除[明細書マスタカテゴリ.DEL-2] を実施する
 		List<LayoutMasterCategory> lstCategories = this.categoryRepository.getCategories(command.getCompanyCode(),
 				command.getStmtCode(), 
-				command.getStartYM());
+				command.getStartYm());
 		this.categoryRepository.removeAllCategory(lstCategories);
 		//1件成功した場合以外の場合
 		//bo sung them
@@ -63,26 +63,26 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		//データベース削除[明細書マスタ行.DEL-2] を実施する
 		List<LayoutMasterLine> lstLineOfCategory = this.lineRepository.getLines(command.getCompanyCode(), 
 				command.getStmtCode(), 
-				command.getStartYM());
+				command.getStartYm());
 		this.lineRepository.remove(lstLineOfCategory);
 		
 		
 		//データベース削除[明細書マスタ明細.DEｌ-1] を実施する
 		List<LayoutMasterDetail> lstDetails = this.detailRepository.getDetails(command.getCompanyCode(),
 				command.getStmtCode(),
-				command.getStartYM());				
+				command.getStartYm());				
 		this.detailRepository.remove(lstDetails);
 	}
 	
 	private void updateObject(DeleteLayoutHistoryCommand command){
 		//データベース更新[明細書マスタ.UPD-2] を実施する
 		LayoutMaster layoutOrigin = layoutRepository.getLayout(command.getCompanyCode(),
-				command.getStartYM() - 1,
+				command.getStartYm() - 1,
 				command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		Optional<LayoutMaster> layoutBefore = layoutRepository.getHistoryBefore(command.getCompanyCode(),
 				command.getStmtCode(),
-				command.getStartYM() - 1);
+				command.getStartYm() - 1);
 		if (layoutBefore.isPresent()) {
 			
 		}
@@ -93,7 +93,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
 		List<LayoutMasterCategory> lstCategoryBefore = this.categoryRepository.getCategoriesBefore(command.getCompanyCode(),
 				command.getStmtCode(),
-				command.getStartYM() - 1);
+				command.getStartYm() - 1);
 		List<LayoutMasterCategory> lstCategoryUP = lstCategoryBefore.stream().map(
 				category -> {
 					return LayoutMasterCategory.createFromDomain(category.getCompanyCode(),
@@ -108,7 +108,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		//データベース更新[明細書マスタ行.UPD-2] を実施する
 		List<LayoutMasterLine> lstLineBefore = this.lineRepository.getLinesBefore(command.getCompanyCode(),
 				command.getStmtCode(),
-				command.getStartYM() - 1);
+				command.getStartYm() - 1);
 		List<LayoutMasterLine> lstLineUp = lstLineBefore.stream().map(
 				line ->{
 					return LayoutMasterLine.createFromDomain(line.getCompanyCode(),
@@ -124,7 +124,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		//データベース更新[明細書マスタ明細.UPD-2] を実施する
 		List<LayoutMasterDetail> detailsBefore = detailRepository.getDetailsBefore(command.getCompanyCode(), 
 				command.getStmtCode(), 
-				command.getStartYM() - 1);
+				command.getStartYm() - 1);
 			
 		List<LayoutMasterDetail> detailsUpdate = detailsBefore.stream().map(
 				org -> {

@@ -13,7 +13,7 @@ public class DeleteLayoutHistoryCommand {
 	
 	private String stmtCode;
 	
-	private int startYM;
+	private int startYm;
 		
 	private int layoutAtr;
 	
@@ -23,7 +23,7 @@ public class DeleteLayoutHistoryCommand {
 	public LayoutMaster toDomain(int endYm, int layoutAtr, String stmtName){
 		return LayoutMaster.createFromJavaType(
 				AppContexts.user().companyCode(), 
-				this.startYM, 
+				this.startYm, 
 				this.stmtCode, 
 				endYm, 
 				layoutAtr, 
