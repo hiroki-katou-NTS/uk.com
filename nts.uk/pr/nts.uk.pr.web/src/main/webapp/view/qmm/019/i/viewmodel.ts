@@ -1,7 +1,8 @@
 module qmmm019.i.viewmodel{
     export class ScreenModel {
         boxes: BoxModel[];
-        
+                               
+
         /**
          * Init screen model.
          */

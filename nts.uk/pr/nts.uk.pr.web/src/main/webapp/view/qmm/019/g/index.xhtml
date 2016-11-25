@@ -11,11 +11,21 @@
 				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
 				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
             	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+				<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
 			    <script>var dialogSize = { width: 600, height: 700 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
+				<script>
+					__viewContext.primitiveValueConstraints = {
+						startYm: {
+							valueType: "String",
+							charType: "Numeric",
+							maxLength: 7
+						}
+					};
+				</script>
             </ui:define>
             
             <ui:define name="content">
@@ -53,7 +63,7 @@
 							<br/>
 							<div class ="form-label inline">
 								<label id = "LBL_005">開始年月</label>
-								<input id = "INP_003" data-bind="value: selectStartYm"></input>
+								<input id = "INP_003" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input>
 								<!-- 入力した開始年月を和暦で表記 -->
 								<label id = "LBL_006"></label>
 							</div><br/>

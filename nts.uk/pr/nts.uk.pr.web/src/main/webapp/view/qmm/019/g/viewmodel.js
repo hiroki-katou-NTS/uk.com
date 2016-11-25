@@ -4,6 +4,7 @@ var qmm019;
     (function (g) {
         var viewmodel;
         (function (viewmodel) {
+            var option = nts.uk.ui.option;
             var ScreenModel = (function () {
                 /**
                  * Init screen model.
@@ -20,6 +21,8 @@ var qmm019;
                     self.selectStmtCode = ko.observable(null);
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
+                    console.log(option);
+                    self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
@@ -75,32 +78,32 @@ var qmm019;
                             self.selectStmtCode(layoutCd);
                             self.selectStmtName(layout.stmtName);
                             self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm));
-                            if (layout.layoutAtr == "0") {
-                                self.layoutAtrStr("レーザー　A4　縦向き　1人");
+                            if (layout.layoutAtr == 0) {
+                                self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
                             }
-                            else if (layout.layoutAtr == "1") {
-                                self.layoutAtrStr("レーザー　A4　縦向き　2人");
+                            else if (layout.layoutAtr == 1) {
+                                self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
                             }
-                            else if (layout.layoutAtr == "2") {
-                                self.layoutAtrStr("レーザー　A4　縦向き　3人");
+                            else if (layout.layoutAtr == 2) {
+                                self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
                             }
-                            else if (layout.layoutAtr == "3") {
-                                self.layoutAtrStr("レーザー　A4　横向き　2人");
+                            else if (layout.layoutAtr == 3) {
+                                self.layoutAtrStr("（レーザー　A4　横向き　2人）");
                             }
-                            else if (layout.layoutAtr == "4") {
-                                self.layoutAtrStr("レーザー(圧着式)　縦向き　1人");
+                            else if (layout.layoutAtr == 4) {
+                                self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
                             }
-                            else if (layout.layoutAtr == "5") {
-                                self.layoutAtrStr("レーザー(圧着式)　横向き　1人");
+                            else if (layout.layoutAtr == 5) {
+                                self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
                             }
-                            else if (layout.layoutAtr == "6") {
-                                self.layoutAtrStr("ドットプリンタ　連続用紙　1人");
+                            else if (layout.layoutAtr == 6) {
+                                self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
                             }
-                            else if (layout.layoutAtr == "7") {
-                                self.layoutAtrStr("PAYS単票");
+                            else if (layout.layoutAtr == 7) {
+                                self.layoutAtrStr("（PAYS単票）");
                             }
-                            else if (layout.layoutAtr == "8") {
-                                self.layoutAtrStr("PAYS連続");
+                            else if (layout.layoutAtr == 8) {
+                                self.layoutAtrStr("（PAYS連続）");
                             }
                             return false;
                         }

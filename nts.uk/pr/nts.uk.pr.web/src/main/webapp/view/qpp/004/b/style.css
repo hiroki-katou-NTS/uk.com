@@ -26,9 +26,16 @@
 }
 
 .icon {
+	margin-left: 6px;
 	background-image: url(../a/img/icon_calendar.PNG);
 	background-position: left center;
 	background-repeat: no-repeat;
 	height: 23px;
 	padding-left: 38px; /* Or size of icon + spacing */
+}
+
+.fix-button {
+	text-align: left;
+	padding: 5px;
+	width: 300px;
 }
