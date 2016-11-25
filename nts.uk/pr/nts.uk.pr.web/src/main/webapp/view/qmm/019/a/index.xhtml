@@ -92,55 +92,33 @@
 	           				</div>
 	           				<button id="A_BTN_009">印刷プレビュー</button>
             			</div>
-            			---------------------------------------------------------------
-            			<div id="main">
-						    <h3>Tasks</h3>
-						    <div class="container" data-bind="sortable: tasks">
-						        <div class="item">
-						            <span data-bind="visible: !$root.content.isTaskSelected($data)">
-						                <a href="#" data-bind="text: name, click: $root.content.selectedTask"></a>
-						            </span>
-						            <span data-bind="visibleAndSelect: $root.content.isTaskSelected($data)">
-						                <input data-bind="value: name, event: { blur: $root.content.clearTask($data) }" />
-						            </span>  
-						        </div>
-						    </div>
-						    <a href="#" data-bind="click: addTask">Add Task</a>
-						</div>
+<!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 						
-						<div id="results" class="simpleDiv">
-						    <h3>Tasks</h3>
-						    <ul data-bind="foreach: tasks1">
-						        <li data-bind="text: name"></li>
-						    </ul>
-						</div>
-						
-						--------------------------------------------------------------
-						<div id="group-root">
-							<div id="group-title">
-								<button id="button-group-setting" class="button-setting"></button>
-								<span>支給</span>
-							</div>
-							<div id="category1">
-								<div class="new" data-bind="sortable: tasks1">
-<!-- 									<div class="student" data-bind="text: name"></div> -->
-							        <div class="student">
-							            <span data-bind="visible: !$root.content.isTaskSelected($data)">
-							                <a href="#" data-bind="text: name, click: $root.selectedTask"></a>
-							            </span>
-							            <span data-bind="visibleAndSelect: $root.content.isTaskSelected($data)">
-							                <input data-bind="value: name, event: { blur: $root.content.clearTask }" />
-							            </span>  
-							        </div>
+						<div data-bind="foreach: categories">
+							<div id="group-root">
+								<div id="group-title">
+									<a class="button-setting" data-bind="visible: hasSetting, click: categoryClick"></a>
+									<span data-bind="text: categoryName"></span>
 								</div>
-								<div class="new" data-bind="sortable: tasks2">
-									<div class="student" data-bind="text: name"></div>
+								<div class="line">
+									<div data-bind="foreach: lines">
+										<div class="row" >
+											<div><a class="button-setting" data-bind="enable: !hasRequiredItem"></a></div>
+											<div data-bind="foreach: itemDetails">
+									            <span data-bind="click: itemClick, attr: {class: isRequired() ? 'fixed-button ui-state-disabled li-on-row' : itemAbName() !== '+' ? 'button-with-text li-on-row' : 'li-on-row'}">
+									                <a data-bind="text: itemAbName"></a>
+									            </span>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="new" data-bind="sortable: tasks3">
-									<div class="student" data-bind="text: name"></div>
+								<div class="group-footer">
+									<button data-bind="click: addLine">+行追加</button>
 								</div>
 							</div>
 						</div>
+						
+<!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
             		</div>
             	</div>
             </ui:define>

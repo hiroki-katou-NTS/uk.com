@@ -10,47 +10,80 @@ var qmm019;
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
-                self.tasks = ko.observableArray([
-                    new Task("Get dog food"),
-                    new Task("Mow lawn"),
-                    new Task("Fix car"),
-                    new Task("Fix fence"),
-                    new Task("Walk dog"),
-                    new Task("Read book")
-                ]);
                 self.category1 = ko.observable(new Category(ko.observableArray([
                     new Line(ko.observableArray([
-                        new ItemDetail("1", "itemAbName1", false),
-                        new ItemDetail("2", "itemAbName1", false),
-                        new ItemDetail("3", "+", false),
-                        new ItemDetail("4", "itemAbName1", false),
-                        new ItemDetail("5", "+", false),
-                        new ItemDetail("6", "itemAbName1", false),
-                        new ItemDetail("7", "+", false),
-                        new ItemDetail("8", "itemAbName1", false),
-                        new ItemDetail("9", "itemAbName1", false)
-                    ]), "lineId-1", true, true),
-                    new Line()
+                        new ItemDetail("1", "123", false, 1),
+                        new ItemDetail("2", "12323", false, 2),
+                        new ItemDetail("3", "+", false, 3),
+                        new ItemDetail("4", "456", false, 4),
+                        new ItemDetail("5", "+", false, 5),
+                        new ItemDetail("6", "789", false, 6),
+                        new ItemDetail("7", "+", false, 7),
+                        new ItemDetail("8", "235", false, 8),
+                        new ItemDetail("9", "itemName", false, 9)
+                    ]), "lineId-1", true, true, 1),
+                    new Line(ko.observableArray([
+                        new ItemDetail("1", "23", false, 1),
+                        new ItemDetail("2", "7863", false, 2),
+                        new ItemDetail("3", "+", false, 3),
+                        new ItemDetail("4", "45453453", false, 4),
+                        new ItemDetail("5", "+", false, 5),
+                        new ItemDetail("6", "3", false, 6),
+                        new ItemDetail("7", "+", false, 7),
+                        new ItemDetail("8", "Name1", false, 8),
+                        new ItemDetail("9", "2323322", false, 9)
+                    ]), "lineId-2", true, true, 2)
                 ]), "categoryId-1", "categoryName-1", false));
-                self.category2 = ko.observableArray([
-                    new Task("Get dog food"),
-                    new Task("Mow lawn"),
-                    new Task("Fix car"),
-                    new Task("Fix fence"),
-                    new Task("Walk dog"),
-                    new Task("Read book")
-                ]);
-                self.category3 = ko.observableArray([
-                    new Task("Get dog food"),
-                    new Task("Mow lawn"),
-                    new Task("Fix car"),
-                    new Task("Fix fence"),
-                    new Task("Walk dog"),
-                    new Task("Read book")
-                ]);
-                self.categories = ko.observableArray();
+                self.category2 = ko.observable(new Category(ko.observableArray([
+                    new Line(ko.observableArray([
+                        new ItemDetail("1", "itemAb12", false, 1),
+                        new ItemDetail("2", "itemAme3", false, 2),
+                        new ItemDetail("3", "+", false, 3),
+                        new ItemDetail("4", "itemAe14", false, 4),
+                        new ItemDetail("5", "+", false, 5),
+                        new ItemDetail("6", "iteMme15", false, 6),
+                        new ItemDetail("7", "+", false, 7),
+                        new ItemDetail("8", "itemNe16", false, 8),
+                        new ItemDetail("9", "item17", true, 9)
+                    ]), "lineId-1", true, true, 1),
+                    new Line(ko.observableArray([
+                        new ItemDetail("1", "現在使用行数", false, 1),
+                        new ItemDetail("2", "現在使用行数", false, 2),
+                        new ItemDetail("3", "+", false, 3),
+                        new ItemDetail("4", "現在使用行数", false, 4),
+                        new ItemDetail("5", "+", false, 5),
+                        new ItemDetail("6", "ghghghghwwww", false, 6),
+                        new ItemDetail("7", "+", false, 7),
+                        new ItemDetail("8", "itemYZ71", false, 8),
+                        new ItemDetail("9", "itemYX61", true, 9)
+                    ]), "lineId-2", true, true, 2)
+                ]), "categoryId-2", "categoryName-2", false));
+                self.category3 = ko.observable(new Category(ko.observableArray([
+                    new Line(ko.observableArray([
+                        new ItemDetail("1", "item1x", false, 1),
+                        new ItemDetail("2", "item1z", false, 2),
+                        new ItemDetail("3", "+", false, 3),
+                        new ItemDetail("4", "item1c", false, 4),
+                        new ItemDetail("5", "+", false, 5),
+                        new ItemDetail("6", "item1s", false, 6),
+                        new ItemDetail("7", "+", false, 7),
+                        new ItemDetail("8", "item1d", false, 8),
+                        new ItemDetail("9", "item1g", false, 9)
+                    ]), "lineId-1", true, true, 1),
+                    new Line(ko.observableArray([
+                        new ItemDetail("1", "itemv1", false, 1),
+                        new ItemDetail("2", "item1h", false, 2),
+                        new ItemDetail("3", "+", false, 3),
+                        new ItemDetail("4", "item1t", false, 4),
+                        new ItemDetail("5", "+", false, 5),
+                        new ItemDetail("6", "item1u", false, 6),
+                        new ItemDetail("7", "+", false, 7),
+                        new ItemDetail("8", "item1e", false, 8),
+                        new ItemDetail("9", "item1j", false, 9)
+                    ]), "lineId-2", true, true, 2)
+                ]), "categoryId-3", "categoryName-3", true));
+                self.categories = ko.observableArray([self.category1, self.category2, self.category3]);
                 self.selectedTask = ko.observable();
-                $("#category1").sortable();
             }
             ScreenModel.prototype.clearTask = function (data, event) {
                 var self = this;
@@ -74,6 +107,18 @@ var qmm019;
                 return task === self.selectedTask();
             };
             ;
+            ScreenModel.prototype.bindSortable = function () {
+                $(".row").sortable({
+                    items: "span:not(.ui-state-disabled)"
+                });
+                $(".line").sortable({
+                    items: ".row"
+                });
+            };
+            ScreenModel.prototype.destroySortable = function () {
+                $(".row").sortable("destroy");
+                $(".line").sortable("destroy");
+            };
             // start function
             ScreenModel.prototype.start = function () {
                 var self = this;
@@ -126,25 +171,50 @@ var qmm019;
                 this.categoryName = categoryName;
                 this.hasSetting = hasSetting;
             }
+            Category.prototype.categoryClick = function (data, event) {
+                alert(data.categoryName);
+            };
+            Category.prototype.addLine = function () {
+                var self = this;
+                self.lines.push(new Line(ko.observableArray([
+                    new ItemDetail("1", "itemv1", false, 1),
+                    new ItemDetail("2", "item1h", false, 2),
+                    new ItemDetail("3", "+", false, 3),
+                    new ItemDetail("4", "item1t", false, 4),
+                    new ItemDetail("5", "+", false, 5),
+                    new ItemDetail("6", "item1u", false, 6),
+                    new ItemDetail("7", "+", false, 7),
+                    new ItemDetail("8", "item1e", false, 8),
+                    new ItemDetail("9", "item1j", false, 9)
+                ]), "lineId-3", true, true, 2));
+                ScreenModel.prototype.bindSortable();
+                ScreenModel.prototype.destroySortable();
+                ScreenModel.prototype.bindSortable();
+            };
             return Category;
         }());
         a.Category = Category;
         var Line = (function () {
-            function Line(details, autoLineId, isDisplayOnPrint, hasRequiredItem) {
-                this.details = details;
+            function Line(itemDetails, autoLineId, isDisplayOnPrint, hasRequiredItem, linePosition) {
+                this.itemDetails = itemDetails;
                 this.autoLineId = autoLineId;
                 this.isDisplayOnPrint = isDisplayOnPrint;
                 this.hasRequiredItem = hasRequiredItem;
+                this.linePosition = linePosition;
             }
             return Line;
         }());
         a.Line = Line;
         var ItemDetail = (function () {
-            function ItemDetail(itemCode, itemAbName, isRequired) {
-                this.itemCode = itemCode;
-                this.itemAbName = itemAbName;
-                this.isRequired = isRequired;
+            function ItemDetail(itemCode, itemAbName, isRequired, itemPosColumn) {
+                this.itemCode = ko.observable(itemCode);
+                this.itemAbName = ko.observable(itemAbName);
+                this.isRequired = ko.observable(isRequired);
+                this.itemPosColumn = ko.observable(itemPosColumn);
             }
+            ItemDetail.prototype.itemClick = function (data, event) {
+                alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+            };
             return ItemDetail;
         }());
         a.ItemDetail = ItemDetail;
