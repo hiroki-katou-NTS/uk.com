@@ -69,10 +69,26 @@ var nts;
                     return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
                 }
                 validation.isDecimal = isDecimal;
-                function validateTime(time) {
+                var ResultParseTime = (function () {
+                    function ResultParseTime(success, minus, hours, minutes) {
+                        this.success = success;
+                        this.minus = minus;
+                        this.hours = hours;
+                        this.minutes = minutes;
+                    }
+                    ResultParseTime.succeeded = function (minus, hours, minutes) {
+                        return new ResultParseTime(true, minus, hours, minutes);
+                    };
+                    ResultParseTime.failed = function () {
+                        return new ResultParseTime(false);
+                    };
+                    return ResultParseTime;
+                }());
+                validation.ResultParseTime = ResultParseTime;
+                function parseTime(time) {
                     if (time.length < 2 || time.split(':').length > 2 || time.split('-').length > 2
                         || time.lastIndexOf('-') > 0) {
-                        throw new Error('invalid time value: ' + time);
+                        return ResultParseTime.failed();
                     }
                     var minusNumber = time.charAt(0) === '-';
                     if (minusNumber) {
@@ -90,11 +106,11 @@ var nts;
                         hours = time.substr(0, time.length - 2);
                     }
                     if (!isInteger(minutes) || parseInt(minutes) > 59 || !isInteger(hours)) {
-                        throw new Error('invalid time value: ' + time);
+                        return ResultParseTime.failed();
                     }
-                    return (minusNumber ? '-' : '') + hours + ":" + (minutes.length === 1 ? '0' + minutes : minutes);
+                    return ResultParseTime.succeeded(minusNumber, Number(hours), Number(minutes));
                 }
-                validation.validateTime = validateTime;
+                validation.parseTime = parseTime;
                 function validateYearMonth(yearMonth) {
                     var stringLengh = yearMonth.length;
                     if ((stringLengh < 6 || stringLengh > 7) || yearMonth.split('/').length > 2) {
