@@ -16,33 +16,19 @@ var nts;
                         self.oldDated = ko.observable(undefined);
                         document.getElementById(self.targetComponent).innerHTML = self.formatted();
                     }
-                    KibanTimer.prototype.run = function () {
-                        //            var x = self.getTime(new Date()) - self.getTime(self.oldDated());
-                        var x = new Date().getTime() - this.oldDated().getTime();
+                    KibanTimer.prototype.run = function (timer) {
+                        var x = new Date().getTime() - timer.oldDated().getTime();
                         x = Math.floor(x / 1000);
-                        this.elapsedSeconds = x;
-                        //            self.fomatted(nts.uk.text.formatSeconds(self.elapsedSeconds(), 'hh:mm:ss'));
-                        //            self.fomatted(x);
-                        //            $(self.targetComponent).html(x.toString());
-                        document.getElementById(this.targetComponent).innerHTML
+                        timer.elapsedSeconds = x;
+                        document.getElementById(timer.targetComponent).innerHTML
                             = nts.uk.text.formatSeconds(x, 'hh:mm:ss');
                     };
-                    KibanTimer.prototype.getTime = function (value) {
-                        var self = this;
-                        var day = value.getDate();
-                        var hours = value.getHours();
-                        var minutes = value.getMinutes();
-                        var seconds = value.getSeconds();
-                        var time = day * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds;
-                        return time;
-                    };
                     KibanTimer.prototype.start = function () {
-                        var _this = this;
                         var self = this;
                         if (!self.isTimerStart()) {
                             self.oldDated(new Date());
                             self.isTimerStart(true);
-                            self.interval = setInterval(function () { return _this.run(); }, 1000);
+                            self.interval = setInterval(self.run, 1000, self);
                         }
                     };
                     KibanTimer.prototype.end = function () {
