@@ -10,7 +10,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>
-				var dialogSize = { width: 400, height: 600 };
+				var dialogSize = { width: 370, height: 400 };
 			</script>
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
@@ -20,18 +20,22 @@
 
 		<ui:define name="content">
 			<div id="contents-area" data-bind="with: employeeList">
-				<div id="list-box"
+				<div id="list-box" style="margin: 0px auto;"
 					data-bind="ntsListBox: {options: items,
-							optionsValue: 'code',
 							optionsText: 'name',
 							multiple: false,
-							value: selectedCodes,
+							rows: 10,
+							value: selected,
 							enable: true,
 							columns: [
-								{ prop: 'code', length: 4 },
-								{ prop: 'name', length: 10 }
+								{ prop: 'code', length: 8 },
+								{ prop: 'name', length: 8 }
 							]}"
 					class="cf"></div>
+			</div>
+			<div style="margin: 0px auto; margin: 10px auto; text-align: center">
+				<button class="proceed" data-bind="click: chooseEmployee">設定</button>
+				<button>キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

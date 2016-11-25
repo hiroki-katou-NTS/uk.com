@@ -20,9 +20,29 @@ public enum CategoryAtr {
 	 * 印字しない
 	 */
 	DO_NOT_PRINT(-1);
-	
-	public final int value;
-	
-	
 
+	public final int value;
+
+	public String toName() {
+		String name;
+		switch (value) {
+		case 0:
+			name = "支給";
+			break;
+		case 1:
+			name = "控除";
+			break;
+		case 2:
+			name = "勤怠";
+			break;
+		case 3:
+			name = "記事";
+			break;
+		default:
+			name = "その他";
+			break;
+		}
+
+		return name;
+	}
 }
