@@ -6,7 +6,7 @@ module qmm019.d.service {
     /**
      * Get list layout master new history
      */
-    export function getLayoutWithMaxStartYm(): JQueryPromise<Array<LayoutMasterModel>> {
+    export function getLayoutWithMaxStartYm(): JQueryPromise<Array<model.LayoutMasterDto>> {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.getLayoutInfor)
             .done(function(res: Array<any>){
@@ -18,36 +18,16 @@ module qmm019.d.service {
         return dfd.promise(); 
     }
     
-    
-    
-    /**
-     * PaymentDateProcessingMasterModel.
-     * Contain enum define information.
-     */
-    export interface LayoutMasterModel {
-        /**
-         * layout code
-         */
-        layoutCode: string;
-    
-        /**
-         * layout name
-         */
-        layoutName: string;
-    
-        /**
-         * layout attribute
-         */
-        layoutAtr: number;
-    
-        /**
-         * start YearMonth
-         */
-        startYm: number;
-    
-        /**
-         * end yearMonth
-         */
-        endYm: number;
-    }
+    export module model {
+            // layout
+            export class LayoutMasterDto {
+                companyCode: string;
+                stmtCode: string;
+                startYm: number;
+                stmtName: string;
+                endYM: number;
+                layoutAtr: number;
+            }
+
+        }
 }

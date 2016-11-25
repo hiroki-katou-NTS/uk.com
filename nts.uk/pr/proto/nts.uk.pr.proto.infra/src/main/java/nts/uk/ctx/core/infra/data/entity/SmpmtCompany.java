@@ -23,14 +23,6 @@ public class SmpmtCompany extends AggregateTableEntity {
 	
 	@Column(name = "NAME")
 	public String name;
-	
-	@Column(name = "TEST_DATE")
-	@Convert(converter = LocalDateTimeToDBConverter.class)
-	public LocalDateTime date;
-
-	@Column(name = "TEST_DATE2")
-	@Convert(converter = LocalDateToDBConverter.class)
-	public LocalDate date2;
 }
 
 /*

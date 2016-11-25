@@ -8,14 +8,14 @@ module qpp004.l.service {
      */
     export function processCreatePaymentData(options: any): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-
-        nts.uk.request.ajax(paths.createpaymentdata, options)
-            .done(function(res: any){
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+            
+           nts.uk.request.ajax(paths.createpaymentdata, options)
+                .done(function(res: any){
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })    
         return dfd.promise(); 
     }
     
