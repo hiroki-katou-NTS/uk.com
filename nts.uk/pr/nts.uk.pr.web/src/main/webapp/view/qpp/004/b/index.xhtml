@@ -32,21 +32,22 @@
 			<div id="contents-area">
 				<div id="program-body" style="top: 140px; min-width: 431px;"
 					data-bind="with: wizard">
-					<div id="wizard" data-bind="ntsWizard: {steps: stepList}">
+					<div id="wizard" data-bind="ntsWizard: {steps: stepList}" class="cf">
+						<div class="header">
+							<div class="image" data-icon="../../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+							<div class="content">再集計</div>
+						</div>
 						<div class="steps">
-							<div class="begin step-1"
-								data-icon="../../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg">データ作成</div>
-							<div class="step-2">
+							<div class="step-1">
 								<div class="fit-space" data-bind="click: step2">
 									<span>処理方法を選ぶ</span><br /> └詳細設定をする
 								</div>
 							</div>
-							<div class="step-3">対象社員を選ぶ</div>
-							<div class="end step-4">実行</div>
+							<div class="step-2">対象社員を選ぶ</div>
+							<div class="end step-3">実行</div>
 						</div>
 						<div class="contents">
-							<div class="step-1"></div>
-							<div class="step-2">
+							<div class="step-1">
 								<div class="round-border">
 									<span class="icon separate-1 green-div">処理する給与明細書の年月</span>
 									<a data-bind="text: $parent.currentProcessingYearMonth"></a>
@@ -60,7 +61,7 @@
 								<button class="large fix-button">外部（CSV）データの実績を取り込む。</button>
 								<br /> <br />
 							</div>
-							<div class="step-3">
+							<div class="step-2">
 								<div class="round-border">
 									<span class="icon separate-1 green-div">処理する給与明細書の年月</span>
 									<a data-bind="text: $parent.currentProcessingYearMonth"></a>
@@ -85,7 +86,7 @@
 								<button data-bind="click: next" class="proceed x-large">次
 									へ →</button>
 							</div>
-							<div class="step-4">
+							<div class="step-3">
 								<div class="round-border">
 									<span class="icon separate-1 green-div">処理する給与明細書の年月</span>
 									<a data-bind="text: $parent.currentProcessingYearMonth"></a>

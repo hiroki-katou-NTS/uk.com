@@ -14,7 +14,7 @@ public class LayoutMasterCategoryDto {
 	/**カテゴリ区分	 */
 	private int categoryAtr;
 	/**終了年月	 */
-	private int endYM;
+	private int endYm;
 	/**カテゴリ表示位置 */
 	private int ctgPos;
 	
@@ -24,7 +24,7 @@ public class LayoutMasterCategoryDto {
 				domain.getStmtCode().v(), 
 				domain.getStartYM().v(),
 				domain.getCtAtr().value,
-				domain.getEndYM().v(),
+				domain.getEndYm().v(),
 				domain.getCtgPos().v());
 	}
 }

@@ -41,7 +41,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
 		entity.qstmtStmtLayoutCtgPk.strYm = domain.getStartYM().v();
 		entity.qstmtStmtLayoutCtgPk.ctgAtr = domain.getCtAtr().value;
-		entity.endYm = domain.getEndYM().v();
+		entity.endYm = domain.getEndYm().v();
 		entity.ctgPos = domain.getCtgPos().v();
 
 		return entity;
