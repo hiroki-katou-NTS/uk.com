@@ -11,10 +11,10 @@
 
 			<link rel="stylesheet" type="text/css" href="style.css" />
 			<script src="../../../../lib/nittsu/ui/dialog-options.js"></script>
+			<com:scriptfile path="/lib/nittsu/ui/sharedvm/timer.js"/>
 			<script src="start.js"></script>
 			<script src="viewmodel.js"></script>
 			<script src="service.js"></script>
-			<script src="countup.js"></script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -32,7 +32,7 @@
 									</tr>
 									<tr>
 										<th>処理状態</th>
-										<td>完了</td>
+										<td><span data-bind="text: processingStateText"></span>　<span data-bind="text: displayProcessingNumberOfPerson"></span> </td>
 									</tr>
 									<tr>
 										<th>エラー件数</th>
@@ -58,18 +58,18 @@
 							<table id="tbl-error">
 								<thead>
 									<tr>
-										<th>No</th>
-										<th>処理状態</th>
-										<th>区分</th>
-										<th>内容</th>
+										<th style="width: 5%;">No</th>
+										<th style="width: 30%;">処理状態</th>
+										<th style="width: 10%;">区分</th>
+										<th style="width: 55%;">内容</th>
 									</tr>
 								</thead>
-								<tbody>
+								<tbody data-bind="foreach: errorList">
 									<tr>
-										<td>１</td>
-										<td>初期データ作成</td>
-										<td>初期データ作成</td>
-										<td>初期データ作成</td>
+										<td data-bind="text: $index"></td>
+										<td data-bind="text: 'データの作成中'"></td>
+										<td data-bind="text: 'エラー'"></td>
+										<td data-bind="text: contenError"></td>
 									</tr>
 								</tbody>
 							</table>
@@ -77,7 +77,7 @@
 					</div>
 					
 					<div class="dlg-footer">
-						<button data-bind="text: buttonText"></button>
+						<button data-bind="click: stopProcess, text: buttonText"></button>
 					</div>
 				</div>
 			</div>
