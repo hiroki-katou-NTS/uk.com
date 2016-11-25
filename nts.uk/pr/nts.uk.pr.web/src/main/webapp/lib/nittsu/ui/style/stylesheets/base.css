@@ -137,17 +137,11 @@ div.form-label.inline {
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 40, ../sass/components/_commons.scss */
-div.form-label.required > :first-child:after {
-  content: '*';
-  color: #f30;
-  margin-left: 5px;
-}
-/* line 47, ../sass/components/_commons.scss */
+/* line 41, ../sass/components/_commons.scss */
 div.form-label > label {
   font-size: 14px;
 }
-/* line 51, ../sass/components/_commons.scss */
+/* line 45, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -155,15 +149,15 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 58, ../sass/components/_commons.scss */
+/* line 52, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 62, ../sass/components/_commons.scss */
+/* line 56, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 67, ../sass/components/_commons.scss */
+/* line 61, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
@@ -172,7 +166,7 @@ div.form-label.inline > i {
 /*****************************
   NtsLinkButton
 *****************************/
-/* line 77, ../sass/components/_commons.scss */
+/* line 71, ../sass/components/_commons.scss */
 div.link-button {
   display: inline-block;
   padding: 3px 12px;
@@ -185,7 +179,7 @@ div.link-button {
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 90, ../sass/components/_commons.scss */
+/* line 84, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -199,7 +193,7 @@ div.popup-panel {
 /*****************************
   NtsEditor
 *****************************/
-/* line 102, ../sass/components/_commons.scss */
+/* line 96, ../sass/components/_commons.scss */
 input[type="text"].error {
   border: 1px solid #f33;
 }

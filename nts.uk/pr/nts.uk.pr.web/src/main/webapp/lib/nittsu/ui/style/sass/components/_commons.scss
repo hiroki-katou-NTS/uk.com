@@ -36,12 +36,6 @@ div.form-label {
 	
 	&.required {
 		border-color: $_label_ribbon_color_required;
-		
-		> :first-child:after {
-			content: '*';
-			color: #f30;
-			margin-left: 5px;
-		}
 	}
 	
 	> label {
