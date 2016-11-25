@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
@@ -76,78 +73,84 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 	
 	private void updateObject(DeleteLayoutHistoryCommand command){
 		//データベース更新[明細書マスタ.UPD-2] を実施する
-		LayoutMaster layoutOrigin = layoutRepository.getLayout(command.getCompanyCode(),
-				command.getStartYm() - 1,
-				command.getStmtCode())
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
+//		Optional<LayoutMaster> layoutOrigin = layoutRepository.getLayout(command.getCompanyCode(),
+//				command.getStartYm() - 1,
+//				command.getStmtCode());
 		Optional<LayoutMaster> layoutBefore = layoutRepository.getHistoryBefore(command.getCompanyCode(),
 				command.getStmtCode(),
 				command.getStartYm() - 1);
 		if (layoutBefore.isPresent()) {
-			
+			LayoutMaster layoutOrigin = layoutBefore.get();
+			layoutOrigin.setEndYm(new YearMonth(999912));
+			layoutRepository.update(layoutOrigin);
 		}
-		
-		layoutOrigin.setEndYm(new YearMonth(999912));
-		layoutRepository.update(layoutOrigin);
 		
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
 		List<LayoutMasterCategory> lstCategoryBefore = this.categoryRepository.getCategoriesBefore(command.getCompanyCode(),
 				command.getStmtCode(),
 				command.getStartYm() - 1);
-		List<LayoutMasterCategory> lstCategoryUP = lstCategoryBefore.stream().map(
-				category -> {
-					return LayoutMasterCategory.createFromDomain(category.getCompanyCode(),
-							category.getStartYM(),
-							category.getStmtCode(),
-							category.getCtAtr(),
-							new YearMonth(999912),
-							category.getCtgPos());
-				}).collect(Collectors.toList());
-		this.categoryRepository.update(lstCategoryUP);
+		if(!lstCategoryBefore.isEmpty()){
+			List<LayoutMasterCategory> lstCategoryUP = lstCategoryBefore.stream().map(
+					category -> {
+						return LayoutMasterCategory.createFromDomain(category.getCompanyCode(),
+								category.getStartYM(),
+								category.getStmtCode(),
+								category.getCtAtr(),
+								new YearMonth(999912),
+								category.getCtgPos());
+					}).collect(Collectors.toList());
+			this.categoryRepository.update(lstCategoryUP);
+		}
+		
 		
 		//データベース更新[明細書マスタ行.UPD-2] を実施する
 		List<LayoutMasterLine> lstLineBefore = this.lineRepository.getLinesBefore(command.getCompanyCode(),
 				command.getStmtCode(),
 				command.getStartYm() - 1);
-		List<LayoutMasterLine> lstLineUp = lstLineBefore.stream().map(
-				line ->{
-					return LayoutMasterLine.createFromDomain(line.getCompanyCode(),
-							line.getStartYM(), 
-							line.getStmtCode(), 
-							new YearMonth(999912), 
-							line.getAutoLineId(), 
-							line.getCategoryAtr(), 
-							line.getLineDispayAttribute(), 
-							line.getLinePosition());
-				}).collect(Collectors.toList());
-		this.lineRepository.update(lstLineUp);
+		if(!lstLineBefore.isEmpty()){
+			List<LayoutMasterLine> lstLineUp = lstLineBefore.stream().map(
+					line ->{
+						return LayoutMasterLine.createFromDomain(line.getCompanyCode(),
+								line.getStartYM(), 
+								line.getStmtCode(), 
+								new YearMonth(999912), 
+								line.getAutoLineId(), 
+								line.getCategoryAtr(), 
+								line.getLineDispayAttribute(), 
+								line.getLinePosition());
+					}).collect(Collectors.toList());
+			this.lineRepository.update(lstLineUp);	
+		}
+		
 		//データベース更新[明細書マスタ明細.UPD-2] を実施する
 		List<LayoutMasterDetail> detailsBefore = detailRepository.getDetailsBefore(command.getCompanyCode(), 
 				command.getStmtCode(), 
 				command.getStartYm() - 1);
-			
-		List<LayoutMasterDetail> detailsUpdate = detailsBefore.stream().map(
-				org -> {
-					return LayoutMasterDetail.createFromDomain(
-							org.getCompanyCode(), 
-							org.getLayoutCode(), 
-							org.getStartYm(),
-							new YearMonth(999912), 
-							org.getCategoryAtr(), 
-							org.getItemCode(), 
-							org.getAutoLineId(), 
-							org.getItemPosColumn(), 
-							org.getError(), 
-							org.getCalculationMethod(), 
-							org.getDistribute(), 
-							org.getDisplayAtr(), 
-							org.getAlarm(), 
-							org.getSumScopeAtr(), 
-							org.getSetOffItemCode(), 
-							org.getCommuteAtr(), 
-							org.getPersonalWageCode());
-				}).collect(Collectors.toList());
-		this.detailRepository.update(detailsUpdate);
+		if(!detailsBefore.isEmpty()){
+			List<LayoutMasterDetail> detailsUpdate = detailsBefore.stream().map(
+					org -> {
+						return LayoutMasterDetail.createFromDomain(
+								org.getCompanyCode(), 
+								org.getLayoutCode(), 
+								org.getStartYm(),
+								new YearMonth(999912), 
+								org.getCategoryAtr(), 
+								org.getItemCode(), 
+								org.getAutoLineId(), 
+								org.getItemPosColumn(), 
+								org.getError(), 
+								org.getCalculationMethod(), 
+								org.getDistribute(), 
+								org.getDisplayAtr(), 
+								org.getAlarm(), 
+								org.getSumScopeAtr(), 
+								org.getSetOffItemCode(), 
+								org.getCommuteAtr(), 
+								org.getPersonalWageCode());
+					}).collect(Collectors.toList());
+			this.detailRepository.update(detailsUpdate);
+		}
+		
 	}
 	
 }

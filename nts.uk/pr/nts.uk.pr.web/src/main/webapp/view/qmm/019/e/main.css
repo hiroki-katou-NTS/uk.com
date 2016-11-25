@@ -3,10 +3,9 @@
 }
 #LBL_003{
 	margin-left: 15px;
+	margin-right: 10px;
 }
-#LBL_004{
-	margin-left: 10px;	
-}
+
 
 .selectStyle{
 	display: flex;
@@ -26,8 +25,11 @@
 
 .bottomStype{
 	margin-top: 20px;
-	margin-left: 200px;
+	margin-left: 150px;
 }
 #BTN_001{
 	margin-right: 20px;
+}
+#header{
+	display: none;
 }
