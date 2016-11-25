@@ -3,9 +3,6 @@ __viewContext.ready(function () {
     $('#dialog-open').click(function () {
         vm.dialogconfirm.open();
     });
-    $('#removeErrors').click(function () {
-        vm.errordialog.errors.shift();
-    });
     function ErrorHeader(name, text, width, visible) {
         this.name = name;
         this.text = text;
@@ -57,38 +54,6 @@ __viewContext.ready(function () {
             option: ko.mapping.fromJS(new option.OKDialogOption()),
             okButtonClicked: function () { },
             cancelButtonClicked: function () { },
-            open: function () {
-                var self = this;
-                self.option.show(true);
-            },
-            hide: function () {
-                var self = this;
-                self.option.show(false);
-            }
-        },
-        // Error Dialog
-        errordialog: {
-            title: ko.observable("Error Dialog title"),
-            errors: ko.observableArray([
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" },
-                { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }, { tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" }
-            ]),
-            option: ko.mapping.fromJS(new option.ErrorDialogWithTabOption()),
-            closeButtonClicked: function () { },
             open: function () {
                 var self = this;
                 self.option.show(true);

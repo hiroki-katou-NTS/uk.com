@@ -21,8 +21,23 @@ module nts.uk.ui.errors {
         hide() {
             this.option.show(false);
         }
+        
+        addError(error: ErrorListItem) {
+            this.errors.push(error);
+        }
+        
+        removeErrorByElement($element: JQuery) {
+            var removeds = _.filter(this.errors(), e => e.$control.is($element));
+            this.errors.removeAll(removeds);
+        }
     }
     
+    export interface ErrorListItem {
+        tab?: string;
+        location: string;
+        message: string;
+        $control?: JQuery;
+    }
     
     export class ErrorHeader {
         name: string;
@@ -38,7 +53,7 @@ module nts.uk.ui.errors {
         }
     }
     
-    function errorsViewModel() {
+    function errorsViewModel(): ErrorsViewModel {
         return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
     }
     
@@ -50,13 +65,11 @@ module nts.uk.ui.errors {
         errorsViewModel().hide();
     }
     
-    export interface ErrorListItem {
-        tab?: string;
-        location: string;
-        message: string;
+    export function add(error: ErrorListItem) {
+        errorsViewModel().addError(error);
     }
     
-    export function add(error: ErrorListItem) {
-        
+    export function removeByElement($control: JQuery) {
+        errorsViewModel().removeErrorByElement($control);
     }
 }

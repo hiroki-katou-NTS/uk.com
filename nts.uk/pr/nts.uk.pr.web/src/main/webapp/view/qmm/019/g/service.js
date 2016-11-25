@@ -22,6 +22,19 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
+            /**
+                   * Model namespace.
+                */
+            var model;
+            (function (model) {
+                // layout
+                var LayoutMasterDto = (function () {
+                    function LayoutMasterDto() {
+                    }
+                    return LayoutMasterDto;
+                }());
+                model.LayoutMasterDto = LayoutMasterDto;
+            })(model = service.model || (service.model = {}));
         })(service = g.service || (g.service = {}));
     })(g = qmm019.g || (qmm019.g = {}));
 })(qmm019 || (qmm019 = {}));

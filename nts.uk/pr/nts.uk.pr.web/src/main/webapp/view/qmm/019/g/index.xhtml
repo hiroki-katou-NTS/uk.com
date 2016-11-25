@@ -11,11 +11,21 @@
 				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
 				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
             	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+				<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
 			    <script>var dialogSize = { width: 600, height: 700 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
+				<script>
+					__viewContext.primitiveValueConstraints = {
+						startYm: {
+							valueType: "String",
+							charType: "Numeric",
+							maxLength: 7
+						}
+					};
+				</script>
             </ui:define>
             
             <ui:define name="content">
@@ -25,7 +35,7 @@
 						<br />
 						<div class = "layoutSelect">
 							<div id="SEL_001">
-								<input type="radio" name="layoutCreate" value="newCreate" /> 新規に作成<br />
+								<input type="radio" checked="checked" name="layoutCreate" value="newCreate" /> 新規に作成<br />
 				  				<input type="radio" name="layoutCreate" value="copyCreate" /> 既存のレイアウトをコピーして作成<br />
 							</div>
 							<div id="SEL_002"
@@ -39,23 +49,21 @@
  												{ prop: 'layoutName', length: 10 }
  											]}" 
 							class="cf"></div>
-							<!-- <div class = "selectDrop"><input  id = "SEL_002"></input></div> -->
 							<!-- 明細書マスタ一覧で選択した項目のレイアウトパターンを表記 (レイアウト区分)-->
-							<div class = "selectDrop"><label id = "LBL_002">レイアウト区分</label></div>
+							<div class = "selectDrop"><label id = "LBL_002" data-bind="text: layoutAtrStr"></label></div>
 						</div>
-						<br/>
 						<div><label id = "LBL_003">※選択した明細レイアウトの最新の履歴からコピーします。</label></div>
-						<br/><br/>
+						<br/>
 						<div>
 							<div class ="form-label inline">
 								<label id = "LBL_004" >コード/名称</label>
-								<input  id = "INP_001" ></input>
-								<input  id = "INP_002"></input>
+								<input  id = "INP_001" data-bind="value: selectStmtCode" ></input>
+								<input  id = "INP_002" data-bind="value: selectStmtName"></input>
 							</div><br/>
 							<br/>
 							<div class ="form-label inline">
 								<label id = "LBL_005">開始年月</label>
-								<input id = "INP_003"></input>
+								<input id = "INP_003" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input>
 								<!-- 入力した開始年月を和暦で表記 -->
 								<label id = "LBL_006"></label>
 							</div><br/>
@@ -65,29 +73,28 @@
 								<label id = "LBL_008">※コピーして作成する場合、コピー元のレイアウトより表示項目が少ない項目は選択できません。</label>
 							</div>
 						</div>
-						<div>
 						<br/>
+						<div class = "lstBox">						
 						<div id = "LST_001"
 							data-bind="ntsListBox: {options: itemList,
-										optionsValue: '',
+										optionsValue: 'stt',
 										optionsText: 'numberDisplayItems',
 										multiple: false,
 										value: selectedCodes,
 										enable: isEnable(),
 										columns: [
-											{ prop: 'stt', length: 1 },
-											{ prop: 'printType', length: 5 },
-											{ prop: 'paperType', length: 20 },
-											{ prop: 'direction', length: 20 },
-											{ prop: 'numberPeople', length: 20 },
-											{ prop: 'numberDisplayItems', length: 20 },
-											{ prop: 'reference', length: 20 }
+											{ prop: 'printType', length: 7 },
+											{ prop: 'paperType', length: 4 },
+											{ prop: 'direction', length: 3 },
+											{ prop: 'numberPeople', length: 3 },
+											{ prop: 'numberDisplayItems', length: 13 },
+											{ prop: 'reference', length: 6 }
 										]}"
 						class="cf"></div></div>
 						<br/>
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001">作成</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind="click: createNewLayout">作成</button>
 							<button class="large" id="BTN_002">キャンセル</button><br />
 						</div>
 					</div>

@@ -27,9 +27,6 @@ var nts;
                     function KibanViewModel() {
                         var self = this;
                         self.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
-                        for (var i = 0; i < 20; i++) {
-                            self.errorDialogViewModel.errors.push({ tab: "基本情報", location: "メールアドレス", message: "メールアドレスは必須項目です" });
-                        }
                     }
                     return KibanViewModel;
                 }());
