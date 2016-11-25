@@ -1125,7 +1125,7 @@ var nts;
                             container.append('<h1 class="' + contentClass + '">' + htmlStep + '</h1>');
                             container.append('<div>' + htmlContent + '</div>');
                         }
-                        var icon = container.children('.steps').children('.begin').data('icon');
+                        var icon = container.find('.header .image').data('icon');
                         // Remove html.
                         var header = container.children('.header');
                         container.children('.header').remove();
@@ -1172,8 +1172,9 @@ var nts;
                         container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                         // Remove content.
                         container.find('.actions').hide();
-                        //container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
+                        // Add Header
                         container.children('.steps').prepend(header);
+                        container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
                         $.fn.begin = function () {
                             $(this).setStep(0);
                         };
