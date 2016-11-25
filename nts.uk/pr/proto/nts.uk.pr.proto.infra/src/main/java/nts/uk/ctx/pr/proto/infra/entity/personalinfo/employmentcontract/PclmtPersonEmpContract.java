@@ -10,9 +10,9 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
 @Table(name="PCLMT_PERSON_EMP_CONTRACT")
-public class PclmtPersonEmpContract extends AggregateTableEntity {
+public class PclmtPersonEmpContract {
 
 	@EmbeddedId
 	public PclmtPersonEmpContractPK pclmtPersonEmpContractPK;

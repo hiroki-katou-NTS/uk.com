@@ -25,13 +25,21 @@ public class DetailItemDto {
 	 */
 	Double value;
 
-	DetailItemPositionDto itemPosition;
+	/**
+	 * 行
+	 */
+	int linePosition;
+
+	/**
+	 * 列
+	 */
+	int columnPosition;
 
 	boolean isCreated;
 
 	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, Double value,
-			DetailItemPositionDto itemPosition, boolean isCreated) {
-		return new DetailItemDto(categoryAtr, itemCode, itemName, value, itemPosition, isCreated);
+			int linePosition, int colPosition, boolean isCreated) {
+		return new DetailItemDto(categoryAtr, itemCode, itemName, value, linePosition, colPosition, isCreated);
 
 	}
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PaymentDataResult {
 
-	private PaymentDataHeaderDto paymenHeader;
+	private PaymentDataHeaderDto paymentHeader;
 
 	private List<LayoutMasterCategoryDto> categories;
 

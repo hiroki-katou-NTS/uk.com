@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.screen.app.query.qpp005.GetPaymentDataQueryProcessor;
 import nts.uk.ctx.pr.screen.app.query.qpp005.PaymentDataQuery;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataResult;
 
 @Path("/screen/pr/qpp005/paymentdata")
 @Produces("application/json")
@@ -16,7 +17,7 @@ public class QPP005WebService {
 
 	@POST
 	@Path("find")
-	public void find(PaymentDataQuery query) {
-		this.getPaymentDataQueryProcessor.find(query);
+	public PaymentDataResult find(PaymentDataQuery query) {
+		return this.getPaymentDataQueryProcessor.find(query);
 	}
 }

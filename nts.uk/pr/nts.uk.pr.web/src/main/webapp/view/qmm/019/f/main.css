@@ -1,0 +1,17 @@
+.form-label input{
+	width:125px;
+}
+
+.form-label a{
+	margin-left:30px;
+}
+
+.left-content{
+	float: left;
+	width: 25%;
+}
+
+.right-content{
+	float: right;
+	width: 72%;
+}
