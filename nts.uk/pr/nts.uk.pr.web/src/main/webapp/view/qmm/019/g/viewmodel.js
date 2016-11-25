@@ -78,31 +78,31 @@ var qmm019;
                             self.selectStmtCode(layoutCd);
                             self.selectStmtName(layout.stmtName);
                             self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm));
-                            if (layout.layoutAtr == "0") {
+                            if (layout.layoutAtr == 0) {
                                 self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
                             }
-                            else if (layout.layoutAtr == "1") {
+                            else if (layout.layoutAtr == 1) {
                                 self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
                             }
-                            else if (layout.layoutAtr == "2") {
+                            else if (layout.layoutAtr == 2) {
                                 self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
                             }
-                            else if (layout.layoutAtr == "3") {
+                            else if (layout.layoutAtr == 3) {
                                 self.layoutAtrStr("（レーザー　A4　横向き　2人）");
                             }
-                            else if (layout.layoutAtr == "4") {
+                            else if (layout.layoutAtr == 4) {
                                 self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
                             }
-                            else if (layout.layoutAtr == "5") {
+                            else if (layout.layoutAtr == 5) {
                                 self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
                             }
-                            else if (layout.layoutAtr == "6") {
+                            else if (layout.layoutAtr == 6) {
                                 self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
                             }
-                            else if (layout.layoutAtr == "7") {
+                            else if (layout.layoutAtr == 7) {
                                 self.layoutAtrStr("（PAYS単票）");
                             }
-                            else if (layout.layoutAtr == "8") {
+                            else if (layout.layoutAtr == 8) {
                                 self.layoutAtrStr("（PAYS連続）");
                             }
                             return false;
