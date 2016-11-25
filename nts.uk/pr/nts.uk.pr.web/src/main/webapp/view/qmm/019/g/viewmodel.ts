@@ -93,7 +93,6 @@ module qmm019.g.viewmodel {
                     self.selectStmtCode(layoutCd);
                     self.selectStmtName(layout.stmtName);
                     self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm));
-                    
                     if(layout.layoutAtr == 0) {
                         self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
                     }else if (layout.layoutAtr == 1){

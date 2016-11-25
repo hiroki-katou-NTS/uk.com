@@ -948,11 +948,7 @@ var nts;
                             selectListBoxContainer.selectable("enable");
                             container.removeClass('disabled');
                         }
-                        var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
                         var padding = 10;
-                        if (ntsCommonPadding) {
-                            padding = parseInt(ntsCommonPadding) * 2;
-                        }
                         // Set width for multi columns.
                         if (columns && columns.length > 0) {
                             var i = 0;
@@ -963,6 +959,10 @@ var nts;
                                 totalWidth += length * maxWidthCharacter + 20;
                                 i++;
                             });
+                            if ($('.nts-column').css('padding')) {
+                                var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
+                                padding = parseInt(ntsCommonPadding) * 2;
+                            }
                             totalWidth += padding * (columns.length + 1); // + 50;
                             $('.nts-list-box > li').css({ 'min-width': totalWidth });
                             $('.nts-list-box').css({ 'min-width': totalWidth });

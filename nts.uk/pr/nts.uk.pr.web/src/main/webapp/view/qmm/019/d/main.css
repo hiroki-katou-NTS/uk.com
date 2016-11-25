@@ -1,17 +1,18 @@
 #LBL_007{
 	padding-right: 20px;
+	margin-left: 5px;
 }
 #LBL_005{
 	padding-right: 100px;
 }
 #LBL_002{
-	margin-right: 50px;
+	margin-right: 65px;
 }
 #LBL_003{
 	padding-right: 20px;
 }
 #INP_001{
-	width: 50px;
+	width: 50px;	
 }
 .inlineInfor{
 	display: flex;
@@ -31,4 +32,16 @@
 }
 #BTN_001{
 	margin-right: 20px;
+}
+
+.lstBox{
+	border: 2px solid gray;
+    margin-left: 150px;
+    padding-top: 5px;
+    width: 750px;
+    height: 205px;
+    margin-top: 10px;
+}
+#header{
+	display: none;
 }
