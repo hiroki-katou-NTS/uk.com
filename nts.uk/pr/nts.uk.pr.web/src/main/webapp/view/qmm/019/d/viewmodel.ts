@@ -1,7 +1,7 @@
 module qmm019.d.viewmodel {
     
     export class ScreenModel {
-        itemList: KnockoutObservableArray<ItemModel>;
+       itemList: KnockoutObservableArray<ItemModel>;
         itemName: KnockoutObservable<string>;
         currentLayoutAtr: KnockoutObservable<number>
         selectedLayoutAtr: KnockoutObservable<number>;
@@ -23,7 +23,7 @@ module qmm019.d.viewmodel {
                 new ItemModel('5','レーザー（圧着式）', 'Ａ４', '横向き','1人','支給、控除、勤怠各52項目','圧着式：　はがき'),
                 new ItemModel('6','ドットプリンタ', '連続用紙', '―','1人','支給、控除、勤怠各27項目','a')
             ]);
-            self.itemName = ko.observable('');
+             self.itemName = ko.observable('');
             self.currentLayoutAtr = ko.observable(3);
             self.selectedLayoutAtr = ko.observable(null)
             self.isEnable = ko.observable(true);
