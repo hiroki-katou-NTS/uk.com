@@ -20,16 +20,75 @@ var nts;
                  */
                 var ScreenWindow = (function () {
                     function ScreenWindow(id, isRoot, parent) {
+                        this.global = null;
+                        this.$dialog = null;
+                        this.$iframe = null;
+                        this.onClosedHandler = $.noop;
                         this.id = id;
                         this.isRoot = isRoot;
                         this.parent = parent;
-                        this.global = null;
                     }
                     ScreenWindow.createMainWindow = function () {
                         return new ScreenWindow(MAIN_WINDOW_ID, true, null);
                     };
                     ScreenWindow.createSubWindow = function (parent) {
                         return new ScreenWindow(uk.util.randomId(), false, parent);
+                    };
+                    ScreenWindow.prototype.setupAsDialog = function (path, options) {
+                        var _this = this;
+                        options.close = function () {
+                            _this.dispose();
+                        };
+                        this.build$dialog(options);
+                        this.$iframe.bind('load', function () {
+                            _this.global.nts.uk.ui.windows.selfId = _this.id;
+                            _this.$dialog.dialog('option', {
+                                width: _this.global.dialogSize.width,
+                                height: _this.global.dialogSize.height,
+                                title: options.title || "dialog",
+                                beforeClose: function () {
+                                    //return dialogWindow.__viewContext.dialog.beforeClose();
+                                }
+                            }).dialog('open');
+                        });
+                        this.global.location.href = uk.request.resolvePath(path);
+                    };
+                    ScreenWindow.prototype.build$dialog = function (options) {
+                        this.$dialog = $('<div/>')
+                            .css({
+                            padding: 'initial',
+                            overflow: 'hidden'
+                        })
+                            .appendTo($('body'))
+                            .dialog(options);
+                        this.$iframe = $('<iframe/>').css({
+                            width: '100%',
+                            height: '100%'
+                        })
+                            .appendTo(this.$dialog);
+                        this.global = this.$iframe[0].contentWindow;
+                    };
+                    ScreenWindow.prototype.onClosed = function (callback) {
+                        this.onClosedHandler = callback;
+                    };
+                    ScreenWindow.prototype.close = function () {
+                        if (this.isRoot) {
+                            window.close();
+                        }
+                        else {
+                            this.$dialog.dialog('close');
+                        }
+                    };
+                    ScreenWindow.prototype.dispose = function () {
+                        var _this = this;
+                        _.defer(function () { return _this.onClosedHandler(); });
+                        // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
+                        setTimeout(function () {
+                            _this.$iframe.remove();
+                            _this.$dialog.remove();
+                            _this.$dialog = null;
+                            _this.$iframe = null;
+                        }, 2000);
                     };
                     return ScreenWindow;
                 }());
@@ -50,32 +109,9 @@ var nts;
                     ScreenWindowContainer.prototype.createDialog = function (path, options, parentId) {
                         var parentwindow = this.windows[parentId];
                         var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                        this.windows[subWindow.id] = subWindow;
                         options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-                        var $dialog = $('<div/>')
-                            .css({
-                            padding: 'initial',
-                            overflow: 'hidden'
-                        })
-                            .appendTo($('body'))
-                            .dialog(options);
-                        var $iframe = $('<iframe/>')
-                            .css({
-                            width: '100%',
-                            height: '100%'
-                        }).appendTo($dialog);
-                        var dialogGlobal = $iframe[0].contentWindow;
-                        $iframe.bind('load', function () {
-                            dialogGlobal.nts.uk.ui.windows.selfId = subWindow.id;
-                            $dialog.dialog('option', {
-                                width: dialogGlobal.dialogSize.width,
-                                height: dialogGlobal.dialogSize.height,
-                                title: options.title || "dialog",
-                                beforeClose: function () {
-                                    //return dialogWindow.__viewContext.dialog.beforeClose();
-                                }
-                            }).dialog('open');
-                        });
-                        dialogGlobal.location.href = uk.request.resolvePath(path);
+                        subWindow.setupAsDialog(path, options);
                         return subWindow;
                     };
                     ScreenWindowContainer.prototype.getShared = function (key) {
@@ -83,6 +119,10 @@ var nts;
                     };
                     ScreenWindowContainer.prototype.setShared = function (key, data) {
                         this.shared[key] = data;
+                    };
+                    ScreenWindowContainer.prototype.close = function (id) {
+                        var target = this.windows[id];
+                        target.close();
                     };
                     return ScreenWindowContainer;
                 }());
@@ -103,6 +143,11 @@ var nts;
                     windows.container.setShared(key, data);
                 }
                 windows.setShared = setShared;
+                function close(windowId) {
+                    windowId = uk.util.orDefault(windowId, windows.selfId);
+                    windows.container.close(windowId);
+                }
+                windows.close = close;
                 var sub;
                 (function (sub) {
                     function modal(path, options) {

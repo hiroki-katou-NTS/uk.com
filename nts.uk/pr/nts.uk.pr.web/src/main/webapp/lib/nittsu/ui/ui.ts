@@ -20,13 +20,15 @@
             id: string;
             isRoot: boolean;
             parent: ScreenWindow;
-            global: Window;
+            global: any = null;
+            $dialog: JQuery = null;
+            $iframe: JQuery = null;
+            onClosedHandler: () => {} = $.noop;
 
             constructor(id: string, isRoot: boolean, parent: ScreenWindow) {
                 this.id = id;
                 this.isRoot = isRoot;
                 this.parent = parent;
-                this.global = null;
             }
 
             static createMainWindow() {
@@ -35,6 +37,72 @@
 
             static createSubWindow(parent: ScreenWindow) {
                 return new ScreenWindow(util.randomId(), false, parent);
+            }
+            
+            setupAsDialog(path: string, options: any) {
+                
+                options.close = () => {
+                    this.dispose();
+                };
+
+                this.build$dialog(options);
+                
+                this.$iframe.bind('load', () => {
+                    this.global.nts.uk.ui.windows.selfId = this.id;
+
+                    this.$dialog.dialog('option', {
+                        width: this.global.dialogSize.width,
+                        height: this.global.dialogSize.height,
+                        title: options.title || "dialog",
+                        beforeClose: function () {
+                            //return dialogWindow.__viewContext.dialog.beforeClose();
+                        }
+                    }).dialog('open');
+                });
+                
+                this.global.location.href = request.resolvePath(path);
+            }
+            
+            build$dialog(options: any) {
+               this.$dialog = $('<div/>')
+                    .css({
+                        padding: 'initial',
+                        overflow: 'hidden'
+                    })
+                    .appendTo($('body'))
+                    .dialog(options);
+                
+                this.$iframe = $('<iframe/>').css({
+                        width: '100%',
+                        height: '100%'
+                    })
+                    .appendTo(this.$dialog);
+                
+                this.global = (<any>this.$iframe[0]).contentWindow;
+            }
+            
+            onClosed(callback: () => {}) {
+                this.onClosedHandler = callback;
+            }
+            
+            close() {
+                if (this.isRoot) {
+                    window.close();
+                } else {
+                    this.$dialog.dialog('close');
+                }
+            }
+            
+            dispose() {
+                _.defer(() => this.onClosedHandler());
+                
+                // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
+                setTimeout(() => {
+                    this.$iframe.remove();
+                    this.$dialog.remove();
+                    this.$dialog = null;
+                    this.$iframe = null;
+                }, 2000);
             }
         }
 
@@ -59,39 +127,12 @@
 
                 var parentwindow = this.windows[parentId];
                 var subWindow = ScreenWindow.createSubWindow(parentwindow);
+                this.windows[subWindow.id] = subWindow;
 
                 options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-
-                var $dialog = $('<div/>')
-                    .css({
-                        padding: 'initial',
-                        overflow: 'hidden'
-                    })
-                    .appendTo($('body'))
-                    .dialog(options);
-
-                var $iframe = $('<iframe/>')
-                    .css({
-                        width: '100%',
-                        height: '100%'
-                    }).appendTo($dialog);
-
-                var dialogGlobal = (<any>$iframe[0]).contentWindow;
-                $iframe.bind('load', function () {
-                    dialogGlobal.nts.uk.ui.windows.selfId = subWindow.id;
-
-                    $dialog.dialog('option', {
-                        width: dialogGlobal.dialogSize.width,
-                        height: dialogGlobal.dialogSize.height,
-                        title: options.title || "dialog",
-                        beforeClose: function () {
-                            //return dialogWindow.__viewContext.dialog.beforeClose();
-                        }
-                    }).dialog('open');
-                });
                 
-                dialogGlobal.location.href = request.resolvePath(path);
-                
+                subWindow.setupAsDialog(path, options);
+
                 return subWindow;
             }
             
@@ -101,6 +142,11 @@
             
             setShared(key: string, data: any) {
                 this.shared[key] = data;
+            }
+            
+            close(id: string) {
+                var target = this.windows[id];
+                target.close();
             }
         }
 
@@ -121,6 +167,11 @@
             
         export function setShared(key: string, data: any) {
             container.setShared(key, data);
+        }
+        
+        export function close(windowId?: string) {
+            windowId = util.orDefault(windowId, selfId);
+            container.close(windowId);
         }
 
         export module sub {
