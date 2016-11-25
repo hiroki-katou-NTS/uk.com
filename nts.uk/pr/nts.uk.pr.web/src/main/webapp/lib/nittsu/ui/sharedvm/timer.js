@@ -10,10 +10,11 @@ var nts;
                     function KibanTimer(target) {
                         var self = this;
                         self.elapsedSeconds = 0;
-                        self.fomatted = ko.observable(nts.uk.text.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
+                        self.formatted = ko.observable(nts.uk.text.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
                         self.targetComponent = target;
                         self.isTimerStart = ko.observable(false);
                         self.oldDated = ko.observable(undefined);
+                        document.getElementById(self.targetComponent).innerHTML = self.formatted();
                     }
                     KibanTimer.prototype.run = function () {
                         //            var x = self.getTime(new Date()) - self.getTime(self.oldDated());
