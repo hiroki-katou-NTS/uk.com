@@ -14,6 +14,7 @@
 				</com:ValidatorScript>
             	<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
             	<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+            	<com:scriptfile path="../../../../view/sample/sortable/js/knockout-sortable.js" />
                 <com:scriptfile path="viewmodel.js" />
             	<com:scriptfile path="start.js" />
             	<com:scriptfile path="service.js" />
@@ -91,7 +92,55 @@
 	           				</div>
 	           				<button id="A_BTN_009">印刷プレビュー</button>
             			</div>
-            			
+            			---------------------------------------------------------------
+            			<div id="main">
+						    <h3>Tasks</h3>
+						    <div class="container" data-bind="sortable: tasks">
+						        <div class="item">
+						            <span data-bind="visible: !$root.content.isTaskSelected($data)">
+						                <a href="#" data-bind="text: name, click: $root.content.selectedTask"></a>
+						            </span>
+						            <span data-bind="visibleAndSelect: $root.content.isTaskSelected($data)">
+						                <input data-bind="value: name, event: { blur: $root.content.clearTask($data) }" />
+						            </span>  
+						        </div>
+						    </div>
+						    <a href="#" data-bind="click: addTask">Add Task</a>
+						</div>
+						
+						<div id="results" class="simpleDiv">
+						    <h3>Tasks</h3>
+						    <ul data-bind="foreach: tasks1">
+						        <li data-bind="text: name"></li>
+						    </ul>
+						</div>
+						
+						--------------------------------------------------------------
+						<div id="group-root">
+							<div id="group-title">
+								<button id="button-group-setting" class="button-setting"></button>
+								<span>支給</span>
+							</div>
+							<div id="category1">
+								<div class="new" data-bind="sortable: tasks1">
+<!-- 									<div class="student" data-bind="text: name"></div> -->
+							        <div class="student">
+							            <span data-bind="visible: !$root.content.isTaskSelected($data)">
+							                <a href="#" data-bind="text: name, click: $root.selectedTask"></a>
+							            </span>
+							            <span data-bind="visibleAndSelect: $root.content.isTaskSelected($data)">
+							                <input data-bind="value: name, event: { blur: $root.content.clearTask }" />
+							            </span>  
+							        </div>
+								</div>
+								<div class="new" data-bind="sortable: tasks2">
+									<div class="student" data-bind="text: name"></div>
+								</div>
+								<div class="new" data-bind="sortable: tasks3">
+									<div class="student" data-bind="text: name"></div>
+								</div>
+							</div>
+						</div>
             		</div>
             	</div>
             </ui:define>

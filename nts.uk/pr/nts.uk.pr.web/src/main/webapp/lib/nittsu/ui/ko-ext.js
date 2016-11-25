@@ -757,6 +757,7 @@ var nts;
                         var isMultiSelect = data.multiple;
                         var enable = data.enable;
                         var columns = data.columns;
+                        var rows = data.rows;
                         // Container.
                         var container = $(element);
                         // Default value.
@@ -868,6 +869,7 @@ var nts;
                         var isMultiSelect = data.multiple;
                         var enable = data.enable;
                         var columns = data.columns;
+                        var rows = data.rows;
                         // Container.
                         var container = $(element);
                         var selectListBoxContainer = container.find('.nts-list-box');
@@ -950,6 +952,11 @@ var nts;
                             selectListBoxContainer.selectable("enable");
                             container.removeClass('disabled');
                         }
+                        var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
+                        var padding = 10;
+                        if (ntsCommonPadding) {
+                            padding = parseInt(ntsCommonPadding) * 2;
+                        }
                         // Set width for multi columns.
                         if (columns && columns.length > 0) {
                             var i = 0;
@@ -960,15 +967,15 @@ var nts;
                                 totalWidth += length * maxWidthCharacter + 20;
                                 i++;
                             });
-                            var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
-                            var padding = 10;
-                            if (ntsCommonPadding) {
-                                padding = parseInt(ntsCommonPadding) * 2;
-                            }
                             totalWidth += padding * (columns.length + 1); // + 50;
                             $('.nts-list-box > li').css({ 'min-width': totalWidth });
                             $('.nts-list-box').css({ 'min-width': totalWidth });
                             container.css({ 'min-width': totalWidth });
+                        }
+                        if (rows && rows > 0) {
+                            container.css({ 'height': rows * (18 + padding) });
+                            $('.nts-list-box').css({ 'height': rows * (18 + padding) });
+                            container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
                     };
                     return ListBoxBindingHandler;
@@ -1120,6 +1127,8 @@ var nts;
                         }
                         var icon = container.children('.steps').children('.begin').data('icon');
                         // Remove html.
+                        var header = container.children('.header');
+                        container.children('.header').remove();
                         container.children('.steps').remove();
                         container.children('.contents').remove();
                         // Create wizard.
@@ -1149,7 +1158,7 @@ var nts;
                         container.addClass('nts-wizard');
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
-                        container.children('.steps').children('ul').children('.first').addClass('begin');
+                        //container.children('.steps').children('ul').children('.first').addClass('begin');
                         container.children('.steps').children('ul').children('.last').addClass('end');
                         container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
                         container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>');
@@ -1163,7 +1172,8 @@ var nts;
                         container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                         // Remove content.
                         container.find('.actions').hide();
-                        container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
+                        //container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
+                        container.children('.steps').prepend(header);
                         $.fn.begin = function () {
                             $(this).setStep(0);
                         };

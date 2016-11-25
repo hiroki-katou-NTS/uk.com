@@ -15,6 +15,8 @@ var qmm019;
                     // Return.
                     return dfd.promise();
                 };
+                ScreenModel.prototype.startDiaglo = function () {
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
