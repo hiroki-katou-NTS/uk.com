@@ -147,7 +147,11 @@
             dataType: options.dataType || 'json',
             data: data
         }).done(function (res) {
-            dfd.resolve(res);
+            if (res.businessException) {
+                dfd.reject(res);
+            } else {
+                dfd.resolve(res);
+            }
         });
 
         return dfd.promise();

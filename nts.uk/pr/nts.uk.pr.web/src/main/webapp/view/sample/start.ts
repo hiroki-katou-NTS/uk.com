@@ -13,8 +13,15 @@ __viewContext.ready(function () {
     });
 
     var vm = {
-        hoge: ko.observable('aaa')
+        hoge: ko.observable('aaa'),
+        timer: new nts.uk.ui.sharedvm.KibanTimer('test'),
+        start: function(){
+            this.timer.start();    
+        },end: function(){
+            this.timer.end();    
+        }
     }; // developer's view model
+    
     this.bind(vm);
     
 });

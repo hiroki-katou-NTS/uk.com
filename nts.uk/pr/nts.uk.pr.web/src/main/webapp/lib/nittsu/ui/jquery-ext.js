@@ -26,7 +26,7 @@ var nts;
                         var $control = $(this);
                         if (action === "set") {
                             ui.errors.add({
-                                location: $control.data('name'),
+                                location: $control.data('name') || "",
                                 message: message,
                                 $control: $control
                             });

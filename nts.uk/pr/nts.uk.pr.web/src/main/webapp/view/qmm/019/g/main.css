@@ -13,16 +13,19 @@
 .layoutSelect{
 	display: flex;
 	height: 45px;
-	margin-left: 20px;
+	margin-left: 15px;
+	margin-bottom: 5px;
 }
 #SEL_002{
 	margin-left: 50px;
+	margin-top: 15px;
 }
 #LBL_002{
 	margin-left: 10px;
 }
 .selectDrop{
-	margin-top: 15px;
+	margin-top: 20px;
+	margin-left: 10px;
 }
 .bottomStype{
 	margin-top: 20px;
@@ -30,4 +33,17 @@
 }
 #BTN_001{
 	margin-right: 20px;
+}
+.lstBox{
+	border: 2px solid gray;
+    margin-left: 150px;
+    padding-top: 5px;
+    width: 750px;
+    height: 205px;
+}
+#LBL_003{
+	padding-left: 50px;
+}
+#header{
+	display: none;
 }
