@@ -1,4 +1,5 @@
 module qmm019.g.viewmodel {
+    import option = nts.uk.ui.option;
     
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
@@ -6,11 +7,12 @@ module qmm019.g.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         comboboxList: KnockoutObservableArray<ItemCombobox>;
         selectLayoutCode: KnockoutObservable<string>;
-        layouts: KnockoutObservableArray<service.LayoutMasterDto>;
+        layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutAtrStr: KnockoutObservable<string>;
         selectStmtCode : KnockoutObservable<string>;
         selectStmtName : KnockoutObservable<string>;
         selectStartYm: KnockoutObservable<string>;
+        timeEditorOption: KnockoutObservable<any>;
         
         /**
          * Init screen model.
@@ -27,6 +29,8 @@ module qmm019.g.viewmodel {
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
+            console.log(option);
+            self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
         }   
         
         // start function
@@ -41,7 +45,7 @@ module qmm019.g.viewmodel {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
             //combobox
-            service.getLayoutWithMaxStartYm().done(function(layout: Array<service.LayoutMasterDto>){
+            service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
                 self.layouts(layout);
                 self.buildCombobox();
             });
@@ -53,7 +57,6 @@ module qmm019.g.viewmodel {
             
             
             dfd.resolve();
-            
             // Return.
             return dfd.promise();    
         }
@@ -92,23 +95,23 @@ module qmm019.g.viewmodel {
                     self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm));
                     
                     if(layout.layoutAtr == "0") {
-                        self.layoutAtrStr("レーザー　A4　縦向き　1人");
+                        self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
                     }else if (layout.layoutAtr == "1"){
-                        self.layoutAtrStr("レーザー　A4　縦向き　2人");
+                        self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
                     }else if (layout.layoutAtr == "2"){
-                        self.layoutAtrStr("レーザー　A4　縦向き　3人");
+                        self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
                     }else if (layout.layoutAtr == "3"){
-                        self.layoutAtrStr("レーザー　A4　横向き　2人");
+                        self.layoutAtrStr("（レーザー　A4　横向き　2人）");
                     }else if (layout.layoutAtr == "4"){
-                        self.layoutAtrStr("レーザー(圧着式)　縦向き　1人");
+                        self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
                     }else if (layout.layoutAtr == "5"){
-                        self.layoutAtrStr("レーザー(圧着式)　横向き　1人");
+                        self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
                     }else if (layout.layoutAtr == "6"){
-                        self.layoutAtrStr("ドットプリンタ　連続用紙　1人");
+                        self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
                     }else if (layout.layoutAtr == "7"){
-                        self.layoutAtrStr("PAYS単票");
+                        self.layoutAtrStr("（PAYS単票）");
                     }else if (layout.layoutAtr == "8"){
-                        self.layoutAtrStr("PAYS連続");
+                        self.layoutAtrStr("（PAYS連続）");
                     }
                     return false;
                 }    
@@ -116,7 +119,7 @@ module qmm019.g.viewmodel {
         }
         
         createNewLayout(): any{
-                
+            
         }
     }
     
