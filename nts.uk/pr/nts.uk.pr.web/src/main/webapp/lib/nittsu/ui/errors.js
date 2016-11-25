@@ -21,6 +21,7 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
+                        // TODO: ignore duplicated item
                         this.errors.push(error);
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
