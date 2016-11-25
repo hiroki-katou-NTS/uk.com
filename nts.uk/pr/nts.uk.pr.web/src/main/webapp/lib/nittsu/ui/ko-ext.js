@@ -19,12 +19,10 @@ var nts;
                     NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
-                        console.log(this.constraint);
                         var $input = $(element);
+                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
@@ -35,14 +33,13 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = ko.unwrap(data.option);
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
                         var textmode = ko.unwrap(option.textmode);
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
-                        this.constraint = validation.getCharType(data.constraint);
                         var $input = $(element);
                         $input.attr('type', textmode);
                         if (enable !== false)
@@ -59,7 +56,6 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
-                        var isError = this.constraint.validate(newText);
                         $input.val(newText);
                     };
                     return NtsTextEditorBindingHandler;
@@ -76,7 +72,7 @@ var nts;
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
+                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -91,7 +87,7 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = ko.unwrap(data.option);
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
