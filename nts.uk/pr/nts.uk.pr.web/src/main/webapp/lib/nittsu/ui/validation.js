@@ -82,6 +82,9 @@ var nts;
                     ResultParseTime.failed = function () {
                         return new ResultParseTime(false);
                     };
+                    ResultParseTime.prototype.format = function () {
+                        return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
+                    };
                     return ResultParseTime;
                 }());
                 validation.ResultParseTime = ResultParseTime;

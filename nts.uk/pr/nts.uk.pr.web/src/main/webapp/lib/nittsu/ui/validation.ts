@@ -108,6 +108,10 @@
         static failed() {
             return new ResultParseTime(false);
         }
+        
+        format() {
+            return (this.minus ? '-' : '') + this.hours + ':' + text.padLeft(String(this.minutes), '0', 2);
+        }
     }
      
     export function parseTime(time: string): ResultParseTime {

@@ -129,8 +129,15 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
-                            setValue(newText);
+                            var result = validation.parseTime(newText);
+                            if (result.success) {
+                                $input.ntsError('clear');
+                                setValue(result.format());
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid time');
+                                setValue(newText);
+                            }
                         });
                     };
                     /**
