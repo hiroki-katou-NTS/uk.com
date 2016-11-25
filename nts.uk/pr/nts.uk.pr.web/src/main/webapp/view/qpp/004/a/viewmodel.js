@@ -19,10 +19,7 @@ var qpp004;
                             return item.processingNo == newValue;
                         });
                         self.currentPaymentDateProcessing(currentDateMaster);
-                        var currentYearMonth = currentDateMaster.currentProcessingYm + "";
-                        var year = currentYearMonth.substring(0, 4);
-                        var month = currentYearMonth.substring(4, 6);
-                        self.displayCurrentYearMonthProcessing(year + "/" + month);
+                        self.displayCurrentYearMonthProcessing(nts.uk.text.formatYearMonth(currentDateMaster.currentProcessingYm));
                     });
                 }
                 /**
