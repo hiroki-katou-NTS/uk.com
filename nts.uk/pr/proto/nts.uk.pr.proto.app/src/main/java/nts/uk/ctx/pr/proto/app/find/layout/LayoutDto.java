@@ -43,7 +43,7 @@ public class LayoutDto {
 				domain.getStmtCode().v(), 
 				domain.getStartYM().v(),
 				domain.getStmtName().v(),
-				domain.getEndYM().v(),
+				domain.getEndYm().v(),
 				domain.getLayoutAtr().value);
 	}
 
