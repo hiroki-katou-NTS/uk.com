@@ -45,7 +45,7 @@
 
     export function getCharType(primitiveValueName: string): CharType {
         var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-        
+        if(constraint === undefined) return null;
         if(constraint.charType === undefined)
             constraint.charType = "Any";
         var charType = charTypes[constraint.charType];

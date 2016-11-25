@@ -105,7 +105,7 @@ module nts.uk.ui.koExtentions {
             
             var $input = $(element);
             
-            $input.attr('type', 'number');
+            $input.attr('type', 'text');
             if(enable !== false)
                 $input.removeAttr('disabled');
             else
@@ -165,7 +165,7 @@ module nts.uk.ui.koExtentions {
             
             var $input = $(element);
             
-            $input.attr('type', 'time');
+            $input.attr('type', 'text');
             if(enable !== false)
                 $input.removeAttr('disabled');
             else

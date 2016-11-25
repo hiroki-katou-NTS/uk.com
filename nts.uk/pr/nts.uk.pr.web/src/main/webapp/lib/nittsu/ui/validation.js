@@ -43,6 +43,8 @@ var nts;
                 validation.ValidationResult = ValidationResult;
                 function getCharType(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
+                    if (constraint === undefined)
+                        return null;
                     if (constraint.charType === undefined)
                         constraint.charType = "Any";
                     var charType = charTypes[constraint.charType];

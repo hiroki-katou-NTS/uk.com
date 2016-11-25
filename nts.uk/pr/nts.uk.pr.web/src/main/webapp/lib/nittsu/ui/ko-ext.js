@@ -98,7 +98,7 @@ var nts;
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
-                        $input.attr('type', 'number');
+                        $input.attr('type', 'text');
                         if (enable !== false)
                             $input.removeAttr('disabled');
                         else
@@ -151,7 +151,7 @@ var nts;
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
-                        $input.attr('type', 'time');
+                        $input.attr('type', 'text');
                         if (enable !== false)
                             $input.removeAttr('disabled');
                         else
