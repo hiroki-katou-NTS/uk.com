@@ -6,20 +6,6 @@ var nts;
         (function (ui) {
             var jqueryExtentions;
             (function (jqueryExtentions) {
-                var ntsTextBox;
-                (function (ntsTextBox) {
-                    $.fn.ntsTextBox = function () {
-                        if (arguments.length === 1) {
-                            var p = arguments[0];
-                            if (_.isPlainObject(p)) {
-                                return init(p);
-                            }
-                        }
-                    };
-                    function init(param) {
-                        return null;
-                    }
-                })(ntsTextBox || (ntsTextBox = {}));
                 var ntsError;
                 (function (ntsError) {
                     $.fn.ntsError = function (action, message) {

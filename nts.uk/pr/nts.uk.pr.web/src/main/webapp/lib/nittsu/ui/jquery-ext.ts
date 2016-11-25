@@ -1,24 +1,9 @@
 ﻿interface JQuery {
-    ntsPopup(args: any);
+    ntsPopup(args: any): JQuery;
+    ntsError(action: string, param?: any): JQuery;
 }
 
 module nts.uk.ui.jqueryExtentions {
-
-    module ntsTextBox {
-        $.fn.ntsTextBox = function () {
-
-            if (arguments.length === 1) {
-                var p: any = arguments[0];
-                if (_.isPlainObject(p)) {
-                    return init(p);
-                }
-            }
-        };
-
-        function init(param): JQuery {
-            return null;
-        }
-    }
     
     module ntsError {
         $.fn.ntsError = function (action: string, message: string) {
