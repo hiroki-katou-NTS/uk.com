@@ -8,7 +8,9 @@ module qmm019.h.viewmodel {
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
         selectLayoutCode: KnockoutObservable<string>;
-         selectedPersonalWageName: KnockoutObservableArray<any>;
+        selectedPersonalWageName: KnockoutObservableArray<any>;
+        layouts: KnockoutObservableArray<service.model.LayoutMasterModel>;
+
 
         /**
          * Init screen model.
@@ -43,18 +45,25 @@ module qmm019.h.viewmodel {
             self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
-            
-            $("#SEL_002").on("selectionChanging", function(event) {
-                console.log("Selecting value:" + (<any>event.originalEvent).detail);
+              self.selectLayoutCode = ko.observable("001");    
+     self.itemList();
+            $('#LST_001').on('selectionChanging', function(event) {
+                console.log('Selecting value:' + (<any>event.originalEvent).detail);
             })
-            $("#SEL_002").on("selectionChanged", function(event: any) {
-                console.log("Selected value:" + (<any>event.originalEvent).detail)
+            $('#LST_001').on('selectionChanged', function(event: any) {
+                console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
-            
         
-            self.selectLayoutCode = ko.observable("001");           
+                 
+                service.getAllLayout().done(function(layout: Array<service.model.LayoutMasterModel>){
+                self.layouts(layout);
+//                self.startDialog();
+            });
+            
         } 
     }
+    
+    
         
     export class ItemModel {
         companyCode: string;
