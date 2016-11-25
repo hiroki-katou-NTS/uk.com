@@ -81,11 +81,11 @@
     };
      
     export function isInteger(value: any) {
-        return !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10));
+        return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }
      
     export function isDecimal(value: any) {
-        return !isNaN(value) && parseFloat(Number(value)) == value && !isNaN(parseFloat(value));
+        return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
      
     export function validateTime(time: string){

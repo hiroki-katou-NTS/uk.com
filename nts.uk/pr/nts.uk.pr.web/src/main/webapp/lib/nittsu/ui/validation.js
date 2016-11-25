@@ -62,11 +62,11 @@ var nts;
                     Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
                 };
                 function isInteger(value) {
-                    return !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10));
+                    return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
                 }
                 validation.isInteger = isInteger;
                 function isDecimal(value) {
-                    return !isNaN(value) && parseFloat(Number(value)) == value && !isNaN(parseFloat(value));
+                    return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
                 }
                 validation.isDecimal = isDecimal;
                 function validateTime(time) {
