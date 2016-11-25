@@ -120,8 +120,8 @@
 					</div>
 					<br />
 					<div class="form-label">
-						<label>上限チェック</label> <a style="float: right;">を超える場合</a> <input
-							style="float: right; margin-left: 20px;" type="text" />
+						<label>上限チェック</label> <a style="float: right;">を超える場合</a> 
+						<input data-bind="enable: checkBox.errRangeHighAtr" style="float: right; margin-left: 20px;" type="text" />
 						<div style="float: right; margin-left: 45px;"
 							data-bind="with: checkBox">
 							<div id="checkBoxErrRangeHigh"
@@ -135,13 +135,13 @@
 								data-bind="ntsCheckBox: { checked: alRangeHighAtr, text: 'アラーム'}"
 								class="cf"></div>
 						</div>
-						<input style="float: left; margin-left: 9px;" type="text" /> <a
+						<input data-bind="enable: checkBox.alRangeHighAtr" style="float: left; margin-left: 9px;" type="text" /> <a
 							style="float: left;">を超える場合</a>
 					</div>
 					<br /> <br /> <br />
 					<div class="form-label">
-						<label>下限チェック</label> <a style="float: right;">未満の場合</a> <input
-							style="float: right; margin-left: 20px;" type="text" />
+						<label>下限チェック</label> <a style="float: right;">未満の場合</a> 
+						<input data-bind="enable: checkBox.errRangeLowAtr" style="float: right; margin-left: 20px;" type="text" />
 						<div style="float: right; margin-left: 45px;"
 							data-bind="with: checkBox">
 							<div id="checkBoxErrRangeLowAtr"
@@ -155,7 +155,7 @@
 								data-bind="ntsCheckBox: { checked: alRangeLowAtr, text: 'アラーム'}"
 								class="cf"></div>
 						</div>
-						<input style="float: left; margin-left: 9px;" type="text" /> <a
+						<input data-bind="enable: checkBox.alRangeLowAtr" style="float: left; margin-left: 9px;" type="text" /> <a
 							style="float: left;">未満の場合</a>
 					</div>
 					<br /> <br/> <br/> <br />
