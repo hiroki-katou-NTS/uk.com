@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+ <body>
+     <ui:composition template="../../../master/base.xhtml">
+         <ui:define name="htmlHead">
+         	<script>var dialogSize = { width: 300, height: 200 };</script>
+<!--          	<link rel="stylesheet" type="text/css" href="../../../lib/nittsu/ui/style/stylesheets/jquery.steps.css" /> -->
+         	
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+				nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+				nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
+			</com:ValidatorScript>
+			
+			<script src="../../../lib/generic/jquery/jquery.steps.js"></script>
+			<script src="viewmodel.js"></script>
+			<script src="start.js"></script>
+         </ui:define>
+         
+         <ui:define name="content">
+         	<div id="functions-area">
+         	</div>
+         	<div id="contents-area">
+				<h2>Wizard</h2>
+				<div class="cf">
+					<div>
+						<select data-bind="options: stepList, optionsText: 'id', value: stepSelected" style="width: 200px"></select>
+						<button data-bind="click: goto">Go to Step</button>
+					</div>
+					<br/>
+					<div id="wizard" data-bind="ntsWizard: {steps: stepList}" class="cf">
+						<div class="header">
+							<div class="image" data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+							<div class="content">再集計</div>
+						</div>
+						<div class="steps">
+							<div class="step-1">再集計</div>
+							<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする</div>
+							<div class="step-3">対象社員を選ぶ</div>
+							<div class="step-4">対象社員を選ぶ</div>
+							<div class="step-5">対象社員を選ぶ</div>
+							<div class="end step-6">実行</div>
+						</div>
+						<div class="contents">
+							<div class="step-1">contents step1</div>
+							<div class="step-2">contents step2</div>
+							<div class="step-3">contents step3</div>
+							<div class="step-4">
+								<div data-bind="with: user">
+									Code: <input type="text" data-bind="value: code" /><br/>
+									Name: <input type="text" data-bind="value: name" />
+								</div>
+							</div>
+							<div class="step-5">contents step5</div>
+							<div class="step-6">contents step6</div>
+						</div>
+					</div>
+					
+					<button data-bind="click: begin">Begin</button>
+					<button data-bind="click: end">End</button>
+					<button data-bind="click: previous">Previous</button>
+					<button data-bind="click: next">Next</button>
+					<button data-bind="click: getCurrentStep">Current Step Index</button>
+				</div>
+         	</div>
+         </ui:define>
+ 	</ui:composition>
+	</body>
+</html>

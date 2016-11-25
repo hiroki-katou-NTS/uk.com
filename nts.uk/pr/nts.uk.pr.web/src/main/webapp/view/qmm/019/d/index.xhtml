@@ -11,11 +11,12 @@
 				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
 				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
             	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+				<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
 			    <script>var dialogSize = { width: 600, height: 700 };</script>
-			    <style>.nts-list-box *{box-sizing: border-box} </style>
+			    <style>.nts-list-box *{box-sizing: border-box} </style>				
             </ui:define>
             
             <ui:define name="content">
@@ -25,14 +26,14 @@
 						<br />
 						<div class = "form-label inline">
 							<label id = "LBL_002">コード/名称</label>
-							<label id = "LBL_003">01</label>
-							<label id = "LBL_004">明細レイアウト01</label>	
+							<label id = "LBL_003" data-bind="text: selectStmtCode">01</label>
+							<label id = "LBL_004" data-bind="text: selectStmtName">明細レイアウト01</label>	
 						</div><br/><br />
 						<div class ="form-label inline">
 							<label id = "LBL_005">期間</label>
-							<input id = "INP_001"></input>
+							<input id = "INP_001" data-bind="value: selectStartYm"></input>
 							<!-- 入力した開始年月を和暦で表記 -->
-							<label id = "LBL_006">平成29年04月</label>
+							<!-- <label id = "LBL_006">平成29年04月</label> -->
 							<label id = "LBL_007"> ～　   9999/12</label>
 						</div><br/><br />
 						<div class ="inlineInfor">
@@ -40,32 +41,34 @@
 								<label id = "LBL_008">レイアウトの引継ぎ</label>
 							</div>
 							<div id="SEL_001">
-								<input type="radio" name="layoutCreate" value="newCreate" /> 最新の履歴（N）から引き継ぐ<br />
+								<input type="radio" checked="checked" name="layoutCreate" value="newCreate" /> 最新の履歴（N）から引き継ぐ<br />
 				  				<input type="radio" name="layoutCreate" value="copyCreate" /> 初めから作成する<br />
 							</div>
 						</div><br/>
 						<div class="label009"><label id = "LBL_009">レイアウトパターンの選択</label></div>
+						<div class = "lstBox">	
 						<div id = "LST_001"
 							data-bind="ntsListBox: {options: itemList,
-										optionsValue: '',
+										optionsValue: 'stt',
 										optionsText: 'numberDisplayItems',
 										multiple: false,
-										value: selectedCodes,
+										value: selectLayoutAtr,
 										enable: isEnable(),
 										columns: [
-											{ prop: 'stt', length: 1 },
-											{ prop: 'printType', length: 5 },
-											{ prop: 'paperType', length: 20 },
-											{ prop: 'direction', length: 20 },
-											{ prop: 'numberPeople', length: 20 },
-											{ prop: 'numberDisplayItems', length: 20 },
-											{ prop: 'reference', length: 20 }
+											{ prop: 'printType', length: 7 },
+											{ prop: 'paperType', length: 4 },
+											{ prop: 'direction', length: 3 },
+											{ prop: 'numberPeople', length: 3 },
+											{ prop: 'numberDisplayItems', length: 13 },
+											{ prop: 'reference', length: 6 }
 										]}"
 						class="cf"></div></div>
+						
+						</div>
 						<br/>
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001">決定</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind="click: createHistoryLayout">決定</button>
 							<button class="large" id="BTN_002">キャンセル</button><br />
 						</div>
 					</div>

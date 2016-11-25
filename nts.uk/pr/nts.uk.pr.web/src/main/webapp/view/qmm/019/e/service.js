@@ -5,14 +5,15 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym"
+                getLayoutInfor: "pr/proto/layout/findlayout"
             };
             /**
              * Get list layout master new history
              */
             function getLayoutWithMaxStartYm() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getLayoutInfor)
+                var objectLayout = [{ 'stmtCode': '1', 'startYm': 201605 }];
+                nts.uk.request.ajax(paths.getLayoutInfor + objectLayout)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -22,6 +23,19 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
+            /**
+                    * Model namespace.
+                 */
+            var model;
+            (function (model) {
+                // layout
+                var LayoutMasterDto = (function () {
+                    function LayoutMasterDto() {
+                    }
+                    return LayoutMasterDto;
+                }());
+                model.LayoutMasterDto = LayoutMasterDto;
+            })(model = service.model || (service.model = {}));
         })(service = e.service || (e.service = {}));
     })(e = qmm019.e || (qmm019.e = {}));
 })(qmm019 || (qmm019 = {}));

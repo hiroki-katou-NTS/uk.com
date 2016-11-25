@@ -40,11 +40,11 @@ public class LayoutWebService {
 		return this.find.getAllLayout(AppContexts.user().companyCode());		
 	}
 	@POST
-	@Path("findlayout/{companyCode, stmtCode, startYm}")
+	@Path("findlayout/{stmtCode, startYm}")
 	public LayoutDto getLayout(@PathParam("companyCode") String companyCode,
 			@PathParam("stmtCode") String stmtCode,
 			@PathParam("startYm") int startYm){
-		return this.find.getLayout(companyCode, stmtCode, startYm).get();
+		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, startYm).get();
 	}
 	
 	@POST

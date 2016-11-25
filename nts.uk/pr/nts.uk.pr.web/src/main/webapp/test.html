@@ -43,23 +43,19 @@ hr {
 <script src="lib/nittsu/ui/ko-ext.js"></script>
 <script src="lib/nittsu/ui/ui.js"></script>
 <script>
-	var __viewContext = {
-		primitiveValueConstraints: {
-			CompanyCode: {
-				valueType: "String",
-				charType: "Numeric",
-				maxLength: 4
-			},
-			CompanyName: {
-				valueType: "String",
-				charType: "Any",
-				maxLength: 20
-			}
-		}
-	};
-</script>
-<script>
 	var __viewContext = __viewContext || {};
+	__viewContext.primitiveValueConstraints = {
+		CompanyCode: {
+			valueType: "String",
+			charType: "Numeric",
+			maxLength: 4
+		},
+		CompanyName: {
+			valueType: "String",
+			charType: "Any",
+			maxLength: 20
+		}
+	}
 	__viewContext.system = {
 		kinjirou:false,
 		installationType:1,
@@ -94,228 +90,182 @@ hr {
 	};
 </script>
 <script>
-			var vm;
-			//Wizard User
-        	function User(code, name) {
-                this.code = ko.observable(code);
-                this.name = ko.observable(name);
-                this.name.subscribe(function (val) { alert(val); });
-            }
-			var _wizard = function() {
-				var self = this;
-				self.stepList = ko.observableArray([
-                    new Step('step-1', '.step-1'),
-                    new Step('step-2', '.step-2'),
-                    new Step('step-3', '.step-3'),
-                    new Step('step-4', '.step-4'),
-                    new Step('step-5', '.step-5'),
-                    new Step('step-6', '.step-6')
-                ]);
-                self.stepSelected = ko.observable(new Step('step-1', '.step-1'));
-	            self.user = ko.observable(new User('U1', 'User 1'));
-                self.begin =  function () {
-                    $('#wizard').begin();
-                };
-                self.end = function () {
-                    $('#wizard').end();
-                };
-                self.next = function () {
-                    $('#wizard').steps('next');
-                    //console.log("next");
-                };
-                self.previous = function () {
-                    $('#wizard').steps('previous');
-                };
-                self.getCurrentStep = function () {
-                    alert($('#wizard').steps('getCurrentIndex'));
-                };
-                self.gotoStep = function () {
-                    var index = self.stepList().indexOf(stepSelected());
-                    $('#wizard').setStep(index);
-                };
-			};
-			function Step(id, content) {
-                this.id = ko.observable(id);
-                this.content = ko.observable(content);
-        	}
-			$(function () {
-				vm = {
-					companyCode: ko.observable('0001'),
-					companyName: ko.observable('てすと会社'),
-					// TextBox ViewModel
-					textbox: {
-						value: ko.observable("test"),
-						constraint: 'CompanyCode'
-					},
-					// SwitchButton ViewModel
-					switchbutton: {
-						roundingRules: ko.observableArray([
-							{ code: '1', name: '四捨五入' },
-							{ code: '2', name: '切り上げ' },
-							{ code: '3', name: '切り捨て' }
-						]),
-						selectedRuleCode: ko.observable('1')
-					},
-					// CheckBox ViewModel
-					checkbox: {
-						// Check box test.
-						isHealthInsurance: ko.observable(true),
-						isEnable:  ko.observable(true),
-					},
-					multicheckbox: {
-						boxes: ko.observableArray([
-				            new BoxModel(1, 'box 1'), new BoxModel(2, 'box 2'), new BoxModel(3, 'box 3')
-				    	]),
-				    	selectedBoxes: ko.observableArray([])
-				    },
-					// ComboBox ViewModel
-					combobox: {
-						itemList: ko.observableArray([
-							new ItemModel('基本給1', '基本給'),
-							new ItemModel('基本給2', '役職手当'),
-							new ItemModel('0003', '基本給')
-						]),
-						itemName: ko.observable(''),
-						currentCode: ko.observable(3),
-						selectedCode: ko.observable('0002'),
-						isEnable: ko.observable(true),
-						isEditable: ko.observable(true),
-						addOptions: function () {
-							var self = this;
-							var newCode = self.currentCode() + 1;
-							var itemCode = newCode.toString();
-							var codeLength = itemCode.length;
-							while (codeLength < 4) {
-								itemCode = '0' + itemCode;
-								codeLength++;
-							}
-							self.itemList.push(new ItemModel(itemCode, self.itemName()));
-							self.currentCode(newCode);
-						},
-						clearOptions: function () {
-							this.itemList([]);
-						},
-						removeByCode: function () {
-							var self = this;
-							var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
-							self.itemList.remove(selected);
+		var vm;
+		$(function () {
+			vm = {
+				companyCode: ko.observable('0001'),
+				companyName: ko.observable('てすと会社'),
+				// TextBox ViewModel
+				textbox: {
+					value: ko.observable("test"),
+					constraint: 'CompanyCode'
+				},
+				// SwitchButton ViewModel
+				switchbutton: {
+					roundingRules: ko.observableArray([
+						{ code: '1', name: '四捨五入' },
+						{ code: '2', name: '切り上げ' },
+						{ code: '3', name: '切り捨て' }
+					]),
+					selectedRuleCode: ko.observable('1')
+				},
+				// CheckBox ViewModel
+				checkbox: {
+					// Check box test.
+					isHealthInsurance: ko.observable(true),
+					isEnable:  ko.observable(true),
+				},
+				multicheckbox: {
+					boxes: ko.observableArray([
+						new BoxModel(1, 'box 1'), new BoxModel(2, 'box 2'), new BoxModel(3, 'box 3')
+					]),
+					selectedBoxes: ko.observableArray([])
+				},
+				// ComboBox ViewModel
+				combobox: {
+					itemList: ko.observableArray([
+						new ItemModel('基本給1', '基本給'),
+						new ItemModel('基本給2', '役職手当'),
+						new ItemModel('0003', '基本給')
+					]),
+					itemName: ko.observable(''),
+					currentCode: ko.observable(3),
+					selectedCode: ko.observable('0002'),
+					isEnable: ko.observable(true),
+					isEditable: ko.observable(true),
+					addOptions: function () {
+						var self = this;
+						var newCode = self.currentCode() + 1;
+						var itemCode = newCode.toString();
+						var codeLength = itemCode.length;
+						while (codeLength < 4) {
+							itemCode = '0' + itemCode;
+							codeLength++;
 						}
+						self.itemList.push(new ItemModel(itemCode, self.itemName()));
+						self.currentCode(newCode);
 					},
-				 	// ListBox ViewModel
-					listbox: {
-						itemList: ko.observableArray([
-							new ItemModel('基本給2', '基本給', "Test dest 1"),
-							new ItemModel('基本給1', '役職手当', "Test dest 2"),
-							new ItemModel('基本給3', '基本給', "Test dest 3")
-						]),
-						itemName: ko.observable(''),
-						currentCode: ko.observable(3),
-						selectedCode: ko.observable(null),
-						isEnable: ko.observable(true),
-						selectedCodes: ko.observableArray([]),
-						addOptions: function () {
-							var self = this;
-							var newCode = self.currentCode() + 1;
-							var itemCode = newCode.toString();
-							var codeLength = itemCode.length;
-							while (codeLength < 4) {
-								itemCode = '0' + itemCode;
-								codeLength++;
-							}
-							self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
-							self.currentCode(newCode);
-						},
-						deselectAll: function () {
-							$('#list-box').ntsListBox('deselectAll');
-						},
-						selectAll: function () {
-							$('#list-box').ntsListBox('selectAll');
-						},
-						clearOptions: function () {
-							this.itemList([]);
-						},
-						remove: function () {
-							var self = this;
-							var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
-							self.itemList.remove(selected);
-							var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
-							self.itemList.removeAll(selecteds);
+					clearOptions: function () {
+						this.itemList([]);
+					},
+					removeByCode: function () {
+						var self = this;
+						var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
+						self.itemList.remove(selected);
+					}
+				},
+			 	// ListBox ViewModel
+				listbox: {
+					itemList: ko.observableArray([
+						new ItemModel('基本給2', '基本給', "Test dest 1"),
+						new ItemModel('基本給1', '役職手当', "Test dest 2"),
+						new ItemModel('基本給3', '基本給', "Test dest 3")
+					]),
+					itemName: ko.observable(''),
+					currentCode: ko.observable(3),
+					selectedCode: ko.observable(null),
+					isEnable: ko.observable(true),
+					selectedCodes: ko.observableArray([]),
+					addOptions: function () {
+						var self = this;
+						var newCode = self.currentCode() + 1;
+						var itemCode = newCode.toString();
+						var codeLength = itemCode.length;
+						while (codeLength < 4) {
+							itemCode = '0' + itemCode;
+							codeLength++;
 						}
+						self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
+						self.currentCode(newCode);
 					},
-				 	// TreeGrid ViewModel
-					treegrid: {
-						items1: ko.observableArray([new Node('0001', 'サービス部', [
-							new Node('0001-1', 'サービス部1', []),
-							new Node('0001-2', 'サービス部2', []),
-							new Node('0001-3', 'サービス部3', [])
-						]), new Node('0002', '開発部', [])]),
-						items2: ko.observableArray([new Node('0001', 'サービス部', [
-							new Node('0001-1', 'サービス部1', []),
-							new Node('0001-2', 'サービス部2', []),
-							new Node('0001-3', 'サービス部3', [])
-						]), new Node('0002', '開発部', [])]),
-						selectedCode: ko.observableArray([]),
-						singleSelectedCode: ko.observable(null),
-						index: 0,
-						resetSelection: function () {
-							var self = this;
-							self.items1([new Node('0001', 'サービス部', [
-									new Node('0001-1', 'サービス部1', []),
-									new Node('0001-2', 'サービス部2', []),
-									new Node('0001-3', 'サービス部3', [])
-								]), new Node('0002', '開発部', [])]);
-							self.items2([new Node('0001', 'サービス部', [
+					deselectAll: function () {
+						$('#list-box').ntsListBox('deselectAll');
+					},
+					selectAll: function () {
+						$('#list-box').ntsListBox('selectAll');
+					},
+					clearOptions: function () {
+						this.itemList([]);
+					},
+					remove: function () {
+						var self = this;
+						var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
+						self.itemList.remove(selected);
+						var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
+						self.itemList.removeAll(selecteds);
+					}
+				},
+			 	// TreeGrid ViewModel
+				treegrid: {
+					items1: ko.observableArray([new Node('0001', 'サービス部', [
+						new Node('0001-1', 'サービス部1', []),
+						new Node('0001-2', 'サービス部2', []),
+						new Node('0001-3', 'サービス部3', [])
+					]), new Node('0002', '開発部', [])]),
+					items2: ko.observableArray([new Node('0001', 'サービス部', [
+						new Node('0001-1', 'サービス部1', []),
+						new Node('0001-2', 'サービス部2', []),
+						new Node('0001-3', 'サービス部3', [])
+					]), new Node('0002', '開発部', [])]),
+					selectedCode: ko.observableArray([]),
+					singleSelectedCode: ko.observable(null),
+					index: 0,
+					resetSelection: function () {
+						var self = this;
+						self.items1([new Node('0001', 'サービス部', [
 								new Node('0001-1', 'サービス部1', []),
 								new Node('0001-2', 'サービス部2', []),
 								new Node('0001-3', 'サービス部3', [])
 							]), new Node('0002', '開発部', [])]);
-							self.singleSelectedCode('0002');
-							self.selectedCode(['0001-1', '0002']);
-						},
-						changeDataSource: function () {
-							var self = this;
-							var i = 0;
-							var newArrays = new Array();
-							while (i < 50) {
-								self.index++;
-								i++;
-								newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
-							};
-							self.items1(newArrays);
-							self.items2(newArrays);
-						}
+						self.items2([new Node('0001', 'サービス部', [
+							new Node('0001-1', 'サービス部1', []),
+							new Node('0001-2', 'サービス部2', []),
+							new Node('0001-3', 'サービス部3', [])
+						]), new Node('0002', '開発部', [])]);
+						self.singleSelectedCode('0002');
+						self.selectedCode(['0001-1', '0002']);
 					},
-					//Wizard ViewModel
-					wizard: _wizard
-				};
-				//Wizard Step
-				
-				//checkbox item
-				function BoxModel(id,name) {
-				    this.id = ko.observable(id);
-				    this.name = ko.observable(name);
+					changeDataSource: function () {
+						var self = this;
+						var i = 0;
+						var newArrays = new Array();
+						while (i < 50) {
+							self.index++;
+							i++;
+							newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
+						};
+						self.items1(newArrays);
+						self.items2(newArrays);
+					}
 				}
-            	
-				// ListBox & ComboBox Item
-				function ItemModel(code, name, dest) {
-					this.code = code;
-					this.name = name;
-					this.dest = dest;
-				}
-				
-				// TreeGrid Node
-				function Node(code, name, childs) {
-					this.code = code;
-					this.name = name;
-					this.nodeText = code + ' ' + name;
-					this.childs = childs;
-					this.custom = 'Random' + new Date().getTime();
-				}
-				
-				ko.applyBindings(vm);
-				
-			});
-		</script>
+			};
+			
+			//checkbox item
+			function BoxModel(id,name) {
+				this.id = ko.observable(id);
+				this.name = ko.observable(name);
+			}
+			
+			// ListBox & ComboBox Item
+			function ItemModel(code, name, dest) {
+				this.code = code;
+				this.name = name;
+				this.dest = dest;
+			}
+			
+			// TreeGrid Node
+			function Node(code, name, childs) {
+				this.code = code;
+				this.name = name;
+				this.nodeText = code + ' ' + name;
+				this.childs = childs;
+				this.custom = 'Random' + new Date().getTime();
+			}
+			
+			ko.applyBindings(vm);
+			
+		});
+	</script>
 </head>
 <body>
 	<div>てすとぺーじ</div>
@@ -433,7 +383,7 @@ hr {
 			<h2>TreeGrid Multi Selection</h2>
 			<table id="treegrid"
 				data-bind="ntsTreeGridView:{
-				   	width: 500,
+					width: 500,
 					height: 500,
 					options: items1,
 					selectedValues: selectedCode,
@@ -450,7 +400,7 @@ hr {
 			<h2>TreeGrid Single Selection</h2>
 			<table id="treegrid2"
 				data-bind="ntsTreeGridView:{
-				   	width: 700,
+					width: 700,
 					height: 500,
 					options: items2,
 					value: singleSelectedCode,
@@ -468,7 +418,7 @@ hr {
 			<h2>test</h2>
 			<table id="treegrid3"
 				data-bind="ntsTreeGridView:{
-				   	width: 700,
+					width: 700,
 					height: 500,
 					options: items2,
 					value: singleSelectedCode,
@@ -497,67 +447,22 @@ hr {
 	</div>
 	<hr />
 	<div class="cf" data-bind="with: multicheckbox">
-          <h2>Multi Check Box Custom Bindings</h2>
-          <div style="float: left; margin-right: 25px">
-	          <strong>List of Boxes</strong>
-	          <div data-bind="foreach: boxes">
-	              <div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}">
-	              </div>
-	              <br/>
-	          </div>
-	      </div>
-          <p> You've selected</p>
-          <div style="float: left" data-bind="foreach: selectedBoxes">
-              <p><span data-bind="text: id"></span></p>
-          </div>
-      </div>
-      <hr />
-      <h2>Wizard </h2>
-	<div id="program-body" style="top: 140px; min-width: 431px;" data-bind="with: wizard">
-		<div id="contents-area" class="two-column-layout">
-			<div class="column right cf">
-				<div>
-					<select data-bind="options: stepList, 
-												optionsText: 'id',
-												value: stepSelected" style="width: 200px"></select>
-					<button data-bind="click: gotoStep">Go to Step</button>
-				</div><br/>
-				<div id="wizard"
-					data-bind="ntsWizard: {steps: stepList}"
-					class="cf">
-					<div class="steps">
-						<div class="begin step-1" data-icon="./lib/nittsu/ui/style/images/ntsWizard/start-images.jpg">再集計</div>
-						<div class="step-2"><span>処理方法を選ぶ</span><br /> └詳細設定をする
-						</div>
-						<div class="step-3">対象社員を選ぶ</div>
-						<div class="step-4">対象社員を選ぶ</div>
-						<div class="step-5">対象社員を選ぶ</div>
-						<div class="end step-6">実行</div>
-					</div>
-					<div class="contents">
-						<div class="step-1">contents step1</div>
-						<div class="step-2">contents step2</div>
-						<div class="step-3">contents step3</div>
-						<div class="step-4">
-							<div data-bind="with: user">
-								Code: <input type="text" data-bind="value: code"><br>
-								Name: <input type="text" data-bind="value: name">
-							</div>
-						</div>
-						<div class="step-5">contents step5</div>
-						<div class="step-6">contents step6</div>
-					</div>
-				</div>
-				
-				<button data-bind="click: begin">Begin</button>
-				<button data-bind="click: end">End</button>
-				<button data-bind="click: previous">Previous</button>
-				<button data-bind="click: next">Next</button>
-				<button data-bind="click: getCurrentStep">Current Step Index</button>
-			</div>
-		</div>
-		<hr/>
+		  <h2>Multi Check Box Custom Bindings</h2>
+		  <div style="float: left; margin-right: 25px">
+			  <strong>List of Boxes</strong>
+			  <div data-bind="foreach: boxes">
+				  <div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}">
+				  </div>
+				  <br/>
+			  </div>
+		  </div>
+		  <p> You've selected</p>
+		  <div style="float: left" data-bind="foreach: selectedBoxes">
+			  <p><span data-bind="text: id"></span></p>
+		  </div>
 	</div>
+	<hr />
+	<h2><a href="view/sample/wizard/wizard.xhtml">&#9655; Wizard Sample</a></h2>
 	<br/><br/><br/>
 </body>
 </html>

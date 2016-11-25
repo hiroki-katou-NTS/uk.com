@@ -19,12 +19,10 @@ var nts;
                     NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
-                        console.log(this.constraint);
                         var $input = $(element);
+                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
@@ -35,14 +33,13 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = ko.unwrap(data.option);
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
                         var textmode = ko.unwrap(option.textmode);
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
-                        this.constraint = validation.getCharType(data.constraint);
                         var $input = $(element);
                         $input.attr('type', textmode);
                         if (enable !== false)
@@ -59,7 +56,6 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
-                        var isError = this.constraint.validate(newText);
                         $input.val(newText);
                     };
                     return NtsTextEditorBindingHandler;
@@ -76,7 +72,7 @@ var nts;
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = validation.getCharType(data.constraint);
+                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
@@ -91,7 +87,7 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = ko.unwrap(data.option);
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
@@ -952,11 +948,7 @@ var nts;
                             selectListBoxContainer.selectable("enable");
                             container.removeClass('disabled');
                         }
-                        var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
                         var padding = 10;
-                        if (ntsCommonPadding) {
-                            padding = parseInt(ntsCommonPadding) * 2;
-                        }
                         // Set width for multi columns.
                         if (columns && columns.length > 0) {
                             var i = 0;
@@ -967,6 +959,10 @@ var nts;
                                 totalWidth += length * maxWidthCharacter + 20;
                                 i++;
                             });
+                            if ($('.nts-column').css('padding')) {
+                                var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
+                                padding = parseInt(ntsCommonPadding) * 2;
+                            }
                             totalWidth += padding * (columns.length + 1); // + 50;
                             $('.nts-list-box > li').css({ 'min-width': totalWidth });
                             $('.nts-list-box').css({ 'min-width': totalWidth });
@@ -1125,8 +1121,10 @@ var nts;
                             container.append('<h1 class="' + contentClass + '">' + htmlStep + '</h1>');
                             container.append('<div>' + htmlContent + '</div>');
                         }
-                        var icon = container.children('.steps').children('.begin').data('icon');
+                        var icon = container.find('.header .image').data('icon');
                         // Remove html.
+                        var header = container.children('.header');
+                        container.children('.header').remove();
                         container.children('.steps').remove();
                         container.children('.contents').remove();
                         // Create wizard.
@@ -1156,7 +1154,7 @@ var nts;
                         container.addClass('nts-wizard');
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
-                        container.children('.steps').children('ul').children('.first').addClass('begin');
+                        //container.children('.steps').children('ul').children('.first').addClass('begin');
                         container.children('.steps').children('ul').children('.last').addClass('end');
                         container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
                         container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>');
@@ -1170,7 +1168,9 @@ var nts;
                         container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                         // Remove content.
                         container.find('.actions').hide();
-                        container.find('.nts-steps').first().attr('style', 'background-image: url("' + icon + '")');
+                        // Add Header
+                        container.children('.steps').prepend(header);
+                        container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
                         $.fn.begin = function () {
                             $(this).setStep(0);
                         };
