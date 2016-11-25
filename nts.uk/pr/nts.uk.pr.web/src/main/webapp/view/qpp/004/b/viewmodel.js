@@ -107,7 +107,7 @@ var qpp004;
                         processingYearMonth: self.processingYM()
                     };
                     nts.uk.ui.windows.setShared("data", data);
-                    nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成" });
+                    nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成", dialogClass: "no-close" });
                 };
                 return ScreenModel;
             }());
