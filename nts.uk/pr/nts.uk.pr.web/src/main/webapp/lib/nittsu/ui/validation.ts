@@ -80,21 +80,30 @@
         
     };
      
-    export function isInteger(value: any, option?: any) {
+     
+    function isInteger(value: any, option?: any) {
         if(option !== undefined && option.groupseperator() !== undefined){
             value = this.isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
         }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }
      
-    export function isDecimal(value: any, option?: any) {
+    function isDecimal(value: any, option?: any) {
         if(option !== undefined && option.groupseperator() !== undefined){
             value = this.isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
         }
         return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
      
-    export abstract class TimeParseResult{
+    export function isNumber(value: any, isDecimalValue?: boolean, option?: any){
+        if(isDecimalValue){
+            return isDecimal(value, option); 
+        }else{
+            return isInteger(value, option); 
+        }
+    }
+     
+    abstract class ParseResult{
         success: boolean;
         constructor(success) {
             this.success = success;
@@ -105,7 +114,7 @@
         abstract toValue();
     }
      
-    export class ResultParseTime extends TimeParseResult{
+    export class ResultParseTime extends ParseResult{
         minus: boolean;
         hours: number;
         minutes: number;
@@ -169,7 +178,7 @@
         return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
     } 
     
-    export class ResultParseYearMonth extends TimeParseResult{
+    export class ResultParseYearMonth extends ParseResult{
         year: number;
         month: number;
         
