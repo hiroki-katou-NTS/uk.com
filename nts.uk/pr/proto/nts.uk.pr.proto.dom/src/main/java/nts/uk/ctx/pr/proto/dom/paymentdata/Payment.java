@@ -320,6 +320,11 @@ public class Payment extends AggregateRoot {
 		this.detailArticleItems.addAll(items);
 	}
 	
+	public void setPositionCategoryItems(List<PrintPositionCategory> items) {
+		this.printCategories.clear();
+		this.printCategories.addAll(items);
+	}
+	
 	/**
 	 * Calculate total payment
 	 * @return
