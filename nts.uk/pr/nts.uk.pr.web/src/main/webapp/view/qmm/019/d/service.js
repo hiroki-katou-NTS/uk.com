@@ -5,7 +5,8 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym"
+                getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym",
+                copylayoutPath: "pr/proto/layout/createlayout"
             };
             /**
              * Get list layout master new history
@@ -22,6 +23,16 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
+            function createLayout(layoutMaster) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.createLayout = createLayout;
             var model;
             (function (model) {
                 // layout

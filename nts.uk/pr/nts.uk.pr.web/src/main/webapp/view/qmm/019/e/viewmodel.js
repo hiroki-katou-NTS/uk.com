@@ -20,7 +20,7 @@ var qmm019;
                 // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
-                    e.service.getLayout("1", 201606).done(function (layout) {
+                    e.service.getLayout("01", 201606).done(function (layout) {
                         self.selectLayout(layout);
                         self.startDiaglog();
                     }).fail(function (res) {
@@ -49,12 +49,24 @@ var qmm019;
                     if ($("#layoutDetele").is(":checked")) {
                         self.dataDelete();
                     }
+                    else {
+                        self.dataUpdate();
+                    }
                 };
                 ScreenModel.prototype.dataDelete = function () {
                     var self = this;
-                    //明細書マスタ.DEL-1
                     e.service.deleteLayout(self.selectLayout()).done(function () {
-                        alert("削除しました。");
+                        alert("履歴を削除する。");
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                };
+                ScreenModel.prototype.dataUpdate = function () {
+                    var self = this;
+                    var layoutInfor = self.selectLayout();
+                    layoutInfor.startYm = $("#INP_001").val().replace('/', '');
+                    e.service.updateLayout(layoutInfor).done(function () {
+                        alert("履歴を修正する。");
                     }).fail(function (res) {
                         alert(res);
                     });
