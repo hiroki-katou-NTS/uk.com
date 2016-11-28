@@ -7,11 +7,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="PPRMT_PERSON_WAGE")
-public class PprmtPersonWage extends AggregateTableEntity {
+public class PprmtPersonWage {
 	@EmbeddedId
     public PprmtPersonWagePK pprmtPersonWagePK;
 	

@@ -37,17 +37,18 @@ public class JpaPersonalWageRepository extends JpaRepository implements Personal
 		PersonalWage domain = PersonalWage.createFromJavaType(entity.val, entity.pprmtPersonWagePK.pId,
 				entity.pprmtPersonWagePK.ccd, entity.pprmtPersonWagePK.ctgAtr, entity.pprmtPersonWagePK.strYm,
 				entity.endYm);
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 
 	@Override
 	public Optional<PersonalWage> find(String companyCode, String personId, int categoryAttribute, String wageCode,
 			int startYearMonth) {
-		return this.queryProxy()
+		Optional<PersonalWage> result = this.queryProxy()
 				.find(new PprmtPersonWagePK(companyCode, personId, categoryAttribute, wageCode, startYearMonth),
 						PprmtPersonWage.class)
 				.map(c -> toDomain(c));
+		return result;
 	}
 
 }
