@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -320,6 +319,11 @@ public class Payment extends AggregateRoot {
 	public void setDetailArticleItems(List<DetailItem> items) {
 		this.detailArticleItems.clear();
 		this.detailArticleItems.addAll(items);
+	}
+	
+	public void setPositionCategoryItems(List<PrintPositionCategory> items) {
+		this.printCategories.clear();
+		this.printCategories.addAll(items);
 	}
 	
 	/**
