@@ -15,6 +15,7 @@ import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailParam;
@@ -66,13 +67,13 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		// LAYOUT_DETAIL with CTR_ATR = 3
 		val detailsOfCategoryArticles = layoutMasterDetailList.stream()
 				.filter(l -> l.isCategoryArticles())
-				.map(l -> createDetailOfCategoryArticlesOrOther(l))
+				.map(l -> createDetailOfCategoryArticlesOrOther(param, l))
 				.collect(Collectors.toList());
 		
 		// LAYOUT_DETAIL with CTR_ATR = 9
 		val detailsOfCategoryOther = layoutMasterDetailList.stream()
 				.filter(l -> l.isCategoryOther())
-				.map(l -> createDetailOfCategoryArticlesOrOther(l))
+				.map(l -> createDetailOfCategoryArticlesOrOther(param, l))
 				.collect(Collectors.toList());
 		
 		Map<CategoryAtr, List<DetailItem>> payDetail = new HashMap<>();
@@ -91,13 +92,12 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			LayoutMasterDetail layout,
 			PersonalCommuteFee commute) {
 		
+		ItemMaster itemMaster = getItemMaster(param, layout);
+		
 		// get calculate method
 		if (layout.isCalMethodManualOrFormulaOrWageOrCommon()) {
-			return DetailItem.createDataDetailItem(layout.getItemCode(), 0.0, layout.getCategoryAtr());
+			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr());
 		} else if (layout.isCalMethodPesonalInfomation()) {
-			
-			ItemMaster itemMaster = getItemMaster(param, layout);
-			
 			// calculate pay value by tax
 			return getPayValueByTax(param, layout, layout.getItemCode().v(),
 					itemMaster, commute);
@@ -110,10 +110,11 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private DetailItem createDetailOfCategoryDeduction(
 			PaymentDetailParam param,
 			LayoutMasterDetail layout) {
+		ItemMaster itemMaster = getItemMaster(param, layout);
+		
 		// sum
 		//double sumCommuteAllowance = commute.sumCommuteAllowance(param.getCurrentProcessingYearMonth());
 		if (layout.isCalMethodPesonalInfomation()) {
-			ItemMaster itemMaster = getItemMaster(param, layout);
 			// get personal wage
 			PersonalWage personalWage = personalWageRepo.find(
 					param.getCompanyCode(),
@@ -121,9 +122,9 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					itemMaster.getCategoryAtr().value,
 					this.getPersonalWageCode(itemMaster.getItemCode().v()),
 					param.getCurrentProcessingYearMonth().v()).get();
-			return DetailItem.createDataDetailItem(layout.getItemCode(), personalWage.getWageValue().doubleValue(), layout.getCategoryAtr());
+			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), layout.getCategoryAtr());
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
-			return DetailItem.createDataDetailItem(layout.getItemCode(), 0.0, layout.getCategoryAtr());
+			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr());
 		} else {
 			throw new RuntimeException("システムエラー");
 		}
@@ -135,6 +136,9 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			LayoutMasterDetail layout) {
 		
 		double value;
+		
+		ItemMaster itemMaster = getItemMaster(param, layout);
+		
 		// PayrollSystem == 2 || 3
 		if (param.getEmploymentContract().isPayrollSystemDailyOrDay()) {
 			value = getPayValueByMonthlyDaily(layout.getItemCode(), param.getHoliday(), param.getPaymentDateMaster(),
@@ -147,12 +151,14 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			throw new RuntimeException("システムエラー");
 		}
 		
-		return DetailItem.createDataDetailItem(layout.getItemCode(), value, layout.getCategoryAtr());
+		return this.createDataDetailItem(itemMaster, value, layout.getCategoryAtr());
 	}
 	
 	/** Create data detail with Layout.Category = 3 || 9 **/
-	private DetailItem createDetailOfCategoryArticlesOrOther(LayoutMasterDetail layout) {
-		return DetailItem.createDataDetailItem(layout.getItemCode(), 0.0, layout.getCategoryAtr());
+	private DetailItem createDetailOfCategoryArticlesOrOther(PaymentDetailParam param, LayoutMasterDetail layout) {
+		ItemMaster itemMaster = getItemMaster(param, layout);
+		
+		return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr());
 	}
 
 	/** Get item master **/
@@ -186,11 +192,10 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					getPersonalWageCode(itemCode),
 					param.getCurrentProcessingYearMonth().v()).get();
 			
-			return DetailItem.createDataDetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr());
+			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr());
 		} else if (itemMaster.isTaxCommutingoCostOrCommutingExpense()) { // tax_atr = 3 || 4
 			
-			return DetailItem.createDataDetailItem(
-					itemLayoutMasterDetail.getItemCode(),
+			return this.createDataDetailItem(itemMaster,
 					commute.sumCommuteAllowance(
 							itemLayoutMasterDetail.getCommuteAtr(),
 							param.getCurrentProcessingYearMonth().v()),
@@ -254,5 +259,19 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		}
 		
 		return itemCode.substring(2);
+	}
+	
+	/**
+	 * Create data for detail item
+	 * @param itemMaster
+	 * @param value
+	 * @param categoryAtr
+	 * @return
+	 */
+	private DetailItem createDataDetailItem(ItemMaster itemMaster, double value, CategoryAtr categoryAtr) {
+		val detailItem = DetailItem.createDataDetailItem(itemMaster.getItemCode(), value, categoryAtr);
+		detailItem.additionalInfo(CorrectFlag.NO_MODIFY, itemMaster.getSocialInsuranceAtr().value, itemMaster.getLaborInsuranceAtr().value, itemMaster.getDeductAttribute());
+		detailItem.additionalInfo(itemMaster.getLimitMoney().v(), itemMaster.getFixedPaidAtr().value, itemMaster.getAvgPaidAtr().value, itemMaster.getTaxAtr().value);
+		return detailItem;
 	}
 }
