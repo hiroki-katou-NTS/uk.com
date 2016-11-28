@@ -9,6 +9,15 @@ public interface PersonalEmploymentContractRepository {
 	Optional<PersonalEmploymentContract> find(String companyCode, String personId, LocalDate baseYmd);
 	
 	/**
+	 * Find employment contract
+	 * @param companyCode company code
+	 * @param personId person id
+	 * @param baseYmd base year month date
+	 * @return
+	 */
+	Optional<PersonalEmploymentContract> findActive(String companyCode, String personId, LocalDate baseYmd);
+	
+	/**
 	 * 
 	 * @param companyCode
 	 * @param personIdList
