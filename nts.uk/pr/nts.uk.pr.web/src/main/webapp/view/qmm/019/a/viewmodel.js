@@ -10,6 +10,7 @@ var qmm019;
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
+                self.layoutMaster = ko.observable(new a.service.model.LayoutMasterDto());
                 self.category1 = ko.observable(new Category(ko.observableArray([
                     new Line("categoryId-1", ko.observableArray([
                         new ItemDetail("1", "123", false, 1),
@@ -83,30 +84,15 @@ var qmm019;
                     ]), "lineId-2", true, true, 2)
                 ]), "categoryId-3", "categoryName-3", true));
                 self.categories = ko.observableArray([self.category1, self.category2, self.category3]);
-                self.selectedTask = ko.observable();
+                self.singleSelectedCode.subscribe(function (codeChanged) {
+                    var layoutFind = _.find(self.layouts(), function (layout) {
+                        return layout.stmtCode === codeChanged.split(';')[0];
+                    });
+                    if (layoutFind !== undefined) {
+                        self.layoutMaster(layoutFind);
+                    }
+                });
             }
-            ScreenModel.prototype.clearTask = function (data, event) {
-                var self = this;
-                if (data === self.selectedTask()) {
-                    self.selectedTask(null);
-                }
-                if (data.name() === "") {
-                    self.tasks.remove(data);
-                }
-            };
-            ;
-            ScreenModel.prototype.addTask = function () {
-                var self = this;
-                var task = new Task("new");
-                self.selectedTask(task);
-                self.tasks.push(task);
-            };
-            ;
-            ScreenModel.prototype.isTaskSelected = function (task) {
-                var self = this;
-                return task === self.selectedTask();
-            };
-            ;
             ScreenModel.prototype.bindSortable = function () {
                 $(".row").sortable({
                     items: "span:not(.ui-state-disabled)"
@@ -146,7 +132,7 @@ var qmm019;
                         return layout.stmtCode === layoutMax.stmtCode;
                     });
                     _.forEach(childLayouts, function (child) {
-                        children.push(new NodeTest(child.stmtCode + 1, child.stmtName, [], child.startYm + " ~ " + child.endYM));
+                        children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], child.startYm + " ~ " + child.endYm));
                     });
                     self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
                 });
@@ -177,15 +163,15 @@ var qmm019;
             Category.prototype.addLine = function () {
                 var self = this;
                 self.lines.push(new Line(self.categoryId, ko.observableArray([
-                    new ItemDetail("1", "itemv1", false, 1),
-                    new ItemDetail("2", "item1h", false, 2),
+                    new ItemDetail("1", "+", false, 1),
+                    new ItemDetail("2", "+", false, 2),
                     new ItemDetail("3", "+", false, 3),
-                    new ItemDetail("4", "item1t", false, 4),
+                    new ItemDetail("4", "+", false, 4),
                     new ItemDetail("5", "+", false, 5),
-                    new ItemDetail("6", "item1u", false, 6),
+                    new ItemDetail("6", "+", false, 6),
                     new ItemDetail("7", "+", false, 7),
-                    new ItemDetail("8", "item1e", false, 8),
-                    new ItemDetail("9", "item1j", false, 9)
+                    new ItemDetail("8", "+", false, 8),
+                    new ItemDetail("9", "+", false, 9)
                 ]), "lineId-3", true, true, 2));
                 ScreenModel.prototype.bindSortable();
                 ScreenModel.prototype.destroySortable();
@@ -232,23 +218,3 @@ var qmm019;
     })(a = qmm019.a || (qmm019.a = {}));
 })(qmm019 || (qmm019 = {}));
 ;
-var VisibleAndSelectBindingHandler = (function () {
-    /**
-     * Constructor.
-     */
-    function VisibleAndSelectBindingHandler() {
-    }
-    VisibleAndSelectBindingHandler.prototype.update = function (element, valueAccessor) {
-        //update: function(element, valueAccessor) {
-        ko.bindingHandlers.visible.update(element, valueAccessor);
-        if (valueAccessor()) {
-            setTimeout(function () {
-                $(element).find("input").focus().select();
-            }, 0); //new tasks are not in DOM yet
-        }
-    };
-    return VisibleAndSelectBindingHandler;
-}());
-;
-//control visibility, give element focus, and select the contents (in order)
-ko.bindingHandlers['visibleAndSelect'] = new VisibleAndSelectBindingHandler();
