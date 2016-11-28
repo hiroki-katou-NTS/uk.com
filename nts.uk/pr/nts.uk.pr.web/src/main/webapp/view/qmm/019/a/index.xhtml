@@ -65,8 +65,8 @@
             				<div data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
 	            				<label id="A_LBL_002">コード/名称</label>
 	           				</div>
-	           				<label id="A_LBL_003" data-bind="text: singleSelectedCode">01</label>
-	           				<input id="A_INP_002" data-bind="value: singleSelectedCode" type="text" />
+	           				<label id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
+	           				<input id="A_INP_002" data-bind="value: layoutMaster().stmtName" type="text" />
 	           				<label id="A_LBL_004">（　レーザープリンター　A4　縦向き　最大３人　）</label>
             			</div>
             			<div>

@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.proto.app.command.layout.CreateLayoutCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.CreateLayoutCommandHandler;
 import nts.uk.ctx.pr.proto.app.command.layout.CreateLayoutHistoryCommand;
@@ -16,13 +17,15 @@ import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
+import nts.uk.ctx.pr.proto.app.find.item.ItemDto;
+import nts.uk.ctx.pr.proto.app.find.item.ItemFinder;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/proto/layout")
 @Produces("application/json")
-public class LayoutWebService {
+public class LayoutWebService extends WebService {
 
 	@Inject
 	private CreateLayoutCommandHandler createLayoutData;

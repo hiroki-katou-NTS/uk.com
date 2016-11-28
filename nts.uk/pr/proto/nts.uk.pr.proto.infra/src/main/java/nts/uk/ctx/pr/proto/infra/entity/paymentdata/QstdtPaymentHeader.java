@@ -131,43 +131,43 @@ public class QstdtPaymentHeader {
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS1_CTG_ATR")
-	public String printPositionCategoryATR1;
+	public int printPositionCategoryATR1;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS2_CTG_ATR")
-	public String printPositionCategoryATR2;
+	public int printPositionCategoryATR2;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS3_CTG_ATR")
-	public String printPositionCategoryATR3;
+	public int printPositionCategoryATR3;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS4_CTG_ATR")
-	public String printPositionCategoryATR4;
+	public int printPositionCategoryATR4;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS5_CTG_ATR")
-	public String printPositionCategoryATR5;
+	public int printPositionCategoryATR5;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS1_CTG_LINES")
-	public String printPositionCategoryLines1;
+	public int printPositionCategoryLines1;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS2_CTG_LINES")
-	public String printPositionCategoryLines2;
+	public int printPositionCategoryLines2;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS3_CTG_LINES")
-	public String printPositionCategoryLines3;
+	public int printPositionCategoryLines3;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS4_CTG_LINES")
-	public String printPositionCategoryLines4;
+	public int printPositionCategoryLines4;
 	
 	@Basic(optional = false)
 	@Column(name = "PR_POS5_CTG_LINES")
-	public String printPositionCategoryLines5;
+	public int printPositionCategoryLines5;
 	
 	@Column(name = "MEMO")
 	public String comment;
