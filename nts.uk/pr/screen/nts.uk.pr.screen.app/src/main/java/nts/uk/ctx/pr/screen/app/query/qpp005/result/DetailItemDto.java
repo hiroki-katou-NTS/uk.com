@@ -10,6 +10,9 @@ public class DetailItemDto {
 	 */
 	int categoryAtr;
 
+	
+	int itemAtr; 
+	
 	/**
 	 * 項目コード
 	 */
@@ -36,10 +39,10 @@ public class DetailItemDto {
 	int columnPosition;
 
 	boolean isCreated;
-
-	public static DetailItemDto fromDomain(int categoryAtr, String itemCode, String itemName, Double value,
+	
+	public static DetailItemDto fromDomain(int categoryAtr, int itemAtr, String itemCode, String itemName, Double value,
 			int linePosition, int colPosition, boolean isCreated) {
-		return new DetailItemDto(categoryAtr, itemCode, itemName, value, linePosition, colPosition, isCreated);
+		return new DetailItemDto(categoryAtr, itemAtr, itemCode, itemName, value, linePosition, colPosition, isCreated);
 
 	}
 }

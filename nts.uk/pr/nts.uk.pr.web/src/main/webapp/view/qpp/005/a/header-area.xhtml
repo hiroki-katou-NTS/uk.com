@@ -15,7 +15,7 @@
 						<h:outputText value="対象年月" />
 					</div>
 					<div class="i-right">
-						<label data-bind="text: processingYM"></label>
+						<label data-bind="text: nts.uk.time.formatYearMonth(processingYM())"></label>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -23,8 +23,8 @@
 					<div class="i-left">
 						<button data-bind="click: openEmployeeList"
 							style="height: 25px !important;">対象者</button>
-						<button style="height: 25px !important;" data-bind="click: prevEmployee">⇦</button>
-						<button style="height: 25px !important;" data-bind="click: nextEmployee">⇨</button>
+						<button id="prev" style="height: 25px !important;" data-bind="click: prevEmployee">⇦</button>
+						<button id="next" style="height: 25px !important;" data-bind="click: nextEmployee">⇨</button>
 					</div>
 					<div class="i-right" data-bind="with: employee()">
 						<input id="employeeCode" data-name="employeeCode" data-bind="ntsTextEditor: {value: code, constraint: '', enable: false}" />
@@ -121,7 +121,7 @@
 
 			<div id="h-right" data-bind="with: paymentDataResult().paymentHeader">
 				<div data-bind="ntsFormLabel: {constraint: 'Comment', inline: true}">メモ</div>
-				<textarea id="txt-header-comment" rows="10" cols="45">今月より資格手当に「システム監査技術者（30,000円）が支給されます。
+				<textarea id="txt-header-comment">今月より資格手当に「システム監査技術者（30,000円）が支給されます。
 			</textarea>
 			</div>
 		</div>

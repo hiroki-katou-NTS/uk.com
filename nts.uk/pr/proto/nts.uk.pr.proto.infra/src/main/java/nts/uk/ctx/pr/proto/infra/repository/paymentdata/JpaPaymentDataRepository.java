@@ -210,6 +210,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				detail.getCategoryAtr().value, detail.getItemCode().v());
 		entity.value = BigDecimal.valueOf(detail.getValue());
 		entity.correctFlag = detail.getCorrectFlag().value;
+		entity.taxATR = domain.getTaxAtr().value;
 		entity.socialInsurranceAttribute = detail.getSocialInsuranceAtr().value;
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
 		entity.columnPosition = detail.getItemPostion().getColumnPosition().v().intValue();

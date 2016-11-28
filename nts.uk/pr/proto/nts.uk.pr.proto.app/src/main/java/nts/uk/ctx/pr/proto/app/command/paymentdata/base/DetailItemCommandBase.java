@@ -29,7 +29,7 @@ public class DetailItemCommandBase {
 	/**
 	 * 修正フラグ
 	 */
-	private int correctFlag;
+	private int correctFlag = 0;
 
 	/**
 	 * 社保対象区分
@@ -45,9 +45,9 @@ public class DetailItemCommandBase {
 
 	private int linePostion;
 
-	private int colPosition;
+	private int columnPosition;
 
-	private boolean isCreated;
+	private boolean created;
 
 	public DetailItem toDomain() {
 		return DetailItem.createFromJavaType(

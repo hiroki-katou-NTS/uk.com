@@ -13,56 +13,56 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
  */
 @Getter
 @Setter
-public abstract class PaymentHeaderCommandBase {
+public class PaymentHeaderCommandBase {
 
 	private String personId;
 	
-	private  int processingNo;
+	private int processingNo = 1;
 
-	private  int payBonusAtr;
+	private  int payBonusAtr = 0;
 
 	private  int processingYM;
 
-	private int sparePayAtr;
+	private int sparePayAtr = 0;
 
 	private LocalDate standardDate;
 
 	private String specificationCode;
 
-	private String residenceCode;
+	private String residenceCode = "000001";
 
-	private String residenceName;
+	private String residenceName = "住民税納付先";
 
-	private int healthInsuranceGrade;
+	private int healthInsuranceGrade = 5;
 
-	private int healthInsuranceAverageEarn;
+	private int healthInsuranceAverageEarn = 98000;
 
-	private int ageContinuationInsureAtr;
+	private int ageContinuationInsureAtr = 0;
 
-	private int tenureAtr;
+	private int tenureAtr = 0;
 
-	private int taxAtr;
+	private int taxAtr = 0;
 
-	private int pensionInsuranceGrade;
+	private int pensionInsuranceGrade = 1;
 
-	private int pensionAverageEarn;
+	private int pensionAverageEarn = 98000;
 
-	private int employmentInsuranceAtr;
+	private int employmentInsuranceAtr = 0;
 
-	private int dependentNumber;
+	private int dependentNumber = 0;
 
-	private int workInsuranceCalculateAtr;
+	private int workInsuranceCalculateAtr = 0;
 
-	private int insuredAtr;
+	private int insuredAtr = 0;
 
-	private int bonusTaxRate;
+	private int bonusTaxRate = 0;
 
-	private int calcFlag;
+	private int calcFlag = 1;
 
-	private int makeMethodFlag;
+	private int makeMethodFlag = 1;
 
 	private String comment;
-
+	
 	/**
 	 * Convert to domain object.
 	 * 

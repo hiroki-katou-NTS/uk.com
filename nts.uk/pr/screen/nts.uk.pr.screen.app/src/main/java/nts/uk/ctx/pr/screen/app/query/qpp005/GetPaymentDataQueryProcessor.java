@@ -139,20 +139,15 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(
-					layout.getStartYM().v(),
-					payment.getDependentNumber().v(), 
-					payment.getSpecificationCode().v(), layout.getStmtName().v(),
-					payment.getMakeMethodFlag().value, query.getEmployeeCode(), 
-					payment.getComment().v(), true));
+			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), payment.getDependentNumber().v(),
+					payment.getSpecificationCode().v(), layout.getStmtName().v(), payment.getMakeMethodFlag().value,
+					query.getEmployeeCode(), payment.getComment().v(), true));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(
-					layout.getStartYM().v(), null,
-					layout.getStmtCode().v(), layout.getStmtName().v(), 
-					null, query.getEmployeeCode(), null, false));
+			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), null, layout.getStmtCode().v(),
+					layout.getStmtName().v(), null, query.getEmployeeCode(), null, false));
 
 			return new ArrayList<>();
 		}
@@ -179,8 +174,7 @@ public class GetPaymentDataQueryProcessor {
 			String ctName = category.getCtAtr().toName();
 
 			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
-			List<LayoutMasterLine> fLines = lines.stream()
-					.filter(x -> x.getCategoryAtr().value == ctAtr)
+			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr)
 					.collect(Collectors.toList());
 			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr);
 
@@ -205,14 +199,16 @@ public class GetPaymentDataQueryProcessor {
 								&& x.getAutoLineId().v().equals(mLine.getAutoLineId().v())
 								&& x.getItemPosColumn().v() == posCol)
 						.findFirst().map(d -> {
-							Double value = datas.stream()
-									.filter(x -> x.getCategoryAtr() == ctAtr
-											&& x.getItemCode().equals(d.getItemCode().v()))
-									.findFirst().map(x -> x.getValue()).orElse(null);
-
-							return DetailItemDto.fromDomain(ctAtr, d.getItemCode().v(), d.getItemAbName().v(), value,
-									mLine.getLinePosition().v(), d.getItemPosColumn().v(), value != null);
-						}).orElse(DetailItemDto.fromDomain(ctAtr, "", "", null, mLine.getLinePosition().v(), i, false));
+							Optional<DetailItemDto> itemData = datas.stream().filter(
+									x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
+									.findFirst();
+							
+							// TODO ko get duoc
+							Double value = itemData.map(x -> x.getValue()).orElse(null);
+							return DetailItemDto.fromDomain(ctAtr, itemData.get().getItemAtr(), d.getItemCode().v(),
+									d.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(),
+									value != null);
+						}).orElse(DetailItemDto.fromDomain(ctAtr, -1, "", "", null, mLine.getLinePosition().v(), i, false));
 
 				items.add(detailItem);
 			}
