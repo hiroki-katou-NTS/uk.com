@@ -4,6 +4,10 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            /** Event to notify document ready to initialize UI. */
+            ui.documentReady = $.Callbacks();
+            /** Event to notify ViewModel built to bind. */
+            ui.viewModelBuilt = $.Callbacks();
             var init;
             (function (init) {
                 var _start;
@@ -15,12 +19,14 @@ var nts;
                         content: contentViewModel,
                         kiban: new KibanViewModel() // Kiban's view model
                     };
+                    ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                 };
                 $(function () {
+                    ui.documentReady.fire();
                     __viewContext.transferred = uk.sessionStorage.getItemAndRemove(uk.request.STORAGE_KEY_TRANSFER_DATA)
                         .map(function (v) { return JSON.parse(v); });
-                    _start.call(__viewContext);
+                    _.defer(function () { return _start.call(__viewContext); });
                 });
                 // Kiban ViewModel
                 var KibanViewModel = (function () {

@@ -8,9 +8,11 @@ var nts;
             (function (errors) {
                 var ErrorsViewModel = (function () {
                     function ErrorsViewModel() {
+                        var _this = this;
                         this.title = "エラー一覧";
                         this.errors = ko.observableArray([]);
                         this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
+                        this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
                     };
@@ -44,6 +46,7 @@ var nts;
                 function errorsViewModel() {
                     return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
                 }
+                errors.errorsViewModel = errorsViewModel;
                 function show() {
                     errorsViewModel().open();
                 }

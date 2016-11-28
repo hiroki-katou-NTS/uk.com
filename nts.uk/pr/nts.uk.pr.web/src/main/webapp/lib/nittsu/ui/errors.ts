@@ -4,11 +4,13 @@ module nts.uk.ui.errors {
         title: string;
         errors: KnockoutObservableArray<ErrorListItem>;
         option: any;
+        occurs: KnockoutComputed<boolean>;
         
         constructor() {
             this.title = "エラー一覧"
             this.errors = ko.observableArray([]);
             this.option = ko.mapping.fromJS(new option.ErrorDialogOption());
+            this.occurs = ko.computed(() => this.errors().length !== 0);
         }
         
         closeButtonClicked() {
@@ -54,7 +56,7 @@ module nts.uk.ui.errors {
         }
     }
     
-    function errorsViewModel(): ErrorsViewModel {
+    export function errorsViewModel(): ErrorsViewModel {
         return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
     }
     
