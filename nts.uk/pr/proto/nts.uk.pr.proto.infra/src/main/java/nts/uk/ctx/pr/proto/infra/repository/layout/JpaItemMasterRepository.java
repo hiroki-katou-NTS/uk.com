@@ -16,8 +16,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";
 	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode";
-	private final String SELECT_ALL_BY_CATEGORY = SELECT_ALL_BY_COMPANY + " WHERE c.qcamtItemPK.ccd = :companyCode"
-			+ " AND c.qcamtItemPK.ctgAtr = :categoryType";
+	private final String SELECT_ALL_BY_CATEGORY = SELECT_ALL_BY_COMPANY + " AND c.qcamtItemPK.ctgAtr = :categoryType";
 	private final String SELECT_DETAIL = SELECT_ALL_BY_CATEGORY + " AND c.qcamtItemPK.itemCd = :itemCode";
 
 	@Override
