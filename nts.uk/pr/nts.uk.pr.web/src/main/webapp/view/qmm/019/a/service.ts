@@ -47,8 +47,11 @@ module qmm019.a {
                 stmtCode: string;
                 startYm: number;
                 stmtName: string;
-                endYM: number;
+                endYm: number;
                 layoutAtr: number;
+                constructor() {
+                    
+                }
             }
 
         }

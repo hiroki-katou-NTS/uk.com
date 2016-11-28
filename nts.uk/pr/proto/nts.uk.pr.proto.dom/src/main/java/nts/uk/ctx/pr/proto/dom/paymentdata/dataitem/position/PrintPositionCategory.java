@@ -15,6 +15,7 @@ public class PrintPositionCategory extends DomainObject {
 	/**
 	 * 位置
 	 */
+	@Getter
 	private final CategoryAtr position;
 
 	/**

@@ -7,11 +7,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
-//@Entity
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="PPRMT_PERSON_COMMUTE")
-public class PprmtPersonCommute extends AggregateTableEntity {
+public class PprmtPersonCommute {
 
 	@EmbeddedId
     public PprmtPersonCommutePK pprmtPersonCommutePK;

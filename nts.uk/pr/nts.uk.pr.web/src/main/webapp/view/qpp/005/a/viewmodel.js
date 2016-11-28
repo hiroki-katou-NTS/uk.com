@@ -15,34 +15,34 @@ var nts;
                             function ScreenModel() {
                                 var self = this;
                                 self.isHandInput = ko.observable(true);
-                                self.paymentDataResult = ko.observable();
+                                self.paymentDataResult = ko.observable(new viewModel.PaymentDataResultViewModel());
                                 self.categories = ko.observable(new CategoriesList());
                                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
-                                self.employeeCode = ko.observable('A000000000001');
-                                self.employeeName = ko.observable('社員1');
+                                self.employee = ko.observable();
                                 var employeeMocks = [
-                                    { code: 'A000000000001', name: '日通　社員1' },
-                                    { code: 'A000000000002', name: '日通　社員2' },
-                                    { code: 'A000000000003', name: '日通　社員3' },
-                                    { code: 'A000000000004', name: '日通　社員4' },
-                                    { code: 'A000000000005', name: '日通　社員5' },
-                                    { code: 'A000000000006', name: '日通　社員6' },
-                                    { code: 'A000000000007', name: '日通　社員7' },
-                                    { code: 'A000000000008', name: '日通　社員8' },
-                                    { code: 'A000000000009', name: '日通　社員9' },
-                                    { code: 'A000000000010', name: '日通　社員10' }
+                                    { personId: 'A00000000000000000000000000000000001', code: 'A000000000001', name: '日通　社員1' },
+                                    { personId: 'A00000000000000000000000000000000002', code: 'A000000000002', name: '日通　社員2' },
+                                    { personId: 'A00000000000000000000000000000000003', code: 'A000000000003', name: '日通　社員3' },
+                                    { personId: 'A00000000000000000000000000000000004', code: 'A000000000004', name: '日通　社員4' },
+                                    { personId: 'A00000000000000000000000000000000005', code: 'A000000000005', name: '日通　社員5' },
+                                    { personId: 'A00000000000000000000000000000000006', code: 'A000000000006', name: '日通　社員6' },
+                                    { personId: 'A00000000000000000000000000000000007', code: 'A000000000007', name: '日通　社員7' },
+                                    { personId: 'A00000000000000000000000000000000008', code: 'A000000000008', name: '日通　社員8' },
+                                    { personId: 'A00000000000000000000000000000000009', code: 'A000000000009', name: '日通　社員9' },
+                                    { personId: 'A00000000000000000000000000000000010', code: 'A000000000010', name: '日通　社員10' }
                                 ];
                                 var employees = _.map(employeeMocks, function (employee) {
-                                    return new Employee(employee.code, employee.name);
+                                    return new Employee(employee.personId, employee.code, employee.name);
                                 });
                                 self.employeeList = ko.observableArray(employees);
+                                self.employee(employees[0]);
                             }
                             ScreenModel.prototype.startPage = function () {
                                 var self = this;
                                 var dfd = $.Deferred();
-                                qpp005.service.getPaymentData("A00000000000000000000000000000000001", self.employeeCode()).done(function (paymentResult) {
-                                    self.paymentDataResult(paymentResult);
-                                    var cates = _.map(paymentResult.categories, function (category) {
+                                qpp005.service.getPaymentData(self.employee().personId(), self.employee().code()).done(function (res) {
+                                    ko.mapping.fromJS(res, {}, self.paymentDataResult());
+                                    var cates = _.map(res.categories, function (category) {
                                         switch (category.categoryAttribute) {
                                             case 0:
                                                 return new Category(0, '支給');
@@ -58,7 +58,7 @@ var nts;
                                         ;
                                     });
                                     self.categories().items(cates);
-                                    self.categories().selectedCode(paymentResult.categories[0].categoryAttribute);
+                                    self.categories().selectedCode(res.categories[0].categoryAttribute);
                                     dfd.resolve();
                                 }).fail(function (res) {
                                     // Alert message
@@ -67,66 +67,103 @@ var nts;
                                 // Return.
                                 return dfd.promise();
                             };
-                            ScreenModel.prototype.openEmployeeList = function () {
+                            /** Event click: 計算/登録*/
+                            ScreenModel.prototype.register = function () {
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml', { title: '社員選択' }).onClosed(function () {
-                                    var employeeCode = nts.uk.ui.windows.getShared('employee');
-                                    self.employeeCode(employeeCode);
-                                    self.employeeName(employee);
+                                // TODO: Check error input
+                                qpp005.service.register(self.paymentDataResult()).done(function (res) {
                                 });
                             };
-                            ScreenModel.prototype.definedItems = function () {
+                            /** Event click: 対象者*/
+                            ScreenModel.prototype.openEmployeeList = function () {
+                                var _this = this;
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml', { title: '社員選択' }).onClosed(function () {
+                                    var employee = nts.uk.ui.windows.getShared('employee');
+                                    self.employee(employee);
+                                    self.startPage();
+                                    return _this;
+                                });
+                            };
+                            /** Event: Previous employee */
+                            ScreenModel.prototype.prevEmployee = function () {
+                                var self = this;
+                                var eIdx = _.indexOf(self.employeeList(), self.employee());
+                                var eSize = self.employeeList().length;
+                                if (eIdx === 0) {
+                                    return;
+                                }
+                                self.employee(self.employeeList()[eIdx - 1]);
+                                self.startPage();
+                            };
+                            /** Event: Next employee */
+                            ScreenModel.prototype.nextEmployee = function () {
+                                var self = this;
+                                var eIdx = _.indexOf(self.employeeList(), self.employee());
+                                var eSize = self.employeeList().length;
+                                if (eIdx === eSize - 1) {
+                                    return;
+                                }
+                                self.employee(self.employeeList()[eIdx + 1]);
+                                self.startPage();
                             };
                             return ScreenModel;
                         }());
                         viewmodel.ScreenModel = ScreenModel;
                         ;
-                        function Employee(code, name) {
-                            var self = this;
-                            self.code = code;
-                            self.name = name;
-                        }
+                        //        private parseResultDtoToViewModel(resultDto) {
+                        //              //        }
+                        var Employee = (function () {
+                            function Employee(personId, code, name) {
+                                var self = this;
+                                self.personId = ko.observable(personId);
+                                self.code = ko.observable(code);
+                                self.name = ko.observable(name);
+                            }
+                            return Employee;
+                        }());
+                        viewmodel.Employee = Employee;
                         /**
                           * Model namespace.
                        */
-                        var model;
-                        (function (model) {
-                            var PaymentDataResult = (function () {
-                                function PaymentDataResult() {
+                        var viewModel;
+                        (function (viewModel) {
+                            var PaymentDataResultViewModel = (function () {
+                                function PaymentDataResultViewModel() {
                                 }
-                                return PaymentDataResult;
+                                return PaymentDataResultViewModel;
                             }());
-                            model.PaymentDataResult = PaymentDataResult;
+                            viewModel.PaymentDataResultViewModel = PaymentDataResultViewModel;
                             // header
-                            var PaymentDataHeaderModel = (function () {
-                                function PaymentDataHeaderModel() {
+                            var PaymentDataHeaderViewModel = (function () {
+                                function PaymentDataHeaderViewModel() {
                                 }
-                                return PaymentDataHeaderModel;
+                                return PaymentDataHeaderViewModel;
                             }());
-                            model.PaymentDataHeaderModel = PaymentDataHeaderModel;
+                            viewModel.PaymentDataHeaderViewModel = PaymentDataHeaderViewModel;
                             // categories
-                            var LayoutMasterCategoryModel = (function () {
-                                function LayoutMasterCategoryModel() {
+                            var LayoutMasterCategoryViewModel = (function () {
+                                function LayoutMasterCategoryViewModel() {
                                 }
-                                return LayoutMasterCategoryModel;
+                                return LayoutMasterCategoryViewModel;
                             }());
-                            model.LayoutMasterCategoryModel = LayoutMasterCategoryModel;
+                            viewModel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                             // item
-                            var DetailItemModel = (function () {
-                                function DetailItemModel(categoryAtr, itemCode, itemNme, value, linePosition, columnPosition, isCreated) {
+                            var DetailItemViewModel = (function () {
+                                function DetailItemViewModel(categoryAtr, itemCode, itemNme, value, colPosition, rowPosition, isCreated) {
                                     var self = this;
                                     self.categoryAtr = categoryAtr;
                                     self.itemCode = itemCode;
                                     self.itemNme = itemNme;
                                     self.value = ko.observable(value);
-                                    self.linePosition = linePosition;
-                                    self.columnPosition = columnPosition;
+                                    self.colPosition = colPosition;
+                                    self.rowPosition = rowPosition;
                                     self.isCreated = isCreated;
                                 }
-                                return DetailItemModel;
+                                return DetailItemViewModel;
                             }());
-                            model.DetailItemModel = DetailItemModel;
-                        })(model = viewmodel.model || (viewmodel.model = {}));
+                            viewModel.DetailItemViewModel = DetailItemViewModel;
+                        })(viewModel = viewmodel.viewModel || (viewmodel.viewModel = {}));
                         var CategoriesList = (function () {
                             function CategoriesList() {
                                 this.selectionChangedEvent = $.Callbacks();
@@ -157,20 +194,6 @@ var nts;
                             return Category;
                         }());
                         viewmodel.Category = Category;
-                        var self = (function () {
-                            function self(categoryAtr, itemCode, itemNme, value, colPosition, rowPosition, isCreated) {
-                                var self = this;
-                                self.categoryAtr = categoryAtr;
-                                self.itemCode = itemCode;
-                                self.itemNme = itemNme;
-                                self.value = value;
-                                self.colPosition = colPosition;
-                                self.rowPosition = rowPosition;
-                                self.isCreated = isCreated;
-                            }
-                            return self;
-                        }());
-                        viewmodel.self = self;
                     })(viewmodel = qpp005.viewmodel || (qpp005.viewmodel = {}));
                 })(qpp005 = view.qpp005 || (view.qpp005 = {}));
             })(view = pr.view || (pr.view = {}));

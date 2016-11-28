@@ -80,22 +80,47 @@
         
     };
      
-    export function isInteger(value: any) {
+     
+    function isInteger(value: any, option?: any) {
+        if(option !== undefined && option.groupseperator() !== undefined){
+            value = this.isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
+        }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }
      
-    export function isDecimal(value: any) {
+    function isDecimal(value: any, option?: any) {
+        if(option !== undefined && option.groupseperator() !== undefined){
+            value = this.isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
+        }
         return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
      
-    export class ResultParseTime {
+    export function isNumber(value: any, isDecimalValue?: boolean, option?: any){
+        if(isDecimalValue){
+            return isDecimal(value, option); 
+        }else{
+            return isInteger(value, option); 
+        }
+    }
+     
+    abstract class ParseResult{
         success: boolean;
+        constructor(success) {
+            this.success = success;
+        }
+        
+        abstract format();
+        
+        abstract toValue();
+    }
+     
+    export class ResultParseTime extends ParseResult{
         minus: boolean;
         hours: number;
         minutes: number;
         
         constructor(success, minus?, hours?, minutes?) {
-            this.success = success;
+            super(success);
             this.minus = minus;
             this.hours = hours;
             this.minutes = minutes;
@@ -112,9 +137,20 @@
         format() {
             return (this.minus ? '-' : '') + this.hours + ':' + text.padLeft(String(this.minutes), '0', 2);
         }
+        
+        toValue() {
+            return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
+        }
     }
      
-    export function parseTime(time: string): ResultParseTime {
+    export function parseTime(time: any, isMinutes?: boolean): ResultParseTime {
+        if(isMinutes){
+            var hoursX = Math.floor(time/60);
+            time = hoursX + text.padLeft((time - hoursX*60).toString(), '0', 2);
+        }
+        if(!(time instanceof String)){
+            time = time.toString();
+        }
         if(time.length < 2 || time.split(':').length > 2 || time.split('-').length > 2
             || time.lastIndexOf('-') > 0){
             return ResultParseTime.failed();
@@ -139,18 +175,48 @@
             return ResultParseTime.failed();
         }
         
-        return ResultParseTime.succeeded(minusNumber, Number(hours), Number(minutes));
+        return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
     } 
+    
+    export class ResultParseYearMonth extends ParseResult{
+        year: number;
+        month: number;
+        
+        constructor(success, year?, month?) {
+            super(success);
+            this.year = year;
+            this.month = month;
+        }
+        
+        static succeeded(year, month) {
+            return new ResultParseYearMonth(true, year, month);
+        }
      
-    export function validateYearMonth(yearMonth: string){
+        static failed() {
+            return new ResultParseYearMonth(false);
+        }
+        
+        format() {
+            return this.year + '/' + text.padLeft(String(this.month), '0', 2);
+        }
+        
+        toValue() {
+            return (this.year * 100 + this.month);
+        }
+    }
+     
+    export function parseYearMonth(yearMonth: any): ResultParseYearMonth{
+        if(!(yearMonth instanceof String)){
+            yearMonth = yearMonth.toString();
+        }
         var stringLengh = yearMonth.length;
         if((stringLengh < 6 || stringLengh > 7) || yearMonth.split('/').length > 2){
-            throw new Error('invalid year month value: ' + yearMonth);
+            return ResultParseYearMonth.failed();
         }
         var indexOf = yearMonth.lastIndexOf('/');
         var year, month;
         if(indexOf > -1 && indexOf !== 4){
-            throw new Error('invalid year month value: ' + yearMonth);
+            return ResultParseYearMonth.failed();
         }else if(indexOf === 4) {
             year = yearMonth.split('/')[0];
             month = yearMonth.split('/')[1];
@@ -159,9 +225,9 @@
             month = yearMonth.substr(-2, 2);
         }
         if(!isInteger(month) || parseInt(month) > 12 || !isInteger(year)　|| parseInt(year) < 1900 ){
-                throw new Error('invalid year month value: ' + yearMonth);
+                return ResultParseYearMonth.failed();
         }
         
-        return year + "/" + (month.length === 1 ? '0' + month : month);
+        return ResultParseYearMonth.succeeded(parseInt(year), parseInt(month));
     } 
 }

@@ -1,4 +1,4 @@
-﻿module nts.uk.ui.notify {
+module nts.uk.ui.notify {
     
     module error {
         

@@ -22,9 +22,8 @@ public class UpdatePaymentDataCommand extends PaymentDataCommandBase {
 	 * 
 	 * @return domain
 	 */
-	@Override
 	public Payment toDomain(String companyCode) {
-		Payment domain = super.toDomain(companyCode);
+		Payment domain = super.getPaymentHeader().toDomain(companyCode);
 		domain.setVersion(this.version);
 		return domain;
 	}

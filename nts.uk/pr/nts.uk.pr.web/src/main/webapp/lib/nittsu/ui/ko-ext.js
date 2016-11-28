@@ -23,7 +23,15 @@ var nts;
                         this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         $input.change(function () {
                             var newText = $input.val();
-                            setValue(newText);
+                            var result = validation.parseTime(newText);
+                            if (result.success) {
+                                $input.ntsError('clear');
+                                setValue(result.format());
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid text');
+                                setValue(newText);
+                            }
                         });
                     };
                     /**
@@ -33,23 +41,18 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
                         var textmode = ko.unwrap(option.textmode);
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', textmode);
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
@@ -72,11 +75,17 @@ var nts;
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
                         this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
+                            if (validation.isNumber(newText, true, option)) {
+                                $input.ntsError('clear');
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid number');
+                            }
                             setValue(newText);
                         });
                     };
@@ -87,28 +96,25 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', 'text');
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
+                        newText = uk.text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText)
+                            : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
                         $input.val(newText);
                     };
                     return NtsNumberEditorBindingHandler;
@@ -125,14 +131,21 @@ var nts;
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            var result = validation.parseTime(newText);
+                            var result;
+                            if (option.inputFormat() === "yearmonth") {
+                                result = validation.parseYearMonth(newText);
+                            }
+                            else {
+                                result = validation.parseTime(newText);
+                            }
                             if (result.success) {
                                 $input.ntsError('clear');
-                                setValue(result.format());
+                                $input.val(result.format());
+                                setValue(result.toValue());
                             }
                             else {
                                 $input.ntsError('set', 'invalid time');
@@ -147,34 +160,40 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', 'text');
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var newText = getValue();
-                        $input.val(newText);
+                        var result;
+                        if (option.inputFormat() === "yearmonth") {
+                            result = validation.parseYearMonth(data.value());
+                        }
+                        else {
+                            result = validation.parseTime(data.value(), true);
+                        }
+                        if (result.success) {
+                            $input.val(result.format());
+                        }
+                        else {
+                            $input.val(data.value());
+                        }
                     };
                     return NtsTimeEditorBindingHandler;
                 }());
                 /**
-                 * TextEditor
+                 * MaskEditor
                  */
                 var NtsMaskEditorBindingHandler = (function () {
                     function NtsMaskEditorBindingHandler() {
@@ -189,7 +208,6 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
@@ -200,23 +218,17 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
-                        var textmode = ko.unwrap(option.textmode);
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
-                        $input.attr('type', textmode);
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        $input.attr('type', 'text');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);

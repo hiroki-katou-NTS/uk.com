@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * item finder
@@ -22,8 +23,8 @@ public class ItemFinder {
 	 * @param categoryAtr
 	 * @return
 	 */
-	public List<ItemDto> getAllItems(String companyCode, int categoryAtr){
-		return this.repostirory.getAllItemMaster(companyCode, categoryAtr).stream()
+	public List<ItemDto> getAllItems(int categoryAtr){
+		return this.repostirory.findAllByCategory(AppContexts.user().companyCode(), categoryAtr).stream()
 				.map(item -> ItemDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
@@ -34,8 +35,8 @@ public class ItemFinder {
  * @param itemCode
  * @return
  */
-	public Optional<ItemDto> getItem(String companyCode, int categoryAtr, String itemCode){
-		return this.repostirory.getItemMaster(companyCode, categoryAtr, itemCode)
+	public Optional<ItemDto> getItem(int categoryAtr, String itemCode){
+		return this.repostirory.getItemMaster(AppContexts.user().companyCode(), categoryAtr, itemCode)
 				.map(item->ItemDto.fromDomain(item));
 	}
 }
