@@ -20,7 +20,7 @@ __viewContext.ready(function () {
             },
             // TimeEditor
             timeeditor: {
-                value: ko.observable("1200"),
+                value: ko.observable("-1200"),
                 constraint: 'LayoutCode',
                 option: ko.mapping.fromJS(new option.TimeEditorOption()),
                 enable: ko.observable(true),
@@ -28,7 +28,7 @@ __viewContext.ready(function () {
             },
             // TimeEditor
             yearMonthEditor: {
-                value: ko.observable("1200"),
+                value: ko.observable("199911"),
                 constraint: 'LayoutCode',
                 option: ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: 'yearmonth'})),
                 enable: ko.observable(true),

@@ -134,7 +134,11 @@
         }
     }
      
-    export function parseTime(time: any): ResultParseTime {
+    export function parseTime(time: any, isMinutes?: boolean): ResultParseTime {
+        if(isMinutes){
+            var hoursX = Math.floor(time/60);
+            time = hoursX + text.padLeft((time - hoursX*60).toString(), '0', 2);
+        }
         if(!(time instanceof String)){
             time = time.toString();
         }

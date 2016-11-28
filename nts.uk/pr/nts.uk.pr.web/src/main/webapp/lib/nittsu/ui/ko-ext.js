@@ -181,7 +181,7 @@ var nts;
                             result = validation.parseYearMonth(data.value());
                         }
                         else {
-                            result = validation.parseTime(data.value());
+                            result = validation.parseTime(data.value(), true);
                         }
                         if (result.success) {
                             $input.val(result.format());
