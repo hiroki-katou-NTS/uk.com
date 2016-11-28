@@ -180,8 +180,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		
 		// add by EAP 06.データ作成（実行）-登録処理 (update 28.11.2016)
 		entity.companyName = "日通システム株式会社";
-		entity.employeeCode = "0000000001";
-		entity.employeeName = "雇用";
+		entity.employmentCode = "0000000001";
+		entity.employmentName = "雇用";
 		entity.departmentCode = "0000000001";
 		entity.departmentName = "部門";
 		entity.externalDepartmentCode = "000000000000001";
