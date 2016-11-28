@@ -23,7 +23,7 @@ var nts;
                         this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         $input.change(function () {
                             var newText = $input.val();
-                            var result = validation.parseTime(newText);
+                            var result = uk.time.parseTime(newText);
                             if (result.success) {
                                 $input.ntsError('clear');
                                 setValue(result.format());
@@ -80,7 +80,7 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            if (validation.isNumber(newText, true, option)) {
+                            if (uk.ntsNumber.isNumber(newText, true, option)) {
                                 $input.ntsError('clear');
                             }
                             else {
@@ -113,8 +113,8 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
-                        if (newText !== undefined && newText !== null && newText.trim().length > 0) {
-                            newText = uk.text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText)
+                        if (newText !== undefined && newText !== null && newText.toString().trim().length > 0) {
+                            newText = uk.ntsNumber.formatNumber(uk.ntsNumber.isNumber(newText, true) ? parseFloat(newText)
                                 : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
                         }
                         $input.val(newText);
@@ -139,10 +139,10 @@ var nts;
                             var newText = $input.val();
                             var result;
                             if (option.inputFormat() === "yearmonth") {
-                                result = validation.parseYearMonth(newText);
+                                result = uk.time.parseYearMonth(newText);
                             }
                             else {
-                                result = validation.parseTime(newText);
+                                result = uk.time.parseTime(newText);
                             }
                             if (result.success) {
                                 $input.ntsError('clear');
@@ -181,10 +181,10 @@ var nts;
                         if (data.value() !== undefined && data.value() !== null) {
                             var result;
                             if (option.inputFormat() === "yearmonth") {
-                                result = validation.parseYearMonth(data.value());
+                                result = uk.time.parseYearMonth(data.value());
                             }
                             else {
-                                result = validation.parseTime(data.value(), true);
+                                result = uk.time.parseTime(data.value(), true);
                             }
                             if (result.success) {
                                 $input.val(result.format());

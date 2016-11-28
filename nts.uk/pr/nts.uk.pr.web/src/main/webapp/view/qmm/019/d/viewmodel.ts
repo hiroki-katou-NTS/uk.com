@@ -66,7 +66,7 @@ module qmm019.d.viewmodel {
                 if(stmtCode == self.layoutSelect()){
                     self.selectStmtCode(stmtCode);
                     self.selectStmtName(layout.stmtName);
-                    self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm + 1));
+                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm + 1));
                     return false;                    
                 }
             });     
