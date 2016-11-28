@@ -99,3 +99,25 @@ input[type="text"]{
 }
 
 
+/*****************************
+  ErrorNotifier
+*****************************/
+#func-notifier-errors {
+	position: absolute;
+	display: inline-block;
+
+    @include border-radius(5px);
+	padding: 1px 17px 3px 17px;
+    font-weight: bold;
+    border: solid 1px #eaa;
+    
+	background-color: #ffdddd;
+	color: #dd3a3a;
+    cursor: pointer;
+
+    &:hover {
+    	background-color: #ffcccc;
+    	color: #cc2222;
+        border-color: #cc2222;
+    }
+}

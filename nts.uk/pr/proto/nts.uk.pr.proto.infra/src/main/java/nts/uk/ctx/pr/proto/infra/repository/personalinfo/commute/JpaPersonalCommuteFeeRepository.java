@@ -45,7 +45,7 @@ public class JpaPersonalCommuteFeeRepository extends JpaRepository implements Pe
 		PersonalCommuteFee domain = PersonalCommuteFee.createFromJavaType(entity.commuNotaxLimitPriNo,
 				entity.commuNotaxLimitPriNo, commute1, commute2, commute3, commute4, commute5,
 				entity.pprmtPersonCommutePK.pId);
-		entity.toDomain(domain);
+		//entity.toDomain(domain);
 		return domain;
 	}
 
