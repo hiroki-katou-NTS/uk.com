@@ -10,15 +10,17 @@ public class LayoutMasterCategoryDto {
 	/** カテゴリ区分 */
 	int categoryAttribute;
 
+	String categoryName;
+
 	/** カテゴリ表示位置 */
 	int categoryPosition;
 
 	int lineCounts;
 
-	List<DetailItemDto> details;
+	List<LineDto> lines;
 
-	public static LayoutMasterCategoryDto fromDomain(int categoryAttribute, int categoryPosition, int lineCounts,
-			List<DetailItemDto> details) {
-		return new LayoutMasterCategoryDto(categoryAttribute, categoryPosition, lineCounts, details);
+	public static LayoutMasterCategoryDto fromDomain(int categoryAttribute, String categoryName, int categoryPosition,
+			int lineCounts, List<LineDto> lines) {
+		return new LayoutMasterCategoryDto(categoryAttribute, categoryName, categoryPosition, lineCounts, lines);
 	}
 }

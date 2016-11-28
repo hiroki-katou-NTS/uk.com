@@ -3,7 +3,7 @@ package nts.uk.shr.com.context;
 public class LoginUserContext {
 
 	public String companyCode() {
-		return "1234";
+		return "0001";
 	}
 	
 	public String employeeCode() {

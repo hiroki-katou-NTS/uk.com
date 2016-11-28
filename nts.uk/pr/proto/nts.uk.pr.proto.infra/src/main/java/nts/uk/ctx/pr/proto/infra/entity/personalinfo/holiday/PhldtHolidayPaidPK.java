@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.entity.personalinfo.holiday;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -21,6 +21,6 @@ public class PhldtHolidayPaidPK implements Serializable{
 	public String pId;
 	
 	@Column(name = "GRANT_DATE")
-	public Date grantDate;
+	public LocalDate grantDate;
 
 }

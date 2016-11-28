@@ -22,7 +22,9 @@ var services = (function () {
     var services = {};
 
     services.getEmployeeList = function () {
-       return employeeList;
+    	var dfd = $.Deferred();
+    	dfd.resolve(employeeList);
+       return dfd.promise();
     };
    
     return services;

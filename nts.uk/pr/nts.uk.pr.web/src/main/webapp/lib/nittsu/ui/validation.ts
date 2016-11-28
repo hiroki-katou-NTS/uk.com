@@ -81,17 +81,43 @@
     };
      
     export function isInteger(value: any) {
-        return !isNaN(value) && parseInt(Number(value)) == value && !isNaN(parseInt(value, 10));
+        return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }
      
     export function isDecimal(value: any) {
-        return !isNaN(value) && parseFloat(Number(value)) == value && !isNaN(parseFloat(value));
+        return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
      
-    export function validateTime(time: string){
+    export class ResultParseTime {
+        success: boolean;
+        minus: boolean;
+        hours: number;
+        minutes: number;
+        
+        constructor(success, minus?, hours?, minutes?) {
+            this.success = success;
+            this.minus = minus;
+            this.hours = hours;
+            this.minutes = minutes;
+        }
+        
+        static succeeded(minus, hours, minutes) {
+            return new ResultParseTime(true, minus, hours, minutes);
+        }
+     
+        static failed() {
+            return new ResultParseTime(false);
+        }
+        
+        format() {
+            return (this.minus ? '-' : '') + this.hours + ':' + text.padLeft(String(this.minutes), '0', 2);
+        }
+    }
+     
+    export function parseTime(time: string): ResultParseTime {
         if(time.length < 2 || time.split(':').length > 2 || time.split('-').length > 2
             || time.lastIndexOf('-') > 0){
-            throw new Error('invalid time value: ' + time);
+            return ResultParseTime.failed();
         }
         
         var minusNumber = time.charAt(0) === '-';
@@ -110,10 +136,10 @@
         }
         
         if(!isInteger(minutes) || parseInt(minutes) > 59 || !isInteger(hours)){
-                throw new Error('invalid time value: ' + time);
+            return ResultParseTime.failed();
         }
         
-        return (minusNumber ? '-' : '') + hours + ":" + (minutes.length === 1 ? '0' + minutes : minutes);
+        return ResultParseTime.succeeded(minusNumber, Number(hours), Number(minutes));
     } 
      
     export function validateYearMonth(yearMonth: string){

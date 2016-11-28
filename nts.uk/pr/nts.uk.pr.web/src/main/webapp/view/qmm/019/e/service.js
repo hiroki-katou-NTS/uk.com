@@ -5,15 +5,17 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/layout/findlayout"
+                getLayoutInfor: "/pr/proto/layout/findlayout/{0}/{1}",
+                pathDeleteLayout: "/pr/proto/layout/deletedata"
             };
             /**
              * Get list layout master new history
              */
-            function getLayoutWithMaxStartYm() {
+            function getLayout(stmtCode, startYm) {
                 var dfd = $.Deferred();
-                var objectLayout = [{ 'stmtCode': '1', 'startYm': 201605 }];
-                nts.uk.request.ajax(paths.getLayoutInfor + objectLayout)
+                var objectLayout = { stmtCode: stmtCode, startYm: startYm };
+                var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, startYm);
+                nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -22,7 +24,26 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
+            service.getLayout = getLayout;
+            function deleteLayout(layoutMaster) {
+                var dfd = $.Deferred();
+                //        var dto : model.LayoutMasterDto = {
+                //            companyCode: layoutMaster.companyCode,
+                //            stmtCode: layoutMaster.stmtCode,
+                //            startYm: layoutMaster.startYm,
+                //            stmtName: layoutMaster.stmtName,
+                //            endYM: layoutMaster.endYM,
+                //            layoutAtr: layoutMaster.layoutAtr
+                //        };
+                var _path = nts.uk.text.format(paths.pathDeleteLayout, layoutMaster);
+                nts.uk.request.ajax(paths.pathDeleteLayout, layoutMaster).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.deleteLayout = deleteLayout;
             /**
                     * Model namespace.
                  */

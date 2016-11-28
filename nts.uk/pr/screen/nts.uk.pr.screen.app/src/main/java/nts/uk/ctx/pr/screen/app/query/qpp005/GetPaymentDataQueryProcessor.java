@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.screen.app.query.qpp005;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessi
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemPositionDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.LineDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.LayoutMasterCategoryDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataHeaderDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataResult;
@@ -138,14 +139,14 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymenHeader(new PaymentDataHeaderDto(payment.getDependentNumber().v(),
+			result.setPaymentHeader(new PaymentDataHeaderDto(payment.getDependentNumber().v(),
 					payment.getSpecificationCode().v(), layout.getStmtName().v(), payment.getMakeMethodFlag().value,
 					query.getEmployeeCode(), payment.getComment().v()));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymenHeader(new PaymentDataHeaderDto(null, layout.getStmtCode().v(), layout.getStmtName().v(),
+			result.setPaymentHeader(new PaymentDataHeaderDto(null, layout.getStmtCode().v(), layout.getStmtName().v(),
 					null, query.getEmployeeCode(), null));
 
 			return new ArrayList<>();
@@ -170,39 +171,54 @@ public class GetPaymentDataQueryProcessor {
 		mCates.sort((x, y) -> x.getCtgPos().compareTo(y.getCtgPos()));
 		for (LayoutMasterCategory category : mCates) {
 			int ctAtr = category.getCtAtr().value;
-			List<DetailItemDto> items = new ArrayList<>();
-			for (LayoutMasterDetail item : details) {
-				DetailItemDto detailItem = createDetailItemDto(lines, datas, ctAtr, item);
-				if (detailItem != null) {
-					items.add(detailItem);
-				}
-			}
-
+			String ctName = category.getCtAtr().toName();
+			
 			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
-			categories.add(
-					LayoutMasterCategoryDto.fromDomain(ctAtr, category.getCtgPos().v(), lineCounts.intValue(), items));
+			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).collect(Collectors.toList());
+			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr);
+
+			categories.add(LayoutMasterCategoryDto.fromDomain(
+					ctAtr, ctName, 
+					category.getCtgPos().v(),
+					lineCounts.intValue(), 
+					lineItems));
 		}
 
 		return categories;
 	}
 
-	private static DetailItemDto createDetailItemDto(List<LayoutMasterLine> lines, List<DetailItemDto> datas, int ctAtr,
-			LayoutMasterDetail item) {
-		Optional<LayoutMasterLine> mLine = lines.stream()
-				.filter(x -> x.getCategoryAtr().value == ctAtr && x.getAutoLineId().equals(item.getAutoLineId()))
-				.findFirst();
-
-		if (mLine.isPresent()) {
-			return null;
+	private static List<LineDto> getDetailItems(List<LayoutMasterLine> lines, List<LayoutMasterDetail> details,
+			List<DetailItemDto> datas, int ctAtr) {
+		List<LineDto> rLines = new ArrayList<>();
+		
+		for (LayoutMasterLine mLine : lines) {
+			LineDto lineDto; 
+			List<DetailItemDto> items = new ArrayList<>();
+			for (int i = 1; i <= 9; i++) {
+				int posCol = i;
+				DetailItemDto detailItem = details.stream()
+						.filter(x -> x.getCategoryAtr().value == ctAtr && x.getAutoLineId().v().equals(mLine.getAutoLineId().v()) && x.getItemPosColumn().v() == posCol)
+						.findFirst()
+						.map(d -> {
+							Double value = datas.stream()
+									.filter(x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
+									.findFirst().map(x -> x.getValue())
+									.orElse(null);
+							
+							return DetailItemDto.fromDomain(ctAtr,
+									d.getItemCode().v(), d.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(),
+									value != null);
+						}).orElse(DetailItemDto.fromDomain(ctAtr, "", "", null,
+								mLine.getLinePosition().v(), i, false));
+				
+				items.add(detailItem);
+			}
+			
+			lineDto = new LineDto(mLine.getLinePosition().v(), items);
+			rLines.add(lineDto);
 		}
-
-		Double value = datas.stream()
-				.filter(x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(item.getItemCode().v())).findFirst()
-				.map(d -> d.getValue()).orElse(null);
-
-		DetailItemDto detailItem = DetailItemDto.fromDomain(ctAtr, item.getItemCode().v(), item.getItemAbName().v(),
-				value, DetailItemPositionDto.fromDomain(mLine.get().getLinePosition().v(), item.getItemPosColumn().v()),
-				value != null);
-		return detailItem;
+		
+		return rLines;
 	}
+
 }

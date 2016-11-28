@@ -23,6 +23,7 @@ module nts.uk.ui.errors {
         }
         
         addError(error: ErrorListItem) {
+            // TODO: ignore duplicated item
             this.errors.push(error);
         }
         

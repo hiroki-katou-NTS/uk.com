@@ -129,8 +129,15 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
-                            setValue(newText);
+                            var result = validation.parseTime(newText);
+                            if (result.success) {
+                                $input.ntsError('clear');
+                                setValue(result.format());
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid time');
+                                setValue(newText);
+                            }
                         });
                     };
                     /**
@@ -839,8 +846,16 @@ var nts;
                         var container = $(element);
                         var selectListBoxContainer = container.find('.nts-list-box');
                         var maxWidthCharacter = 15;
+                        var getOptionValue = function (item) {
+                            if (optionValue === undefined) {
+                                return item;
+                            }
+                            else {
+                                return item[optionValue];
+                            }
+                        };
                         // Check selected code.
-                        if (!isMultiSelect && options.filter(function (item) { return item[optionValue] == selectedValue; }).length == 0) {
+                        if (!isMultiSelect && options.filter(function (item) { return getOptionValue(item) === selectedValue; }).length == 0) {
                             selectedValue = '';
                         }
                         // Remove options.
@@ -848,7 +863,7 @@ var nts;
                             var optValue = $(option).data('value');
                             // Check if btn is contained in options.
                             var foundFlag = _.findIndex(options, function (opt) {
-                                return opt[optionValue] == optValue;
+                                return getOptionValue(opt) == optValue;
                             }) != -1;
                             if (!foundFlag) {
                                 // Remove selected if not found option.
@@ -865,7 +880,7 @@ var nts;
                             var targetOption;
                             $('li', container).each(function (index, opt) {
                                 var optValue = $(opt).data('value');
-                                if (optValue == item[optionValue]) {
+                                if (optValue == getOptionValue(item)) {
                                     targetOption = $(opt);
                                     return;
                                 }
@@ -873,10 +888,10 @@ var nts;
                             // Check option is Selected.
                             var isSelected = false;
                             if (isMultiSelect) {
-                                isSelected = selectedValue.indexOf(item[optionValue]) != -1;
+                                isSelected = selectedValue.indexOf(getOptionValue(item)) != -1;
                             }
                             else {
-                                isSelected = selectedValue == item[optionValue];
+                                isSelected = selectedValue == getOptionValue(item);
                             }
                             if (!targetOption) {
                                 // Add option.
@@ -893,7 +908,11 @@ var nts;
                                 else {
                                     itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
                                 }
-                                selectListBoxContainer.append('<li data-value="' + item[optionValue] + '" class="' + selectedClass + '"> ' + itemTemplate + ' </li>');
+                                $('<li/>')
+                                    .addClass(selectedClass)
+                                    .html(itemTemplate)
+                                    .data('value', getOptionValue(item))
+                                    .appendTo(selectListBoxContainer);
                             }
                             else {
                                 if (isSelected) {

@@ -23,10 +23,13 @@
 					<div class="cf">
 						<div class="form-label inline">
 							<label id="LBL_001">対象データ</label>
-							<label id="LBL_002">01</label>
-							<label id="LBL_003">正社員用明細書</label>
-							<label id="LBL_004">2016/04　～　</label>
-							<label id="LBL_005">2018/03</label>
+							<label id="LBL_002" data-bind="text: selectLayoutCode">01</label>
+							<label id="LBL_003" data-bind="text: selectLayoutName">正社員用明細書</label>
+							<label id="">（</label>
+							<label id="LBL_004" data-bind="text: selectLayoutStartYm">2016/04</label>
+							<label id="">　　～　　</label>
+							<label id="LBL_005" data-bind="text: selectLayoutEndYm"></label>
+							<label id="">）</label>
 						</div><br />
 						<br />
 						<div class = "form-label inline">
@@ -35,20 +38,21 @@
 						<br/><br/>
 						<div class = "selectStyle">
 							<div id="SEL_001">
-								<input type="radio" name="layoutSelect" value="layoutDetele" /> 履歴を削除する<br /><br />
-				  				<input type="radio" name="layoutSelect" value="layoutUpdate" /> 履歴を修正する<br />
+								<input type="radio" name="layoutSelect" id="layoutDetele" checked="checked" /> 履歴を削除する<br /><br />
+				  				<input type="radio" name="layoutSelect" id="layoutUpdate" /> 履歴を修正する<br />
 							</div>							
 							<div>
 								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/><br />
 								<label id="LBL_008">開始年月</label>
-								<input  id = "INP_001" ></input>
-								<label id = "LBL_009">　～　2018/03</label>
+								<input  id = "INP_001" data-bind="value: selectLayoutStartYm"></input>
+								<label id="">　　～　　</label>
+								<label id = "LBL_009" data-bind="text: selectLayoutEndYm"></label>
 							</div>
 						</div>
 						<br /><br />
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001">決定</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind = "click: layoutProcess">決定</button>
 							<button class="large" id="BTN_002">キャンセル</button><br />
 						</div>
 					</div>

@@ -21,14 +21,14 @@
 				<div class="clear"></div>
 				<div class="h-item">
 					<div class="i-left">
-						<button data-bind="click: $root.openEmployeeList"
+						<button data-bind="click: openEmployeeList"
 							style="height: 25px !important;">対象者</button>
 						<button style="height: 25px !important;">⇦</button>
 						<button style="height: 25px !important;">⇨</button>
 					</div>
 					<div class="i-right">
-						<input type="text" id="employeeCode" data-bind="" />
-						<h:outputText value="日通　太郎丙" />
+						<input id="employeeCode" data-name="employeeCode" data-bind="ntsTextEditor: {value: employeeCode, constraint: '', enable: false}" />
+						<span data-bind="text: employeeName"></span>
 					</div>
 					<div class="i-left">
 						<h:outputText value="部門" />
@@ -82,7 +82,7 @@
 				</div>
 
 				<div class="clear"></div>
-				<div class="h-item" style="border-top: none;">
+				<div class="h-item" style="border-top: none;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
 						<h:outputText value="厚生年金" />
 					</div>
@@ -102,7 +102,7 @@
 				</div>
 
 				<div class="clear"></div>
-				<div class="h-item" style="margin: 3px 0px 0px 0px !important;">
+				<div class="h-item" style="margin: 3px 0px 0px 0px !important;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
 						<h:outputText value="明細書レイアウト" />
 					</div>
@@ -119,8 +119,8 @@
 				</div>
 			</div>
 
-			<div id="h-right">
-				<div data-bind="ntsFormLabel: {constraint: 'Comment'	}">メモ</div>
+			<div id="h-right" data-bind="with: paymentDataResult().paymentHeader">
+				<div data-bind="ntsFormLabel: {constraint: 'Comment', inline: true}">メモ</div>
 				<textarea id="txt-header-comment" rows="10" cols="45">今月より資格手当に「システム監査技術者（30,000円）が支給されます。
 			</textarea>
 			</div>
