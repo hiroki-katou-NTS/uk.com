@@ -43,7 +43,7 @@ var nts;
                         var getValue = data.value;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
                         var textmode = ko.unwrap(option.textmode);
                         var placeholder = ko.unwrap(option.placeholder);
@@ -98,7 +98,7 @@ var nts;
                         var getValue = data.value;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
@@ -113,8 +113,10 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
-                        newText = uk.text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText)
-                            : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
+                        if (newText !== undefined && newText !== null && newText.trim().length > 0) {
+                            newText = uk.text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText)
+                                : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
+                        }
                         $input.val(newText);
                     };
                     return NtsNumberEditorBindingHandler;
@@ -162,7 +164,7 @@ var nts;
                         var getValue = data.value;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
@@ -176,18 +178,20 @@ var nts;
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var result;
-                        if (option.inputFormat() === "yearmonth") {
-                            result = validation.parseYearMonth(data.value());
-                        }
-                        else {
-                            result = validation.parseTime(data.value(), true);
-                        }
-                        if (result.success) {
-                            $input.val(result.format());
-                        }
-                        else {
-                            $input.val(data.value());
+                        if (data.value() !== undefined && data.value() !== null) {
+                            var result;
+                            if (option.inputFormat() === "yearmonth") {
+                                result = validation.parseYearMonth(data.value());
+                            }
+                            else {
+                                result = validation.parseTime(data.value(), true);
+                            }
+                            if (result.success) {
+                                $input.val(result.format());
+                            }
+                            else {
+                                $input.val(data.value());
+                            }
                         }
                     };
                     return NtsTimeEditorBindingHandler;
@@ -220,7 +224,7 @@ var nts;
                         var getValue = data.value;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);

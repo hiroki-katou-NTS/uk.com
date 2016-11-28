@@ -40,7 +40,7 @@ module nts.uk.ui.koExtentions {
             var getValue: () => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
             var textmode: string = ko.unwrap(option.textmode);
             var placeholder: string = ko.unwrap(option.placeholder);
@@ -99,7 +99,7 @@ module nts.uk.ui.koExtentions {
             var getValue: () => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
@@ -117,8 +117,10 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
 
             var newText = getValue();
-            newText = text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText) 
-                : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
+            if(newText !== undefined && newText !== null && newText.trim().length > 0){
+                newText = text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText) 
+                    : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);    
+            }
             $input.val(newText);
         }
     }
@@ -168,7 +170,7 @@ module nts.uk.ui.koExtentions {
             var getValue: () => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
@@ -184,16 +186,18 @@ module nts.uk.ui.koExtentions {
                 $input.width(width);
             if (textalign.trim() != "")
                 $input.css('text-align', textalign);
-            var result;
-            if (option.inputFormat() === "yearmonth") {
-                result = validation.parseYearMonth(data.value());
-            } else {
-                result = validation.parseTime(data.value(), true);
-            }
-            if (result.success) {
-                $input.val(result.format());
-            }else{
-                $input.val(data.value());
+            if(data.value() !== undefined && data.value() !== null){
+                var result;
+                if (option.inputFormat() === "yearmonth") {
+                    result = validation.parseYearMonth(data.value());
+                } else {
+                    result = validation.parseTime(data.value(), true);
+                }
+                if (result.success) {
+                    $input.val(result.format());
+                }else{
+                    $input.val(data.value());
+                }
             }
         }
     }
@@ -229,7 +233,7 @@ module nts.uk.ui.koExtentions {
             var getValue: () => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
             var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
