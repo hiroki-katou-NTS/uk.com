@@ -65,4 +65,5 @@ public interface LayoutMasterRepository {
 	 */
 	List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode);
 	
+	
 }

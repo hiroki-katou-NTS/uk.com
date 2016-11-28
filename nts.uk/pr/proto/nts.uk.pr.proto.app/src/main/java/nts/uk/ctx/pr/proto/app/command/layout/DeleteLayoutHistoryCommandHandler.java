@@ -73,16 +73,13 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 	
 	private void updateObject(DeleteLayoutHistoryCommand command){
 		//データベース更新[明細書マスタ.UPD-2] を実施する
-//		Optional<LayoutMaster> layoutOrigin = layoutRepository.getLayout(command.getCompanyCode(),
-//				command.getStartYm() - 1,
-//				command.getStmtCode());
 		Optional<LayoutMaster> layoutBefore = layoutRepository.getHistoryBefore(command.getCompanyCode(),
 				command.getStmtCode(),
 				command.getStartYm() - 1);
-		if (layoutBefore.isPresent()) {
-			LayoutMaster layoutOrigin = layoutBefore.get();
-			layoutOrigin.setEndYm(new YearMonth(999912));
-			layoutRepository.update(layoutOrigin);
+		if (layoutBefore != null) {
+			LayoutMaster layout = layoutBefore.get();
+			layout.setEndYm(new YearMonth(999912));
+			layoutRepository.update(layout);
 		}
 		
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する

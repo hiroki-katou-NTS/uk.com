@@ -56,7 +56,6 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
             
             var newText = getValue();
-            
             $input.val(newText);
         }
     }
@@ -79,7 +78,6 @@ module nts.uk.ui.koExtentions {
 
             $input.change(function() {
                 var newText = $input.val();
-                bindingContext.$data.change(newText);
                 setValue(newText);
             });
         }
@@ -187,7 +185,7 @@ module nts.uk.ui.koExtentions {
     }
     
     /**
-     * TextEditor
+     * MaskEditor
      */
     class NtsMaskEditorBindingHandler implements KnockoutBindingHandler {
 
@@ -204,7 +202,6 @@ module nts.uk.ui.koExtentions {
 
             $input.change(function() {
                 var newText = $input.val();
-                bindingContext.$data.change(newText);
                 setValue(newText);
             });
         }

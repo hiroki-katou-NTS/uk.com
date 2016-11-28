@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.commute;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -52,6 +53,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 		super();
 		this.commuteNoTaxLimitPrivateNo = commuteNoTaxLimitPrivateNo;
 		this.commuteNoTaxLimitPublishNo = commuteNoTaxLimitPublishNo;
+		this.commutes = new ArrayList<>();
 		addCommute(commute1);
 		addCommute(commute2);
 		addCommute(commute3);

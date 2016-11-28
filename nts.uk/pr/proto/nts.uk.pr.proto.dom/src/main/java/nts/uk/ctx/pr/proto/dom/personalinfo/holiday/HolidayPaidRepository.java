@@ -12,6 +12,8 @@ public interface HolidayPaidRepository {
 	
 	Optional<HolidayPaid> find(String companyCode, String personId, LocalDate startDate);
 	
+	Optional<HolidayPaid> find(String companyCode, String personId);
+	
 	/**
 	 * 
 	 * @param companyCode

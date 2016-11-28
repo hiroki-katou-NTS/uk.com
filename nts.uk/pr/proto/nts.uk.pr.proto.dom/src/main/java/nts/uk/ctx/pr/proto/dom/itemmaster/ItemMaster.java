@@ -77,12 +77,13 @@ public class ItemMaster extends AggregateRoot{
 	private DisplayAtr zeroDisplayAtr;
 	
 	
-	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr, ItemName itemName) {
+	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr, ItemName itemName, TaxAtr taxAtr) {
 		super();
 		this.itemName = itemName;
 		this.companyCode = companyCode;
 		this.itemCode = itemCode;
 		this.categoryAtr = categoryAtr;
+		this.taxAtr = taxAtr;
 	}
 	/**
 	 * Validate
@@ -96,12 +97,13 @@ public class ItemMaster extends AggregateRoot{
 			String companyCode, 
 			String itemCode, 
 			int categoryAtr, 
-			String itemName)
+			String itemName,
+			int taxAtr)
 	{
 		return new ItemMaster(new CompanyCode(companyCode),
 				new ItemCode(itemCode),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				new ItemName(itemName));
+				new ItemName(itemName), EnumAdaptor.valueOf(taxAtr, TaxAtr.class));
 		
 	}
 	
