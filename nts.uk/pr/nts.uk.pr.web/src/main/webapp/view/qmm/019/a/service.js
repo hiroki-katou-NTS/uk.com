@@ -107,9 +107,61 @@ var qmm019;
                     Category.prototype.addLine = function () {
                         var self = this;
                         var autoLineId = "lineId;" + self.lines.length;
-                        var itemDetailObj = {};
+                        var itemDetailObj1 = { itemCode: "1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj2 = { itemCode: "2", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj3 = { itemCode: "3", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj4 = { itemCode: "4", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj5 = { itemCode: "5", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj6 = { itemCode: "6", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj7 = { itemCode: "7", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj8 = { itemCode: "8", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
+                        var itemDetailObj9 = { itemCode: "9", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
                         self.lines.push(new Line(self.categoryAtr, ([
-                            new ItemDetail(itemDetailObj)
+                            new ItemDetail(itemDetailObj1),
+                            new ItemDetail(itemDetailObj2),
+                            new ItemDetail(itemDetailObj3),
+                            new ItemDetail(itemDetailObj4),
+                            new ItemDetail(itemDetailObj5),
+                            new ItemDetail(itemDetailObj6),
+                            new ItemDetail(itemDetailObj7),
+                            new ItemDetail(itemDetailObj8),
+                            new ItemDetail(itemDetailObj9)
                         ]), autoLineId, 1, self.lines.length));
                         a.ScreenModel.prototype.bindSortable();
                         a.ScreenModel.prototype.destroySortable();
@@ -120,6 +172,7 @@ var qmm019;
                 model.Category = Category;
                 var Line = (function () {
                     function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition) {
+                        this.hasRequiredItem = false;
                         this.details = itemDetails;
                         this.autoLineId = autoLineId;
                         if (lineDispayAtr === 0) {
@@ -128,14 +181,20 @@ var qmm019;
                         else {
                             this.isDisplayOnPrint = true;
                         }
-                        //TODO: Can tinh xem co thang item nao required ko
-                        this.hasRequiredItem = false;
+                        var checkRequired = _.find(itemDetails, function (findItem) {
+                            return findItem.isRequired() === true;
+                        });
+                        if (checkRequired !== undefined) {
+                            this.hasRequiredItem = true;
+                        }
                         this.linePosition = linePosition;
                         this.categoryAtr = categoryAtr;
                     }
                     Line.prototype.lineClick = function (data, event) {
                         //TODO: goi man hinh khac
-                        $("#" + data.autoLineId + data.categoryAtr).addClass("ground-gray");
+                        if (data.hasRequiredItem === false) {
+                            $("#" + data.autoLineId + data.categoryAtr).addClass("ground-gray");
+                        }
                     };
                     return Line;
                 }());
@@ -147,9 +206,12 @@ var qmm019;
                     //                            errRangeHigh: number, isUseLowError: number, errRangeLow: number, isUseHighAlam: number,
                     //                            alamRangeHigh: number, isUseLowAlam: number, alamRangeLow: number
                     function ItemDetail(itemObject) {
+                        this.isRequired = ko.observable(false);
                         this.itemCode = ko.observable(itemObject.itemCode);
                         this.itemAbName = ko.observable(itemObject.itemAbName);
-                        this.isRequired = ko.observable(itemObject.isRequired);
+                        if (itemObject.itemCode === "F003" || itemObject.itemCode === "F114") {
+                            this.isRequired = ko.observable(true);
+                        }
                         this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
                         this.categoryAtr = ko.observable(itemObject.categoryAtr);
                         this.autoLineId = ko.observable(itemObject.autoLineId);
