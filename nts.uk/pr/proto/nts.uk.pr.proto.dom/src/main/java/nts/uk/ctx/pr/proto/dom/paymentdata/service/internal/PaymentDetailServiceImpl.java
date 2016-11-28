@@ -272,7 +272,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 */
 	private DetailItem createDataDetailItem(ItemMaster itemMaster, double value, CategoryAtr categoryAtr, List<LayoutMasterLine> lineList, String autoLineId, int itemPositionColumn) {
 		LayoutMasterLine line = lineList.stream()
-				.filter(x -> categoryAtr == x.getCategoryAtr() && x.getAutoLineId().v() == autoLineId)
+				.filter(x -> categoryAtr == x.getCategoryAtr() && x.getAutoLineId().v().equals(autoLineId))
 				.findFirst().get();
 		
 		int linePosition;

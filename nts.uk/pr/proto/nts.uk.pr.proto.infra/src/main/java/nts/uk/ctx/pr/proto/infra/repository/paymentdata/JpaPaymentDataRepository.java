@@ -203,7 +203,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	 */
 	private QstdtPaymentDetail toPaymentDetailEntity(Payment domain, DetailItem detail) {
 		QstdtPaymentDetail entity = new QstdtPaymentDetail();
-		entity.fromDomain(domain);
+		//entity.fromDomain(domain);
 		entity.qstdtPaymentDetailPK = new QstdtPaymentDetailPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
 				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value,
