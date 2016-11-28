@@ -117,8 +117,10 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
 
             var newText = getValue();
-            newText = text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText) 
-                : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
+            if(newText !== undefined && newText !== null && newText.trim().length > 0){
+                newText = text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText) 
+                    : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);    
+            }
             $input.val(newText);
         }
     }
@@ -184,16 +186,18 @@ module nts.uk.ui.koExtentions {
                 $input.width(width);
             if (textalign.trim() != "")
                 $input.css('text-align', textalign);
-            var result;
-            if (option.inputFormat() === "yearmonth") {
-                result = validation.parseYearMonth(data.value());
-            } else {
-                result = validation.parseTime(data.value(), true);
-            }
-            if (result.success) {
-                $input.val(result.format());
-            }else{
-                $input.val(data.value());
+            if(data.value() !== undefined && data.value() !== null){
+                var result;
+                if (option.inputFormat() === "yearmonth") {
+                    result = validation.parseYearMonth(data.value());
+                } else {
+                    result = validation.parseTime(data.value(), true);
+                }
+                if (result.success) {
+                    $input.val(result.format());
+                }else{
+                    $input.val(data.value());
+                }
             }
         }
     }
