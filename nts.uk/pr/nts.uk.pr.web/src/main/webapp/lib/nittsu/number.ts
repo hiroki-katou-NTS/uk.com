@@ -2,14 +2,14 @@
     
     function isInteger(value: any, option?: any) {
         if(option !== undefined && option.groupseperator() !== undefined){
-            value = this.isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
+            value = isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
         }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }
      
     function isDecimal(value: any, option?: any) {
         if(option !== undefined && option.groupseperator() !== undefined){
-            value = this.isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
+            value = isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
         }
         return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
@@ -46,6 +46,6 @@
             values[1] = values[1].substr(0, decimallength);    
         }
          
-        return formattedValue + decimalseperator + values[1];   
+        return formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);   
      }
 }
