@@ -72,21 +72,27 @@ var nts;
                     }
                     return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
                 }
-                validation.isInteger = isInteger;
                 function isDecimal(value, option) {
                     if (option !== undefined && option.groupseperator() !== undefined) {
                         value = this.isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
                     }
                     return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
                 }
-                validation.isDecimal = isDecimal;
-                var TimeParseResult = (function () {
-                    function TimeParseResult(success) {
+                function isNumber(value, isDecimalValue, option) {
+                    if (isDecimalValue) {
+                        return isDecimal(value, option);
+                    }
+                    else {
+                        return isInteger(value, option);
+                    }
+                }
+                validation.isNumber = isNumber;
+                var ParseResult = (function () {
+                    function ParseResult(success) {
                         this.success = success;
                     }
-                    return TimeParseResult;
+                    return ParseResult;
                 }());
-                validation.TimeParseResult = TimeParseResult;
                 var ResultParseTime = (function (_super) {
                     __extends(ResultParseTime, _super);
                     function ResultParseTime(success, minus, hours, minutes) {
@@ -108,7 +114,7 @@ var nts;
                         return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
                     };
                     return ResultParseTime;
-                }(TimeParseResult));
+                }(ParseResult));
                 validation.ResultParseTime = ResultParseTime;
                 function parseTime(time, isMinutes) {
                     if (isMinutes) {
@@ -163,7 +169,7 @@ var nts;
                         return (this.year * 100 + this.month);
                     };
                     return ResultParseYearMonth;
-                }(TimeParseResult));
+                }(ParseResult));
                 validation.ResultParseYearMonth = ResultParseYearMonth;
                 function parseYearMonth(yearMonth) {
                     if (!(yearMonth instanceof String)) {

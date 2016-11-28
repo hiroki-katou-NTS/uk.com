@@ -63,7 +63,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		}
 		
 		// update payment header
-		this.paymentDataRepository.update(payment);
+		this.paymentDataRepository.updateHeader(payment);
 
 		// update detail
 		List<ItemMaster> mItems = this.itemMasterRepository.findAll(companyCode);
@@ -110,8 +110,9 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 						item.getCorrectFlag(),
 						item.getSocialInsuranceAtr(),
 						item.getLaborInsuranceAtr(),
-						item.getDeductionAtr(),
-						item.getCategoryAtr());
+						item.getCategoryAtr(),
+						mItem.getDeductAttribute().value
+						);
 				
 				if (item.isCreated()) {
 						this.paymentDataRepository.updateDetail(payment, detailItem);	

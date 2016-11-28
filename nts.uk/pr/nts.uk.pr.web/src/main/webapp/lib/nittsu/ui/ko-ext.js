@@ -80,7 +80,7 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            if (validation.isDecimal(newText, option)) {
+                            if (validation.isNumber(newText, true, option)) {
                                 $input.ntsError('clear');
                             }
                             else {
@@ -113,7 +113,7 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
-                        newText = uk.text.formatNumber(validation.isDecimal(newText) ? parseFloat(newText)
+                        newText = uk.text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText)
                             : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
                         $input.val(newText);
                     };

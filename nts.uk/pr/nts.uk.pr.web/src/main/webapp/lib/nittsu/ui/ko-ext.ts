@@ -81,7 +81,7 @@ module nts.uk.ui.koExtentions {
 
             $input.change(function() {
                 var newText = $input.val();
-                if(validation.isDecimal(newText, option)){
+                if(validation.isNumber(newText, true, option)){
                     $input.ntsError('clear');
                 } else {
                     $input.ntsError('set', 'invalid number');
@@ -117,7 +117,7 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
 
             var newText = getValue();
-            newText = text.formatNumber(validation.isDecimal(newText) ? parseFloat(newText) 
+            newText = text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText) 
                 : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
             $input.val(newText);
         }
