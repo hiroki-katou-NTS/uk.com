@@ -26,6 +26,14 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             },
+            // TimeEditor
+            yearMonthEditor: {
+                value: ko.observable("1200"),
+                constraint: 'LayoutCode',
+                option: ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: 'yearmonth'})),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            },
             // MaskEditor
             maskeditor: {
                 value: ko.observable("0001"),

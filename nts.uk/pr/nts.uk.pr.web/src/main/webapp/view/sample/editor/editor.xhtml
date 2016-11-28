@@ -392,6 +392,12 @@
 							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
 							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
 						</div>
+						
+						<div data-bind="with: yearMonthEditor">
+							<br/><br/>
+							<h2>Year Month Editor</h2>
+							<input data-bind="ntsTimeEditor: {value: value, option: option, enable: enable, readonly: readonly}" />
+						</div>
 						<br/>
 						<!-- ViewModel -->
 						<div class="cf">
