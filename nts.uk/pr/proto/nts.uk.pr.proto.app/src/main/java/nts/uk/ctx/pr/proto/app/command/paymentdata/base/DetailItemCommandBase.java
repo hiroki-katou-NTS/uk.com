@@ -51,12 +51,13 @@ public class DetailItemCommandBase {
 
 	public DetailItem toDomain() {
 		return DetailItem.createFromJavaType(
-				getItemCode(), 
-				getValue(), 
-				getCorrectFlag(), 
-				getSocialInsuranceAtr(), 
-				getLaborInsuranceAtr(),
-				getCategoryAtr()
+				this.getItemCode(), 
+				this.getValue(), 
+				this.getCorrectFlag(), 
+				this.getSocialInsuranceAtr(), 
+				this.getLaborInsuranceAtr(),
+				this.getCategoryAtr(),
+				this.getDeductionAtr()
 				);
 	}
 }

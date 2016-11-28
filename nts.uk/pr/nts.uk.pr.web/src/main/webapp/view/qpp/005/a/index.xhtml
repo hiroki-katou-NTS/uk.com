@@ -24,7 +24,7 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button class="proceed">計算/登録</button>
+				<button class="proceed" data-bind="click: register">計算/登録</button>
 				<button>計算結果の確認</button>
 				<button>印刷プレビュー</button>
 				<button>データ修正ログ</button>
@@ -69,7 +69,7 @@
 									<com:ko-foreach bind="details">
 										<com:ko-if bind="itemCode !== ''">
 											<td><span data-bind="text: itemName"></span> <input
-												data-bind="ntsNumberEditor: {value: ko.observable(value)}" />
+												data-bind="ntsNumberEditor: {value: value}" />
 											</td>
 										</com:ko-if>
 										<com:ko-if bind="itemCode === ''">
