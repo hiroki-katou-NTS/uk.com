@@ -8,15 +8,16 @@ import lombok.Value;
 public class CategoryCommandBase {
 
 	/** カテゴリ区分 */
-	private int categoryAttribute;
-
+	int categoryAttribute;
+	/** カテゴリ名 */
+	String categoryName;
 	/** カテゴリ表示位置 */
-	private int categoryPosition;
+	int categoryPosition;
 
-	private List<DetailItemCommandBase> details;
+	private List<LineCommandBase> lines;
 
-	public static CategoryCommandBase fromDomain(int categoryAttribute, int categoryPosition,
-			List<DetailItemCommandBase> details) {
-		return new CategoryCommandBase(categoryAttribute, categoryPosition, details);
+	public static CategoryCommandBase fromDomain(int categoryAttribute, String categoryName, int categoryPosition,
+			List<LineCommandBase> lines) {
+		return new CategoryCommandBase(categoryAttribute, categoryName, categoryPosition, lines);
 	}
 }

@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
@@ -114,7 +112,7 @@ public class Payment extends AggregateRoot {
 	private List<DetailItem> detailPaymentItems = new ArrayList<>();
 
 	@Getter
-	private List<DetailDeductionItem> detailDeductionItems = new ArrayList<>();
+	private List<DetailItem> detailDeductionItems = new ArrayList<>();
 
 	@Getter
 	private List<DetailItem> detailPersonalTimeItems = new ArrayList<>();
@@ -262,7 +260,7 @@ public class Payment extends AggregateRoot {
 							int makeMethodFlag,
 							String comment,
 							List<DetailItem> detailPaymentItems,
-							List<DetailDeductionItem> detailDeductionItems,
+							List<DetailItem> detailDeductionItems,
 							List<DetailItem> detailPersonalTimeItems,
 							List<DetailItem> detailArticleItems
 							) {
@@ -307,7 +305,7 @@ public class Payment extends AggregateRoot {
 		this.detailPaymentItems.addAll(items);
 	}
 	
-	public void setDetailDeductionItems(List<DetailDeductionItem> items) {
+	public void setDetailDeductionItems(List<DetailItem> items) {
 		this.detailDeductionItems.clear();
 		this.detailDeductionItems.addAll(items);
 	}

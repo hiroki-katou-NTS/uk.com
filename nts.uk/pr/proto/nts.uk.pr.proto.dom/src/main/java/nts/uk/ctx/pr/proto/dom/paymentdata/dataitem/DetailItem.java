@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.DetailItemPosition;
 
@@ -49,7 +50,13 @@ public class DetailItem extends DomainObject {
 	private DetailItemPosition itemPostion;
 
 	@Getter
-	private CategoryAtr categoryAttribute;
+	private CategoryAtr categoryAtr;
+	
+	/*
+	 * 控除種類
+	 */
+	@Getter
+	private DeductionAtr deductionAtr;
 
 	/**
 	 * Constructor
@@ -60,7 +67,7 @@ public class DetailItem extends DomainObject {
 	 * @param laborInsuranceAtr
 	 */
 	public DetailItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
-			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAttribute) {
+			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr) {
 		super();
 		this.itemCode = itemCode;
 		this.value = value;
@@ -70,13 +77,15 @@ public class DetailItem extends DomainObject {
 	}
 
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
-			int laborInsuranceAtr, int categoryAttribute) {
+			int laborInsuranceAtr, int categoryAtr, int deductionAtr) {
 
 		return new DetailItem(new ItemCode(itemCode), value.doubleValue(),
 				EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
 				EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class),
-				EnumAdaptor.valueOf(categoryAttribute, CategoryAtr.class));
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class)
+				);
 	}
 
 	/**
@@ -89,6 +98,6 @@ public class DetailItem extends DomainObject {
 	 */
 	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
 		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
-				InsuranceAtr.UN_SUBJECT, categoryAttribute);
+				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION);
 	}
 }

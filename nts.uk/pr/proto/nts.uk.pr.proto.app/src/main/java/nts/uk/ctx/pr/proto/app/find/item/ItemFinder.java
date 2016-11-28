@@ -23,7 +23,7 @@ public class ItemFinder {
 	 * @return
 	 */
 	public List<ItemDto> getAllItems(String companyCode, int categoryAtr){
-		return this.repostirory.getAllItemMaster(companyCode, categoryAtr).stream()
+		return this.repostirory.findAllByCategory(companyCode, categoryAtr).stream()
 				.map(item -> ItemDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}

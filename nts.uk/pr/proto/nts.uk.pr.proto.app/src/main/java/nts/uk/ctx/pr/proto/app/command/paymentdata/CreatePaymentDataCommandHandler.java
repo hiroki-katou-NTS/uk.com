@@ -32,7 +32,6 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.TenureAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.EmploymentInsuranceAtr;
@@ -174,7 +173,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				SumScopeAtr.INCLUDED.value);
 
 		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutDetailMasterList);
-		List<DetailDeductionItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutDetailMasterList);
+		List<DetailItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutDetailMasterList);
 
 		Payment paymentHead = this.toDomain(
 				loginInfo.companyCode(), personId, processingNo, processingYearMonth,
@@ -189,7 +188,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * @return domain
 	 */
 	private Payment toDomain(String companyCode, String personId, int processingNo, YearMonth processingYearMonth,
-			List<DetailItem> detailPaymentList, List<DetailDeductionItem> detailDeductionList,
+			List<DetailItem> detailPaymentList, List<DetailItem> detailDeductionList,
 			Map<CategoryAtr, List<DetailItem>> payDetail) {
 		Payment payment = new Payment(new CompanyCode(companyCode), new PersonId(personId),
 				new ProcessingNo(processingNo), PayBonusAtr.SALARY, 

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
 class Helper {
@@ -21,7 +20,7 @@ class Helper {
 			.collect(Collectors.toList());
 	}
 
-	static List<DetailDeductionItem> createDetailsOfDeduction(Map<CategoryAtr, List<DetailItem>> payDetail,
+	static List<DetailItem> createDetailsOfDeduction(Map<CategoryAtr, List<DetailItem>> payDetail,
 			List<LayoutMasterDetail> layoutDetailMasterList) {
 		
 		return payDetail.get(CategoryAtr.DEDUCTION).stream()
@@ -35,8 +34,8 @@ class Helper {
 	 * @param detailItem
 	 * @return
 	 */
-	private static DetailDeductionItem toDetailDeductionItem(DetailItem detailItem) {
-		return new DetailDeductionItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
-				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), DeductionAtr.ANY_DEDUCTION, detailItem.getCategoryAttribute());
+	private static DetailItem toDetailDeductionItem(DetailItem detailItem) {
+		return new DetailItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
+				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), detailItem.getCategoryAtr(), DeductionAtr.ANY_DEDUCTION);
 	}
 }
