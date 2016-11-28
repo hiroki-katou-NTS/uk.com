@@ -4,44 +4,24 @@ module qmm019.a {
     export class ScreenModel {
         //Khai bao bien
         itemList: KnockoutObservableArray<NodeTest>;
-        singleSelectedCode: any;
+        singleSelectedCode: KnockoutObservable<string>;
         selectedCode: KnockoutObservableArray<NodeTest>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
+        layoutMaster: KnockoutObservable<service.model.LayoutMasterDto>;
 
         categories: KnockoutObservableArray<KnockoutObservable<Category>>;
-        tasks: KnockoutObservableArray<any>;
         category1: KnockoutObservable<Category>;
         category2: KnockoutObservable<Category>;
         category3: KnockoutObservable<Category>;
-        selectedTask: KnockoutObservable<any>;
-        clearTask(data, event): void {
-            var self = this;
-            if (data === self.selectedTask()) {
-                self.selectedTask(null);
-            }
-            if (data.name() === "") {
-                self.tasks.remove(data);
-            }
-        };
-        addTask(): void {
-            var self = this;
-            var task = new Task("new");
-            self.selectedTask(task);
-            self.tasks.push(task);
-        };
-        isTaskSelected(task): any {
-            var self = this;
-            return task === self.selectedTask();
-        };
-
-
+        
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.layouts = ko.observableArray([]);
             self.layoutsMax = ko.observableArray([]);
+            self.layoutMaster = ko.observable(new service.model.LayoutMasterDto());
 
             self.category1 = ko.observable(
                 new Category(
@@ -127,9 +107,17 @@ module qmm019.a {
 
             self.categories = ko.observableArray([self.category1, self.category2, self.category3]);
 
-            self.selectedTask = ko.observable();
+            self.singleSelectedCode.subscribe(function(codeChanged) {
+                var layoutFind = _.find(self.layouts(), function(layout) {
+                    return layout.stmtCode === codeChanged.split(';')[0];
+                });
+                if (layoutFind !== undefined){
+                    self.layoutMaster(layoutFind);                   
+                }
+            });
         }
 
+        
         bindSortable() {
             $(".row").sortable({
                 items: "span:not(.ui-state-disabled)"    
@@ -138,12 +126,12 @@ module qmm019.a {
                 items: ".row"    
             });
         }
+        
         destroySortable() {
             $(".row").sortable("destroy");
             $(".all-line").sortable("destroy");    
         }
         
-
         // start function
         start(): JQueryPromise<any> {
             var self = this;
@@ -174,7 +162,7 @@ module qmm019.a {
                     return layout.stmtCode === layoutMax.stmtCode;
                 });
                 _.forEach(childLayouts, function(child) {
-                    children.push(new NodeTest(child.stmtCode + 1, child.stmtName, [], child.startYm + " ~ " + child.endYM));
+                    children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], child.startYm + " ~ " + child.endYm));
                 });
                 self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
             });
@@ -210,15 +198,15 @@ module qmm019.a {
         addLine(){
             var self = this;
             self.lines.push(new Line(self.categoryId, ko.observableArray([
-                            new ItemDetail("1", "itemv1", false, 1),
-                            new ItemDetail("2", "item1h", false, 2),
+                            new ItemDetail("1", "+", false, 1),
+                            new ItemDetail("2", "+", false, 2),
                             new ItemDetail("3", "+", false, 3),
-                            new ItemDetail("4", "item1t", false, 4),
+                            new ItemDetail("4", "+", false, 4),
                             new ItemDetail("5", "+", false, 5),
-                            new ItemDetail("6", "item1u", false, 6),
+                            new ItemDetail("6", "+", false, 6),
                             new ItemDetail("7", "+", false, 7),
-                            new ItemDetail("8", "item1e", false, 8),
-                            new ItemDetail("9", "item1j", false, 9)
+                            new ItemDetail("8", "+", false, 8),
+                            new ItemDetail("9", "+", false, 9)
                         ]), "lineId-3", true, true, 2));
 
             ScreenModel.prototype.bindSortable();
@@ -272,25 +260,3 @@ module qmm019.a {
     }
 
 };
-
-
-class VisibleAndSelectBindingHandler implements KnockoutBindingHandler {
-    /**
-     * Constructor.
-     */
-    constructor() {
-    }
-    update(element: any, valueAccessor: () => any): void {
-        //update: function(element, valueAccessor) {
-        ko.bindingHandlers.visible.update(element, valueAccessor);
-        if (valueAccessor()) {
-            setTimeout(function() {
-                $(element).find("input").focus().select();
-            }, 0); //new tasks are not in DOM yet
-        }
-    }
-};
-
-
-//control visibility, give element focus, and select the contents (in order)
-ko.bindingHandlers['visibleAndSelect'] = new VisibleAndSelectBindingHandler();

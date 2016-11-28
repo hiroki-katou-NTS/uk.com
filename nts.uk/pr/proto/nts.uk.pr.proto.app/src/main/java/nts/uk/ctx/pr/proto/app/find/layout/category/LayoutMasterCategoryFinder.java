@@ -20,4 +20,6 @@ public class LayoutMasterCategoryFinder {
 				.map(c -> LayoutMasterCategoryDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
+	
+	
 }
