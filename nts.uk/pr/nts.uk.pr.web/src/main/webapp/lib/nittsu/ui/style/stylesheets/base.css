@@ -198,6 +198,32 @@ input[type="text"].error {
   border: 1px solid #f33;
 }
 
+/*****************************
+  ErrorNotifier
+*****************************/
+/* line 105, ../sass/components/_commons.scss */
+#func-notifier-errors {
+  position: absolute;
+  display: inline-block;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  padding: 1px 17px 3px 17px;
+  font-weight: bold;
+  border: solid 1px #eaa;
+  background-color: #ffdddd;
+  color: #dd3a3a;
+  cursor: pointer;
+}
+/* line 118, ../sass/components/_commons.scss */
+#func-notifier-errors:hover {
+  background-color: #ffcccc;
+  color: #cc2222;
+  border-color: #cc2222;
+}
+
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,

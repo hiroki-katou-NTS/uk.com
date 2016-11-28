@@ -28,6 +28,7 @@
         </div>
         <div data-bind="with: kiban.errorDialogViewModel">
 			<div data-bind="ntsErrorDialog: {title: title, errors: errors, option: option}"></div>
+			<div id="func-notifier-errors" data-bind="visible: occurs, click: open">エラーがあります</div>
         </div>
     </h:body>
 
