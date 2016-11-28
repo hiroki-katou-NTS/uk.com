@@ -20,7 +20,7 @@ module nts.uk.ui.koExtentions {
             
             $input.change(function() {
                 var newText = $input.val();
-                var result = validation.parseTime(newText);
+                var result = time.parseTime(newText);
                 if (result.success) {
                     $input.ntsError('clear');
                     setValue(result.format());
@@ -81,7 +81,7 @@ module nts.uk.ui.koExtentions {
 
             $input.change(function() {
                 var newText = $input.val();
-                if(validation.isNumber(newText, true, option)){
+                if(ntsNumber.isNumber(newText, true, option)){
                     $input.ntsError('clear');
                 } else {
                     $input.ntsError('set', 'invalid number');
@@ -117,8 +117,8 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
 
             var newText = getValue();
-            if(newText !== undefined && newText !== null && newText.trim().length > 0){
-                newText = text.formatNumber(validation.isNumber(newText, true) ? parseFloat(newText) 
+            if(newText !== undefined && newText !== null && newText.toString().trim().length > 0){
+                newText = ntsNumber.formatNumber(ntsNumber.isNumber(newText, true) ? parseFloat(newText) 
                     : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);    
             }
             $input.val(newText);
@@ -146,9 +146,9 @@ module nts.uk.ui.koExtentions {
 
                 var result;
                 if (option.inputFormat() === "yearmonth") {
-                    result = validation.parseYearMonth(newText);
+                    result = time.parseYearMonth(newText);
                 } else {
-                    result = validation.parseTime(newText);
+                    result = time.parseTime(newText);
                 }
                 if (result.success) {
                     $input.ntsError('clear');
@@ -189,9 +189,9 @@ module nts.uk.ui.koExtentions {
             if(data.value() !== undefined && data.value() !== null){
                 var result;
                 if (option.inputFormat() === "yearmonth") {
-                    result = validation.parseYearMonth(data.value());
+                    result = time.parseYearMonth(data.value());
                 } else {
-                    result = validation.parseTime(data.value(), true);
+                    result = time.parseTime(data.value(), true);
                 }
                 if (result.success) {
                     $input.val(result.format());
