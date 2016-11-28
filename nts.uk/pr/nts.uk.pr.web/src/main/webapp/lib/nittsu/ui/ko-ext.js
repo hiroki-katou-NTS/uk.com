@@ -76,7 +76,6 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
@@ -174,7 +173,7 @@ var nts;
                     return NtsTimeEditorBindingHandler;
                 }());
                 /**
-                 * TextEditor
+                 * MaskEditor
                  */
                 var NtsMaskEditorBindingHandler = (function () {
                     function NtsMaskEditorBindingHandler() {
@@ -189,7 +188,6 @@ var nts;
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
                             setValue(newText);
                         });
                     };
