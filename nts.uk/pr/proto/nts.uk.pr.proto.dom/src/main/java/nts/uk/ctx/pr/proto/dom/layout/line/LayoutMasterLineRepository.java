@@ -49,6 +49,17 @@ public interface LayoutMasterLineRepository {
 	void remove(String companyCode, int startYm, String autoLineID, int categoryAtr, String stmtCode);
 	
 	void remove(List<LayoutMasterLine> lines);
+	
+	/**
+	 * Find layout master line
+	 * @param companyCd
+	 * @param stmtCd
+	 * @param strYm
+	 * @param categoryAtr
+	 * @param autoLineId
+	 * @return
+	 */
+	Optional<LayoutMasterLine> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr, String autoLineId);
 
 	Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId);
 

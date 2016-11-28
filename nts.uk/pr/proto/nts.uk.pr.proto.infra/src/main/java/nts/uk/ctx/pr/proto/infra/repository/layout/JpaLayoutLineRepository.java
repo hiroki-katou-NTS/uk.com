@@ -137,4 +137,11 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public Optional<LayoutMasterLine> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr,
+			String autoLineId) {
+		QstmtStmtLayoutLinesPK primaryKey = new QstmtStmtLayoutLinesPK(companyCode, stmtCode, startYearMonth, categoryAtr, autoLineId);
+		return this.queryProxy().find(primaryKey, QstmtStmtLayoutLines.class)
+				.map(x -> toDomain(x));
+	}
 }
