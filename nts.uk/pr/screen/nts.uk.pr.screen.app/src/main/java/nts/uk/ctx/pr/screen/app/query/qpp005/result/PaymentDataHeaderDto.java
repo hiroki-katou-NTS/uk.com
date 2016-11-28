@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class PaymentDataHeaderDto {
 	
-	String processingYM;
+	Integer processingYM;
 	
 	/** 扶養人数（その月時点） */
 	Integer dependentNumber;
@@ -27,7 +27,7 @@ public class PaymentDataHeaderDto {
 
 	boolean isCreated;
 
-	public PaymentDataHeaderDto(String processingYM, Integer dependentNumber, String specificationCode, String specificationName,
+	public PaymentDataHeaderDto(Integer processingYM, Integer dependentNumber, String specificationCode, String specificationName,
 			Integer makeMethodFlag, String employeeCode, String comment, boolean isCreated) {
 		super();
 		

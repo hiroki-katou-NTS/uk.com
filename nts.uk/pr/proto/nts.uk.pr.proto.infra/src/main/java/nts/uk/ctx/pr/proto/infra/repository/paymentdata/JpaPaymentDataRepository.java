@@ -62,9 +62,10 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public void add(Payment payment) {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
-
+		
 		this.commandProxy().insert(paymentHeader);
 
+		
 		for (DetailItem item : payment.getDetailPaymentItems()) {
 			this.insertDetail(payment, item);
 		}
@@ -80,10 +81,18 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
-	public void update(Payment payment) {
-
+	public void updateHeader(Payment payment) {
+		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
+		this.commandProxy().update(paymentHeader);
 	}
 
+	@Override
+	public void insertHeader(Payment payment) {
+		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
+		
+		this.commandProxy().insert(paymentHeader);
+	}
+	
 	@Override
 	public void insertDetail(Payment payment, DetailItem item) {
 		QstdtPaymentDetail paymentDetail = toPaymentDetailEntity(payment, item);
@@ -205,20 +214,14 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
 		entity.columnPosition = detail.getItemPostion().getColumnPosition().v().intValue();
 		entity.linePosition = detail.getItemPostion().getLinePosition().v().intValue();
-		
-//		entity.limitAmount = ""; //QCAM_ITEM.LIMIT_MNY
-//		entity.socialInsurranceAttribute = 0;//SOCIAL_INS_ATR
-//		entity.laborSubjectAttribute = ; //LABOR_INS_ATR
-//		entity.fixPayATR = ; //FIX_PAY_ATR
-//		entity.averagePayATR = ;//
-//		entity.deductAttribute = ; //
-//		entity.itemAtr = ; //
-//		entity.commuteAllowTaxImpose = 0;
-//		entity.commuteAllowMonth = 0;
-//		entity.commuteAllowFraction = 0;
-//		entity.linePosition = ;//
-//		entity.columnPosition
-		
+		entity.limitAmount = detail.getLimitAmount(); //QCAM_ITEM.LIMIT_MNY
+		entity.fixPayATR = detail.getFixPayAtr() ; //FIX_PAY_ATR
+		entity.averagePayATR = detail.getAveragePayAtr();//
+		entity.deductAttribute = detail.getDeductionAtr().value; //
+		entity.itemAtr = detail.getItemAtr().value; //
+		entity.commuteAllowTaxImpose = 0;
+		entity.commuteAllowMonth = 0;
+		entity.commuteAllowFraction = 0;		
 		
 		return entity;
 	}

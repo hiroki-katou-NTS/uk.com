@@ -5,6 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.DetailItemPosition;
 
@@ -20,31 +21,31 @@ public class DetailItem extends DomainObject {
 	 * 項目コード
 	 */
 	@Getter
-	private final ItemCode itemCode;
+	private ItemCode itemCode;
 
 	/**
 	 * 値
 	 */
 	@Getter
-	private final Double value;
+	private Double value;
 
 	/**
 	 * 修正フラグ
 	 */
 	@Getter
-	private final CorrectFlag correctFlag;
+	private CorrectFlag correctFlag;
 
 	/**
 	 * 社保対象区分
 	 */
 	@Getter
-	private final InsuranceAtr socialInsuranceAtr;
+	private InsuranceAtr socialInsuranceAtr;
 
 	/**
 	 * 労保対象区分
 	 */
 	@Getter
-	private final InsuranceAtr laborInsuranceAtr;
+	private InsuranceAtr laborInsuranceAtr;
 
 	@Getter
 	private DetailItemPosition itemPostion;
@@ -57,6 +58,18 @@ public class DetailItem extends DomainObject {
 	 */
 	@Getter
 	private DeductionAtr deductionAtr;
+	
+	@Getter
+	private ItemAtr itemAtr;
+	
+	@Getter
+	private int averagePayAtr;
+	
+	@Getter
+	private int fixPayAtr;
+	
+	@Getter
+	private int limitAmount;
 
 	/**
 	 * Constructor
@@ -87,17 +100,36 @@ public class DetailItem extends DomainObject {
 				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class)
 				);
 	}
+	
+	/**
+	 * Create data for detail item (using for create data)
+	 */
+	public DetailItem additionalInfo(int limitAmount, int fixPayAtr, int averagePayAtr, int itemAtr) {
+		this.limitAmount = limitAmount;
+		this.fixPayAtr = fixPayAtr;
+		this.averagePayAtr = averagePayAtr;
+		this.itemAtr = EnumAdaptor.valueOf(itemAtr, ItemAtr.class);
+		return this;
+	}
+	
+	/**
+	 * Create data for detail item (using for create data)
+	 * 
+	 */
+	public DetailItem additionalInfo(CorrectFlag correctFlag, int socialInsuranceAtr, int laborInsuranceAtr, DeductionAtr deductionAtr) {
+		this.correctFlag = correctFlag;
+		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class);
+		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class);
+		this.deductionAtr = deductionAtr;
+		return this;
+	}
 
 	/**
 	 * Create data for detail item (using for create data)
 	 * 
-	 * @param itemCode
-	 * @param value
-	 * @param categoryAttribute
-	 * @return
 	 */
-	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
-		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
-				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION);
-	}
+    public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
+        return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
+                InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION);
+    }
 }
