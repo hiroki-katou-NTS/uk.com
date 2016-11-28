@@ -15,22 +15,29 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode"
-			+ " AND c.qcamtItemPK.ctgAtr = :categoryType";
-	private final String SELECT_DETAIL = SELECT_ALL_DETAILS + " AND c.qcamtItemPK.itemCd = :itemCode";
+	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode";
+	private final String SELECT_ALL_BY_CATEGORY = SELECT_ALL_BY_COMPANY + " AND c.qcamtItemPK.ctgAtr = :categoryType";
+	private final String SELECT_DETAIL = SELECT_ALL_BY_CATEGORY + " AND c.qcamtItemPK.itemCd = :itemCode";
+
+	@Override
+	public List<ItemMaster> findAll(String companyCode) {
+		return this.queryProxy().query(SELECT_ALL_BY_COMPANY, QcamtItem.class).setParameter("companyCode", companyCode)
+				.getList(c -> toDomain(c));
+	}
 
 	/**
 	 * find all item master by company code, category type
 	 */
 	@Override
-	public List<ItemMaster> getAllItemMaster(String companyCode, int categoryType) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, QcamtItem.class).setParameter("companyCode", companyCode)
+	public List<ItemMaster> findAllByCategory(String companyCode, int categoryType) {
+		return this.queryProxy().query(SELECT_ALL_BY_CATEGORY, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).getList(c -> toDomain(c));
 	}
 
 	private static ItemMaster toDomain(QcamtItem entity) {
 		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
 				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.taxAtr);
+		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
 		return domain;
 	}
 

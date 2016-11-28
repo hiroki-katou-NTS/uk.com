@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.app.find.layout.category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Value;
@@ -20,7 +21,6 @@ public class LayoutMasterCategoryDto {
 	private int endYm;
 	/**カテゴリ表示位置 */
 	private int ctgPos;
-	
 	private List<LayoutMasterLineDto> lines;
 	
 	public static LayoutMasterCategoryDto fromDomain(LayoutMasterCategory domain){
@@ -31,6 +31,6 @@ public class LayoutMasterCategoryDto {
 				domain.getCtAtr().value,
 				domain.getEndYm().v(),
 				domain.getCtgPos().v(), 
-				null);
+				new ArrayList<>());
 	}
 }

@@ -10,6 +10,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentDetail;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstdtPaymentDetailPK;
@@ -61,9 +62,10 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public void add(Payment payment) {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
-
+		
 		this.commandProxy().insert(paymentHeader);
 
+		
 		for (DetailItem item : payment.getDetailPaymentItems()) {
 			this.insertDetail(payment, item);
 		}
@@ -79,10 +81,18 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
-	public void update(Payment payment) {
-
+	public void updateHeader(Payment payment) {
+		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
+		this.commandProxy().update(paymentHeader);
 	}
 
+	@Override
+	public void insertHeader(Payment payment) {
+		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
+		
+		this.commandProxy().insert(paymentHeader);
+	}
+	
 	@Override
 	public void insertDetail(Payment payment, DetailItem item) {
 		QstdtPaymentDetail paymentDetail = toPaymentDetailEntity(payment, item);
@@ -134,7 +144,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.residenceCode = domain.getResidenceCode().v();
 		entity.residenceName = domain.getResidenceName().v();
 		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceGrade().v().intValue();
-		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceAverageEarn().v().intValue();
+		entity.healthInsuranceGrade = domain.getHealthInsuranceAverageEarn().v().intValue();
 		entity.ageContinuationInsureAtr = domain.getAgeContinuationInsureAtr().value;
 		entity.tenureAtr = domain.getTenureAtr().value;
 		entity.taxAtr = domain.getTaxAtr().value;
@@ -147,6 +157,40 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.calcFlag = domain.getCalcFlag().value;
 		entity.makeMethodFlag = domain.getMakeMethodFlag().value;
 		entity.comment = domain.getComment().v();
+		
+		PrintPositionCategory item0 = domain.getPrintCategories().get(0);
+		entity.printPositionCategoryATR1 = item0.getPosition().value;
+		entity.printPositionCategoryLines1 = item0.getLines().v();
+		
+		PrintPositionCategory item1 = domain.getPrintCategories().get(1);
+		entity.printPositionCategoryATR2 = item1.getPosition().value;
+		entity.printPositionCategoryLines2 = item1.getLines().v();
+		
+		PrintPositionCategory item2 = domain.getPrintCategories().get(2);
+		entity.printPositionCategoryATR3 = item2.getPosition().value;
+		entity.printPositionCategoryLines3 = item2.getLines().v();
+		
+		PrintPositionCategory item3 = domain.getPrintCategories().get(3);
+		entity.printPositionCategoryATR4 = item3.getPosition().value;
+		entity.printPositionCategoryLines4 = item3.getLines().v();
+		
+		PrintPositionCategory item4 = domain.getPrintCategories().get(4);
+		entity.printPositionCategoryATR5 = item4.getPosition().value;
+		entity.printPositionCategoryLines5 = item4.getLines().v();
+		
+		// add by EAP 06.データ作成（実行）-登録処理 (update 28.11.2016)
+		entity.companyName = "日通システム株式会社";
+		entity.employmentCode = "0000000001";
+		entity.employmentName = "雇用";
+		entity.departmentCode = "0000000001";
+		entity.departmentName = "部門";
+		entity.externalDepartmentCode = "000000000000001";
+		entity.classificationCode = "0000000001";
+		entity.classificationName = "分類";
+		entity.positionCode = "0000000001";
+		entity.positionName = "職位";
+//		entity.specificationName = "";
+		
 		return entity;
 	}
 
@@ -159,17 +203,26 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	 */
 	private QstdtPaymentDetail toPaymentDetailEntity(Payment domain, DetailItem detail) {
 		QstdtPaymentDetail entity = new QstdtPaymentDetail();
-		entity.fromDomain(domain);
+		//entity.fromDomain(domain);
 		entity.qstdtPaymentDetailPK = new QstdtPaymentDetailPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
 				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value,
-				detail.getCategoryAttribute().value, detail.getItemCode().v());
+				detail.getCategoryAtr().value, detail.getItemCode().v());
 		entity.value = BigDecimal.valueOf(detail.getValue());
 		entity.correctFlag = detail.getCorrectFlag().value;
 		entity.socialInsurranceAttribute = detail.getSocialInsuranceAtr().value;
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
 		entity.columnPosition = detail.getItemPostion().getColumnPosition().v().intValue();
 		entity.linePosition = detail.getItemPostion().getLinePosition().v().intValue();
+		entity.limitAmount = detail.getLimitAmount(); //QCAM_ITEM.LIMIT_MNY
+		entity.fixPayATR = detail.getFixPayAtr() ; //FIX_PAY_ATR
+		entity.averagePayATR = detail.getAveragePayAtr();//
+		entity.deductAttribute = detail.getDeductionAtr().value; //
+		entity.itemAtr = detail.getItemAtr().value; //
+		entity.commuteAllowTaxImpose = 0;
+		entity.commuteAllowMonth = 0;
+		entity.commuteAllowFraction = 0;		
+		
 		return entity;
 	}
 

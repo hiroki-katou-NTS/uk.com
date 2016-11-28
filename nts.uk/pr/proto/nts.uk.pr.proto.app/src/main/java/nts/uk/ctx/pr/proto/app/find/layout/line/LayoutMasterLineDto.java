@@ -1,6 +1,10 @@
 package nts.uk.ctx.pr.proto.app.find.layout.line;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Value;
+import nts.uk.ctx.pr.proto.app.find.layout.detail.LayoutMasterDetailDto;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 
 @Value
@@ -21,6 +25,7 @@ public class LayoutMasterLineDto {
 	private int linePosition;
 	/**カテゴリ区分	 */
 	private int categoryAtr;
+	private List<LayoutMasterDetailDto> details;
 	
 	public static LayoutMasterLineDto fromDomain(LayoutMasterLine domain){
 		return new LayoutMasterLineDto(domain.getCompanyCode().v(), 
@@ -30,7 +35,8 @@ public class LayoutMasterLineDto {
 				domain.getAutoLineId().v(), 
 				domain.getLineDispayAttribute().value,
 				domain.getLinePosition().v(),
-				domain.getCategoryAtr().value);
+				domain.getCategoryAtr().value,
+				new ArrayList<>());
 		
 	}
 }

@@ -40,8 +40,8 @@ var qmm019;
                     }
                     self.selectLayoutCode(code);
                     self.selectLayoutName(layout.stmtName);
-                    self.selectLayoutStartYm(nts.uk.text.formatYearMonth(layout.startYm));
-                    self.selectLayoutEndYm(nts.uk.text.formatYearMonth(layout.endYm));
+                    self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                    self.selectLayoutEndYm(nts.uk.time.formatYearMonth(layout.endYm));
                 };
                 ScreenModel.prototype.layoutProcess = function () {
                     var self = this;

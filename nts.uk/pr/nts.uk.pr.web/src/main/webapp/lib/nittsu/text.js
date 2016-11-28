@@ -163,31 +163,6 @@ var nts;
             }
             text_1.format = format;
             /**
-            * 日付をフォーマットする
-            * @param  {Date}   date     日付
-            * @param  {String} [format] フォーマット
-            * @return {String}          フォーマット済み日付
-            */
-            function formatDate(date, format) {
-                if (!format)
-                    format = 'yyyy-MM-dd hh:mm:ss.SSS';
-                format = format.replace(/yyyy/g, date.getFullYear());
-                format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
-                format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
-                format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-                format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
-                format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
-                format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
-                if (format.match(/S/g)) {
-                    var milliSeconds = ('00' + date.getMilliseconds()).slice(-3);
-                    var length = format.match(/S/g).length;
-                    for (var i = 0; i < length; i++)
-                        format = format.replace(/S/, milliSeconds.substring(i, i + 1));
-                }
-                return format;
-            }
-            text_1.formatDate = formatDate;
-            /**
             * 変換文字列の先頭に、文字数分の指定文字列を追加する
             * @param text 変換対象の文字列
             * @param paddingChar 指定文字列
@@ -228,29 +203,6 @@ var nts;
                 return result;
             }
             text_1.charPadding = charPadding;
-            function formatYearMonth(yearMonth) {
-                var result;
-                var num = parseInt(String(yearMonth));
-                var year = String(Math.floor(num / 100));
-                var month = charPadding(String(num % 100), '0', true, 2);
-                result = year + '/' + month;
-                return result;
-            }
-            text_1.formatYearMonth = formatYearMonth;
-            function formatSeconds(seconds, formatOption) {
-                seconds = parseInt(String(seconds));
-                var ss = padLeft(String(seconds % 60), '0', 2);
-                var minutes = Math.floor(seconds / 60);
-                var mm = padLeft(String(minutes % 60), '0', 2);
-                var hours = Math.floor(seconds / 60 / 60);
-                var h = String(hours);
-                // TODO: use formatOption
-                return "h:mm:ss"
-                    .replace(/h/g, h)
-                    .replace(/mm/g, mm)
-                    .replace(/ss/g, ss);
-            }
-            text_1.formatSeconds = formatSeconds;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

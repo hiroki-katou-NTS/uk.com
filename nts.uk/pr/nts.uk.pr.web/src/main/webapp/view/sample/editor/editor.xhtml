@@ -36,13 +36,11 @@
 					<div class="cf">
 						<h2>TextEditor</h2>
 						<div data-bind="with: texteditor">
-							<input id="testPushError" data-name="テスト" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option}" />
+							<input id="testPushError" data-name="テスト" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
-							<!--  Using Method -->
-							<button data-bind="click: enable.bind($data, true)">enable</button>
-							<button data-bind="click: enable.bind($data, false)">disable</button>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
+							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -73,6 +71,30 @@
 										</td>
 									</tr>
 									<tr>
+										<td>required<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set required for editor
+										</td>
+									</tr>
+									<tr>
+										<td>enable<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> true<br/>
+											Set enable/disable for editor
+										</td>
+									</tr>
+									<tr>
+										<td>readonly<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set readonly for editor
+										</td>
+									</tr>
+									<tr>
 										<td>option<br/><i>(optional)</i></td>
 										<td>
 											<b>Type:</b> object<br/>
@@ -86,6 +108,8 @@
 							<pre style="float:left">texteditor: {
 	value: ko.observable('For Lordaeron'),
 	constraint: 'CompanyCode',
+	required: ko.observable(false),
+	enable: ko.observable(true),
 	option: ko.mapping.fromJS(new TextEditorOption())
 }</pre>
 						</div>
@@ -146,13 +170,11 @@
 					<div class="cf">
 						<h2>NumberEditor</h2>
 						<div data-bind="with: numbereditor">
-							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option}" />
+							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
-							<!--  Using Method -->
-							<button data-bind="click: enable.bind($data, true)">enable</button>
-							<button data-bind="click: enable.bind($data, false)">disable</button>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
+							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -183,6 +205,30 @@
 										</td>
 									</tr>
 									<tr>
+										<td>required<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set required for editor
+										</td>
+									</tr>
+									<tr>
+										<td>enable<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> true<br/>
+											Set enable/disable for editor
+										</td>
+									</tr>
+									<tr>
+										<td>readonly<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set readonly for editor
+										</td>
+									</tr>
+									<tr>
 										<td>option<br/><i>(optional)</i></td>
 										<td>
 											<b>Type:</b> object<br/>
@@ -197,6 +243,8 @@
 							<pre style="float:left">numbereditor: {
 	value: ko.observable('For Lordaeron'),
 	constraint: 'CompanyCode',
+	required: ko.observable(false),
+	enable: ko.observable(true),
 	option: ko.mapping.fromJS(new NumberEditorOption())
 }</pre>
 						</div>
@@ -338,13 +386,17 @@
 					<div class="cf">
 						<h2>TimeEditor</h2>
 						<div data-bind="with: timeeditor">
-							<input data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option}" />
+							<input data-bind="ntsTimeEditor: {value: value, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
-							<!--  Using Method -->
-							<button data-bind="click: enable.bind($data, true)">enable</button>
-							<button data-bind="click: enable.bind($data, false)">disable</button>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
+							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
+						</div>
+						
+						<div data-bind="with: yearMonthEditor">
+							<br/><br/>
+							<h2>Year Month Editor</h2>
+							<input data-bind="ntsTimeEditor: {value: value, option: option, enable: enable, readonly: readonly}" />
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -374,6 +426,30 @@
 										</td>
 									</tr>
 									<tr>
+										<td>required<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set required for editor
+										</td>
+									</tr>
+									<tr>
+										<td>enable<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> true<br/>
+											Set enable/disable for editor
+										</td>
+									</tr>
+									<tr>
+										<td>readonly<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set readonly for editor
+										</td>
+									</tr>
+									<tr>
 										<td>option<br/><i>(optional)</i></td>
 										<td>
 											<b>Type:</b> object<br/>
@@ -386,6 +462,8 @@
 							<pre style="float:left">timeeditor: {
 	value: ko.observable(1200),
 	constraint: 'CompanyCode',
+	required: ko.observable(false),
+	enable: ko.observable(true),
 	option: ko.mapping.fromJS(new TimeEditorOption())
 }</pre>
 						</div>
@@ -470,13 +548,11 @@
 					<div class="cf">
 						<h2>MaskEditor</h2>
 						<div data-bind="with: maskeditor">
-							<input data-bind="ntsMaskEditor: {value: value, constraint: constraint, option: option}" />
+							<input data-bind="ntsMaskEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
-							<!--  Using Method -->
-							<button data-bind="click: enable.bind($data, true)">enable</button>
-							<button data-bind="click: enable.bind($data, false)">disable</button>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
+							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -506,6 +582,30 @@
 										</td>
 									</tr>
 									<tr>
+										<td>required<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set required for editor
+										</td>
+									</tr>
+									<tr>
+										<td>enable<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> true<br/>
+											Set enable/disable for editor
+										</td>
+									</tr>
+									<tr>
+										<td>readonly<br/><i>(optional)</i></td>
+										<td>
+											<b>Type:</b> boolean<br/>
+											<b>Default:</b> false<br/>
+											Set readonly for editor
+										</td>
+									</tr>
+									<tr>
 										<td>option<br/><i>(optional)</i></td>
 										<td>
 											<b>Type:</b> object<br/>
@@ -519,6 +619,8 @@
 							<pre style="float:left">maskeditor: {
 	value: ko.observable(1200),
 	constraint: 'CompanyCode',
+	required: ko.observable(false),
+	enable: ko.observable(true),
 	option: ko.mapping.fromJS(new EmployeeCodeEditorOption())
 }</pre>
 						</div>
@@ -620,7 +722,6 @@
 								</tr>
 							</tbody>
 						</table>
-
 					</div>
 				</div>
           	</div>
