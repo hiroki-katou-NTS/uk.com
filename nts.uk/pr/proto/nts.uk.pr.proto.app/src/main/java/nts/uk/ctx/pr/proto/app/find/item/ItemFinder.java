@@ -24,7 +24,7 @@ public class ItemFinder {
 	 * @return
 	 */
 	public List<ItemDto> getAllItems(int categoryAtr){
-		return this.repostirory.getAllItemMaster(AppContexts.user().companyCode(), categoryAtr).stream()
+		return this.repostirory.findAllByCategory(AppContexts.user().companyCode(), categoryAtr).stream()
 				.map(item -> ItemDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}

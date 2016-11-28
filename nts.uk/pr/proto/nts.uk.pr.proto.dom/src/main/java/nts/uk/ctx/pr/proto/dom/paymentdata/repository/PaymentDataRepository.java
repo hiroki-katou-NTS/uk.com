@@ -62,11 +62,18 @@ public interface PaymentDataRepository {
 	void add(Payment payment);
 
 	/**
-	 * Update
+	 * Update header
 	 * 
 	 * @param payment
 	 */
-	void update(Payment payment);
+	void updateHeader(Payment payment);
+
+	/**
+	 * Insert header
+	 * 
+	 * @param payment
+	 */
+	void insertHeader(Payment payment);
 
 	/**
 	 * Insert detail

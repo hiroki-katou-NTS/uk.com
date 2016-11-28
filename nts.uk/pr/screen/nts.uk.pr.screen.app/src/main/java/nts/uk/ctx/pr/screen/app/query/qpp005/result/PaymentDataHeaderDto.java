@@ -1,11 +1,12 @@
 package nts.uk.ctx.pr.screen.app.query.qpp005.result;
 
 import lombok.Value;
-import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 
 @Value
 public class PaymentDataHeaderDto {
-
+	
+	Integer processingYM;
+	
 	/** 扶養人数（その月時点） */
 	Integer dependentNumber;
 
@@ -24,15 +25,20 @@ public class PaymentDataHeaderDto {
 	/** memo */
 	String comment;
 
-	public PaymentDataHeaderDto(Integer dependentNumber, String specificationCode, String specificationName,
-			Integer makeMethodFlag, String employeeCode, String comment) {
+	boolean isCreated;
+
+	public PaymentDataHeaderDto(Integer processingYM, Integer dependentNumber, String specificationCode, String specificationName,
+			Integer makeMethodFlag, String employeeCode, String comment, boolean isCreated) {
 		super();
+		
+		this.processingYM = processingYM;
 		this.dependentNumber = dependentNumber;
 		this.specificationCode = specificationCode;
 		this.specificationName = specificationName;
 		this.makeMethodFlag = makeMethodFlag;
 		this.employeeCode = employeeCode;
 		this.comment = comment;
+		this.isCreated = isCreated;
 	}
 
 }

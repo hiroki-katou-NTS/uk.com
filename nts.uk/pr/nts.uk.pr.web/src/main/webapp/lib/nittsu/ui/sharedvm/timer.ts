@@ -11,7 +11,7 @@ module nts.uk.ui.sharedvm {
         constructor(target: string) {
             var self = this;
             self.elapsedSeconds = 0;
-            self.formatted = ko.observable(nts.uk.text.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
+            self.formatted = ko.observable(time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
             self.targetComponent = target;
             self.isTimerStart = ko.observable(false);
             self.oldDated = ko.observable(undefined);
@@ -22,7 +22,7 @@ module nts.uk.ui.sharedvm {
             x = Math.floor(x/1000);
             timer.elapsedSeconds = x;
             document.getElementById(timer.targetComponent).innerHTML 
-                = nts.uk.text.formatSeconds(x, 'hh:mm:ss');
+                = time.formatSeconds(x, 'hh:mm:ss');
         }
         
         start() {

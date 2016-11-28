@@ -9,6 +9,10 @@ var nts;
                 var error;
                 (function (error) {
                     ui.documentReady.add(function () {
+                        var $functionsArea = $('#functions-area');
+                        if ($functionsArea.length === 0) {
+                            return;
+                        }
                         $('#func-notifier-errors').position({ my: 'left+5 top-5', at: 'left bottom', of: $('#functions-area') });
                     });
                 })(error || (error = {}));
