@@ -6,40 +6,32 @@ __viewContext.ready(function () {
             value: ko.observable('For Lordaeron'),
             constraint: 'LayoutCode',
             option: ko.mapping.fromJS(new option.TextEditorOption()),
-            enable: function (enable) {
-                var self = this;
-                self.option.enable(enable);
-            }
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
         },
         // NumberEditor
         numbereditor: {
             value: ko.observable(1234),
             constraint: 'ProcessingNo',
             option: ko.mapping.fromJS(new option.NumberEditorOption({ grouplength: 3, decimallength: 2 })),
-            enable: function (enable) {
-                var self = this;
-                self.option.enable(enable);
-            }
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
         },
         // TimeEditor
         timeeditor: {
-            value: ko.observable("12:00"),
+            value: ko.observable("1200"),
             constraint: 'LayoutCode',
             option: ko.mapping.fromJS(new option.TimeEditorOption()),
-            enable: function (enable) {
-                var self = this;
-                self.option.enable(enable);
-            }
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
         },
         // MaskEditor
         maskeditor: {
             value: ko.observable("0001"),
             constraint: 'LayoutCode',
             option: ko.mapping.fromJS(new option.MaskEditorOption()),
-            enable: function (enable) {
-                var self = this;
-                self.option.enable(enable);
-            }
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
         },
     };
     // developer's view model

@@ -17,10 +17,17 @@ module nts.uk.ui.koExtentions {
             var setValue: (newText: string) => {} = data.value;
             var $input = $(element);
             this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
-
+            
             $input.change(function() {
                 var newText = $input.val();
-                setValue(newText);
+                var result = validation.parseTime(newText);
+                if (result.success) {
+                    $input.ntsError('clear');
+                    setValue(result.format());
+                } else {
+                    $input.ntsError('set', 'invalid text');
+                    setValue(newText);
+                }
             });
         }
 
@@ -31,24 +38,19 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
-            var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
             var textmode: string = ko.unwrap(option.textmode);
-            var enable: boolean = ko.unwrap(option.enable);
-            var readonly: boolean = ko.unwrap(option.readonly);
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
             var textalign: string = ko.unwrap(option.textalign);
             var $input = $(element);
             
             $input.attr('type',textmode);
-            if(enable !== false)
-                $input.removeAttr('disabled');
-            else
-                $input.attr('disabled','disabled');
-            if(readonly === false)
-                $input.removeAttr('readonly');
-            else
-                $input.attr('readonly','readonly');
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
             $input.attr('placeholder', placeholder);
             if(width.trim() != "")
                 $input.width(width);
@@ -89,9 +91,10 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
             var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-            var enable: boolean = ko.unwrap(option.enable);
-            var readonly: boolean = ko.unwrap(option.readonly);
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
             var textalign: string = ko.unwrap(option.textalign);
@@ -99,14 +102,8 @@ module nts.uk.ui.koExtentions {
             var $input = $(element);
             
             $input.attr('type', 'text');
-            if(enable !== false)
-                $input.removeAttr('disabled');
-            else
-                $input.attr('disabled','disabled');
-            if(readonly === false)
-                $input.removeAttr('readonly');
-            else
-                $input.attr('readonly','readonly');
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
             $input.attr('placeholder', placeholder);
             if(width.trim() != "")
                 $input.width(width);
@@ -155,9 +152,10 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
             var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-            var enable: boolean = ko.unwrap(option.enable);
-            var readonly: boolean = ko.unwrap(option.readonly);
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
             var textalign: string = ko.unwrap(option.textalign);
@@ -165,14 +163,8 @@ module nts.uk.ui.koExtentions {
             var $input = $(element);
             
             $input.attr('type', 'text');
-            if(enable !== false)
-                $input.removeAttr('disabled');
-            else
-                $input.attr('disabled','disabled');
-            if(readonly === false)
-                $input.removeAttr('readonly');
-            else
-                $input.attr('readonly','readonly');
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
             $input.attr('placeholder', placeholder);
             if(width.trim() != "")
                 $input.width(width);
@@ -213,25 +205,19 @@ module nts.uk.ui.koExtentions {
             // Get data
             var data = valueAccessor();
             var getValue: () => string = data.value;
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
             var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
-            var textmode: string = ko.unwrap(option.textmode);
-            var enable: boolean = ko.unwrap(option.enable);
-            var readonly: boolean = ko.unwrap(option.readonly);
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
             var textalign: string = ko.unwrap(option.textalign);
             
             var $input = $(element);
             
-            $input.attr('type',textmode);
-            if(enable !== false)
-                $input.removeAttr('disabled');
-            else
-                $input.attr('disabled','disabled');
-            if(readonly === false)
-                $input.removeAttr('readonly');
-            else
-                $input.attr('readonly','readonly');
+            $input.attr('type','text');
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
             $input.attr('placeholder', placeholder);
             if(width.trim() != "")
                 $input.width(width);

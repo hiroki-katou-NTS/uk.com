@@ -23,7 +23,15 @@ var nts;
                         this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         $input.change(function () {
                             var newText = $input.val();
-                            setValue(newText);
+                            var result = validation.parseTime(newText);
+                            if (result.success) {
+                                $input.ntsError('clear');
+                                setValue(result.format());
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid text');
+                                setValue(newText);
+                            }
                         });
                     };
                     /**
@@ -33,23 +41,18 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
                         var textmode = ko.unwrap(option.textmode);
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', textmode);
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
@@ -86,22 +89,17 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', 'text');
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
@@ -146,22 +144,17 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', 'text');
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
@@ -198,23 +191,17 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
-                        var textmode = ko.unwrap(option.textmode);
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
-                        $input.attr('type', textmode);
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        $input.attr('type', 'text');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
