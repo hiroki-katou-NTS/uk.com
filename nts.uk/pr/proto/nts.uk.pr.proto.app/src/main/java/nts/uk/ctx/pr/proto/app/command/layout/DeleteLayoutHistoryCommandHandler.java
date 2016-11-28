@@ -76,7 +76,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		Optional<LayoutMaster> layoutBefore = layoutRepository.getHistoryBefore(command.getCompanyCode(),
 				command.getStmtCode(),
 				command.getStartYm() - 1);
-		if (layoutBefore != null) {
+		if (layoutBefore.isPresent()) {
 			LayoutMaster layout = layoutBefore.get();
 			layout.setEndYm(new YearMonth(999912));
 			layoutRepository.update(layout);
