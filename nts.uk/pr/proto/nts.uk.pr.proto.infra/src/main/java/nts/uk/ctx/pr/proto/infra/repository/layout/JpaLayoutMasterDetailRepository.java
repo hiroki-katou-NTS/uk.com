@@ -218,6 +218,11 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	 public List<LayoutMasterDetail> getDetailsWithSumScopeAtr(String companyCode, String stmtCode, int startYearMonth,
 	   int categoryAttribute, int sumScopeAtr) {
 	  return this.queryProxy().query(SELECT_DETAILS_WITH_SUMSCOPEATR, QstmtStmtLayoutDetail.class)
+			  .setParameter("companyCd", companyCode)
+			  .setParameter("stmtCd", stmtCode)
+			  .setParameter("strYm", startYearMonth)
+			  .setParameter("ctgAtr", categoryAttribute)
+			  .setParameter("sumScopeAtr", sumScopeAtr)
 	    .getList(c -> toDomain(c));
 	 }
 

@@ -38,13 +38,18 @@ var qmm019;
                     self.selectedCode = ko.observable(null);
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
-                    $("#SEL_002").on("selectionChanging", function (event) {
-                        console.log("Selecting value:" + event.originalEvent.detail);
-                    });
-                    $("#SEL_002").on("selectionChanged", function (event) {
-                        console.log("Selected value:" + event.originalEvent.detail);
-                    });
                     self.selectLayoutCode = ko.observable("001");
+                    self.itemList();
+                    $('#LST_001').on('selectionChanging', function (event) {
+                        console.log('Selecting value:' + event.originalEvent.detail);
+                    });
+                    $('#LST_001').on('selectionChanged', function (event) {
+                        console.log('Selected value:' + event.originalEvent.detail);
+                    });
+                    h.service.getAllLayout().done(function (layout) {
+                        self.layouts(layout);
+                        //                self.startDialog();
+                    });
                 }
                 return ScreenModel;
             }());

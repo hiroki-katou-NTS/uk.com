@@ -127,7 +127,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					param.getCompanyCode(),
 					param.getPersonId().v(),
 					itemMaster.getCategoryAtr().value,
-					itemMaster.getItemCode().v(),
+					this.getPersonalWageCode(itemMaster.getItemCode().v()),
 					param.getCurrentProcessingYearMonth().v()).get();
 			return DetailItem.createDataDetailItem(layout.getItemCode(), personalWage.getWageValue().doubleValue(), layout.getCategoryAtr());
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
@@ -191,7 +191,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					param.getCompanyCode(),
 					param.getPersonId().v(),
 					itemMaster.getCategoryAtr().value,
-					itemCode,
+					getPersonalWageCode(itemCode),
 					param.getCurrentProcessingYearMonth().v()).get();
 			
 			return DetailItem.createDataDetailItem(itemLayoutMasterDetail.getItemCode(), personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr());
@@ -249,5 +249,18 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		} else {
 			return 0;
 		}
+	}
+	
+	/**
+	 * Get personal wage code from item code.
+	 * @param itemCode
+	 * @return
+	 */
+	private String getPersonalWageCode(String itemCode) {
+		if (itemCode == null || itemCode == "") {
+			return itemCode;
+		}
+		
+		return itemCode.substring(2);
 	}
 }

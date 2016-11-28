@@ -20,22 +20,13 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
 			+ " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
 	//private final String SELECT_DETAIL = SELECT_ALL + " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
-	private final String SELECT_LAYOUT_BEFORE = "SELECT TOP 1 c FROM QstmtStmtLayoutHead c"
+	private final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.strYm < :strYm" + " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
 
-	private final String SELECT_MAX_START = "SELECT c.qstmtStmtLayoutHeadPK.stmtCd,"
-			+ " c.stmtName,"
-			+ " MAX(c.qstmtStmtLayoutHeadPK.strYm),"
-			+ " 999912 endYm,"
-			+ " c.layoutAtr"
-			+ " FROM QstmtStmtLayoutHead c"
+	private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode"
-			+ " GROUP BY c.qstmtStmtLayoutHeadPK.companyCd,"
-			+ " c.qstmtStmtLayoutHeadPK.stmtCd,"
-			+ " c.stmtName,"
-			+ " c.layoutAtr";
-
+			+ " AND c.endYm = 999912";
 	// private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM
 	// QstmtStmtLayoutHead e "
 	// + "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND
@@ -50,11 +41,10 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	private static QstmtStmtLayoutHead toEntity(LayoutMaster domain) {
-		val entity = new QstmtStmtLayoutHead();
-
-		entity.qstmtStmtLayoutHeadPK.companyCd = domain.getCompanyCode().v();
-		entity.qstmtStmtLayoutHeadPK.stmtCd = domain.getStmtCode().v();
-		entity.qstmtStmtLayoutHeadPK.strYm = domain.getStartYM().v();
+		QstmtStmtLayoutHead entity = new QstmtStmtLayoutHead();
+		entity.qstmtStmtLayoutHeadPK = new QstmtStmtLayoutHeadPK(domain.getCompanyCode().v(),
+				domain.getStmtCode().v(),
+				domain.getStartYM().v());
 		entity.endYm = domain.getEndYm().v();
 		entity.layoutAtr = domain.getLayoutAtr().value;
 		entity.stmtName = domain.getStmtName().v();
@@ -76,12 +66,16 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int strYm) {
-		return this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
-				.setParameter("companyCd", companyCode)
-				.setParameter("stmtCode", stmtCode)
-				.setParameter("strYm", strYm)
-				.getSingle(c -> toDomain(c));
-
+		try {
+			LayoutMaster lstHistoryBefore = this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
+					.setParameter("companyCd", companyCode)
+					.setParameter("stmtCd", stmtCode)
+					.setParameter("strYm", strYm)
+					.getList(c -> toDomain(c)).get(0);
+		return Optional.of(lstHistoryBefore);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@Override
@@ -100,8 +94,12 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public void update(LayoutMaster layoutMaster) {
-		this.commandProxy().update(toEntity(layoutMaster));
-
+		try{
+			this.commandProxy().update(toEntity(layoutMaster));
+		}
+		catch(Exception ex){
+			throw ex;
+		}
 	}
 
 	@Override
@@ -122,23 +120,10 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	@Override
 	public List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode) {
 		try {
-			@SuppressWarnings("unchecked")
-			List<Object[]> listObject = this.queryProxy().getEntityManager().createQuery(SELECT_MAX_START)
-					.setParameter("companyCode", companyCode)				
-					.getResultList();
-			List<LayoutMaster> results = new ArrayList<>();
-			for (Object[] resultData : listObject) {
-				val entity = new QstmtStmtLayoutHead();
-				entity.qstmtStmtLayoutHeadPK = new QstmtStmtLayoutHeadPK();
-				entity.qstmtStmtLayoutHeadPK.companyCd = companyCode;
-				entity.qstmtStmtLayoutHeadPK.stmtCd = (String) resultData[0];
-				entity.qstmtStmtLayoutHeadPK.strYm = (int) resultData[2];
-				entity.endYm = 999912;
-				entity.layoutAtr = (int) resultData[4];
-				entity.stmtName = (String) resultData[1];
-				results.add(toDomain(entity));
-			}
-			return results;
+			return this.queryProxy().query(SELECT_LAYOUT_MAX_START, QstmtStmtLayoutHead.class)
+			.setParameter("companyCode", companyCode)
+			.getList(c -> toDomain(c));
+			
 		} catch (Exception e) {
 			throw e;
 		}

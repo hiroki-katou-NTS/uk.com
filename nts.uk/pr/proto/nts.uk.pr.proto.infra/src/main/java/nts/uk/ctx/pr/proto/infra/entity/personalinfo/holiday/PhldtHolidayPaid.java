@@ -1,16 +1,21 @@
 package nts.uk.ctx.pr.proto.infra.entity.personalinfo.holiday;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="PHLDT_HOLIDAY_PAID")
 public class PhldtHolidayPaid {
 	
@@ -18,10 +23,12 @@ public class PhldtHolidayPaid {
     public PhldtHolidayPaidPK phldtHolidayPaidPK;
 
 	@Column(name = "BOY_DATE")
-	public Date boyDate;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate boyDate;
 	
 	@Column(name = "EXPIRE_DATE")
-	public Date expireDate;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate expireDate;
 	
 	@Column(name = "GRANT_DAYS")
 	public BigDecimal grantDays;
@@ -80,8 +87,8 @@ public class PhldtHolidayPaid {
 	@Column(name = "GRANT_WORK_DAYS")
 	public BigDecimal grantWorkDays;
 	
-	@Column(name = "USAGE_RATE")
-	public BigDecimal usageRate;
+//	@Column(name = "USAGE_RATE")
+//	public BigDecimal usageRate;
 	
 	@Column(name = "DISAPPEAR_FLG")
 	public int disappearFlg;
