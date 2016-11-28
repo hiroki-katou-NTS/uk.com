@@ -5,7 +5,7 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <body>
-        <ui:composition template="../../../../master/base.xhtml">
+        <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
             	<link rel="stylesheet" type="text/css" href="main.css" />
 				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
@@ -19,6 +19,8 @@
             </ui:define>
             
             <ui:define name="content">
+            	<div id="functions-area"></div>
+            	
             	<div id="contents-area">
 					<div class="cf">
 						<div class="form-label inline">

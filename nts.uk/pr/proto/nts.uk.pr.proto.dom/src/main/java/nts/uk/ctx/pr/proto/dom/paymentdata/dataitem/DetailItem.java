@@ -7,7 +7,9 @@ import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.ColumnPosition;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.DetailItemPosition;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.LinePosition;
 
 /**
  * 明細データ明細
@@ -87,6 +89,7 @@ public class DetailItem extends DomainObject {
 		this.correctFlag = correctFlag;
 		this.socialInsuranceAtr = socialInsuranceAtr;
 		this.laborInsuranceAtr = laborInsuranceAtr;
+		this.categoryAtr = categoryAtr;
 	}
 
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
@@ -103,6 +106,10 @@ public class DetailItem extends DomainObject {
 	
 	/**
 	 * Create data for detail item (using for create data)
+	 * @param limitAmount limitAmount
+	 * @param fixPayAtr fixPayAtr
+	 * @param averagePayAtr averagePayAtr
+	 * @param itemAtr itemAtr
 	 */
 	public DetailItem additionalInfo(int limitAmount, int fixPayAtr, int averagePayAtr, int itemAtr) {
 		this.limitAmount = limitAmount;
@@ -115,12 +122,27 @@ public class DetailItem extends DomainObject {
 	/**
 	 * Create data for detail item (using for create data)
 	 * 
+	 * @param correctFlag correctFlag
+	 * @param socialInsuranceAtr socialInsuranceAtr
+	 * @param laborInsuranceAtr laborInsuranceAtr
+	 * @param deductionAtr deductionAtr
 	 */
 	public DetailItem additionalInfo(CorrectFlag correctFlag, int socialInsuranceAtr, int laborInsuranceAtr, DeductionAtr deductionAtr) {
 		this.correctFlag = correctFlag;
 		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class);
 		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class);
 		this.deductionAtr = deductionAtr;
+		return this;
+	}
+	
+	/**
+	 * Create data for detail item (using for create data)
+	 * 
+	 * @param linePosition linePosition
+	 * @param columnPosition columnPosition
+	 */
+	public DetailItem additionalInfo(int linePosition, int columnPosition) {
+		this.itemPostion = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
 		return this;
 	}
 

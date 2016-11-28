@@ -5,7 +5,7 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <body>
-        <ui:composition template="../../../../master/base.xhtml">
+        <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
             	<link rel="stylesheet" type="text/css" href="main.css" />
 				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
@@ -15,7 +15,7 @@
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
-			    <script>var dialogSize = { width: 600, height: 700 };</script>
+			    <script>var dialogSize = { width: 950, height: 700 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
 				<script>
 					__viewContext.primitiveValueConstraints = {
@@ -29,14 +29,14 @@
             </ui:define>
             
             <ui:define name="content">
+            <div id="functions-area"></div>
             	<div id="contents-area">
 					<div class="cf">
 						<div class="form-label"><label id="LBL_001">作成方法の選択</label></div><br />
-						<br />
 						<div class = "layoutSelect">
 							<div id="SEL_001">
-								<input type="radio" checked="checked" name="layoutCreate" value="newCreate" /> 新規に作成<br />
-				  				<input type="radio" name="layoutCreate" value="copyCreate" /> 既存のレイアウトをコピーして作成<br />
+								<input type="radio" checked="checked" name="layoutCreate" id="newCreate" /> 新規に作成<br />
+				  				<input type="radio" name="layoutCreate" id="copyCreate" /> 既存のレイアウトをコピーして作成<br />
 							</div>
 							<div id="SEL_002"
 							data-bind="ntsComboBox: {options: comboboxList,
@@ -57,8 +57,8 @@
 						<div>
 							<div class ="form-label inline">
 								<label id = "LBL_004" >コード/名称</label>
-								<input  id = "INP_001" data-bind="value: selectStmtCode" ></input>
-								<input  id = "INP_002" data-bind="value: selectStmtName"></input>
+								<input  id = "INP_001"  ></input>
+								<input  id = "INP_002" ></input>
 							</div><br/>
 							<br/>
 							<div class ="form-label inline">
@@ -95,7 +95,7 @@
 						<hr></hr>
 						<div class = "bottomStype">
 							<button class="x-large proceed" id = "BTN_001" data-bind="click: createNewLayout">作成</button>
-							<button class="large" id="BTN_002">キャンセル</button><br />
+							<button class="large" id="BTN_002" data-bind="click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>
 	           	</div>

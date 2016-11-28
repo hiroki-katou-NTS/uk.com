@@ -7,6 +7,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
@@ -25,6 +26,7 @@ public class PaymentDetailParam {
 	PaymentDateMaster paymentDateMaster;
 	PersonalAllotSetting personalAllotSetting;
 	List<LayoutMasterDetail> layoutMasterDetailList;
+	List<LayoutMasterLine> lineList;
 	
 	public int getStartYearMonth() {
 		return personalAllotSetting.getStartDate().v();

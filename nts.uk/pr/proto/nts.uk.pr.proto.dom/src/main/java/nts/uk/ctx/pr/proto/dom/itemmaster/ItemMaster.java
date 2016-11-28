@@ -108,6 +108,24 @@ public class ItemMaster extends AggregateRoot{
 	}
 	
 	/**
+	 * additional Info 
+	 * @param limitMoney
+	 * @param fixedPaidAtr
+	 * @param laborInsuranceAtr
+	 * @param socialInsuranceAtr
+	 * @return
+	 */
+	public ItemMaster additionalInfo(int limitMoney, int fixedPaidAtr, int laborInsuranceAtr, int socialInsuranceAtr, int avgPaidAtr, int deductAttribute) {
+		this.limitMoney = new LimitMoney(limitMoney);
+		this.fixedPaidAtr = EnumAdaptor.valueOf(fixedPaidAtr, WageClassificationAtr.class);
+		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, WageClassificationAtr.class);
+		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, WageClassificationAtr.class);
+		this.avgPaidAtr = EnumAdaptor.valueOf(avgPaidAtr, WageClassificationAtr.class);
+		this.deductAttribute = EnumAdaptor.valueOf(deductAttribute, DeductionAtr.class);
+		return this;
+	}
+	
+	/**
 	 * Check tax = COMMUTING_COST || COMMUTING_EXPENSE
 	 * (using for calculate payment create data)
 	 * @return

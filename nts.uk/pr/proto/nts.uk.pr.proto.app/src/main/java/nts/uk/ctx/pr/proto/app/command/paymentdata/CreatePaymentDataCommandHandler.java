@@ -30,6 +30,7 @@ import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate;
 import nts.uk.ctx.pr.proto.dom.paymentdata.CalcFlag;
+import nts.uk.ctx.pr.proto.dom.paymentdata.Comment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber;
 import nts.uk.ctx.pr.proto.dom.paymentdata.MakeMethodFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
@@ -177,6 +178,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// get layout detail master
 		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(loginInfo.companyCode(),
 						stmtCode, personalAllotSetting.getStartDate().v());
+		// get layout master line
+		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
 		
 		PaymentDetailParam param = new PaymentDetailParam(
 				loginInfo.companyCode(),
@@ -188,11 +191,11 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				payCalBasicInfo,
 				payDay,
 				personalAllotSetting,
-				layoutMasterDetailList);
+				layoutMasterDetailList,
+				lineList);
 
 		// calculate payment detail
 		Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
-		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
 		
 		// get layout master detail
 		List<LayoutMasterDetail> layoutDetailMasterList = layoutMasterDetailList.stream()
@@ -243,7 +246,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				new BonusTaxRate(0),
 				CalcFlag.CALCULATED, 
 				MakeMethodFlag.INITIAL_DATA, 
-				null);
+				new Comment(""));
 
 		payment.setDetailPaymentItems(detailPaymentList);
 		payment.setDetailDeductionItems(detailDeductionList);

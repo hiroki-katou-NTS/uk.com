@@ -6,39 +6,59 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 /** Finder DTO of item */
 @Value
 public class LayoutMasterDetailDto {
+	private String layoutCode;
+	/**開始年月*/
+	private int startYm;
+	/** 終了年月 */
+	private int endYm;
+	/**カテゴリ区分 */
+	private int categoryAtr;
 	/**項目CD*/
-	String itemCode;
+	private String itemCode;
+	/**自動採番された行番号	 */
+	private String autoLineId;
+	/**項目位置（列）	 */
+	private int itemPosColumn;
+	/** name */
+	private String itemAbName;
 	/** 合計対象区分 */
-	int sumScopeAtr;
+	private int sumScopeAtr;
 	/**計算方法 */
-	int calculationMethod;
+	private int calculationMethod;
 	/**按分設定 */
-	int distributeSet;
+	private int distributeSet;
 	/**按分方法	 */
-	int distributeWay;
+	private int distributeWay;
 	/**個人金額コード	 */
-	String personalWageCode;
+	private String personalWageCode;
 	/**エラー範囲上限利用区分	 */
-	int isUseHighError;
+	private int isUseHighError;
 	/**エラー範囲上限	 */
-	int errRangeHigh;
+	private int errRangeHigh;
 	/**エラー範囲下限利用区分	 */
-	int isUseLowError;
+	private int isUseLowError;
 	/**エラー範囲下限	 */
-	int errRangeLow;
+	private int errRangeLow;
 	/**アラーム範囲下限利用区分 */
-	int isUseHighAlam;
+	private int isUseHighAlam;
 	/**アラーム範囲上限	 */
-	int alamRangeHigh;
+	private int alamRangeHigh;
 	/**アラーム範囲下限利用区分	 */
-	int isUseLowAlam;
+	private int isUseLowAlam;
 	/**アラーム範囲下限	 */
-	int alamRangeLow;
+	private int alamRangeLow;
 	
 	public static LayoutMasterDetailDto fromDomain(LayoutMasterDetail domain)
 	{
-		return new LayoutMasterDetailDto( 
+		return new LayoutMasterDetailDto(
+				domain.getLayoutCode().v(),
+				domain.getStartYm().v(),
+				domain.getEndYm().v(),
+				domain.getCategoryAtr().value,
 				domain.getItemCode().v(), 
+				domain.getAutoLineId().v(),
+				domain.getItemPosColumn().v(),
+				domain.getItemAbName().v(),
 				domain.getSumScopeAtr().value,
 				domain.getCalculationMethod().value,
 				domain.getDistribute().getSetting().value, 
