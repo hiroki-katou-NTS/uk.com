@@ -24,9 +24,19 @@ __viewContext.ready(function () {
             },
             // TimeEditor
             timeeditor: {
-                value: ko.observable("12:00"),
-                constraint: 'LayoutCode',
+                value: ko.observable("-1259"),
+                constraint: '',
                 option: ko.mapping.fromJS(new option.TimeEditorOption()),
+                enable: function(enable){
+                    var self = this;
+                    self.option.enable(enable);
+                }
+            },
+            // TimeEditor
+            yearMonthEditor: {
+                value: ko.observable("199912"),
+                constraint: '',
+                option: ko.mapping.fromJS(new option.TimeEditorOption({inputFormat:"yearmonth"})),
                 enable: function(enable){
                     var self = this;
                     self.option.enable(enable);
@@ -43,7 +53,6 @@ __viewContext.ready(function () {
                 }
             },
         };
-     // developer's view model
+     // developer's view model.
     this.bind(vm);
-    
 });

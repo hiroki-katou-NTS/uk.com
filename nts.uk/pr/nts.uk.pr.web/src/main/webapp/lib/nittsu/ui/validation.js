@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -61,17 +66,31 @@ var nts;
                     Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
                     Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
                 };
-                function isInteger(value) {
+                function isInteger(value, option) {
+                    if (option !== undefined && option.groupseperator() !== undefined) {
+                        value = this.isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
+                    }
                     return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
                 }
                 validation.isInteger = isInteger;
-                function isDecimal(value) {
+                function isDecimal(value, option) {
+                    if (option !== undefined && option.groupseperator() !== undefined) {
+                        value = this.isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
+                    }
                     return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
                 }
                 validation.isDecimal = isDecimal;
-                var ResultParseTime = (function () {
-                    function ResultParseTime(success, minus, hours, minutes) {
+                var TimeParseResult = (function () {
+                    function TimeParseResult(success) {
                         this.success = success;
+                    }
+                    return TimeParseResult;
+                }());
+                validation.TimeParseResult = TimeParseResult;
+                var ResultParseTime = (function (_super) {
+                    __extends(ResultParseTime, _super);
+                    function ResultParseTime(success, minus, hours, minutes) {
+                        _super.call(this, success);
                         this.minus = minus;
                         this.hours = hours;
                         this.minutes = minutes;
@@ -85,10 +104,16 @@ var nts;
                     ResultParseTime.prototype.format = function () {
                         return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
                     };
+                    ResultParseTime.prototype.toValue = function () {
+                        return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
+                    };
                     return ResultParseTime;
-                }());
+                }(TimeParseResult));
                 validation.ResultParseTime = ResultParseTime;
                 function parseTime(time) {
+                    if (!(time instanceof String)) {
+                        time = time.toString();
+                    }
                     if (time.length < 2 || time.split(':').length > 2 || time.split('-').length > 2
                         || time.lastIndexOf('-') > 0) {
                         return ResultParseTime.failed();
@@ -111,18 +136,43 @@ var nts;
                     if (!isInteger(minutes) || parseInt(minutes) > 59 || !isInteger(hours)) {
                         return ResultParseTime.failed();
                     }
-                    return ResultParseTime.succeeded(minusNumber, Number(hours), Number(minutes));
+                    return ResultParseTime.succeeded(minusNumber, parseInt(hours), parseInt(minutes));
                 }
                 validation.parseTime = parseTime;
-                function validateYearMonth(yearMonth) {
+                var ResultParseYearMonth = (function (_super) {
+                    __extends(ResultParseYearMonth, _super);
+                    function ResultParseYearMonth(success, year, month) {
+                        _super.call(this, success);
+                        this.year = year;
+                        this.month = month;
+                    }
+                    ResultParseYearMonth.succeeded = function (year, month) {
+                        return new ResultParseYearMonth(true, year, month);
+                    };
+                    ResultParseYearMonth.failed = function () {
+                        return new ResultParseYearMonth(false);
+                    };
+                    ResultParseYearMonth.prototype.format = function () {
+                        return this.year + '/' + uk.text.padLeft(String(this.month), '0', 2);
+                    };
+                    ResultParseYearMonth.prototype.toValue = function () {
+                        return (this.year * 100 + this.month);
+                    };
+                    return ResultParseYearMonth;
+                }(TimeParseResult));
+                validation.ResultParseYearMonth = ResultParseYearMonth;
+                function parseYearMonth(yearMonth) {
+                    if (!(yearMonth instanceof String)) {
+                        yearMonth = yearMonth.toString();
+                    }
                     var stringLengh = yearMonth.length;
                     if ((stringLengh < 6 || stringLengh > 7) || yearMonth.split('/').length > 2) {
-                        throw new Error('invalid year month value: ' + yearMonth);
+                        return ResultParseYearMonth.failed();
                     }
                     var indexOf = yearMonth.lastIndexOf('/');
                     var year, month;
                     if (indexOf > -1 && indexOf !== 4) {
-                        throw new Error('invalid year month value: ' + yearMonth);
+                        return ResultParseYearMonth.failed();
                     }
                     else if (indexOf === 4) {
                         year = yearMonth.split('/')[0];
@@ -133,11 +183,11 @@ var nts;
                         month = yearMonth.substr(-2, 2);
                     }
                     if (!isInteger(month) || parseInt(month) > 12 || !isInteger(year) || parseInt(year) < 1900) {
-                        throw new Error('invalid year month value: ' + yearMonth);
+                        return ResultParseYearMonth.failed();
                     }
-                    return year + "/" + (month.length === 1 ? '0' + month : month);
+                    return ResultParseYearMonth.succeeded(parseInt(year), parseInt(month));
                 }
-                validation.validateYearMonth = validateYearMonth;
+                validation.parseYearMonth = parseYearMonth;
             })(validation = ui.validation || (ui.validation = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

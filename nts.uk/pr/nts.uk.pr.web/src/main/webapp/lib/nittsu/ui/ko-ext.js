@@ -72,11 +72,17 @@ var nts;
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
                         this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            bindingContext.$data.change(newText);
+                            if (validation.isDecimal(newText, option)) {
+                                $input.ntsError('clear');
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid number');
+                            }
                             setValue(newText);
                         });
                     };
@@ -109,6 +115,8 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
+                        newText = uk.text.formatNumber(validation.isDecimal(newText) ? parseFloat(newText)
+                            : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
                         $input.val(newText);
                     };
                     return NtsNumberEditorBindingHandler;
@@ -125,14 +133,21 @@ var nts;
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            var result = validation.parseTime(newText);
+                            var result;
+                            if (option.inputFormat() === "yearmonth") {
+                                result = validation.parseYearMonth(newText);
+                            }
+                            else {
+                                result = validation.parseTime(newText);
+                            }
                             if (result.success) {
                                 $input.ntsError('clear');
-                                setValue(result.format());
+                                $input.val(result.format());
+                                setValue(result.toValue());
                             }
                             else {
                                 $input.ntsError('set', 'invalid time');
@@ -147,7 +162,7 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
                         var enable = ko.unwrap(option.enable);
                         var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
@@ -168,8 +183,19 @@ var nts;
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var newText = getValue();
-                        $input.val(newText);
+                        var result;
+                        if (option.inputFormat() === "yearmonth") {
+                            result = validation.parseYearMonth(data.value());
+                        }
+                        else {
+                            result = validation.parseTime(data.value());
+                        }
+                        if (result.success) {
+                            $input.val(result.format());
+                        }
+                        else {
+                            $input.val(data.value());
+                        }
                     };
                     return NtsTimeEditorBindingHandler;
                 }());

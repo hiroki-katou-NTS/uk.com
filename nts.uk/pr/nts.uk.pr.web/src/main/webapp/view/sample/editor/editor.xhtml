@@ -30,6 +30,7 @@
           	</div>
           	
           	<div id="contents-area">
+          		<input onchange="console.log($(this).val());" />
 				<div class="">
 					<h2><a href="../../../test.html">&#9665;</a> Editor</h2>
 					<hr/>
@@ -338,13 +339,20 @@
 					<div class="cf">
 						<h2>TimeEditor</h2>
 						<div data-bind="with: timeeditor">
+							<h5>Time</h5>
 							<input data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option}" />
-							<br/><br/>
+							<br/>
+							<br/>
 							<!--  Using Method -->
 							<button data-bind="click: enable.bind($data, true)">enable</button>
 							<button data-bind="click: enable.bind($data, false)">disable</button>
 							<!-- Direct Binding -->
 							<label><input type="checkbox" data-bind="checked: option.readonly" /> Readonly</label>
+						</div>
+						<div data-bind="with: yearMonthEditor">
+							<br/>
+							<h5>Year Month</h5>
+							<input id="yearmonth" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option}" />
 						</div>
 						<br/>
 						<!-- ViewModel -->
