@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.layout.category;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface LayoutMasterCategoryRepository {
@@ -60,4 +61,14 @@ public interface LayoutMasterCategoryRepository {
 	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, int startYm);
 
 	List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm);
+	
+	/**
+	 * Find layout master category
+	 * @param companyCode
+	 * @param stmtCode
+	 * @param startYearMonth
+	 * @param categoryAtr
+	 * @return
+	 */
+	Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr);
 }

@@ -10,25 +10,25 @@
 	<ui:composition>
 		<div>
 			<div id="h-left">
-				<div class="h-item" style="margin: 3px 0px !important;">
+				<div class="h-item" style="margin: 3px 0px !important;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
 						<h:outputText value="対象年月" />
 					</div>
 					<div class="i-right">
-						<h:outputText value="2016/01" />
+						<label data-bind="text: processingYM"></label>
 					</div>
 				</div>
 				<div class="clear"></div>
-				<div class="h-item">
+				<div class="h-item" >
 					<div class="i-left">
 						<button data-bind="click: openEmployeeList"
 							style="height: 25px !important;">対象者</button>
-						<button style="height: 25px !important;">⇦</button>
-						<button style="height: 25px !important;">⇨</button>
+						<button style="height: 25px !important;" data-bind="click: prevEmployee">⇦</button>
+						<button style="height: 25px !important;" data-bind="click: nextEmployee">⇨</button>
 					</div>
-					<div class="i-right">
-						<input id="employeeCode" data-name="employeeCode" data-bind="ntsTextEditor: {value: employeeCode, constraint: '', enable: false}" />
-						<span data-bind="text: employeeName"></span>
+					<div class="i-right" data-bind="with: employee()">
+						<input id="employeeCode" data-name="employeeCode" data-bind="ntsTextEditor: {value: code, constraint: '', enable: false}" />
+						<span data-bind="text: name"></span>
 					</div>
 					<div class="i-left">
 						<h:outputText value="部門" />

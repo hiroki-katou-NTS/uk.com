@@ -14,7 +14,6 @@ import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
@@ -30,8 +29,6 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWageRepository;
 public class PaymentDetailServiceImpl implements PaymentDetailService {
 
 	@Inject
-	private LayoutMasterDetailRepository layoutDetailMasterRepo;
-	@Inject
 	private ItemMasterRepository itemMasterRepo;
 	@Inject
 	private PersonalWageRepository personalWageRepo;
@@ -40,13 +37,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 
 	@Override
 	public Map<CategoryAtr, List<DetailItem>> calculatePayValue(PaymentDetailParam param) {
-		
-		// get personal allot setting
-		String stmtCode = param.getPersonalAllotSetting().getPaymentDetailCode().v();
-
-		// get layout detail master
-		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(param.getCompanyCode(),
-				stmtCode, param.getStartYearMonth());
+		// layout master detail list
+		List<LayoutMasterDetail> layoutMasterDetailList = param.getLayoutMasterDetailList();
 		
 		// get personal commute
 		PersonalCommuteFee commute = personalCommuteRepo.find(
