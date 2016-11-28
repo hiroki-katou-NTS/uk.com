@@ -40,7 +40,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	 */
 	public Optional<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode) {
 		return this.queryProxy().query(SELECT_DETAIL, QcamtItem.class).setParameter("companyCode", companyCode)
-				.setParameter("categoryType", categoryType).setParameter("itemCd", itemCode)
+				.setParameter("categoryType", categoryType).setParameter("itemCode", itemCode)
 				.getSingle(c -> toDomain(c));
 	}
 
