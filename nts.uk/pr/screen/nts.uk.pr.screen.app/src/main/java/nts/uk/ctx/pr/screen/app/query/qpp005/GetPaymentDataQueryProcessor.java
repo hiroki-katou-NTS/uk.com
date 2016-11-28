@@ -140,7 +140,7 @@ public class GetPaymentDataQueryProcessor {
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
 			result.setPaymentHeader(new PaymentDataHeaderDto(
-					String.valueOf(layout.getStartYM().v()),
+					layout.getStartYM().v(),
 					payment.getDependentNumber().v(), 
 					payment.getSpecificationCode().v(), layout.getStmtName().v(),
 					payment.getMakeMethodFlag().value, query.getEmployeeCode(), 
@@ -150,7 +150,7 @@ public class GetPaymentDataQueryProcessor {
 
 		} else {
 			result.setPaymentHeader(new PaymentDataHeaderDto(
-					String.valueOf(layout.getStartYM().v()), null,
+					layout.getStartYM().v(), null,
 					layout.getStmtCode().v(), layout.getStmtName().v(), 
 					null, query.getEmployeeCode(), null, false));
 
