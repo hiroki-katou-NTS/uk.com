@@ -44,7 +44,7 @@ module qmm019.a {
             var dfd = $.Deferred<Array<model.Category>>();
             nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
                 .done(function(res: Array<model.Category>) {
-                    var result = _.map(res, function(category: model.Category) {
+                    var result = _.map(res, function(category: any) {
                         return new model.Category(category.lines, category.categoryAtr);
                     });
                     dfd.resolve(result);
@@ -73,19 +73,20 @@ module qmm019.a {
             }
                     
             export class Category {
-                lines: Array<Line>;
+                lines: KnockoutObservableArray<Line>;
                 categoryAtr: number;
                 categoryName: string;
                 hasSetting: boolean = false;
                 
                 constructor(lines: Array<Line>, categoryAtr: number) {
-                    this.lines = _.map(lines, function(line: model.Line) {
+                    this.lines = ko.observableArray([]);
+                    this.lines(_.map(lines, function(line: model.Line) {
                         var details = 
                             _.map(line.details, function(detail: model.ItemDetail){
                                 return new model.ItemDetail(detail);  
                             });
                         return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
-                    });
+                    }));
                     this.categoryAtr = categoryAtr;
                     switch (categoryAtr){
                         case 0:
@@ -114,7 +115,7 @@ module qmm019.a {
                 }
                 addLine(){
                     var self = this;
-                    let autoLineId : string = "lineId;" + self.lines.length;
+                    let autoLineId : string = self.categoryAtr + "-lineId" + self.lines().length;
                     var itemDetailObj1 = {itemCode: "1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
                                         categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
                                         distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
@@ -182,6 +183,7 @@ module qmm019.a {
             export class Line {
                 categoryAtr: number;
                 autoLineId: string;
+                rowId: string;
                 details: Array<ItemDetail>;
                 lineDispayAtr: number;
                 linePosition: number;
@@ -192,6 +194,7 @@ module qmm019.a {
                     autoLineId: string, lineDispayAtr: number, linePosition: number) {
                     this.details = itemDetails;
                     this.autoLineId = autoLineId;
+                    this.rowId = categoryAtr + autoLineId;
                     if(lineDispayAtr === 0) {
                         this.isDisplayOnPrint = false;
                     } 
@@ -211,7 +214,7 @@ module qmm019.a {
                 lineClick(data, event) {
                     //TODO: goi man hinh khac
                     if (data.hasRequiredItem === false) {
-                        $("#" + data.autoLineId + data.categoryAtr).addClass("ground-gray");
+                        $("#" + data.rowId).addClass("ground-gray");
                     }    
                 }
             }
