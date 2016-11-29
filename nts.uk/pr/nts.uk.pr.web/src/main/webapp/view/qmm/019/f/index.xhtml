@@ -43,7 +43,7 @@
 											   rows: 15,
 											   columns: [
 													{ prop: 'id', length: 3 },
-													{ prop: 'name', length: 5 }
+													{ prop: 'name', length: 12 }
 											   ]}"
 							class="cf"></div>
 					</div>
@@ -53,14 +53,14 @@
 				<div class="right-content">
 					<div class="form-label">
 						<label>コード/名称</label> <a data-bind="text: listBox.selectedCode()">コード</a>
-						<a data-bind="text: listBox.selectedName()">名称</a>
+						<a data-bind="text: listBox.itemDtoSelected().itemAbName">名称</a>
 					</div>
 					<br /> <br />
-					<div data-bind="with: comboBox" class="form-label required">
+					<div data-bind="with: comboBoxSumScopeAtr, visible: isCategoryAtrEqual0() || isCategoryAtrEqual1()" class="form-label required">
 						<label>内訳項目</label>
-						<div style="margin-left: 30px; float: right" id="combo-box1"
+						<div style="margin:-5px 0 0 30px; float: right" id="combo-box1"
 							data-bind="ntsComboBox: {
-							options: itemListSumScopeAtr,
+							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
 							optionsText: 'name',
@@ -72,12 +72,12 @@
 							class="cf"></div>
 					</div>
 					<br /> <br />
-					<div style="margin-bottom: 5px;" data-bind="with: comboBox"
+					<div style="margin-bottom: 5px;" data-bind="with: comboBoxCalcMethod0, visible: isCategoryAtrEqual0() || isCategoryAtrEqual1()"
 						class="form-label required">
 						<label>計算方法</label>
-						<div style="margin-left: 30px; float: right" id="combo-box2"
+						<div style="margin:-5px 0 0 30px; float: right" id="combo-box2"
 							data-bind="ntsComboBox: {
-							options: itemListCalcMethod0,
+							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
 							optionsText: 'name',
@@ -90,6 +90,24 @@
 					</div>
 
 					<hr />
+					<!-- CategoryAtr = 0 and select 手入力 -->
+					<div style="margin-bottom: 5px;" data-bind="with: comboBoxCommutingClassification, visible: isCategoryAtrEqual1() &amp;&amp; $root.content.comboBoxCalcMethod0.isManualInput()"
+						class="form-label">
+						<label style="float: left">計算方法</label>
+						<div style="margin:-5px 0 0 30px; float: left" id="combo-box9"
+							data-bind="ntsComboBox: {
+							options: itemList,
+							optionsValue: 'id',
+							value: selectedCode,
+							optionsText: 'name',
+							editable: false,
+							enable: true,
+							columns: [
+								{ prop: 'name', length: 10 },
+							]}"
+							class="cf"></div>
+					</div>
+					<br/>
 					<div class="form-label">
 						<label style="float: left;">按分設定</label>
 						<div style="float: left; margin-left: 45px;"
@@ -104,10 +122,10 @@
 						</div>
 					</div>
 					<br />
-					<div style="margin-left: 115px;" data-bind="with: comboBox">
+					<div style="margin-left: 115px;" data-bind="with: comboBoxDistributeWay">
 						<div id="combo-box3"
 							data-bind="ntsComboBox: {
-							options: itemListDistributeWay,
+							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
 							optionsText: 'name',
@@ -121,41 +139,37 @@
 					<br />
 					<div class="form-label">
 						<label>上限チェック</label> <a style="float: right;">を超える場合</a> 
-						<input data-bind="enable: checkBox.errRangeHighAtr" style="float: right; margin-left: 20px;" type="text" />
-						<div style="float: right; margin-left: 45px;"
-							data-bind="with: checkBox">
+						<input data-bind="enable: listBox.itemDtoSelected().isUseHighError, value: listBox.itemDtoSelected().errRangeHigh" style="float: right; margin-left: 20px;" type="text" />
+						<div style="float: right; margin-left: 45px;">
 							<div id="checkBoxErrRangeHigh"
-								data-bind="ntsCheckBox: { checked: errRangeHighAtr, text: 'エラー'}"
+								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseHighError, text: 'エラー'}"
 								class="cf"></div>
 						</div>
 						<br /> <br />
-						<div style="float: left; margin-left: 115px;"
-							data-bind="with: checkBox">
+						<div style="float: left; margin-left: 115px;">
 							<div id="checkBoxAlRangeHigh"
-								data-bind="ntsCheckBox: { checked: alRangeHighAtr, text: 'アラーム'}"
+								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseHighAlam, text: 'アラーム'}"
 								class="cf"></div>
 						</div>
-						<input data-bind="enable: checkBox.alRangeHighAtr" style="float: left; margin-left: 9px;" type="text" /> <a
+						<input data-bind="enable: listBox.itemDtoSelected().isUseHighAlam, value: listBox.itemDtoSelected().alamRangeHigh" style="float: left; margin-left: 9px;" type="text" /> <a
 							style="float: left;">を超える場合</a>
 					</div>
 					<br /> <br /> <br />
 					<div class="form-label">
 						<label>下限チェック</label> <a style="float: right;">未満の場合</a> 
-						<input data-bind="enable: checkBox.errRangeLowAtr" style="float: right; margin-left: 20px;" type="text" />
-						<div style="float: right; margin-left: 45px;"
-							data-bind="with: checkBox">
+						<input data-bind="enable: listBox.itemDtoSelected().isUseLowError, value: listBox.itemDtoSelected().errRangeLow" style="float: right; margin-left: 20px;" type="text" />
+						<div style="float: right; margin-left: 45px;">
 							<div id="checkBoxErrRangeLowAtr"
-								data-bind="ntsCheckBox: { checked: errRangeLowAtr, text: 'エラー'}"
+								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseLowError, text: 'エラー'}"
 								class="cf"></div>
 						</div>
 						<br /> <br />
-						<div style="float: left; margin-left: 115px;"
-							data-bind="with: checkBox">
+						<div style="float: left; margin-left: 115px;">
 							<div id="checkBoxAlRangeHigh"
-								data-bind="ntsCheckBox: { checked: alRangeLowAtr, text: 'アラーム'}"
+								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseLowAlam, text: 'アラーム'}"
 								class="cf"></div>
 						</div>
-						<input data-bind="enable: checkBox.alRangeLowAtr" style="float: left; margin-left: 9px;" type="text" /> <a
+						<input data-bind="enable: listBox.itemDtoSelected().isUseLowAlam, value: listBox.itemDtoSelected().alamRangeLow" style="float: left; margin-left: 9px;" type="text" /> <a
 							style="float: left;">未満の場合</a>
 					</div>
 					<br /> <br/> <br/> <br />
