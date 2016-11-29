@@ -141,6 +141,12 @@ var nts;
                                 return PaymentDataHeaderViewModel;
                             }());
                             viewModel.PaymentDataHeaderViewModel = PaymentDataHeaderViewModel;
+                            var PrintPositionCategoryViewModel = (function () {
+                                function PrintPositionCategoryViewModel() {
+                                }
+                                return PrintPositionCategoryViewModel;
+                            }());
+                            viewModel.PrintPositionCategoryViewModel = PrintPositionCategoryViewModel;
                             // categories
                             var LayoutMasterCategoryViewModel = (function () {
                                 function LayoutMasterCategoryViewModel() {
@@ -150,7 +156,7 @@ var nts;
                             viewModel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                             // item
                             var DetailItemViewModel = (function () {
-                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, isCreated) {
+                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, isCreated) {
                                     var self = this;
                                     self.categoryAtr = categoryAtr;
                                     self.itemAtr = itemAtr;
@@ -160,6 +166,7 @@ var nts;
                                     self.columnPosition = columnPosition;
                                     self.linePosition = linePosition;
                                     self.deductAtr = deductAtr;
+                                    self.displayAtr = displayAtr;
                                     self.isCreated = isCreated;
                                 }
                                 return DetailItemViewModel;

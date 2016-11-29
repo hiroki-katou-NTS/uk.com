@@ -227,7 +227,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				PayBonusAtr.SALARY, 
 				processingYearMonth, 
 				SparePayAtr.NORMAL,
-				GeneralDate.localDate(payDay.getStandardDate()),
+				payDay.getStandardDate(),
 				new SpecificationCode(stmtCode), 
 				new ResidenceCode("000001"), 
 				new ResidenceName("住民税納付先"), 
