@@ -67,6 +67,8 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymen
 import nts.uk.ctx.pr.proto.dom.personalinfo.employmentcontract.PersonalEmploymentContractRepository;
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaidRepository;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWage;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWageRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.primitive.PersonId;
@@ -105,6 +107,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	private LayoutMasterLineRepository layoutMasterLineRepo;
 	@Inject
 	private ItemMasterRepository itemMasterRepo;
+	@Inject
+	private PersonalWageRepository personalWageRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreatePaymentDataCommand> context) {
@@ -177,6 +181,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// get layout master line
 		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
 		
+		// get personal wage list
+		List<PersonalWage> personWageList = personalWageRepo.findAll(loginInfo.companyCode(), personId, baseYearMonth.v());
+		
 		PaymentDetailParam param = new PaymentDetailParam(
 				loginInfo.companyCode(),
 				new PersonId(personId),
@@ -188,7 +195,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				payDay,
 				personalAllotSetting,
 				layoutMasterDetailList,
-				lineList);
+				lineList,
+				personWageList);
 
 		// calculate payment detail
 		Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
@@ -243,8 +251,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				new SpecificationCode(stmtCode), 
 				new ResidenceCode("000001"), 
 				new ResidenceName("住民税納付先"), 
-				new HealthInsuranceGrade(98000), 
-				new HealthInsuranceAverageEarn(5), 
+				new HealthInsuranceGrade(5), 
+				new HealthInsuranceAverageEarn(98000), 
 				AgeContinuationInsureAtr.NOT_TARGET, 
 				TenureAtr.TENURE,
 				TaxAtr.TAXATION,
@@ -326,6 +334,13 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		return detailItem;
 	}
 	
+	/**
+	 * Update again list detail item.
+	 * @param exists
+	 * @param detailItemList
+	 * @param detailItem
+	 * @return
+	 */
 	private List<DetailItem> updateDetailItem(boolean exists, List<DetailItem> detailItemList, DetailItem detailItem) {
 		if (exists) {
 			for (DetailItem item : detailItemList) {
