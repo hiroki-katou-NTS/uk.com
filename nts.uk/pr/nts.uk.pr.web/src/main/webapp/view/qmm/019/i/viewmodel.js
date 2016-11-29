@@ -14,6 +14,9 @@ var qmmm019;
                     this.boxes.push({ id: 1, text: "明細書に印字する行" });
                     this.boxes.push({ id: 2, text: "明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）" });
                 }
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

@@ -133,7 +133,7 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutLines.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
-				.setParameter("strYm", endYm)
+				.setParameter("endYm", endYm)
 				.getList(c -> toDomain(c));
 	}
 

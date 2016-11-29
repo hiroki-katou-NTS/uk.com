@@ -72,12 +72,13 @@ var qmm019;
                 var Category = (function () {
                     function Category(lines, categoryAtr) {
                         this.hasSetting = false;
-                        this.lines = _.map(lines, function (line) {
+                        this.lines = ko.observableArray([]);
+                        this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
                                 return new model.ItemDetail(detail);
                             });
                             return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
-                        });
+                        }));
                         this.categoryAtr = categoryAtr;
                         switch (categoryAtr) {
                             case 0:
@@ -106,7 +107,7 @@ var qmm019;
                     };
                     Category.prototype.addLine = function () {
                         var self = this;
-                        var autoLineId = "lineId;" + self.lines.length;
+                        var autoLineId = self.categoryAtr + "-lineId" + self.lines().length;
                         var itemDetailObj1 = { itemCode: "1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
                             categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
@@ -175,6 +176,7 @@ var qmm019;
                         this.hasRequiredItem = false;
                         this.details = itemDetails;
                         this.autoLineId = autoLineId;
+                        this.rowId = categoryAtr + autoLineId;
                         if (lineDispayAtr === 0) {
                             this.isDisplayOnPrint = false;
                         }
@@ -193,7 +195,7 @@ var qmm019;
                     Line.prototype.lineClick = function (data, event) {
                         //TODO: goi man hinh khac
                         if (data.hasRequiredItem === false) {
-                            $("#" + data.autoLineId + data.categoryAtr).addClass("ground-gray");
+                            $("#" + data.rowId).addClass("ground-gray");
                         }
                     };
                     return Line;

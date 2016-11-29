@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @Entity
 @Table(name = "QSTDT_PAYMENT_HEADER")
@@ -31,6 +33,7 @@ public class QstdtPaymentHeader {
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
 	@Temporal(TemporalType.DATE)
+	@Convert(converter = LocalDateToDBConverter.class)
 	public LocalDate standardDate;
 	
 	@Column(name = "EMPCD")
