@@ -61,11 +61,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	@Override
 	public void add(Payment payment) {
-		try {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
 		
 		this.commandProxy().getEntityManager().persist(paymentHeader);
-
 		
 		for (DetailItem item : payment.getDetailPaymentItems()) {
 			this.insertDetail(payment, item);
@@ -78,9 +76,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		}
 		for (DetailItem item : payment.getDetailArticleItems()) {
 			this.insertDetail(payment, item);
-		}
-		} catch (Exception e) {
-			return;
 		}
 	}
 
