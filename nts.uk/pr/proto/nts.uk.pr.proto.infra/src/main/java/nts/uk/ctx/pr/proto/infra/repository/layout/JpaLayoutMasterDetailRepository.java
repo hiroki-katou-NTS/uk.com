@@ -250,7 +250,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		return this.queryProxy().query(FIND_ONLY_ALL, QstmtStmtLayoutDetail.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYm", startYm)
+				.setParameter("strYm", startYm)
 				.getList(c -> toDomain(c));
 	}
 }

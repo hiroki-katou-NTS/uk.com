@@ -36,7 +36,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 
 	private static ItemMaster toDomain(QcamtItem entity) {
 		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
-				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.taxAtr);
+				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.itemAbName, entity.taxAtr, entity.itemAtr);
 		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
 		return domain;
 	}

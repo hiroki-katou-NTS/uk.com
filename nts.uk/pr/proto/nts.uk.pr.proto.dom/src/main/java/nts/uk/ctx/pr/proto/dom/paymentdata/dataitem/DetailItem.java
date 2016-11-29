@@ -97,7 +97,7 @@ public class DetailItem extends DomainObject {
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
 			int laborInsuranceAtr, int categoryAtr, int deductionAtr, Integer itemAtr) {
 
-		return new DetailItem(new ItemCode(itemCode), value.doubleValue(),
+		return new DetailItem(new ItemCode(itemCode), value,
 				EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
 				EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class),

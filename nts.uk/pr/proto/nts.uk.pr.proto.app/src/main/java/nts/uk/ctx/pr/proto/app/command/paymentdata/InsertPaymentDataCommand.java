@@ -68,9 +68,16 @@ public class InsertPaymentDataCommand extends PaymentDataCommandBase {
 
 	private static List<DetailItem> toDomainDetails(List<LineCommandBase> lines) {
 		List<DetailItem> details = new ArrayList<>();
-		for (LineCommandBase line : lines) {
-			details.addAll(line.getDetails().stream().map(d -> d.toDomain()).collect(Collectors.toList()));
+		try {
+			for (LineCommandBase line : lines) {
+				List<DetailItem> items = line.getDetails().stream().map(d -> d.toDomain()).collect(Collectors.toList());
+				details.addAll(items);
+			}
+		} catch (Exception e) {
+			throw e;
 		}
+		
+		
 		return details;
 	}
 }
