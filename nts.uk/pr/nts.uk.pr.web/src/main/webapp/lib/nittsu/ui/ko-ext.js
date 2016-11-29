@@ -97,7 +97,7 @@ var nts;
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
                         var textmode = ko.unwrap(option.textmode);
-                        $input.attr('type', textmode);
+                        $input.attr('type', 'text');
                         _super.prototype.update.call(this, $input, data);
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
@@ -163,13 +163,13 @@ var nts;
                      * Init.
                      */
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new TextEditorProcessor().init($(element), valueAccessor());
+                        new NumberEditorProcessor().init($(element), valueAccessor());
                     };
                     /**
                      * Update
                      */
                     NtsNumberEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new TextEditorProcessor().update($(element), valueAccessor());
+                        new NumberEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsNumberEditorBindingHandler;
                 }());

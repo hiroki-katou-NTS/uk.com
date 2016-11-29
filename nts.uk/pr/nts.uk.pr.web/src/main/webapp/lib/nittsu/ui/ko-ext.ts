@@ -89,7 +89,7 @@ module nts.uk.ui.koExtentions {
         update($input: JQuery, data: any) {
             var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
             var textmode: string = ko.unwrap(option.textmode);
-            $input.attr('type', textmode);
+            $input.attr('type', 'text');
             
             super.update($input, data);
         }
@@ -157,14 +157,14 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new TextEditorProcessor().init($(element), valueAccessor());
+            new NumberEditorProcessor().init($(element), valueAccessor());
         }
 
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new TextEditorProcessor().update($(element), valueAccessor());
+            new NumberEditorProcessor().update($(element), valueAccessor());
         }
     }
 
