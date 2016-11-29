@@ -104,8 +104,8 @@ table.tb-category, th, td {
 	height: 80px;
 }
 
-.disable {
+.disabled {
 	pointer-events: none;
 	cursor: default;
-	color: #696969;
+	color: #000;
 }

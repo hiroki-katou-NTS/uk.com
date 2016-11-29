@@ -142,11 +142,12 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.specificationCode = domain.getSpecificationCode().v();
 		entity.residenceCode = domain.getResidenceCode().v();
 		entity.residenceName = domain.getResidenceName().v();
-		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceGrade().v().intValue();
-		entity.healthInsuranceGrade = domain.getHealthInsuranceAverageEarn().v().intValue();
+		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceAverageEarn().v().intValue();
+		entity.healthInsuranceGrade = domain.getHealthInsuranceGrade().v().intValue();
 		entity.ageContinuationInsureAtr = domain.getAgeContinuationInsureAtr().value;
 		entity.tenureAtr = domain.getTenureAtr().value;
 		entity.taxAtr = domain.getTaxAtr().value;
+		entity.pensionInsuranceGrade = domain.getPensionInsuranceGrade().v();
 		entity.pensionAverageEarn = domain.getPensionAverageEarn().v();
 		entity.employmentInsuranceAtr = domain.getEmploymentInsuranceAtr().value;
 		entity.dependentNumber = domain.getDependentNumber().v();

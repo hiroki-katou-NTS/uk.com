@@ -153,7 +153,7 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), payment.getDependentNumber().v(),
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), payment.getDependentNumber().v(),
 					payment.getSpecificationCode().v(), layout.getStmtName().v(), payment.getMakeMethodFlag().value,
 					query.getEmployeeCode(), payment.getComment().v(), true,
 					printPosCates
@@ -162,7 +162,7 @@ public class GetPaymentDataQueryProcessor {
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), null, layout.getStmtCode().v(),
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), null, layout.getStmtCode().v(),
 					layout.getStmtName().v(), null, query.getEmployeeCode(), "", false, printPosCates));
 
 			return new ArrayList<>();
@@ -191,6 +191,9 @@ public class GetPaymentDataQueryProcessor {
 			String ctName = category.getCtAtr().toName();
 
 			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
+			if (lineCounts == 0) {
+				continue;
+			}
 			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr)
 					.collect(Collectors.toList());
 			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr, mItems);
