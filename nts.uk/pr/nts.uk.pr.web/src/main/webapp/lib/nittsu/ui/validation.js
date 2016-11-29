@@ -103,6 +103,9 @@ var nts;
                         else if (this.option.inputFormat() === "time") {
                             parseResult = uk.time.parseTime(inputText, false);
                         }
+                        else {
+                            parseResult = uk.time.ResultParseTime.failed();
+                        }
                         if (parseResult.success) {
                             result.success(parseResult.toValue());
                         }

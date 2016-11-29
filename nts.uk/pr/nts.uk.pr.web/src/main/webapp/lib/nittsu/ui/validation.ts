@@ -112,6 +112,8 @@
                 parseResult = time.parseYearMonth(inputText);
             } else if (this.option.inputFormat() === "time") {
                 parseResult = time.parseTime(inputText, false);
+            }else {
+                parseResult = time.ResultParseTime.failed();
             }
             if(parseResult.success){
                 result.success(parseResult.toValue());
