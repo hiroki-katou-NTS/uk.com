@@ -57,7 +57,7 @@ var nts;
                         return {};
                     };
                     EditorProcessor.prototype.getFormatter = function (data) {
-                        return new format.NoFormatter();
+                        return new uk.format.NoFormatter();
                     };
                     EditorProcessor.prototype.getValidator = function (data) {
                         return new validation.NoValidator();
@@ -88,6 +88,28 @@ var nts;
                         ;
                     };
                     return TextEditorProcessor;
+                }(EditorProcessor));
+                var NumberEditorProcessor = (function (_super) {
+                    __extends(NumberEditorProcessor, _super);
+                    function NumberEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    NumberEditorProcessor.prototype.update = function ($input, data) {
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var textmode = ko.unwrap(option.textmode);
+                        $input.attr('type', textmode);
+                        _super.prototype.update.call(this, $input, data);
+                    };
+                    NumberEditorProcessor.prototype.getDefaultOption = function () {
+                        return new nts.uk.ui.option.NumberEditorOption();
+                    };
+                    NumberEditorProcessor.prototype.getFormatter = function (data) {
+                        return new uk.format.NoFormatter();
+                    };
+                    NumberEditorProcessor.prototype.getValidator = function (data) {
+                        return new validation.NoValidator();
+                    };
+                    return NumberEditorProcessor;
                 }(EditorProcessor));
                 /**
                  * Editor
@@ -141,50 +163,13 @@ var nts;
                      * Init.
                      */
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var setValue = data.value;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-                        var $input = $(element);
-                        $input.change(function () {
-                            var newText = $input.val();
-                            if (uk.ntsNumber.isNumber(newText, true, option)) {
-                                $input.ntsError('clear');
-                            }
-                            else {
-                                $input.ntsError('set', 'invalid number');
-                            }
-                            setValue(newText);
-                        });
+                        new TextEditorProcessor().init($(element), valueAccessor());
                     };
                     /**
                      * Update
                      */
                     NtsNumberEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var getValue = data.value;
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-                        var placeholder = ko.unwrap(option.placeholder);
-                        var width = ko.unwrap(option.width);
-                        var textalign = ko.unwrap(option.textalign);
-                        var $input = $(element);
-                        $input.attr('type', 'text');
-                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
-                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
-                        $input.attr('placeholder', placeholder);
-                        if (width.trim() != "")
-                            $input.width(width);
-                        if (textalign.trim() != "")
-                            $input.css('text-align', textalign);
-                        var newText = getValue();
-                        if (newText !== undefined && newText !== null && newText.toString().trim().length > 0) {
-                            newText = uk.ntsNumber.formatNumber(uk.ntsNumber.isNumber(newText, true) ? parseFloat(newText)
-                                : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
-                        }
-                        $input.val(newText);
+                        new TextEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsNumberEditorBindingHandler;
                 }());

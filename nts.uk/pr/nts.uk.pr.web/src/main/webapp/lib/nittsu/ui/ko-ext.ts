@@ -83,6 +83,30 @@ module nts.uk.ui.koExtentions {
             return validation.createValidator(constraintName);;
         }
     }
+    
+    class NumberEditorProcessor extends EditorProcessor {
+        
+        update($input: JQuery, data: any) {
+            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var textmode: string = ko.unwrap(option.textmode);
+            $input.attr('type', textmode);
+            
+            super.update($input, data);
+        }
+        
+        getDefaultOption(): any {
+            return new nts.uk.ui.option.NumberEditorOption();
+        }
+                
+        getFormatter(data: any): format.IFormatter {
+            return new format.NoFormatter();
+        }
+        
+        getValidator(data: any): validation.IValidator {
+            return new validation.NoValidator();
+        }
+    }
+
 
     /**
      * Editor
@@ -133,54 +157,14 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var data = valueAccessor();
-            var setValue: (newText: string) => {} = data.value;
-            var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-            var $input = $(element);
-
-            $input.change(function() {
-                var newText = $input.val();
-                if(ntsNumber.isNumber(newText, true, option)){
-                    $input.ntsError('clear');
-                } else {
-                    $input.ntsError('set', 'invalid number');
-                }
-                setValue(newText);
-            });
+            new TextEditorProcessor().init($(element), valueAccessor());
         }
 
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data
-            var data = valueAccessor();
-            var getValue: () => string = data.value;
-            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-            var placeholder: string = ko.unwrap(option.placeholder);
-            var width: string = ko.unwrap(option.width);
-            var textalign: string = ko.unwrap(option.textalign);
-
-            var $input = $(element);
-
-            $input.attr('type', 'text');
-            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
-            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
-            $input.attr('placeholder', placeholder);
-            if (width.trim() != "")
-                $input.width(width);
-            if (textalign.trim() != "")
-                $input.css('text-align', textalign);
-
-            var newText = getValue();
-            if(newText !== undefined && newText !== null && newText.toString().trim().length > 0){
-                newText = ntsNumber.formatNumber(ntsNumber.isNumber(newText, true) ? parseFloat(newText) 
-                    : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);    
-            }
-            $input.val(newText);
+            new TextEditorProcessor().update($(element), valueAccessor());
         }
     }
 
