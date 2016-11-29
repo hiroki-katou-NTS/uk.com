@@ -27,6 +27,9 @@ var nts;
                 validation.ValidationResult = ValidationResult;
                 function createValidator(constraintName) {
                     var constraint = getConstraint(constraintName);
+                    if (constraint === null) {
+                        return new NoValidator();
+                    }
                     switch (constraint.valueType) {
                         case 'String':
                             return new StringValidator(constraintName);

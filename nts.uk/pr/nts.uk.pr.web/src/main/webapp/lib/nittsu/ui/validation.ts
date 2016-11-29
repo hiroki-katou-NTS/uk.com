@@ -21,7 +21,10 @@
      
     export function createValidator(constraintName: string): IValidator {
         var constraint = getConstraint(constraintName);
-        
+        if (constraint === null) {
+            return new NoValidator();
+        }
+            
         switch (constraint.valueType) {
             case 'String':
                 return new StringValidator(constraintName);
