@@ -57,7 +57,7 @@ var nts;
                         return {};
                     };
                     EditorProcessor.prototype.getFormatter = function (data) {
-                        return new format.NoFormatter();
+                        return new uk.format.NoFormatter();
                     };
                     EditorProcessor.prototype.getValidator = function (data) {
                         return new validation.NoValidator();
