@@ -22,6 +22,13 @@
 			
 			<script src="../../../lib/nittsu/ui/textbox-options.js"></script>
 			<script src="start.js"></script>
+			<script>
+			__viewContext.primitiveValueConstraints.EmployeeCode = {
+					valueType: 'String',
+					charType: 'Numeric',
+					maxLength: 10,
+				};
+			</script>
           </ui:define>
           
           <ui:define name="content">
@@ -39,8 +46,8 @@
 							<input id="testPushError" data-name="テスト" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
-							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -173,8 +180,8 @@
 							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
-							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -389,14 +396,18 @@
 							<input data-bind="ntsTimeEditor: {value: value, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
-							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						
 						<div data-bind="with: yearMonthEditor">
 							<br/><br/>
 							<h2>Year Month Editor</h2>
 							<input data-bind="ntsTimeEditor: {value: value, option: option, enable: enable, readonly: readonly}" />
+							<br/><br/>
+							<!-- Direct Binding -->
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<!-- ViewModel -->
@@ -551,8 +562,8 @@
 							<input data-bind="ntsMaskEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
 							<!-- Direct Binding -->
-							<label><input type="checkbox" data-bind="checked: enable" /> Enable</label>
-							<label><input type="checkbox" data-bind="checked: readonly" /> Readonly</label>
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<!-- ViewModel -->
