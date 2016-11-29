@@ -12,6 +12,10 @@ import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.shr.com.primitive.PersonId;
 
 public class PersonalWage extends AggregateRoot {
+	/** person wage code **/
+	@Getter
+	private String wageCode;
+	
 	/**
 	 * Person wage value.
 	 */
