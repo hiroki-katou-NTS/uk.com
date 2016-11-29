@@ -9,12 +9,15 @@ module qmm019.d.viewmodel {
         selectStmtName : KnockoutObservable<string>;
         selectStartYm: KnockoutObservable<string>;
         layoutSelect:  KnockoutObservable<string>;
+        valueSel001:   KnockoutObservable<string>;
+        createlayout:  KnockoutObservable<service.model.LayoutMasterDto>;
+        startYmHis: KnockoutObservable<number>;
         /**
          * Init screen model.
          */
         constructor() {
             var self = this;
-            self.selectLayoutAtr = ko.observable("2");
+            self.selectLayoutAtr = ko.observable("3");
             self.itemList = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.layouts = ko.observableArray([]);
@@ -22,7 +25,10 @@ module qmm019.d.viewmodel {
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
             //sau nay gan lai
-            self.layoutSelect = ko.observable("1");
+            self.layoutSelect = ko.observable("01");
+            self.valueSel001 = ko.observable("");
+            self.createlayout = ko.observable(null);
+            self.startYmHis = ko.observable(null);
         } 
         
         start(): JQueryPromise<any> {
@@ -62,19 +68,64 @@ module qmm019.d.viewmodel {
         startDialog() : any{
             var self = this;
             _.forEach(self.layouts(), function(layout){
-                var stmtCode = layout.stmtCode.trim();
+                var stmtCode = layout.stmtCode;
                 if(stmtCode == self.layoutSelect()){
                     self.selectStmtCode(stmtCode);
                     self.selectStmtName(layout.stmtName);
-                    self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm + 1));
+                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                    self.valueSel001('最新の履歴'+ layout.startYm +'から引き継ぐ')
+                    self.startYmHis = layout.startYm;
                     return false;                    
                 }
             });     
         }
         
        createHistoryLayout(): any{
-           
+           var self = this;
+           var selectYm = self.startYmHis;
+            var inputYm =$("#INP_001").val().replace('/','');
+            if(+inputYm < +selectYm
+              || + inputYm == +selectYm){
+               alert('履歴の期間が正しくありません。');
+                return false;
+            }
+           else{
+               if($("#copyCreate").is(":checked")){
+                    self.copyCreateData();
+                }else{
+                    self.newCreateData();    
+                }
+               service.createLayoutHistory(self.createlayout()).done(function(){
+                    alert("追加しました。");    
+               }).fail(function(res){
+                    alert(res);
+               })
+           }
        }
+       copyCreateData(): any{
+           var self = this;
+           
+           self.createlayout({
+               checkContinue: true,
+               stmtCode: self.selectStmtCode(),
+               startYm: +(self.selectStartYm().replace('/','')),
+               endYm: (+(self.selectStartYm().replace('/','')) - 1),
+               startPrevious: + nts.uk.time.formatYearMonth($('#INP_001').val()),
+               layoutAtr: 3
+          });
+       }
+        
+        newCreateData(): any{
+            var self = this;
+            self.createlayout({
+               checkContinue: false,
+               stmtCode: self.selectStmtCode(),
+               startYm: +(self.selectStartYm().replace('/','')),
+               endYm: (+(self.selectStartYm().replace('/','')) - 1),
+               startPrevious: + nts.uk.time.formatYearMonth($('#INP_001').val()),
+               layoutAtr: 3
+          });
+        }
     }
     
         /**

@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 
@@ -15,7 +16,8 @@ public class PrintPositionCategory extends DomainObject {
 	/**
 	 * 位置
 	 */
-	private final CategoryAtr position;
+	@Getter
+	private final CategoryAtr categoryAtr;
 
 	/**
 	 * 行
@@ -23,10 +25,14 @@ public class PrintPositionCategory extends DomainObject {
 	@Getter
 	private final PrintPosCatalogLines lines;
 
-	public PrintPositionCategory(CategoryAtr position, PrintPosCatalogLines lines) {
+	public PrintPositionCategory(CategoryAtr categoryAtr, PrintPosCatalogLines lines) {
 		super();
-		this.position = position;
+		this.categoryAtr = categoryAtr;
 		this.lines = lines;
 	}
 
+	public static PrintPositionCategory createFromJavaType(int categoryAtr, int lines) {
+		return new PrintPositionCategory(EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
+				new PrintPosCatalogLines(lines));
+	}
 }

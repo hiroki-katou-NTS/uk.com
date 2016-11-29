@@ -1,62 +1,78 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
-@Value
+@Getter
+@Setter
 public class DetailItemCommandBase {
 
 	/**
 	 * category atr
 	 */
-	private int categoryAtr;
-
+	int categoryAtr;
+	
+	Integer itemAtr;
+	
 	/**
 	 * 項目コード
 	 */
-	private String itemCode;
+	String itemCode;
 
 	/**
 	 * 項目名
 	 */
-	private String itemName;
+	String itemName;
 
 	/**
 	 * 値
 	 */
-	private Double value;
+	Double value;
 
 	/**
 	 * 修正フラグ
 	 */
-	private int correctFlag;
+	int correctFlag = 0;
 
 	/**
 	 * 社保対象区分
 	 */
-	private int socialInsuranceAtr;
+	int socialInsuranceAtr;
 
 	/**
 	 * 労保対象区分
 	 */
-	private int laborInsuranceAtr;
+	int laborInsuranceAtr;
 
-	private int deductionAtr;
+	int linePosition;
 
-	private int linePostion;
+	int columnPosition;
 
-	private int colPosition;
+	Integer deductAtr;
+	
+	Integer displayAtr;
+	
+	boolean created;
 
-	private boolean isCreated;
-
-	public DetailItem toDomain() {
+	public DetailItem toDomain(Integer linePosition) {
+		if (displayAtr == DisplayAtr.NO_DISPLAY.value) {
+			this.linePosition = -1;
+		}else {
+			this.linePosition = linePosition;
+		}
 		return DetailItem.createFromJavaType(
-				getItemCode(), 
-				getValue(), 
-				getCorrectFlag(), 
-				getSocialInsuranceAtr(), 
-				getLaborInsuranceAtr(),
-				getCategoryAtr()
+				this.itemCode, 
+				this.value, 
+				this.correctFlag, 
+				this.socialInsuranceAtr, 
+				this.laborInsuranceAtr,
+				this.categoryAtr,
+				this.deductAtr,
+				this.itemAtr,
+				this.linePosition,
+				this.columnPosition
 				);
 	}
 }

@@ -10,7 +10,7 @@ var qmm019;
                  */
                 function ScreenModel() {
                     var self = this;
-                    self.selectLayoutAtr = ko.observable("2");
+                    self.selectLayoutAtr = ko.observable("3");
                     self.itemList = ko.observableArray([]);
                     self.isEnable = ko.observable(true);
                     self.layouts = ko.observableArray([]);
@@ -18,7 +18,10 @@ var qmm019;
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
                     //sau nay gan lai
-                    self.layoutSelect = ko.observable("1");
+                    self.layoutSelect = ko.observable("01");
+                    self.valueSel001 = ko.observable("");
+                    self.createlayout = ko.observable(null);
+                    self.startYmHis = ko.observable(null);
                 }
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -54,16 +57,61 @@ var qmm019;
                 ScreenModel.prototype.startDialog = function () {
                     var self = this;
                     _.forEach(self.layouts(), function (layout) {
-                        var stmtCode = layout.stmtCode.trim();
+                        var stmtCode = layout.stmtCode;
                         if (stmtCode == self.layoutSelect()) {
                             self.selectStmtCode(stmtCode);
                             self.selectStmtName(layout.stmtName);
-                            self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm + 1));
+                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                            self.valueSel001('最新の履歴' + layout.startYm + 'から引き継ぐ');
+                            self.startYmHis = layout.startYm;
                             return false;
                         }
                     });
                 };
                 ScreenModel.prototype.createHistoryLayout = function () {
+                    var self = this;
+                    var selectYm = self.startYmHis;
+                    var inputYm = $("#INP_001").val().replace('/', '');
+                    if (+inputYm < +selectYm
+                        || +inputYm == +selectYm) {
+                        alert('履歴の期間が正しくありません。');
+                        return false;
+                    }
+                    else {
+                        if ($("#copyCreate").is(":checked")) {
+                            self.copyCreateData();
+                        }
+                        else {
+                            self.newCreateData();
+                        }
+                        d.service.createLayoutHistory(self.createlayout()).done(function () {
+                            alert("追加しました。");
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                    }
+                };
+                ScreenModel.prototype.copyCreateData = function () {
+                    var self = this;
+                    self.createlayout({
+                        checkContinue: true,
+                        stmtCode: self.selectStmtCode(),
+                        startYm: +(self.selectStartYm().replace('/', '')),
+                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
+                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
+                        layoutAtr: 3
+                    });
+                };
+                ScreenModel.prototype.newCreateData = function () {
+                    var self = this;
+                    self.createlayout({
+                        checkContinue: false,
+                        stmtCode: self.selectStmtCode(),
+                        startYm: +(self.selectStartYm().replace('/', '')),
+                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
+                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
+                        layoutAtr: 3
+                    });
                 };
                 return ScreenModel;
             }());

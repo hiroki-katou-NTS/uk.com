@@ -15,9 +15,9 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetailPK;
 
 @RequestScoped
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
-
-	private final String SELECT_NO_WHERE = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE
+	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
+	private final String SELECT_NO_WHERE_JOIN = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE_JOIN
 			+ " INNER JOIN QcamtItem i"
 			+ " ON ("
 			+ " i.qcamtItemPK.ccd = c.qstmtStmtLayoutDetailPk.companyCd"
@@ -41,6 +41,11 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
 			+ " AND c.endYm = :endYm";
+	
+	private final String FIND_ONLY_ALL = "SELECT c FROM QstmtStmtLayoutDetail c"
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
@@ -232,6 +237,20 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
 				.setParameter("endYm", endYm)
+				.getList(c -> toDomain(c));
+	}
+	
+	/**
+	 * find all layout master details without item info
+	 */
+	@Override
+	public List<LayoutMasterDetail> findAll(String companyCd, 
+			String stmtCd, 
+			int startYm) {
+		return this.queryProxy().query(FIND_ONLY_ALL, QstmtStmtLayoutDetail.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("strYm", startYm)
 				.getList(c -> toDomain(c));
 	}
 }

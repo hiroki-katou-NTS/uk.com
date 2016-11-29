@@ -12,11 +12,13 @@ module nts.uk.ui.option {
         placeholder?: string;
         width?: string;
         textalign?: string;
+        format?: Format;
     }
 
     export class TextEditorOption extends EditorOptionBase {
         textmode: TextMode;
-
+        format: Format;
+        
         constructor(option?: ITextEditorOption) {
             super();
             // Default value
@@ -24,6 +26,7 @@ module nts.uk.ui.option {
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
+            this.format = (option && option.format) ? option.format : null;
         }
     }
 
@@ -136,7 +139,18 @@ module nts.uk.ui.option {
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
     }
-
+    
+    class Format {
+        filldirection: FillDirection;
+        fillcharacter: string;
+        
+        constructor(filldirection: FillDirection, fillcharacter: string){
+            this.filldirection = filldirection;
+            this.fillcharacter = fillcharacter;
+        }    
+    }
+    
     type TextMode = "text" | "password";
+    type FillDirection = "left" |"right";
     type Currency = "JPY" | "USD";
 }

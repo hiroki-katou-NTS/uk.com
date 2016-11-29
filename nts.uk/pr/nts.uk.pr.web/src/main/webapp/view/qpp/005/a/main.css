@@ -7,18 +7,19 @@
 }
 
 #h-left {
-	width: 75%;
+	width: 65%;
 	float: left;
 }
 
 #h-right {
 	float: left;
-	width: 24%;
+	width: 34%;
 }
 
 .h-item {
 	float: left;
 	border: 1px solid #d2d2d2;
+	width: 770px;
 }
 
 .i-left {
@@ -33,6 +34,7 @@
 	float: left;
 	padding: 0px 20px 0px 5px;
 	line-height: 30px;
+	min-width: 110px;
 }
 
 .clear {
@@ -41,20 +43,17 @@
 }
 
 #txt-header-comment {
-	width: 455px;
+	width: 500px;
 	height: 170px;
 	resize: none;
 	border-radius: 5px;
+	margin: 5px 0px 0px 0px;
 }
 
 #events {
-	margin: 10px 0px;
+	margin: 5px 0px;
 	float: left;
 	width: 100%;
-}
-
-#txt-header-comment {
-	margin: 5px 0px 0px 0px;
 }
 
 #chk-hand-input {
@@ -72,7 +71,7 @@
 }
 
 table.tb-category {
-	margin-bottom: 20px;
+	margin-bottom: 5px;
 }
 
 table.tb-category, th, td {
@@ -95,4 +94,18 @@ table.tb-category, th, td {
 .tb-category td>input {
 	border: none;
 	width: 100%;
+}
+
+#txt-remarks {
+	resize: none;
+	border-radius: 5px;
+	margin: 5px 0px 0px 0px;
+	width: 50%;
+	height: 80px;
+}
+
+.disable {
+	pointer-events: none;
+	cursor: default;
+	color: #696969;
 }

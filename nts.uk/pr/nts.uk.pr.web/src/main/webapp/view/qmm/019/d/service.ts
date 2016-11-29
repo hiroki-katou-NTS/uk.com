@@ -1,6 +1,7 @@
 module qmm019.d.service {
     var paths = {
-        getLayoutInfor : "pr/proto/layout/findlayoutwithmaxstartym"       
+        getLayoutInfor : "pr/proto/layout/findlayoutwithmaxstartym",
+        createlayouthistory: "pr/proto/layout/createlayouthistory"
     }
     
     /**
@@ -18,14 +19,25 @@ module qmm019.d.service {
         return dfd.promise(); 
     }
     
+    export function createLayoutHistory(layoutMaster: model.LayoutMasterDto){
+        var dfd = $.Deferred<Array<any>>();  
+        nts.uk.request.ajax(paths.createlayouthistory, layoutMaster).done(function(res: Array<any>){
+            dfd.resolve(res);    
+        }).fail(function(res){
+            dfd.reject(res);
+        })
+        return dfd.promise(); 
+    }
+    
+    
     export module model {
             // layout
             export class LayoutMasterDto {
-                companyCode: string;
+                checkContinue: Boolean;
                 stmtCode: string;
                 startYm: number;
-                stmtName: string;
-                endYM: number;
+                endYm: number;
+                startPrevious: number;
                 layoutAtr: number;
             }
 

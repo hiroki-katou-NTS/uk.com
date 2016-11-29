@@ -29,24 +29,32 @@
 						<div><label id="LBL_001">個人金額コードを選択してください。</label></div><br />
 						<br />
 						
-						<div id = "LST_001"
+						<div data-bind="with: listBox">
+						<div id="list-box"
 							data-bind="ntsListBox: {options: itemList,
-										optionsValue: 'companyCode',
-										optionsText: 'personalWaveName',
-										multiple: false,
-										value: selectedCodes,
-										enable: isEnable(),
-										columns: [
-											{ prop: 'companyCode', length: 4 },
-											{ prop: 'personalWaveName', length: 20 },
-											
-										]}"
-						class="cf"></div></div>
+											   optionsValue: 'id',
+											   optionsText: 'name',
+											   multiple: false,
+											   value: selectedCode,
+											   enable: true,
+											   rows: 20,
+											   columns: [
+													{ prop: 'id', length: 4 },
+													{ prop: 'name', length: 20 }
+											   ]}"
+							class="cf"></div>
+					</div></div>
+					<div >
+						<!--  <a data-bind="text: listBox.selectedCode()">コード</a>
+						<a data-bind="text: listBox.selectedName()">名称</a> -->
+					</div>
+					<br /> <br />
+					
 						<br/>
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001">決定</button>
-							<button class="large" id="BTN_002">キャンセル</button><br />
+							<button class="x-large proceed" id = "BTN_001" data-bind="click: chooseItem" >決定</button>
+							<button class="large" id="BTN_002" value="cancel" data-bind="click: closeDialog" >キャンセル</button><br />
 						</div>
 					</div>
             </ui:define>

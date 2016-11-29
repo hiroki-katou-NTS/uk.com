@@ -12,6 +12,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
@@ -20,15 +23,17 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
+import nts.uk.ctx.pr.proto.dom.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.LineDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.LayoutMasterCategoryDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.LineDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataHeaderDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataResult;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.PrintPositionCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -74,6 +79,9 @@ public class GetPaymentDataQueryProcessor {
 	@Inject
 	private PaymentDataQueryRepository queryRepository;
 
+	@Inject
+	private ItemMasterRepository itemMasterRepository;
+
 	/**
 	 * get data detail
 	 * 
@@ -107,19 +115,22 @@ public class GetPaymentDataQueryProcessor {
 				layout.getStmtCode().v(), startYM);
 
 		// get 明細書マスタ行
-		List<LayoutMasterLine> lines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
+		List<LayoutMasterLine> mLines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
 
 		// get 明細書マスタ明細
-		List<LayoutMasterDetail> lDetails = this.layoutMasterDetailRepository.getDetails(companyCode, stmtCode,
-				startYM);
+		List<LayoutMasterDetail> mDetails = this.layoutMasterDetailRepository.findAll(companyCode, stmtCode, startYM);
+
+		// get 項目マスタ
+		List<ItemMaster> mItems = this.itemMasterRepository.findAll(companyCode);
 
 		// get header of payment
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(), PROCESSING_NO,
 				PAY_BONUS_ATR, processingYM, 0);
 
-		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, layout, optPHeader);
+		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, layout, optPHeader,
+				mCates, mLines);
 
-		result.setCategories(mergeDataToLayout(mCates, lines, lDetails, detailItems));
+		result.setCategories(mergeDataToLayout(mCates, mLines, mDetails, detailItems, mItems));
 		return result;
 	}
 
@@ -135,19 +146,24 @@ public class GetPaymentDataQueryProcessor {
 	 * @return
 	 */
 	private List<DetailItemDto> getDetailItems(PaymentDataQuery query, PaymentDataResult result, String companyCode,
-			int processingYM, LayoutMaster layout, Optional<Payment> optPHeader) {
+			int processingYM, LayoutMaster layout, Optional<Payment> optPHeader, List<LayoutMasterCategory> mCates,
+			List<LayoutMasterLine> mLines) {
+
+		List<PrintPositionCategoryDto> printPosCates = this.getPrintPosCategories(mCates, mLines);
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(payment.getDependentNumber().v(),
+			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), payment.getDependentNumber().v(),
 					payment.getSpecificationCode().v(), layout.getStmtName().v(), payment.getMakeMethodFlag().value,
-					query.getEmployeeCode(), payment.getComment().v()));
+					query.getEmployeeCode(), payment.getComment().v(), true,
+					printPosCates
+					));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(null, layout.getStmtCode().v(), layout.getStmtName().v(),
-					null, query.getEmployeeCode(), null));
+			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), null, layout.getStmtCode().v(),
+					layout.getStmtName().v(), null, query.getEmployeeCode(), "", false, printPosCates));
 
 			return new ArrayList<>();
 		}
@@ -164,7 +180,8 @@ public class GetPaymentDataQueryProcessor {
 	 * @return
 	 */
 	private static List<LayoutMasterCategoryDto> mergeDataToLayout(List<LayoutMasterCategory> mCates,
-			List<LayoutMasterLine> lines, List<LayoutMasterDetail> details, List<DetailItemDto> datas) {
+			List<LayoutMasterLine> lines, List<LayoutMasterDetail> details, List<DetailItemDto> datas,
+			List<ItemMaster> mItems) {
 
 		List<LayoutMasterCategoryDto> categories = new ArrayList<>();
 
@@ -172,53 +189,101 @@ public class GetPaymentDataQueryProcessor {
 		for (LayoutMasterCategory category : mCates) {
 			int ctAtr = category.getCtAtr().value;
 			String ctName = category.getCtAtr().toName();
-			
-			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
-			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).collect(Collectors.toList());
-			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr);
 
-			categories.add(LayoutMasterCategoryDto.fromDomain(
-					ctAtr, ctName, 
-					category.getCtgPos().v(),
-					lineCounts.intValue(), 
-					lineItems));
+			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
+			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr)
+					.collect(Collectors.toList());
+			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr, mItems);
+
+			categories.add(LayoutMasterCategoryDto.fromDomain(ctAtr, ctName, category.getCtgPos().v(),
+					lineCounts.intValue(), lineItems));
 		}
 
 		return categories;
 	}
 
-	private static List<LineDto> getDetailItems(List<LayoutMasterLine> lines, List<LayoutMasterDetail> details,
-			List<DetailItemDto> datas, int ctAtr) {
+	/**
+	 * Get item info by line
+	 * 
+	 * @param mLines
+	 * @param mDetails
+	 * @param datas
+	 * @param ctAtr
+	 * @return
+	 */
+	private static List<LineDto> getDetailItems(List<LayoutMasterLine> mLines, List<LayoutMasterDetail> mDetails,
+			List<DetailItemDto> datas, int ctAtr, List<ItemMaster> mItems) {
 		List<LineDto> rLines = new ArrayList<>();
-		
-		for (LayoutMasterLine mLine : lines) {
-			LineDto lineDto; 
+
+		for (LayoutMasterLine mLine : mLines) {
+			LineDto lineDto;
 			List<DetailItemDto> items = new ArrayList<>();
 			for (int i = 1; i <= 9; i++) {
 				int posCol = i;
-				DetailItemDto detailItem = details.stream()
-						.filter(x -> x.getCategoryAtr().value == ctAtr && x.getAutoLineId().v().equals(mLine.getAutoLineId().v()) && x.getItemPosColumn().v() == posCol)
-						.findFirst()
-						.map(d -> {
+				DetailItemDto detailItem = mDetails.stream()
+						.filter(x -> x.getCategoryAtr().value == ctAtr
+								&& x.getAutoLineId().v().equals(mLine.getAutoLineId().v())
+								&& x.getItemPosColumn().v() == posCol)
+						.findFirst().map(d -> {
+
+							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
+									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
+
 							Double value = datas.stream()
-									.filter(x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
-									.findFirst().map(x -> x.getValue())
-									.orElse(null);
-							
-							return DetailItemDto.fromDomain(ctAtr,
-									d.getItemCode().v(), d.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(),
+									.filter(x -> x.getCategoryAtr() == ctAtr
+											&& x.getItemCode().equals(d.getItemCode().v()))
+									.findFirst().map(x -> x.getValue()).orElse(null);
+
+							return DetailItemDto.fromDomain(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
+									mItem.getItemAbName().v(), value, mLine.getLinePosition().v(),
+									d.getItemPosColumn().v(), mItem.getDeductAttribute().value, d.getDisplayAtr().value,
 									value != null);
-						}).orElse(DetailItemDto.fromDomain(ctAtr, "", "", null,
-								mLine.getLinePosition().v(), i, false));
-				
+						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i,
+								null, null, false));
+
 				items.add(detailItem);
 			}
-			
+
 			lineDto = new LineDto(mLine.getLinePosition().v(), items);
 			rLines.add(lineDto);
 		}
-		
+
 		return rLines;
+	}
+
+	/**
+	 * get list print post category(1~5)
+	 * 
+	 * @param mCates
+	 * @param lines
+	 * @return
+	 */
+	private List<PrintPositionCategoryDto> getPrintPosCategories(List<LayoutMasterCategory> mCates,
+			List<LayoutMasterLine> lines) {
+		List<PrintPositionCategoryDto> result = new ArrayList<>();
+
+		for (int i = 1; i <= 5; i++) {
+			result.add(this.getPrintPosition(mCates, lines, i));
+		}
+
+		return result;
+	}
+
+	/**
+	 * get print post category
+	 * 
+	 * @param mCates
+	 * @param lines
+	 * @param position
+	 * @return
+	 */
+	private PrintPositionCategoryDto getPrintPosition(List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines,
+			int position) {
+		int printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().get().getCtAtr().value;
+		Long countLine = lines.stream().filter(x -> x.getCategoryAtr().value == printPosCtg
+				&& x.getLineDispayAttribute().value == LineDispAtr.ENABLE.value).count();
+
+		return PrintPositionCategoryDto.fromDomain(printPosCtg, countLine.intValue());
 	}
 
 }

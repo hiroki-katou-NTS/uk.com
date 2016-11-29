@@ -1,7 +1,8 @@
 module qmm019.e.service {
     var paths:any = {
         getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
-        pathDeleteLayout: "/pr/proto/layout/deletedata"   
+        pathDeleteLayout: "/pr/proto/layout/deletedata",
+        pathUpdateLayout: "/pr/proto/layout/updatedata"
     }
     
     /**
@@ -33,6 +34,17 @@ module qmm019.e.service {
 //        };
         var _path = nts.uk.text.format(paths.pathDeleteLayout, layoutMaster);
         nts.uk.request.ajax(paths.pathDeleteLayout, layoutMaster).done(function(res: Array<any>){
+            dfd.resolve(res);    
+        }).fail(function(res){
+            dfd.reject(res);
+        })
+        
+        return dfd.promise(); 
+    }
+    
+    export function updateLayout(layoutMaster : model.LayoutMasterDto){
+        var dfd = $.Deferred<Array<any>>();  
+        nts.uk.request.ajax(paths.pathUpdateLayout, layoutMaster).done(function(res: Array<any>){
             dfd.resolve(res);    
         }).fail(function(res){
             dfd.reject(res);

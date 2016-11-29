@@ -3,11 +3,14 @@ package nts.uk.ctx.pr.proto.app.command.paymentdata;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -18,30 +21,45 @@ import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.SumScopeAtr;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
+import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
+import nts.uk.ctx.pr.proto.dom.layout.line.LineDispAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate;
 import nts.uk.ctx.pr.proto.dom.paymentdata.CalcFlag;
+import nts.uk.ctx.pr.proto.dom.paymentdata.Comment;
+import nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber;
 import nts.uk.ctx.pr.proto.dom.paymentdata.MakeMethodFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.SpecificationCode;
 import nts.uk.ctx.pr.proto.dom.paymentdata.TenureAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
+import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.EmploymentInsuranceAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceAverageEarn;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.HealthInsuranceGrade;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.InsuredAtr;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.PensionAverageEarn;
+import nts.uk.ctx.pr.proto.dom.paymentdata.insure.PensionInsuranceGrade;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.WorkInsuranceCalculateAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentCalculationBasicInformationRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode;
+import nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceName;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDataCheckService;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailParam;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDetailService;
@@ -78,14 +96,15 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	@Inject
 	private PaymentCalculationBasicInformationRepository payCalBasicInfoRepo;
 	@Inject
-	private LayoutMasterRepository layoutMasterRepo;
-	@Inject
 	private PaymentDateMasterRepository payDateMasterRepo;
 	@Inject
 	private LayoutMasterDetailRepository layoutDetailMasterRepo;
 	@Inject
 	private PaymentDataRepository paymentDataRepo;
-	
+	@Inject
+	private LayoutMasterLineRepository layoutMasterLineRepo;
+	@Inject
+	private ItemMasterRepository itemMasterRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreatePaymentDataCommand> context) {
@@ -107,7 +126,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		PaymentDateMaster payDay = payDateMasterRepo.find(loginInfo.companyCode(), PayBonusAtr.SALARY.value,
 				command.getProcessingYearMonth(), SparePayAtr.NORMAL.value, command.getProcessingNo())
 					.orElseThrow(() -> new RuntimeException("PaymentDateMaster not found"));
-
+			
 		// calculate personal
 		calculatePersonalPayment(
 				loginInfo,
@@ -133,7 +152,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// check exists
 		boolean isExists = paymentDataCheckService.isExists(loginInfo.companyCode(), personId, PayBonusAtr.SALARY, processingYearMonth.v());
 		if (isExists) {
-			throw new RuntimeException("既にデータが存在します。");
+			throw new BusinessException("既にデータが存在します。");
 		}
 		
 		//
@@ -149,11 +168,15 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		PersonalAllotSetting personalAllotSetting = getPersonalAllotSetting(loginInfo.companyCode(), personId,
 				processingYearMonth.v());
 
-		// get layout master
-		LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
-				processingYearMonth.v(), personalAllotSetting.getPaymentDetailCode().v())
-					.orElseThrow(() -> new RuntimeException("LayoutMaster not found"));
+		// get personal allot setting
+		String stmtCode = personalAllotSetting.getPaymentDetailCode().v();
 
+		// get layout detail master
+		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(loginInfo.companyCode(),
+						stmtCode, personalAllotSetting.getStartDate().v());
+		// get layout master line
+		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
+		
 		PaymentDetailParam param = new PaymentDetailParam(
 				loginInfo.companyCode(),
 				new PersonId(personId),
@@ -163,23 +186,41 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				employmentContract,
 				payCalBasicInfo,
 				payDay,
-				personalAllotSetting);
+				personalAllotSetting,
+				layoutMasterDetailList,
+				lineList);
 
 		// calculate payment detail
 		Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
-
-		// get layout master detail
-		List<LayoutMasterDetail> layoutDetailMasterList = layoutDetailMasterRepo.getDetailsWithSumScopeAtr(loginInfo.companyCode(),
-				layoutHead.getStmtCode().v(), layoutHead.getStartYM().v(), CategoryAtr.PAYMENT.value,
-				SumScopeAtr.INCLUDED.value);
-
-		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutDetailMasterList);
-		List<DetailDeductionItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutDetailMasterList);
-
-		Payment paymentHead = this.toDomain(
-				loginInfo.companyCode(), personId, processingNo, processingYearMonth,
-				detailPaymentList, detailDeductionList, payDetail);
 		
+		// get layout master detail
+		List<LayoutMasterDetail> layoutDetailMasterList = layoutMasterDetailList.stream()
+				.filter(x -> CategoryAtr.PAYMENT == x.getCategoryAtr() && SumScopeAtr.INCLUDED == x.getSumScopeAtr())
+				.collect(Collectors.toList());
+
+		// convert to domain
+		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutDetailMasterList);
+		List<DetailItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutDetailMasterList);
+		List<PrintPositionCategory> positionCategoryList = Helper.createPositionCategory(payDetail, lineList);
+		List<DetailItem> detailPersonTimeList = payDetail.get(CategoryAtr.PERSONAL_TIME);
+		List<DetailItem> detailArticleList = payDetail.get(CategoryAtr.ARTICLES);
+				
+		Payment paymentHead = this.toDomain(
+				loginInfo.companyCode(), personId, processingNo, processingYearMonth, stmtCode,
+				detailPaymentList, detailDeductionList, detailPersonTimeList, detailArticleList, positionCategoryList, payDay);
+		
+		// Save detail payment with calculate payment
+		DetailItem detailPaymentTotal = this.createDataDetailItem(loginInfo.companyCode(), "F003", paymentHead.calculateTotalPayment(), CategoryAtr.PAYMENT, lineList, layoutMasterDetailList);
+		DetailItem detailDeductionTotal = this.createDataDetailItem(loginInfo.companyCode(), "F114", paymentHead.calculateDeductionTotalPayment(), CategoryAtr.DEDUCTION, lineList, layoutMasterDetailList);
+		DetailItem detailAmount = this.createDataDetailItem(loginInfo.companyCode(), "F309", paymentHead.amountOfPay(), CategoryAtr.ARTICLES, lineList, layoutMasterDetailList);
+		
+		detailPaymentList = updateDetailItem(paymentHead.existsDetailPaymentItem(CategoryAtr.PAYMENT, new ItemCode("F003")), detailPaymentList, detailPaymentTotal);
+		detailDeductionList = updateDetailItem(paymentHead.existsDetailDeductionItem(CategoryAtr.DEDUCTION, new ItemCode("F114")), detailDeductionList, detailDeductionTotal);
+		detailArticleList = updateDetailItem(paymentHead.existsDetailArticleItem(CategoryAtr.ARTICLES, new ItemCode("F309")), detailArticleList, detailAmount);
+		
+		paymentHead = this.toDomain(paymentHead, detailPaymentList, detailDeductionList, detailArticleList);
+		
+		// create data
 		paymentDataRepo.add(paymentHead);
 	}
 
@@ -188,22 +229,49 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * 
 	 * @return domain
 	 */
-	private Payment toDomain(String companyCode, String personId, int processingNo, YearMonth processingYearMonth,
-			List<DetailItem> detailPaymentList, List<DetailDeductionItem> detailDeductionList,
-			Map<CategoryAtr, List<DetailItem>> payDetail) {
-		Payment payment = new Payment(new CompanyCode(companyCode), new PersonId(personId),
-				new ProcessingNo(processingNo), PayBonusAtr.SALARY, 
-				processingYearMonth, SparePayAtr.NORMAL, // ??
-				GeneralDate.today(), // ??
-				null, null, null, null, null, AgeContinuationInsureAtr.NOT_TARGET, TenureAtr.CHILDCARE_LEAVE,
-				TaxAtr.TAXATION, null, null, EmploymentInsuranceAtr.A, null,
-				WorkInsuranceCalculateAtr.FULL_TIME_EMPLOYEE, InsuredAtr.GENERAL_INSURED_PERSON, null,
-				CalcFlag.UN_CALCULATION, MakeMethodFlag.INITIAL_DATA, null);
+	private Payment toDomain(String companyCode, String personId, int processingNo, YearMonth processingYearMonth, String stmtCode,
+			List<DetailItem> detailPaymentList, List<DetailItem> detailDeductionList, List<DetailItem> detailPersonTimeList, List<DetailItem> detailArticleList,
+			List<PrintPositionCategory> positionCategoryList, PaymentDateMaster payDay) {
+		Payment payment = new Payment(
+				new CompanyCode(companyCode), 
+				new PersonId(personId),
+				new ProcessingNo(processingNo), 
+				PayBonusAtr.SALARY, 
+				processingYearMonth, 
+				SparePayAtr.NORMAL,
+				payDay.getStandardDate(),
+				new SpecificationCode(stmtCode), 
+				new ResidenceCode("000001"), 
+				new ResidenceName("住民税納付先"), 
+				new HealthInsuranceGrade(98000), 
+				new HealthInsuranceAverageEarn(5), 
+				AgeContinuationInsureAtr.NOT_TARGET, 
+				TenureAtr.TENURE,
+				TaxAtr.TAXATION,
+				new PensionInsuranceGrade(1), 
+				new PensionAverageEarn(98000), 
+				EmploymentInsuranceAtr.A, 
+				new DependentNumber(0),
+				WorkInsuranceCalculateAtr.FULL_TIME_EMPLOYEE, 
+				InsuredAtr.GENERAL_INSURED_PERSON,
+				new BonusTaxRate(0),
+				CalcFlag.CALCULATED, 
+				MakeMethodFlag.INITIAL_DATA, 
+				new Comment(""));
 
 		payment.setDetailPaymentItems(detailPaymentList);
 		payment.setDetailDeductionItems(detailDeductionList);
-		payment.setDetailPersonalTimeItems(payDetail.get(CategoryAtr.PERSONAL_TIME));
-		payment.setDetailArticleItems(payDetail.get(CategoryAtr.ARTICLES));
+		payment.setDetailPersonalTimeItems(detailPersonTimeList);
+		payment.setDetailArticleItems(detailArticleList);
+		payment.setPositionCategoryItems(positionCategoryList);
+				
+		return payment;
+	}
+	
+	private Payment toDomain(Payment payment, List<DetailItem> detailPaymentList, List<DetailItem> detailDeductionList, List<DetailItem> detailArticleList) {
+		payment.setDetailPaymentItems(detailPaymentList);
+		payment.setDetailDeductionItems(detailDeductionList);
+		payment.setDetailArticleItems(detailArticleList);
 		
 		return payment;
 	}
@@ -231,5 +299,46 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		}
 
 		return result;
+	}
+	
+	/** Create data payment detail for case total payment **/
+	private DetailItem createDataDetailItem(String companyCode, String itemCode, double value, CategoryAtr categoryAtr, List<LayoutMasterLine> lineList, List<LayoutMasterDetail> layoutMasterDetailList) {
+		ItemMaster itemMaster = itemMasterRepo.getItemMaster(companyCode, categoryAtr.value, itemCode).get();
+		LayoutMasterDetail layoutMasterDetail = layoutMasterDetailList.stream().filter(x -> x.getCategoryAtr() == categoryAtr && itemCode.equals(x.getItemCode().v())).findFirst().get();
+		String autoLineId = layoutMasterDetail.getAutoLineId().v();
+		int itemPositionColumn = layoutMasterDetail.getItemPosColumn().v();
+		
+		LayoutMasterLine line = lineList.stream()
+				.filter(x -> categoryAtr == x.getCategoryAtr() && x.getAutoLineId().v().equals(autoLineId))
+				.findFirst().get();
+		
+		int linePosition;
+		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {
+			linePosition = -1;
+		} else {
+			linePosition = line.getLinePosition().v();
+		}
+		
+		val detailItem = DetailItem.createDataDetailItem(itemMaster.getItemCode(), value, categoryAtr);
+		detailItem.additionalInfo(CorrectFlag.NO_MODIFY, itemMaster.getSocialInsuranceAtr().value, itemMaster.getLaborInsuranceAtr().value, itemMaster.getDeductAttribute());
+		detailItem.additionalInfo(itemMaster.getLimitMoney().v(), itemMaster.getFixedPaidAtr().value, itemMaster.getAvgPaidAtr().value, itemMaster.getTaxAtr().value);
+		detailItem.additionalInfo(linePosition, itemPositionColumn);
+		return detailItem;
+	}
+	
+	private List<DetailItem> updateDetailItem(boolean exists, List<DetailItem> detailItemList, DetailItem detailItem) {
+		if (exists) {
+			for (DetailItem item : detailItemList) {
+				if (detailItem.getItemCode().equals(item.getItemCode())) {
+					detailItemList.remove(item);
+					detailItemList.add(detailItem);
+					return detailItemList;
+				}
+			}
+		} else {
+			detailItemList.add(detailItem);
+		}
+		
+		return detailItemList;
 	}
 }

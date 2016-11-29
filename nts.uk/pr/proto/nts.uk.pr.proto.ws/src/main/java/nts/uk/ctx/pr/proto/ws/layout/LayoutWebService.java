@@ -17,10 +17,12 @@ import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
-import nts.uk.ctx.pr.proto.app.find.item.ItemDto;
-import nts.uk.ctx.pr.proto.app.find.item.ItemFinder;
+import nts.uk.ctx.pr.proto.app.command.layout.register.RegisterLayoutCommand;
+import nts.uk.ctx.pr.proto.app.command.layout.register.RegisterLayoutCommandHandler;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
+import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryDto;
+import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/proto/layout")
@@ -35,8 +37,12 @@ public class LayoutWebService extends WebService {
 	private UpdateLayoutHistoryCommandHandler updateData;
 	@Inject
 	private DeleteLayoutHistoryCommandHandler deleteData;
+	@Inject 
+	private RegisterLayoutCommandHandler registerLayoutHandler;
 	@Inject
 	private LayoutMasterFinder find;
+	@Inject
+	private LayoutMasterCategoryFinder categoryFinder;
 	
 	@POST
 	@Path("findalllayout")
@@ -48,7 +54,11 @@ public class LayoutWebService extends WebService {
 	public LayoutDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm){
 		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, startYm).get();
 	}
-	
+	@POST
+	@Path("findCategoies/full/{layoutCd}/{startYm}")
+	public List<LayoutMasterCategoryDto> getCategoriesFullData(@PathParam("layoutCd") String layoutCd, @PathParam("startYm") int startYm){
+		return this.categoryFinder.getCategoriesFullData(layoutCd, startYm);
+	}
 	@POST
 	@Path("findlayoutwithmaxstartym")
 	public List<LayoutDto> getLayoutsWithMaxStartYm(){
@@ -74,6 +84,11 @@ public class LayoutWebService extends WebService {
 	@Path("deletedata")
 	public void deleteData(DeleteLayoutHistoryCommand command){
 		this.deleteData.handle(command);
+	}
+	@POST
+	@Path("register")
+	public void registerLayout(RegisterLayoutCommand command){
+		this.registerLayoutHandler.handle(command);
 	}
 	
 	

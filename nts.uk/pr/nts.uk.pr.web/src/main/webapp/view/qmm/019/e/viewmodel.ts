@@ -23,7 +23,7 @@ module qmm019.e.viewmodel {
          // start function
         start(): JQueryPromise<any> {
             var self = this;
-             service.getLayout("1", 201606).done(function(layout){
+             service.getLayout("01", 201606).done(function(layout){
                  self.selectLayout(layout);
                  self.startDiaglog();                 
                  
@@ -48,8 +48,8 @@ module qmm019.e.viewmodel {
             }
             self.selectLayoutCode(code);
             self.selectLayoutName(layout.stmtName);
-            self.selectLayoutStartYm(nts.uk.text.formatYearMonth(layout.startYm));
-            self.selectLayoutEndYm(nts.uk.text.formatYearMonth(layout.endYm));
+            self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+            self.selectLayoutEndYm(nts.uk.time.formatYearMonth(layout.endYm));
         }
         
         layoutProcess(): any{
@@ -57,14 +57,26 @@ module qmm019.e.viewmodel {
             //履歴の編集-削除処理
             if($("#layoutDetele").is(":checked")){
                 self.dataDelete();
+            }else{
+                self.dataUpdate();    
             }
         }
         
         dataDelete():any{
             var self = this;
-            //明細書マスタ.DEL-1
             service.deleteLayout(self.selectLayout()).done(function(){
-                alert("削除しました。");
+                alert("履歴を削除する。");
+            }).fail(function(res){
+                alert(res);    
+            })
+        }
+        
+        dataUpdate(): any{
+            var self = this;
+            var layoutInfor = self.selectLayout();
+            layoutInfor.startYm = $("#INP_001").val().replace('/','');
+            service.updateLayout(layoutInfor).done(function(){
+                alert("履歴を修正する。")    
             }).fail(function(res){
                 alert(res);    
             })

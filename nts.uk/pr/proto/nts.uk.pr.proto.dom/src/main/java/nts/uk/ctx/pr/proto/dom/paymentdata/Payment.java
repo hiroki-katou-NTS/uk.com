@@ -2,18 +2,19 @@ package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailDeductionItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.proto.dom.paymentdata.insure.AgeContinuationInsureAtr;
@@ -54,7 +55,7 @@ public class Payment extends AggregateRoot {
 	private SparePayAtr sparePayAtr;
 
 	@Getter
-	private GeneralDate standardDate;
+	private LocalDate standardDate;
 
 	@Getter
 	private SpecificationCode specificationCode;
@@ -114,7 +115,7 @@ public class Payment extends AggregateRoot {
 	private List<DetailItem> detailPaymentItems = new ArrayList<>();
 
 	@Getter
-	private List<DetailDeductionItem> detailDeductionItems = new ArrayList<>();
+	private List<DetailItem> detailDeductionItems = new ArrayList<>();
 
 	@Getter
 	private List<DetailItem> detailPersonalTimeItems = new ArrayList<>();
@@ -132,7 +133,7 @@ public class Payment extends AggregateRoot {
 				PayBonusAtr  payBonusAtr,
 				YearMonth processingYM, 
 				SparePayAtr sparePayAtr, 
-				GeneralDate standardDate,
+				LocalDate standardDate,
 				SpecificationCode specificationCode, 
 				ResidenceCode residenceCode, 
 				ResidenceName residenceName,
@@ -215,7 +216,7 @@ public class Payment extends AggregateRoot {
 					EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
 					new YearMonth(processingYM),
 					EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
-					GeneralDate.localDate(standardDate),
+					standardDate,
 					new SpecificationCode(specificationCode),
 					new ResidenceCode(residenceCode),
 					new ResidenceName(residenceName),
@@ -262,7 +263,7 @@ public class Payment extends AggregateRoot {
 							int makeMethodFlag,
 							String comment,
 							List<DetailItem> detailPaymentItems,
-							List<DetailDeductionItem> detailDeductionItems,
+							List<DetailItem> detailDeductionItems,
 							List<DetailItem> detailPersonalTimeItems,
 							List<DetailItem> detailArticleItems
 							) {
@@ -274,7 +275,7 @@ public class Payment extends AggregateRoot {
 				EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
 				new YearMonth(processingYM),
 				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
-				GeneralDate.localDate(standardDate),
+				standardDate,
 				new SpecificationCode(specificationCode),
 				new ResidenceCode(residenceCode),
 				new ResidenceName(residenceName),
@@ -307,7 +308,7 @@ public class Payment extends AggregateRoot {
 		this.detailPaymentItems.addAll(items);
 	}
 	
-	public void setDetailDeductionItems(List<DetailDeductionItem> items) {
+	public void setDetailDeductionItems(List<DetailItem> items) {
 		this.detailDeductionItems.clear();
 		this.detailDeductionItems.addAll(items);
 	}
@@ -322,6 +323,15 @@ public class Payment extends AggregateRoot {
 		this.detailArticleItems.addAll(items);
 	}
 	
+	public void setPositionCategoryItems(List<PrintPositionCategory> items) {
+		this.printCategories.clear();
+		this.printCategories.addAll(items);
+	}
+	
+	public void setStandardDate(LocalDate standardDate) {
+		this.standardDate = standardDate;
+	}
+	
 	/**
 	 * Calculate total payment
 	 * @return
@@ -332,6 +342,7 @@ public class Payment extends AggregateRoot {
 		}
 		
 		return this.detailPaymentItems.stream()
+				.filter(x -> !itemCodeSpecialList().contains(x.getItemCode().v()))
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -345,6 +356,7 @@ public class Payment extends AggregateRoot {
 		}
 		
 		return this.detailDeductionItems.stream()
+				.filter(x -> !itemCodeSpecialList().contains(x.getItemCode().v()))
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -354,5 +366,43 @@ public class Payment extends AggregateRoot {
 	 */
 	public double amountOfPay() {
 		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
+	}
+	
+	/**
+	 * Check duplicate detail payment item
+	 * @param cateAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public boolean existsDetailPaymentItem(CategoryAtr cateAtr, ItemCode itemCode) {
+		return this.detailPaymentItems.stream().anyMatch(x->x.getCategoryAtr() == cateAtr && x.getItemCode().equals(itemCode));
+	}
+	
+	/**
+	 * Check duplicate detail deduction item
+	 * @param cateAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public boolean existsDetailDeductionItem(CategoryAtr cateAtr, ItemCode itemCode) {
+		return this.detailDeductionItems.stream().anyMatch(x->x.getCategoryAtr() == cateAtr && x.getItemCode().equals(itemCode));
+	}
+
+	/**
+	 * Check duplicate detail article item
+	 * @param cateAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public boolean existsDetailArticleItem(CategoryAtr cateAtr, ItemCode itemCode) {
+		return this.detailArticleItems.stream().anyMatch(x->x.getCategoryAtr() == cateAtr && x.getItemCode().equals(itemCode));
+	}
+	
+	/**
+	 * Item code list include(TotalPayment, DeductionTotalPayment, amountOfPay)
+	 * @return
+	 */
+	private List<String> itemCodeSpecialList() {
+		return Arrays.asList("F003", "F114", "F309");
 	}
 }
