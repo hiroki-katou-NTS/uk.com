@@ -87,24 +87,38 @@ module nts.uk.ui.koExtentions {
     
     class NumberEditorProcessor extends EditorProcessor {
         
-        update($input: JQuery, data: any) {
-            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            var textmode: string = ko.unwrap(option.textmode);
-            $input.attr('type', 'text');
-            
-            super.update($input, data);
-        }
-        
         getDefaultOption(): any {
             return new nts.uk.ui.option.NumberEditorOption();
         }
-                
+        
         getFormatter(data: any): format.IFormatter {
-            return new format.NoFormatter();
+            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            return new text.NumberFormatter({ option: option});
         }
         
         getValidator(data: any): validation.IValidator {
-            return new validation.NoValidator();
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            return new validation.NumberValidator(constraintName, option);
+        }
+    }
+    
+    
+    class TimeEditorProcessor extends EditorProcessor {
+        
+        getDefaultOption(): any {
+            return new nts.uk.ui.option.TimeEditorOption();
+        }
+        
+        getFormatter(data: any): format.IFormatter {
+            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            return new text.TimeFormatter({ option: option});
+        }
+        
+        getValidator(data: any): validation.IValidator {
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            return new validation.TimeValidator(constraintName, option);
         }
     }
 
@@ -178,29 +192,7 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var data = valueAccessor();
-            var setValue: (newValue: any) => {} = data.value;
-            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-            var $input = $(element);
-
-            $input.change(function() {
-                var newText = $input.val();
-
-                var result;
-                if (option.inputFormat() === "yearmonth") {
-                    result = time.parseYearMonth(newText);
-                } else {
-                    result = time.parseTime(newText);
-                }
-                if (result.success) {
-                    $input.ntsError('clear');
-                    $input.val(result.format());
-                    setValue(result.toValue());
-                } else {
-                    $input.ntsError('set', 'invalid time');
-                    setValue(newText);
-                }
-            });
+            new TimeEditorProcessor().init($(element), valueAccessor());
         }
 
         /**
@@ -208,39 +200,7 @@ module nts.uk.ui.koExtentions {
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
-            var data = valueAccessor();
-            var getValue: () => string = data.value;
-            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var option: any = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-            var placeholder: string = ko.unwrap(option.placeholder);
-            var width: string = ko.unwrap(option.width);
-            var textalign: string = ko.unwrap(option.textalign);
-
-            var $input = $(element);
-
-            $input.attr('type', 'text');
-            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
-            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
-            $input.attr('placeholder', placeholder);
-            if (width.trim() != "")
-                $input.width(width);
-            if (textalign.trim() != "")
-                $input.css('text-align', textalign);
-            if(data.value() !== undefined && data.value() !== null){
-                var result;
-                if (option.inputFormat() === "yearmonth") {
-                    result = time.parseYearMonth(data.value());
-                } else {
-                    result = time.parseTime(data.value(), true);
-                }
-                if (result.success) {
-                    $input.val(result.format());
-                }else{
-                    $input.val(data.value());
-                }
-            }
+            new TimeEditorProcessor().update($(element), valueAccessor());
         }
     }
 

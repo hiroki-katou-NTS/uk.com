@@ -94,22 +94,38 @@ var nts;
                     function NumberEditorProcessor() {
                         _super.apply(this, arguments);
                     }
-                    NumberEditorProcessor.prototype.update = function ($input, data) {
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var textmode = ko.unwrap(option.textmode);
-                        $input.attr('type', 'text');
-                        _super.prototype.update.call(this, $input, data);
-                    };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
-                        return new uk.format.NoFormatter();
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new uk.text.NumberFormatter({ option: option });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
-                        return new validation.NoValidator();
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new validation.NumberValidator(constraintName, option);
                     };
                     return NumberEditorProcessor;
+                }(EditorProcessor));
+                var TimeEditorProcessor = (function (_super) {
+                    __extends(TimeEditorProcessor, _super);
+                    function TimeEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    TimeEditorProcessor.prototype.getDefaultOption = function () {
+                        return new nts.uk.ui.option.TimeEditorOption();
+                    };
+                    TimeEditorProcessor.prototype.getFormatter = function (data) {
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new uk.text.TimeFormatter({ option: option });
+                    };
+                    TimeEditorProcessor.prototype.getValidator = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new validation.TimeValidator(constraintName, option);
+                    };
+                    return TimeEditorProcessor;
                 }(EditorProcessor));
                 /**
                  * Editor
@@ -183,68 +199,14 @@ var nts;
                      * Init.
                      */
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var setValue = data.value;
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var $input = $(element);
-                        $input.change(function () {
-                            var newText = $input.val();
-                            var result;
-                            if (option.inputFormat() === "yearmonth") {
-                                result = uk.time.parseYearMonth(newText);
-                            }
-                            else {
-                                result = uk.time.parseTime(newText);
-                            }
-                            if (result.success) {
-                                $input.ntsError('clear');
-                                $input.val(result.format());
-                                setValue(result.toValue());
-                            }
-                            else {
-                                $input.ntsError('set', 'invalid time');
-                                setValue(newText);
-                            }
-                        });
+                        new TimeEditorProcessor().init($(element), valueAccessor());
                     };
                     /**
                      * Update
                      */
                     NtsTimeEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
-                        var data = valueAccessor();
-                        var getValue = data.value;
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var placeholder = ko.unwrap(option.placeholder);
-                        var width = ko.unwrap(option.width);
-                        var textalign = ko.unwrap(option.textalign);
-                        var $input = $(element);
-                        $input.attr('type', 'text');
-                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
-                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
-                        $input.attr('placeholder', placeholder);
-                        if (width.trim() != "")
-                            $input.width(width);
-                        if (textalign.trim() != "")
-                            $input.css('text-align', textalign);
-                        if (data.value() !== undefined && data.value() !== null) {
-                            var result;
-                            if (option.inputFormat() === "yearmonth") {
-                                result = uk.time.parseYearMonth(data.value());
-                            }
-                            else {
-                                result = uk.time.parseTime(data.value(), true);
-                            }
-                            if (result.success) {
-                                $input.val(result.format());
-                            }
-                            else {
-                                $input.val(data.value());
-                            }
-                        }
+                        new TimeEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTimeEditorBindingHandler;
                 }());

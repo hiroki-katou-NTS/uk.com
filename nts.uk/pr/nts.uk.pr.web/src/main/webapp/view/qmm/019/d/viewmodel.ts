@@ -90,42 +90,33 @@ module qmm019.d.viewmodel {
                 return false;
             }
            else{
+                self.createData();
                if($("#copyCreate").is(":checked")){
-                    self.copyCreateData();
+                    self.createlayout().checkContinue = true;
                 }else{
-                    self.newCreateData();    
+                    self.createlayout().checkContinue = false; 
                 }
                service.createLayoutHistory(self.createlayout()).done(function(){
-                    alert("追加しました。");    
+                   alert("追加しました。"); 
+                   nts.uk.ui.windows.close();   
                }).fail(function(res){
-                    alert(res);
+                   alert(res);
+                   nts.uk.ui.windows.close();
                })
            }
        }
-       copyCreateData(): any{
+       createData(): any{
            var self = this;
-           
+           var startPreviou = +$('#INP_001').val().replace('/','');
            self.createlayout({
-               checkContinue: true,
+               checkContinue: false,
                stmtCode: self.selectStmtCode(),
-               startYm: +(self.selectStartYm().replace('/','')),
-               endYm: (+(self.selectStartYm().replace('/','')) - 1),
-               startPrevious: + nts.uk.time.formatYearMonth($('#INP_001').val()),
+               startYm: +self.startYmHis,
+               endYm: (startPreviou - 1),
+               startPrevious: startPreviou,
                layoutAtr: 3
           });
        }
-        
-        newCreateData(): any{
-            var self = this;
-            self.createlayout({
-               checkContinue: false,
-               stmtCode: self.selectStmtCode(),
-               startYm: +(self.selectStartYm().replace('/','')),
-               endYm: (+(self.selectStartYm().replace('/','')) - 1),
-               startPrevious: + nts.uk.time.formatYearMonth($('#INP_001').val()),
-               layoutAtr: 3
-          });
-        }
     }
     
         /**

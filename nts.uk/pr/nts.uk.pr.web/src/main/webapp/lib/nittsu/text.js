@@ -290,6 +290,36 @@ var nts;
                 return StringFormatter;
             }());
             text_1.StringFormatter = StringFormatter;
+            var NumberFormatter = (function () {
+                function NumberFormatter(option) {
+                    this.option = option;
+                }
+                NumberFormatter.prototype.format = function (source) {
+                    return uk.ntsNumber.formatNumber(source, this.option.option);
+                };
+                return NumberFormatter;
+            }());
+            text_1.NumberFormatter = NumberFormatter;
+            var TimeFormatter = (function () {
+                function TimeFormatter(option) {
+                    this.option = option;
+                }
+                TimeFormatter.prototype.format = function (source) {
+                    var result;
+                    if (this.option.option.inputFormat() === "yearmonth") {
+                        result = uk.time.parseYearMonth(source);
+                    }
+                    else if (this.option.option.inputFormat() === "time") {
+                        result = uk.time.parseTime(source, true);
+                    }
+                    if (result.success) {
+                        return result.format();
+                    }
+                    return source;
+                };
+                return TimeFormatter;
+            }());
+            text_1.TimeFormatter = TimeFormatter;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -321,5 +321,40 @@
                 return source;
             }
         }
+        
+        export class NumberFormatter implements format.IFormatter {
+            
+            option: any;
+            
+            constructor(option: any) {
+                this.option = option;
+            }
+            
+            format(source: any): string {
+                return ntsNumber.formatNumber(source, this.option.option);
+            }
+        }
+        
+        export class TimeFormatter implements format.IFormatter {
+            
+            option: any;
+            
+            constructor(option: any) {
+                this.option = option;
+            }
+            
+            format(source: any): string {
+                var result;
+                if(this.option.option.inputFormat() === "yearmonth"){
+                    result = time.parseYearMonth(source);
+                }else if(this.option.option.inputFormat() === "time"){
+                    result = time.parseTime(source, true);    
+                }
+                if(result.success){
+                    return result.format(); 
+                }
+                return source;
+            }
+        }
     }
 }
