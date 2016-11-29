@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetailPK;
 @RequestScoped
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
-	private final String SELECT_NO_WHERE_JOIN = "SELECT c.itemAbName, c FROM QstmtStmtLayoutDetail c";
+	private final String SELECT_NO_WHERE_JOIN = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE_JOIN
 			+ " INNER JOIN QcamtItem i"
 			+ " ON ("
@@ -54,6 +54,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	private QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
 		val entity = new QstmtStmtLayoutDetail();
+		entity.qstmtStmtLayoutDetailPk = new QstmtStmtLayoutDetailPK();
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
 		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYm().v();
@@ -62,7 +63,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		entity.endYm = domain.getEndYm().v();
 		entity.autoLineId = domain.getAutoLineId().v();
 		//xem lai voi qa 86
-		//entity.itemPosColumn = domain.geti
+		entity.itemPosColumn = domain.getItemPosColumn().v();
 		entity.dispAtr = domain.getDisplayAtr().value;
 		entity.sumScopeAtr = domain.getSumScopeAtr().value;
 		entity.calcMethod = domain.getCalculationMethod().value;

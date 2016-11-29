@@ -22,7 +22,7 @@ var sample;
                     self.user = ko.observable(new User('U1', 'User 1'));
                 }
                 ScreenModel.prototype.begin = function () {
-                    $('#wizard').begin();
+                    //$('#wizard').begin();
                 };
                 ScreenModel.prototype.end = function () {
                     $('#wizard').end();

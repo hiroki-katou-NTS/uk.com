@@ -1,4 +1,6 @@
 module qmm019.f.viewmodel {
+  
+            
 
     export class ItemModel {
         id: any;
@@ -8,6 +10,8 @@ module qmm019.f.viewmodel {
             this.id = id;
             this.name = name;
         }
+        
+        
     }
 
     //get the model from app
@@ -99,7 +103,10 @@ module qmm019.f.viewmodel {
 
             });
         }
+        
+        
     }
+   
 
     export class ComboBox {
         itemName: KnockoutObservable<any>;
@@ -235,5 +242,15 @@ module qmm019.f.viewmodel {
 
             return dfd.promise();
         }
+        
+        openHDialog(){
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(() => {
+                var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                alert(selectedCode);
+                return this;
+            });
+        }
     }
+    
+   
 }

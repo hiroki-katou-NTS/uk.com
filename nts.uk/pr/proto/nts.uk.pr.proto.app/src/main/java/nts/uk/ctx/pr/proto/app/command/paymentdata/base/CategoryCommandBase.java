@@ -2,9 +2,11 @@ package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
-@Value
+@Getter
+@Setter
 public class CategoryCommandBase {
 
 	/** カテゴリ区分 */
@@ -15,9 +17,4 @@ public class CategoryCommandBase {
 	int categoryPosition;
 
 	private List<LineCommandBase> lines;
-
-	public static CategoryCommandBase fromDomain(int categoryAttribute, String categoryName, int categoryPosition,
-			List<LineCommandBase> lines) {
-		return new CategoryCommandBase(categoryAttribute, categoryName, categoryPosition, lines);
-	}
 }

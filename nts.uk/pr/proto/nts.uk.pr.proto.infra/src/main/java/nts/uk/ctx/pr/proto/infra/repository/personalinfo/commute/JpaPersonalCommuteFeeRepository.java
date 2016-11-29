@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommuteP
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
 	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
+	private final String SEL_1 = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId = :pId and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";
 
 	@Override
 	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIds, int baseYM) {
@@ -54,6 +55,15 @@ public class JpaPersonalCommuteFeeRepository extends JpaRepository implements Pe
 		return this.queryProxy()
 				.find(new PprmtPersonCommutePK(companyCode, personId, startYearMonth), PprmtPersonCommute.class)
 				.map(c -> toDomain(c));
+	}
+
+	@Override
+	public List<PersonalCommuteFee> findAll(String companyCode, String personId, int baseYearMonth) {
+		return this.queryProxy().query(SEL_1, PprmtPersonCommute.class)
+				.setParameter("ccd", companyCode)
+				.setParameter("pId", personId)
+				.setParameter("baseYm", baseYearMonth)
+				.getList(x -> toDomain(x));
 	}
 
 }

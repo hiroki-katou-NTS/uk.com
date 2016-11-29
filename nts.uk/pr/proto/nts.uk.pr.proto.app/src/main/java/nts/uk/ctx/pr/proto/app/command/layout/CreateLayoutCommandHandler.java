@@ -44,7 +44,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 	
 	@Override
 	protected void handle(CommandHandlerContext<CreateLayoutCommand> context) {
-		
+		try{
 		CreateLayoutCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
@@ -125,4 +125,9 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			}
 		}
 	}
+		catch(Exception ex){
+			throw ex;
+		}
+	}
+	
 }

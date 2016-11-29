@@ -65,6 +65,7 @@ module qmm019.e.service {
                 stmtName: string;
                 endYm: number;
                 layoutAtr: number;
+                startYmOriginal: number;
             }
 
         }

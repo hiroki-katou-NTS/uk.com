@@ -7,7 +7,8 @@ var qmm019;
             var paths = {
                 getAllLayout: "pr/proto/layout/findalllayout",
                 getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
-                getCategoryFull: "pr/proto/layout/findCategoies/full"
+                getCategoryFull: "pr/proto/layout/findCategoies/full",
+                registerLayout: "pr/proto/layout/register"
             };
             /**
              * Get list payment date processing.
@@ -40,7 +41,7 @@ var qmm019;
             }
             service.getLayoutsWithMaxStartYm = getLayoutsWithMaxStartYm;
             /**
-             * Get list payment date processing.
+             * Get list getCategoryFull.
              */
             function getCategoryFull(layoutCode, startYm) {
                 var dfd = $.Deferred();
@@ -58,6 +59,118 @@ var qmm019;
             }
             service.getCategoryFull = getCategoryFull;
             /**
+             * Register Layout
+             */
+            function registerLayout(layout, categories) {
+                var dfd = $.Deferred();
+                var categoryCommand = [], lineCommand = [], detailCommand = [];
+                var listCategoryAtrDeleted = [], listAutoLineIdDeleted = [], listItemCodeDeleted = [];
+                var categoryPosition = 1;
+                for (var _i = 0, categories_1 = categories; _i < categories_1.length; _i++) {
+                    var category = categories_1[_i];
+                    if (category.isRemoved === true) {
+                        // Truong hop remove category thi remove luon line va detail
+                        listCategoryAtrDeleted.push(category.categoryAtr);
+                        var linePosition = 1;
+                        for (var _a = 0, _b = category.lines(); _a < _b.length; _a++) {
+                            var line = _b[_a];
+                            listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
+                            for (var _c = 0, _d = line.details; _c < _d.length; _c++) {
+                                var detail = _d[_c];
+                                listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
+                            }
+                        }
+                    }
+                    else {
+                        categoryCommand.push({ categoryAtr: category.categoryAtr, categoryPosition: categoryPosition });
+                        var linePosition = 1;
+                        var sortedLines = $("#" + category.categoryAtr).sortable("toArray");
+                        var _loop_1 = function(itemLine) {
+                            //for (let line of category.lines()) {
+                            var line = _.find(category.lines(), function (lineDetail) {
+                                return lineDetail.rowId === itemLine.toString();
+                            });
+                            if (line.isRemoved !== true) {
+                                lineCommand.push({ categoryAtr: category.categoryAtr,
+                                    autoLineId: line.autoLineId,
+                                    linePosition: linePosition,
+                                    lineDisplayAtr: line.lineDispayAtr });
+                            }
+                            else {
+                                listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
+                            }
+                            linePosition++;
+                            var itemPosColumn = 1;
+                            var sortedItemCodes = $("#" + line.rowId).sortable("toArray");
+                            var _loop_2 = function(item) {
+                                var detail = _.find(line.details, function (itemDetail) {
+                                    return itemDetail.itemCode() === item.toString();
+                                });
+                                if (detail.isRemoved !== true) {
+                                    detailCommand.push({
+                                        categoryAtr: category.categoryAtr,
+                                        itemCode: detail.itemCode(),
+                                        autoLineId: detail.autoLineId(),
+                                        itemPosColumn: itemPosColumn,
+                                        calculationMethod: detail.calculationMethod(),
+                                        displayAtr: line.lineDispayAtr,
+                                        sumScopeAtr: detail.sumScopeAtr(),
+                                        setOffItemCode: detail.setOffItemCode(),
+                                        commuteAtr: detail.commuteAtr(),
+                                        personalWageCode: detail.personalWageCode(),
+                                        distributeWay: detail.distributeWay(),
+                                        distributeSet: detail.distributeSet(),
+                                        isErrorUseHigh: detail.isUseHighError(),
+                                        errorRangeHigh: detail.errRangeHigh(),
+                                        isErrorUserLow: detail.isUseLowError(),
+                                        errorRangeLow: detail.errRangeLow(),
+                                        isAlamUseHigh: detail.isUseHighAlam(),
+                                        alamRangeHigh: detail.alamRangeHigh(),
+                                        isAlamUseLow: detail.isUseLowAlam(),
+                                        alamRangeLow: detail.alamRangeLow() });
+                                }
+                                else {
+                                    listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
+                                }
+                                itemPosColumn++;
+                            };
+                            for (var _e = 0, sortedItemCodes_1 = sortedItemCodes; _e < sortedItemCodes_1.length; _e++) {
+                                var item = sortedItemCodes_1[_e];
+                                _loop_2(item);
+                            }
+                        };
+                        for (var _f = 0, sortedLines_1 = sortedLines; _f < sortedLines_1.length; _f++) {
+                            var itemLine = sortedLines_1[_f];
+                            _loop_1(itemLine);
+                        }
+                    }
+                    categoryPosition++;
+                }
+                var command = {
+                    layoutCommand: {
+                        stmtCode: layout.stmtCode,
+                        startYm: layout.startYm,
+                        stmtName: layout.stmtName,
+                        endYm: layout.endYm
+                    },
+                    categoryCommand: categoryCommand,
+                    lineCommand: lineCommand,
+                    detailCommand: detailCommand,
+                    listCategoryAtrDeleted: listCategoryAtrDeleted,
+                    listAutoLineIdDeleted: listAutoLineIdDeleted,
+                    listItemCodeDeleted: listItemCodeDeleted
+                };
+                nts.uk.request.ajax(paths.registerLayout, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.registerLayout = registerLayout;
+            /**
                * Model namespace.
             */
             var model;
@@ -72,6 +185,7 @@ var qmm019;
                 var Category = (function () {
                     function Category(lines, categoryAtr) {
                         this.hasSetting = false;
+                        this.isRemoved = false;
                         this.lines = ko.observableArray([]);
                         this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
@@ -107,49 +221,58 @@ var qmm019;
                     };
                     Category.prototype.addLine = function () {
                         var self = this;
-                        var autoLineId = self.categoryAtr + "-lineId" + self.lines().length;
-                        var itemDetailObj1 = { itemCode: "1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var autoLineId = "lineIdTemp-" + self.lines().length;
+                        var itemDetailObj1 = { itemCode: "itemTemp-1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj2 = { itemCode: "2", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj2 = { itemCode: "itemTemp-2", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj3 = { itemCode: "3", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj3 = { itemCode: "itemTemp-3", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj4 = { itemCode: "4", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj4 = { itemCode: "itemTemp-4", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj5 = { itemCode: "5", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj5 = { itemCode: "itemTemp-5", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj6 = { itemCode: "6", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj6 = { itemCode: "itemTemp-6", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj7 = { itemCode: "7", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj7 = { itemCode: "itemTemp-7", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj8 = { itemCode: "8", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj8 = { itemCode: "itemTemp-8", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj9 = { itemCode: "9", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, calculationMethod: 0,
+                        var itemDetailObj9 = { itemCode: "itemTemp-9", itemAbName: "+", isRequired: false, itemPosColumn: 1,
+                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                             distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                             errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
                             alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
@@ -174,9 +297,11 @@ var qmm019;
                 var Line = (function () {
                     function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition) {
                         this.hasRequiredItem = false;
+                        this.isRemoved = false;
                         this.details = itemDetails;
                         this.autoLineId = autoLineId;
                         this.rowId = categoryAtr + autoLineId;
+                        this.lineDispayAtr = lineDispayAtr;
                         if (lineDispayAtr === 0) {
                             this.isDisplayOnPrint = false;
                         }
@@ -193,9 +318,11 @@ var qmm019;
                         this.categoryAtr = categoryAtr;
                     }
                     Line.prototype.lineClick = function (data, event) {
+                        var self = this;
                         //TODO: goi man hinh khac
                         if (data.hasRequiredItem === false) {
                             $("#" + data.rowId).addClass("ground-gray");
+                            self.isRemoved = true;
                         }
                     };
                     return Line;
@@ -209,6 +336,7 @@ var qmm019;
                     //                            alamRangeHigh: number, isUseLowAlam: number, alamRangeLow: number
                     function ItemDetail(itemObject) {
                         this.isRequired = ko.observable(false);
+                        this.isRemoved = false;
                         this.itemCode = ko.observable(itemObject.itemCode);
                         this.itemAbName = ko.observable(itemObject.itemAbName);
                         if (itemObject.itemCode === "F003" || itemObject.itemCode === "F114") {
@@ -218,6 +346,8 @@ var qmm019;
                         this.categoryAtr = ko.observable(itemObject.categoryAtr);
                         this.autoLineId = ko.observable(itemObject.autoLineId);
                         this.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
+                        this.setOffItemCode = ko.observable(itemObject.setOffItemCode);
+                        this.commuteAtr = ko.observable(itemObject.commuteAtr);
                         this.calculationMethod = ko.observable(itemObject.calculationMethod);
                         this.distributeSet = ko.observable(itemObject.distributeSet);
                         this.distributeWay = ko.observable(itemObject.distributeWay);

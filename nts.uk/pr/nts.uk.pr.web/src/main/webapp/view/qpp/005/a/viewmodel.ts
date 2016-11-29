@@ -4,7 +4,7 @@ module nts.uk.pr.view.qpp005 {
     export module viewmodel {
         export class ScreenModel {
             isHandInput: KnockoutObservable<boolean>;
-            paymentDataResult: KnockoutObservable<viewModel.PaymentDataResultViewModel>;
+            paymentDataResult: KnockoutObservable<PaymentDataResultViewModel>;
             categories: KnockoutObservable<CategoriesList>;
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
@@ -13,7 +13,7 @@ module nts.uk.pr.view.qpp005 {
             constructor() {
                 var self = this;
                 self.isHandInput = ko.observable(true);
-                self.paymentDataResult = ko.observable(new viewModel.PaymentDataResultViewModel());
+                self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
                 self.categories = ko.observable(new CategoriesList());
                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                 self.employee = ko.observable<Employee>();
@@ -43,23 +43,11 @@ module nts.uk.pr.view.qpp005 {
 
                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
 
-                    var cates = _.map(res.categories, function(category: viewModel.LayoutMasterCategoryViewModel): Category {
-                        switch (category.categoryAttribute) {
-                            case 0:
-                                return new Category(0, '支給');
-                            case 1:
-                                return new Category(1, '控除');
-                            case 2:
-                                return new Category(2, '勤怠');
-                            case 3:
-                                return new Category(3, '記事');
-                            default:
-                                break;
-                        };
-                    });
-                    self.categories().items(cates);
-                    self.categories().selectedCode(res.categories[0].categoryAttribute);
-
+                    var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
+                    var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
+                    var categoryArticle: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[3];
+                    self.calcTotal(categoryPayment, categoryDeduct, categoryArticle, true);
+                    self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
 
                     dfd.resolve();
                 }).fail(function(res) {
@@ -119,11 +107,47 @@ module nts.uk.pr.view.qpp005 {
                 self.employee(self.employeeList()[eIdx + 1]);
                 self.startPage();
             }
+            openGridSetting() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(() => {
+                    var employee = nts.uk.ui.windows.getShared('employee');
+                    self.employee(employee);
+
+                    self.startPage();
+                    return this;
+                });
+            }
+
+            /**
+             * auto Calculate item total
+             */
+            calcTotal(source, tranfer, destinate, isPayment) {
+                var detailsPayment = _.flatMap(source.lines(), l => l.details());
+                var totalPayment = _.last(detailsPayment);
+                var inputtingsDetailsPayment = _.reject(detailsPayment, totalPayment);
+                var updateTotalPayment = () => {
+                    var total = _(inputtingsDetailsPayment).map(d => Number(util.orDefault(d.value(), 0))).sum();
+                    totalPayment.value(total);
+
+                    var detailsTranfer = _.flatMap(tranfer.lines(), l => l.details());
+                    var totalValueTranfer = _.last(detailsTranfer).value();
+                    var detailsDestinate = _.flatMap(destinate.lines(), l => l.details());
+                    if (isPayment) {
+                        _.last(detailsDestinate).value(total - totalValueTranfer);
+                    } else {
+                        _.last(detailsDestinate).value(totalValueTranfer - total);
+                    }
+                };
+                inputtingsDetailsPayment.forEach(detail => {
+                    detail.value.subscribe(() => updateTotalPayment());
+                });
+
+            }
         };
 
         //        private parseResultDtoToViewModel(resultDto) {
         //              //        }
-        
+
         export class Employee {
             personId: KnockoutObservable<string>;
             code: KnockoutObservable<string>;
@@ -141,56 +165,65 @@ module nts.uk.pr.view.qpp005 {
         /**
           * Model namespace.
        */
-        export module viewModel {
-            export class PaymentDataResultViewModel {
-                paymentHeader: PaymentDataHeaderViewModel;
-                categories: Array<LayoutMasterCategoryViewModel>;
-            }
+        export class PaymentDataResultViewModel {
+            paymentHeader: PaymentDataHeaderViewModel;
+            categories: Array<LayoutMasterCategoryViewModel>;
+        }
 
-            // header
-            export class PaymentDataHeaderViewModel {
-                dependentNumber: number;
-                specificationCode: string;
-                specificationName: string;
-                makeMethodFlag: number;
-                employeeCode: string;
-                comment: string;
-                isCreated: boolean;
-            }
+        // header
+        export class PaymentDataHeaderViewModel {
+            dependentNumber: number;
+            specificationCode: string;
+            specificationName: string;
+            makeMethodFlag: number;
+            employeeCode: string;
+            comment: string;
+            printPositionCategories: Array<PrintPositionCategoryViewModel>;
+            isCreated: boolean;
+        }
 
-            // categories
-            export class LayoutMasterCategoryViewModel {
-                categoryAttribute: number;
-                categoryPosition: number;
-                lineCounts: number;
-                details: Array<DetailItemViewModel>;
-            }
+        export class PrintPositionCategoryViewModel {
+            categoryAtr: number;
+            lines: number;
+        }
+        // categories
+        export class LayoutMasterCategoryViewModel {
+            categoryAttribute: number;
+            categoryPosition: number;
+            lineCounts: number;
+            lines: KnockoutObservableArray<LayoutMasterLine>;
+        }
 
-            // item
-            export class DetailItemViewModel {
-                categoryAtr: number;
-                itemAtr: number;
-                itemCode: string;
-                itemName: string;
-                value: KnockoutObservable<number>;
-                columnPosition: number;
-                linePosition: number;
-                deductAtr: number;
-                isCreated: boolean;
+        export interface LayoutMasterLine {
+            details: KnockoutObservableArray<DetailItemViewModel>;
+        }
 
-                constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, 
-                            columnPosition: number, linePosition: number, deductAtr: number, isCreated: boolean) {
-                    var self = this;
-                    self.categoryAtr = categoryAtr;
-                    self.itemAtr = itemAtr;
-                    self.itemCode = itemCode;
-                    self.itemName = itemName;
-                    self.value = ko.observable(value);
-                    self.columnPosition = columnPosition;
-                    self.linePosition = linePosition;
-                    self.deductAtr = deductAtr;
-                    self.isCreated = isCreated;
-                }
+        // item
+        export class DetailItemViewModel {
+            categoryAtr: number;
+            itemAtr: number;
+            itemCode: string;
+            itemName: string;
+            value: KnockoutObservable<number>;
+            columnPosition: number;
+            linePosition: number;
+            deductAtr: number;
+            displayAtr: number;
+            isCreated: boolean;
+
+            constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number,
+                columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, isCreated: boolean) {
+                var self = this;
+                self.categoryAtr = categoryAtr;
+                self.itemAtr = itemAtr;
+                self.itemCode = itemCode;
+                self.itemName = itemName;
+                self.value = ko.observable(value);
+                self.columnPosition = columnPosition;
+                self.linePosition = linePosition;
+                self.deductAtr = deductAtr;
+                self.displayAtr = displayAtr;
+                self.isCreated = isCreated;
             }
         }
 
@@ -228,5 +261,23 @@ module nts.uk.pr.view.qpp005 {
                 self.name = name;
             }
         }
+
+
+        //                    var cates = _.map(res.categories, function(category: viewModel.LayoutMasterCategoryViewModel): Category {
+        //                        switch (category.categoryAttribute) {
+        //                            case 0:
+        //                                return new Category(0, '支給');
+        //                            case 1:
+        //                                return new Category(1, '控除');
+        //                            case 2:
+        //                                return new Category(2, '勤怠');
+        //                            case 3:
+        //                                return new Category(3, '記事');
+        //                            default:
+        //                                break;
+        //                        };
+        //                    });
+        //                    self.categories().items(cates);
+        //                    self.categories().selectedCode(res.categories[0].categoryAttribute);
     }
 }

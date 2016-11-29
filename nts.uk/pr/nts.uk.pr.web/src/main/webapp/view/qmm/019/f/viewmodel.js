@@ -181,6 +181,14 @@ var qmm019;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.openHDialog = function () {
+                    var _this = this;
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(function () {
+                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                        alert(selectedCode);
+                        return _this;
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

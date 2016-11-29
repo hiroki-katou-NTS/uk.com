@@ -152,6 +152,30 @@ var qmm019;
                     self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
                 });
             };
+            ScreenModel.prototype.registerLayout = function () {
+                var self = this;
+                a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
+                }).fail(function (err) {
+                    alert(err);
+                });
+            };
+            ScreenModel.prototype.openADialog = function () {
+                var self = this;
+                if (self.singleSelectedCode() == null)
+                    return;
+                var singleSelectedCode = self.singleSelectedCode().split(';');
+                nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () { return void {}; });
+            };
+            ScreenModel.prototype.openEDialog = function () {
+                var self = this;
+                if (self.singleSelectedCode() == null)
+                    return;
+                var singleSelectedCode = self.singleSelectedCode().split(';');
+                nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
+                nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () { return void {}; });
+            };
             return ScreenModel;
         }());
         a.ScreenModel = ScreenModel;

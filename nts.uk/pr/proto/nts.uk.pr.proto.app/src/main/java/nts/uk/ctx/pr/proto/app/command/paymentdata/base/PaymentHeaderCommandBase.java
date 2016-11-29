@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +18,12 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 public class PaymentHeaderCommandBase {
 
 	private String personId;
-	
+
 	private int processingNo = 1;
 
-	private  int payBonusAtr = 0;
+	private int payBonusAtr = 0;
 
-	private  int processingYM;
+	private int processingYM;
 
 	private int sparePayAtr = 0;
 
@@ -62,40 +64,25 @@ public class PaymentHeaderCommandBase {
 	private int makeMethodFlag = 1;
 
 	private String comment;
-	
+
+	private List<PrintPositionCategoryBase> printPositionCategories;
+
 	/**
 	 * Convert to domain object.
 	 * 
 	 * @return domain
 	 */
 	public Payment toDomain(String companyCode) {
-		Payment payment =  Payment.createFromJavaType(
-				companyCode, 
-				personId, 
-				this.processingNo, 
-				this.payBonusAtr, 
-				this.processingYM, 
-				this.sparePayAtr, 
-				this.standardDate, 
-				this.specificationCode, 
-				this.residenceCode, 
-				this.residenceName, 
-				this.healthInsuranceGrade, 
-				this.healthInsuranceAverageEarn, 
-				this.ageContinuationInsureAtr, 
-				this.tenureAtr, 
-				this.taxAtr, 
-				this.pensionInsuranceGrade, 
-				this.pensionAverageEarn, 
-				this.employmentInsuranceAtr, 
-				this.dependentNumber, 
-				this.workInsuranceCalculateAtr, 
-				this.insuredAtr, 
-				this.bonusTaxRate, 
-				this.calcFlag, 
-				this.makeMethodFlag,
+		Payment payment = Payment.createFromJavaType(companyCode, personId, this.processingNo, this.payBonusAtr,
+				this.processingYM, this.sparePayAtr, this.standardDate, this.specificationCode, this.residenceCode,
+				this.residenceName, this.healthInsuranceGrade, this.healthInsuranceAverageEarn,
+				this.ageContinuationInsureAtr, this.tenureAtr, this.taxAtr, this.pensionInsuranceGrade,
+				this.pensionAverageEarn, this.employmentInsuranceAtr, this.dependentNumber,
+				this.workInsuranceCalculateAtr, this.insuredAtr, this.bonusTaxRate, this.calcFlag, this.makeMethodFlag,
 				this.comment);
-		
+
+		payment.setPositionCategoryItems(printPositionCategories.stream()
+				.map(x -> x.toDomain(x.getCategoryAtr(), x.getLines())).collect(Collectors.toList()));
 		return payment;
 	}
 }

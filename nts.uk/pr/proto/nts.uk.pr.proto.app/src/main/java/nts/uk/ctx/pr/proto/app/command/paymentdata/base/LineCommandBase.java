@@ -2,9 +2,11 @@ package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import java.util.List;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
-@Value
+@Getter
+@Setter
 public class LineCommandBase {
 
 	/**
@@ -13,8 +15,4 @@ public class LineCommandBase {
 	int linePosition;
 
 	List<DetailItemCommandBase> details;
-
-	public static LineCommandBase fromDomain(int linePosition, List<DetailItemCommandBase> details) {
-		return new LineCommandBase(linePosition, details);
-	}
 }
