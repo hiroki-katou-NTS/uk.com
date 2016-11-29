@@ -118,12 +118,10 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		//double sumCommuteAllowance = commute.sumCommuteAllowance(param.getCurrentProcessingYearMonth());
 		if (layout.isCalMethodPesonalInfomation()) {
 			// get personal wage
-			PersonalWage personalWage = personalWageRepo.find(
-					param.getCompanyCode(),
-					param.getPersonId().v(),
-					itemMaster.getCategoryAtr().value,
-					this.getPersonalWageCode(itemMaster.getItemCode().v()),
-					param.getCurrentProcessingYearMonth().v()).get();
+			PersonalWage personalWage = param.getPersonalWageList().stream()
+					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemMaster.getItemCode().v()))).findFirst()
+					.orElseThrow(() -> new RuntimeException("システムエラー")); 
+			
 			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
 			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
@@ -187,14 +185,13 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		// check tax attribute
 		if (itemMaster.isTaxTaxationOrTaxFreeLimitOrTaxFreeUnLimit()) { // tax_atr = 0 || 1 || 2
 			// get personal wage
-			PersonalWage personalWage = personalWageRepo.find(
-					param.getCompanyCode(),
-					param.getPersonId().v(),
-					itemMaster.getCategoryAtr().value,
-					getPersonalWageCode(itemCode),
-					param.getCurrentProcessingYearMonth().v()).get();
+			PersonalWage personalWage = param.getPersonalWageList().stream()
+					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemCode))).findFirst()
+					.orElseThrow(() -> new RuntimeException("システムエラー")); 
 			
-			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr(), param.getLineList(), itemLayoutMasterDetail.getAutoLineId().v(), itemLayoutMasterDetail.getItemPosColumn().v());
+			return this.createDataDetailItem(
+					itemMaster, personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr(), 
+					param.getLineList(), itemLayoutMasterDetail.getAutoLineId().v(), itemLayoutMasterDetail.getItemPosColumn().v());
 		} else if (itemMaster.isTaxCommutingoCostOrCommutingExpense()) { // tax_atr = 3 || 4
 			
 			return this.createDataDetailItem(itemMaster,
@@ -204,7 +201,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					itemLayoutMasterDetail.getCategoryAtr(), param.getLineList(), itemLayoutMasterDetail.getAutoLineId().v(), itemLayoutMasterDetail.getItemPosColumn().v());
 			
 		} else {
-			throw new RuntimeException("Error system");
+			throw new RuntimeException("システムエラー");
 		}
 	}
 

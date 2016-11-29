@@ -228,7 +228,7 @@
                 viewName: string,
                 width: number,
                 validator: (text: string) => boolean) {
-    
+                
                 this.viewName = viewName;
                 this.width = width;
                 this.validator = validator;
@@ -295,13 +295,64 @@
             return charType;
         }
         
+        export function formatEmployeeCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
+            if (filldirection === "left")
+                return padRight(code, fillcharacter, length);
+            else
+                return padLeft(code, fillcharacter, length);
+        }
         
         export class StringFormatter implements format.IFormatter {
+            args: any;
             
-            constructor(option: any) {
+            constructor(args: any) {
+                this.args = args;
             }
             
             format(source: any): string {
+                var constraintName = this.args.constraintName;
+                if (constraintName === "EmployeeCode") {
+                    var constraint = this.args.constraint;
+                    var filldirection: string = this.args.editorOption.filldirection();
+                    var fillcharacter: string = this.args.editorOption.fillcharacter();
+                    var length: number = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                    return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                }
+                return source;
+            }
+        }
+        
+        export class NumberFormatter implements format.IFormatter {
+            
+            option: any;
+            
+            constructor(option: any) {
+                this.option = option;
+            }
+            
+            format(source: any): string {
+                return ntsNumber.formatNumber(source, this.option.option);
+            }
+        }
+        
+        export class TimeFormatter implements format.IFormatter {
+            
+            option: any;
+            
+            constructor(option: any) {
+                this.option = option;
+            }
+            
+            format(source: any): string {
+                var result;
+                if(this.option.option.inputFormat() === "yearmonth"){
+                    result = time.parseYearMonth(source);
+                }else if(this.option.option.inputFormat() === "time"){
+                    result = time.parseTime(source, true);    
+                }
+                if(result.success){
+                    return result.format(); 
+                }
                 return source;
             }
         }
