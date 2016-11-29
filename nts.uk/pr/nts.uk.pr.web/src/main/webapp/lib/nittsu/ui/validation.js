@@ -62,12 +62,15 @@ var nts;
                     }
                     NumberValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        var isDecimalNumber = (this.option !== undefined && this.option.decimallength() > 0);
-                        if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber, this.option)) {
+                        var isDecimalNumber = false;
+                        if (this.option !== undefined) {
+                            isDecimalNumber = (this.option.decimallength() > 0);
+                            inputText = uk.text.replaceAll(inputText, this.option.groupseperator(), '');
+                        }
+                        if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
                             result.fail('invalid number');
                             return result;
                         }
-                        inputText = uk.text.replaceAll(inputText, this.option.groupseperator(), '');
                         var value = isDecimalNumber ? parseFloat(inputText) : parseInt(inputText);
                         if (this.constraint !== null) {
                             if (this.constraint.max !== undefined && value > this.constraint.max) {
