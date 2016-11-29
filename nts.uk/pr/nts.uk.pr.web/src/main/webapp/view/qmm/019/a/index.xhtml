@@ -31,7 +31,7 @@
             	
             	<div id="functions-area">
             		<button onclick="nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'})">新規レイアウト</button>
-            		<button id="A_BTN_001" class="proceed">登録</button>
+            		<button id="A_BTN_001" class="proceed" data-bind="click : registerLayout">登録</button>
             		<button>Excel出力</button>
             		<button id="A_BTN_004">マスタ修正ログ</button>
             		<a href="#">計算式の登録へ</a>
@@ -46,7 +46,7 @@
 							<button>検索</button>
 						</div>
 						<div>
-							<button id="A_BTN_007">履歴追加</button>
+							<button id="A_BTN_007" onclick="nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'})">履歴追加</button>
 							<button id="A_BTN_008">履歴編集</button>
 						</div>
 						<div >

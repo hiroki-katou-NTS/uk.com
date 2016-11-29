@@ -3,7 +3,8 @@ module qmm019.a {
         var paths: any = {
             getAllLayout: "pr/proto/layout/findalllayout",
             getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
-            getCategoryFull: "pr/proto/layout/findCategoies/full"
+            getCategoryFull: "pr/proto/layout/findCategoies/full",
+            registerLayout: "pr/proto/layout/register"
         }
 
 
@@ -38,7 +39,7 @@ module qmm019.a {
         }
 
         /**
-         * Get list payment date processing.
+         * Get list getCategoryFull.
          */
         export function getCategoryFull(layoutCode, startYm): JQueryPromise<Array<model.Category>> {
             var dfd = $.Deferred<Array<model.Category>>();
@@ -55,6 +56,34 @@ module qmm019.a {
             return dfd.promise();
         }
         
+        /**
+         * Register Layout
+         */
+        export function registerLayout(layout: model.LayoutMasterDto, categories): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var command = {
+                layoutCommand: {
+                    stmtCode: layout.stmtCode,
+                    startYm: layout.startYm,
+                    stmtName: layout.stmtName,
+                    endYm: layout.endYm
+                },
+                categoryCommand: [],
+                lineCommand: [],
+                detailCommand: [],
+                listCategoryAtrDeleted: [],
+                listAutoLineIdDeleted: [],
+                listItemCodeDeleted: []
+            }
+            nts.uk.request.ajax(paths.registerLayout, command)
+                .done(function(res: Array<any>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
         /**
            * Model namespace.
         */

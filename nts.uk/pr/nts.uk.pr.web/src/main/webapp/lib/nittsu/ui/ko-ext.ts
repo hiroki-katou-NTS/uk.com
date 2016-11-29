@@ -102,6 +102,7 @@ module nts.uk.ui.koExtentions {
         }
     }
     
+    
     class TimeEditorProcessor extends EditorProcessor {
         
         getDefaultOption(): any {
@@ -110,7 +111,7 @@ module nts.uk.ui.koExtentions {
         
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            return new text.TimeFormatter({ option: option});
+            return new text.NumberFormatter({ option: option});
         }
         
         getValidator(data: any): validation.IValidator {
@@ -119,6 +120,7 @@ module nts.uk.ui.koExtentions {
             return new validation.TimeValidator(constraintName, option);
         }
     }
+
 
     /**
      * Editor
@@ -176,7 +178,6 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data
             new NumberEditorProcessor().update($(element), valueAccessor());
         }
     }
@@ -197,7 +198,8 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new TimeEditorProcessor().update($(element), valueAccessor());
+            // Get data
+            new TimeEditorProcessor().init($(element), valueAccessor());
         }
     }
 

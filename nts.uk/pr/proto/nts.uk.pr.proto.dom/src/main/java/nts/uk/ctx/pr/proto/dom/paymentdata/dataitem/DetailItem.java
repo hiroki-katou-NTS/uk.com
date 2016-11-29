@@ -50,26 +50,26 @@ public class DetailItem extends DomainObject {
 	private InsuranceAtr laborInsuranceAtr;
 
 	@Getter
-	private DetailItemPosition itemPostion;
+	private DetailItemPosition itemPosition;
 
 	@Getter
 	private CategoryAtr categoryAtr;
-	
+
 	/*
 	 * 控除種類
 	 */
 	@Getter
 	private DeductionAtr deductionAtr;
-	
+
 	@Getter
 	private ItemAtr itemAtr;
-	
+
 	@Getter
 	private int averagePayAtr;
-	
+
 	@Getter
 	private int fixPayAtr;
-	
+
 	@Getter
 	private int limitAmount;
 
@@ -82,7 +82,8 @@ public class DetailItem extends DomainObject {
 	 * @param laborInsuranceAtr
 	 */
 	public DetailItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
-			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr, ItemAtr itemAtr) {
+			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr, ItemAtr itemAtr,
+			DetailItemPosition itemPosition) {
 		super();
 		this.itemCode = itemCode;
 		this.value = value;
@@ -92,27 +93,36 @@ public class DetailItem extends DomainObject {
 		this.categoryAtr = categoryAtr;
 		this.deductionAtr = deductionAtr;
 		this.itemAtr = itemAtr;
+		this.itemPosition = itemPosition;
 	}
 
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
-			int laborInsuranceAtr, int categoryAtr, int deductionAtr, Integer itemAtr) {
+			int laborInsuranceAtr, int categoryAtr, int deductionAtr, Integer itemAtr, int linePosition,
+			int columnPosition) {
 
-		return new DetailItem(new ItemCode(itemCode), value,
-				EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
+		return new DetailItem(new ItemCode(itemCode), value, EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
 				EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class),
-				EnumAdaptor.valueOf(itemAtr, ItemAtr.class)
+				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class), 
+				EnumAdaptor.valueOf(itemAtr, ItemAtr.class),
+				new DetailItemPosition(
+						new LinePosition(linePosition), 
+						new ColumnPosition(columnPosition))
 				);
 	}
-	
+
 	/**
 	 * Create data for detail item (using for create data)
-	 * @param limitAmount limitAmount
-	 * @param fixPayAtr fixPayAtr
-	 * @param averagePayAtr averagePayAtr
-	 * @param itemAtr itemAtr
+	 * 
+	 * @param limitAmount
+	 *            limitAmount
+	 * @param fixPayAtr
+	 *            fixPayAtr
+	 * @param averagePayAtr
+	 *            averagePayAtr
+	 * @param itemAtr
+	 *            itemAtr
 	 */
 	public DetailItem additionalInfo(int limitAmount, int fixPayAtr, int averagePayAtr, int itemAtr) {
 		this.limitAmount = limitAmount;
@@ -121,31 +131,38 @@ public class DetailItem extends DomainObject {
 		this.itemAtr = EnumAdaptor.valueOf(itemAtr, ItemAtr.class);
 		return this;
 	}
-	
+
 	/**
 	 * Create data for detail item (using for create data)
 	 * 
-	 * @param correctFlag correctFlag
-	 * @param socialInsuranceAtr socialInsuranceAtr
-	 * @param laborInsuranceAtr laborInsuranceAtr
-	 * @param deductionAtr deductionAtr
+	 * @param correctFlag
+	 *            correctFlag
+	 * @param socialInsuranceAtr
+	 *            socialInsuranceAtr
+	 * @param laborInsuranceAtr
+	 *            laborInsuranceAtr
+	 * @param deductionAtr
+	 *            deductionAtr
 	 */
-	public DetailItem additionalInfo(CorrectFlag correctFlag, int socialInsuranceAtr, int laborInsuranceAtr, DeductionAtr deductionAtr) {
+	public DetailItem additionalInfo(CorrectFlag correctFlag, int socialInsuranceAtr, int laborInsuranceAtr,
+			DeductionAtr deductionAtr) {
 		this.correctFlag = correctFlag;
 		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class);
 		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class);
 		this.deductionAtr = deductionAtr;
 		return this;
 	}
-	
+
 	/**
 	 * Create data for detail item (using for create data)
 	 * 
-	 * @param linePosition linePosition
-	 * @param columnPosition columnPosition
+	 * @param linePosition
+	 *            linePosition
+	 * @param columnPosition
+	 *            columnPosition
 	 */
 	public DetailItem additionalInfo(int linePosition, int columnPosition) {
-		this.itemPostion = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
+		this.itemPosition = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
 		return this;
 	}
 
@@ -153,8 +170,9 @@ public class DetailItem extends DomainObject {
 	 * Create data for detail item (using for create data)
 	 * 
 	 */
-    public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
-        return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
-                InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, ItemAtr.TIMES);
-    }
+	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
+//		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
+//				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, ItemAtr.TIMES);
+		return null;
+	}
 }

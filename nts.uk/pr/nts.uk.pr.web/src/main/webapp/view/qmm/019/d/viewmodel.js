@@ -10,7 +10,7 @@ var qmm019;
                  */
                 function ScreenModel() {
                     var self = this;
-                    self.selectLayoutAtr = ko.observable("2");
+                    self.selectLayoutAtr = ko.observable("3");
                     self.itemList = ko.observableArray([]);
                     self.isEnable = ko.observable(true);
                     self.layouts = ko.observableArray([]);
@@ -21,6 +21,7 @@ var qmm019;
                     self.layoutSelect = ko.observable("01");
                     self.valueSel001 = ko.observable("");
                     self.createlayout = ko.observable(null);
+                    self.startYmHis = ko.observable(null);
                 }
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -60,53 +61,56 @@ var qmm019;
                         if (stmtCode == self.layoutSelect()) {
                             self.selectStmtCode(stmtCode);
                             self.selectStmtName(layout.stmtName);
-                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm + 1));
+                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             self.valueSel001('最新の履歴' + layout.startYm + 'から引き継ぐ');
+                            self.startYmHis = layout.startYm;
                             return false;
                         }
                     });
                 };
                 ScreenModel.prototype.createHistoryLayout = function () {
                     var self = this;
-                    if ($("#copyCreate").is(":checked")) {
-                        self.copyCreateData();
+                    var selectYm = self.startYmHis;
+                    var inputYm = $("#INP_001").val().replace('/', '');
+                    if (+inputYm < +selectYm
+                        || +inputYm == +selectYm) {
+                        alert('履歴の期間が正しくありません。');
+                        return false;
                     }
                     else {
-                        self.newCreateData();
+                        if ($("#copyCreate").is(":checked")) {
+                            self.copyCreateData();
+                        }
+                        else {
+                            self.newCreateData();
+                        }
+                        d.service.createLayoutHistory(self.createlayout()).done(function () {
+                            alert("追加しました。");
+                        }).fail(function (res) {
+                            alert(res);
+                        });
                     }
-                    d.service.createLayout(self.createlayout()).done(function () {
-                        alert("追加しました。");
-                    }).fail(function (res) {
-                        alert(res);
-                    });
                 };
                 ScreenModel.prototype.copyCreateData = function () {
                     var self = this;
-                    //var test = self.selectStmtCode();
                     self.createlayout({
-                        companyCode: self.layouts()[0].companyCode,
+                        checkContinue: true,
                         stmtCode: self.selectStmtCode(),
-                        startYm: +nts.uk.time.formatYearMonth($('#INP_001').val()),
-                        stmtName: self.selectStmtName(),
-                        endYM: 999912,
-                        layoutAtr: 3,
-                        isCopy: true,
-                        stmtCodeCopied: self.selectStmtCode(),
-                        startYmCopied: self.selectStartYm()
+                        startYm: +(self.selectStartYm().replace('/', '')),
+                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
+                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
+                        layoutAtr: 3
                     });
                 };
                 ScreenModel.prototype.newCreateData = function () {
                     var self = this;
                     self.createlayout({
-                        companyCode: self.layouts()[0].companyCode,
+                        checkContinue: false,
                         stmtCode: self.selectStmtCode(),
-                        startYm: +nts.uk.time.formatYearMonth($('#INP_001').val()),
-                        stmtName: self.selectStmtName(),
-                        endYM: 999912,
-                        layoutAtr: 3,
-                        isCopy: false,
-                        stmtCodeCopied: self.selectStmtCode(),
-                        startYmCopied: self.selectStartYm()
+                        startYm: +(self.selectStartYm().replace('/', '')),
+                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
+                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
+                        layoutAtr: 3
                     });
                 };
                 return ScreenModel;

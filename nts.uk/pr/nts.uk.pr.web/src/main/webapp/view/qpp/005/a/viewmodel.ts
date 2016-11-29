@@ -155,9 +155,14 @@ module nts.uk.pr.view.qpp005 {
                 makeMethodFlag: number;
                 employeeCode: string;
                 comment: string;
+                printPositionCategories: Array<PrintPositionCategoryViewModel>;
                 isCreated: boolean;
             }
-
+            
+            export class PrintPositionCategoryViewModel {
+                categoryAtr: number;
+                lines: number;    
+            }
             // categories
             export class LayoutMasterCategoryViewModel {
                 categoryAttribute: number;
@@ -176,10 +181,11 @@ module nts.uk.pr.view.qpp005 {
                 columnPosition: number;
                 linePosition: number;
                 deductAtr: number;
+                displayAtr: number;
                 isCreated: boolean;
 
                 constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, 
-                            columnPosition: number, linePosition: number, deductAtr: number, isCreated: boolean) {
+                            columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, isCreated: boolean) {
                     var self = this;
                     self.categoryAtr = categoryAtr;
                     self.itemAtr = itemAtr;
@@ -189,6 +195,7 @@ module nts.uk.pr.view.qpp005 {
                     self.columnPosition = columnPosition;
                     self.linePosition = linePosition;
                     self.deductAtr = deductAtr;
+                    self.displayAtr = displayAtr;
                     self.isCreated = isCreated;
                 }
             }
