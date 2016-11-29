@@ -1,58 +1,38 @@
 module nts.uk.ui.koExtentions {
 
     import validation = nts.uk.ui.validation;
-
-    /**
-     * Editor
-     */
-    class NtsEditorBindingHandler implements KnockoutBindingHandler {
+    
+    class EditorProcessor {
         
-        validator: validation.IValidator;
-        formatter: format.IFormatter;
-
-        /**
-         * Init.
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var data = valueAccessor();
-            var setValue: (newText: string) => {} = data.value;
-            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
-            var $input = $(element);
-            
+        init($input: JQuery, data: any) {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            this.validator = validation.createValidator(constraintName);
-            this.formatter = new text.StringFormatter({ constraintName: constraintName });
+            var validator = this.getValidator(data);
+            var formatter = this.getFormatter(data);
+            var setValue: (newText: string) => {} = data.value;
             
             $input.change(() => {
                 var newText = $input.val();
-                var result = this.validator.validate(newText);
+                var result = validator.validate(newText);
                 if (result.isValid) {
                     $input.ntsError('clear');
                     setValue(result.parsedValue);
-                    $input.val(this.formatter.format(result.parsedValue));
+                    $input.val(formatter.format(result.parsedValue));
                 } else {
                     $input.ntsError('set', result.errorMessage);
                     setValue(newText);
                 }
             });
         }
-
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data
-            var data = valueAccessor();
+        
+        update($input: JQuery, data: any) {
             var getValue: () => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
+            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
             var placeholder: string = ko.unwrap(option.placeholder);
             var width: string = ko.unwrap(option.width);
             var textalign: string = ko.unwrap(option.textalign);
-            var $input = $(element);
             
             (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
             (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
@@ -62,7 +42,65 @@ module nts.uk.ui.koExtentions {
             if (textalign.trim() != "")
                 $input.css('text-align', textalign);
 
-            $input.val(this.formatter.format(getValue()));
+            var formatter = this.getFormatter(data);
+            $input.val(formatter.format(getValue()));
+        }
+        
+        getDefaultOption(): any {
+            return {};
+        }
+        
+        getFormatter(data: any): format.IFormatter {
+            return new format.NoFormatter();
+        }
+        
+        getValidator(data: any): validation.IValidator {
+            return new validation.NoValidator();
+        }
+    }
+    
+    class TextEditorProcessor extends EditorProcessor {
+        
+        update($input: JQuery, data: any) {
+            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var textmode: string = ko.unwrap(option.textmode);
+            $input.attr('type', textmode);
+            
+            super.update($input, data);
+        }
+        
+        getDefaultOption(): any {
+            return new nts.uk.ui.option.TextEditorOption();
+        }
+        
+        getFormatter(data: any): format.IFormatter {
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            return new text.StringFormatter({ constraintName: constraintName });
+        }
+        
+        getValidator(data: any): validation.IValidator {
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            return validation.createValidator(constraintName);;
+        }
+    }
+
+    /**
+     * Editor
+     */
+    class NtsEditorBindingHandler implements KnockoutBindingHandler {
+        
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new EditorProcessor().init($(element), valueAccessor());
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new EditorProcessor().update($(element), valueAccessor());
         }
     }
 
@@ -70,19 +108,19 @@ module nts.uk.ui.koExtentions {
      * TextEditor
      */
     class NtsTextEditorBindingHandler extends NtsEditorBindingHandler {
+        
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new TextEditorProcessor().init($(element), valueAccessor());
+        }
 
         /**
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            
-            var data = valueAccessor();
-            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
-            var textmode: string = ko.unwrap(option.textmode);
-            var $input = $(element);
-            $input.attr('type', textmode);
-            
-            super.update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
+            new TextEditorProcessor().update($(element), valueAccessor());
         }
     }
 

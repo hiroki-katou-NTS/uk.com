@@ -126,7 +126,30 @@ module qmm019.g.viewmodel {
         
         createNewLayout(): any{
             var self = this;
-            //登録時チェック処理
+            
+            if(self.checkData())
+            {
+                   if($("#newCreate").is(":checked")){
+                       self.createNewData();
+                    }else{
+                       //印字行数　＞　最大印字行数　の場合
+                       //メッセージ( ER030 )を表示する
+                       
+                       
+                        self.createCopyData();    
+                    }
+                    service.createLayout(self.createlayout()).done(function(){
+                        alert('追加しました。');    
+                        nts.uk.ui.windows.close();
+                    }).fail(function(res){
+                        alert(res);    
+                    })
+             }
+        }
+        
+        checkData(): any{
+            var self = this;
+              //登録時チェック処理
             var mess = "が入力されていません";
             //必須項目の未入力チェックを行う
             if($('#INP_001').val() == ''){
@@ -145,28 +168,20 @@ module qmm019.g.viewmodel {
                 return false;    
             }
             //コードの重複チェックを行う
+            var isStorage = false;
             _.forEach(self.layouts(), function(layout){
                 if(+$('#INP_001').val() === +layout.stmtCode){
-                    alert('入力した'+$('#INP_001').val()+'は既に存在しています。\r\n'+$('#INP_001').val()+'を確認してください。')
+                    alert('入力した'+$('#INP_001').val()+'は既に存在しています。\r\n'+$('#INP_001').val()+'を確認してください。');
+                    $('#INP_001').focus();
+                    isStorage = true;
                     return false;
                 }
-            });
-            
-           if($("#newCreate").is(":checked")){
-               self.createNewData();
-            }else{
-               //印字行数　＞　最大印字行数　の場合
-               //メッセージ( ER030 )を表示する
-               
-               
-                self.createCopyData();    
+            }); 
+            if(isStorage){
+                return false;    
             }
-            service.createLayout(self.createlayout()).done(function(){
-                alert('追加しました。');    
-                nts.uk.ui.windows.close();
-            }).fail(function(res){
-                alert(res);    
-            })
+                
+            return true; 
         }
         
         createNewData(): any{

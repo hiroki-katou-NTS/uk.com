@@ -52,6 +52,7 @@ var nts;
                     }
                     return NumberValidator;
                 }());
+                validation.NumberValidator = NumberValidator;
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)

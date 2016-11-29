@@ -116,6 +116,14 @@ var qmm019;
                     self.switchButton = new SwitchButton();
                     self.checkBox = new CheckBox();
                 }
+                ScreenModel.prototype.openHDialog = function () {
+                    var _this = this;
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(function () {
+                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                        alert(selectedCode);
+                        return _this;
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

@@ -2,7 +2,9 @@ package nts.uk.ctx.pr.proto.app.command.layout.register;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -18,6 +20,8 @@ import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+@RequestScoped
+@Transactional
 public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutCommand>{
 
 	@Inject

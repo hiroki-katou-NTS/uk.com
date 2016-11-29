@@ -147,7 +147,7 @@
             dataType: options.dataType || 'json',
             data: data
         }).done(function (res) {
-            if (res.businessException) {
+            if (res !== undefined && res.businessException) {
                 dfd.reject(res);
             } else {
                 dfd.resolve(res);

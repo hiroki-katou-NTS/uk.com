@@ -2,6 +2,18 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var format;
+        (function (format) {
+            var NoFormatter = (function () {
+                function NoFormatter() {
+                }
+                NoFormatter.prototype.format = function (source) {
+                    return source;
+                };
+                return NoFormatter;
+            }());
+            format.NoFormatter = NoFormatter;
+        })(format = uk.format || (uk.format = {}));
         var text;
         (function (text_1) {
             var regexp = {
