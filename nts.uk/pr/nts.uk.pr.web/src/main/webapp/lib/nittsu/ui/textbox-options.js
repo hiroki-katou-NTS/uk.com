@@ -25,6 +25,7 @@ var nts;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
+                        this.format = (option && option.format) ? option.format : null;
                     }
                     return TextEditorOption;
                 }(EditorOptionBase));
@@ -105,6 +106,13 @@ var nts;
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
                 option_1.CurrencyEditorOption = CurrencyEditorOption;
+                var Format = (function () {
+                    function Format(filldirection, fillcharacter) {
+                        this.filldirection = filldirection;
+                        this.fillcharacter = fillcharacter;
+                    }
+                    return Format;
+                }());
             })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
