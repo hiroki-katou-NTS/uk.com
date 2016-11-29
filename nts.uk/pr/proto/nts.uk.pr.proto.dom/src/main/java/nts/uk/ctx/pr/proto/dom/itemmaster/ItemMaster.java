@@ -53,7 +53,7 @@ public class ItemMaster extends AggregateRoot{
 	
 	/** 項目属性 */
 	@Getter
-	private ItemAtr itemAttributeAtr;	
+	private ItemAtr itemAtr;	
 	/** 項目名表示区分 */
 	@Getter
 	private ItemNameDisplayAtr itemNameDisplayAtr;

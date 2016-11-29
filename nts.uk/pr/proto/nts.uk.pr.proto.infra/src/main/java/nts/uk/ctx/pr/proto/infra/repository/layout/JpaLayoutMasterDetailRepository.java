@@ -42,6 +42,11 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
 			+ " AND c.endYm = :endYm";
 	
+	private final String FIND_ONLY_ALL = "SELECT c FROM QstmtStmtLayoutDetail c"
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
+	
 	@Override
 	public void add(LayoutMasterDetail domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -232,6 +237,20 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
 				.setParameter("endYm", endYm)
+				.getList(c -> toDomain(c));
+	}
+	
+	/**
+	 * find all layout master details without item info
+	 */
+	@Override
+	public List<LayoutMasterDetail> findAll(String companyCd, 
+			String stmtCd, 
+			int startYm) {
+		return this.queryProxy().query(FIND_ONLY_ALL, QstmtStmtLayoutDetail.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.setParameter("startYm", startYm)
 				.getList(c -> toDomain(c));
 	}
 }

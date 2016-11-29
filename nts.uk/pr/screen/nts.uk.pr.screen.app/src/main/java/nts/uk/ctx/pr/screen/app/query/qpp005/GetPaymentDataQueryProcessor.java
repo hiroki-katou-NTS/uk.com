@@ -12,6 +12,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
@@ -25,8 +27,8 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessi
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.LineDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.LayoutMasterCategoryDto;
+import nts.uk.ctx.pr.screen.app.query.qpp005.result.LineDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataHeaderDto;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -74,6 +76,9 @@ public class GetPaymentDataQueryProcessor {
 	@Inject
 	private PaymentDataQueryRepository queryRepository;
 
+	@Inject
+	private ItemMasterRepository itemMasterRepository;
+
 	/**
 	 * get data detail
 	 * 
@@ -110,8 +115,10 @@ public class GetPaymentDataQueryProcessor {
 		List<LayoutMasterLine> lines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
 
 		// get 明細書マスタ明細
-		List<LayoutMasterDetail> lDetails = this.layoutMasterDetailRepository.getDetails(companyCode, stmtCode,
-				startYM);
+		List<LayoutMasterDetail> lDetails = this.layoutMasterDetailRepository.findAll(companyCode, stmtCode, startYM);
+
+		// get 項目マスタ
+		List<ItemMaster> mItems = this.itemMasterRepository.findAll(companyCode);
 
 		// get header of payment
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(), PROCESSING_NO,
@@ -119,7 +126,7 @@ public class GetPaymentDataQueryProcessor {
 
 		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, layout, optPHeader);
 
-		result.setCategories(mergeDataToLayout(mCates, lines, lDetails, detailItems));
+		result.setCategories(mergeDataToLayout(mCates, lines, lDetails, detailItems, mItems));
 		return result;
 	}
 
@@ -164,7 +171,8 @@ public class GetPaymentDataQueryProcessor {
 	 * @return
 	 */
 	private static List<LayoutMasterCategoryDto> mergeDataToLayout(List<LayoutMasterCategory> mCates,
-			List<LayoutMasterLine> lines, List<LayoutMasterDetail> details, List<DetailItemDto> datas) {
+			List<LayoutMasterLine> lines, List<LayoutMasterDetail> details, List<DetailItemDto> datas,
+			List<ItemMaster> mItems) {
 
 		List<LayoutMasterCategoryDto> categories = new ArrayList<>();
 
@@ -176,7 +184,7 @@ public class GetPaymentDataQueryProcessor {
 			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
 			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr)
 					.collect(Collectors.toList());
-			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr);
+			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr, mItems);
 
 			categories.add(LayoutMasterCategoryDto.fromDomain(ctAtr, ctName, category.getCtgPos().v(),
 					lineCounts.intValue(), lineItems));
@@ -185,30 +193,43 @@ public class GetPaymentDataQueryProcessor {
 		return categories;
 	}
 
-	private static List<LineDto> getDetailItems(List<LayoutMasterLine> lines, List<LayoutMasterDetail> details,
-			List<DetailItemDto> datas, int ctAtr) {
+	/**
+	 * Get item info by line
+	 * 
+	 * @param mLines
+	 * @param mDetails
+	 * @param datas
+	 * @param ctAtr
+	 * @return
+	 */
+	private static List<LineDto> getDetailItems(List<LayoutMasterLine> mLines, List<LayoutMasterDetail> mDetails,
+			List<DetailItemDto> datas, int ctAtr, List<ItemMaster> mItems) {
 		List<LineDto> rLines = new ArrayList<>();
 
-		for (LayoutMasterLine mLine : lines) {
+		for (LayoutMasterLine mLine : mLines) {
 			LineDto lineDto;
 			List<DetailItemDto> items = new ArrayList<>();
 			for (int i = 1; i <= 9; i++) {
 				int posCol = i;
-				DetailItemDto detailItem = details.stream()
+				DetailItemDto detailItem = mDetails.stream()
 						.filter(x -> x.getCategoryAtr().value == ctAtr
 								&& x.getAutoLineId().v().equals(mLine.getAutoLineId().v())
 								&& x.getItemPosColumn().v() == posCol)
 						.findFirst().map(d -> {
-							Optional<DetailItemDto> itemData = datas.stream().filter(
-									x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
-									.findFirst();
-							
-							// TODO ko get duoc
-							Double value = itemData.map(x -> x.getValue()).orElse(null);
-							return DetailItemDto.fromDomain(ctAtr, itemData.get().getItemAtr(), d.getItemCode().v(),
-									d.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(),
+
+							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
+									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
+
+							Double value = datas.stream()
+									.filter(x -> x.getCategoryAtr() == ctAtr
+											&& x.getItemCode().equals(d.getItemCode().v()))
+									.findFirst().map(x -> x.getValue()).orElse(null);
+
+							return DetailItemDto.fromDomain(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
+									d.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(), mItem.getDeductAttribute().value,
 									value != null);
-						}).orElse(DetailItemDto.fromDomain(ctAtr, -1, "", "", null, mLine.getLinePosition().v(), i, false));
+						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i, null,
+								false));
 
 				items.add(detailItem);
 			}

@@ -52,6 +52,9 @@ var qmm019;
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
                 }
+                ListBox.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 return ListBox;
             }());
             viewmodel.ListBox = ListBox;
