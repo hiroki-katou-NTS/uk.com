@@ -199,7 +199,7 @@ module nts.uk.ui.koExtentions {
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
-            new TimeEditorProcessor().init($(element), valueAccessor());
+            new TimeEditorProcessor().update($(element), valueAccessor());
         }
     }
 

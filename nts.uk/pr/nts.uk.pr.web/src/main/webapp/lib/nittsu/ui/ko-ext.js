@@ -206,7 +206,7 @@ var nts;
                      */
                     NtsTimeEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
-                        new TimeEditorProcessor().init($(element), valueAccessor());
+                        new TimeEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTimeEditorBindingHandler;
                 }());
