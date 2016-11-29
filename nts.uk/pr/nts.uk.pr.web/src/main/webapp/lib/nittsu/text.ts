@@ -9,6 +9,12 @@
         export interface IFormatterOption {
             constraintName: string
         }
+        
+        export class NoFormatter implements format.IFormatter {
+            format(source: any): string {
+                return source;
+            }
+        }
     }
     
     export module text {

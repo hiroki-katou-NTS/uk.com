@@ -47,7 +47,7 @@
         }
     }
     
-    class NumberValidator implements IValidator {
+    export class NumberValidator implements IValidator {
     }
      
     export function getConstraint(primitiveValueName: string) {
