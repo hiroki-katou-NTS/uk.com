@@ -70,8 +70,8 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.update = function ($input, data) {
-                        this.editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var textmode = ko.unwrap(this.editorOption.textmode);
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var textmode = ko.unwrap(editorOption.textmode);
                         $input.attr('type', textmode);
                         _super.prototype.update.call(this, $input, data);
                     };
@@ -79,9 +79,10 @@ var nts;
                         return new nts.uk.ui.option.TextEditorOption();
                     };
                     TextEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constrain = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: this.editorOption });
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";

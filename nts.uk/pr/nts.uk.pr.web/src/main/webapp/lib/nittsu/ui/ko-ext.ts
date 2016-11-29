@@ -60,11 +60,10 @@ module nts.uk.ui.koExtentions {
     }
     
     class TextEditorProcessor extends EditorProcessor {
-        editorOption: any;
-        
+                
         update($input: JQuery, data: any) {
-            this.editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            var textmode: string = ko.unwrap(this.editorOption.textmode);
+            var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var textmode: string = ko.unwrap(editorOption.textmode);
             $input.attr('type', textmode);
             super.update($input, data);
         }
@@ -74,9 +73,10 @@ module nts.uk.ui.koExtentions {
         }
         
         getFormatter(data: any): format.IFormatter {
+            var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({constraintName: constraintName, constrain: constrain, editorOption: this.editorOption});
+            return new text.StringFormatter({constraintName: constraintName, constrain: constrain, editorOption: editorOption});
         }
         
         getValidator(data: any): validation.IValidator {
