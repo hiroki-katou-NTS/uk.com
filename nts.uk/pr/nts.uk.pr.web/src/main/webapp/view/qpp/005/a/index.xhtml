@@ -67,19 +67,19 @@
 							<tbody data-bind="foreach: lines">
 								<tr>
 									<com:ko-foreach bind="details">
-										<com:ko-if bind="itemCode !== ''">
+										<com:ko-if bind="itemCode() !== ''">
 											<td><span data-bind="text: itemName"></span> <com:ko-if
 													bind="itemAtr === 0">
 													<input data-bind="ntsNumberEditor: {value: value}" />
-												</com:ko-if> <com:ko-if bind="itemAtr === 0">
+												</com:ko-if> <com:ko-if bind="itemAtr() === 0">
 													<input data-bind="ntsTimeEditor: {value: value}" />
-												</com:ko-if> <com:ko-if bind="itemAtr === 1">
+												</com:ko-if> <com:ko-if bind="itemAtr() === 1">
 													<input data-bind="ntsNumerEditor: {value: value}" />
-												</com:ko-if> <com:ko-if bind="itemAtr === 2 || itemAtr === 3">
+												</com:ko-if> <com:ko-if bind="itemAtr() === 2 || itemAtr() === 3">
 													<input data-bind="ntsNumerEditor: {value: value}" />
 												</com:ko-if></td>
 										</com:ko-if>
-										<com:ko-if bind="itemCode === ''">
+										<com:ko-if bind="itemCode() === ''">
 											<td><span data-bind="text: itemName"></span> <input
 												type="text" /></td>
 										</com:ko-if>

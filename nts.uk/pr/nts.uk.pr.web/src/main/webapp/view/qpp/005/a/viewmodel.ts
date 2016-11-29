@@ -171,21 +171,24 @@ module nts.uk.pr.view.qpp005 {
                 categoryAtr: number;
                 itemAtr: number;
                 itemCode: string;
-                itemNme: string;
+                itemName: string;
                 value: KnockoutObservable<number>;
-                colPosition: number;
-                rowPosition: number;
+                columnPosition: number;
+                linePosition: number;
+                deductAtr: number;
                 isCreated: boolean;
 
-                constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemNme: string, value: number, colPosition: number, rowPosition: number, isCreated: boolean) {
+                constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, 
+                            columnPosition: number, linePosition: number, deductAtr: number, isCreated: boolean) {
                     var self = this;
                     self.categoryAtr = categoryAtr;
                     self.itemAtr = itemAtr;
                     self.itemCode = itemCode;
-                    self.itemNme = itemNme;
+                    self.itemName = itemName;
                     self.value = ko.observable(value);
-                    self.colPosition = colPosition;
-                    self.rowPosition = rowPosition;
+                    self.columnPosition = columnPosition;
+                    self.linePosition = linePosition;
+                    self.deductAtr = deductAtr;
                     self.isCreated = isCreated;
                 }
             }

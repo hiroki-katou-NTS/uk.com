@@ -226,7 +226,7 @@ public class GetPaymentDataQueryProcessor {
 									.findFirst().map(x -> x.getValue()).orElse(null);
 
 							return DetailItemDto.fromDomain(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
-									d.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(), mItem.getDeductAttribute().value,
+									mItem.getItemAbName().v(), value, mLine.getLinePosition().v(), d.getItemPosColumn().v(), mItem.getDeductAttribute().value,
 									value != null);
 						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i, null,
 								false));

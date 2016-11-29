@@ -150,15 +150,16 @@ var nts;
                             viewModel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                             // item
                             var DetailItemViewModel = (function () {
-                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemNme, value, colPosition, rowPosition, isCreated) {
+                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, isCreated) {
                                     var self = this;
                                     self.categoryAtr = categoryAtr;
                                     self.itemAtr = itemAtr;
                                     self.itemCode = itemCode;
-                                    self.itemNme = itemNme;
+                                    self.itemName = itemName;
                                     self.value = ko.observable(value);
-                                    self.colPosition = colPosition;
-                                    self.rowPosition = rowPosition;
+                                    self.columnPosition = columnPosition;
+                                    self.linePosition = linePosition;
+                                    self.deductAtr = deductAtr;
                                     self.isCreated = isCreated;
                                 }
                                 return DetailItemViewModel;
