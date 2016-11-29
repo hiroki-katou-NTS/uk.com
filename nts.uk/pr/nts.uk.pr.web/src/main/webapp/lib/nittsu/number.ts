@@ -32,7 +32,7 @@
     }
 
     export function formatNumber(value: any, formatOption: any) {
-        if (value !== undefined || value !== null || value.toString().trim().lenth <= 0) {
+        if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
             return value;
         }
         var groupseperator = formatOption.groupseperator() ? formatOption.groupseperator() : ',';

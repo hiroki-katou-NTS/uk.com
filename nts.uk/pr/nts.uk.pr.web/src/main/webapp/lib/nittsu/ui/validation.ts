@@ -69,7 +69,7 @@
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
             var isDecimalNumber = (this.option !== undefined && this.option.decimallength() > 0)
-            if (!ntsNumber.isNumber(inputText, !isDecimalNumber)) {
+            if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
                 result.fail('invalid number');
                 return result;
             }
