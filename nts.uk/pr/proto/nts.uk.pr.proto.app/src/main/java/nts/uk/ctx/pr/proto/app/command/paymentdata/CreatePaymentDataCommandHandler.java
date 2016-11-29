@@ -314,7 +314,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		
 		int linePosition;
 		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {
-			linePosition = 0;
+			linePosition = -1;
 		} else {
 			linePosition = line.getLinePosition().v();
 		}
@@ -330,7 +330,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		if (exists) {
 			for (DetailItem item : detailItemList) {
 				if (detailItem.getItemCode().equals(item.getItemCode())) {
-					item = detailItem;
+					detailItemList.remove(item);
+					detailItemList.add(detailItem);
+					return detailItemList;
 				}
 			}
 		} else {
