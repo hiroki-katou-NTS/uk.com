@@ -52,9 +52,6 @@ var qmm019;
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
                 }
-                ListBox.prototype.closeDialog = function () {
-                    nts.uk.ui.windows.close();
-                };
                 return ListBox;
             }());
             viewmodel.ListBox = ListBox;
@@ -63,6 +60,14 @@ var qmm019;
                     var self = this;
                     self.listBox = new ListBox();
                 }
+                ScreenModel.prototype.chooseItem = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('selectedCode', self.listBox.selectedCode());
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

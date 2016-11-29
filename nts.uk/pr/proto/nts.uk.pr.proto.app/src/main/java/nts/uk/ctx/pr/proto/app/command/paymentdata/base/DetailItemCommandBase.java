@@ -1,9 +1,12 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
-@Value
+@Getter
+@Setter
 public class DetailItemCommandBase {
 
 	/**
@@ -43,15 +46,22 @@ public class DetailItemCommandBase {
 	 */
 	int laborInsuranceAtr;
 
-	int linePostion;
+	int linePosition;
 
 	int columnPosition;
 
 	Integer deductAtr;
 	
+	Integer displayAtr;
+	
 	boolean created;
 
-	public DetailItem toDomain() {
+	public DetailItem toDomain(Integer linePosition) {
+		if (displayAtr == DisplayAtr.NO_DISPLAY.value) {
+			this.linePosition = -1;
+		}else {
+			this.linePosition = linePosition;
+		}
 		return DetailItem.createFromJavaType(
 				this.itemCode, 
 				this.value, 
@@ -60,7 +70,9 @@ public class DetailItemCommandBase {
 				this.laborInsuranceAtr,
 				this.categoryAtr,
 				this.deductAtr,
-				this.itemAtr
+				this.itemAtr,
+				this.linePosition,
+				this.columnPosition
 				);
 	}
 }

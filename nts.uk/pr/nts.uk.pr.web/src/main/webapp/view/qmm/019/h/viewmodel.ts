@@ -2,6 +2,8 @@
 
 module qmm019.h.viewmodel {
  import option = nts.uk.ui.option;
+    
+
     export class ItemModel {
         id: any;
         name: any;
@@ -11,6 +13,7 @@ module qmm019.h.viewmodel {
             this.name = name;
         }
     }
+    
 
     export class ListBox {
         itemList: KnockoutObservableArray<any>;
@@ -64,13 +67,8 @@ module qmm019.h.viewmodel {
 
 
         }
-          closeDialog(): any{
-             nts.uk.ui.windows.close();
-       }
     }
 
- 
-  
 
     export class ScreenModel {
         listBox: ListBox;
@@ -80,8 +78,19 @@ module qmm019.h.viewmodel {
             self.listBox = new ListBox();
 
         }
+        
+        chooseItem() {
+            var self = this;
+            nts.uk.ui.windows.setShared('selectedCode', self.listBox.selectedCode());
+            nts.uk.ui.windows.close();
+        }
+        
+      closeDialog() {
+             nts.uk.ui.windows.close();
+       }
+
     }
     
     
-   
+ 
 }

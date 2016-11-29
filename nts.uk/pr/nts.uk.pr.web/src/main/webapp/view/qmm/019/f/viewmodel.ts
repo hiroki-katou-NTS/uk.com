@@ -1,4 +1,6 @@
 module qmm019.f.viewmodel {
+  
+            
 
     export class ItemModel {
         id: any;
@@ -8,6 +10,8 @@ module qmm019.f.viewmodel {
             this.id = id;
             this.name = name;
         }
+        
+        
     }
 
     export class ListBox {
@@ -53,7 +57,10 @@ module qmm019.f.viewmodel {
             self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
         }
+        
+        
     }
+   
 
     export class ComboBox {
         itemListSumScopeAtr: KnockoutObservableArray<any>;
@@ -138,5 +145,15 @@ module qmm019.f.viewmodel {
             self.switchButton = new SwitchButton();
             self.checkBox = new CheckBox();
         }
+        
+        openHDialog(){
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(() => {
+                var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                alert(selectedCode);
+                return this;
+            });
+        }
     }
+    
+   
 }

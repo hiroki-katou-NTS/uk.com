@@ -8,7 +8,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * 住民税納付先名
  */
-@StringCharType(CharType.ANY_HALF_WIDTH)
 @StringMaxLength(24)
 public class ResidenceName extends StringPrimitiveValue<ResidenceName> {
 

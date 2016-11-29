@@ -152,6 +152,13 @@ var qmm019;
                     self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
                 });
             };
+            ScreenModel.prototype.registerLayout = function () {
+                var self = this;
+                a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
+                }).fail(function (err) {
+                    alert(err);
+                });
+            };
             return ScreenModel;
         }());
         a.ScreenModel = ScreenModel;

@@ -106,7 +106,9 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 						item.getLaborInsuranceAtr(),
 						item.getCategoryAtr(),
 						item.getDeductAtr(),
-						item.getItemAtr()
+						item.getItemAtr(),
+						item.getLinePosition(),
+						item.getColumnPosition()
 						);
 				
 				if (item.isCreated()) {
