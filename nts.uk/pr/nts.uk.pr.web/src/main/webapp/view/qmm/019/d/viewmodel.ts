@@ -109,6 +109,7 @@ module qmm019.d.viewmodel {
                checkContinue: true,
                stmtCode: self.selectStmtCode(),
                startYm: +(self.selectStartYm().replace('/','')),
+               endYm: (+(self.selectStartYm().replace('/','')) - 1),
                startPrevious: + nts.uk.time.formatYearMonth($('#INP_001').val()),
                layoutAtr: 3
           });
@@ -120,6 +121,7 @@ module qmm019.d.viewmodel {
                checkContinue: false,
                stmtCode: self.selectStmtCode(),
                startYm: +(self.selectStartYm().replace('/','')),
+               endYm: (+(self.selectStartYm().replace('/','')) - 1),
                startPrevious: + nts.uk.time.formatYearMonth($('#INP_001').val()),
                layoutAtr: 3
           });

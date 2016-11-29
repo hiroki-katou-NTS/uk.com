@@ -97,6 +97,7 @@ var qmm019;
                         checkContinue: true,
                         stmtCode: self.selectStmtCode(),
                         startYm: +(self.selectStartYm().replace('/', '')),
+                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
                         startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
                         layoutAtr: 3
                     });
@@ -107,6 +108,7 @@ var qmm019;
                         checkContinue: false,
                         stmtCode: self.selectStmtCode(),
                         startYm: +(self.selectStartYm().replace('/', '')),
+                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
                         startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
                         layoutAtr: 3
                     });

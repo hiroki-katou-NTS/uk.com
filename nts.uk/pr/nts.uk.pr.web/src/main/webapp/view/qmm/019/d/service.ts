@@ -36,6 +36,7 @@ module qmm019.d.service {
                 checkContinue: Boolean;
                 stmtCode: string;
                 startYm: number;
+                endYm: number;
                 startPrevious: number;
                 layoutAtr: number;
             }
