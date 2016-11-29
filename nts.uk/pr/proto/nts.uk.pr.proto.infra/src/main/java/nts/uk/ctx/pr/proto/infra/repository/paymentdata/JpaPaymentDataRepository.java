@@ -61,9 +61,10 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	@Override
 	public void add(Payment payment) {
+		try {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
 		
-		this.commandProxy().insert(paymentHeader);
+		this.commandProxy().getEntityManager().persist(paymentHeader);
 
 		
 		for (DetailItem item : payment.getDetailPaymentItems()) {
@@ -77,6 +78,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		}
 		for (DetailItem item : payment.getDetailArticleItems()) {
 			this.insertDetail(payment, item);
+		}
+		} catch (Exception e) {
+			return;
 		}
 	}
 
@@ -148,12 +152,12 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.ageContinuationInsureAtr = domain.getAgeContinuationInsureAtr().value;
 		entity.tenureAtr = domain.getTenureAtr().value;
 		entity.taxAtr = domain.getTaxAtr().value;
-		entity.pensionAverageEarn = domain.getPensionAverageEarn().v().intValue();
+		entity.pensionAverageEarn = domain.getPensionAverageEarn().v();
 		entity.employmentInsuranceAtr = domain.getEmploymentInsuranceAtr().value;
-		entity.dependentNumber = domain.getDependentNumber().v().intValue();
+		entity.dependentNumber = domain.getDependentNumber().v();
 		entity.workInsuranceCalculateAtr = domain.getWorkInsuranceCalculateAtr().value;
 		entity.insuredAtr = domain.getInsuredAtr().value;
-		entity.bonusTaxRate = domain.getBonusTaxRate().v().intValue();
+		entity.bonusTaxRate = domain.getBonusTaxRate().v();
 		entity.calcFlag = domain.getCalcFlag().value;
 		entity.makeMethodFlag = domain.getMakeMethodFlag().value;
 		entity.comment = domain.getComment().v();

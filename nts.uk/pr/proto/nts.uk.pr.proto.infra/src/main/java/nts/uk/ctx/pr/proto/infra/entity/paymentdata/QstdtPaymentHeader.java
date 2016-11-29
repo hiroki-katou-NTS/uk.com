@@ -11,11 +11,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @Entity
 @Table(name = "QSTDT_PAYMENT_HEADER")
+@AllArgsConstructor
+@NoArgsConstructor
 public class QstdtPaymentHeader {
 	
 	@EmbeddedId

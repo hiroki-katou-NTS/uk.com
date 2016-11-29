@@ -30,6 +30,8 @@ var qpp004;
                             self.stopTimer();
                         }
                         else {
+                            // close dialog
+                            nts.uk.ui.windows.close();
                         }
                     };
                 }
@@ -59,7 +61,7 @@ var qpp004;
                             });
                         }
                     });
-                    index.subscribe(function (value) {
+                    self.processingNumberOfPerson.subscribe(function (value) {
                         console.log(value);
                         if (value == data.personIdList.length) {
                             self.stopTimer();

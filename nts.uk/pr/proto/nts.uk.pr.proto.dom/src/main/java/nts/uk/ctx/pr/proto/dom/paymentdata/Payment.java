@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.proto.dom.paymentdata;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.position.PrintPositionCategory;
@@ -335,6 +338,7 @@ public class Payment extends AggregateRoot {
 		}
 		
 		return this.detailPaymentItems.stream()
+				.filter(x -> !itemCodeSpecialList().contains(x.getItemCode().v()))
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -348,6 +352,7 @@ public class Payment extends AggregateRoot {
 		}
 		
 		return this.detailDeductionItems.stream()
+				.filter(x -> !itemCodeSpecialList().contains(x.getItemCode().v()))
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
 	
@@ -357,5 +362,43 @@ public class Payment extends AggregateRoot {
 	 */
 	public double amountOfPay() {
 		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
+	}
+	
+	/**
+	 * Check duplicate detail payment item
+	 * @param cateAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public boolean existsDetailPaymentItem(CategoryAtr cateAtr, ItemCode itemCode) {
+		return this.detailPaymentItems.stream().anyMatch(x->x.getCategoryAtr() == cateAtr && x.getItemCode().equals(itemCode));
+	}
+	
+	/**
+	 * Check duplicate detail deduction item
+	 * @param cateAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public boolean existsDetailDeductionItem(CategoryAtr cateAtr, ItemCode itemCode) {
+		return this.detailDeductionItems.stream().anyMatch(x->x.getCategoryAtr() == cateAtr && x.getItemCode().equals(itemCode));
+	}
+
+	/**
+	 * Check duplicate detail article item
+	 * @param cateAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public boolean existsDetailArticleItem(CategoryAtr cateAtr, ItemCode itemCode) {
+		return this.detailArticleItems.stream().anyMatch(x->x.getCategoryAtr() == cateAtr && x.getItemCode().equals(itemCode));
+	}
+	
+	/**
+	 * Item code list include(TotalPayment, DeductionTotalPayment, amountOfPay)
+	 * @return
+	 */
+	private List<String> itemCodeSpecialList() {
+		return Arrays.asList("F003", "F114", "F309");
 	}
 }

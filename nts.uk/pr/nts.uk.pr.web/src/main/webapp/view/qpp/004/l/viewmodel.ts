@@ -43,7 +43,7 @@ module qpp004.l.viewmodel {
                     self.stopTimer();
                 } else {
                     // close dialog
-                    //nts.uk.ui.close();
+                    nts.uk.ui.windows.close();
                 }
             }
         }
@@ -83,7 +83,7 @@ module qpp004.l.viewmodel {
                     
             });
         
-            index.subscribe(function(value){
+            self.processingNumberOfPerson.subscribe(function(value){
                 console.log(value);
                 if (value == data.personIdList.length) {
                     self.stopTimer();
