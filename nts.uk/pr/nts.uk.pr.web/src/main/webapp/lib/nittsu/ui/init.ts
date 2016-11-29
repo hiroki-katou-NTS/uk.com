@@ -9,6 +9,18 @@ module nts.uk.ui {
     /** Event to notify ViewModel built to bind. */
     export var viewModelBuilt = $.Callbacks();
 
+    
+    // Kiban ViewModel
+    export class KibanViewModel {
+        title: KnockoutObservable<string>;
+        errorDialogViewModel: errors.ErrorsViewModel;
+        
+        constructor(){
+            this.title = ko.observable('');
+            this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
+        }
+    }
+    
     module init {
         
         var _start: any;
@@ -18,10 +30,14 @@ module nts.uk.ui {
         };
         
         __viewContext.bind = function (contentViewModel: any) {
+            var kiban = new KibanViewModel();
+            
             _viewModel = {
-                content: contentViewModel, // developer's view model
-                kiban: new KibanViewModel() // Kiban's view model
+                content: contentViewModel,
+                kiban: kiban
             };
+            
+            kiban.title(__viewContext.title || 'THIS IS TITLE');
             
             viewModelBuilt.fire(_viewModel);
             
@@ -36,15 +52,5 @@ module nts.uk.ui {
             
             _.defer(() => _start.call(__viewContext));
         });
-        
-        // Kiban ViewModel
-        class KibanViewModel {
-            errorDialogViewModel: errors.ErrorsViewModel;
-            
-            constructor(){
-                var self = this;
-                self.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
-            }
-        }
     }
 }

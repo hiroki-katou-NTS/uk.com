@@ -8,6 +8,15 @@ var nts;
             ui.documentReady = $.Callbacks();
             /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
+            // Kiban ViewModel
+            var KibanViewModel = (function () {
+                function KibanViewModel() {
+                    this.title = ko.observable('');
+                    this.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
+                }
+                return KibanViewModel;
+            }());
+            ui.KibanViewModel = KibanViewModel;
             var init;
             (function (init) {
                 var _start;
@@ -15,10 +24,12 @@ var nts;
                     _start = callback;
                 };
                 __viewContext.bind = function (contentViewModel) {
+                    var kiban = new KibanViewModel();
                     ui._viewModel = {
                         content: contentViewModel,
-                        kiban: new KibanViewModel() // Kiban's view model
+                        kiban: kiban
                     };
+                    kiban.title(__viewContext.title || 'THIS IS TITLE');
                     ui.viewModelBuilt.fire(ui._viewModel);
                     ko.applyBindings(ui._viewModel);
                 };
@@ -28,14 +39,6 @@ var nts;
                         .map(function (v) { return JSON.parse(v); });
                     _.defer(function () { return _start.call(__viewContext); });
                 });
-                // Kiban ViewModel
-                var KibanViewModel = (function () {
-                    function KibanViewModel() {
-                        var self = this;
-                        self.errorDialogViewModel = new nts.uk.ui.errors.ErrorsViewModel();
-                    }
-                    return KibanViewModel;
-                }());
             })(init || (init = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

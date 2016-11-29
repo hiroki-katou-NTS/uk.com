@@ -6,13 +6,13 @@ var nts;
         (function (ntsNumber) {
             function isInteger(value, option) {
                 if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
+                    value = isInteger(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
                 }
                 return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
             }
             function isDecimal(value, option) {
                 if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
+                    value = isDecimal(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
                 }
                 return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
             }
@@ -25,13 +25,32 @@ var nts;
                 }
             }
             ntsNumber.isNumber = isNumber;
+            /*similar with Math.trunc, get integer value from decimal*/
+            function trunc(value) {
+                try {
+                    return Math.trunc(value);
+                }
+                catch (x) {
+                    /*In IE*/
+                    return value > 0 ? Math.floor(value) : Math.ceil(value);
+                }
+            }
+            ntsNumber.trunc = trunc;
+            function getDecimal(value, scale) {
+                var scaleX = Math.pow(10, scale);
+                return trunc(value * scaleX) / scaleX;
+            }
+            ntsNumber.getDecimal = getDecimal;
             function formatNumber(value, formatOption) {
+                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
+                    return value;
+                }
                 var groupseperator = formatOption.groupseperator() ? formatOption.groupseperator() : ',';
                 var grouplength = formatOption.grouplength() ? formatOption.grouplength() : 0;
                 var decimalseperator = formatOption.decimalseperator() ? formatOption.decimalseperator() : ".";
                 var decimallength = formatOption.decimallength() ? formatOption.decimallength() : 0;
                 var formattedValue = "";
-                var stringValue = value.toString();
+                var stringValue = uk.text.replaceAll(value.toString(), groupseperator, '');
                 var values = stringValue.split(decimalseperator);
                 if (grouplength > 0) {
                     var x = values[0].split('').reverse().join('');
