@@ -138,7 +138,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
 				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value);
-		entity.standardDate = domain.getStandardDate().localDate();
+		entity.standardDate = domain.getStandardDate();
 		entity.specificationCode = domain.getSpecificationCode().v();
 		entity.residenceCode = domain.getResidenceCode().v();
 		entity.residenceName = domain.getResidenceName().v();
@@ -158,23 +158,23 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.comment = domain.getComment().v();
 		
 		PrintPositionCategory item0 = domain.getPrintCategories().get(0);
-		entity.printPositionCategoryATR1 = item0.getPosition().value;
+		entity.printPositionCategoryATR1 = item0.getCategoryAtr().value;
 		entity.printPositionCategoryLines1 = item0.getLines().v();
 		
 		PrintPositionCategory item1 = domain.getPrintCategories().get(1);
-		entity.printPositionCategoryATR2 = item1.getPosition().value;
+		entity.printPositionCategoryATR2 = item1.getCategoryAtr().value;
 		entity.printPositionCategoryLines2 = item1.getLines().v();
 		
 		PrintPositionCategory item2 = domain.getPrintCategories().get(2);
-		entity.printPositionCategoryATR3 = item2.getPosition().value;
+		entity.printPositionCategoryATR3 = item2.getCategoryAtr().value;
 		entity.printPositionCategoryLines3 = item2.getLines().v();
 		
 		PrintPositionCategory item3 = domain.getPrintCategories().get(3);
-		entity.printPositionCategoryATR4 = item3.getPosition().value;
+		entity.printPositionCategoryATR4 = item3.getCategoryAtr().value;
 		entity.printPositionCategoryLines4 = item3.getLines().v();
 		
 		PrintPositionCategory item4 = domain.getPrintCategories().get(4);
-		entity.printPositionCategoryATR5 = item4.getPosition().value;
+		entity.printPositionCategoryATR5 = item4.getCategoryAtr().value;
 		entity.printPositionCategoryLines5 = item4.getLines().v();
 		
 		// add by EAP 06.データ作成（実行）-登録処理 (update 28.11.2016)
@@ -212,8 +212,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.taxATR = domain.getTaxAtr().value;
 		entity.socialInsurranceAttribute = detail.getSocialInsuranceAtr().value;
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
-		entity.columnPosition = detail.getItemPostion().getColumnPosition().v().intValue();
-		entity.linePosition = detail.getItemPostion().getLinePosition().v().intValue();
+		entity.columnPosition = detail.getItemPosition().getColumnPosition().v();
+		entity.linePosition = detail.getItemPosition().getLinePosition().v();
 		entity.limitAmount = detail.getLimitAmount(); //QCAM_ITEM.LIMIT_MNY
 		entity.fixPayATR = detail.getFixPayAtr() ; //FIX_PAY_ATR
 		entity.averagePayATR = detail.getAveragePayAtr();//

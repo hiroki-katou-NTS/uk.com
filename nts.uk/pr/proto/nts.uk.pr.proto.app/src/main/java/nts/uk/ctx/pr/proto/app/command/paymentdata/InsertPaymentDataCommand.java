@@ -32,11 +32,11 @@ public class InsertPaymentDataCommand extends PaymentDataCommandBase {
 	 */
 	public Payment toDomain(String companyCode) {
 		Payment domain = super.getPaymentHeader().toDomain(companyCode);
-
+		
 		for (CategoryCommandBase cate : super.getCategories()) {
 			toDomainByCategory(domain, cate);
 		}
-
+		
 		return domain;
 	}
 
@@ -70,7 +70,7 @@ public class InsertPaymentDataCommand extends PaymentDataCommandBase {
 		List<DetailItem> details = new ArrayList<>();
 		try {
 			for (LineCommandBase line : lines) {
-				List<DetailItem> items = line.getDetails().stream().map(d -> d.toDomain()).collect(Collectors.toList());
+				List<DetailItem> items = line.getDetails().stream().filter(d-> !d.getItemCode().equals("")).map(d -> d.toDomain(line.getLinePosition())).collect(Collectors.toList());
 				details.addAll(items);
 			}
 		} catch (Exception e) {

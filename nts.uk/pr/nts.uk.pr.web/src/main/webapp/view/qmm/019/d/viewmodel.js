@@ -78,38 +78,31 @@ var qmm019;
                         return false;
                     }
                     else {
+                        self.createData();
                         if ($("#copyCreate").is(":checked")) {
-                            self.copyCreateData();
+                            self.createlayout().checkContinue = true;
                         }
                         else {
-                            self.newCreateData();
+                            self.createlayout().checkContinue = false;
                         }
                         d.service.createLayoutHistory(self.createlayout()).done(function () {
                             alert("追加しました。");
+                            nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);
+                            nts.uk.ui.windows.close();
                         });
                     }
                 };
-                ScreenModel.prototype.copyCreateData = function () {
+                ScreenModel.prototype.createData = function () {
                     var self = this;
-                    self.createlayout({
-                        checkContinue: true,
-                        stmtCode: self.selectStmtCode(),
-                        startYm: +(self.selectStartYm().replace('/', '')),
-                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
-                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
-                        layoutAtr: 3
-                    });
-                };
-                ScreenModel.prototype.newCreateData = function () {
-                    var self = this;
+                    var startPreviou = +$('#INP_001').val().replace('/', '');
                     self.createlayout({
                         checkContinue: false,
                         stmtCode: self.selectStmtCode(),
-                        startYm: +(self.selectStartYm().replace('/', '')),
-                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
-                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
+                        startYm: +self.startYmHis,
+                        endYm: (startPreviou - 1),
+                        startPrevious: startPreviou,
                         layoutAtr: 3
                     });
                 };

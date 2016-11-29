@@ -57,7 +57,8 @@ class Helper {
 	 * @return
 	 */
 	private static DetailItem toDetailDeductionItem(DetailItem detailItem) {
-		return new DetailItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
-				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), detailItem.getCategoryAtr(), detailItem.getDeductionAtr(), detailItem.getItemAtr());
+//		return new DetailItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
+//				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), detailItem.getCategoryAtr(), detailItem.getDeductionAtr(), detailItem.getItemAtr());
+		return null;
 	}
 }

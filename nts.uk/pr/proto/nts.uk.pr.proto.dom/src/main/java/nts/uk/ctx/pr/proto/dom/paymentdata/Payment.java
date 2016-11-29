@@ -55,7 +55,7 @@ public class Payment extends AggregateRoot {
 	private SparePayAtr sparePayAtr;
 
 	@Getter
-	private GeneralDate standardDate;
+	private LocalDate standardDate;
 
 	@Getter
 	private SpecificationCode specificationCode;
@@ -133,7 +133,7 @@ public class Payment extends AggregateRoot {
 				PayBonusAtr  payBonusAtr,
 				YearMonth processingYM, 
 				SparePayAtr sparePayAtr, 
-				GeneralDate standardDate,
+				LocalDate standardDate,
 				SpecificationCode specificationCode, 
 				ResidenceCode residenceCode, 
 				ResidenceName residenceName,
@@ -216,7 +216,7 @@ public class Payment extends AggregateRoot {
 					EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
 					new YearMonth(processingYM),
 					EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
-					GeneralDate.localDate(standardDate),
+					standardDate,
 					new SpecificationCode(specificationCode),
 					new ResidenceCode(residenceCode),
 					new ResidenceName(residenceName),
@@ -275,7 +275,7 @@ public class Payment extends AggregateRoot {
 				EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
 				new YearMonth(processingYM),
 				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
-				GeneralDate.localDate(standardDate),
+				standardDate,
 				new SpecificationCode(specificationCode),
 				new ResidenceCode(residenceCode),
 				new ResidenceName(residenceName),
@@ -326,6 +326,10 @@ public class Payment extends AggregateRoot {
 	public void setPositionCategoryItems(List<PrintPositionCategory> items) {
 		this.printCategories.clear();
 		this.printCategories.addAll(items);
+	}
+	
+	public void setStandardDate(LocalDate standardDate) {
+		this.standardDate = standardDate;
 	}
 	
 	/**
