@@ -31,9 +31,6 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
 
-	@Inject
-	private ItemMasterRepository itemMasterRepository;
-
 	@Override
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
@@ -42,9 +39,8 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 
 		this.paymentDataRepository.insertHeader(payment);
 		// update detail
-		List<ItemMaster> mItems = this.itemMasterRepository.findAll(companyCode);
 		for (CategoryCommandBase cate : context.getCommand().getCategories()) {
-			this.registerDetail(payment, cate, mItems);
+			this.registerDetail(payment, cate);
 		}
 	}
 	
@@ -54,12 +50,10 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	 * @param items
 	 * @param payment
 	 */
-	private void registerDetail(Payment payment, CategoryCommandBase category, List<ItemMaster> mItems) {
+	private void registerDetail(Payment payment, CategoryCommandBase category) {
 		category.getLines().stream().forEach(x-> {
 		for (DetailItemCommandBase item : x.getDetails()) {
 			
-			ItemMaster mItem = mItems.stream().filter(m-> m.getItemCode().equals(item.getItemCode()) && m.getCategoryAtr().value == item.getCategoryAtr())
-					.findFirst().get();
 			DetailItem detailItem = DetailItem.createFromJavaType(
 					item.getItemCode(), 
 					item.getValue(),
@@ -67,7 +61,8 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 					item.getSocialInsuranceAtr(),
 					item.getLaborInsuranceAtr(),
 					item.getCategoryAtr(),
-					mItem.getDeductAttribute().value
+					item.getDeductAtr(),
+					item.getItemAtr()
 					);
 			this.paymentDataRepository.insertDetail(payment, detailItem);
 		}
