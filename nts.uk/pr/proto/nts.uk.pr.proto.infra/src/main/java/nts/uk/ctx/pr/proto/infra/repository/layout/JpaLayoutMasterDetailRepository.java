@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetailPK;
 @RequestScoped
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
-	private final String SELECT_NO_WHERE_JOIN = "SELECT c.itemAbName, c FROM QstmtStmtLayoutDetail c";
+	private final String SELECT_NO_WHERE_JOIN = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE_JOIN
 			+ " INNER JOIN QcamtItem i"
 			+ " ON ("

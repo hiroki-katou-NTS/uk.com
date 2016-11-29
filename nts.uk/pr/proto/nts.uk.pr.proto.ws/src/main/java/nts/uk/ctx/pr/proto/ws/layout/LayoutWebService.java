@@ -17,6 +17,8 @@ import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
+import nts.uk.ctx.pr.proto.app.command.layout.register.RegisterLayoutCommand;
+import nts.uk.ctx.pr.proto.app.command.layout.register.RegisterLayoutCommandHandler;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
 import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryDto;
@@ -35,6 +37,8 @@ public class LayoutWebService extends WebService {
 	private UpdateLayoutHistoryCommandHandler updateData;
 	@Inject
 	private DeleteLayoutHistoryCommandHandler deleteData;
+	@Inject 
+	private RegisterLayoutCommandHandler registerLayoutHandler;
 	@Inject
 	private LayoutMasterFinder find;
 	@Inject
@@ -80,6 +84,11 @@ public class LayoutWebService extends WebService {
 	@Path("deletedata")
 	public void deleteData(DeleteLayoutHistoryCommand command){
 		this.deleteData.handle(command);
+	}
+	@POST
+	@Path("register")
+	public void registerLayout(RegisterLayoutCommand command){
+		this.registerLayoutHandler.handle(command);
 	}
 	
 	
