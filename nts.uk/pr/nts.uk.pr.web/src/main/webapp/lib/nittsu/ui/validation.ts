@@ -3,7 +3,16 @@
     export interface IValidator {
         validate(inputText: string): ValidationResult;
     }
-
+    
+    export class NoValidator {
+        validate(inputText: string): ValidationResult {
+            var result = new ValidationResult();
+            result.isValid = true;
+            result.parsedValue = inputText;
+            return result;
+        }
+    }
+    
     export class ValidationResult {
         isValid: boolean;
         parsedValue: any;
@@ -17,6 +26,8 @@
             case 'String':
                 return new StringValidator(constraintName);
         }
+        
+        return new NoValidator();
     }
     
         

@@ -6,6 +6,18 @@ var nts;
         (function (ui) {
             var validation;
             (function (validation) {
+                var NoValidator = (function () {
+                    function NoValidator() {
+                    }
+                    NoValidator.prototype.validate = function (inputText) {
+                        var result = new ValidationResult();
+                        result.isValid = true;
+                        result.parsedValue = inputText;
+                        return result;
+                    };
+                    return NoValidator;
+                }());
+                validation.NoValidator = NoValidator;
                 var ValidationResult = (function () {
                     function ValidationResult() {
                         this.errorMessage = 'error message';
@@ -19,6 +31,7 @@ var nts;
                         case 'String':
                             return new StringValidator(constraintName);
                     }
+                    return new NoValidator();
                 }
                 validation.createValidator = createValidator;
                 var StringValidator = (function () {
