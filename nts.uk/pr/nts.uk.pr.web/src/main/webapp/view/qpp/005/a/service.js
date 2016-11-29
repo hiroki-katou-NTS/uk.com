@@ -30,12 +30,15 @@ var nts;
                         }
                         service.getPaymentData = getPaymentData;
                         function register(paymentData) {
-                            var data = ko.toJS(paymentData);
-                            var isCreated = data.paymentHeader.isCreated;
-                            if (isCreated) {
-                                return nts.uk.request.ajax(servicePath.insertData, data);
+                            var result = {
+                                paymentHeader: ko.toJS(paymentData.paymentHeader),
+                                categories: ko.toJS(paymentData.categories)
+                            };
+                            var isCreated = result.paymentHeader.created;
+                            if (!isCreated) {
+                                return nts.uk.request.ajax(servicePath.insertData, result);
                             }
-                            return nts.uk.request.ajax(servicePath.updateData, data);
+                            return nts.uk.request.ajax(servicePath.updateData, result);
                         }
                         service.register = register;
                     })(service = qpp005.service || (qpp005.service = {}));

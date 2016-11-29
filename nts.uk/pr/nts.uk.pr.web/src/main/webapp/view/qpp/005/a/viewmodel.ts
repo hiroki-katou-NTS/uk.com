@@ -169,6 +169,7 @@ module nts.uk.pr.view.qpp005 {
             // item
             export class DetailItemViewModel {
                 categoryAtr: number;
+                itemAtr: number;
                 itemCode: string;
                 itemNme: string;
                 value: KnockoutObservable<number>;
@@ -176,9 +177,10 @@ module nts.uk.pr.view.qpp005 {
                 rowPosition: number;
                 isCreated: boolean;
 
-                constructor(categoryAtr: number, itemCode: string, itemNme: string, value: number, colPosition: number, rowPosition: number, isCreated: boolean) {
+                constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemNme: string, value: number, colPosition: number, rowPosition: number, isCreated: boolean) {
                     var self = this;
                     self.categoryAtr = categoryAtr;
+                    self.itemAtr = itemAtr;
                     self.itemCode = itemCode;
                     self.itemNme = itemNme;
                     self.value = ko.observable(value);

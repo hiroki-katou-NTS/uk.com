@@ -53,7 +53,7 @@ public class ItemMaster extends AggregateRoot{
 	
 	/** 項目属性 */
 	@Getter
-	private ItemAtr itemAttributeAtr;	
+	private ItemAtr itemAtr;	
 	/** 項目名表示区分 */
 	@Getter
 	private ItemNameDisplayAtr itemNameDisplayAtr;
@@ -105,6 +105,24 @@ public class ItemMaster extends AggregateRoot{
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
 				new ItemName(itemName), EnumAdaptor.valueOf(taxAtr, TaxAtr.class));
 		
+	}
+	
+	/**
+	 * additional Info 
+	 * @param limitMoney
+	 * @param fixedPaidAtr
+	 * @param laborInsuranceAtr
+	 * @param socialInsuranceAtr
+	 * @return
+	 */
+	public ItemMaster additionalInfo(int limitMoney, int fixedPaidAtr, int laborInsuranceAtr, int socialInsuranceAtr, int avgPaidAtr, int deductAttribute) {
+		this.limitMoney = new LimitMoney(limitMoney);
+		this.fixedPaidAtr = EnumAdaptor.valueOf(fixedPaidAtr, WageClassificationAtr.class);
+		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, WageClassificationAtr.class);
+		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, WageClassificationAtr.class);
+		this.avgPaidAtr = EnumAdaptor.valueOf(avgPaidAtr, WageClassificationAtr.class);
+		this.deductAttribute = EnumAdaptor.valueOf(deductAttribute, DeductionAtr.class);
+		return this;
 	}
 	
 	/**

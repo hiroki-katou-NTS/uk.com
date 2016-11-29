@@ -23,7 +23,6 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	private final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.qstmtStmtLayoutHeadPK.strYm < :strYm" + " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
-
 	private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode"
 			+ " AND c.endYm = 999912";

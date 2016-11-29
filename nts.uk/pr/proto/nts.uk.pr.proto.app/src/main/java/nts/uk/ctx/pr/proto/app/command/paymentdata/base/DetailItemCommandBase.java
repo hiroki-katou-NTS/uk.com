@@ -9,55 +9,58 @@ public class DetailItemCommandBase {
 	/**
 	 * category atr
 	 */
-	private int categoryAtr;
-
+	int categoryAtr;
+	
+	Integer itemAtr;
+	
 	/**
 	 * 項目コード
 	 */
-	private String itemCode;
+	String itemCode;
 
 	/**
 	 * 項目名
 	 */
-	private String itemName;
+	String itemName;
 
 	/**
 	 * 値
 	 */
-	private Double value;
+	Double value;
 
 	/**
 	 * 修正フラグ
 	 */
-	private int correctFlag;
+	int correctFlag = 0;
 
 	/**
 	 * 社保対象区分
 	 */
-	private int socialInsuranceAtr;
+	int socialInsuranceAtr;
 
 	/**
 	 * 労保対象区分
 	 */
-	private int laborInsuranceAtr;
+	int laborInsuranceAtr;
 
-	private int deductionAtr;
+	int linePostion;
 
-	private int linePostion;
+	int columnPosition;
 
-	private int colPosition;
-
-	private boolean isCreated;
+	Integer deductAtr;
+	
+	boolean created;
 
 	public DetailItem toDomain() {
 		return DetailItem.createFromJavaType(
-				this.getItemCode(), 
-				this.getValue(), 
-				this.getCorrectFlag(), 
-				this.getSocialInsuranceAtr(), 
-				this.getLaborInsuranceAtr(),
-				this.getCategoryAtr(),
-				this.getDeductionAtr()
+				this.itemCode, 
+				this.value, 
+				this.correctFlag, 
+				this.socialInsuranceAtr, 
+				this.laborInsuranceAtr,
+				this.categoryAtr,
+				this.deductAtr,
+				this.itemAtr
 				);
 	}
 }

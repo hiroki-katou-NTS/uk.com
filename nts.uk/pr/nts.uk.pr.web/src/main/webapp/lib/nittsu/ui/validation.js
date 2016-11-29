@@ -41,6 +41,14 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
+                function getConstraint(primitiveValueName) {
+                    var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
+                    if (constraint === undefined)
+                        return null;
+                    else
+                        return __viewContext.primitiveValueConstraints[primitiveValueName];
+                }
+                validation.getConstraint = getConstraint;
                 function getCharType(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)

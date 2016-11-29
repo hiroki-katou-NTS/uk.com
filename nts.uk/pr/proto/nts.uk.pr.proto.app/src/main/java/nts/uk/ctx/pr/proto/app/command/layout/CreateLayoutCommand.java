@@ -8,7 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class CreateLayoutCommand {
 
 	/** Nếu mode trên màn hình là copy từ layout khác thì isCopy=true */
-	private boolean isCopy;
+	private boolean checkCopy;
 	/** StmtCode của Layout được copy */
 	private String stmtCodeCopied;
 	/** startYm của Layout được copy */

@@ -3,7 +3,7 @@ module qmm019.g.viewmodel {
     
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemModel>;
-        selectedCodes: KnockoutObservableArray<string>;
+        selectedCodes: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         comboboxList: KnockoutObservableArray<ItemCombobox>;
         selectLayoutCode: KnockoutObservable<string>;
@@ -13,6 +13,8 @@ module qmm019.g.viewmodel {
         selectStmtName : KnockoutObservable<string>;
         selectStartYm: KnockoutObservable<string>;
         timeEditorOption: KnockoutObservable<any>;
+        createlayout: KnockoutObservable<service.model.LayoutMasterDto>;
+        createNewSelect: KnockoutObservable<string>;
         
         /**
          * Init screen model.
@@ -20,7 +22,7 @@ module qmm019.g.viewmodel {
         constructor() {
             var self = this;
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray(["2"]);
+            self.selectedCodes = ko.observable("2");
             self.layouts = ko.observableArray([]);
             self.itemList = ko.observableArray([]);   
             self.comboboxList = ko.observableArray([]);
@@ -31,6 +33,8 @@ module qmm019.g.viewmodel {
             self.selectStartYm =  ko.observable(null);
             console.log(option);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
+            self.createlayout = ko.observable(null);
+            self.createNewSelect = ko.observable(null);
         }   
         
         // start function
@@ -51,10 +55,13 @@ module qmm019.g.viewmodel {
             });
             //change combobox
             self.selectLayoutCode.subscribe(function(newValue){
-                self.buildComboboxChange(newValue.trim());
+                self.selectLayoutCode(newValue);
+                self.createNewSelect(newValue);
             })
-            //layout attribute text
-            
+            //start ym
+            var d = new Date();
+            var ym = d.getFullYear() + '/' + (d.getMonth() + 1);
+            self.selectStartYm(ym);
             
             dfd.resolve();
             // Return.
@@ -88,38 +95,111 @@ module qmm019.g.viewmodel {
         
         buildComboboxChange(layoutCd) : void {
             var self = this;
-            _.forEach(self.layouts(), function(layout){
-                if(layout.stmtCode.trim() == layoutCd){
-                    self.selectStmtCode(layoutCd);
-                    self.selectStmtName(layout.stmtName);
-                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                    if(layout.layoutAtr == 0) {
-                        self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
-                    }else if (layout.layoutAtr == 1){
-                        self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
-                    }else if (layout.layoutAtr == 2){
-                        self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
-                    }else if (layout.layoutAtr == 3){
-                        self.layoutAtrStr("（レーザー　A4　横向き　2人）");
-                    }else if (layout.layoutAtr == 4){
-                        self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
-                    }else if (layout.layoutAtr == 5){
-                        self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
-                    }else if (layout.layoutAtr == 6){
-                        self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
-                    }else if (layout.layoutAtr == 7){
-                        self.layoutAtrStr("（PAYS単票）");
-                    }else if (layout.layoutAtr == 8){
-                        self.layoutAtrStr("（PAYS連続）");
-                    }
-                    return false;
-                }    
-            });
+//            _.forEach(self.layouts(), function(layout){
+//                if(layout.stmtCode.trim() == layoutCd){
+//                    self.selectStmtCode(layoutCd);
+//                    self.selectStmtName(layout.stmtName);
+//                    
+//                    if(layout.layoutAtr == 0) {
+//                        self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
+//                    }else if (layout.layoutAtr == 1){
+//                        self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
+//                    }else if (layout.layoutAtr == 2){
+//                        self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
+//                    }else if (layout.layoutAtr == 3){
+//                        self.layoutAtrStr("（レーザー　A4　横向き　2人）");
+//                    }else if (layout.layoutAtr == 4){
+//                        self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
+//                    }else if (layout.layoutAtr == 5){
+//                        self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
+//                    }else if (layout.layoutAtr == 6){
+//                        self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
+//                    }else if (layout.layoutAtr == 7){
+//                        self.layoutAtrStr("（PAYS単票）");
+//                    }else if (layout.layoutAtr == 8){
+//                        self.layoutAtrStr("（PAYS連続）");
+//                    }
+//                    return false;
+//                }    
+//            });
         }
         
         createNewLayout(): any{
+            var self = this;
+            //登録時チェック処理
+            var mess = "が入力されていません";
+            //必須項目の未入力チェックを行う
+            if($('#INP_001').val() == ''){
+               alert("コード" + mess);
+                $('#INP_001').focus();
+                return false;
+            }
+            if( $('#INP_002').val() == ''){
+                alert('名称' + mess);
+                $('#INP_002').focus();
+                return false;    
+            }
+            if($('INP_003').val() == ''){
+                alert('開始年月' + mess);
+                $('#INP_003').focus();
+                return false;    
+            }
+            //コードの重複チェックを行う
+            _.forEach(self.layouts(), function(layout){
+                if(+$('#INP_001').val() === +layout.stmtCode){
+                    alert('入力した'+$('#INP_001').val()+'は既に存在しています。\r\n'+$('#INP_001').val()+'を確認してください。')
+                    return false;
+                }
+            });
             
+           if($("#newCreate").is(":checked")){
+               self.createNewData();
+            }else{
+               //印字行数　＞　最大印字行数　の場合
+               //メッセージ( ER030 )を表示する
+               
+               
+                self.createCopyData();    
+            }
+            service.createLayout(self.createlayout()).done(function(){
+                alert('追加しました。');    
+                nts.uk.ui.windows.close();
+            }).fail(function(res){
+                alert(res);    
+            })
         }
+        
+        createNewData(): any{
+            var self = this;         
+            self.createlayout({
+                checkCopy: false,
+                stmtCodeCopied: self.createNewSelect() + "",
+                startYmCopied: + self.selectStartYm().replace('/', ''),
+                stmtCode: $('#INP_001').val(),
+                startYm: + $('#INP_003').val().replace('/',''),
+                layoutAtr: 3,
+                stmtName: $('#INP_002').val() + "",
+                endYm: 999912
+            });   
+        }
+        
+        createCopyData(): any{
+             var self = this;
+            self.createlayout({
+                checkCopy: true,
+                stmtCodeCopied: self.createNewSelect() + "",
+                startYmCopied: + self.selectStartYm().replace('/', ''),
+                stmtCode: $('#INP_001').val() + "",
+                startYm: + $('#INP_003').val().replace('/',''),
+                layoutAtr: 3,
+                stmtName: $('#INP_002').val() + "",
+                endYm: 999912
+            });             
+        }
+        
+       closeDialog(): any{
+             nts.uk.ui.windows.close();
+       }
     }
     
         /**
