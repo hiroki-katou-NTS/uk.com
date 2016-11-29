@@ -52,6 +52,7 @@ public class PaymentDateMaster extends AggregateRoot {
 		this.processingYearMonth = processingYearMonth;
 		this.sparePayAttribute = sparePayAttribute;
 		this.payBonusAttribute = payBonusAttribute;
+		this.standardDate = standardDate;
 	}
 	
 	public static PaymentDateMaster createFromJavaType(BigDecimal neededWorkDay, int processingNo, int processingYearMonth,
