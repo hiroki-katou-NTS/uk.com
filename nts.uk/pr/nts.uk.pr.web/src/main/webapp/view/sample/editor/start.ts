@@ -13,7 +13,7 @@ __viewContext.ready(function () {
             // NumberEditor
             numbereditor: {
                 value: ko.observable(12),
-                constraint: 'ProcessingNo',
+                constraint: '',
                 option: ko.mapping.fromJS(new option.NumberEditorOption({grouplength: 3, decimallength: 2})),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)

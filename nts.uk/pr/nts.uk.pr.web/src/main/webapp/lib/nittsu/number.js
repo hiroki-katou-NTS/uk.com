@@ -36,7 +36,7 @@ var nts;
             }
             ntsNumber.trunc = trunc;
             function formatNumber(value, formatOption) {
-                if (value !== undefined || value !== null || value.toString().trim().lenth <= 0) {
+                if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
                     return value;
                 }
                 var groupseperator = formatOption.groupseperator() ? formatOption.groupseperator() : ',';
