@@ -265,10 +265,26 @@ var nts;
                 return charType;
             }
             text_1.getCharType = getCharType;
+            function formatEmployeeCode(code, filldirection, fillcharacter, length) {
+                if (filldirection === "left")
+                    return padRight(code, fillcharacter, length);
+                else
+                    return padLeft(code, fillcharacter, length);
+            }
+            text_1.formatEmployeeCode = formatEmployeeCode;
             var StringFormatter = (function () {
-                function StringFormatter(option) {
+                function StringFormatter(args) {
+                    this.args = args;
                 }
                 StringFormatter.prototype.format = function (source) {
+                    var constraintName = this.args.constraintName;
+                    if (constraintName === "EmployeeCode") {
+                        var constraint = this.args.constraint;
+                        var filldirection = this.args.editorOption.filldirection();
+                        var fillcharacter = this.args.editorOption.fillcharacter();
+                        var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                        return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                    }
                     return source;
                 };
                 return StringFormatter;
