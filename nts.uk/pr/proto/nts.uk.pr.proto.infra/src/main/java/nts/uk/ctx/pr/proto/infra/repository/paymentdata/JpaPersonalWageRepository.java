@@ -37,7 +37,7 @@ public class JpaPersonalWageRepository extends JpaRepository implements Personal
 	private static PersonalWage toDomain(PprmtPersonWage entity) {
 		PersonalWage domain = PersonalWage.createFromJavaType(entity.val, entity.pprmtPersonWagePK.pId,
 				entity.pprmtPersonWagePK.ccd, entity.pprmtPersonWagePK.ctgAtr, entity.pprmtPersonWagePK.strYm,
-				entity.endYm);
+				entity.endYm, entity.pprmtPersonWagePK.pWageCd);
 		//entity.toDomain(domain);
 		return domain;
 	}
