@@ -7,7 +7,8 @@ var qmm019;
             var paths = {
                 getAllLayout: "pr/proto/layout/findalllayout",
                 getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
-                getCategoryFull: "pr/proto/layout/findCategoies/full"
+                getCategoryFull: "pr/proto/layout/findCategoies/full",
+                registerLayout: "pr/proto/layout/register"
             };
             /**
              * Get list payment date processing.
@@ -40,7 +41,7 @@ var qmm019;
             }
             service.getLayoutsWithMaxStartYm = getLayoutsWithMaxStartYm;
             /**
-             * Get list payment date processing.
+             * Get list getCategoryFull.
              */
             function getCategoryFull(layoutCode, startYm) {
                 var dfd = $.Deferred();
@@ -57,6 +58,35 @@ var qmm019;
                 return dfd.promise();
             }
             service.getCategoryFull = getCategoryFull;
+            /**
+             * Register Layout
+             */
+            function registerLayout(layout, categories) {
+                var dfd = $.Deferred();
+                var command = {
+                    layoutCommand: {
+                        stmtCode: layout.stmtCode,
+                        startYm: layout.startYm,
+                        stmtName: layout.stmtName,
+                        endYm: layout.endYm
+                    },
+                    categoryCommand: [],
+                    lineCommand: [],
+                    detailCommand: [],
+                    listCategoryAtrDeleted: [],
+                    listAutoLineIdDeleted: [],
+                    listItemCodeDeleted: []
+                };
+                nts.uk.request.ajax(paths.registerLayout, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.registerLayout = registerLayout;
             /**
                * Model namespace.
             */
