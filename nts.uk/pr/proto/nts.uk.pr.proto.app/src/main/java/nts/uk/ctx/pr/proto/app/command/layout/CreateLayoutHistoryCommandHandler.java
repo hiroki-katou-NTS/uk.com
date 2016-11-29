@@ -48,7 +48,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartYm(), command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		
-		LayoutMaster layoutNew = command.toDomain(layoutOrigin.getLayoutAtr().value, layoutOrigin.getStmtName().v());
+		LayoutMaster layoutNew = command.toDomain(layoutOrigin.getStmtName().v());
 		
 		//Validate follow EAP
 		if (layoutNew.getStartYM().compareTo(layoutOrigin.getStartYM()) < 0){
@@ -60,7 +60,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		layoutNew.validate();
 		layoutRepo.add(layoutNew);
 		
-		if (command.isContinue()) {
+		if (command.isCheckContinue()) {
 			copyFromPreviousHistory(command, companyCode);
 		}
 		

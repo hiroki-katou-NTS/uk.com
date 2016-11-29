@@ -1,7 +1,7 @@
 module qmm019.d.service {
     var paths = {
         getLayoutInfor : "pr/proto/layout/findlayoutwithmaxstartym",
-        copylayoutPath: "pr/proto/layout/createlayout"
+        createlayouthistory: "pr/proto/layout/createlayouthistory"
     }
     
     /**
@@ -19,9 +19,9 @@ module qmm019.d.service {
         return dfd.promise(); 
     }
     
-    export function createLayout(layoutMaster: model.LayoutMasterDto){
+    export function createLayoutHistory(layoutMaster: model.LayoutMasterDto){
         var dfd = $.Deferred<Array<any>>();  
-        nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function(res: Array<any>){
+        nts.uk.request.ajax(paths.createlayouthistory, layoutMaster).done(function(res: Array<any>){
             dfd.resolve(res);    
         }).fail(function(res){
             dfd.reject(res);
@@ -33,16 +33,11 @@ module qmm019.d.service {
     export module model {
             // layout
             export class LayoutMasterDto {
-                companyCode: string;
+                checkContinue: Boolean;
                 stmtCode: string;
                 startYm: number;
-                stmtName: string;
-                endYM: number;
+                startPrevious: number;
                 layoutAtr: number;
-                isCopy: Boolean;
-                stmtCodeCopied: string;
-                startYmCopied: string;
-                
             }
 
         }
