@@ -215,6 +215,9 @@
             return result;
         }
         
+        export function replaceAll(str: string, find: string, replace: string){
+            return str.split(find).join(replace);    
+        }
         
         /**
          * Type of characters
