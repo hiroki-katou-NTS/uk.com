@@ -42,10 +42,19 @@
         isValid: boolean;
         errorMessage = 'error message';
     }
+     
+    export function getConstraint(primitiveValueName: string) {
+        var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
+        if(constraint === undefined)
+            return null;
+        else
+            return __viewContext.primitiveValueConstraints[primitiveValueName];
+    }
 
     export function getCharType(primitiveValueName: string): CharType {
         var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-        if(constraint === undefined) return null;
+        if(constraint === undefined)
+            return null;
         if(constraint.charType === undefined)
             constraint.charType = "Any";
         var charType = charTypes[constraint.charType];

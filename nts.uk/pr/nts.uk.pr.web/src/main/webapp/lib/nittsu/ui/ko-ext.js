@@ -19,11 +19,24 @@ var nts;
                     NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
                         var $input = $(element);
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
+                        this.constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        this.constraint = validation.getConstraint(this.constraintName);
+                        this.charType = validation.getCharType(this.constraintName);
+                        if (this.constraintName === "EmployeeCode") {
+                            if (option.format === null) {
+                                option.format = { filldirection: "right", fillcharacter: "0" };
+                            }
+                        }
+                        else {
+                        }
+                        console.log(this.constraint);
+                        console.log(this.charType);
                         $input.change(function () {
                             var newText = $input.val();
-                            var result = uk.time.parseTime(newText);
+                            //var result = time.parseTime(newText);
+                            var result = newText;
                             if (result.success) {
                                 $input.ntsError('clear');
                                 setValue(result.format());
