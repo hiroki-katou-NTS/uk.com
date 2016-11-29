@@ -25,20 +25,10 @@ var nts;
                 }
             }
             ntsNumber.isNumber = isNumber;
-            /*similar with Math.trunc, get integer value from decimal*/
-            function trunc(value) {
-                try {
-                    return Math.trunc(value);
-                }
-                catch (x) {
-                    /*In IE*/
-                    return value > 0 ? Math.floor(value) : Math.ceil(value);
-                }
-            }
-            ntsNumber.trunc = trunc;
+            ntsNumber.trunc = (typeof Math.trunc === 'function') ? Math.trunc : function (value) { return value > 0 ? Math.floor(value) : Math.ceil(value); };
             function getDecimal(value, scale) {
                 var scaleX = Math.pow(10, scale);
-                return trunc(value * scaleX) / scaleX;
+                return ntsNumber.trunc(value * scaleX) / scaleX;
             }
             ntsNumber.getDecimal = getDecimal;
             function formatNumber(value, formatOption) {
@@ -51,7 +41,8 @@ var nts;
                 var decimallength = formatOption.decimallength() ? formatOption.decimallength() : 0;
                 var formattedValue = "";
                 var stringValue = uk.text.replaceAll(value.toString(), groupseperator, '');
-                var values = stringValue.split(decimalseperator);
+                var isMinus = stringValue.charAt(0) === '-';
+                var values = isMinus ? stringValue.split('-')[1].split(decimalseperator) : stringValue.split(decimalseperator);
                 if (grouplength > 0) {
                     var x = values[0].split('').reverse().join('');
                     for (var i = 0; i < x.length;) {
@@ -69,7 +60,7 @@ var nts;
                 else {
                     values[1] = values[1].substr(0, decimallength);
                 }
-                return formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);
+                return (isMinus ? '-' : '') + formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);
             }
             ntsNumber.formatNumber = formatNumber;
         })(ntsNumber = uk.ntsNumber || (uk.ntsNumber = {}));
