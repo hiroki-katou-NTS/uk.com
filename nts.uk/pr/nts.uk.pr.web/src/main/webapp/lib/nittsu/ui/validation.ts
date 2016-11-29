@@ -68,12 +68,18 @@
 
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
-            var isDecimalNumber = (this.option !== undefined && this.option.decimallength() > 0)
+            var isDecimalNumber = false;
+            if(this.option !== undefined){
+                isDecimalNumber = (this.option.decimallength() > 0)
+                inputText = text.replaceAll(inputText, this.option.groupseperator(), '');    
+            }
+            
             if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
                 result.fail('invalid number');
                 return result;
             }
-            var value = isDecimalNumber ? parseFloat(inputText) : parseInt(inputText);
+            var value = isDecimalNumber ? 
+                ntsNumber.getDecimal(inputText, this.option.decimallength()) : parseInt(inputText);
 
             if (this.constraint !== null) {
                 if (this.constraint.max !== undefined && value > this.constraint.max) {
@@ -106,6 +112,8 @@
                 parseResult = time.parseYearMonth(inputText);
             } else if (this.option.inputFormat() === "time") {
                 parseResult = time.parseTime(inputText, false);
+            }else {
+                parseResult = time.ResultParseTime.failed();
             }
             if(parseResult.success){
                 result.success(parseResult.toValue());

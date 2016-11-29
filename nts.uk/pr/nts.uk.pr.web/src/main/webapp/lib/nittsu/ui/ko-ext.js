@@ -50,8 +50,10 @@ var nts;
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var formatter = this.getFormatter(data);
-                        $input.val(formatter.format(getValue()));
+                        var formatted = $input.ntsError('hasError')
+                            ? getValue()
+                            : this.getFormatter(data).format(getValue());
+                        $input.val(formatted);
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
                         return {};
@@ -64,14 +66,35 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
+                var DynamicEditorProcessor = (function (_super) {
+                    __extends(DynamicEditorProcessor, _super);
+                    function DynamicEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    DynamicEditorProcessor.prototype.getValidator = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return validation.createValidator(constraintName);
+                    };
+                    DynamicEditorProcessor.prototype.getFormatter = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        if (constraint) {
+                            switch (constraint.valueType) {
+                                case 'String': return new uk.text.StringFormatter({ constraintName: constraintName });
+                            }
+                        }
+                        return new uk.format.NoFormatter();
+                    };
+                    return DynamicEditorProcessor;
+                }(EditorProcessor));
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.update = function ($input, data) {
-                        this.editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var textmode = ko.unwrap(this.editorOption.textmode);
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var textmode = ko.unwrap(editorOption.textmode);
                         $input.attr('type', textmode);
                         _super.prototype.update.call(this, $input, data);
                     };
@@ -79,9 +102,10 @@ var nts;
                         return new nts.uk.ui.option.TextEditorOption();
                     };
                     TextEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constrain = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: this.editorOption });
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -147,6 +171,19 @@ var nts;
                     };
                     return NtsEditorBindingHandler;
                 }());
+                var NtsDynamicEditorBindingHandler = (function (_super) {
+                    __extends(NtsDynamicEditorBindingHandler, _super);
+                    function NtsDynamicEditorBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new DinamicEditorProcessor().init($(element), valueAccessor());
+                    };
+                    NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new DinamicEditorProcessor().update($(element), valueAccessor());
+                    };
+                    return NtsDynamicEditorBindingHandler;
+                }(NtsEditorBindingHandler));
                 /**
                  * TextEditor
                  */
@@ -1236,6 +1273,7 @@ var nts;
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+                ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

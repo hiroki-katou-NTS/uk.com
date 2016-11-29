@@ -70,18 +70,18 @@
 										<com:ko-if bind="itemCode() !== ''">
 											<td><span data-bind="text: itemName"></span> <com:ko-if
 													bind="itemAtr === 0">
-													<input data-bind="ntsNumberEditor: {value: value}" />
+													<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': categoryAtr()+ '_' +$parentContext.index()+ '_'+  $index()}" />
 												</com:ko-if> <com:ko-if bind="itemAtr() === 0">
-													<input data-bind="ntsTimeEditor: {value: value}" />
+													<input data-bind="ntsTimeEditor: {value: value}, attr: {'id': categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 												</com:ko-if> <com:ko-if bind="itemAtr() === 1">
-													<input data-bind="ntsNumerEditor: {value: value}" />
+													<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 												</com:ko-if> <com:ko-if bind="itemAtr() === 2 || itemAtr() === 3">
-													<input data-bind="ntsNumerEditor: {value: value}" />
+													<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 												</com:ko-if></td>
 										</com:ko-if>
 										<com:ko-if bind="itemCode() === ''">
 											<td><span data-bind="text: itemName"></span> <input
-												type="text" /></td>
+												type="text" readonly="true" /></td>
 										</com:ko-if>
 
 

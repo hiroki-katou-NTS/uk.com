@@ -215,6 +215,10 @@ var nts;
                 return result;
             }
             text_1.charPadding = charPadding;
+            function replaceAll(str, find, replace) {
+                return str.split(find).join(replace);
+            }
+            text_1.replaceAll = replaceAll;
             /**
              * Type of characters
              */

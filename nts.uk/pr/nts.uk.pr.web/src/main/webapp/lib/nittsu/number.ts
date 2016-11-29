@@ -2,14 +2,14 @@
 
     function isInteger(value: any, option?: any) {
         if (option !== undefined && option.groupseperator() !== undefined) {
-            value = isInteger(value) ? value : value.toString().replace(option.groupseperator(), '');
+            value = isInteger(value) ? value : text.replaceAll(value.toString(), option.groupseperator(), '');
         }
         return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
     }
 
     function isDecimal(value: any, option?: any) {
         if (option !== undefined && option.groupseperator() !== undefined) {
-            value = isDecimal(value) ? value : value.toString().replace(option.groupseperator(), '');
+            value = isDecimal(value) ? value : text.replaceAll(value.toString(), option.groupseperator(), '');
         }
         return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
     }
@@ -23,12 +23,12 @@
     }
 
     /*similar with Math.trunc, get integer value from decimal*/
-    export function trunc(value: number) {
-        try {
-            return Math.trunc(value);
-        } catch (x){
-            return value > 0 ? Math.floor(value) : Math.ceil(value);
-        }
+    export var trunc: (value: number) => number;
+    trunc = (typeof Math.trunc === 'function') ? Math.trunc : value => value > 0 ? Math.floor(value) : Math.ceil(value);
+    
+    export function getDecimal(value: any, scale: number){
+        var scaleX = Math.pow(10, scale);
+        return trunc(value*scaleX)/scaleX;
     }
 
     export function formatNumber(value: any, formatOption: any) {
@@ -40,8 +40,9 @@
         var decimalseperator = formatOption.decimalseperator() ? formatOption.decimalseperator() : ".";
         var decimallength = formatOption.decimallength() ? formatOption.decimallength() : 0;
         var formattedValue = "";
-        var stringValue = value.toString();
-        var values = stringValue.split(decimalseperator);
+        var stringValue = text.replaceAll(value.toString(), groupseperator, '');
+        var isMinus = stringValue.charAt(0) === '-';
+        var values = isMinus ? stringValue.split('-')[1].split(decimalseperator) : stringValue.split(decimalseperator);
         if (grouplength > 0) {
             var x = values[0].split('').reverse().join('');
             for (var i = 0; i < x.length;) {
@@ -58,6 +59,6 @@
             values[1] = values[1].substr(0, decimallength);
         }
 
-        return formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);
+        return (isMinus ? '-' : '') + formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);
     }
 }
