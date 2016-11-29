@@ -21,8 +21,18 @@
             return isInteger(value, option); 
         }
     }
+     
+    /*similar with Math.trunc, get integer value from decimal*/
+    export function trunc(value: number){
+        if(Math.trunc(value)){
+            
+        }
+    }
     
-    export function formatNumber(value: number, formatOption: any){
+    export function formatNumber(value: any, formatOption: any){
+        if(value !== undefined || value !== null || value.toString().trim().lenth <= 0){
+            return value;
+        }
         var groupseperator = formatOption.groupseperator() ? formatOption.groupseperator() : ',';
         var grouplength = formatOption.grouplength() ? formatOption.grouplength() : 0;
         var decimalseperator = formatOption.decimalseperator() ? formatOption.decimalseperator() : ".";

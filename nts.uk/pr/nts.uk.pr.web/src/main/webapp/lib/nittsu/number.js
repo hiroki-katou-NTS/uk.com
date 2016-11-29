@@ -25,7 +25,16 @@ var nts;
                 }
             }
             ntsNumber.isNumber = isNumber;
+            /*similar with Math.trunc, get integer value from decimal*/
+            function trunc(value) {
+                if (Math.trunc(value)) {
+                }
+            }
+            ntsNumber.trunc = trunc;
             function formatNumber(value, formatOption) {
+                if (value !== undefined || value !== null || value.toString().trim().lenth <= 0) {
+                    return value;
+                }
                 var groupseperator = formatOption.groupseperator() ? formatOption.groupseperator() : ',';
                 var grouplength = formatOption.grouplength() ? formatOption.grouplength() : 0;
                 var decimalseperator = formatOption.decimalseperator() ? formatOption.decimalseperator() : ".";

@@ -53,15 +53,24 @@ var nts;
                     return new ResultParseTime(false);
                 };
                 ResultParseTime.prototype.format = function () {
+                    if (!this.success) {
+                        return "";
+                    }
                     return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
                 };
                 ResultParseTime.prototype.toValue = function () {
+                    if (!this.success) {
+                        return 0;
+                    }
                     return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
                 };
                 return ResultParseTime;
             }(ParseResult));
             time_1.ResultParseTime = ResultParseTime;
             function parseTime(time, isMinutes) {
+                if (time === undefined || time === null) {
+                    return ResultParseTime.failed();
+                }
                 if (isMinutes) {
                     var hoursX = Math.floor(time / 60);
                     time = hoursX + uk.text.padLeft((time - hoursX * 60).toString(), '0', 2);
@@ -108,15 +117,24 @@ var nts;
                     return new ResultParseYearMonth(false);
                 };
                 ResultParseYearMonth.prototype.format = function () {
+                    if (!this.success) {
+                        return "";
+                    }
                     return this.year + '/' + uk.text.padLeft(String(this.month), '0', 2);
                 };
                 ResultParseYearMonth.prototype.toValue = function () {
+                    if (!this.success) {
+                        return 0;
+                    }
                     return (this.year * 100 + this.month);
                 };
                 return ResultParseYearMonth;
             }(ParseResult));
             time_1.ResultParseYearMonth = ResultParseYearMonth;
             function parseYearMonth(yearMonth) {
+                if (yearMonth === undefined || yearMonth === null) {
+                    return ResultParseYearMonth.failed();
+                }
                 if (!(yearMonth instanceof String)) {
                     yearMonth = yearMonth.toString();
                 }

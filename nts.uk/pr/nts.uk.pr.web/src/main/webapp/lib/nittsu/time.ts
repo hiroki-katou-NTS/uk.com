@@ -61,15 +61,24 @@
         }
         
         format() {
+            if(!this.success){
+                return "";
+            }
             return (this.minus ? '-' : '') + this.hours + ':' + text.padLeft(String(this.minutes), '0', 2);
         }
         
         toValue() {
+            if(!this.success){
+                return 0;
+            }
             return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
         }
     }
      
     export function parseTime(time: any, isMinutes?: boolean): ResultParseTime {
+        if(time === undefined || time === null){
+            return ResultParseTime.failed();
+        }
         if(isMinutes){
             var hoursX = Math.floor(time/60);
             time = hoursX + text.padLeft((time - hoursX*60).toString(), '0', 2);
@@ -123,15 +132,24 @@
         }
         
         format() {
+            if(!this.success){
+                return "";
+            }
             return this.year + '/' + text.padLeft(String(this.month), '0', 2);
         }
         
         toValue() {
+            if(!this.success){
+                return 0;
+            }
             return (this.year * 100 + this.month);
         }
     }
      
     export function parseYearMonth(yearMonth: any): ResultParseYearMonth{
+        if(yearMonth === undefined || yearMonth === null){
+            return ResultParseYearMonth.failed();
+        }
         if(!(yearMonth instanceof String)){
             yearMonth = yearMonth.toString();
         }
