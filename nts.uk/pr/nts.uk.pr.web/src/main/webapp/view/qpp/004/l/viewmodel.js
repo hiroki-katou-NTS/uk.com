@@ -54,7 +54,9 @@ var qpp004;
                             index(index() + 1);
                             // Resolve start page dfd after load all data.
                             $.when(self.createPaymentData(personId, data, index())).done(function (res) {
-                                self.errorList.push(res);
+                                if (res && res.length > 0) {
+                                    self.errorList.push(res);
+                                }
                                 self.processingNumberOfPerson(index());
                             }).fail(function () {
                                 self.stopTimer();
@@ -89,6 +91,7 @@ var qpp004;
                     };
                     $.when(qpp004.l.service.processCreatePaymentData(parameter)).done(function (data) {
                         self.completeList.push(personId);
+                        dfd.resolve();
                     }).fail(function (res) {
                         self.visibleErrorList(true);
                         var error = {};
