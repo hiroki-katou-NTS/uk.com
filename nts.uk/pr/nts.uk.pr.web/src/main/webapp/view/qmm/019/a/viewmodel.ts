@@ -124,6 +124,7 @@ module qmm019.a {
 
         
         bindSortable() {
+            var self = this;
             $(".row").sortable({
                 items: "span:not(.ui-state-disabled)"    
             });

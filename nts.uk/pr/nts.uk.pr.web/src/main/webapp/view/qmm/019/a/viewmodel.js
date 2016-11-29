@@ -108,6 +108,7 @@ var qmm019;
                 });
             }
             ScreenModel.prototype.bindSortable = function () {
+                var self = this;
                 $(".row").sortable({
                     items: "span:not(.ui-state-disabled)"
                 });

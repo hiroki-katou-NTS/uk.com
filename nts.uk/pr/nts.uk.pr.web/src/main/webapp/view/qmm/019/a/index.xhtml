@@ -108,7 +108,7 @@
 								</div>
 								<div class="all-line">
 									<div data-bind="foreach: lines">
-										<div class="row" data-bind="attr: {id: autoLineId + $parent.categoryAtr, class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
+										<div class="row" data-bind="attr: {id: rowId, class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
 											<div><a class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick"></a></div>
 											<div data-bind="foreach: details">
 									            <span data-bind="click: itemClick, attr: {class: isRequired() ? 'fixed-button ui-state-disabled li-on-row' : itemAbName() !== '+' ? 'button-with-text li-on-row' : 'li-on-row'}">

@@ -82,7 +82,7 @@ public class DetailItem extends DomainObject {
 	 * @param laborInsuranceAtr
 	 */
 	public DetailItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
-			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr) {
+			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr, ItemAtr itemAtr) {
 		super();
 		this.itemCode = itemCode;
 		this.value = value;
@@ -90,17 +90,20 @@ public class DetailItem extends DomainObject {
 		this.socialInsuranceAtr = socialInsuranceAtr;
 		this.laborInsuranceAtr = laborInsuranceAtr;
 		this.categoryAtr = categoryAtr;
+		this.deductionAtr = deductionAtr;
+		this.itemAtr = itemAtr;
 	}
 
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
-			int laborInsuranceAtr, int categoryAtr, int deductionAtr) {
+			int laborInsuranceAtr, int categoryAtr, int deductionAtr, Integer itemAtr) {
 
 		return new DetailItem(new ItemCode(itemCode), value.doubleValue(),
 				EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
 				EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class)
+				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class),
+				EnumAdaptor.valueOf(itemAtr, ItemAtr.class)
 				);
 	}
 	
@@ -152,6 +155,6 @@ public class DetailItem extends DomainObject {
 	 */
     public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
         return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
-                InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION);
+                InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, ItemAtr.TIMES);
     }
 }
