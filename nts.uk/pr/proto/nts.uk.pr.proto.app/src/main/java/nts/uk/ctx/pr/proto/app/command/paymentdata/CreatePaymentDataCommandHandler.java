@@ -25,6 +25,8 @@ import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
+import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
+import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.SumScopeAtr;
@@ -100,6 +102,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	@Inject
 	private PaymentDateMasterRepository payDateMasterRepo;
 	@Inject
+	private LayoutMasterRepository layoutMasterRepo;
+	@Inject
 	private LayoutMasterDetailRepository layoutDetailMasterRepo;
 	@Inject
 	private PaymentDataRepository paymentDataRepo;
@@ -163,7 +167,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// Start calculate payment
 		//
 		PersonalEmploymentContract employmentContract = personalEmploymentContractRepo.findActive(
-				loginInfo.companyCode(), personId, GeneralDate.today().localDate())
+				loginInfo.companyCode(), personId, payDay.getStandardDate())
 					.orElseThrow(() -> new RuntimeException("PersonalEmploymentContract not found"));
 		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId)
 					.orElseThrow(() -> new RuntimeException("HolidayPaid not found")); 
@@ -174,12 +178,20 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		// get personal allot setting
 		String stmtCode = personalAllotSetting.getPaymentDetailCode().v();
-
+		
+		// get layout master 
+		List<LayoutMaster> layoutMasterList = layoutMasterRepo.findAll(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
+		if (layoutMasterList.isEmpty()) {
+			throw new RuntimeException("Layout master not found");
+		}
+		LayoutMaster layoutMaster = layoutMasterList.get(0);
+		
 		// get layout detail master
 		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(loginInfo.companyCode(),
-						stmtCode, personalAllotSetting.getStartDate().v());
+						stmtCode, layoutMaster.getStartYM().v());
+		
 		// get layout master line
-		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
+		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
 		
 		// get personal wage list
 		List<PersonalWage> personWageList = personalWageRepo.findAll(loginInfo.companyCode(), personId, baseYearMonth.v());
