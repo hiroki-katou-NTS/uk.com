@@ -54,6 +54,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	
 	private QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
 		val entity = new QstmtStmtLayoutDetail();
+		entity.qstmtStmtLayoutDetailPk = new QstmtStmtLayoutDetailPK();
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
 		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYm().v();
@@ -62,7 +63,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		entity.endYm = domain.getEndYm().v();
 		entity.autoLineId = domain.getAutoLineId().v();
 		//xem lai voi qa 86
-		//entity.itemPosColumn = domain.geti
+		entity.itemPosColumn = domain.getItemPosColumn().v();
 		entity.dispAtr = domain.getDisplayAtr().value;
 		entity.sumScopeAtr = domain.getSumScopeAtr().value;
 		entity.calcMethod = domain.getCalculationMethod().value;

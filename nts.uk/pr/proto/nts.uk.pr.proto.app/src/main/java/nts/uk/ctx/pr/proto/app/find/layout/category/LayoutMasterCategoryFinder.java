@@ -58,7 +58,7 @@ public class LayoutMasterCategoryFinder {
 							&& d.getCategoryAtr() == line.getCategoryAtr()
 							&& d.getItemPosColumn() == posColumn).findFirst()
 							.orElse(
-									new LayoutMasterDetailDto(layoutCd, startYm, category.getEndYm(), category.getCategoryAtr(), String.valueOf(i), line.getAutoLineId(), i, "+", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0));
+									new LayoutMasterDetailDto(layoutCd, startYm, category.getEndYm(), category.getCategoryAtr(), "itemTemp-" + String.valueOf(i), line.getAutoLineId(), i, "+", 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0));
 					detail9Items.add(item);
 				}
 				

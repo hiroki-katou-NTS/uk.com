@@ -67,6 +67,9 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 
 		List<LayoutMasterDetail> detailsFromDB = detailRepo.getDetails(companyCode, stmtCode, startYm);
 		for(LayoutDetail detailCommand : command.getDetailCommand()){
+			if (detailCommand.getItemCode().contains("itemTemp-")){
+				continue;
+			}
 			if (detailsFromDB.stream().filter(c ->
 						c.getItemCode().v().equals(detailCommand.getItemCode())
 						&& c.getCategoryAtr().value == detailCommand.getCategoryAtr()).findAny().isPresent()) {
