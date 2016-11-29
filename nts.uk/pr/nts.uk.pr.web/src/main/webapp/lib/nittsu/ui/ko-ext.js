@@ -66,16 +66,16 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
-                var DinamicEditorProcessor = (function (_super) {
-                    __extends(DinamicEditorProcessor, _super);
-                    function DinamicEditorProcessor() {
+                var DynamicEditorProcessor = (function (_super) {
+                    __extends(DynamicEditorProcessor, _super);
+                    function DynamicEditorProcessor() {
                         _super.apply(this, arguments);
                     }
-                    DinamicEditorProcessor.prototype.getValidator = function (data) {
+                    DynamicEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         return validation.createValidator(constraintName);
                     };
-                    DinamicEditorProcessor.prototype.getFormatter = function (data) {
+                    DynamicEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         if (constraint) {
@@ -85,7 +85,7 @@ var nts;
                         }
                         return new uk.format.NoFormatter();
                     };
-                    return DinamicEditorProcessor;
+                    return DynamicEditorProcessor;
                 }(EditorProcessor));
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
@@ -171,18 +171,18 @@ var nts;
                     };
                     return NtsEditorBindingHandler;
                 }());
-                var NtsDinamicEditorBindingHandler = (function (_super) {
-                    __extends(NtsDinamicEditorBindingHandler, _super);
-                    function NtsDinamicEditorBindingHandler() {
+                var NtsDynamicEditorBindingHandler = (function (_super) {
+                    __extends(NtsDynamicEditorBindingHandler, _super);
+                    function NtsDynamicEditorBindingHandler() {
                         _super.apply(this, arguments);
                     }
-                    NtsDinamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new DinamicEditorProcessor().init($(element), valueAccessor());
                     };
-                    NtsDinamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new DinamicEditorProcessor().update($(element), valueAccessor());
                     };
-                    return NtsDinamicEditorBindingHandler;
+                    return NtsDynamicEditorBindingHandler;
                 }(NtsEditorBindingHandler));
                 /**
                  * TextEditor
@@ -1273,7 +1273,7 @@ var nts;
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-                ko.bindingHandlers['ntsDinamicEditor'] = new NtsDinamicEditorBindingHandler();
+                ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

@@ -61,7 +61,7 @@ module nts.uk.ui.koExtentions {
         }
     }
     
-    class DinamicEditorProcessor extends EditorProcessor {
+    class DynamicEditorProcessor extends EditorProcessor {
         
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
@@ -165,7 +165,7 @@ module nts.uk.ui.koExtentions {
         }
     }
     
-    class NtsDinamicEditorBindingHandler extends NtsEditorBindingHandler {
+    class NtsDynamicEditorBindingHandler extends NtsEditorBindingHandler {
         
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             new DinamicEditorProcessor().init($(element), valueAccessor());
@@ -1357,7 +1357,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-    ko.bindingHandlers['ntsDinamicEditor'] = new NtsDinamicEditorBindingHandler();
+    ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
