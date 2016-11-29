@@ -25,7 +25,8 @@ var nts;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
-                        this.format = (option && option.format) ? option.format : null;
+                        this.filldirection = (option && option.filldirection) ? option.filldirection : "right";
+                        this.fillcharacter = (option && option.fillcharacter) ? option.fillcharacter : "0";
                     }
                     return TextEditorOption;
                 }(EditorOptionBase));
@@ -43,19 +44,6 @@ var nts;
                     return TimeEditorOption;
                 }(EditorOptionBase));
                 option_1.TimeEditorOption = TimeEditorOption;
-                var MaskEditorOption = (function (_super) {
-                    __extends(MaskEditorOption, _super);
-                    function MaskEditorOption(option) {
-                        _super.call(this);
-                        // Default value
-                        this.mask = (option && option.mask) ? option.mask : "";
-                        this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-                        this.width = (option && option.width) ? option.width : "";
-                        this.textalign = (option && option.textalign) ? option.textalign : "left";
-                    }
-                    return MaskEditorOption;
-                }(EditorOptionBase));
-                option_1.MaskEditorOption = MaskEditorOption;
                 var NumberEditorOption = (function (_super) {
                     __extends(NumberEditorOption, _super);
                     function NumberEditorOption(option) {
@@ -106,13 +94,6 @@ var nts;
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
                 option_1.CurrencyEditorOption = CurrencyEditorOption;
-                var Format = (function () {
-                    function Format(filldirection, fillcharacter) {
-                        this.filldirection = filldirection;
-                        this.fillcharacter = fillcharacter;
-                    }
-                    return Format;
-                }());
             })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
