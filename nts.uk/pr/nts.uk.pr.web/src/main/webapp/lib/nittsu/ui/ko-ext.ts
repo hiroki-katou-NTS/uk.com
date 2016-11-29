@@ -59,6 +59,26 @@ module nts.uk.ui.koExtentions {
         }
     }
     
+    class DinamicEditorProcessor extends EditorProcessor {
+        
+        getValidator(data: any): validation.IValidator {
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            return validation.createValidator(constraintName);
+        }
+        
+        getFormatter(data: any): format.IFormatter {
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            if (constraint) {
+                switch (constraint.valueType) {
+                    case 'String': return new text.StringFormatter({ constraintName: constraintName });
+                }
+            }
+            
+            return new format.NoFormatter();
+        }
+    }
+    
     class TextEditorProcessor extends EditorProcessor {
         
         update($input: JQuery, data: any) {
@@ -101,6 +121,17 @@ module nts.uk.ui.koExtentions {
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             new EditorProcessor().update($(element), valueAccessor());
+        }
+    }
+    
+    class NtsDinamicEditorBindingHandler extends NtsEditorBindingHandler {
+        
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new DinamicEditorProcessor().init($(element), valueAccessor());
+        }
+
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new DinamicEditorProcessor().update($(element), valueAccessor());
         }
     }
 
@@ -1379,6 +1410,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+    ko.bindingHandlers['ntsDinamicEditor'] = new NtsDinamicEditorBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

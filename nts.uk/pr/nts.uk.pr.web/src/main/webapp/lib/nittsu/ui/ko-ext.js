@@ -64,6 +64,27 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
+                var DinamicEditorProcessor = (function (_super) {
+                    __extends(DinamicEditorProcessor, _super);
+                    function DinamicEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    DinamicEditorProcessor.prototype.getValidator = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return validation.createValidator(constraintName);
+                    };
+                    DinamicEditorProcessor.prototype.getFormatter = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        if (constraint) {
+                            switch (constraint.valueType) {
+                                case 'String': return new uk.text.StringFormatter({ constraintName: constraintName });
+                            }
+                        }
+                        return new uk.format.NoFormatter();
+                    };
+                    return DinamicEditorProcessor;
+                }(EditorProcessor));
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
@@ -109,6 +130,19 @@ var nts;
                     };
                     return NtsEditorBindingHandler;
                 }());
+                var NtsDinamicEditorBindingHandler = (function (_super) {
+                    __extends(NtsDinamicEditorBindingHandler, _super);
+                    function NtsDinamicEditorBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    NtsDinamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new DinamicEditorProcessor().init($(element), valueAccessor());
+                    };
+                    NtsDinamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new DinamicEditorProcessor().update($(element), valueAccessor());
+                    };
+                    return NtsDinamicEditorBindingHandler;
+                }(NtsEditorBindingHandler));
                 /**
                  * TextEditor
                  */
@@ -1289,6 +1323,7 @@ var nts;
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+                ko.bindingHandlers['ntsDinamicEditor'] = new NtsDinamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
