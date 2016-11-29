@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.proto.app.command.layout.CreateLayoutCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.CreateLayoutCommandHandler;
 import nts.uk.ctx.pr.proto.app.command.layout.CreateLayoutHistoryCommand;
@@ -16,13 +17,17 @@ import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.DeleteLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommand;
 import nts.uk.ctx.pr.proto.app.command.layout.UpdateLayoutHistoryCommandHandler;
+import nts.uk.ctx.pr.proto.app.command.layout.register.RegisterLayoutCommand;
+import nts.uk.ctx.pr.proto.app.command.layout.register.RegisterLayoutCommandHandler;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
+import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryDto;
+import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/proto/layout")
 @Produces("application/json")
-public class LayoutWebService {
+public class LayoutWebService extends WebService {
 
 	@Inject
 	private CreateLayoutCommandHandler createLayoutData;
@@ -32,8 +37,12 @@ public class LayoutWebService {
 	private UpdateLayoutHistoryCommandHandler updateData;
 	@Inject
 	private DeleteLayoutHistoryCommandHandler deleteData;
+	@Inject 
+	private RegisterLayoutCommandHandler registerLayoutHandler;
 	@Inject
 	private LayoutMasterFinder find;
+	@Inject
+	private LayoutMasterCategoryFinder categoryFinder;
 	
 	@POST
 	@Path("findalllayout")
@@ -45,7 +54,11 @@ public class LayoutWebService {
 	public LayoutDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm){
 		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, startYm).get();
 	}
-	
+	@POST
+	@Path("findCategoies/full/{layoutCd}/{startYm}")
+	public List<LayoutMasterCategoryDto> getCategoriesFullData(@PathParam("layoutCd") String layoutCd, @PathParam("startYm") int startYm){
+		return this.categoryFinder.getCategoriesFullData(layoutCd, startYm);
+	}
 	@POST
 	@Path("findlayoutwithmaxstartym")
 	public List<LayoutDto> getLayoutsWithMaxStartYm(){
@@ -71,6 +84,11 @@ public class LayoutWebService {
 	@Path("deletedata")
 	public void deleteData(DeleteLayoutHistoryCommand command){
 		this.deleteData.handle(command);
+	}
+	@POST
+	@Path("register")
+	public void registerLayout(RegisterLayoutCommand command){
+		this.registerLayoutHandler.handle(command);
 	}
 	
 	

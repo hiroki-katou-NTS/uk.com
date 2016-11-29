@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.repository.layout;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -96,11 +97,17 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	@Override
 	public List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutCtg.class)
+		try {
+			List<LayoutMasterCategory> test = this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutCtg.class)
 				.setParameter("companyCd", companyCode)
 				.setParameter("stmtCd", stmtCode)
 				.setParameter("endYm", endYm)
 				.getList(c -> toDomain(c));
+		return test;
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw e;
+		}
 	}
 
 	@Override
@@ -112,5 +119,10 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		this.commandProxy().removeAll(categoryEntity);
 	}
 
-
+	@Override
+	public Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr) {
+		QstmtStmtLayoutCtgPK primaryKey = new QstmtStmtLayoutCtgPK(companyCode, stmtCode, startYearMonth, categoryAtr);
+		
+		return this.queryProxy().find(primaryKey, QstmtStmtLayoutCtg.class).map(x -> toDomain(x));
+	}
 }

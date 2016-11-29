@@ -34,6 +34,8 @@ public class ScriptFile extends UIComponentBase {
             "/lib/nittsu/ui/errors.js",
             "/lib/nittsu/ui/ui.js",
             "/lib/nittsu/ui/dialog-options.js",
+            "/lib/nittsu/time.js",
+            "/lib/nittsu/number.js",
     }));
     
     @SuppressWarnings("serial")

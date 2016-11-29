@@ -10,7 +10,12 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.base.CategoryCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.DetailItemCommandBase;
+import nts.uk.ctx.pr.proto.app.command.paymentdata.base.LineCommandBase;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
@@ -29,15 +34,15 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	/** CompanyRepository */
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
-
+	
 	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		String personId = context.getCommand().getPersonId();
-		int baseYM = context.getCommand().getProcessingYM();
+		String personId = context.getCommand().getPaymentHeader().getPersonId();
+		int baseYM = context.getCommand().getPaymentHeader().getProcessingYM();
 		
 		
 		Payment payment = context.getCommand().toDomain(companyCode);
@@ -46,25 +51,21 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		// check data
 		boolean isExistHeader = this.paymentDataRepository.isExistHeader(companyCode, personId, PAY_BONUS_ATR, baseYM);
 		if (isExistHeader) {
-			this.checkIfAllItemsExist(companyCode, personId, baseYM,
-					context.getCommand().getDetailPaymentItems());
-			this.checkIfAllItemsExist(companyCode, personId, baseYM,
-					context.getCommand().getDetailPersonalTimeItems());
-			this.checkIfAllItemsExist(companyCode, personId, baseYM,
-					context.getCommand().getDetailArticleItems());
-			this.checkIfAllItemsExist(companyCode, personId, baseYM, context.getCommand().getDetailDeductionItems());
+			for (CategoryCommandBase cate : context.getCommand().getCategories()) {
+				this.checkIfAllItemsExist(companyCode, personId, baseYM,
+						cate.getLines());
+			}
 		} else {
 			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
 		}
 		
 		// update payment header
-		this.paymentDataRepository.update(payment);
+		this.paymentDataRepository.updateHeader(payment);
 
 		// update detail
-		this.registerDetail(payment, context.getCommand().getDetailPaymentItems());
-		this.registerDetail(payment, context.getCommand().getDetailArticleItems());
-		this.registerDetail(payment, context.getCommand().getDetailDeductionItems());
-		this.registerDetail(payment, context.getCommand().getDetailPersonalTimeItems());
+		for (CategoryCommandBase cate : context.getCommand().getCategories()) {
+			this.registerDetail(payment, cate);
+		}
 	}
 
 	/**
@@ -73,14 +74,18 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 * @param categoryAtr
 	 * @param items
 	 */
-	private void checkIfAllItemsExist(String companyCode, String personId, int baseYM, List<DetailItemCommandBase> items) {
-		for (DetailItemCommandBase item : items) {
-			boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
-					item.getCategoryAtr(), item.getItemCode());
-			if (!isExistDetails) {
-				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+	private void checkIfAllItemsExist(String companyCode, String personId, int baseYM, List<LineCommandBase> lines) {
+		lines.stream().forEach(x-> {
+			List<DetailItemCommandBase> items = x.getDetails();
+			for (DetailItemCommandBase item : items) {
+				boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
+						item.getCategoryAtr(), item.getItemCode());
+				if (!isExistDetails) {
+					throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+				}
 			}
-		}
+		});
+		
 	}
 
 	/**
@@ -89,24 +94,28 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 * @param items
 	 * @param payment
 	 */
-	private void registerDetail(Payment payment, List<DetailItemCommandBase> items) {
-
-		for (DetailItemCommandBase item : items) {
-
-			DetailItem detailItem = DetailItem.createFromJavaType(
-					item.getItemCode(), 
-					item.getValue(),
-					item.getCorrectFlag(),
-					item.getSocialInsuranceAtr(),
-					item.getLaborInsuranceAtr(),
-					item.getCategoryAtr());
-			
-			if (item.isCreated()) {
-				this.paymentDataRepository.updateDetail(payment, detailItem);
-			} else {
-				this.paymentDataRepository.insertDetail(payment, detailItem);
+	private void registerDetail(Payment payment, CategoryCommandBase category) {
+		category.getLines().stream().forEach(x-> {
+			for (DetailItemCommandBase item : x.getDetails()) {
+				
+				DetailItem detailItem = DetailItem.createFromJavaType(
+						item.getItemCode(), 
+						item.getValue(),
+						item.getCorrectFlag(),
+						item.getSocialInsuranceAtr(),
+						item.getLaborInsuranceAtr(),
+						item.getCategoryAtr(),
+						item.getDeductAtr(),
+						item.getItemAtr()
+						);
+				
+				if (item.isCreated()) {
+						this.paymentDataRepository.updateDetail(payment, detailItem);	
+				} else {
+						this.paymentDataRepository.insertDetail(payment, detailItem);
+				}
 			}
-		}
+		});
 	}
 
 }

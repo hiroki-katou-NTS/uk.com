@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
 @RequestScoped
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
-	private String SELECT_ALL = " SELECT d, i.ITEM_NAME" +
+	private String SELECT_ALL = " SELECT d, i.ITEM_NAME, i.itemAtr" +
 								" FROM QstdtPaymentDetail d JOIN QcamtItem i ON d.QstdtPaymentDetailPK.companyCode = i.QcamtItemPK.ccd" +
 																	" AND d.QstdtPaymentDetailPK.categoryATR = i.QcamtItemPK.ctgAtr" +
 																	" AND d.QstdtPaymentDetailPK.itemCode = i.QcamtItemPK.itemCd" +

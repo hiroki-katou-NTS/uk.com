@@ -22,11 +22,10 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.textmode = (option && option.textmode) ? option.textmode : "text";
-                        this.enable = (option && option.enable !== undefined) ? option.enable : true;
-                        this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
+                        this.format = (option && option.format) ? option.format : null;
                     }
                     return TextEditorOption;
                 }(EditorOptionBase));
@@ -37,8 +36,6 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "date";
-                        this.enable = (option && option.enable !== undefined) ? option.enable : true;
-                        this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -52,8 +49,6 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.mask = (option && option.mask) ? option.mask : "";
-                        this.enable = (option && option.enable !== undefined) ? option.enable : true;
-                        this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -70,8 +65,6 @@ var nts;
                         this.grouplength = (option && option.grouplength) ? option.grouplength : 0;
                         this.decimalseperator = (option && option.decimalseperator) ? option.decimalseperator : ".";
                         this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
-                        this.enable = (option && option.enable !== undefined) ? option.enable : true;
-                        this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -106,8 +99,6 @@ var nts;
                                 this.currencyposition = "right";
                                 break;
                         }
-                        this.enable = (option && option.enable !== undefined) ? option.enable : true;
-                        this.readonly = (option && option.readonly !== undefined) ? option.readonly : false;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
@@ -115,6 +106,13 @@ var nts;
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
                 option_1.CurrencyEditorOption = CurrencyEditorOption;
+                var Format = (function () {
+                    function Format(filldirection, fillcharacter) {
+                        this.filldirection = filldirection;
+                        this.fillcharacter = fillcharacter;
+                    }
+                    return Format;
+                }());
             })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

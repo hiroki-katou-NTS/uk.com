@@ -2,7 +2,7 @@ module qmm019.h.service {
     var paths = {
         getLayoutInfor: "pr/proto/layout/findalllayout"
     }
-    export function getAllLayout(): JQueryPromise<Array<LayoutMasterModel>> {
+    export function getAllLayout(): JQueryPromise<Array<model.LayoutMasterModel>> {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.getLayoutInfor)
             .done(function(res: Array<any>) {
@@ -13,8 +13,10 @@ module qmm019.h.service {
             })
         return dfd.promise();
     }
+      export module model {
     export interface LayoutMasterModel {
         personalWageName: String;
         companyCode: String;
     }
+          }
 }

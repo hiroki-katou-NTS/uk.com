@@ -3,7 +3,10 @@ package nts.uk.ctx.pr.proto.infra.entity.paymentdata;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.NoArgsConstructor;
+
 @Embeddable
+@NoArgsConstructor
 public class QstdtPaymentDetailPK {
 	@Column(name = "CCD")
 	public String companyCode;

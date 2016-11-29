@@ -1,6 +1,7 @@
 module qmm019.d.service {
     var paths = {
-        getLayoutInfor : "pr/proto/layout/findlayoutwithmaxstartym"       
+        getLayoutInfor : "pr/proto/layout/findlayoutwithmaxstartym",
+        copylayoutPath: "pr/proto/layout/createlayout"
     }
     
     /**
@@ -18,6 +19,17 @@ module qmm019.d.service {
         return dfd.promise(); 
     }
     
+    export function createLayout(layoutMaster: model.LayoutMasterDto){
+        var dfd = $.Deferred<Array<any>>();  
+        nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function(res: Array<any>){
+            dfd.resolve(res);    
+        }).fail(function(res){
+            dfd.reject(res);
+        })
+        return dfd.promise(); 
+    }
+    
+    
     export module model {
             // layout
             export class LayoutMasterDto {
@@ -27,6 +39,10 @@ module qmm019.d.service {
                 stmtName: string;
                 endYM: number;
                 layoutAtr: number;
+                isCopy: Boolean;
+                stmtCodeCopied: string;
+                startYmCopied: string;
+                
             }
 
         }

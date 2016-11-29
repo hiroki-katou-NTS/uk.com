@@ -6,7 +6,8 @@ var qmm019;
         (function (service) {
             var paths = {
                 getLayoutInfor: "/pr/proto/layout/findlayout/{0}/{1}",
-                pathDeleteLayout: "/pr/proto/layout/deletedata"
+                pathDeleteLayout: "/pr/proto/layout/deletedata",
+                pathUpdateLayout: "/pr/proto/layout/updatedata"
             };
             /**
              * Get list layout master new history
@@ -44,6 +45,16 @@ var qmm019;
                 return dfd.promise();
             }
             service.deleteLayout = deleteLayout;
+            function updateLayout(layoutMaster) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.pathUpdateLayout, layoutMaster).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateLayout = updateLayout;
             /**
                     * Model namespace.
                  */

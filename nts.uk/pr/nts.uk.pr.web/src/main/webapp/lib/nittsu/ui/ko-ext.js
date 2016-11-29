@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -7,59 +12,125 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 var validation = nts.uk.ui.validation;
-                /**
-                 * TextEditor
-                 */
-                var NtsTextEditorBindingHandler = (function () {
-                    function NtsTextEditorBindingHandler() {
+                var EditorProcessor = (function () {
+                    function EditorProcessor() {
                     }
-                    /**
-                     * Init.
-                     */
-                    NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
+                    EditorProcessor.prototype.init = function ($input, data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var validator = this.getValidator(data);
+                        var formatter = this.getFormatter(data);
                         var setValue = data.value;
-                        var $input = $(element);
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
                         $input.change(function () {
                             var newText = $input.val();
-                            setValue(newText);
+                            var result = validator.validate(newText);
+                            if (result.isValid) {
+                                $input.ntsError('clear');
+                                setValue(result.parsedValue);
+                                $input.val(formatter.format(result.parsedValue));
+                            }
+                            else {
+                                $input.ntsError('set', result.errorMessage);
+                                setValue(newText);
+                            }
                         });
                     };
-                    /**
-                     * Update
-                     */
-                    NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
+                    EditorProcessor.prototype.update = function ($input, data) {
                         var getValue = data.value;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption());
-                        var textmode = ko.unwrap(option.textmode);
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
-                        var $input = $(element);
-                        $input.attr('type', textmode);
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var newText = getValue();
-                        $input.val(newText);
+                        var formatter = this.getFormatter(data);
+                        $input.val(formatter.format(getValue()));
+                    };
+                    EditorProcessor.prototype.getDefaultOption = function () {
+                        return {};
+                    };
+                    EditorProcessor.prototype.getFormatter = function (data) {
+                        return new format.NoFormatter();
+                    };
+                    EditorProcessor.prototype.getValidator = function (data) {
+                        return new validation.NoValidator();
+                    };
+                    return EditorProcessor;
+                }());
+                var TextEditorProcessor = (function (_super) {
+                    __extends(TextEditorProcessor, _super);
+                    function TextEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    TextEditorProcessor.prototype.update = function ($input, data) {
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var textmode = ko.unwrap(option.textmode);
+                        $input.attr('type', textmode);
+                        _super.prototype.update.call(this, $input, data);
+                    };
+                    TextEditorProcessor.prototype.getDefaultOption = function () {
+                        return new nts.uk.ui.option.TextEditorOption();
+                    };
+                    TextEditorProcessor.prototype.getFormatter = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return new uk.text.StringFormatter({ constraintName: constraintName });
+                    };
+                    TextEditorProcessor.prototype.getValidator = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return validation.createValidator(constraintName);
+                        ;
+                    };
+                    return TextEditorProcessor;
+                }(EditorProcessor));
+                /**
+                 * Editor
+                 */
+                var NtsEditorBindingHandler = (function () {
+                    function NtsEditorBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new EditorProcessor().init($(element), valueAccessor());
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new EditorProcessor().update($(element), valueAccessor());
+                    };
+                    return NtsEditorBindingHandler;
+                }());
+                /**
+                 * TextEditor
+                 */
+                var NtsTextEditorBindingHandler = (function (_super) {
+                    __extends(NtsTextEditorBindingHandler, _super);
+                    function NtsTextEditorBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsTextEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new TextEditorProcessor().init($(element), valueAccessor());
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsTextEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new TextEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTextEditorBindingHandler;
-                }());
+                }(NtsEditorBindingHandler));
                 /**
                  * NumberEditor
                  */
@@ -72,10 +143,16 @@ var nts;
                     NtsNumberEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
+                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
+                            if (uk.ntsNumber.isNumber(newText, true, option)) {
+                                $input.ntsError('clear');
+                            }
+                            else {
+                                $input.ntsError('set', 'invalid number');
+                            }
                             setValue(newText);
                         });
                     };
@@ -86,28 +163,27 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption());
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', 'text');
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var newText = getValue();
+                        if (newText !== undefined && newText !== null && newText.toString().trim().length > 0) {
+                            newText = uk.ntsNumber.formatNumber(uk.ntsNumber.isNumber(newText, true) ? parseFloat(newText)
+                                : parseFloat(newText.toString().replace(option.groupseperator(), '')), option);
+                        }
                         $input.val(newText);
                     };
                     return NtsNumberEditorBindingHandler;
@@ -124,14 +200,21 @@ var nts;
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var setValue = data.value;
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
                         var $input = $(element);
                         $input.change(function () {
                             var newText = $input.val();
-                            var result = validation.parseTime(newText);
+                            var result;
+                            if (option.inputFormat() === "yearmonth") {
+                                result = uk.time.parseYearMonth(newText);
+                            }
+                            else {
+                                result = uk.time.parseTime(newText);
+                            }
                             if (result.success) {
                                 $input.ntsError('clear');
-                                setValue(result.format());
+                                $input.val(result.format());
+                                setValue(result.toValue());
                             }
                             else {
                                 $input.ntsError('set', 'invalid time');
@@ -146,84 +229,39 @@ var nts;
                         // Get data
                         var data = valueAccessor();
                         var getValue = data.value;
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
                         var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
                         var placeholder = ko.unwrap(option.placeholder);
                         var width = ko.unwrap(option.width);
                         var textalign = ko.unwrap(option.textalign);
                         var $input = $(element);
                         $input.attr('type', 'text');
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
+                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
                         if (width.trim() != "")
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var newText = getValue();
-                        $input.val(newText);
+                        if (data.value() !== undefined && data.value() !== null) {
+                            var result;
+                            if (option.inputFormat() === "yearmonth") {
+                                result = uk.time.parseYearMonth(data.value());
+                            }
+                            else {
+                                result = uk.time.parseTime(data.value(), true);
+                            }
+                            if (result.success) {
+                                $input.val(result.format());
+                            }
+                            else {
+                                $input.val(data.value());
+                            }
+                        }
                     };
                     return NtsTimeEditorBindingHandler;
-                }());
-                /**
-                 * MaskEditor
-                 */
-                var NtsMaskEditorBindingHandler = (function () {
-                    function NtsMaskEditorBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsMaskEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var setValue = data.value;
-                        this.constraint = (data.constraint !== undefined) ? validation.getCharType(data.constraint) : validation.getCharType("");
-                        var $input = $(element);
-                        $input.change(function () {
-                            var newText = $input.val();
-                            setValue(newText);
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsMaskEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var getValue = data.value;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.MaskEditorOption());
-                        var textmode = ko.unwrap(option.textmode);
-                        var enable = ko.unwrap(option.enable);
-                        var readonly = ko.unwrap(option.readonly);
-                        var placeholder = ko.unwrap(option.placeholder);
-                        var width = ko.unwrap(option.width);
-                        var textalign = ko.unwrap(option.textalign);
-                        var $input = $(element);
-                        $input.attr('type', textmode);
-                        if (enable !== false)
-                            $input.removeAttr('disabled');
-                        else
-                            $input.attr('disabled', 'disabled');
-                        if (readonly === false)
-                            $input.removeAttr('readonly');
-                        else
-                            $input.attr('readonly', 'readonly');
-                        $input.attr('placeholder', placeholder);
-                        if (width.trim() != "")
-                            $input.width(width);
-                        if (textalign.trim() != "")
-                            $input.css('text-align', textalign);
-                        var newText = getValue();
-                        $input.val(newText);
-                    };
-                    return NtsMaskEditorBindingHandler;
                 }());
                 /**
                  * Multi Checkbox
@@ -1213,7 +1251,7 @@ var nts;
                         var constraintText;
                         switch (constraint.valueType) {
                             case 'String':
-                                return uk.ui.validation.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
+                                return uk.text.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
                             default:
                                 return 'ERROR';
                         }
@@ -1254,7 +1292,6 @@ var nts;
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
-                ko.bindingHandlers['ntsMaskEditor'] = new NtsMaskEditorBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
