@@ -28,5 +28,5 @@ public class DetailItemPosition extends DomainObject {
 		this.linePosition = linePosition;
 		this.columnPosition = columnPosition;
 	}
-
+	
 }

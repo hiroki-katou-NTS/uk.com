@@ -173,6 +173,15 @@ module qmm019.a {
                 self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
             });
         }
+        
+        registerLayout() {
+            var self = this;
+            service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
+                
+            }).fail(function(err){
+                alert(err);    
+            });
+        }
     }
     export class NodeTest {
         code: string;
