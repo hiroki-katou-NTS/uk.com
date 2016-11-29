@@ -16,11 +16,15 @@ var qmm019;
                     self.selectLayoutStartYm = ko.observable(null);
                     self.selectLayoutEndYm = ko.observable(null);
                     self.selectLayout = ko.observable(null);
+                    self.layoutStartYm = ko.observable(null);
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
-                    e.service.getLayout("01", 201606).done(function (layout) {
+                    var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
+                    var startYm = nts.uk.ui.windows.getShared('startYm');
+                    self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
+                    e.service.getLayout(layoutCode, startYm).done(function (layout) {
                         self.selectLayout(layout);
                         self.startDiaglog();
                     }).fail(function (res) {
@@ -56,7 +60,8 @@ var qmm019;
                 ScreenModel.prototype.dataDelete = function () {
                     var self = this;
                     e.service.deleteLayout(self.selectLayout()).done(function () {
-                        alert("履歴を削除する。");
+                        alert("履歴を削除しました。");
+                        nts.uk.ui.windows.close();
                     }).fail(function (res) {
                         alert(res);
                     });
@@ -64,12 +69,17 @@ var qmm019;
                 ScreenModel.prototype.dataUpdate = function () {
                     var self = this;
                     var layoutInfor = self.selectLayout();
-                    layoutInfor.startYm = $("#INP_001").val().replace('/', '');
+                    layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/', '');
+                    layoutInfor.startYm = +$("#INP_001").val().replace('/', '');
                     e.service.updateLayout(layoutInfor).done(function () {
-                        alert("履歴を修正する。");
+                        alert("履歴を修正しました。");
+                        nts.uk.ui.windows.close();
                     }).fail(function (res) {
                         alert(res);
                     });
+                };
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
                 };
                 return ScreenModel;
             }());

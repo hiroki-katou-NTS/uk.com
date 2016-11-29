@@ -18,7 +18,7 @@ var qmm019;
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
                     //sau nay gan lai
-                    self.layoutSelect = ko.observable("01");
+                    self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode')); //ko.observable("01");
                     self.valueSel001 = ko.observable("");
                     self.createlayout = ko.observable(null);
                     self.startYmHis = ko.observable(null);
@@ -105,6 +105,9 @@ var qmm019;
                         startPrevious: startPreviou,
                         layoutAtr: 3
                     });
+                };
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
                 };
                 return ScreenModel;
             }());

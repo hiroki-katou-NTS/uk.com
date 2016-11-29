@@ -14,7 +14,7 @@
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
-			    <script>var dialogSize = { width: 600, height: 700 };</script>
+			    <script>var dialogSize = { width: 560, height: 400 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
             </ui:define>
             
@@ -28,7 +28,7 @@
 							<label id="LBL_002" data-bind="text: selectLayoutCode">01</label>
 							<label id="LBL_003" data-bind="text: selectLayoutName">正社員用明細書</label>
 							<label id="">（</label>
-							<label id="LBL_004" data-bind="text: selectLayoutStartYm">2016/04</label>
+							<label id="LBL_004" data-bind="text: layoutStartYm">2016/04</label>
 							<label id="">　　～　　</label>
 							<label id="LBL_005" data-bind="text: selectLayoutEndYm"></label>
 							<label id="">）</label>
@@ -55,7 +55,7 @@
 						<hr></hr>
 						<div class = "bottomStype">
 							<button class="x-large proceed" id = "BTN_001" data-bind = "click: layoutProcess">決定</button>
-							<button class="large" id="BTN_002">キャンセル</button><br />
+							<button class="large" id="BTN_002" data-bind = "click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>
 	           	</div>

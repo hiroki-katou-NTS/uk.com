@@ -7,6 +7,7 @@ module qmm019.e.viewmodel {
         selectLayoutName: KnockoutObservable<string>;
         selectLayoutStartYm: KnockoutObservable<string>;
         selectLayoutEndYm: KnockoutObservable<string>;
+        layoutStartYm: KnockoutObservable<string>;
         /**
          * Init screen model.
          */
@@ -18,12 +19,16 @@ module qmm019.e.viewmodel {
             self.selectLayoutStartYm = ko.observable(null);
             self.selectLayoutEndYm = ko.observable(null);
             self.selectLayout = ko.observable(null);
+            self.layoutStartYm = ko.observable(null);
         }
         
          // start function
         start(): JQueryPromise<any> {
             var self = this;
-             service.getLayout("01", 201606).done(function(layout){
+            var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
+            var startYm = nts.uk.ui.windows.getShared('startYm');
+            self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
+             service.getLayout(layoutCode, startYm).done(function(layout){
                  self.selectLayout(layout);
                  self.startDiaglog();                 
                  
@@ -65,7 +70,8 @@ module qmm019.e.viewmodel {
         dataDelete():any{
             var self = this;
             service.deleteLayout(self.selectLayout()).done(function(){
-                alert("履歴を削除する。");
+                alert("履歴を削除しました。");
+                 nts.uk.ui.windows.close();
             }).fail(function(res){
                 alert(res);    
             })
@@ -74,12 +80,18 @@ module qmm019.e.viewmodel {
         dataUpdate(): any{
             var self = this;
             var layoutInfor = self.selectLayout();
-            layoutInfor.startYm = $("#INP_001").val().replace('/','');
+            layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/','');
+            layoutInfor.startYm = +$("#INP_001").val().replace('/','');
             service.updateLayout(layoutInfor).done(function(){
-                alert("履歴を修正する。")    
+                alert("履歴を修正しました。");
+                 nts.uk.ui.windows.close();
             }).fail(function(res){
                 alert(res);    
             })
+        }
+        
+        closeDialog() {
+            nts.uk.ui.windows.close();    
         }
     }
 }

@@ -182,6 +182,27 @@ module qmm019.a {
                 alert(err);    
             });
         }
+        
+        openADialog() {
+            var self = this;
+            if(self.singleSelectedCode() == null)
+                return;
+            var singleSelectedCode = self.singleSelectedCode().split(';');
+            nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(() => void {
+                
+            });
+        }
+        openEDialog(){
+            var self = this;
+            if(self.singleSelectedCode() == null)
+                return;
+            var singleSelectedCode = self.singleSelectedCode().split(';');
+            nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
+            nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(() => void {
+                });
+        }
     }
     export class NodeTest {
         code: string;
