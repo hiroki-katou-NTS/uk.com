@@ -12,6 +12,9 @@ module qmmm019.j.viewmodel{
             this.boxes1.push({id: 2, text: "明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）"});
             this.boxes1.push({id: 3, text: "レイアウトから行を削除（登録処理を行うまでは元に戻せます）"});
         }
+              closeDialog(): any{
+             nts.uk.ui.windows.close();
+       }
     }
     
     

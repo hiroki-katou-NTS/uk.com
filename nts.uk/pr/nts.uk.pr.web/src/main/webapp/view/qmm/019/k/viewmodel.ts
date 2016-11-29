@@ -13,6 +13,9 @@ module qmmm019.k.viewmodel{
             this.boxes2.push({id: 3, text: "レイアウトから行を削除（登録処理を行うまでは元に戻せます）"});
            
         }
+              closeDialog(): any{
+             nts.uk.ui.windows.close();
+       }
     }
     
     
