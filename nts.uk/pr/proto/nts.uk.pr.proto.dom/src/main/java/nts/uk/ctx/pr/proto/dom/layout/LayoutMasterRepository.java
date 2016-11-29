@@ -65,5 +65,5 @@ public interface LayoutMasterRepository {
 	 */
 	List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode);
 	
-	
+	List<LayoutMaster> findAll(String companyCode, String stmtCode, int baseYearMonth);
 }

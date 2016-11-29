@@ -24,7 +24,7 @@ module sample.wizard.viewmodel {
         }
         
         begin() {
-            $('#wizard').begin();
+            //$('#wizard').begin();
         }
         end() {
             $('#wizard').end();

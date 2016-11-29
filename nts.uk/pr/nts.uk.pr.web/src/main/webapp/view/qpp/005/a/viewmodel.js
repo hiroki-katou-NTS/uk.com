@@ -15,7 +15,7 @@ var nts;
                             function ScreenModel() {
                                 var self = this;
                                 self.isHandInput = ko.observable(true);
-                                self.paymentDataResult = ko.observable(new viewModel.PaymentDataResultViewModel());
+                                self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
                                 self.categories = ko.observable(new CategoriesList());
                                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                                 self.employee = ko.observable();
@@ -42,23 +42,11 @@ var nts;
                                 var dfd = $.Deferred();
                                 qpp005.service.getPaymentData(self.employee().personId(), self.employee().code()).done(function (res) {
                                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
-                                    var cates = _.map(res.categories, function (category) {
-                                        switch (category.categoryAttribute) {
-                                            case 0:
-                                                return new Category(0, '支給');
-                                            case 1:
-                                                return new Category(1, '控除');
-                                            case 2:
-                                                return new Category(2, '勤怠');
-                                            case 3:
-                                                return new Category(3, '記事');
-                                            default:
-                                                break;
-                                        }
-                                        ;
-                                    });
-                                    self.categories().items(cates);
-                                    self.categories().selectedCode(res.categories[0].categoryAttribute);
+                                    var categoryPayment = self.paymentDataResult().categories()[0];
+                                    var categoryDeduct = self.paymentDataResult().categories()[1];
+                                    var categoryArticle = self.paymentDataResult().categories()[3];
+                                    self.calcTotal(categoryPayment, categoryDeduct, categoryArticle, true);
+                                    self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
                                     dfd.resolve();
                                 }).fail(function (res) {
                                     // Alert message
@@ -107,6 +95,40 @@ var nts;
                                 self.employee(self.employeeList()[eIdx + 1]);
                                 self.startPage();
                             };
+                            ScreenModel.prototype.openGridSetting = function () {
+                                var _this = this;
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(function () {
+                                    var employee = nts.uk.ui.windows.getShared('employee');
+                                    self.employee(employee);
+                                    self.startPage();
+                                    return _this;
+                                });
+                            };
+                            /**
+                             * auto Calculate item total
+                             */
+                            ScreenModel.prototype.calcTotal = function (source, tranfer, destinate, isPayment) {
+                                var detailsPayment = _.flatMap(source.lines(), function (l) { return l.details(); });
+                                var totalPayment = _.last(detailsPayment);
+                                var inputtingsDetailsPayment = _.reject(detailsPayment, totalPayment);
+                                var updateTotalPayment = function () {
+                                    var total = _(inputtingsDetailsPayment).map(function (d) { return Number(uk.util.orDefault(d.value(), 0)); }).sum();
+                                    totalPayment.value(total);
+                                    var detailsTranfer = _.flatMap(tranfer.lines(), function (l) { return l.details(); });
+                                    var totalValueTranfer = _.last(detailsTranfer).value();
+                                    var detailsDestinate = _.flatMap(destinate.lines(), function (l) { return l.details(); });
+                                    if (isPayment) {
+                                        _.last(detailsDestinate).value(total - totalValueTranfer);
+                                    }
+                                    else {
+                                        _.last(detailsDestinate).value(totalValueTranfer - total);
+                                    }
+                                };
+                                inputtingsDetailsPayment.forEach(function (detail) {
+                                    detail.value.subscribe(function () { return updateTotalPayment(); });
+                                });
+                            };
                             return ScreenModel;
                         }());
                         viewmodel.ScreenModel = ScreenModel;
@@ -126,46 +148,50 @@ var nts;
                         /**
                           * Model namespace.
                        */
-                        var viewModel;
-                        (function (viewModel) {
-                            var PaymentDataResultViewModel = (function () {
-                                function PaymentDataResultViewModel() {
-                                }
-                                return PaymentDataResultViewModel;
-                            }());
-                            viewModel.PaymentDataResultViewModel = PaymentDataResultViewModel;
-                            // header
-                            var PaymentDataHeaderViewModel = (function () {
-                                function PaymentDataHeaderViewModel() {
-                                }
-                                return PaymentDataHeaderViewModel;
-                            }());
-                            viewModel.PaymentDataHeaderViewModel = PaymentDataHeaderViewModel;
-                            // categories
-                            var LayoutMasterCategoryViewModel = (function () {
-                                function LayoutMasterCategoryViewModel() {
-                                }
-                                return LayoutMasterCategoryViewModel;
-                            }());
-                            viewModel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
-                            // item
-                            var DetailItemViewModel = (function () {
-                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, isCreated) {
-                                    var self = this;
-                                    self.categoryAtr = categoryAtr;
-                                    self.itemAtr = itemAtr;
-                                    self.itemCode = itemCode;
-                                    self.itemName = itemName;
-                                    self.value = ko.observable(value);
-                                    self.columnPosition = columnPosition;
-                                    self.linePosition = linePosition;
-                                    self.deductAtr = deductAtr;
-                                    self.isCreated = isCreated;
-                                }
-                                return DetailItemViewModel;
-                            }());
-                            viewModel.DetailItemViewModel = DetailItemViewModel;
-                        })(viewModel = viewmodel.viewModel || (viewmodel.viewModel = {}));
+                        var PaymentDataResultViewModel = (function () {
+                            function PaymentDataResultViewModel() {
+                            }
+                            return PaymentDataResultViewModel;
+                        }());
+                        viewmodel.PaymentDataResultViewModel = PaymentDataResultViewModel;
+                        // header
+                        var PaymentDataHeaderViewModel = (function () {
+                            function PaymentDataHeaderViewModel() {
+                            }
+                            return PaymentDataHeaderViewModel;
+                        }());
+                        viewmodel.PaymentDataHeaderViewModel = PaymentDataHeaderViewModel;
+                        var PrintPositionCategoryViewModel = (function () {
+                            function PrintPositionCategoryViewModel() {
+                            }
+                            return PrintPositionCategoryViewModel;
+                        }());
+                        viewmodel.PrintPositionCategoryViewModel = PrintPositionCategoryViewModel;
+                        // categories
+                        var LayoutMasterCategoryViewModel = (function () {
+                            function LayoutMasterCategoryViewModel() {
+                            }
+                            return LayoutMasterCategoryViewModel;
+                        }());
+                        viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
+                        // item
+                        var DetailItemViewModel = (function () {
+                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, isCreated) {
+                                var self = this;
+                                self.categoryAtr = categoryAtr;
+                                self.itemAtr = itemAtr;
+                                self.itemCode = itemCode;
+                                self.itemName = itemName;
+                                self.value = ko.observable(value);
+                                self.columnPosition = columnPosition;
+                                self.linePosition = linePosition;
+                                self.deductAtr = deductAtr;
+                                self.displayAtr = displayAtr;
+                                self.isCreated = isCreated;
+                            }
+                            return DetailItemViewModel;
+                        }());
+                        viewmodel.DetailItemViewModel = DetailItemViewModel;
                         var CategoriesList = (function () {
                             function CategoriesList() {
                                 this.selectionChangedEvent = $.Callbacks();

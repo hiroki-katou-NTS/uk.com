@@ -6,7 +6,7 @@ var qmm019;
         (function (service) {
             var paths = {
                 getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym",
-                copylayoutPath: "pr/proto/layout/createlayout"
+                createlayouthistory: "pr/proto/layout/createlayouthistory"
             };
             /**
              * Get list layout master new history
@@ -23,16 +23,16 @@ var qmm019;
                 return dfd.promise();
             }
             service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
-            function createLayout(layoutMaster) {
+            function createLayoutHistory(layoutMaster) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function (res) {
+                nts.uk.request.ajax(paths.createlayouthistory, layoutMaster).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
                     dfd.reject(res);
                 });
                 return dfd.promise();
             }
-            service.createLayout = createLayout;
+            service.createLayoutHistory = createLayoutHistory;
             var model;
             (function (model) {
                 // layout

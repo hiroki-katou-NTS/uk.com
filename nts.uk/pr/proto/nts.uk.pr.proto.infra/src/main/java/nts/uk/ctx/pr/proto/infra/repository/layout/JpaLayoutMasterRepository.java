@@ -30,6 +30,11 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	// QstmtStmtLayoutHead e "
 	// + "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND
 	// c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
+	private final String SEL_5 = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode"
+			+ " AND c.qstmtStmtLayoutHeadPK.strYm <= :baseYearMonth "
+			+ " AND c.endYm >= :baseYearMonth "; 
 
 	private final LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
 		val domain = LayoutMaster.createFromJavaType(entity.qstmtStmtLayoutHeadPK.companyCd,
@@ -66,12 +71,17 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	@Override
 	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int strYm) {
 		try {
-			LayoutMaster lstHistoryBefore = this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
+			List<LayoutMaster> lstHistoryBefore = this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
 					.setParameter("companyCd", companyCode)
 					.setParameter("stmtCd", stmtCode)
 					.setParameter("strYm", strYm)
-					.getList(c -> toDomain(c)).get(0);
-		return Optional.of(lstHistoryBefore);
+					.getList(c -> toDomain(c));
+			LayoutMaster layoutMaster;
+			if(!lstHistoryBefore.isEmpty()){
+				layoutMaster = lstHistoryBefore.get(0);
+				return Optional.of(layoutMaster);
+			}
+			return null;
 		} catch (Exception e) {
 			throw e;
 		}
@@ -145,4 +155,12 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	// return Optional.empty();
 	// }
 
+	@Override
+	public List<LayoutMaster> findAll(String companyCode, String stmtCode, int baseYearMonth) {
+		return this.queryProxy().query(SEL_5, QstmtStmtLayoutHead.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("stmtCode", stmtCode)
+				.setParameter("baseYearMonth", baseYearMonth)
+				.getList(x -> toDomain(x));
+	}
 }

@@ -109,6 +109,25 @@ var qmm019;
                 };
                 ScreenModel.prototype.createNewLayout = function () {
                     var self = this;
+                    if (self.checkData()) {
+                        if ($("#newCreate").is(":checked")) {
+                            self.createNewData();
+                        }
+                        else {
+                            //印字行数　＞　最大印字行数　の場合
+                            //メッセージ( ER030 )を表示する
+                            self.createCopyData();
+                        }
+                        g.service.createLayout(self.createlayout()).done(function () {
+                            alert('追加しました。');
+                            nts.uk.ui.windows.close();
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                    }
+                };
+                ScreenModel.prototype.checkData = function () {
+                    var self = this;
                     //登録時チェック処理
                     var mess = "が入力されていません";
                     //必須項目の未入力チェックを行う
@@ -128,26 +147,19 @@ var qmm019;
                         return false;
                     }
                     //コードの重複チェックを行う
+                    var isStorage = false;
                     _.forEach(self.layouts(), function (layout) {
                         if (+$('#INP_001').val() === +layout.stmtCode) {
                             alert('入力した' + $('#INP_001').val() + 'は既に存在しています。\r\n' + $('#INP_001').val() + 'を確認してください。');
+                            $('#INP_001').focus();
+                            isStorage = true;
                             return false;
                         }
                     });
-                    if ($("#newCreate").is(":checked")) {
-                        self.createNewData();
+                    if (isStorage) {
+                        return false;
                     }
-                    else {
-                        //印字行数　＞　最大印字行数　の場合
-                        //メッセージ( ER030 )を表示する
-                        self.createCopyData();
-                    }
-                    g.service.createLayout(self.createlayout()).done(function () {
-                        alert('追加しました。');
-                        nts.uk.ui.windows.close();
-                    }).fail(function (res) {
-                        alert(res);
-                    });
+                    return true;
                 };
                 ScreenModel.prototype.createNewData = function () {
                     var self = this;

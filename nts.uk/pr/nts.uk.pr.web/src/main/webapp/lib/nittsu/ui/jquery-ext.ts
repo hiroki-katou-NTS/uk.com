@@ -6,10 +6,13 @@
 module nts.uk.ui.jqueryExtentions {
     
     module ntsError {
+        var DATA_HAS_ERROR = 'haserror';
+        
         $.fn.ntsError = function (action: string, message: string) {
             var $control = $(this);
             
             if (action === "set") {
+                $control.data(DATA_HAS_ERROR, true);
                 ui.errors.add({
                     location: $control.data('name') || "",
                     message: message,
@@ -18,7 +21,12 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             if (action === "clear") {
+                $control.data(DATA_HAS_ERROR, false);
                 ui.errors.removeByElement($control);
+            }
+            
+            if (action === 'hasError') {
+                return $control.data(DATA_HAS_ERROR) === true;
             }
             
             return this;

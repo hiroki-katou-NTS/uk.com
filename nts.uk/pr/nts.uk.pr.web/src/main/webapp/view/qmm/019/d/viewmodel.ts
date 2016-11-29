@@ -11,12 +11,13 @@ module qmm019.d.viewmodel {
         layoutSelect:  KnockoutObservable<string>;
         valueSel001:   KnockoutObservable<string>;
         createlayout:  KnockoutObservable<service.model.LayoutMasterDto>;
+        startYmHis: KnockoutObservable<number>;
         /**
          * Init screen model.
          */
         constructor() {
             var self = this;
-            self.selectLayoutAtr = ko.observable("2");
+            self.selectLayoutAtr = ko.observable("3");
             self.itemList = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.layouts = ko.observableArray([]);
@@ -24,9 +25,10 @@ module qmm019.d.viewmodel {
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
             //sau nay gan lai
-            self.layoutSelect = ko.observable("01");
+            self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));//ko.observable("01");
             self.valueSel001 = ko.observable("");
             self.createlayout = ko.observable(null);
+            self.startYmHis = ko.observable(null);
         } 
         
         start(): JQueryPromise<any> {
@@ -70,8 +72,9 @@ module qmm019.d.viewmodel {
                 if(stmtCode == self.layoutSelect()){
                     self.selectStmtCode(stmtCode);
                     self.selectStmtName(layout.stmtName);
-                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm + 1));
+                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                     self.valueSel001('最新の履歴'+ layout.startYm +'から引き継ぐ')
+                    self.startYmHis = layout.startYm;
                     return false;                    
                 }
             });     
@@ -79,48 +82,43 @@ module qmm019.d.viewmodel {
         
        createHistoryLayout(): any{
            var self = this;
-           if($("#copyCreate").is(":checked")){
-                self.copyCreateData();
-            }else{
-                self.newCreateData();    
+           var selectYm = self.startYmHis;
+            var inputYm =$("#INP_001").val().replace('/','');
+            if(+inputYm < +selectYm
+              || + inputYm == +selectYm){
+               alert('履歴の期間が正しくありません。');
+                return false;
             }
-           service.createLayout(self.createlayout()).done(function(){
-                alert("追加しました。");    
-           }).fail(function(res){
-                alert(res);
-           })
-           
+           else{
+                self.createData();
+               if($("#copyCreate").is(":checked")){
+                    self.createlayout().checkContinue = true;
+                }else{
+                    self.createlayout().checkContinue = false; 
+                }
+               service.createLayoutHistory(self.createlayout()).done(function(){
+                   alert("追加しました。"); 
+                   nts.uk.ui.windows.close();   
+               }).fail(function(res){
+                   alert(res);
+                   nts.uk.ui.windows.close();
+               })
+           }
        }
-        
-       copyCreateData(): any{
+       createData(): any{
            var self = this;
-           //var test = self.selectStmtCode();
+           var startPreviou = +$('#INP_001').val().replace('/','');
            self.createlayout({
-               companyCode: self.layouts()[0].companyCode,
+               checkContinue: false,
                stmtCode: self.selectStmtCode(),
-               startYm: + nts.uk.time.formatYearMonth($('#INP_001').val()),
-               stmtName: self.selectStmtName(),
-               endYM: 999912,
-               layoutAtr: 3,
-               isCopy: true,
-               stmtCodeCopied: self.selectStmtCode(),
-               startYmCopied:self.selectStartYm()
-               });
+               startYm: +self.startYmHis,
+               endYm: (startPreviou - 1),
+               startPrevious: startPreviou,
+               layoutAtr: 3
+          });
        }
-        
-        newCreateData(): any{
-            var self = this;
-            self.createlayout({
-               companyCode: self.layouts()[0].companyCode,
-               stmtCode: self.selectStmtCode(),
-               startYm: + nts.uk.time.formatYearMonth($('#INP_001').val()),
-               stmtName: self.selectStmtName(),
-               endYM: 999912,
-               layoutAtr: 3,
-               isCopy: false,
-               stmtCodeCopied: self.selectStmtCode(),
-               startYmCopied:self.selectStartYm()
-            })
+        closeDialog(): any{
+            nts.uk.ui.windows.close();   
         }
     }
     
