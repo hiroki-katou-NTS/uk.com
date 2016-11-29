@@ -27,7 +27,11 @@ var nts;
             ntsNumber.isNumber = isNumber;
             /*similar with Math.trunc, get integer value from decimal*/
             function trunc(value) {
-                if (Math.trunc(value)) {
+                try {
+                    return Math.trunc(value);
+                }
+                catch (x) {
+                    return value > 0 ? Math.floor(value) : Math.ceil(value);
                 }
             }
             ntsNumber.trunc = trunc;

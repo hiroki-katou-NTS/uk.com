@@ -111,7 +111,7 @@ module nts.uk.ui.koExtentions {
         
         getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            return new text.NumberFormatter({ option: option});
+            return new text.TimeFormatter({ option: option});
         }
         
         getValidator(data: any): validation.IValidator {
