@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.persistence.EnumType;
 
@@ -31,6 +32,9 @@ public class PaymentDateMaster extends AggregateRoot {
 	
 	@Getter
 	private PayBonusAtr payBonusAttribute;
+	
+	@Getter
+	private LocalDate standardDate;
 
 	/**
 	 * 
@@ -41,7 +45,7 @@ public class PaymentDateMaster extends AggregateRoot {
 	 * @param payBonusAttribute
 	 */
 	public PaymentDateMaster(BigDecimal neededWorkDay, ProcessingNo processingNo, YearMonth processingYearMonth,
-			SparePayAtr sparePayAttribute, PayBonusAtr payBonusAttribute) {
+			SparePayAtr sparePayAttribute, PayBonusAtr payBonusAttribute, LocalDate standardDate) {
 		super();
 		this.neededWorkDay = neededWorkDay;
 		this.processingNo = processingNo;
@@ -51,7 +55,7 @@ public class PaymentDateMaster extends AggregateRoot {
 	}
 	
 	public static PaymentDateMaster createFromJavaType(BigDecimal neededWorkDay, int processingNo, int processingYearMonth,
-			int sparePayAttribute, int payBonusAttribute){
-		return new PaymentDateMaster(neededWorkDay, new ProcessingNo(processingNo), YearMonth.of(processingYearMonth), EnumAdaptor.valueOf(sparePayAttribute, SparePayAtr.class), EnumAdaptor.valueOf(payBonusAttribute, PayBonusAtr.class));
+			int sparePayAttribute, int payBonusAttribute, LocalDate standardDate){
+		return new PaymentDateMaster(neededWorkDay, new ProcessingNo(processingNo), YearMonth.of(processingYearMonth), EnumAdaptor.valueOf(sparePayAttribute, SparePayAtr.class), EnumAdaptor.valueOf(payBonusAttribute, PayBonusAtr.class), standardDate);
 	}
 }

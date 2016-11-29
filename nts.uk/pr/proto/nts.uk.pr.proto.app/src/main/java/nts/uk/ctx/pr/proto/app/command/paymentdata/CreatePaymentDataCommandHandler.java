@@ -20,7 +20,6 @@ import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
@@ -168,9 +167,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				processingYearMonth.v());
 
 		// get layout master
-		LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
-				processingYearMonth.v(), personalAllotSetting.getPaymentDetailCode().v())
-					.orElseThrow(() -> new RuntimeException("LayoutMaster not found"));
+//		LayoutMaster layoutHead = layoutMasterRepo.getLayout(loginInfo.companyCode(),
+//				processingYearMonth.v(), personalAllotSetting.getPaymentDetailCode().v())
+//					.orElseThrow(() -> new RuntimeException("LayoutMaster not found"));
 		
 		// get personal allot setting
 		String stmtCode = personalAllotSetting.getPaymentDetailCode().v();
@@ -208,7 +207,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		
 		Payment paymentHead = this.toDomain(
 				loginInfo.companyCode(), personId, processingNo, processingYearMonth, stmtCode,
-				detailPaymentList, detailDeductionList, payDetail, positionCategoryList);
+				detailPaymentList, detailDeductionList, payDetail, positionCategoryList, payDay);
 		
 		paymentDataRepo.add(paymentHead);
 	}
@@ -220,7 +219,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 */
 	private Payment toDomain(String companyCode, String personId, int processingNo, YearMonth processingYearMonth, String stmtCode,
 			List<DetailItem> detailPaymentList, List<DetailItem> detailDeductionList,
-			Map<CategoryAtr, List<DetailItem>> payDetail, List<PrintPositionCategory> positionCategoryList) {
+			Map<CategoryAtr, List<DetailItem>> payDetail, List<PrintPositionCategory> positionCategoryList, PaymentDateMaster payDay) {
 		Payment payment = new Payment(
 				new CompanyCode(companyCode), 
 				new PersonId(personId),
@@ -228,7 +227,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				PayBonusAtr.SALARY, 
 				processingYearMonth, 
 				SparePayAtr.NORMAL,
-				GeneralDate.today(),
+				GeneralDate.localDate(payDay.getStandardDate()),
 				new SpecificationCode(stmtCode), 
 				new ResidenceCode("000001"), 
 				new ResidenceName("住民税納付先"), 
