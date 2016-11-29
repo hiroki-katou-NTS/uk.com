@@ -50,8 +50,10 @@ var nts;
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var formatter = this.getFormatter(data);
-                        $input.val(formatter.format(getValue()));
+                        var formatted = $input.ntsError('hasError')
+                            ? getValue()
+                            : this.getFormatter(data).format(getValue());
+                        $input.val(formatted);
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
                         return {};

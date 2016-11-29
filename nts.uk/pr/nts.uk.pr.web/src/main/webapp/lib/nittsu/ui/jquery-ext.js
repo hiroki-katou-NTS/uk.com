@@ -8,9 +8,11 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsError;
                 (function (ntsError) {
+                    var DATA_HAS_ERROR = 'haserror';
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
                         if (action === "set") {
+                            $control.data(DATA_HAS_ERROR, true);
                             ui.errors.add({
                                 location: $control.data('name') || "",
                                 message: message,
@@ -18,7 +20,11 @@ var nts;
                             });
                         }
                         if (action === "clear") {
+                            $control.data(DATA_HAS_ERROR, false);
                             ui.errors.removeByElement($control);
+                        }
+                        if (action === 'hasError') {
+                            return $control.data(DATA_HAS_ERROR) === true;
                         }
                         return this;
                     };
