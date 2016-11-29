@@ -34,9 +34,6 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	/** CompanyRepository */
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
-
-	@Inject
-	private ItemMasterRepository itemMasterRepository;
 	
 	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;
@@ -66,9 +63,8 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		this.paymentDataRepository.updateHeader(payment);
 
 		// update detail
-		List<ItemMaster> mItems = this.itemMasterRepository.findAll(companyCode);
 		for (CategoryCommandBase cate : context.getCommand().getCategories()) {
-			this.registerDetail(payment, cate, mItems);
+			this.registerDetail(payment, cate);
 		}
 	}
 
@@ -98,12 +94,10 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 * @param items
 	 * @param payment
 	 */
-	private void registerDetail(Payment payment, CategoryCommandBase category, List<ItemMaster> mItems) {
+	private void registerDetail(Payment payment, CategoryCommandBase category) {
 		category.getLines().stream().forEach(x-> {
 			for (DetailItemCommandBase item : x.getDetails()) {
 				
-				ItemMaster mItem = mItems.stream().filter(m-> m.getItemCode().equals(item.getItemCode()) && m.getCategoryAtr().value == item.getCategoryAtr())
-						.findFirst().get();
 				DetailItem detailItem = DetailItem.createFromJavaType(
 						item.getItemCode(), 
 						item.getValue(),
@@ -111,7 +105,8 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 						item.getSocialInsuranceAtr(),
 						item.getLaborInsuranceAtr(),
 						item.getCategoryAtr(),
-						mItem.getDeductAttribute().value
+						item.getDeductAtr(),
+						item.getItemAtr()
 						);
 				
 				if (item.isCreated()) {

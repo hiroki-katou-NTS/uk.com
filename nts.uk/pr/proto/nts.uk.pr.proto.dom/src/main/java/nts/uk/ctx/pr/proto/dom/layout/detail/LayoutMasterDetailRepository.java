@@ -104,4 +104,17 @@ public interface LayoutMasterDetailRepository {
 	 * @return
 	 */
 	List<LayoutMasterDetail> getDetailsWithSumScopeAtr(String companyCode, String stmtCode, int startYearMonth, int categoryAttribute, int sumScopeAtr);
+	
+	/**
+	 * find all
+	 * 
+	 * @param companyCode
+	 * @param layout code
+	 * @param start YM
+	 * @return category type
+	 */
+	List<LayoutMasterDetail> findAll(
+			String companyCd, 
+			String stmtCd, 
+			int startYm);
 }
