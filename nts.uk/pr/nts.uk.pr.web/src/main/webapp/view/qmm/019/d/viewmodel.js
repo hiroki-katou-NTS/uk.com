@@ -60,7 +60,7 @@ var qmm019;
                         if (stmtCode == self.layoutSelect()) {
                             self.selectStmtCode(stmtCode);
                             self.selectStmtName(layout.stmtName);
-                            self.selectStartYm(nts.uk.text.formatYearMonth(layout.startYm + 1));
+                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm + 1));
                             self.valueSel001('最新の履歴' + layout.startYm + 'から引き継ぐ');
                             return false;
                         }
@@ -86,7 +86,7 @@ var qmm019;
                     self.createlayout({
                         companyCode: self.layouts()[0].companyCode,
                         stmtCode: self.selectStmtCode(),
-                        startYm: +nts.uk.text.formatYearMonth($('#INP_001').val()),
+                        startYm: +nts.uk.time.formatYearMonth($('#INP_001').val()),
                         stmtName: self.selectStmtName(),
                         endYM: 999912,
                         layoutAtr: 3,
@@ -100,7 +100,7 @@ var qmm019;
                     self.createlayout({
                         companyCode: self.layouts()[0].companyCode,
                         stmtCode: self.selectStmtCode(),
-                        startYm: +nts.uk.text.formatYearMonth($('#INP_001').val()),
+                        startYm: +nts.uk.time.formatYearMonth($('#INP_001').val()),
                         stmtName: self.selectStmtName(),
                         endYM: 999912,
                         layoutAtr: 3,
