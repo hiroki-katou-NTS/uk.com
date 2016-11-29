@@ -31,6 +31,11 @@
             return value > 0 ? Math.floor(value) : Math.ceil(value);
         }
     }
+    
+    export function getDecimal(value: any, scale: number){
+        var scaleX = Math.pow(10, scale);
+        return trunc(value*scaleX)/scaleX;
+    }
 
     export function formatNumber(value: any, formatOption: any) {
         if (value === undefined || value === null || value.toString().trim().lenth <= 0) {

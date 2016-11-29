@@ -78,7 +78,8 @@
                 result.fail('invalid number');
                 return result;
             }
-            var value = isDecimalNumber ? parseFloat(inputText) : parseInt(inputText);
+            var value = isDecimalNumber ? 
+                ntsNumber.getDecimal(inputText, this.option.decimallength()) : parseInt(inputText);
 
             if (this.constraint !== null) {
                 if (this.constraint.max !== undefined && value > this.constraint.max) {

@@ -71,7 +71,8 @@ var nts;
                             result.fail('invalid number');
                             return result;
                         }
-                        var value = isDecimalNumber ? parseFloat(inputText) : parseInt(inputText);
+                        var value = isDecimalNumber ?
+                            uk.ntsNumber.getDecimal(inputText, this.option.decimallength()) : parseInt(inputText);
                         if (this.constraint !== null) {
                             if (this.constraint.max !== undefined && value > this.constraint.max) {
                                 result.fail('invalid number');

@@ -36,6 +36,11 @@ var nts;
                 }
             }
             ntsNumber.trunc = trunc;
+            function getDecimal(value, scale) {
+                var scaleX = Math.pow(10, scale);
+                return trunc(value * scaleX) / scaleX;
+            }
+            ntsNumber.getDecimal = getDecimal;
             function formatNumber(value, formatOption) {
                 if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
                     return value;
