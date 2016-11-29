@@ -12,12 +12,14 @@ module nts.uk.ui.option {
         placeholder?: string;
         width?: string;
         textalign?: string;
-        format?: Format;
+        filldirection?: FillDirection;
+        fillcharacter?: string;
     }
 
     export class TextEditorOption extends EditorOptionBase {
         textmode: TextMode;
-        format: Format;
+        filldirection: FillDirection;
+        fillcharacter: string;
         
         constructor(option?: ITextEditorOption) {
             super();
@@ -26,7 +28,8 @@ module nts.uk.ui.option {
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
-            this.format = (option && option.format) ? option.format : null;
+            this.filldirection = (option && option.filldirection) ? option.filldirection : "right";
+            this.fillcharacter = (option && option.fillcharacter) ? option.fillcharacter : "0";
         }
     }
 
@@ -50,30 +53,7 @@ module nts.uk.ui.option {
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
     }
-    
-    // Mask Editor Option
-    interface IMaskEditorOption{
-        mask?: string;
-        placeholder?: string;
-        width?: string;
-        textalign?: string;
-    }
 
-
-    export class MaskEditorOption extends EditorOptionBase {
-        mask: string;
-        
-        constructor(option?: IMaskEditorOption) {
-            super();
-            // Default value
-            this.mask = (option && option.mask) ? option.mask : "";
-            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-            this.width = (option && option.width) ? option.width : "";
-            this.textalign = (option && option.textalign) ? option.textalign : "left";
-        }
-    }
-
-    
     // Number Editor Option
     interface INumberEditorOption{
         groupseperator?: string,
@@ -139,17 +119,7 @@ module nts.uk.ui.option {
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
     }
-    
-    class Format {
-        filldirection: FillDirection;
-        fillcharacter: string;
         
-        constructor(filldirection: FillDirection, fillcharacter: string){
-            this.filldirection = filldirection;
-            this.fillcharacter = fillcharacter;
-        }    
-    }
-    
     type TextMode = "text" | "password";
     type FillDirection = "left" |"right";
     type Currency = "JPY" | "USD";

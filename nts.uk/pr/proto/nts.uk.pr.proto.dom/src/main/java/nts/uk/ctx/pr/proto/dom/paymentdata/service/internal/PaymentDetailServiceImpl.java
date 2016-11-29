@@ -118,12 +118,10 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		//double sumCommuteAllowance = commute.sumCommuteAllowance(param.getCurrentProcessingYearMonth());
 		if (layout.isCalMethodPesonalInfomation()) {
 			// get personal wage
-			PersonalWage personalWage = personalWageRepo.find(
-					param.getCompanyCode(),
-					param.getPersonId().v(),
-					itemMaster.getCategoryAtr().value,
-					this.getPersonalWageCode(itemMaster.getItemCode().v()),
-					param.getCurrentProcessingYearMonth().v()).get();
+			PersonalWage personalWage = param.getPersonalWageList().stream()
+					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemMaster.getItemCode().v()))).findFirst()
+					.orElseThrow(() -> new RuntimeException("システムエラー")); 
+			
 			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
 			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
