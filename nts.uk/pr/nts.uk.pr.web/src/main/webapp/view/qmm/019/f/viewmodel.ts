@@ -309,10 +309,7 @@ module qmm019.f.viewmodel {
             var data = {
                 itemCode: itemSelected.itemCode(),
                 itemAbName: itemSelected.itemAbName(),
-                isRequired: null,
-                itemPosColumn: null,
                 categoryAtr: self.paramCategoryAtr(),
-                autoLineId: '',
                 sumScopeAtr: sumScopeAtr,
                 commuteAtr: commuteAtr,
                 calculationMethod: calculationMethod,
