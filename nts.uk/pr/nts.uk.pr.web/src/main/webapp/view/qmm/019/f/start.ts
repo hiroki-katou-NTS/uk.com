@@ -1,8 +1,8 @@
 __viewContext.ready(function() {
     //var data = this.transferred.get();
     var data = {
-        categoryId: 1,
-        itemCode: '0030',
+        categoryId: 0,
+        itemCode: '0003',
         isUpdate: true
     };
     var screenModel = new qmm019.f.viewmodel.ScreenModel(data);

@@ -1,6 +1,6 @@
 module qmm019.f.viewmodel {
-  
-            
+
+
 
     export class ItemModel {
         id: any;
@@ -10,8 +10,8 @@ module qmm019.f.viewmodel {
             this.id = id;
             this.name = name;
         }
-        
-        
+
+
     }
 
     //get the model from app
@@ -20,30 +20,30 @@ module qmm019.f.viewmodel {
         itemCode: KnockoutObservable<String>;
         categoryAtr: KnockoutObservable<number>;
         itemAbName: KnockoutObservable<String>;
-        isUseHighError: KnockoutObservable<boolean>;
+        checkUseHighError: KnockoutObservable<boolean>;
         errRangeHigh: KnockoutObservable<number>;
-        isUseLowError: KnockoutObservable<boolean>;
+        checkUseLowError: KnockoutObservable<boolean>;
         errRangeLow: KnockoutObservable<number>;
-        isUseHighAlam: KnockoutObservable<boolean>;
+        checkUseHighAlam: KnockoutObservable<boolean>;
         alamRangeHigh: KnockoutObservable<number>;
-        isUseLowAlam: KnockoutObservable<boolean>;
+        checkUseLowAlam: KnockoutObservable<boolean>;
         alamRangeLow: KnockoutObservable<number>;
 
-        constructor(companyCode, itemCode, categoryAtr, itemAbName, isUseHighError, errRangeHigh, isUseLowError, errRangeLow, isUseHighAlam, alamRangeHigh, isUseLowAlam, alamRangeLow) {
-            var self = this;
-            self.companyCode = ko.observable(companyCode);
-            self.itemCode = ko.observable(itemCode);
-            self.categoryAtr = ko.observable(categoryAtr);
-            self.itemAbName = ko.observable(itemAbName);
-            self.isUseHighError = ko.observable(isUseHighError);
-            self.errRangeHigh = ko.observable(errRangeHigh);
-            self.isUseLowError = ko.observable(isUseLowError);
-            self.errRangeLow = ko.observable(errRangeLow);
-            self.isUseHighAlam = ko.observable(isUseHighAlam);
-            self.alamRangeHigh = ko.observable(alamRangeHigh);
-            self.isUseLowAlam = ko.observable(isUseLowAlam);
-            self.alamRangeLow = ko.observable(alamRangeLow);
-        }
+        //        constructor(companyCode, itemCode, categoryAtr, itemAbName, checkUseHighError, errRangeHigh, checkUseLowError, errRangeLow, checkUseHighAlam, alamRangeHigh, checkUseLowAlam, alamRangeLow) {
+        //            var self = this;
+        //            self.companyCode = ko.observable(companyCode);
+        //            self.itemCode = ko.observable(itemCode);
+        //            self.categoryAtr = ko.observable(categoryAtr);
+        //            self.itemAbName = ko.observable(itemAbName);
+        //            self.checkUseHighError = ko.observable(checkUseHighError);
+        //            self.errRangeHigh = ko.observable(errRangeHigh);
+        //            self.checkUseLowError = ko.observable(checkUseLowError);
+        //            self.errRangeLow = ko.observable(errRangeLow);
+        //            self.checkUseHighAlam = ko.observable(checkUseHighAlam);
+        //            self.alamRangeHigh = ko.observable(alamRangeHigh);
+        //            self.checkUseLowAlam = ko.observable(checkUseLowAlam);
+        //            self.alamRangeLow = ko.observable(alamRangeLow);
+        //        }
     }
 
     export class ListBox {
@@ -54,7 +54,7 @@ module qmm019.f.viewmodel {
         selectedName: KnockoutObservable<any>;
         isEnable: KnockoutObservable<any>;
         selectedCodes: KnockoutObservableArray<any>;
-        itemDtoSelected: KnockoutObservable<ItemDto>;
+        itemDtoSelected: KnockoutObservable<any>;
         listItemDto: Array<ItemDto>;
 
         constructor(listItemDto, currentItemCode) {
@@ -74,12 +74,8 @@ module qmm019.f.viewmodel {
                 self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
             });
             // get item selected
-            self.itemDtoSelected = ko.computed(function(){
-                return _.find(self.listItemDto, function(item) {
-                    return item.itemCode == self.selectedCode().toString();
-                });
-            });
-
+            var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
+            self.itemDtoSelected = ko.observable(item);
             //self.itemList = ko.observableArray([
             //    new ItemModel('001', '名前１'),
             //    new ItemModel('002', '名前2'),
@@ -100,37 +96,38 @@ module qmm019.f.viewmodel {
 
             //subcribe list box's change
             self.selectedCode.subscribe(function(codeChange) {
-
+                var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
+                self.itemDtoSelected(ko.observable(item));
             });
         }
-        
-        
+
+        getItemDtoSelected(codeChange): ItemDto {
+            var self = this;
+            var item = _.find(self.listItemDto, function(item) {
+                return item.itemCode == codeChange;
+            });
+            return item;
+        }
+
     }
-   
+
 
     export class ComboBox {
         itemName: KnockoutObservable<any>;
-        currentCode: KnockoutObservable<any>;
         selectedCode: KnockoutObservable<number>;
         itemList: KnockoutObservableArray<any>;
 
         constructor(itemList) {
             var self = this;
-            self.itemList = itemList;
+            if (itemList !== null) {
+                self.itemList = itemList;
+            }
+            else {
+                self.itemList = ko.observableArray();
+            }
             self.itemName = ko.observable('');
-            self.currentCode = ko.observable(1);
             self.selectedCode = ko.observable(null);
         }
-        
-        isManualInput(): boolean{
-            var self = this;
-            return self.selectedCode == ko.observable(0);
-        }
-        
-        isPersonalinformationReference(): boolean {
-            var self = this;
-            return self.selectedCode == ko.observable(1);
-        } 
     }
 
     export class SwitchButton {
@@ -148,25 +145,24 @@ module qmm019.f.viewmodel {
     }
 
     export class ScreenModel {
-        listBox: ListBox;
-        comboBoxSumScopeAtr: ComboBox;
-        comboBoxCalcMethod0: ComboBox;
-        comboBoxCalcMethod1: ComboBox;
-        comboBoxDistributeWay: ComboBox;
-        comboBoxCommutingClassification: ComboBox;
-        switchButton: SwitchButton;
+        listBox: KnockoutObservable<ListBox>;
+        comboBoxSumScopeAtr: KnockoutObservable<ComboBox>;
+        comboBoxCalcMethod: KnockoutObservable<ComboBox>;
+        comboBoxDistributeWay: KnockoutObservable<ComboBox>;
+        comboBoxCommutingClassification: KnockoutObservable<ComboBox>;
+        switchButton: KnockoutObservable<SwitchButton>;
         itemCode: KnockoutObservable<String>;
         paramItemCode: String;
-        paramCategoryAtr: number;
+        paramCategoryAtr: KnockoutObservable<number>;
         isUpdate: boolean;
-        listItemDto: Array<any>;
+        listItemDto: any;
 
         constructor(data) {
             var self = this;
             self.paramItemCode = data.itemCode;
-            self.paramCategoryAtr = data.categoryId;
+            self.paramCategoryAtr = ko.observable(data.categoryId);
             self.isUpdate = data.isUpdate;
-            
+
             var itemListSumScopeAtr = ko.observableArray([
                 new ItemModel(0, '対象外'),
                 new ItemModel(1, '対象内'),
@@ -197,33 +193,45 @@ module qmm019.f.viewmodel {
                 new ItemModel(0, '交通機関'),
                 new ItemModel(1, '交通用具')
             ]);
-            
-            self.comboBoxSumScopeAtr = new ComboBox(itemListSumScopeAtr);
-            self.comboBoxCalcMethod0 = new ComboBox(itemListCalcMethod0);
-            self.comboBoxCalcMethod1 = new ComboBox(itemListCalcMethod1);
-            self.comboBoxDistributeWay = new ComboBox(itemListDistributeWay);
-            self.comboBoxCommutingClassification = new ComboBox(itemListCommutingClassification);
-            self.switchButton = new SwitchButton();
+
+            self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
+            if (self.paramCategoryAtr() == 0) {
+                self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod0));
+            } else if (self.paramCategoryAtr() == 1) {
+                self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod1));
+            }
+            self.comboBoxDistributeWay = ko.observable(new ComboBox(itemListDistributeWay));
+            self.comboBoxCommutingClassification = ko.observable(new ComboBox(itemListCommutingClassification));
+            self.switchButton = ko.observable(new SwitchButton());
         }
-        
+
         isCategoryAtrEqual0(): boolean {
             var self = this;
-            return self.paramCategoryAtr == 0;
+            return self.paramCategoryAtr() == 0;
         }
-        
+
         isCategoryAtrEqual1(): boolean {
             var self = this;
-            return self.paramCategoryAtr == 1;
+            return self.paramCategoryAtr() == 1;
         }
-        
+
         isCategoryAtrEqual2(): boolean {
             var self = this;
-            return self.paramCategoryAtr == 2;
+            return self.paramCategoryAtr() == 2;
         }
-        
+
         isCategoryAtrEqual3(): boolean {
             var self = this;
-            return self.paramCategoryAtr == 3;
+            return self.paramCategoryAtr() == 3;
+        }
+
+        checkDisplayComboBoxCalcMethod(): boolean {
+            var self = this;
+            return (self.isCategoryAtrEqual0() || self.isCategoryAtrEqual1());
+        }
+
+        checkDisplayComboBoxCommutingClassification(): boolean {
+            return false;
         }
 
         start(): JQueryPromise<any> {
@@ -232,9 +240,14 @@ module qmm019.f.viewmodel {
             var dfd = $.Deferred();
 
             // Resolve start page dfd after load all data.
-            $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr)).done(function(data) {
-                self.listItemDto = data;
-                self.listBox = new ListBox(self.listItemDto, self.paramItemCode);
+            $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function(data) {
+                if (data !== null) {
+                    self.listItemDto = data;
+                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode));
+                }
+                else {
+                    self.listItemDto = ko.observableArray();
+                }
                 dfd.resolve();
             }).fail(function(res) {
 
@@ -242,15 +255,98 @@ module qmm019.f.viewmodel {
 
             return dfd.promise();
         }
-        
-        openHDialog(){
+
+        openHDialog() {
             nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(() => {
                 var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                 alert(selectedCode);
                 return this;
             });
         }
+
+        returnBackData() {
+            var self = this;
+            var itemSelected = self.listBox().itemDtoSelected();
+            var sumScopeAtr = null;
+            var commuteAtr = null;
+            var calculationMethod = null;
+            var distributeSet = null;
+            var distributeWay = null;
+            var personalWageCode = '';
+            var isUseHighError = null;
+            var errRangeHigh = null;
+            var isUseLowError = null;
+            var errRangeLow = null;
+            var isUseHighAlam = null;
+            var alamRangeHigh = null;
+            var isUseLowAlam = null;
+            var alamRangeLow = null;
+            if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1) {
+                sumScopeAtr = self.comboBoxSumScopeAtr().selectedCode();
+                calculationMethod = self.comboBoxCalcMethod().selectedCode();
+                distributeSet = self.switchButton().selectedRuleCode();
+                distributeWay = self.comboBoxDistributeWay().selectedCode();
+            }
+            if (calculationMethod == 0 && self.paramCategoryAtr() == 0) {
+                commuteAtr = self.comboBoxCommutingClassification().selectedCode();
+            }
+            if (calculationMethod == 1 && self.paramCategoryAtr() == 0) {
+                personalWageCode = '';
+            }
+            if (calculationMethod == 1 && self.paramCategoryAtr() == 1) {
+                personalWageCode = '';
+            }
+            if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1 || self.paramCategoryAtr() == 2) {
+                isUseHighError = itemSelected.checkUseHighError();
+                errRangeHigh = itemSelected.errRangeHigh();
+                isUseLowError = itemSelected.checkUseLowError();
+                errRangeLow = itemSelected.errRangeLow();
+                isUseHighAlam = itemSelected.checkUseHighAlam();
+                alamRangeHigh = itemSelected.alamRangeHigh();
+                isUseLowAlam = itemSelected.checkUseLowAlam();
+                alamRangeLow = itemSelected.alamRangeLow();
+            }
+            var data = {
+                itemCode: itemSelected.itemCode(),
+                itemAbName: itemSelected.itemAbName(),
+                isRequired: null,
+                itemPosColumn: null,
+                categoryAtr: self.paramCategoryAtr(),
+                autoLineId: '',
+                sumScopeAtr: sumScopeAtr,
+                commuteAtr: commuteAtr,
+                calculationMethod: calculationMethod,
+                distributeSet: distributeSet,
+                distributeWay: distributeWay,
+                personalWageCode: personalWageCode,
+                setOffItemCode: '',
+                isUseHighError: isUseHighError,
+                errRangeHigh: errRangeHigh,
+                isUseLowError: isUseLowError,
+                errRangeLow: errRangeLow,
+                isUseHighAlam: isUseHighAlam,
+                alamRangeHigh: alamRangeHigh,
+                isUseLowAlam: isUseLowAlam,
+                alamRangeLow: alamRangeLow
+            };
+            nts.uk.ui.windows.setShared('itemResult', data);
+            nts.uk.ui.windows.close();
+        }
+
+        close() {
+            nts.uk.ui.windows.close();
+        }
+
+        checkManualInput(): boolean {
+            var self = this;
+            return self.comboBoxCalcMethod().selectedCode() == 0;
+        }
+
+        checkPersonalInformationReference(): boolean {
+            var self = this;
+            return self.comboBoxCalcMethod().selectedCode() == 1;
+        }
     }
-    
-   
+
+
 }

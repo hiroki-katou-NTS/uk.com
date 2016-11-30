@@ -15,20 +15,7 @@ var qmm019;
             viewmodel.ItemModel = ItemModel;
             //get the model from app
             var ItemDto = (function () {
-                function ItemDto(companyCode, itemCode, categoryAtr, itemAbName, isUseHighError, errRangeHigh, isUseLowError, errRangeLow, isUseHighAlam, alamRangeHigh, isUseLowAlam, alamRangeLow) {
-                    var self = this;
-                    self.companyCode = ko.observable(companyCode);
-                    self.itemCode = ko.observable(itemCode);
-                    self.categoryAtr = ko.observable(categoryAtr);
-                    self.itemAbName = ko.observable(itemAbName);
-                    self.isUseHighError = ko.observable(isUseHighError);
-                    self.errRangeHigh = ko.observable(errRangeHigh);
-                    self.isUseLowError = ko.observable(isUseLowError);
-                    self.errRangeLow = ko.observable(errRangeLow);
-                    self.isUseHighAlam = ko.observable(isUseHighAlam);
-                    self.alamRangeHigh = ko.observable(alamRangeHigh);
-                    self.isUseLowAlam = ko.observable(isUseLowAlam);
-                    self.alamRangeLow = ko.observable(alamRangeLow);
+                function ItemDto() {
                 }
                 return ItemDto;
             }());
@@ -49,11 +36,8 @@ var qmm019;
                         self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
                     });
                     // get item selected
-                    self.itemDtoSelected = ko.computed(function () {
-                        return _.find(self.listItemDto, function (item) {
-                            return item.itemCode == self.selectedCode().toString();
-                        });
-                    });
+                    var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
+                    self.itemDtoSelected = ko.observable(item);
                     //self.itemList = ko.observableArray([
                     //    new ItemModel('001', '名前１'),
                     //    new ItemModel('002', '名前2'),
@@ -72,27 +56,32 @@ var qmm019;
                     //  ]);
                     //subcribe list box's change
                     self.selectedCode.subscribe(function (codeChange) {
+                        var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
+                        self.itemDtoSelected(ko.observable(item));
                     });
                 }
+                ListBox.prototype.getItemDtoSelected = function (codeChange) {
+                    var self = this;
+                    var item = _.find(self.listItemDto, function (item) {
+                        return item.itemCode == codeChange;
+                    });
+                    return item;
+                };
                 return ListBox;
             }());
             viewmodel.ListBox = ListBox;
             var ComboBox = (function () {
                 function ComboBox(itemList) {
                     var self = this;
-                    self.itemList = itemList;
+                    if (itemList !== null) {
+                        self.itemList = itemList;
+                    }
+                    else {
+                        self.itemList = ko.observableArray();
+                    }
                     self.itemName = ko.observable('');
-                    self.currentCode = ko.observable(1);
                     self.selectedCode = ko.observable(null);
                 }
-                ComboBox.prototype.isManualInput = function () {
-                    var self = this;
-                    return self.selectedCode == ko.observable(0);
-                };
-                ComboBox.prototype.isPersonalinformationReference = function () {
-                    var self = this;
-                    return self.selectedCode == ko.observable(1);
-                };
                 return ComboBox;
             }());
             viewmodel.ComboBox = ComboBox;
@@ -113,7 +102,7 @@ var qmm019;
                 function ScreenModel(data) {
                     var self = this;
                     self.paramItemCode = data.itemCode;
-                    self.paramCategoryAtr = data.categoryId;
+                    self.paramCategoryAtr = ko.observable(data.categoryId);
                     self.isUpdate = data.isUpdate;
                     var itemListSumScopeAtr = ko.observableArray([
                         new ItemModel(0, '対象外'),
@@ -145,37 +134,53 @@ var qmm019;
                         new ItemModel(0, '交通機関'),
                         new ItemModel(1, '交通用具')
                     ]);
-                    self.comboBoxSumScopeAtr = new ComboBox(itemListSumScopeAtr);
-                    self.comboBoxCalcMethod0 = new ComboBox(itemListCalcMethod0);
-                    self.comboBoxCalcMethod1 = new ComboBox(itemListCalcMethod1);
-                    self.comboBoxDistributeWay = new ComboBox(itemListDistributeWay);
-                    self.comboBoxCommutingClassification = new ComboBox(itemListCommutingClassification);
-                    self.switchButton = new SwitchButton();
+                    self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
+                    if (self.paramCategoryAtr() == 0) {
+                        self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod0));
+                    }
+                    else if (self.paramCategoryAtr() == 1) {
+                        self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod1));
+                    }
+                    self.comboBoxDistributeWay = ko.observable(new ComboBox(itemListDistributeWay));
+                    self.comboBoxCommutingClassification = ko.observable(new ComboBox(itemListCommutingClassification));
+                    self.switchButton = ko.observable(new SwitchButton());
                 }
                 ScreenModel.prototype.isCategoryAtrEqual0 = function () {
                     var self = this;
-                    return self.paramCategoryAtr == 0;
+                    return self.paramCategoryAtr() == 0;
                 };
                 ScreenModel.prototype.isCategoryAtrEqual1 = function () {
                     var self = this;
-                    return self.paramCategoryAtr == 1;
+                    return self.paramCategoryAtr() == 1;
                 };
                 ScreenModel.prototype.isCategoryAtrEqual2 = function () {
                     var self = this;
-                    return self.paramCategoryAtr == 2;
+                    return self.paramCategoryAtr() == 2;
                 };
                 ScreenModel.prototype.isCategoryAtrEqual3 = function () {
                     var self = this;
-                    return self.paramCategoryAtr == 3;
+                    return self.paramCategoryAtr() == 3;
+                };
+                ScreenModel.prototype.checkDisplayComboBoxCalcMethod = function () {
+                    var self = this;
+                    return (self.isCategoryAtrEqual0() || self.isCategoryAtrEqual1());
+                };
+                ScreenModel.prototype.checkDisplayComboBoxCommutingClassification = function () {
+                    return false;
                 };
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     // Page load dfd.
                     var dfd = $.Deferred();
                     // Resolve start page dfd after load all data.
-                    $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr)).done(function (data) {
-                        self.listItemDto = data;
-                        self.listBox = new ListBox(self.listItemDto, self.paramItemCode);
+                    $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function (data) {
+                        if (data !== null) {
+                            self.listItemDto = data;
+                            self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode));
+                        }
+                        else {
+                            self.listItemDto = ko.observableArray();
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                     });
@@ -188,6 +193,85 @@ var qmm019;
                         alert(selectedCode);
                         return _this;
                     });
+                };
+                ScreenModel.prototype.returnBackData = function () {
+                    var self = this;
+                    var itemSelected = self.listBox().itemDtoSelected();
+                    var sumScopeAtr = null;
+                    var commuteAtr = null;
+                    var calculationMethod = null;
+                    var distributeSet = null;
+                    var distributeWay = null;
+                    var personalWageCode = '';
+                    var isUseHighError = null;
+                    var errRangeHigh = null;
+                    var isUseLowError = null;
+                    var errRangeLow = null;
+                    var isUseHighAlam = null;
+                    var alamRangeHigh = null;
+                    var isUseLowAlam = null;
+                    var alamRangeLow = null;
+                    if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1) {
+                        sumScopeAtr = self.comboBoxSumScopeAtr().selectedCode();
+                        calculationMethod = self.comboBoxCalcMethod().selectedCode();
+                        distributeSet = self.switchButton().selectedRuleCode();
+                        distributeWay = self.comboBoxDistributeWay().selectedCode();
+                    }
+                    if (calculationMethod == 0 && self.paramCategoryAtr() == 0) {
+                        commuteAtr = self.comboBoxCommutingClassification().selectedCode();
+                    }
+                    if (calculationMethod == 1 && self.paramCategoryAtr() == 0) {
+                        personalWageCode = '';
+                    }
+                    if (calculationMethod == 1 && self.paramCategoryAtr() == 1) {
+                        personalWageCode = '';
+                    }
+                    if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1 || self.paramCategoryAtr() == 2) {
+                        isUseHighError = itemSelected.checkUseHighError();
+                        errRangeHigh = itemSelected.errRangeHigh();
+                        isUseLowError = itemSelected.checkUseLowError();
+                        errRangeLow = itemSelected.errRangeLow();
+                        isUseHighAlam = itemSelected.checkUseHighAlam();
+                        alamRangeHigh = itemSelected.alamRangeHigh();
+                        isUseLowAlam = itemSelected.checkUseLowAlam();
+                        alamRangeLow = itemSelected.alamRangeLow();
+                    }
+                    var data = {
+                        itemCode: itemSelected.itemCode(),
+                        itemAbName: itemSelected.itemAbName(),
+                        isRequired: null,
+                        itemPosColumn: null,
+                        categoryAtr: self.paramCategoryAtr(),
+                        autoLineId: '',
+                        sumScopeAtr: sumScopeAtr,
+                        commuteAtr: commuteAtr,
+                        calculationMethod: calculationMethod,
+                        distributeSet: distributeSet,
+                        distributeWay: distributeWay,
+                        personalWageCode: personalWageCode,
+                        setOffItemCode: '',
+                        isUseHighError: isUseHighError,
+                        errRangeHigh: errRangeHigh,
+                        isUseLowError: isUseLowError,
+                        errRangeLow: errRangeLow,
+                        isUseHighAlam: isUseHighAlam,
+                        alamRangeHigh: alamRangeHigh,
+                        isUseLowAlam: isUseLowAlam,
+                        alamRangeLow: alamRangeLow
+                    };
+                    nts.uk.ui.windows.setShared('itemResult', data);
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.close = function () {
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.checkManualInput = function () {
+                    var self = this;
+                    return self.comboBoxCalcMethod().selectedCode() == 0;
+                };
+                ScreenModel.prototype.checkPersonalInformationReference = function () {
+                    var self = this;
+                    return self.comboBoxCalcMethod().selectedCode() == 1;
                 };
                 return ScreenModel;
             }());
