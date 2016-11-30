@@ -300,9 +300,9 @@
         
         export function formatEmployeeCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
             if (filldirection === "left")
-                return padRight(code, fillcharacter, length);
-            else
                 return padLeft(code, fillcharacter, length);
+            else
+                return padRight(code, fillcharacter, length);
         }
         
         export class StringFormatter implements format.IFormatter {
