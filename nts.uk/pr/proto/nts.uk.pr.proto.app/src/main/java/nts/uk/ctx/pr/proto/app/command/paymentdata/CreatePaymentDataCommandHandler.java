@@ -309,7 +309,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		if (!personalAllotSettingOp.isPresent()) {
 			// get allot company setting
-			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode, baseYearMonth).get();
+			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode, baseYearMonth)
+					.orElseThrow(() -> new RuntimeException("Company Allot Setting Not Found"));
 
 			result = new PersonalAllotSetting(new CompanyCode(companyCode), new PersonId(personId),
 					companyAllotSetting.getStartDate(), companyAllotSetting.getEndDate(),

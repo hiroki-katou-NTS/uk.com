@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
+import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItemPK;
 
 @RequestScoped
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
@@ -50,6 +51,12 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		return this.queryProxy().query(SELECT_DETAIL, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).setParameter("itemCode", itemCode)
 				.getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
+		return this.queryProxy().find(new QcamtItemPK(companyCode, itemCode, categoryAtr), QcamtItem.class).
+				map(entity -> toDomain(entity));
 	}
 
 }
