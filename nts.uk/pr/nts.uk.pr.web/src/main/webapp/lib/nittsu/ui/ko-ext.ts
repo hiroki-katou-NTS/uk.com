@@ -1160,6 +1160,7 @@ module nts.uk.ui.koExtentions {
                 if (olds.length > 0 && olds[0] == singleValue) {
                     return;
                 }
+                $(element).igTreeGridSelection("clearSelection");
                 $(element).igTreeGridSelection("selectRowById", singleValue);
             }
         }
