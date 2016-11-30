@@ -15,6 +15,7 @@ var qmmm019;
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.setShared('selectedCode', undefined);
                     nts.uk.ui.windows.close();
                 };
                 return ScreenModel;

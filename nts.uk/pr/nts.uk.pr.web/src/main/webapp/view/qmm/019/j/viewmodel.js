@@ -7,7 +7,7 @@ var qmmm019;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.selectedBox = ko.observable("3");
+                    self.selectedBox = ko.observable("1");
                 }
                 ScreenModel.prototype.chooseItem = function () {
                     var self = this;
@@ -15,6 +15,7 @@ var qmmm019;
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.setShared('selectedCode', undefined);
                     nts.uk.ui.windows.close();
                 };
                 return ScreenModel;

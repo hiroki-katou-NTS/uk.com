@@ -88,4 +88,7 @@
 	pointer-events: auto;
 }
 
+.removed{
+	display: none;
+}
 

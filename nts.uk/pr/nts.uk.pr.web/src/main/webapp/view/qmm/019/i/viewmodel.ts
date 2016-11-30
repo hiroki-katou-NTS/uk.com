@@ -14,6 +14,7 @@ module qmmm019.i.viewmodel{
         }
         
         closeDialog() {
+            nts.uk.ui.windows.setShared('selectedCode', undefined);
             nts.uk.ui.windows.close();
         }
     }

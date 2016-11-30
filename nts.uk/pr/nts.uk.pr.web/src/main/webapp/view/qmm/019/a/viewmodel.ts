@@ -92,7 +92,11 @@ module qmm019.a {
         registerLayout() {
             var self = this;
             service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                
+                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                    .done(function(listResult : Array<service.model.Category>){
+                        self.categories(listResult);
+                        self.bindSortable();
+                });
             }).fail(function(err){
                 alert(err);    
             });
