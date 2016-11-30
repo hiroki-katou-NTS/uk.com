@@ -4,29 +4,22 @@ var qmmm019;
     (function (k) {
         var viewmodel;
         (function (viewmodel) {
-            var ScreenModel2 = (function () {
-                /**
-                 * Init screen model.
-                 */
-                function ScreenModel2() {
+            var ScreenModel = (function () {
+                function ScreenModel() {
                     var self = this;
-                    this.boxes2 = [];
-                    this.boxes2.push({ id: 1, text: "明細書に印字する行" });
-                    this.boxes2.push({ id: 2, text: "明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）" });
-                    this.boxes2.push({ id: 3, text: "レイアウトから行を削除（登録処理を行うまでは元に戻せます）" });
+                    self.selectedBox = ko.observable("3");
                 }
-                ScreenModel2.prototype.closeDialog = function () {
+                ScreenModel.prototype.chooseItem = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('selectedCode', self.selectedBox());
                     nts.uk.ui.windows.close();
                 };
-                return ScreenModel2;
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
+                return ScreenModel;
             }());
-            viewmodel.ScreenModel2 = ScreenModel2;
-            var BoxModel2 = (function () {
-                function BoxModel2() {
-                }
-                return BoxModel2;
-            }());
-            viewmodel.BoxModel2 = BoxModel2;
+            viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = k.viewmodel || (k.viewmodel = {}));
     })(k = qmmm019.k || (qmmm019.k = {}));
 })(qmmm019 || (qmmm019 = {}));
