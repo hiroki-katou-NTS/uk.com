@@ -35,13 +35,6 @@ module nts.uk.pr.view.qpp005 {
 
                 var $tbl = $("#" + tblid);
                 window.orientation = orientation;
-                window.hlist = [];
-                $tbl.find('input').each(function() { hlist.push($(this)); });
-                for (var i = 0; i < hlist.length; i++) {
-                    var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
-                    hlist[i].data('hnext', next);
-                }
-
                 window.vlist = [];
                 var countColumns = 9;
                 var countRows = $tbl.find('tr').length;
@@ -58,6 +51,13 @@ module nts.uk.pr.view.qpp005 {
                 for (var i = 0; i < vlist.length; i++) {
                     var next = (i === vlist.length - 1) ? vlist[0] : vlist[i + 1];
                     vlist[i].data('vnext', next);
+                }
+
+                window.hlist = [];
+                $tbl.find('input').not('.disabled').each(function() { hlist.push($(this)); });
+                for (var i = 0; i < hlist.length; i++) {
+                    var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
+                    hlist[i].data('hnext', next);
                 }
 
                 $tbl.on('keydown', 'input', function(e) {
