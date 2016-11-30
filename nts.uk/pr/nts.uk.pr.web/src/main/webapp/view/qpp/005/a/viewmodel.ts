@@ -9,7 +9,8 @@ module nts.uk.pr.view.qpp005 {
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
             employeeList: KnockoutObservableArray<any>;
-
+            orientation: string;
+            
             constructor() {
                 var self = this;
                 self.isHandInput = ko.observable(true);
@@ -39,7 +40,7 @@ module nts.uk.pr.view.qpp005 {
                 var self = this;
                 var dfd = $.Deferred();
 
-                qpp005.service.getPaymentData(self.employee().personId(), self.employee().code()).done(function(res: any) {
+                qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
 
                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
 
@@ -107,6 +108,18 @@ module nts.uk.pr.view.qpp005 {
                 self.employee(self.employeeList()[eIdx + 1]);
                 self.startPage();
             }
+
+            openColorSettingGuide() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
+                    var employee = nts.uk.ui.windows.getShared('employee');
+                    self.employee(employee);
+
+                    self.startPage();
+                    return this;
+                });
+            }
+
             openGridSetting() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(() => {
@@ -149,16 +162,16 @@ module nts.uk.pr.view.qpp005 {
         //              //        }
 
         export class Employee {
-            personId: KnockoutObservable<string>;
-            code: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
+            personId: string;
+            code: string;
+            name: string;
 
             constructor(personId: string, code: string, name: string) {
                 var self = this;
 
-                self.personId = ko.observable(personId);
-                self.code = ko.observable(code);
-                self.name = ko.observable(name);
+                self.personId = personId;
+                self.code = code;
+                self.name = name;
             }
         }
 

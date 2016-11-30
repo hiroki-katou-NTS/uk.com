@@ -91,7 +91,7 @@
                     return result;
                 }
             }
-            result.success(value);
+            result.success(inputText);
             return result;
         }
     }

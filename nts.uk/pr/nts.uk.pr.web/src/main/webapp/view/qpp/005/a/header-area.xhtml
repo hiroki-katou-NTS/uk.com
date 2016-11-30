@@ -26,8 +26,8 @@
 						<button id="prev" style="height: 25px !important;" data-bind="click: prevEmployee">⇦</button>
 						<button id="next" style="height: 25px !important;" data-bind="click: nextEmployee">⇨</button>
 					</div>
-					<div class="i-right" data-bind="with: employee()">
-						<input id="employeeCode" data-name="employeeCode" data-bind="ntsTextEditor: {value: code, constraint: '', enable: false}" />
+					<div class="i-right" data-bind="with: employee">
+						<input id="employeeCode" data-name="employeeCode" data-bind="value: code" disabled="disabled" />
 						<span data-bind="text: name"></span>
 					</div>
 					<div class="i-left">
