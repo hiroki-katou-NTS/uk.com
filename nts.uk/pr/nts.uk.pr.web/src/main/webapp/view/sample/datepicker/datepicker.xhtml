@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+ <body>
+     <ui:composition template="../../../master/base.xhtml">
+         <ui:define name="htmlHead">
+         	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+         	<link rel="stylesheet" type="text/css" href="css/datepicker.css" />
+         	<script>var dialogSize = { width: 300, height: 200 };</script>
+         	
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+				nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+				nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
+			</com:ValidatorScript>
+			<script src="js/bootstrap.js"></script>
+			<script src="js/bootstrap-datepicker.js"></script>
+			<script src="js/bootstrap-datepicker.ja.js"></script>
+			<script src="js/viewmodel.js"></script>
+			<script src="js/start.js"></script>
+         </ui:define>
+         
+         <ui:define name="content">
+         	<div id="program-body" style="top: 140px; min-width: 431px;">
+				<div id="contents-area" class="two-column-layout">
+					<div class="column right cf">
+						<div>
+							<input id="date-picker" data-bind="ntsDatePicker: {value: date}"></input>
+							<span data-bind="text: nts.uk.time.formatDate(date, 'yyyy/mm/dd')"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+         </ui:define>
+ 	</ui:composition>
+	</body>
+</html>
