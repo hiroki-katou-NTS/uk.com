@@ -240,15 +240,10 @@
             validate(text: string) {
                 var result = new ui.validation.ValidationResult();
                 if (this.validator(text)) {
-                    result.isValid = true;
+                    return true;
                 } else {
-                    result.isValid = false;
-                    result.errorMessage = 'invalid text';
+                    return false;
                 }
-                
-                result.parsedValue = text;
-    
-                return result;
             }
             
             buildConstraintText(maxLength: number) {
