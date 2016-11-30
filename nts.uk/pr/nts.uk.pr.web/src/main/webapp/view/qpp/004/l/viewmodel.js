@@ -49,6 +49,9 @@ var qpp004;
                         self.processingState(0);
                         self.processingStateText("データの作成中");
                     }
+                    else {
+                        self.stopTimer();
+                    }
                     _.forEach(data.personIdList, function (personId) {
                         if (self.buttonStatus().status == 1) {
                             index(index() + 1);
