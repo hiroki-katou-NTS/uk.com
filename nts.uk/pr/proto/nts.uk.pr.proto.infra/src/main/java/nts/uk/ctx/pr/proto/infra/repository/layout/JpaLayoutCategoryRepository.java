@@ -95,7 +95,10 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	@Override
 	public void update(List<LayoutMasterCategory> categories) {
-		this.commandProxy().updateAll(categories);
+		for (LayoutMasterCategory category : categories) {
+			this.commandProxy().update(toEntity(category));
+		}
+		
 	}
 
 	@Override
