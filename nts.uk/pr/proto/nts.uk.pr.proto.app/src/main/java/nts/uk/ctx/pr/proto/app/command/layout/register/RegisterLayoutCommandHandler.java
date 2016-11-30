@@ -141,15 +141,15 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			String stmtCode, int startYm) {
 		if (command.getListCategoryAtrDeleted().size() > 0) {
 			for(Integer categoryAtr : command.getListCategoryAtrDeleted()){
-				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
+				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
+						companyCode, stmtCode, startYm, categoryAtr);
+				detailRepo.remove(detailsDelete);
 				
 				List<LayoutMasterLine> linesDelete = lineRepo.getLines(companyCode, stmtCode, 
 						startYm, categoryAtr);
 				lineRepo.remove(linesDelete);
 				
-				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
-						companyCode, stmtCode, startYm, categoryAtr);
-				detailRepo.remove(detailsDelete);
+				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
 			}
 		}
 		
