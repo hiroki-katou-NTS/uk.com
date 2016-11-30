@@ -128,7 +128,7 @@ module qpp004.l.viewmodel {
                    personId: personId.id,
                    personName: personId.name, 
                    errorMessage: res.message,
-                   contenError: nts.uk.text.format("{0} (社員CD: {1})", res.message, personId.id)
+                   contenError: nts.uk.text.format("{0} (社員CD: {1})", res.message, personId.code)
                 };
                 
                 dfd.resolve(error); 
