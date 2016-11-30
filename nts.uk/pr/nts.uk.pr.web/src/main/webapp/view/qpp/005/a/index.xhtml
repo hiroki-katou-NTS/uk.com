@@ -22,7 +22,9 @@
 		</ui:define>
 
 		<ui:define name="content">
-
+			<div id="pơpup-orientation" style="display: none;">
+				<ui:include src="/view/qpp/005/b/index.xhtml"/>
+			</div>
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register">計算/登録</button>
 				<button>計算結果の確認</button>
@@ -88,8 +90,9 @@
 												</com:ko-if></td>
 										</com:ko-if>
 										<com:ko-if bind="itemCode() === ''">
-											<td><span data-bind="text: itemName"></span> <input
-												type="text" readonly="true" /></td>
+											<td><span data-bind="text: itemName"></span> 
+											<span class="sp-readonly"></span>
+											</td>
 										</com:ko-if>
 
 
@@ -105,7 +108,7 @@
 
 					</div>
 				</div>
-
+				
 			</div>
 		</ui:define>
 	</ui:composition>
