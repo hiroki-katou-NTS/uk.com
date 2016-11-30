@@ -43,12 +43,12 @@ var qmm019;
             /**
              * Get list getCategoryFull.
              */
-            function getCategoryFull(layoutCode, startYm) {
+            function getCategoryFull(layoutCode, startYm, screenModel) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
                     .done(function (res) {
                     var result = _.map(res, function (category) {
-                        return new model.Category(category.lines, category.categoryAtr);
+                        return new model.Category(category.lines, category.categoryAtr, screenModel);
                     });
                     dfd.resolve(result);
                 })
@@ -183,9 +183,10 @@ var qmm019;
                 }());
                 model.LayoutMasterDto = LayoutMasterDto;
                 var Category = (function () {
-                    function Category(lines, categoryAtr) {
+                    function Category(lines, categoryAtr, screenModel) {
                         this.hasSetting = false;
                         this.isRemoved = false;
+                        this.screenModel = ko.observable(screenModel);
                         this.lines = ko.observableArray([]);
                         this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
@@ -216,8 +217,10 @@ var qmm019;
                         }
                     }
                     Category.prototype.categoryClick = function (data, event) {
+                        var self = this;
                         //TODO: di den man hinh ...
-                        alert(data.categoryName);
+                        //alert(data.categoryName);
+                        self.screenModel().start();
                     };
                     Category.prototype.addLine = function () {
                         var self = this;

@@ -5,9 +5,9 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/layout/findalllayout"
+                getLayoutInfor: "pr/proto/personalwage/findPersonalWageName"
             };
-            function getAllLayout() {
+            function getPersonalWageNames() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getLayoutInfor)
                     .done(function (res) {
@@ -18,7 +18,17 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getAllLayout = getAllLayout;
+            service.getPersonalWageNames = getPersonalWageNames;
+            var model;
+            (function (model) {
+                // layout
+                var PersonalWageNameDto = (function () {
+                    function PersonalWageNameDto() {
+                    }
+                    return PersonalWageNameDto;
+                }());
+                model.PersonalWageNameDto = PersonalWageNameDto;
+            })(model = service.model || (service.model = {}));
         })(service = h.service || (h.service = {}));
     })(h = qmm019.h || (qmm019.h = {}));
 })(qmm019 || (qmm019 = {}));
