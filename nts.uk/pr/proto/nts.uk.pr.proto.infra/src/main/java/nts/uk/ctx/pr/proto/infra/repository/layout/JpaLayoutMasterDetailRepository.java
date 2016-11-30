@@ -183,17 +183,16 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	@Override
 	public void add(List<LayoutMasterDetail> details) {
-		for(LayoutMasterDetail detail: details){
+		for(LayoutMasterDetail detail : details){
 			this.commandProxy().insert(toEntity(detail));
 		}
 	}
 
 	@Override
 	public void update(List<LayoutMasterDetail> details) {
-		for(LayoutMasterDetail detail: details){
+		for(LayoutMasterDetail detail : details){
 			this.commandProxy().update(toEntity(detail));
 		}
-		
 	}
 
 	@Override
@@ -211,10 +210,15 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	@Override
 	public void remove(List<LayoutMasterDetail> details) {
-		List<QstmtStmtLayoutDetail> detailEntities = details.stream().map(
-					detail -> {return this.toEntity(detail);}
-				).collect(Collectors.toList());
-		this.commandProxy().removeAll(QstmtStmtLayoutDetail.class, detailEntities);
+		for(LayoutMasterDetail detail : details){
+			val objectKey = new QstmtStmtLayoutDetailPK();
+			objectKey.companyCd = detail.getCompanyCode().v();
+			objectKey.stmtCd = detail.getLayoutCode().v();
+			objectKey.strYm = detail.getStartYm().v();
+			objectKey.ctgAtr = detail.getCategoryAtr().value;
+			objectKey.itemCd = detail.getItemCode().v();		
+			this.commandProxy().remove(QstmtStmtLayoutDetail.class, objectKey);
+		}
 	}
 
 	@Override
