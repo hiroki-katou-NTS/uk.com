@@ -40,7 +40,7 @@ var nts;
                             ScreenModel.prototype.startPage = function () {
                                 var self = this;
                                 var dfd = $.Deferred();
-                                qpp005.service.getPaymentData(self.employee().personId(), self.employee().code()).done(function (res) {
+                                qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function (res) {
                                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
                                     var categoryPayment = self.paymentDataResult().categories()[0];
                                     var categoryDeduct = self.paymentDataResult().categories()[1];
@@ -95,6 +95,16 @@ var nts;
                                 self.employee(self.employeeList()[eIdx + 1]);
                                 self.startPage();
                             };
+                            ScreenModel.prototype.openColorSettingGuide = function () {
+                                var _this = this;
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(function () {
+                                    var employee = nts.uk.ui.windows.getShared('employee');
+                                    self.employee(employee);
+                                    self.startPage();
+                                    return _this;
+                                });
+                            };
                             ScreenModel.prototype.openGridSetting = function () {
                                 var _this = this;
                                 var self = this;
@@ -138,9 +148,9 @@ var nts;
                         var Employee = (function () {
                             function Employee(personId, code, name) {
                                 var self = this;
-                                self.personId = ko.observable(personId);
-                                self.code = ko.observable(code);
-                                self.name = ko.observable(name);
+                                self.personId = personId;
+                                self.code = code;
+                                self.name = name;
                             }
                             return Employee;
                         }());

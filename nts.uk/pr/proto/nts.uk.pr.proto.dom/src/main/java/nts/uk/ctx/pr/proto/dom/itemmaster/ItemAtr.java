@@ -11,9 +11,9 @@ public enum ItemAtr {
 	//2:金額（小数点無し）
 	AMOUNT_NO_DECIMAL(2),
 	//3:金額（小数点あり）
-	AMOUNT_WITH_DECIMAL(3),
-	//4:文字
-	CHARACTERS(4);
+	AMOUNT_WITH_DECIMAL(3);
+//	//4:文字
+//	CHARACTERS(4);
 	
 	public final int value;	
 }
