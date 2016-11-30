@@ -23,6 +23,10 @@ public class LayoutMasterDetailDto {
 	private String itemAbName;
 	/** 合計対象区分 */
 	private int sumScopeAtr;
+	/** 支給相殺コード */	
+	private String setOffItemCode;	
+	/**通勤区分*/
+	private int commuteAtr;
 	/**計算方法 */
 	private int calculationMethod;
 	/**按分設定 */
@@ -60,6 +64,8 @@ public class LayoutMasterDetailDto {
 				domain.getItemPosColumn().v(),
 				domain.getItemAbName().v(),
 				domain.getSumScopeAtr().value,
+				domain.getSetOffItemCode().v(),
+				domain.getCommuteAtr().value,
 				domain.getCalculationMethod().value,
 				domain.getDistribute().getSetting().value, 
 				domain.getDistribute().getMethod().value,

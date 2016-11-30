@@ -18,10 +18,10 @@ public class LayoutDetail {
 	private int itemPosColumn;
 	/**計算方法 */	
 	private int calculationMethod;
-	/**項目位置 */
-	private int columnPosition;
-	/** 按分設定  */
-	private int distribute;	
+//	/**項目位置 */
+//	private int columnPosition;
+//	/** 按分設定  */
+//	private int distribute;	
 	/** 表示区分 */	
 	private int displayAtr;
 	/** 合計対象区分 */	

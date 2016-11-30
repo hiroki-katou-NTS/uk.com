@@ -1100,6 +1100,7 @@ var nts;
                             if (olds.length > 0 && olds[0] == singleValue) {
                                 return;
                             }
+                            $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
                     };
@@ -1269,6 +1270,41 @@ var nts;
                     };
                     return NtsLinkButtonBindingHandler;
                 }());
+                /**
+                 * Datepicker binding handler
+                 */
+                var DatePickerBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function DatePickerBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Container.
+                        var container = $(element);
+                        var date = ko.unwrap(data.value());
+                        container.attr('value', nts.uk.time.formatDate(date, 'yyyy/mm/dd'));
+                        container.datepicker({
+                            format: 'yyyy/mm/dd',
+                            language: 'ja'
+                        }).on('changeDate', function (ev) {
+                            data.value(ev.date);
+                            container.datepicker('hide');
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return DatePickerBindingHandler;
+                }());
+                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();

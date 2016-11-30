@@ -35,7 +35,7 @@ var qpp004;
                         new qpp004.b.viewmodel.ItemModel('A00000000007', '日通　社員7'),
                         new qpp004.b.viewmodel.ItemModel('A00000000008', '日通　社員8'),
                         new qpp004.b.viewmodel.ItemModel('A00000000009', '日通　社員9'),
-                        new qpp004.b.viewmodel.ItemModel('A000000000010', '日通　社員１0'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000010', '日通　社員１0'),
                     ]);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable(3);

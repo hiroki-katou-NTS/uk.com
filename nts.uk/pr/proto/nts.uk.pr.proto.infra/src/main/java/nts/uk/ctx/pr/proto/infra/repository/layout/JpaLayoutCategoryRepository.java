@@ -38,6 +38,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	private QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
 		val entity = new QstmtStmtLayoutCtg();
 
+		entity.qstmtStmtLayoutCtgPk = new QstmtStmtLayoutCtgPK();
 		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
 		entity.qstmtStmtLayoutCtgPk.strYm = domain.getStartYM().v();
@@ -98,12 +99,12 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	@Override
 	public List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm) {
 		try {
-			List<LayoutMasterCategory> test = this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutCtg.class)
+			List<LayoutMasterCategory> lstCategory = this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutCtg.class)
 				.setParameter("companyCd", companyCode)
 				.setParameter("stmtCd", stmtCode)
 				.setParameter("endYm", endYm)
 				.getList(c -> toDomain(c));
-		return test;
+		return lstCategory;
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw e;

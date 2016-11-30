@@ -23,8 +23,9 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        // TODO: ignore duplicated item
-                        this.errors.push(error);
+                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                        if (duplicate.length == 0)
+                            this.errors.push(error);
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
                         var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });

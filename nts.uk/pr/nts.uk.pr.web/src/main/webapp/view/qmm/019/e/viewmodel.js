@@ -71,12 +71,25 @@ var qmm019;
                     var layoutInfor = self.selectLayout();
                     layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/', '');
                     layoutInfor.startYm = +$("#INP_001").val().replace('/', '');
-                    e.service.updateLayout(layoutInfor).done(function () {
+                    //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
+                    if (layoutInfor.startYmOriginal > layoutInfor.startYm
+                        || layoutInfor.startYm > +self.selectLayoutEndYm().replace('/', '')) {
+                        alert("履歴の期間が重複しています。");
+                        return false;
+                    }
+                    else if (layoutInfor.startYmOriginal == layoutInfor.startYm) {
                         alert("履歴を修正しました。");
                         nts.uk.ui.windows.close();
-                    }).fail(function (res) {
-                        alert(res);
-                    });
+                        return false;
+                    }
+                    else {
+                        e.service.updateLayout(layoutInfor).done(function () {
+                            alert("履歴を修正しました。");
+                            nts.uk.ui.windows.close();
+                        }).fail(function (res) {
+                            alert(res);
+                        });
+                    }
                 };
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
