@@ -232,6 +232,10 @@ var qmm019;
                                 // Xoa category
                                 $("#group-" + data.categoryAtr).addClass("removed");
                                 self.isRemoved = true;
+                                if (data.categoryAtr === 2)
+                                    self.screenModel().notHasKintai(true);
+                                if (data.categoryAtr === 3)
+                                    self.screenModel().notHasKiji(true);
                             }
                             return _this;
                         });
@@ -369,7 +373,9 @@ var qmm019;
                     //TODO: goi man hinh chi tiet
                     ItemDetail.prototype.itemClick = function (data, event) {
                         var _this = this;
-                        alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+                        var self = this;
+                        //                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+                        //                    self.itemAbName("dfdfd");
                         var param = {
                             categoryId: data.categoryAtr(),
                             itemCode: data.itemCode(),
@@ -377,7 +383,25 @@ var qmm019;
                         };
                         nts.uk.ui.windows.setShared('param', param);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(function () {
-                            var selectedCode = nts.uk.ui.windows.getShared('itemResult');
+                            var itemResult = nts.uk.ui.windows.getShared('itemResult');
+                            self.itemCode(itemResult.itemCode);
+                            self.itemAbName(itemResult.itemAbName);
+                            self.categoryAtr(itemResult.categoryAtr);
+                            self.sumScopeAtr(itemResult.sumScopeAtr);
+                            //self.setOffItemCode(itemResult.setOffItemCode);
+                            //self.commuteAtr(itemResult.commuteAtr);
+                            self.calculationMethod(itemResult.calculationMethod);
+                            self.distributeSet(itemResult.distributeSet);
+                            self.distributeWay(itemResult.distributeWay);
+                            self.personalWageCode(itemResult.personalWageCode);
+                            self.isUseHighError(itemResult.isUseHighError);
+                            self.errRangeHigh(itemResult.errRangeHigh);
+                            self.isUseLowError(itemResult.isUseLowError);
+                            self.errRangeLow(itemResult.errRangeLow);
+                            self.isUseHighAlam(itemResult.isUseHighAlam);
+                            self.alamRangeHigh(itemResult.alamRangeHigh);
+                            self.isUseLowAlam(itemResult.isUseLowAlam);
+                            self.alamRangeLow(itemResult.alamRangeLow);
                             return _this;
                         });
                     };

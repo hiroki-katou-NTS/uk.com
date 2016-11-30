@@ -5,11 +5,12 @@ module qmm019.a {
         //Khai bao bien
         itemList: KnockoutObservableArray<NodeTest>;
         singleSelectedCode: KnockoutObservable<string>;
-//        selectedCode: KnockoutObservableArray<NodeTest>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutMaster: KnockoutObservable<service.model.LayoutMasterDto>;
         categories: KnockoutObservableArray<service.model.Category>;
+        notHasKintai: KnockoutObservable<boolean> = ko.observable(false);
+        notHasKiji: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             var self = this;
@@ -29,13 +30,25 @@ module qmm019.a {
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
                         .done(function(listResult : Array<service.model.Category>){
                             self.categories(listResult);
+                            self.checkKintaiKiji();
                             self.bindSortable();
                     });
                 }
             });
         }
 
-        
+        checkKintaiKiji(){
+            var self = this;
+            var findKintai = _.find(self.categories(), function(category){
+               return category.categoryAtr === 2; 
+            });
+            self.notHasKintai(findKintai === undefined);
+            
+            var findKiji = _.find(self.categories(), function(category){
+               return category.categoryAtr === 3; 
+            });
+            self.notHasKiji(findKiji === undefined);    
+        }
         bindSortable() {
             var self = this;
             $(".row").sortable({
@@ -95,6 +108,7 @@ module qmm019.a {
                 service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
                     .done(function(listResult : Array<service.model.Category>){
                         self.categories(listResult);
+                        self.checkKintaiKiji();
                         self.bindSortable();
                 });
             }).fail(function(err){
@@ -106,14 +120,16 @@ module qmm019.a {
             var self = this;
             let category: service.model.Category = new service.model.Category([], 2, self);
             self.categories.push(category);
-            $("#btnKintai").addClass("removed");
+            self.notHasKintai(false);
+            self.bindSortable();
         }
         
         addKijiCategory() {
             var self = this;
             let category: service.model.Category = new service.model.Category([], 3, self);
             self.categories.push(category);
-            $("#btnKiji").addClass("removed");
+            self.notHasKiji(false);
+            self.bindSortable();
         }
         
         openADialog() {

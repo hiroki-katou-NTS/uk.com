@@ -233,6 +233,10 @@ module qmm019.a {
                             // Xoa category
                             $("#group-" + data.categoryAtr).addClass("removed");
                             self.isRemoved = true;
+                            if (data.categoryAtr === 2)
+                                self.screenModel().notHasKintai(true);
+                            if (data.categoryAtr === 3)
+                                self.screenModel().notHasKiji(true);
                         }
                         return this;
                     });
@@ -398,7 +402,9 @@ module qmm019.a {
                 }
                 //TODO: goi man hinh chi tiet
                 itemClick(data, event) {
-                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+                    var self = this;
+//                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+//                    self.itemAbName("dfdfd");
                     var param = {
                         categoryId: data.categoryAtr(),
                         itemCode: data.itemCode(),
@@ -406,7 +412,26 @@ module qmm019.a {
                     };    
                     nts.uk.ui.windows.setShared('param', param);
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(() => {
-                        var selectedCode = nts.uk.ui.windows.getShared('itemResult');
+                        var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
+                        
+                        self.itemCode(itemResult.itemCode);
+                        self.itemAbName(itemResult.itemAbName);
+                        self.categoryAtr(itemResult.categoryAtr);
+                        self.sumScopeAtr(itemResult.sumScopeAtr);
+                        //self.setOffItemCode(itemResult.setOffItemCode);
+                        //self.commuteAtr(itemResult.commuteAtr);
+                        self.calculationMethod(itemResult.calculationMethod);
+                        self.distributeSet(itemResult.distributeSet);
+                        self.distributeWay(itemResult.distributeWay);
+                        self.personalWageCode(itemResult.personalWageCode);
+                        self.isUseHighError(itemResult.isUseHighError);
+                        self.errRangeHigh(itemResult.errRangeHigh);
+                        self.isUseLowError(itemResult.isUseLowError);
+                        self.errRangeLow(itemResult.errRangeLow);
+                        self.isUseHighAlam(itemResult.isUseHighAlam);
+                        self.alamRangeHigh(itemResult.alamRangeHigh);
+                        self.isUseLowAlam(itemResult.isUseLowAlam);
+                        self.alamRangeLow(itemResult.alamRangeLow);
                         
                         return this;
                     });
