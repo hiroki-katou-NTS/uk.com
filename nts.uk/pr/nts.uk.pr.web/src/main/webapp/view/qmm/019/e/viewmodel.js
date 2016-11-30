@@ -24,7 +24,7 @@ var qmm019;
                     var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
                     var startYm = nts.uk.ui.windows.getShared('startYm');
                     self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-                    e.service.getLayout(layoutCode, startYm).done(function (layout) {
+                    e.service.getLayout(layoutCode, startYm).done(void function (layout) {
                         self.selectLayout(layout);
                         self.startDiaglog();
                     }).fail(function (res) {

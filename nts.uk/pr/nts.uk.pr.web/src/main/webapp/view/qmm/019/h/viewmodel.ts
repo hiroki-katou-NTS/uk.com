@@ -81,6 +81,7 @@ module qmm019.h.viewmodel {
             service.getPersonalWageNames(categoryAtr).done(function(data: any){
                 self.personalWages(data);
                 self.buildItemList();
+                
                 dfd.resolve();
             }).fail(function(res) {
                 alert(res);
