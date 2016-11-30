@@ -39,9 +39,9 @@ var qmm019;
                     var self = this;
                     var layout = self.selectLayout();
                     var code = layout.stmtCode.trim();
-                    if (code.length < 2) {
-                        code = "0" + code;
-                    }
+                    //            if(code.length < 2){
+                    //               code = "0" + code;
+                    //            }
                     self.selectLayoutCode(code);
                     self.selectLayoutName(layout.stmtName);
                     self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));

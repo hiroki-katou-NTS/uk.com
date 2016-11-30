@@ -5,6 +5,8 @@ var qmm019;
     (function (a) {
         var ScreenModel = (function () {
             function ScreenModel() {
+                this.notHasKintai = ko.observable(false);
+                this.notHasKiji = ko.observable(false);
                 var self = this;
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
@@ -21,11 +23,23 @@ var qmm019;
                         a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
                             .done(function (listResult) {
                             self.categories(listResult);
+                            self.checkKintaiKiji();
                             self.bindSortable();
                         });
                     }
                 });
             }
+            ScreenModel.prototype.checkKintaiKiji = function () {
+                var self = this;
+                var findKintai = _.find(self.categories(), function (category) {
+                    return category.categoryAtr === 2;
+                });
+                self.notHasKintai(findKintai === undefined);
+                var findKiji = _.find(self.categories(), function (category) {
+                    return category.categoryAtr === 3;
+                });
+                self.notHasKiji(findKiji === undefined);
+            };
             ScreenModel.prototype.bindSortable = function () {
                 var self = this;
                 $(".row").sortable({
@@ -79,11 +93,26 @@ var qmm019;
                     a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
                         .done(function (listResult) {
                         self.categories(listResult);
+                        self.checkKintaiKiji();
                         self.bindSortable();
                     });
                 }).fail(function (err) {
                     alert(err);
                 });
+            };
+            ScreenModel.prototype.addKintaiCategory = function () {
+                var self = this;
+                var category = new a.service.model.Category([], 2, self);
+                self.categories.push(category);
+                self.notHasKintai(false);
+                self.bindSortable();
+            };
+            ScreenModel.prototype.addKijiCategory = function () {
+                var self = this;
+                var category = new a.service.model.Category([], 3, self);
+                self.categories.push(category);
+                self.notHasKiji(false);
+                self.bindSortable();
             };
             ScreenModel.prototype.openADialog = function () {
                 var self = this;

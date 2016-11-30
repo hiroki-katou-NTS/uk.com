@@ -23,7 +23,7 @@ module qmm019.g.viewmodel {
         constructor() {
             var self = this;
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observable("2");
+            self.selectedCodes = ko.observable("3");
             self.layouts = ko.observableArray([]);
             self.itemList = ko.observableArray([]);   
             self.comboboxList = ko.observableArray([]);
@@ -88,9 +88,9 @@ module qmm019.g.viewmodel {
             self.comboboxList.removeAll();
             _.forEach(self.layouts(), function(layout){
                 var stmtCode = layout.stmtCode;
-                if(stmtCode.length == 1){
-                    stmtCode = "0" + layout.stmtCode;
-                }
+//                if(stmtCode.length == 1){
+//                    stmtCode = "0" + layout.stmtCode;
+//                }
                     
                 self.comboboxList.push(new ItemCombobox(stmtCode, layout.stmtName));
             });          

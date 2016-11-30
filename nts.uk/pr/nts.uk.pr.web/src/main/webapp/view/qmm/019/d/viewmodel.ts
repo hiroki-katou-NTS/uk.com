@@ -76,7 +76,7 @@ module qmm019.d.viewmodel {
                     self.selectStmtName(layout.stmtName);
                     self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                     self.valueSel001('最新の履歴（'+ nts.uk.time.formatYearMonth(layout.startYm) +'）から引き継ぐ')
-                    self.startYmHis = layout.startYm;
+                    self.startYmHis(layout.startYm);
                     return false;                    
                 }
             });     
@@ -84,7 +84,7 @@ module qmm019.d.viewmodel {
         
        createHistoryLayout(): any{
            var self = this;
-           var selectYm = self.startYmHis;
+           var selectYm = self.startYmHis();
             var inputYm =$("#INP_001").val().replace('/','');
             if(+inputYm < +selectYm
               || + inputYm == +selectYm){
@@ -110,13 +110,15 @@ module qmm019.d.viewmodel {
        createData(): any{
            var self = this;
            var start = +$('#INP_001').val().replace('/','');
+           
            self.createlayout({
                checkContinue: false,
                stmtCode: self.selectStmtCode(),
                startYm: start,
-               endYm: (start - 1),
-               startPrevious: +self.startYmHis,
-               layoutAtr: 3
+               endYm: start,
+               startPrevious: self.startYmHis(),
+               layoutAtr: 3,
+               stmtName: ""
           });
        }
         closeDialog(): any{

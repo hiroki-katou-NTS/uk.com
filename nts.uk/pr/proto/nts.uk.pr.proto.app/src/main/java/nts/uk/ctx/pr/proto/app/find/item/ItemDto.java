@@ -14,13 +14,13 @@ public class ItemDto {
 	/** item name */
 	String itemAbName;
 	/** item details */
-	boolean isUseHighError;
+	boolean checkUseHighError;
     int errRangeHigh;
-    boolean isUseLowError;
+    boolean checkUseLowError;
     int errRangeLow;
-    boolean isUseHighAlam;
+    boolean checkUseHighAlam;
     int alamRangeHigh;
-    boolean isUseLowAlam;
+    boolean checkUseLowAlam;
     int alamRangeLow;
 	
 	

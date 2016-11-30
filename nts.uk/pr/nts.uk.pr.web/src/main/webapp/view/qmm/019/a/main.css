@@ -24,7 +24,7 @@
 
 
 /* ************************************************************************ */
-#group-root{
+.group-root{
 	width: 900px;
 	border-radius: 7px;
 	border: 1px solid gray;
@@ -92,3 +92,6 @@
 	display: none;
 }
 
+.addCategoryButton {
+	margin-bottom: 5px;	
+}
