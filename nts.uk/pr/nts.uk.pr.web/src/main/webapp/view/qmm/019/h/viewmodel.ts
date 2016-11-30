@@ -78,13 +78,14 @@ module qmm019.h.viewmodel {
 
             //var categoryAtr = ko.observable(nts.uk.ui.windows.getShared('categoryAtr'));
              var categoryAtr = 1;
-            service.getPersonalWageNames(categoryAtr).done(function(personalWage: Array<service.model.PersonalWageNameDto>){
-                 self.personalWages(personalWage);
-                 self.buildItemList();
-                console.log(self.itemList());
+            service.getPersonalWageNames(categoryAtr).done(function(data: any){
+                self.personalWages(data);
+                self.buildItemList();
+                dfd.resolve();
+            }).fail(function(res) {
+                alert(res);
             });
-          
-        
+             
             // Return.
             return dfd.promise();    
         }

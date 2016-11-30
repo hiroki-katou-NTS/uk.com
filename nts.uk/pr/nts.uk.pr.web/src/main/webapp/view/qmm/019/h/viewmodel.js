@@ -70,10 +70,12 @@ var qmm019;
                     var dfd = $.Deferred();
                     //var categoryAtr = ko.observable(nts.uk.ui.windows.getShared('categoryAtr'));
                     var categoryAtr = 1;
-                    h.service.getPersonalWageNames(categoryAtr).done(function (personalWage) {
-                        self.personalWages(personalWage);
+                    h.service.getPersonalWageNames(categoryAtr).done(function (data) {
+                        self.personalWages(data);
                         self.buildItemList();
-                        console.log(self.itemList());
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        alert(res);
                     });
                     // Return.
                     return dfd.promise();
