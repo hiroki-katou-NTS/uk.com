@@ -353,7 +353,7 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
+  /* IgniteUI é╞é╠îôé╦ìçéóé┼background-coloré╔é═!importanté¬òKùvé┴é█éóüH */
 }
 /* line 28, ../sass/components/_button.scss */
 button:hover {
@@ -597,10 +597,10 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* line 6, ../sass/components/_switchbutton.scss */
 button.nts-switch-button {
-  font-size: 12px;
+  font-size: 16.8px;
   padding: 1px 4px;
   border-bottom-width: 3px;
-  height: 25px;
+  height: 36.6px;
   /*
       &.selected {
           top: $button_thickness;
@@ -615,20 +615,20 @@ button.nts-switch-button {
           }
       }*/
 }
-/* line 33, ../sass/components/_switchbutton.scss */
+/* line 34, ../sass/components/_switchbutton.scss */
 button.nts-switch-button:active {
-  height: 23px;
+  height: 34.6px;
   border-bottom-width: 1px;
 }
-/* line 38, ../sass/components/_switchbutton.scss */
+/* line 39, ../sass/components/_switchbutton.scss */
 button.nts-switch-button.selected {
-  height: 23px;
+  height: 34.6px;
   border-bottom-width: 1px;
   top: 2px;
   color: #fff;
   background-color: #00B050;
 }
-/* line 47, ../sass/components/_switchbutton.scss */
+/* line 48, ../sass/components/_switchbutton.scss */
 button.nts-switch-button.selected:hover {
   color: #fff;
   background-color: #00B050;

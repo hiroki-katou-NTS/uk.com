@@ -27,7 +27,7 @@ ScreenModel.prototype.start = function() {
          {personId: 'A00000000000000000000000000000000010', code: 'A000000000010', name: '日通　社員10' }
 	    ];
 	var employeeList = _.map(employeeMocks, function(employee) {
-		return new Employee(employee.code, employee.name);
+		return new Employee(employee.personId, employee.code, employee.name);
 	});
 	
 	self.employeeList().items(employeeList);
@@ -45,9 +45,10 @@ function EmployeeList() {
 	self.items = ko.observableArray([]);
 	self.selected = ko.observable();
 }
-function Employee(code, name) {
+function Employee(personId, code, name) {
 	var self = this;
-
+	
+	self.personId = personId;
 	self.code = code;
 	self.name = name;
 }

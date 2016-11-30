@@ -41,12 +41,12 @@ module qmm019.a {
         /**
          * Get list getCategoryFull.
          */
-        export function getCategoryFull(layoutCode, startYm): JQueryPromise<Array<model.Category>> {
+        export function getCategoryFull(layoutCode, startYm, screenModel: ScreenModel): JQueryPromise<Array<model.Category>> {
             var dfd = $.Deferred<Array<model.Category>>();
             nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
                 .done(function(res: Array<model.Category>) {
                     var result = _.map(res, function(category: any) {
-                        return new model.Category(category.lines, category.categoryAtr);
+                        return new model.Category(category.lines, category.categoryAtr, screenModel);
                     });
                     dfd.resolve(result);
                 })
@@ -178,8 +178,10 @@ module qmm019.a {
                 categoryName: string;
                 hasSetting: boolean = false;
                 isRemoved: boolean = false;
+                screenModel: KnockoutObservable<ScreenModel>;
                 
-                constructor(lines: Array<Line>, categoryAtr: number) {
+                constructor(lines: Array<Line>, categoryAtr: number, screenModel: ScreenModel) {
+                    this.screenModel = ko.observable(screenModel);
                     this.lines = ko.observableArray([]);
                     this.lines(_.map(lines, function(line: model.Line) {
                         var details = 
@@ -211,8 +213,10 @@ module qmm019.a {
                     }
                 }
                 categoryClick(data, event) {
+                    var self = this;
                     //TODO: di den man hinh ...
-                    alert(data.categoryName);    
+                    //alert(data.categoryName);
+                    self.screenModel().start();    
                 }
                 addLine(){
                     var self = this;

@@ -271,9 +271,9 @@ var nts;
             text_1.getCharType = getCharType;
             function formatEmployeeCode(code, filldirection, fillcharacter, length) {
                 if (filldirection === "left")
-                    return padRight(code, fillcharacter, length);
-                else
                     return padLeft(code, fillcharacter, length);
+                else
+                    return padRight(code, fillcharacter, length);
             }
             text_1.formatEmployeeCode = formatEmployeeCode;
             var StringFormatter = (function () {

@@ -74,7 +74,7 @@ module qpp004.l.viewmodel {
                         
                     // Resolve start page dfd after load all data.
                     $.when(self.createPaymentData(personId, data, index())).done(function(res){
-                        if (res && res.length > 0) {
+                        if (res) {
                             self.errorList.push(res);
                         }
                         
