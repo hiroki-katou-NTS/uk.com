@@ -36,6 +36,13 @@ var nts;
                                 });
                                 self.employeeList = ko.observableArray(employees);
                                 self.employee(employees[0]);
+                                // グリッド設定
+                                self.switchButton = ko.observable(new SwitchButton());
+                                self.visible = ko.observable(self.switchButton().selectedRuleCode() == 'vnext');
+                                self.switchButton().selectedRuleCode.subscribe(function (newValue) {
+                                    self.visible(newValue == 'vnext');
+                                    qpp005.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                });
                             }
                             ScreenModel.prototype.startPage = function () {
                                 var self = this;
@@ -66,7 +73,7 @@ var nts;
                             ScreenModel.prototype.openEmployeeList = function () {
                                 var _this = this;
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml', { title: '社員選択' }).onClosed(function () {
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/c/index.xhtml', { title: '社員選択' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
                                     self.startPage();
@@ -106,14 +113,8 @@ var nts;
                                 });
                             };
                             ScreenModel.prototype.openGridSetting = function () {
-                                var _this = this;
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(function () {
-                                    var employee = nts.uk.ui.windows.getShared('employee');
-                                    self.employee(employee);
-                                    self.startPage();
-                                    return _this;
-                                });
+                                $('#pơpup-orientation').ntsPopup('show');
                             };
                             /**
                              * auto Calculate item total
@@ -143,8 +144,18 @@ var nts;
                         }());
                         viewmodel.ScreenModel = ScreenModel;
                         ;
-                        //        private parseResultDtoToViewModel(resultDto) {
-                        //              //        }
+                        var SwitchButton = (function () {
+                            function SwitchButton() {
+                                var self = this;
+                                self.roundingRules = ko.observableArray([
+                                    { code: 'vnext', name: '縦方向' },
+                                    { code: 'hnext', name: '横方向' }
+                                ]);
+                                self.selectedRuleCode = ko.observable('hnext');
+                            }
+                            return SwitchButton;
+                        }());
+                        viewmodel.SwitchButton = SwitchButton;
                         var Employee = (function () {
                             function Employee(personId, code, name) {
                                 var self = this;

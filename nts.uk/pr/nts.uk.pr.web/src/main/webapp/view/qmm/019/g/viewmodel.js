@@ -25,6 +25,7 @@ var qmm019;
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                     self.createlayout = ko.observable(null);
                     self.createNewSelect = ko.observable(null);
+                    self.startYmCopy = ko.observable(null);
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
@@ -46,6 +47,7 @@ var qmm019;
                     self.selectLayoutCode.subscribe(function (newValue) {
                         self.selectLayoutCode(newValue);
                         self.createNewSelect(newValue);
+                        self.buildComboboxChange(newValue);
                     });
                     //start ym
                     var d = new Date();
@@ -79,33 +81,12 @@ var qmm019;
                 };
                 ScreenModel.prototype.buildComboboxChange = function (layoutCd) {
                     var self = this;
-                    //            _.forEach(self.layouts(), function(layout){
-                    //                if(layout.stmtCode.trim() == layoutCd){
-                    //                    self.selectStmtCode(layoutCd);
-                    //                    self.selectStmtName(layout.stmtName);
-                    //                    
-                    //                    if(layout.layoutAtr == 0) {
-                    //                        self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
-                    //                    }else if (layout.layoutAtr == 1){
-                    //                        self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
-                    //                    }else if (layout.layoutAtr == 2){
-                    //                        self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
-                    //                    }else if (layout.layoutAtr == 3){
-                    //                        self.layoutAtrStr("（レーザー　A4　横向き　2人）");
-                    //                    }else if (layout.layoutAtr == 4){
-                    //                        self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
-                    //                    }else if (layout.layoutAtr == 5){
-                    //                        self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
-                    //                    }else if (layout.layoutAtr == 6){
-                    //                        self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
-                    //                    }else if (layout.layoutAtr == 7){
-                    //                        self.layoutAtrStr("（PAYS単票）");
-                    //                    }else if (layout.layoutAtr == 8){
-                    //                        self.layoutAtrStr("（PAYS連続）");
-                    //                    }
-                    //                    return false;
-                    //                }    
-                    //            });
+                    _.forEach(self.layouts(), function (layout) {
+                        if (layout.stmtCode.trim() == layoutCd) {
+                            self.startYmCopy(layout.startYm);
+                            return false;
+                        }
+                    });
                 };
                 ScreenModel.prototype.createNewLayout = function () {
                     var self = this;
@@ -166,7 +147,7 @@ var qmm019;
                     self.createlayout({
                         checkCopy: false,
                         stmtCodeCopied: self.createNewSelect() + "",
-                        startYmCopied: +self.selectStartYm().replace('/', ''),
+                        startYmCopied: self.startYmCopy(),
                         stmtCode: $('#INP_001').val(),
                         startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,
@@ -179,7 +160,7 @@ var qmm019;
                     self.createlayout({
                         checkCopy: true,
                         stmtCodeCopied: self.createNewSelect() + "",
-                        startYmCopied: +self.selectStartYm().replace('/', ''),
+                        startYmCopied: self.startYmCopy(),
                         stmtCode: $('#INP_001').val() + "",
                         startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,

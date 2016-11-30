@@ -39,7 +39,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	private LayoutMasterLineRepository lineRepo;
 	@Inject
 	private LayoutMasterDetailRepository detailRepo;
-	
+	@Inject
 	private CreateLayoutCommandHandler layoutCommandHandler;
 	
 	@Override
@@ -47,10 +47,10 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		CreateLayoutHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
-		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartYm(), command.getStmtCode())
+		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartPrevious(), command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		
-		LayoutMaster layoutNew = command.toDomain(command.getStartPrevious(),
+		LayoutMaster layoutNew = command.toDomain(command.getStartYm(),
 				999912,
 				command.getLayoutAtr(),
 				layoutOrigin.getStmtName().v());
@@ -76,9 +76,9 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	}
 
 	private void copyFromPreviousHistory(CreateLayoutHistoryCommand command, String companyCode) {
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartYm());
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartYm());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartYm());
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
 		
 		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(
 				org -> {
@@ -87,7 +87,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							new YearMonth(command.getStartYm()), 
 							org.getStmtCode(), 
 							org.getCtAtr(), 
-							new YearMonth(command.getEndYm()), 
+							new YearMonth(999912), 
 							org.getCtgPos());
 				}).collect(Collectors.toList());
 		
@@ -97,7 +97,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCompanyCode(), 
 							new YearMonth(command.getStartYm()), 
 							org.getStmtCode(), 
-							new YearMonth(command.getEndYm()), 
+							new YearMonth(999912), 
 							org.getAutoLineId(), 
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
@@ -110,7 +110,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCompanyCode(), 
 							org.getLayoutCode(), 
 							new YearMonth(command.getStartYm()), 
-							new YearMonth(command.getEndYm()), 
+							new YearMonth(999912), 
 							org.getCategoryAtr(), 
 							org.getItemCode(), 
 							org.getAutoLineId(), 

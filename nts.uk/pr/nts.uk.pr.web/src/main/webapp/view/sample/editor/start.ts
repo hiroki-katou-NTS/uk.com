@@ -11,15 +11,16 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             },
             employeeeditor: {
-                value: ko.observable('0132'),
+                value: ko.observable(' 1 2'),
                 constraint: 'EmployeeCode',
                 option: ko.mapping.fromJS(new option.TextEditorOption({
-                    filldirection: "left",
+                    filldirection: "right",
                     fillcharacter: "0"
                 })),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
-            },            // NumberEditor
+            },            
+            // NumberEditor
             numbereditor: {
                 value: ko.observable(12),
                 constraint: '',

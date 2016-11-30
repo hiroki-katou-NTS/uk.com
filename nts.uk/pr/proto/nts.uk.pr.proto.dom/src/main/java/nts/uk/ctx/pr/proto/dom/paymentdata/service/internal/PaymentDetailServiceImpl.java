@@ -9,6 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
@@ -45,7 +46,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		List<PersonalCommuteFee> commuteList = personalCommuteRepo.findAll(
 				param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth().v());
 		if (commuteList.isEmpty()) {
-			throw new RuntimeException("Personal commute not found");
+			throw new RuntimeException("Personal commute not found: personId=" + param.getPersonId().v());
 		}
 		PersonalCommuteFee commute = commuteList.get(0);
 		
@@ -105,7 +106,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			return getPayValueByTax(param, layout, layout.getItemCode().v(),
 					itemMaster, commute);
 		} else {
-			throw new RuntimeException("invalid layout");
+			throw new RuntimeException("invalid layout: personId=" + param.getPersonId().v());
 		}
 	}
 
@@ -121,13 +122,13 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// get personal wage
 			PersonalWage personalWage = param.getPersonalWageList().stream()
 					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemMaster.getItemCode().v()))).findFirst()
-					.orElseThrow(() -> new RuntimeException("システムエラー")); 
+					.orElseThrow(() -> new RuntimeException("システムエラー PersonalWage: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v())); 
 			
 			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
 			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
 		} else {
-			throw new RuntimeException("システムエラー");
+			throw new RuntimeException("システムエラー: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v());
 		}
 	}
 	
@@ -149,7 +150,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			value = getPayValueByMonthlyDaily(layout.getItemCode(), param.getHoliday(), param.getPaymentDateMaster(),
 					param.getPayCalBasicInfo());
 		} else {
-			throw new RuntimeException("システムエラー");
+			throw new RuntimeException("システムエラー: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v());
 		}
 		
 		return this.createDataDetailItem(itemMaster, value, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v());
@@ -166,7 +167,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private ItemMaster getItemMaster(PaymentDetailParam param, LayoutMasterDetail layout) {
 		ItemMaster itemMaster = itemMasterRepo
 				.find(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
-				.get();
+				.orElseThrow(() -> new BusinessException("対象データがありません。"));
 		return itemMaster;
 	}
 		
@@ -188,7 +189,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// get personal wage
 			PersonalWage personalWage = param.getPersonalWageList().stream()
 					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemCode))).findFirst()
-					.orElseThrow(() -> new RuntimeException("システムエラー")); 
+					.orElseThrow(() -> new RuntimeException("システムエラー PersonalWage: itemCode="+ itemCode + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v())); 
 			
 			return this.createDataDetailItem(
 					itemMaster, personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr(), 
@@ -202,7 +203,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					itemLayoutMasterDetail.getCategoryAtr(), param.getLineList(), itemLayoutMasterDetail.getAutoLineId().v(), itemLayoutMasterDetail.getItemPosColumn().v());
 			
 		} else {
-			throw new RuntimeException("システムエラー");
+			throw new RuntimeException("システムエラー: itemCode="+ itemCode + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v());
 		}
 	}
 
@@ -271,7 +272,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private DetailItem createDataDetailItem(ItemMaster itemMaster, double value, CategoryAtr categoryAtr, List<LayoutMasterLine> lineList, String autoLineId, int itemPositionColumn) {
 		LayoutMasterLine line = lineList.stream()
 				.filter(x -> categoryAtr == x.getCategoryAtr() && x.getAutoLineId().v().equals(autoLineId))
-				.findFirst().get();
+				.findFirst().orElseThrow(() -> new BusinessException("対象データがありません。"));
 		
 		int linePosition;
 		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {

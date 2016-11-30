@@ -108,8 +108,9 @@ var nts;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return validation.createValidator(constraintName);
+                        return new validation.StringValidator(constraintName, required);
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
@@ -177,10 +178,10 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DinamicEditorProcessor().init($(element), valueAccessor());
+                        new DynamicEditorProcessor().init($(element), valueAccessor());
                     };
                     NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DinamicEditorProcessor().update($(element), valueAccessor());
+                        new DynamicEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsDynamicEditorBindingHandler;
                 }(NtsEditorBindingHandler));
@@ -408,8 +409,10 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = $("#ntsErrorDialog");
-                        if (autoclose === true && errors.length == 0)
+                        if (autoclose === true && errors.length == 0) {
+                            option.show(false);
                             show = false;
+                        }
                         if (show == true) {
                             $dialog.dialog("open");
                             // Create Error Table

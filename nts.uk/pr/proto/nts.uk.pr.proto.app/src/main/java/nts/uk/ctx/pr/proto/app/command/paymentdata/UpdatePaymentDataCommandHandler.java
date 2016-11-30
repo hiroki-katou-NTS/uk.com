@@ -56,7 +56,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 						cate.getLines());
 			}
 		} else {
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+			throw new BusinessException("更新対象のデータが存在しません");
 		}
 		
 		// update payment header
@@ -81,7 +81,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 				boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
 						item.getCategoryAtr(), item.getItemCode());
 				if (!isExistDetails) {
-					throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+					throw new BusinessException(("更新対象のデータが存在しません"));
 				}
 			}
 		});
