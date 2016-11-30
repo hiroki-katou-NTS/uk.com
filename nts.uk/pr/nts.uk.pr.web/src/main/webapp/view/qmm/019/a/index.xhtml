@@ -101,7 +101,7 @@
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 						
 						<div data-bind="foreach: categories">
-							<div id="group-root">
+							<div data-bind="attr: {id: 'group-' + categoryAtr}" class="group-root">
 								<div id="group-title">
 									<a class="button-setting" data-bind="visible: hasSetting, click: categoryClick"></a>
 									<span data-bind="text: categoryName"></span>
@@ -128,7 +128,9 @@
 								</div>
 							</div>
 						</div>
-						
+						<button id="btnKintai" class="addCategoryButton" data-bind="click: addKintaiCategory, visible: notHasKintai">+ 勤怠エリアを追加する</button>
+						<br/>
+						<button id="btnKiji" class="addCategoryButton" data-bind="click: addKijiCategory, visible: notHasKiji">+ 記事エリアを追加する</button>
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
             		</div>
             	</div>

@@ -52,6 +52,16 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		this.commandProxy().insert(toEntity(domain));
 	}
 	
+	private QstmtStmtLayoutDetailPK toEntityPk(LayoutMasterDetail domain){
+		val entityPk = new QstmtStmtLayoutDetailPK();
+		entityPk.companyCd = domain.getCompanyCode().v();
+		entityPk.stmtCd = domain.getLayoutCode().v();
+		entityPk.strYm = domain.getStartYm().v();
+		entityPk.ctgAtr = domain.getCategoryAtr().value;
+		entityPk.itemCd = domain.getItemCode().v();
+		return entityPk;
+	}
+	
 	private QstmtStmtLayoutDetail toEntity(LayoutMasterDetail domain){
 		val entity = new QstmtStmtLayoutDetail();
 		entity.qstmtStmtLayoutDetailPk = new QstmtStmtLayoutDetailPK();
@@ -183,17 +193,16 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	@Override
 	public void add(List<LayoutMasterDetail> details) {
-		for(LayoutMasterDetail detail: details){
+		for(LayoutMasterDetail detail : details){
 			this.commandProxy().insert(toEntity(detail));
 		}
 	}
 
 	@Override
 	public void update(List<LayoutMasterDetail> details) {
-		for(LayoutMasterDetail detail: details){
+		for(LayoutMasterDetail detail : details){
 			this.commandProxy().update(toEntity(detail));
 		}
-		
 	}
 
 	@Override
@@ -203,7 +212,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BY_CATEGORY, QstmtStmtLayoutDetail.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
+				.setParameter("strYm", startYm)
 				.setParameter("ctgAtr", categoryAtr)
 				.getList(c -> toDomain(c));
 	}
@@ -211,10 +220,10 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	@Override
 	public void remove(List<LayoutMasterDetail> details) {
-		List<QstmtStmtLayoutDetail> detailEntities = details.stream().map(
-					detail -> {return this.toEntity(detail);}
+		List<QstmtStmtLayoutDetailPK> detailEntitiesPk = details.stream().map(
+					detail -> {return this.toEntityPk(detail);}
 				).collect(Collectors.toList());
-		this.commandProxy().removeAll(QstmtStmtLayoutDetail.class, detailEntities);
+		this.commandProxy().removeAll(QstmtStmtLayoutDetail.class, detailEntitiesPk);
 	}
 
 	@Override

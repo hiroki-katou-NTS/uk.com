@@ -7,7 +7,7 @@ var qmmm019;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.selectedBox = ko.observable("1");
+                    self.selectedBox = ko.observable("3");
                 }
                 ScreenModel.prototype.chooseItem = function () {
                     var self = this;
