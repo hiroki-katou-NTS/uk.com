@@ -69,15 +69,15 @@ module qmm019.a {
                     // Truong hop remove category thi remove luon line va detail
                     listCategoryAtrDeleted.push(category.categoryAtr);
                     
-                    let linePosition = 1;
-                    for (let line of category.lines()) {
-                        if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
-                            listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});  
-                            for (let detail of line.details) {
-                                listItemCodeDeleted.push({categoryAtr: category.categoryAtr, itemCode: detail.itemCode()});
-                            }
-                        }
-                    }
+//                    let linePosition = 1;
+//                    for (let line of category.lines()) {
+//                        if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
+//                            listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});  
+//                            for (let detail of line.details) {
+//                                listItemCodeDeleted.push({categoryAtr: category.categoryAtr, itemCode: detail.itemCode()});
+//                            }
+//                        }
+//                    }
                 } else {
                     categoryCommand.push({categoryAtr: category.categoryAtr, categoryPosition: categoryPosition});
                     let linePosition = 1;
@@ -217,17 +217,27 @@ module qmm019.a {
                 }
                 categoryClick(data, event) {
                     var self = this;
-                    //TODO: di den man hinh ...
-                    //alert(data.categoryName);
-                    self.screenModel().start();    
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml').onClosed(() => {
+                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                        if (selectedCode === "1") {
+                            // cho phep print all row
+                            for (let line of self.lines()){
+                                line.setPrint(true);
+                            }
+                        } else if (selectedCode === "2") {
+                            // Gray - Khong cho print all row
+                            for (let line of self.lines()){
+                                line.setPrint(false);
+                            }                            
+                        } else if (selectedCode === "3") {
+                            // Xoa category
+                            $("#group-" + data.categoryAtr).addClass("removed");
+                            self.isRemoved = true;
+                        }
+                        return this;
+                    });
                 }
                 addLine(){
-//                    var itemDetailObj1 = {itemCode: "itemTemp-1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-//                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-//                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-//                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-//                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-//                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === undefined) return this;
@@ -388,7 +398,18 @@ module qmm019.a {
                 }
                 //TODO: goi man hinh chi tiet
                 itemClick(data, event) {
-                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());    
+                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+                    var param = {
+                        categoryId: data.categoryAtr(),
+                        itemCode: data.itemCode(),
+                        isUpdate: data.itemAbName() === "+" ? false : true
+                    };    
+                    nts.uk.ui.windows.setShared('param', param);
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(() => {
+                        var selectedCode = nts.uk.ui.windows.getShared('itemResult');
+                        
+                        return this;
+                    });
                 }
             }
         }

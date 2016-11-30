@@ -102,6 +102,20 @@ module qmm019.a {
             });
         }
         
+        addKintaiCategory() {
+            var self = this;
+            let category: service.model.Category = new service.model.Category([], 2, self);
+            self.categories.push(category);
+            $("#btnKintai").addClass("removed");
+        }
+        
+        addKijiCategory() {
+            var self = this;
+            let category: service.model.Category = new service.model.Category([], 3, self);
+            self.categories.push(category);
+            $("#btnKiji").addClass("removed");
+        }
+        
         openADialog() {
             var self = this;
             if(self.singleSelectedCode() == null)

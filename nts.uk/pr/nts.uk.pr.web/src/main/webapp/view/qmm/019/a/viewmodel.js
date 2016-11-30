@@ -85,6 +85,18 @@ var qmm019;
                     alert(err);
                 });
             };
+            ScreenModel.prototype.addKintaiCategory = function () {
+                var self = this;
+                var category = new a.service.model.Category([], 2, self);
+                self.categories.push(category);
+                $("#btnKintai").addClass("removed");
+            };
+            ScreenModel.prototype.addKijiCategory = function () {
+                var self = this;
+                var category = new a.service.model.Category([], 3, self);
+                self.categories.push(category);
+                $("#btnKiji").addClass("removed");
+            };
             ScreenModel.prototype.openADialog = function () {
                 var self = this;
                 if (self.singleSelectedCode() == null)

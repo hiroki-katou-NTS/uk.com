@@ -71,17 +71,6 @@ var qmm019;
                     if (category.isRemoved === true) {
                         // Truong hop remove category thi remove luon line va detail
                         listCategoryAtrDeleted.push(category.categoryAtr);
-                        var linePosition = 1;
-                        for (var _a = 0, _b = category.lines(); _a < _b.length; _a++) {
-                            var line = _b[_a];
-                            if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
-                                listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
-                                for (var _c = 0, _d = line.details; _c < _d.length; _c++) {
-                                    var detail = _d[_c];
-                                    listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
-                                }
-                            }
-                        }
                     }
                     else {
                         categoryCommand.push({ categoryAtr: category.categoryAtr, categoryPosition: categoryPosition });
@@ -138,13 +127,13 @@ var qmm019;
                                 }
                                 itemPosColumn++;
                             };
-                            for (var _e = 0, sortedItemCodes_1 = sortedItemCodes; _e < sortedItemCodes_1.length; _e++) {
-                                var item = sortedItemCodes_1[_e];
+                            for (var _a = 0, sortedItemCodes_1 = sortedItemCodes; _a < sortedItemCodes_1.length; _a++) {
+                                var item = sortedItemCodes_1[_a];
                                 _loop_2(item);
                             }
                         };
-                        for (var _f = 0, sortedLines_1 = sortedLines; _f < sortedLines_1.length; _f++) {
-                            var itemLine = sortedLines_1[_f];
+                        for (var _b = 0, sortedLines_1 = sortedLines; _b < sortedLines_1.length; _b++) {
+                            var itemLine = sortedLines_1[_b];
                             _loop_1(itemLine);
                         }
                     }
@@ -221,19 +210,34 @@ var qmm019;
                         }
                     }
                     Category.prototype.categoryClick = function (data, event) {
+                        var _this = this;
                         var self = this;
-                        //TODO: di den man hinh ...
-                        //alert(data.categoryName);
-                        self.screenModel().start();
+                        nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml').onClosed(function () {
+                            var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                            if (selectedCode === "1") {
+                                // cho phep print all row
+                                for (var _i = 0, _a = self.lines(); _i < _a.length; _i++) {
+                                    var line = _a[_i];
+                                    line.setPrint(true);
+                                }
+                            }
+                            else if (selectedCode === "2") {
+                                // Gray - Khong cho print all row
+                                for (var _b = 0, _c = self.lines(); _b < _c.length; _b++) {
+                                    var line = _c[_b];
+                                    line.setPrint(false);
+                                }
+                            }
+                            else if (selectedCode === "3") {
+                                // Xoa category
+                                $("#group-" + data.categoryAtr).addClass("removed");
+                                self.isRemoved = true;
+                            }
+                            return _this;
+                        });
                     };
                     Category.prototype.addLine = function () {
                         var _this = this;
-                        //                    var itemDetailObj1 = {itemCode: "itemTemp-1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                        //                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                        //                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                        //                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                        //                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                        //                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === undefined)
@@ -364,7 +368,18 @@ var qmm019;
                     }
                     //TODO: goi man hinh chi tiet
                     ItemDetail.prototype.itemClick = function (data, event) {
+                        var _this = this;
                         alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+                        var param = {
+                            categoryId: data.categoryAtr(),
+                            itemCode: data.itemCode(),
+                            isUpdate: data.itemAbName() === "+" ? false : true
+                        };
+                        nts.uk.ui.windows.setShared('param', param);
+                        nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(function () {
+                            var selectedCode = nts.uk.ui.windows.getShared('itemResult');
+                            return _this;
+                        });
                     };
                     return ItemDetail;
                 }());
