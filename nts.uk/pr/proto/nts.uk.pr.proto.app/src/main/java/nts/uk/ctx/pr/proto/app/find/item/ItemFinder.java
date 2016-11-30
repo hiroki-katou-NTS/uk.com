@@ -17,26 +17,29 @@ import nts.uk.shr.com.context.AppContexts;
 public class ItemFinder {
 	@Inject
 	private ItemMasterRepository repostirory;
+
 	/**
 	 * finder all items by company code and category type
+	 * 
 	 * @param companyCode
 	 * @param categoryAtr
 	 * @return
 	 */
-	public List<ItemDto> getAllItems(int categoryAtr){
+	public List<ItemDto> getAllItems(int categoryAtr) {
 		return this.repostirory.findAllByCategory(AppContexts.user().companyCode(), categoryAtr).stream()
-				.map(item -> ItemDto.fromDomain(item))
-				.collect(Collectors.toList());
+				.map(item -> ItemDto.fromDomain(item)).collect(Collectors.toList());
 	}
-/**
- * finder item by company code, category type, item code
- * @param companyCode
- * @param categoryAtr
- * @param itemCode
- * @return
- */
-	public Optional<ItemDto> getItem(int categoryAtr, String itemCode){
+
+	/**
+	 * finder item by company code, category type, item code
+	 * 
+	 * @param companyCode
+	 * @param categoryAtr
+	 * @param itemCode
+	 * @return
+	 */
+	public Optional<ItemDto> getItem(int categoryAtr, String itemCode) {
 		return this.repostirory.getItemMaster(AppContexts.user().companyCode(), categoryAtr, itemCode)
-				.map(item->ItemDto.fromDomain(item));
+				.map(item -> ItemDto.fromDomain(item));
 	}
 }

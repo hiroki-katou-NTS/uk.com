@@ -107,6 +107,16 @@ module nts.uk.pr.view.qpp005 {
                 self.employee(self.employeeList()[eIdx + 1]);
                 self.startPage();
             }
+            openGridSetting() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(() => {
+                    var employee = nts.uk.ui.windows.getShared('employee');
+                    self.employee(employee);
+
+                    self.startPage();
+                    return this;
+                });
+            }
 
             /**
              * auto Calculate item total

@@ -38,6 +38,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	private QstmtStmtLayoutCtg toEntity(LayoutMasterCategory domain) {
 		val entity = new QstmtStmtLayoutCtg();
 
+		entity.qstmtStmtLayoutCtgPk = new QstmtStmtLayoutCtgPK();
 		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
 		entity.qstmtStmtLayoutCtgPk.strYm = domain.getStartYM().v();

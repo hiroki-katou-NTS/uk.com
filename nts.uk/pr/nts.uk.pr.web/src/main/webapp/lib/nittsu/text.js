@@ -316,6 +316,9 @@ var nts;
                     else if (this.option.option.inputFormat() === "time") {
                         result = uk.time.parseTime(source, true);
                     }
+                    else {
+                        result = uk.time.ResultParseTime.failed();
+                    }
                     if (result.success) {
                         return result.format();
                     }

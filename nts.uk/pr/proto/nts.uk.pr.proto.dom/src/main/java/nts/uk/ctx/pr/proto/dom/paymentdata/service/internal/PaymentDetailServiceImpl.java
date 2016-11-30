@@ -34,8 +34,6 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	@Inject
 	private ItemMasterRepository itemMasterRepo;
 	@Inject
-	private PersonalWageRepository personalWageRepo;
-	@Inject
 	private PersonalCommuteFeeRepository personalCommuteRepo;
 
 	@Override
@@ -44,9 +42,12 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		List<LayoutMasterDetail> layoutMasterDetailList = param.getLayoutMasterDetailList();
 						
 		// get personal commute
-		PersonalCommuteFee commute = personalCommuteRepo.find(
-				param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth().v())
-					.orElseThrow(() -> new RuntimeException("PersonalCommuteFee not found"));
+		List<PersonalCommuteFee> commuteList = personalCommuteRepo.findAll(
+				param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth().v());
+		if (commuteList.isEmpty()) {
+			throw new RuntimeException("Personal commute not found");
+		}
+		PersonalCommuteFee commute = commuteList.get(0);
 		
 		// LAYOUT_DETAIL with CTR_ATR = 0
 		val detailsOfCategoryPayment = layoutMasterDetailList.stream()
@@ -141,12 +142,12 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		
 		// PayrollSystem == 2 || 3
 		if (param.getEmploymentContract().isPayrollSystemDailyOrDay()) {
-			value = getPayValueByMonthlyDaily(layout.getItemCode(), param.getHoliday(), param.getPaymentDateMaster(),
-					param.getPayCalBasicInfo());
+			value = getPayValueByPayrollDayHours(layout.getItemCode(), param.getHoliday());
 			
 		} else if (param.getEmploymentContract().isPayrollSystemDailyOrMonthly()) {
 			// PayrollSystem == 0 || 1
-			value = getPayValueByPayrollDayHours(layout.getItemCode(), param.getHoliday());
+			value = getPayValueByMonthlyDaily(layout.getItemCode(), param.getHoliday(), param.getPaymentDateMaster(),
+					param.getPayCalBasicInfo());
 		} else {
 			throw new RuntimeException("システムエラー");
 		}
@@ -164,7 +165,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	/** Get item master **/
 	private ItemMaster getItemMaster(PaymentDetailParam param, LayoutMasterDetail layout) {
 		ItemMaster itemMaster = itemMasterRepo
-				.getItemMaster(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
+				.find(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
 				.get();
 		return itemMaster;
 	}
