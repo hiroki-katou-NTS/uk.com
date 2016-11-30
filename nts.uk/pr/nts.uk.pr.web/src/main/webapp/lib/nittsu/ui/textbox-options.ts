@@ -119,6 +119,27 @@ module nts.uk.ui.option {
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
     }
+    
+    // Multiline Editor Option
+    interface IMultilineEditorOption{
+        resizeable?: boolean;
+        placeholder?: string;
+        width?: string;
+        textalign?: string;
+    }
+
+    export class MultilineEditorOption extends EditorOptionBase {
+        resizeable: boolean;
+        
+        constructor(option?: IMultilineEditorOption) {
+            super();
+            // Default value
+            this.resizeable = (option && option.resizeable !== undefined) ? option.resizeable : false;
+            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
+            this.width = (option && option.width) ? option.width : "";
+            this.textalign = (option && option.textalign) ? option.textalign : "left";
+        }
+    }
         
     type TextMode = "text" | "password";
     type FillDirection = "left" |"right";

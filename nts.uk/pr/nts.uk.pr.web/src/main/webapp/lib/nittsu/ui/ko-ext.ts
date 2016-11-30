@@ -13,8 +13,8 @@ module nts.uk.ui.koExtentions {
             $input.change(() => {
                 var newText = $input.val();
                 var result = validator.validate(newText);
+                $input.ntsError('clear');
                 if (result.isValid) {
-                    $input.ntsError('clear');
                     setValue(result.parsedValue);
                     $input.val(formatter.format(result.parsedValue));
                 } else {
@@ -144,7 +144,33 @@ module nts.uk.ui.koExtentions {
             return new validation.TimeValidator(constraintName, option);
         }
     }
+    
+    class MultilineEditorProcessor extends EditorProcessor {
+        
+        update($input: JQuery, data: any) {
+            var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var resizeable: string = ko.unwrap(editorOption.resizeable);
+            $input.css('resize', (resizeable) ? "both" : "none");
+            super.update($input, data);
+        }
 
+        getDefaultOption(): any {
+            return new option.MultilineEditorOption();
+        }
+
+        getFormatter(data: any): format.IFormatter {
+            var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constrain = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+        }
+
+        getValidator(data: any): validation.IValidator {
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            return new validation.StringValidator(constraintName, required);
+        }
+    }
 
     /**
      * Editor
@@ -235,6 +261,26 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             new TimeEditorProcessor().update($(element), valueAccessor());
+        }
+    }
+    
+    /**
+     * MultilineEditor
+     */
+    class NtsMultilineEditorBindingHandler extends NtsEditorBindingHandler {
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new MultilineEditorProcessor().init($(element), valueAccessor());
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new MultilineEditorProcessor().update($(element), valueAccessor());
         }
     }
 
@@ -1377,7 +1423,7 @@ module nts.uk.ui.koExtentions {
             var date = ko.unwrap(data.value());
             container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
             container.datepicker({
-                format: 'yyyy/mm/dd',
+                format: "yyyy/mm/dd",
                 language: 'ja'
             }).on('changeDate', (ev: any) => {
                 data.value(ev.date);
@@ -1479,6 +1525,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
+    ko.bindingHandlers['ntsMultilineEditor'] = new NtsMultilineEditorBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
