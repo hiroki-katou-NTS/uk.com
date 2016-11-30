@@ -76,6 +76,11 @@ var qmm019;
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
                 a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
+                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                        .done(function (listResult) {
+                        self.categories(listResult);
+                        self.bindSortable();
+                    });
                 }).fail(function (err) {
                     alert(err);
                 });

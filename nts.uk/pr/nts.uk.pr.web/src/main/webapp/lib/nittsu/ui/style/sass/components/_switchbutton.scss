@@ -4,8 +4,9 @@
 @import "../base/_clearfix.scss";
 
 button.nts-switch-button {
+	$sbfs: $bfs*1.4;
     $_base_top: 0;
-    $_base_height: $bfs * 3;
+    $_base_height: $sbfs * 3;
     
     $_base_border_bottom: 1px;
     $_base_margin_bottom: 0;
@@ -22,10 +23,10 @@ button.nts-switch-button {
    	$_padding_gap_v: -2px;
    	$_padding_gap_h: -3px;
    	$_thickness_gap: 0;
-   	$_height: $_base_height + $_padding_gap_v * 2 + $bfs * $_font_size_gap;
+   	$_height: $_base_height + $_padding_gap_v * 2 + $sbfs * $_font_size_gap;
    	$_border_bottom_width: $_base_border_bottom_width + $_thickness_gap;
    	
-   	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
+   	font-size: $sbfs * ($_base_font_size_ratio + $_font_size_gap);
    	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
    	border-bottom-width: $_border_bottom_width;
    	height: $_height;
