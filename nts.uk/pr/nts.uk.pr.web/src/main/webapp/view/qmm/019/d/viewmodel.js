@@ -65,14 +65,14 @@ var qmm019;
                             self.selectStmtName(layout.stmtName);
                             self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             self.valueSel001('最新の履歴（' + nts.uk.time.formatYearMonth(layout.startYm) + '）から引き継ぐ');
-                            self.startYmHis = layout.startYm;
+                            self.startYmHis(layout.startYm);
                             return false;
                         }
                     });
                 };
                 ScreenModel.prototype.createHistoryLayout = function () {
                     var self = this;
-                    var selectYm = self.startYmHis;
+                    var selectYm = self.startYmHis();
                     var inputYm = $("#INP_001").val().replace('/', '');
                     if (+inputYm < +selectYm
                         || +inputYm == +selectYm) {
@@ -103,9 +103,10 @@ var qmm019;
                         checkContinue: false,
                         stmtCode: self.selectStmtCode(),
                         startYm: start,
-                        endYm: (start - 1),
-                        startPrevious: +self.startYmHis,
-                        layoutAtr: 3
+                        endYm: start,
+                        startPrevious: self.startYmHis(),
+                        layoutAtr: 3,
+                        stmtName: ""
                     });
                 };
                 ScreenModel.prototype.closeDialog = function () {

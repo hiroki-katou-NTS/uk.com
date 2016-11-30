@@ -39,6 +39,7 @@ module qmm019.d.service {
                 endYm: number;
                 startPrevious: number;
                 layoutAtr: number;
+                stmtName: string;
             }
 
         }
