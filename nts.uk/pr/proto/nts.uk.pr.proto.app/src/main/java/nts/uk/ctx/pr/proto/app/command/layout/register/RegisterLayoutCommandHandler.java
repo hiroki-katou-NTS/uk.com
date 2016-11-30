@@ -10,6 +10,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
@@ -128,7 +129,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 				lineRepo.add(LayoutMasterLine.createFromJavaType(companyCode, 
 						startYm, stmtCode, 
 						layoutCommand.getEndYm(), 
-						lineCommand.getAutoLineId(), 
+						IdentifierUtil.randomUniqueId(), 
 						lineCommand.getLineDisplayAtr(), 
 						lineCommand.getLinePosition(), 
 						lineCommand.getCategoryAtr()));
@@ -140,15 +141,15 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			String stmtCode, int startYm) {
 		if (command.getListCategoryAtrDeleted().size() > 0) {
 			for(Integer categoryAtr : command.getListCategoryAtrDeleted()){
-				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
+				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
+						companyCode, stmtCode, startYm, categoryAtr);
+				detailRepo.remove(detailsDelete);
 				
 				List<LayoutMasterLine> linesDelete = lineRepo.getLines(companyCode, stmtCode, 
 						startYm, categoryAtr);
 				lineRepo.remove(linesDelete);
 				
-				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
-						companyCode, stmtCode, startYm, categoryAtr);
-				detailRepo.remove(detailsDelete);
+				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
 			}
 		}
 		

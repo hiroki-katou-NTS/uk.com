@@ -231,14 +231,11 @@ var nts;
                 CharType.prototype.validate = function (text) {
                     var result = new uk.ui.validation.ValidationResult();
                     if (this.validator(text)) {
-                        result.isValid = true;
+                        return true;
                     }
                     else {
-                        result.isValid = false;
-                        result.errorMessage = 'invalid text';
+                        return false;
                     }
-                    result.parsedValue = text;
-                    return result;
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
                     return this.viewName + this.getViewLength(maxLength) + '文字';
@@ -271,9 +268,9 @@ var nts;
             text_1.getCharType = getCharType;
             function formatEmployeeCode(code, filldirection, fillcharacter, length) {
                 if (filldirection === "left")
-                    return padRight(code, fillcharacter, length);
-                else
                     return padLeft(code, fillcharacter, length);
+                else
+                    return padRight(code, fillcharacter, length);
             }
             text_1.formatEmployeeCode = formatEmployeeCode;
             var StringFormatter = (function () {

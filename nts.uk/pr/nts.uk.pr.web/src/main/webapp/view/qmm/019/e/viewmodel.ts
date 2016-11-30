@@ -82,12 +82,24 @@ module qmm019.e.viewmodel {
             var layoutInfor = self.selectLayout();
             layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/','');
             layoutInfor.startYm = +$("#INP_001").val().replace('/','');
-            service.updateLayout(layoutInfor).done(function(){
+            //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
+            if(layoutInfor.startYmOriginal > layoutInfor.startYm
+            || layoutInfor.startYm > +self.selectLayoutEndYm().replace('/','')){
+                alert("履歴の期間が重複しています。");
+                return false;
+            }
+            else if (layoutInfor.startYmOriginal == layoutInfor.startYm){
                 alert("履歴を修正しました。");
-                 nts.uk.ui.windows.close();
-            }).fail(function(res){
-                alert(res);    
-            })
+                nts.uk.ui.windows.close();
+                return false;    
+            }else{
+                service.updateLayout(layoutInfor).done(function(){
+                    alert("履歴を修正しました。");
+                     nts.uk.ui.windows.close();
+                }).fail(function(res){
+                    alert(res);    
+                })
+            }
         }
         
         closeDialog() {

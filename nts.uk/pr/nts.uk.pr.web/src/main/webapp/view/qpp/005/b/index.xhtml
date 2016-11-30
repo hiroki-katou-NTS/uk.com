@@ -5,26 +5,16 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 265, height: 170 };</script>
-			
-			<link rel="stylesheet" type="text/css" href="main.css" />
-			<script src="start.js"></script>
-			<script src="viewmodel.js"></script>
-			<script src="service.js"></script>
-		</ui:define>
-
-		<ui:define name="content">
+	<ui:composition>
 		<table class="contentFrame">
 			<tr>
-				<td>
+				<td style="border: none !important;">
 					<div class="form-label">
 						<label>カーソル移動</label>
 					</div>
 				</td>
-				
-				<td>
+
+				<td style="border: none !important;">
 					<div data-bind="with: switchButton" class="switchButton">
 						<div id="switchButtonTest"
 							data-bind="ntsSwitchButton: {
@@ -37,11 +27,13 @@
 				</td>
 			</tr>
 		</table>
-		
+
 		<div class="seperator"></div>
-		<button id="btn001" class="buttonFrame" data-bind="visible: visible">グリッドの高さを広くする</button>
-		<button id="btn002" class="buttonFrame" data-bind="visible: !visible()">グリッドの高さを標準に戻す</button>
-		</ui:define>
+		<div style="position: relative;">
+			<button id="btn001" class="buttonFrame" data-bind="visible: visible">グリッドの高さを広くする</button>
+			<button id="btn002" class="buttonFrame"
+				data-bind="visible: !visible()">グリッドの高さを標準に戻す</button>
+		</div>
 	</ui:composition>
 </body>
 </html>

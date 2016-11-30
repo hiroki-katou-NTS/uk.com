@@ -14,4 +14,5 @@ public interface PersonalWageNameRepository {
 	 * @return
 	 */
 	List<PersonalWageNameMaster> getPersonalWageName(String companyCode, int categoryAtr);
+	List<PersonalWageNameMaster> getPersonalWageNames(String companyCode);
 }

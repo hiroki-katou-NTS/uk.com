@@ -13,8 +13,14 @@ public class PersonalWageNameFinder {
 	@Inject
 	private PersonalWageNameRepository repository;
 	
-	public List<PersonalWageNameDto> getPersonalWageNames(String companyCode, int categoryAtr){
+	public List<PersonalWageNameDto> getPersonalWageName(String companyCode, int categoryAtr){
 		return this.repository.getPersonalWageName(companyCode, categoryAtr).stream()
+				.map(item -> PersonalWageNameDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
+	
+	public List<PersonalWageNameDto> getPersonalWageNames(String companyCode){
+		return this.repository.getPersonalWageNames(companyCode).stream()
 				.map(item -> PersonalWageNameDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}

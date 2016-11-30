@@ -51,7 +51,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		
 		//Validate by EA: 12.履歴の編集-登録時チェック処理
 		Optional<LayoutMaster> layoutBefore = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartYmOriginal());
-		validateHistorySpan(command, layoutOrigin, layoutBefore);
+		//validateHistorySpan(command, layoutOrigin, layoutBefore);
 
 		this.layoutRepo.remove(companyCode, command.getStmtCode(), command.getStartYmOriginal());
 		layoutOrigin.setStartYM(new YearMonth(command.getStartYm()));
@@ -62,7 +62,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		if(layoutBefore != null){
 			LayoutMaster layout = layoutBefore.get();
 			//this.layoutRepo.remove(companyCode, command.getStmtCode(), layout.getStartYM().v());
-			layout.setEndYm(new YearMonth(command.getStartYm() - 1));
+			layout.setEndYm(new YearMonth(command.getStartYm()).previousMonth());
 			layoutRepo.update(layout);
 			//update thang dang truoc no
 			updatePreviousObject(command, companyCode, layoutOrigin);
@@ -89,10 +89,6 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		List<LayoutMasterCategory> categoriesBefore = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
 		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
 		List<LayoutMasterDetail> detailsBefore = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
-		this.categoryRepo.removeAllCategory(categoriesBefore);
-		this.lineRepo.remove(linesBefore);
-		this.detailRepo.remove(detailsBefore);
-		
 		List<LayoutMasterCategory> categoriesUpdate = categoriesBefore.stream().map(
 				org -> {
 					return LayoutMasterCategory.createFromDomain(
@@ -100,7 +96,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getStartYM(), 
 							org.getStmtCode(), 
 							org.getCtAtr(), 
-							new YearMonth(command.getStartYm() - 1), 
+							new YearMonth(command.getStartYm()).previousMonth(), 
 							org.getCtgPos());
 				}).collect(Collectors.toList());
 		
@@ -110,7 +106,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getCompanyCode(), 
 							org.getStartYM(),
 							org.getStmtCode(), 
-							new YearMonth(command.getStartYm() - 1), 
+							new YearMonth(command.getStartYm()).previousMonth(), 
 							org.getAutoLineId(), 
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
@@ -123,7 +119,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getCompanyCode(), 
 							org.getLayoutCode(), 
 							org.getStartYm(),
-							new YearMonth(command.getStartYm() - 1), 
+							new YearMonth(command.getStartYm()).previousMonth(), 
 							org.getCategoryAtr(), 
 							org.getItemCode(), 
 							org.getAutoLineId(), 
@@ -139,9 +135,9 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getPersonalWageCode());
 				}).collect(Collectors.toList());
 		
-		categoryRepo.add(categoriesUpdate);
-		lineRepo.add(linesUpdate);
-		detailRepo.add(detailsUpdate);
+		categoryRepo.update(categoriesUpdate);
+		lineRepo.update(linesUpdate);
+		detailRepo.update(detailsUpdate);
 	}
 
 	private void updateCurrentObject(UpdateLayoutHistoryCommand command, String companyCode) {

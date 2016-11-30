@@ -24,8 +24,8 @@
 
 		<ui:define name="content">
 
-			<div id="functions-area">
-				<div class="separate-1 green-div">操作選択に戻る</div>
+			<div id="functions-area" data-bind="with: wizard">
+				<div class="separate-1 green-div" data-bind="click: previous">操作選択に戻る</div>
 				<button class="separate-1">移送項目設定</button>
 				<button class="separate-1">実行ログ</button>
 			</div>
@@ -75,8 +75,9 @@
 											   multiple: true,
 											   value: selectedCodes,
 											   enable: true,
+											   rows: 10,
 											   columns: [
-													{ prop: 'id', length: 12 },
+													{ prop: 'code', length: 12 },
 													{ prop: 'name', length: 20 }
 											   ]}"
 										class="cf"></div>

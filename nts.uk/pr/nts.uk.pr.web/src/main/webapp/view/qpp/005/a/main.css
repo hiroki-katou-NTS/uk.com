@@ -91,6 +91,14 @@ table.tb-category, th, td {
 	border-bottom: 1px solid #726e6e;
 }
 
+.sp-readonly {
+	float: left;
+	width: 100%;
+	height: 20px;
+	background: #fff !important;
+	border: none !important;
+}
+
 .tb-category td>input {
 	border: none;
 	width: 100%;
@@ -101,7 +109,7 @@ table.tb-category, th, td {
 	border-radius: 5px;
 	margin: 5px 0px 0px 0px;
 	width: 50%;
-	height: 80px;
+	height: 65px;
 }
 
 .disabled {
@@ -112,7 +120,7 @@ table.tb-category, th, td {
 
 #grid-setting {
 	display: inline-block;
-	float:right;
+	float: right;
 }
 
 #btSetting {
@@ -122,4 +130,27 @@ table.tb-category, th, td {
 	height: 25px;
 	width: 28px;
 }
+
+#pơpup-orientation {
+	width: 235px;
+	height: 90px;
+}
+
+.contentFrame {
+	margin: 0px auto;
+}
+
+.switchButton {
+	margin-left: 30px;
+}
+
+.seperator {
+	border-top: 1px solid gray;
+	width: 90%;
+	margin: 5px auto;
+}
+
+.buttonFrame {
+	width: 85%;
+	margin: 5px 0px 0px 17px;
 }

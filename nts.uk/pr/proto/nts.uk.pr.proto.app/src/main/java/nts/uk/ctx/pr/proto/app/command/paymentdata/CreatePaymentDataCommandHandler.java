@@ -128,12 +128,12 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				
 		// get basic calculate
 		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode())
-				.orElseThrow(() -> new RuntimeException("PaymentCalculationBasicInformation not found"));
+				.orElseThrow(() -> new RuntimeException("PaymentCalculationBasicInformation not found: personId=" + command.getPersonId()));
 		
 		// get pay day
 		PaymentDateMaster payDay = payDateMasterRepo.find(loginInfo.companyCode(), PayBonusAtr.SALARY.value,
 				command.getProcessingYearMonth(), SparePayAtr.NORMAL.value, command.getProcessingNo())
-					.orElseThrow(() -> new RuntimeException("PaymentDateMaster not found"));
+					.orElseThrow(() -> new BusinessException("対象データがありません。"));
 			
 		// calculate personal
 		calculatePersonalPayment(
@@ -182,7 +182,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// get layout master 
 		List<LayoutMaster> layoutMasterList = layoutMasterRepo.findAll(loginInfo.companyCode(), stmtCode, processingYearMonth.v());
 		if (layoutMasterList.isEmpty()) {
-			throw new RuntimeException("Layout master not found");
+			throw new BusinessException("対象データがありません。");
 		}
 		LayoutMaster layoutMaster = layoutMasterList.get(0);
 		
@@ -309,7 +309,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		if (!personalAllotSettingOp.isPresent()) {
 			// get allot company setting
-			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode, baseYearMonth).get();
+			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode, baseYearMonth)
+					.orElseThrow(() -> new RuntimeException("Company Allot Setting Not Found"));
 
 			result = new PersonalAllotSetting(new CompanyCode(companyCode), new PersonId(personId),
 					companyAllotSetting.getStartDate(), companyAllotSetting.getEndDate(),
@@ -323,14 +324,15 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	
 	/** Create data payment detail for case total payment **/
 	private DetailItem createDataDetailItem(String companyCode, String itemCode, double value, CategoryAtr categoryAtr, List<LayoutMasterLine> lineList, List<LayoutMasterDetail> layoutMasterDetailList) {
-		ItemMaster itemMaster = itemMasterRepo.getItemMaster(companyCode, categoryAtr.value, itemCode).get();
-		LayoutMasterDetail layoutMasterDetail = layoutMasterDetailList.stream().filter(x -> x.getCategoryAtr() == categoryAtr && itemCode.equals(x.getItemCode().v())).findFirst().get();
+		ItemMaster itemMaster = itemMasterRepo.getItemMaster(companyCode, categoryAtr.value, itemCode).orElseThrow(() -> new BusinessException("対象データがありません。"));
+		LayoutMasterDetail layoutMasterDetail = layoutMasterDetailList.stream().filter(x -> x.getCategoryAtr() == categoryAtr && itemCode.equals(x.getItemCode().v())).findFirst()
+				.orElseThrow(() -> new BusinessException("対象データがありません。"));
 		String autoLineId = layoutMasterDetail.getAutoLineId().v();
 		int itemPositionColumn = layoutMasterDetail.getItemPosColumn().v();
 		
 		LayoutMasterLine line = lineList.stream()
 				.filter(x -> categoryAtr == x.getCategoryAtr() && x.getAutoLineId().v().equals(autoLineId))
-				.findFirst().get();
+				.findFirst().orElseThrow(() -> new BusinessException("対象データがありません。"));
 		
 		int linePosition;
 		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {

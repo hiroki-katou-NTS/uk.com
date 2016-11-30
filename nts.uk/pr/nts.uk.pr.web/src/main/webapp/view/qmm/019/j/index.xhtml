@@ -28,21 +28,19 @@
 			<form>
 				<div>
 					<fieldset>
-					  <div data-bind="foreach: boxes1">
-					        <label><input class="radio-２" type="radio" name="selection" /><span data-bind="text: text"></span></label><br /> 
-				        </div>
-					<!-- 	<input class="radio-1" type="radio" name="selection"/>明細書に印字する行<br /> 
-						<input class="radio-2" type="radio" name="selection"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）<br /> 
-						<input class="radio-3" type="radio" checked="checked" name="selection"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）<br /> -->
+					 	<label><input class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字する行</label><br /> 
+						<label><input class="radio-1" type="radio" value="2" name="selection" data-bind="checked: selectedBox"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）</label><br /> 
+						<label><input class="radio-1" type="radio" value="3" name="selection" data-bind="checked: selectedBox"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）</label><br />
 					</fieldset>
 				</div>
 			</form>
 			<hr></hr>
 			<div>
-				<button class="x-large proceed">決定</button>
+				<button class="x-large proceed" data-bind="click: chooseItem">設定</button>
 				<button class="large" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>
+
 	</ui:composition>
 </body>
 </html>

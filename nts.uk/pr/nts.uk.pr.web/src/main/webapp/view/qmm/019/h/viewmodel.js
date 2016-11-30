@@ -5,10 +5,10 @@ var qmm019;
         var viewmodel;
         (function (viewmodel) {
             var ItemModel = (function () {
-                function ItemModel(id, name) {
+                function ItemModel(companyCode, personalWageName) {
                     var self = this;
-                    this.id = id;
-                    this.name = name;
+                    this.companyCode = companyCode;
+                    this.personalWageName = personalWageName;
                 }
                 return ItemModel;
             }());
@@ -38,16 +38,15 @@ var qmm019;
                         new ItemModel("19", "ドットプリンタ19"),
                         new ItemModel("20", "ドットプリンタ20"),
                     ]);
+                    self.personalWages = ko.observableArray([]);
                     self.itemName = ko.observable('');
-                    self.currentCode = ko.observable('');
+                    self.currentCode = ko.observable('0');
                     self.selectedCode = ko.observable('01');
-                    self.itemName = ko.observable('');
-                    self.itemList();
-                    $('#list-box').on('selectionChanging', function (event) {
-                        console.log('Selecting value:' + event.originalEvent.detail);
-                    });
-                    $('#list-box').on('selectionChanged', function (event) {
-                        console.log('Selected value:' + event.originalEvent.detail);
+                    self.selectedName = ko.computed(function () {
+                        var item = _.find(self.itemList(), function (item) {
+                            return item.id === self.selectedCode();
+                        });
+                        return (item !== undefined) ? item.name : null;
                     });
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
@@ -60,8 +59,37 @@ var qmm019;
                     var self = this;
                     self.listBox = new ListBox();
                 }
+                ScreenModel.prototype.buildItemList = function () {
+                    var self = this;
+                    //            self.listBox.itemList.removeAll();
+                    _.forEach(self.listBox.personalWages(), function (personalWage) {
+                        var companyCode = personalWage.companyCode;
+                        if (companyCode.length == 1) {
+                            companyCode = "0" + personalWage.companyCode;
+                        }
+                        self.listBox.itemList.push(new ItemModel(companyCode, personalWage.personalWageName));
+                    });
+                };
+                ScreenModel.prototype.start = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    self.buildItemList();
+                    $('#LST_001').on('selectionChanging', function (event) {
+                        console.log('Selecting value:' + event.originalEvent.detail);
+                    });
+                    $('#LST_001').on('selectionChanged', function (event) {
+                        console.log('Selected value:' + event.originalEvent.detail);
+                    });
+                    h.service.getPersonalWageNames().done(function (personalWage) {
+                        self.listBox.personalWages(personalWage);
+                        self.buildItemList();
+                    });
+                    // Return.
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.chooseItem = function () {
                     var self = this;
+                    nts.uk.ui.windows.setShared('selectedName', self.listBox.selectedName());
                     nts.uk.ui.windows.setShared('selectedCode', self.listBox.selectedCode());
                     nts.uk.ui.windows.close();
                 };

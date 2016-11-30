@@ -9,6 +9,9 @@ module nts.uk.pr.view.qpp005 {
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
             employeeList: KnockoutObservableArray<any>;
+            switchButton: KnockoutObservable<SwitchButton>;
+            visible: KnockoutObservable<any>;
+
 
             constructor() {
                 var self = this;
@@ -34,12 +37,20 @@ module nts.uk.pr.view.qpp005 {
                 });
                 self.employeeList = ko.observableArray(employees);
                 self.employee(employees[0]);
+
+                // グリッド設定
+                self.switchButton = ko.observable(new SwitchButton());
+                self.visible = ko.observable(self.switchButton().selectedRuleCode() == 'vnext');
+                self.switchButton().selectedRuleCode.subscribe(function(newValue) {
+                    self.visible(newValue == 'vnext');
+                    qpp005.utils.gridSetup(self.switchButton().selectedRuleCode());
+                });
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
 
-                qpp005.service.getPaymentData(self.employee().personId(), self.employee().code()).done(function(res: any) {
+                qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
 
                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
 
@@ -71,7 +82,7 @@ module nts.uk.pr.view.qpp005 {
             /** Event click: 対象者*/
             openEmployeeList() {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml', { title: '社員選択' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/c/index.xhtml', { title: '社員選択' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
 
@@ -107,15 +118,21 @@ module nts.uk.pr.view.qpp005 {
                 self.employee(self.employeeList()[eIdx + 1]);
                 self.startPage();
             }
-            openGridSetting() {
+
+            openColorSettingGuide() {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
 
                     self.startPage();
                     return this;
                 });
+            }
+
+            openGridSetting() {
+                var self = this;
+                $('#pơpup-orientation').ntsPopup('show');
             }
 
             /**
@@ -145,20 +162,30 @@ module nts.uk.pr.view.qpp005 {
             }
         };
 
-        //        private parseResultDtoToViewModel(resultDto) {
-        //              //        }
+        export class SwitchButton {
+            roundingRules: KnockoutObservableArray<any>;
+            selectedRuleCode: KnockoutObservable<string>;
 
+            constructor() {
+                var self = this;
+                self.roundingRules = ko.observableArray([
+                    { code: 'vnext', name: '縦方向' },
+                    { code: 'hnext', name: '横方向' }
+                ]);
+                self.selectedRuleCode = ko.observable('hnext');
+            }
+        }
         export class Employee {
-            personId: KnockoutObservable<string>;
-            code: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
+            personId: string;
+            code: string;
+            name: string;
 
             constructor(personId: string, code: string, name: string) {
                 var self = this;
 
-                self.personId = ko.observable(personId);
-                self.code = ko.observable(code);
-                self.name = ko.observable(name);
+                self.personId = personId;
+                self.code = code;
+                self.name = name;
             }
         }
 

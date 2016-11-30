@@ -41,12 +41,12 @@ module qmm019.a {
         /**
          * Get list getCategoryFull.
          */
-        export function getCategoryFull(layoutCode, startYm): JQueryPromise<Array<model.Category>> {
+        export function getCategoryFull(layoutCode, startYm, screenModel: ScreenModel): JQueryPromise<Array<model.Category>> {
             var dfd = $.Deferred<Array<model.Category>>();
             nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
                 .done(function(res: Array<model.Category>) {
                     var result = _.map(res, function(category: any) {
-                        return new model.Category(category.lines, category.categoryAtr);
+                        return new model.Category(category.lines, category.categoryAtr, screenModel);
                     });
                     dfd.resolve(result);
                 })
@@ -69,13 +69,15 @@ module qmm019.a {
                     // Truong hop remove category thi remove luon line va detail
                     listCategoryAtrDeleted.push(category.categoryAtr);
                     
-                    let linePosition = 1;
-                    for (let line of category.lines()) {
-                        listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});  
-                        for (let detail of line.details) {
-                            listItemCodeDeleted.push({categoryAtr: category.categoryAtr, itemCode: detail.itemCode()});
-                        }
-                    }
+//                    let linePosition = 1;
+//                    for (let line of category.lines()) {
+//                        if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
+//                            listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});  
+//                            for (let detail of line.details) {
+//                                listItemCodeDeleted.push({categoryAtr: category.categoryAtr, itemCode: detail.itemCode()});
+//                            }
+//                        }
+//                    }
                 } else {
                     categoryCommand.push({categoryAtr: category.categoryAtr, categoryPosition: categoryPosition});
                     let linePosition = 1;
@@ -91,10 +93,11 @@ module qmm019.a {
                                                 linePosition: linePosition, 
                                                 lineDisplayAtr: line.lineDispayAtr});
                         } else {
-                            listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});
+                            if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
+                                listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});
+                            }
                         }    
                         linePosition++;
-                        
                         let itemPosColumn = 1;
                         let sortedItemCodes = $("#" + line.rowId).sortable("toArray");
                         for (let item of sortedItemCodes) {
@@ -178,15 +181,17 @@ module qmm019.a {
                 categoryName: string;
                 hasSetting: boolean = false;
                 isRemoved: boolean = false;
+                screenModel: KnockoutObservable<ScreenModel>;
                 
-                constructor(lines: Array<Line>, categoryAtr: number) {
+                constructor(lines: Array<Line>, categoryAtr: number, screenModel: ScreenModel) {
+                    this.screenModel = ko.observable(screenModel);
                     this.lines = ko.observableArray([]);
                     this.lines(_.map(lines, function(line: model.Line) {
                         var details = 
                             _.map(line.details, function(detail: model.ItemDetail){
-                                return new model.ItemDetail(detail);  
+                                return new model.ItemDetail(detail, screenModel);  
                             });
-                        return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
+                        return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition, screenModel);
                     }));
                     this.categoryAtr = categoryAtr;
                     switch (categoryAtr){
@@ -211,82 +216,65 @@ module qmm019.a {
                     }
                 }
                 categoryClick(data, event) {
-                    //TODO: di den man hinh ...
-                    alert(data.categoryName);    
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml').onClosed(() => {
+                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                        if (selectedCode === "1") {
+                            // cho phep print all row
+                            for (let line of self.lines()){
+                                line.setPrint(true);
+                            }
+                        } else if (selectedCode === "2") {
+                            // Gray - Khong cho print all row
+                            for (let line of self.lines()){
+                                line.setPrint(false);
+                            }                            
+                        } else if (selectedCode === "3") {
+                            // Xoa category
+                            $("#group-" + data.categoryAtr).addClass("removed");
+                            self.isRemoved = true;
+                            if (data.categoryAtr === 2)
+                                self.screenModel().notHasKintai(true);
+                            if (data.categoryAtr === 3)
+                                self.screenModel().notHasKiji(true);
+                        }
+                        return this;
+                    });
                 }
                 addLine(){
-                    var self = this;
-                    let autoLineId : string = "lineIdTemp-" + self.lines().length;
-                    var itemDetailObj1 = {itemCode: "itemTemp-1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj2 = {itemCode: "itemTemp-2", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj3 = {itemCode: "itemTemp-3", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj4 = {itemCode: "itemTemp-4", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj5 = {itemCode: "itemTemp-5", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj6 = {itemCode: "itemTemp-6", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj7 = {itemCode: "itemTemp-7", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj8 = {itemCode: "itemTemp-8", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    var itemDetailObj9 = {itemCode: "itemTemp-9", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                                        categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
-                                        setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                                        distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                                        errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                        alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0};
-                    self.lines.push(
-                            new Line(self.categoryAtr, ([
-                                new ItemDetail(itemDetailObj1),
-                                new ItemDetail(itemDetailObj2),
-                                new ItemDetail(itemDetailObj3),
-                                new ItemDetail(itemDetailObj4),
-                                new ItemDetail(itemDetailObj5),
-                                new ItemDetail(itemDetailObj6),
-                                new ItemDetail(itemDetailObj7),
-                                new ItemDetail(itemDetailObj8),
-                                new ItemDetail(itemDetailObj9)
-                                ]), autoLineId, 1, self.lines.length));
-        
-                    ScreenModel.prototype.bindSortable();
-                    ScreenModel.prototype.destroySortable();
-                    ScreenModel.prototype.bindSortable();
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(() => {
+                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                        if (selectedCode === undefined) return this;
+                        
+                        var self = this;
+                        let autoLineId : string = "lineIdTemp-" + self.lines().length;
+                        let listItemDetail: Array<ItemDetail> = new Array;
+                        for(let i: number = 1; i <= 9; i++) {
+                            listItemDetail.push(new ItemDetail(
+                                {itemCode: "itemTemp-" + i, itemAbName: "+", isRequired: false, itemPosColumn: i,
+                                categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0, 
+                                setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
+                                distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                                errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                                alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0}, self.screenModel()            
+                                ));
+                        }
+                        let line: Line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length, self.screenModel());
+                        if (selectedCode === "1") {
+                            // cho phep print
+                            line.setPrint(true);
+                        } else if (selectedCode === "2") {
+                            // Gray - Khong cho print
+                            line.setPrint(false);                           
+                        }
+                        self.lines.push(line);
+                        
+                        self.screenModel().bindSortable();
+                        self.screenModel().destroySortable();
+                        self.screenModel().bindSortable();
+    
+                        return this;
+                    });
                 }
             }
         
@@ -300,9 +288,11 @@ module qmm019.a {
                 isDisplayOnPrint: boolean;
                 hasRequiredItem: boolean = false;
                 isRemoved: boolean = false;
+                screenModel: KnockoutObservable<ScreenModel>;
                 
                 constructor(categoryAtr: number, itemDetails: Array<ItemDetail>, 
-                    autoLineId: string, lineDispayAtr: number, linePosition: number) {
+                    autoLineId: string, lineDispayAtr: number, linePosition: number, screenModel: ScreenModel) {
+                    this.screenModel = ko.observable(screenModel);
                     this.details = itemDetails;
                     this.autoLineId = autoLineId;
                     this.rowId = categoryAtr + autoLineId;
@@ -323,14 +313,39 @@ module qmm019.a {
                     this.linePosition = linePosition;
                     this.categoryAtr = categoryAtr;
                 }
-                lineClick(data, event) {
+                lineClick(data: Line, event) {
                     var self = this;
-                    //TODO: goi man hinh khac
-                    if (data.hasRequiredItem === false) {
-                        $("#" + data.rowId).addClass("ground-gray");
-                        self.isRemoved = true;
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml').onClosed(() => {
+                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                        if (selectedCode === "1") {
+                            // cho phep print
+                            self.setPrint(true);
+                        } else if (selectedCode === "2") {
+                            // Gray - Khong cho print
+                            self.setPrint(false);                            
+                        } else if (selectedCode === "3") {
+                            // Xoa line
+                            if (data.hasRequiredItem === false) {
+                                $("#" + data.rowId).addClass("removed");
+                                self.isRemoved = true;
+                            }
+                        }
+                        return this;
+                    });
+                }
+                setPrint(allowPrint: boolean) {
+                    var self = this;
+                    if (allowPrint === true) {
+                        // cho phep print
+                        $("#" + self.rowId).removeClass("ground-gray");
+                        self.isDisplayOnPrint = true;
+                        self.lineDispayAtr = 1;
+                    } else {
+                        // Gray - Khong cho print
+                        $("#" + self.rowId).addClass("ground-gray");
+                        self.isDisplayOnPrint = false;
+                        self.lineDispayAtr = 0;                            
                     }    
-                    
                 }
             }
         
@@ -357,13 +372,10 @@ module qmm019.a {
                 isUseLowAlam: KnockoutObservable<number>;
                 alamRangeLow: KnockoutObservable<number>;
                 isRemoved: boolean = false;
+                screenModel: KnockoutObservable<ScreenModel>;
                 
-//                itemCode: string, itemAbName: string, isRequired: boolean, itemPosColumn: number,
-//                            categoryAtr: number, autoLineId: string, sumScopeAtr: number, calculationMethod: number,
-//                            distributeSet: number, distributeWay: number, personalWageCode: string, isUseHighError: number,
-//                            errRangeHigh: number, isUseLowError: number, errRangeLow: number, isUseHighAlam: number,
-//                            alamRangeHigh: number, isUseLowAlam: number, alamRangeLow: number
-                constructor(itemObject: any) {
+                constructor(itemObject: any, screenModel: ScreenModel) {
+                    this.screenModel = ko.observable(screenModel);
                     this.itemCode = ko.observable(itemObject.itemCode);
                     this.itemAbName = ko.observable(itemObject.itemAbName);
                     if(itemObject.itemCode === "F003" || itemObject.itemCode === "F114"){
@@ -390,7 +402,39 @@ module qmm019.a {
                 }
                 //TODO: goi man hinh chi tiet
                 itemClick(data, event) {
-                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());    
+                    var self = this;
+//                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+//                    self.itemAbName("dfdfd");
+                    var param = {
+                        categoryId: data.categoryAtr(),
+                        itemCode: data.itemCode(),
+                        isUpdate: data.itemAbName() === "+" ? false : true
+                    };    
+                    nts.uk.ui.windows.setShared('param', param);
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(() => {
+                        var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
+                        
+                        self.itemCode(itemResult.itemCode);
+                        self.itemAbName(itemResult.itemAbName);
+                        self.categoryAtr(itemResult.categoryAtr);
+                        self.sumScopeAtr(itemResult.sumScopeAtr);
+                        //self.setOffItemCode(itemResult.setOffItemCode);
+                        //self.commuteAtr(itemResult.commuteAtr);
+                        self.calculationMethod(itemResult.calculationMethod);
+                        self.distributeSet(itemResult.distributeSet);
+                        self.distributeWay(itemResult.distributeWay);
+                        self.personalWageCode(itemResult.personalWageCode);
+                        self.isUseHighError(itemResult.isUseHighError);
+                        self.errRangeHigh(itemResult.errRangeHigh);
+                        self.isUseLowError(itemResult.isUseLowError);
+                        self.errRangeLow(itemResult.errRangeLow);
+                        self.isUseHighAlam(itemResult.isUseHighAlam);
+                        self.alamRangeHigh(itemResult.alamRangeHigh);
+                        self.isUseLowAlam(itemResult.isUseLowAlam);
+                        self.alamRangeLow(itemResult.alamRangeLow);
+                        
+                        return this;
+                    });
                 }
             }
         }

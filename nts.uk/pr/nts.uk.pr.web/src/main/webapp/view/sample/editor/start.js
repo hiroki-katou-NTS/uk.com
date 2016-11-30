@@ -10,15 +10,16 @@ __viewContext.ready(function () {
             readonly: ko.observable(false)
         },
         employeeeditor: {
-            value: ko.observable('0132'),
+            value: ko.observable(' 1 2'),
             constraint: 'EmployeeCode',
             option: ko.mapping.fromJS(new option.TextEditorOption({
-                filldirection: "left",
+                filldirection: "right",
                 fillcharacter: "0"
             })),
             enable: ko.observable(true),
             readonly: ko.observable(false)
         },
+        // NumberEditor
         numbereditor: {
             value: ko.observable(12),
             constraint: '',
@@ -28,7 +29,7 @@ __viewContext.ready(function () {
         },
         // TimeEditor
         timeeditor: {
-            value: ko.observable(null),
+            value: ko.observable(-1222),
             constraint: 'LayoutCode',
             option: ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'time' })),
             enable: ko.observable(true),
@@ -36,7 +37,7 @@ __viewContext.ready(function () {
         },
         // TimeEditor
         yearMonthEditor: {
-            value: ko.observable(null),
+            value: ko.observable(200001),
             constraint: 'LayoutCode',
             option: ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'yearmonth' })),
             enable: ko.observable(true),

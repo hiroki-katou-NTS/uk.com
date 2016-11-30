@@ -4,7 +4,7 @@ module qmmm019.i.viewmodel{
 
         constructor() {
             var self = this;
-            self.selectedBox = ko.observable("3");           
+            self.selectedBox = ko.observable("1");           
         }
         
         chooseItem() {
@@ -14,6 +14,7 @@ module qmmm019.i.viewmodel{
         }
         
         closeDialog() {
+            nts.uk.ui.windows.setShared('selectedCode', undefined);
             nts.uk.ui.windows.close();
         }
     }
