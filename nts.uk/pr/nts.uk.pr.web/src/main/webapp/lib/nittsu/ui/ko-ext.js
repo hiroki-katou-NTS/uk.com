@@ -1288,7 +1288,7 @@ var nts;
                         // Container.
                         var container = $(element);
                         var date = ko.unwrap(data.value());
-                        container.attr('value', nts.uk.time.formatDate(date, 'yyyy/mm/dd'));
+                        container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
                             format: 'yyyy/mm/dd',
                             language: 'ja'

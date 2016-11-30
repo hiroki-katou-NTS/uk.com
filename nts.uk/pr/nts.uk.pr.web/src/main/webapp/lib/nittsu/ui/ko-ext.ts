@@ -1372,7 +1372,7 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             var date = ko.unwrap(data.value());
-            container.attr('value', nts.uk.time.formatDate(date, 'yyyy/mm/dd'));
+            container.attr('value', nts.uk.time.formatDate(date,'yyyy/MM/dd'));
             container.datepicker({
                 format: 'yyyy/mm/dd',
                 language: 'ja'
@@ -1388,7 +1388,6 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
     }
-    
     ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
