@@ -40,6 +40,8 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	@Inject
 	private LayoutMasterDetailRepository detailRepo;
 	
+	private CreateLayoutCommandHandler layoutCommandHandler;
+	
 	@Override
 	protected void handle(CommandHandlerContext<CreateLayoutHistoryCommand> context) {
 		CreateLayoutHistoryCommand command = context.getCommand();
@@ -65,6 +67,8 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		//「最新の履歴から引き継ぐ」を選択した場合
 		if (command.isCheckContinue()) {
 			copyFromPreviousHistory(command, companyCode);
+		}else{
+			layoutCommandHandler.createNewData(layoutNew, companyCode);
 		}
 		//「初めから作成する。」を選択した場合
 		// and　「最新の履歴から引き継ぐ」を選択した場合 更新データ
