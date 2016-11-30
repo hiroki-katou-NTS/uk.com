@@ -102,7 +102,10 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public void add(List<LayoutMasterLine> lines) {
-		this.commandProxy().insertAll(lines);
+		for(LayoutMasterLine line: lines){
+			this.commandProxy().insert(toEntity(line));
+		}
+		
 	}
 
 	@Override

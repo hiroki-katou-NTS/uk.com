@@ -64,27 +64,26 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 	@Override
 	protected void handle(CommandHandlerContext<CreateLayoutCommand> context) {
 		try{
-		CreateLayoutCommand command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-		
-		if (layoutRepo.isExist(companyCode, command.getStmtCode())) {
-			throw new BusinessException(new RawErrorMessage("入力した明細書コードは既に存在しています。\r\n明細書コードを確認してください。"));
-		}
-		
-		LayoutMaster layout = command.toDomain();
-		layout.validate();
-		this.layoutRepo.add(layout);
-		//作成方法で「既存のレイアウトをコピーして作成」を選択した場合
-		if (command.isCheckCopy()) {
-			copyNewData(command, companyCode);
-		}
-		//作成方法で「新規に作成」を選択した場合
-		else{
+			CreateLayoutCommand command = context.getCommand();
+			String companyCode = AppContexts.user().companyCode();
+			if (layoutRepo.isExist(companyCode, command.getStmtCode())) {
+				throw new BusinessException(new RawErrorMessage("入力した明細書コードは既に存在しています。\r\n明細書コードを確認してください。"));
+			}
 			
-			createNewData(layout, companyCode);
-		}
+			LayoutMaster layout = command.toDomain();
+			layout.validate();
+			this.layoutRepo.add(layout);
+			//作成方法で「既存のレイアウトをコピーして作成」を選択した場合
+			if (command.isCheckCopy()) {
+				copyNewData(command, companyCode);
+			}
+			//作成方法で「新規に作成」を選択した場合
+			else{
+				
+				createNewData(layout, companyCode);
+			}
 		
-	}
+		}
 		catch(Exception ex){
 			throw ex;
 		}
