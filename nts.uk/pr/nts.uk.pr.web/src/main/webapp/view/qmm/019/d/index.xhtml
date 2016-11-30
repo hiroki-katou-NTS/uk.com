@@ -16,7 +16,16 @@
 				<script src="viewmodel.js" />
 				<script src="service.js" />
 			    <script>var dialogSize = { width: 950, height: 700 };</script>
-			    <style>.nts-list-box *{box-sizing: border-box} </style>				
+			    <style>.nts-list-box *{box-sizing: border-box} </style>		
+			    <script>
+					__viewContext.primitiveValueConstraints = {
+						startYm: {
+							valueType: "String",
+							charType: "Numeric",
+							maxLength: 7
+						}
+					};
+				</script>		
             </ui:define>
             
             <ui:define name="content">
@@ -29,19 +38,19 @@
 							<label id = "LBL_003" data-bind="text: selectStmtCode">01</label>
 							<label id = "LBL_004" data-bind="text: selectStmtName">明細レイアウト01</label>	
 						</div><br/><br />
-						<div class ="form-label inline">
+						<div class ="form-label inline required">
 							<label id = "LBL_005">期間</label>
-							<input id = "INP_001" data-bind="value: selectStartYm"></input>
+							<input id = "INP_001" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input>
 							<!-- 入力した開始年月を和暦で表記 -->
 							<!-- <label id = "LBL_006">平成29年04月</label> -->
 							<label id = "LBL_007"> ～　   9999/12</label>
 						</div><br/><br />
 						<div class ="inlineInfor">
-							<div class ="form-label inline">
+							<div class ="form-label inline required">
 								<label id = "LBL_008">レイアウトの引継ぎ</label>
 							</div>
 							<div id="SEL_001">
-								<input type="radio" checked="checked" name="layoutCreate" id="copyCreate" data-bind="text: valueSel001" /> 最新の履歴（N）から引き継ぐ<br />
+								<input type="radio" checked="checked" name="layoutCreate" id="copyCreate" /><label id="lblRadio" data-bind="text: valueSel001">最新の履歴（N）から引き継ぐ</label> <br />
 				  				<input type="radio" name="layoutCreate" id="newCreate" /> 初めから作成する<br />
 							</div>
 						</div><br/>

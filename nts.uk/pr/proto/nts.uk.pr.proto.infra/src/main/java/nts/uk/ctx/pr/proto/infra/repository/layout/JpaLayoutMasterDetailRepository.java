@@ -193,12 +193,16 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 
 	@Override
 	public void add(List<LayoutMasterDetail> details) {
-		this.commandProxy().insertAll(details);
+		for(LayoutMasterDetail detail : details){
+			this.commandProxy().insert(toEntity(detail));
+		}
 	}
 
 	@Override
 	public void update(List<LayoutMasterDetail> details) {
-		this.commandProxy().updateAll(details);
+		for(LayoutMasterDetail detail : details){
+			this.commandProxy().update(toEntity(detail));
+		}
 	}
 
 	@Override

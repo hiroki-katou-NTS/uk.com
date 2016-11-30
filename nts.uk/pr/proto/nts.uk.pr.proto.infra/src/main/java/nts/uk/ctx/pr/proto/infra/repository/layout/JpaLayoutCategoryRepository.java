@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtg;
@@ -88,12 +89,17 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	@Override
 	public void add(List<LayoutMasterCategory> categories) {
-		this.commandProxy().insertAll(categories);
+		for (LayoutMasterCategory category : categories) {
+			this.commandProxy().insert(toEntity(category));		   
+		}		
 	}
 
 	@Override
 	public void update(List<LayoutMasterCategory> categories) {
-		this.commandProxy().updateAll(categories);
+		for (LayoutMasterCategory category : categories) {
+			this.commandProxy().update(toEntity(category));
+		}
+		
 	}
 
 	@Override
@@ -113,11 +119,14 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	@Override
 	public void removeAllCategory(List<LayoutMasterCategory> categories) {
-		List<QstmtStmtLayoutCtg> categoryEntity = categories.stream().map(
-				category -> {
-					return this.toEntity(category);
-				}).collect(Collectors.toList());
-		this.commandProxy().removeAll(categoryEntity);
+		for (LayoutMasterCategory category : categories) {
+			val objectKey = new QstmtStmtLayoutCtgPK();
+			objectKey.companyCd = category.getCompanyCode().v();
+			objectKey.stmtCd = category.getStmtCode().v();
+			objectKey.strYm = category.getStartYM().v();
+			objectKey.ctgAtr = category.getCtAtr().value;
+			this.commandProxy().remove(QstmtStmtLayoutCtg.class, objectKey);
+		}
 	}
 
 	@Override

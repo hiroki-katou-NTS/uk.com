@@ -9,8 +9,10 @@ module nts.uk.pr.view.qpp005 {
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
             employeeList: KnockoutObservableArray<any>;
-            orientation: string;
-            
+            switchButton: KnockoutObservable<SwitchButton>;
+            visible: KnockoutObservable<any>;
+
+
             constructor() {
                 var self = this;
                 self.isHandInput = ko.observable(true);
@@ -35,6 +37,14 @@ module nts.uk.pr.view.qpp005 {
                 });
                 self.employeeList = ko.observableArray(employees);
                 self.employee(employees[0]);
+
+                // グリッド設定
+                self.switchButton = ko.observable(new SwitchButton());
+                self.visible = ko.observable(self.switchButton().selectedRuleCode() == 'vnext');
+                self.switchButton().selectedRuleCode.subscribe(function(newValue) {
+                    self.visible(newValue == 'vnext');
+                    qpp005.utils.gridSetup(self.switchButton().selectedRuleCode());
+                });
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
@@ -72,7 +82,7 @@ module nts.uk.pr.view.qpp005 {
             /** Event click: 対象者*/
             openEmployeeList() {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml', { title: '社員選択' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/c/index.xhtml', { title: '社員選択' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
 
@@ -122,13 +132,7 @@ module nts.uk.pr.view.qpp005 {
 
             openGridSetting() {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(() => {
-                    var employee = nts.uk.ui.windows.getShared('employee');
-                    self.employee(employee);
-
-                    self.startPage();
-                    return this;
-                });
+                $('#pơpup-orientation').ntsPopup('show');
             }
 
             /**
@@ -158,9 +162,19 @@ module nts.uk.pr.view.qpp005 {
             }
         };
 
-        //        private parseResultDtoToViewModel(resultDto) {
-        //              //        }
+        export class SwitchButton {
+            roundingRules: KnockoutObservableArray<any>;
+            selectedRuleCode: KnockoutObservable<string>;
 
+            constructor() {
+                var self = this;
+                self.roundingRules = ko.observableArray([
+                    { code: 'vnext', name: '縦方向' },
+                    { code: 'hnext', name: '横方向' }
+                ]);
+                self.selectedRuleCode = ko.observable('hnext');
+            }
+        }
         export class Employee {
             personId: string;
             code: string;

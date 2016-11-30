@@ -40,17 +40,39 @@ var nts;
                     }
                     switch (constraint.valueType) {
                         case 'String':
-                            return new StringValidator(constraintName);
+                            return new StringValidator(constraintName, null);
                     }
                     return new NoValidator();
                 }
                 validation.createValidator = createValidator;
                 var StringValidator = (function () {
-                    function StringValidator(primitiveValueName) {
+                    function StringValidator(primitiveValueName, required) {
+                        this.constraint = getConstraint(primitiveValueName);
                         this.charType = uk.text.getCharType(primitiveValueName);
+                        this.required = required;
                     }
                     StringValidator.prototype.validate = function (inputText) {
-                        return this.charType.validate(inputText);
+                        var result = new ValidationResult();
+                        if (this.required !== undefined) {
+                            if (!checkRequired(inputText)) {
+                                result.fail('This field is required');
+                                return result;
+                            }
+                        }
+                        if (this.charType !== null) {
+                            if (!this.charType.validate(inputText)) {
+                                result.fail('Invalid text');
+                                return result;
+                            }
+                        }
+                        if (this.constraint !== null && this.constraint.maxLength !== undefined) {
+                            if (uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                                result.fail('Max length for this input is ' + this.constraint.maxLength);
+                                return result;
+                            }
+                        }
+                        result.success(inputText);
+                        return result;
                     };
                     return StringValidator;
                 }());
@@ -117,6 +139,12 @@ var nts;
                     return TimeValidator;
                 }());
                 validation.TimeValidator = TimeValidator;
+                function checkRequired(value) {
+                    if (value === undefined || value === null || value.length == 0) {
+                        return false;
+                    }
+                    return true;
+                }
                 function getConstraint(primitiveValueName) {
                     var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
                     if (constraint === undefined)

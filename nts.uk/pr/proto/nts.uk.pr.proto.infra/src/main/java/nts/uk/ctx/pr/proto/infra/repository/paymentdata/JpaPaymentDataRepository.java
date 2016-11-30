@@ -26,9 +26,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
 	private String SELECT_ITEM = " SELECT d" + " FROM QstdtPaymentDetail d"
-			+ " WHERE d.QstdtPaymentDetailPK.companyCode = :CCD" + " AND d.QstdtPaymentDetailPK.personId = :PID"
-			+ " AND d.QstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
-			+ " AND d.QstdtPaymentDetailPK.categoryATR = :CTG_ATR" + " AND d.QstdtPaymentDetailPK.itemCode = :ITEM_CD";
+			+ " WHERE d.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND d.qstdtPaymentHeaderPK.personId = :PID"
+			+ " AND d.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
+			+ " AND d.qstdtPaymentHeaderPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentHeaderPK.itemCode = :ITEM_CD";
 
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
@@ -46,7 +46,11 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 	@Override
 	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
-		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class).getList();
+		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class)
+				.setParameter("CCD", companyCode)
+				.setParameter("PID", personId).setParameter("PAY_BONUS_ATR", payBonusAttribute)
+				.setParameter("PROCESSING_YM", processingYM)
+				.getList();
 
 		return !pHeader.isEmpty();
 	}
@@ -54,6 +58,11 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
 		List<QstdtPaymentDetail> paymentItems = this.queryProxy().query(SELECT_ITEM, QstdtPaymentDetail.class)
+				.setParameter("CCD", companyCode)
+				.setParameter("PID", personId)
+				.setParameter("CTG_ATR", categoryAtr)
+				.setParameter("PROCESSING_YM", baseYM)
+				.setParameter("ITEM_CD", itemCode)
 				.getList();
 
 		return !paymentItems.isEmpty();

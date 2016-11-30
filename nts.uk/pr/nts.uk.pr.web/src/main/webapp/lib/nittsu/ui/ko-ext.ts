@@ -82,7 +82,7 @@ module nts.uk.ui.koExtentions {
     }
 
     class TextEditorProcessor extends EditorProcessor {
-
+        
         update($input: JQuery, data: any) {
             var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
             var textmode: string = ko.unwrap(editorOption.textmode);
@@ -102,8 +102,9 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return validation.createValidator(constraintName);
+            return new validation.StringValidator(constraintName, required);
         }
     }
 
@@ -168,11 +169,11 @@ module nts.uk.ui.koExtentions {
     class NtsDynamicEditorBindingHandler extends NtsEditorBindingHandler {
 
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new DinamicEditorProcessor().init($(element), valueAccessor());
+            new DynamicEditorProcessor().init($(element), valueAccessor());
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new DinamicEditorProcessor().update($(element), valueAccessor());
+            new DynamicEditorProcessor().update($(element), valueAccessor());
         }
     }
 
@@ -398,8 +399,10 @@ module nts.uk.ui.koExtentions {
 
             var $dialog = $("#ntsErrorDialog");
 
-            if (autoclose === true && errors.length == 0)
+            if (autoclose === true && errors.length == 0) {
+                option.show(false);
                 show = false;
+            }
             if (show == true) {
                 $dialog.dialog("open");
                 // Create Error Table

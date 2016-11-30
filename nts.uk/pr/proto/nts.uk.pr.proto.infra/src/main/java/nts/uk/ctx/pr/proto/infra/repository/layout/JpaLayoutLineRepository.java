@@ -111,22 +111,30 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public void add(List<LayoutMasterLine> lines) {
-		this.commandProxy().insertAll(lines);
+		for(LayoutMasterLine line : lines){
+			this.commandProxy().insert(toEntity(line));
+		}
+		
 	}
 
 	@Override
 	public void update(List<LayoutMasterLine> lines) {
-		this.commandProxy().updateAll(lines);
+		for(LayoutMasterLine line : lines){
+			this.commandProxy().update(toEntity(line));
+		}
+		
 	}
 
 	@Override
 	public void remove(List<LayoutMasterLine> lines) {
+
 		List<QstmtStmtLayoutLinesPK> linesEntityPk = lines.stream().map(
 				line -> {
 							return this.toEntityPk(line); 
 						}).collect(Collectors.toList());
 		
 		this.commandProxy().removeAll(QstmtStmtLayoutLines.class, linesEntityPk);
+
 	}
 
 	@Override
