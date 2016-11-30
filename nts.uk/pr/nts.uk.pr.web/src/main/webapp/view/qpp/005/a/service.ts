@@ -15,7 +15,7 @@ module nts.uk.pr.view.qpp005 {
             nts.uk.request.ajax(servicePath.getPaymentData, query).done(function(res: qpp005.viewmodel.PaymentDataResultViewModel) {
                 dfd.resolve(res);
             }).fail(function(res) {
-                alert('fail');
+               dfd.reject(res);
             });
 
             return dfd.promise();

@@ -56,8 +56,8 @@ var nts;
                                     self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
                                     dfd.resolve();
                                 }).fail(function (res) {
-                                    // Alert message
-                                    alert(res);
+                                    $('.tb-category').css('display', 'none');
+                                    alert(res.message);
                                 });
                                 // Return.
                                 return dfd.promise();

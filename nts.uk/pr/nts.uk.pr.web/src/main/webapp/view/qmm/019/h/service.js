@@ -5,11 +5,12 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/personalwage/findPersonalWageName"
+                getAll: "pr/proto/personalwage/findalls/{0}",
             };
-            function getPersonalWageNames() {
+            function getPersonalWageNames(categoryAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getLayoutInfor)
+                var _path = nts.uk.text.format(paths.getAll, categoryAtr);
+                nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
