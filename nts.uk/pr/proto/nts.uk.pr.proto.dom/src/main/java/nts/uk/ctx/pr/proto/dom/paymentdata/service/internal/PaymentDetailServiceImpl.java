@@ -165,7 +165,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	/** Get item master **/
 	private ItemMaster getItemMaster(PaymentDetailParam param, LayoutMasterDetail layout) {
 		ItemMaster itemMaster = itemMasterRepo
-				.getItemMaster(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
+				.find(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
 				.get();
 		return itemMaster;
 	}

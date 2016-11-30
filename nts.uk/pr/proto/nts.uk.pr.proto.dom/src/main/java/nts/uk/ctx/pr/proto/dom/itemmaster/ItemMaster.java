@@ -1,12 +1,15 @@
 package nts.uk.ctx.pr.proto.dom.itemmaster;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.util.Range;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
+import nts.uk.ctx.pr.proto.dom.enums.UseOrNot;
 import nts.uk.ctx.pr.proto.dom.layout.detail.RangeChecker;
 
 /**
@@ -129,6 +132,14 @@ public class ItemMaster extends AggregateRoot{
 		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, WageClassificationAtr.class);
 		this.avgPaidAtr = EnumAdaptor.valueOf(avgPaidAtr, WageClassificationAtr.class);
 		this.deductAttribute = EnumAdaptor.valueOf(deductAttribute, DeductionAtr.class);
+		return this;
+	}
+	
+	public ItemMaster additionalErrorAlarm(int isUseHighError, int errRangeHigh, int isUseLowError, int errRangeLow, int isUseHighAlam, int alamRangeHigh, int isUseLowAlam, int alamRangeLow){
+		this.error = new ArrayList<>();
+		this.alarm = new ArrayList<>();
+		this.error.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighError, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowError, UseOrNot.class), Range.between(errRangeLow, errRangeHigh)));
+		this.alarm.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighAlam, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowAlam, UseOrNot.class), Range.between(alamRangeLow, alamRangeHigh)));
 		return this;
 	}
 	

@@ -10,6 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
+import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItemPK;
 
 @RequestScoped
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
@@ -38,6 +39,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
 				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.itemAbName, entity.taxAtr, entity.itemAtr);
 		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
+		domain.additionalErrorAlarm(entity.errRangeHighAtr, entity.errRangeHigh.intValue(), entity.errRangeLowAtr, entity.errRangeLow.intValue(), entity.alRangeHighAtr, entity.alRangeHigh.intValue(), entity.alRangeLowAtr, entity.alRangeLow.intValue());
 		return domain;
 	}
 
@@ -49,6 +51,12 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		return this.queryProxy().query(SELECT_DETAIL, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).setParameter("itemCode", itemCode)
 				.getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
+		return this.queryProxy().find(new QcamtItemPK(companyCode, itemCode, categoryAtr), QcamtItem.class).
+				map(entity -> toDomain(entity));
 	}
 
 }

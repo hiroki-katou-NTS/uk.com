@@ -32,4 +32,10 @@ public class JpaPersonalWageNameRepository extends JpaRepository implements Pers
 		entity.toDomain(domain);
 		return domain;
 	}
+
+	@Override
+	public List<PersonalWageNameMaster> getPersonalWageNames(String companyCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

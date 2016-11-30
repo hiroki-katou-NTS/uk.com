@@ -1,20 +1,24 @@
-
-
 module qmm019.h.viewmodel {
- import option = nts.uk.ui.option;
-    
+    import option = nts.uk.ui.option;
+
 
     export class ItemModel {
-        id: any;
-        name: any;
-        constructor(id, name) {
-            var self = this;
-            this.id = id;
-            this.name = name;
-        }
-    }
-    
+        //        id: any;
+        //        name: any;
+        //        constructor(id, name) {
+        //            var self = this;
+        //            this.id        //            this.name = name;
 
+        companyCode: any;
+        personalWageName: any;
+        constructor(companyCode, personalWageName) {
+            var self = this;
+            this.companyCode = companyCode;
+            this.personalWageName = personalWageName;
+        }
+
+
+    }
     export class ListBox {
         itemList: KnockoutObservableArray<any>;
         itemName: KnockoutObservable<any>;
@@ -23,6 +27,7 @@ module qmm019.h.viewmodel {
         selectedName: KnockoutObservable<any>;
         isEnable: KnockoutObservable<any>;
         selectedCodes: KnockoutObservableArray<any>;
+        personalWages: KnockoutObservableArray<service.model.PersonalWageNameDto>;
 
         constructor() {
             var self = this;
@@ -47,29 +52,27 @@ module qmm019.h.viewmodel {
                 new ItemModel("18", "ドットプリンタ18"),
                 new ItemModel("19", "ドットプリンタ19"),
                 new ItemModel("20", "ドットプリンタ20"),
+
             ]);
+            self.personalWages = ko.observableArray([]);
+
             self.itemName = ko.observable('');
-            self.currentCode = ko.observable('');
+            self.currentCode = ko.observable('0');
             self.selectedCode = ko.observable('01');
-            self.itemName = ko.observable('');
+            self.selectedName = ko.computed(
+                function() {
+                    var item = _.find(self.itemList(), function(item) {
+                        return item.id === self.selectedCode();
+                    });
 
-
-            self.itemList();
-            $('#list-box').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#list-box').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            });
+                    return (item !== undefined) ? item.name : null;
+                }
+            );
             self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
-
-
-
         }
+
     }
-
-
     export class ScreenModel {
         listBox: ListBox;
 
@@ -78,19 +81,55 @@ module qmm019.h.viewmodel {
             self.listBox = new ListBox();
 
         }
+
+      
+         buildItemList(): any{
+           var self = this;
+//            self.listBox.itemList.removeAll();
+            _.forEach(self.listBox.personalWages(), function(personalWage){
+                var companyCode = personalWage.companyCode;
+                if(companyCode.length == 1){
+                    companyCode = "0" + personalWage.companyCode;
+                }
+                
+                self.listBox.itemList.push(new ItemModel(companyCode, personalWage.personalWageName));
+            });          
+          
+        }
         
+         start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.buildItemList();
+            $('#LST_001').on('selectionChanging', function(event) {
+                console.log('Selecting value:' + (<any>event.originalEvent).detail);
+            })
+            $('#LST_001').on('selectionChanged', function(event: any) {
+                console.log('Selected value:' + (<any>event.originalEvent).detail)
+            })
+            
+            service.getPersonalWageNames().done(function(personalWage: Array<service.model.PersonalWageNameDto>){
+             self.listBox.personalWages(personalWage);
+                self.buildItemList();
+            });
+          
+        
+            // Return.
+            return dfd.promise();    
+        }
+
         chooseItem() {
             var self = this;
+            nts.uk.ui.windows.setShared('selectedName', self.listBox.selectedName());
             nts.uk.ui.windows.setShared('selectedCode', self.listBox.selectedCode());
             nts.uk.ui.windows.close();
         }
-        
-      closeDialog() {
-             nts.uk.ui.windows.close();
-       }
+
+        closeDialog() {
+            nts.uk.ui.windows.close();
+        }
 
     }
-    
-    
- 
+
+
 }

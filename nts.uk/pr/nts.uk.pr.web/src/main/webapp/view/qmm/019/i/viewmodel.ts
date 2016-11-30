@@ -4,7 +4,7 @@ module qmmm019.i.viewmodel{
 
         constructor() {
             var self = this;
-            self.selectedBox = ko.observable("3");           
+            self.selectedBox = ko.observable("1");           
         }
         
         chooseItem() {

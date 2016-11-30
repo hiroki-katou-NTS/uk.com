@@ -4,6 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -30,19 +31,20 @@
 						<br />
 						
 						<div data-bind="with: listBox">
-						<div id="list-box"
+						 <div id="list-box"
 							data-bind="ntsListBox: {options: itemList,
-											   optionsValue: 'id',
-											   optionsText: 'name',
+											   optionsValue: 'companyCode',
+											   optionsText: 'personalWageName',
 											   multiple: false,
 											   value: selectedCode,
 											   enable: true,
 											   rows: 20,
 											   columns: [
-													{ prop: 'id', length: 4 },
-													{ prop: 'name', length: 20 }
+													{ prop: 'companyName', length: 4 },
+													{ prop: 'personalWageName', length: 20 }
 											   ]}"
-							class="cf"></div>
+							class="cf"></div> 
+						
 					</div></div>
 					<div >
 						<!--  <a data-bind="text: listBox.selectedCode()">コード</a>
