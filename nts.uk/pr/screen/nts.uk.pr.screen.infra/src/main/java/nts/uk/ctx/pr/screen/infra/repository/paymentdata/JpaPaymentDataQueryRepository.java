@@ -13,7 +13,9 @@ import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
 @RequestScoped
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
-	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, d.linePosition, d.columnPosition, d.deductAttribute, d.taxATR " +
+	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "
+										+ "d.linePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"
+										+ "d.commuteAllowTaxImpose, d.commuteAllowMonth, d.commuteAllowFraction" +
 										" FROM QstdtPaymentDetail d " +
 										" WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" +
 												" AND d.qstdtPaymentDetailPK.personId = :PID" +
@@ -75,8 +77,13 @@ public class JpaPaymentDataQueryRepository extends JpaRepository implements Paym
 		int colPosition = (int)x[5];
 		int deductAtr = (int)x[6];
 		int taxATR = (int)x[7];
+		int limitAmount =(int) x[8];
+		double commuteAllowTaxImpose = (double) x[9];
+		double commuteAllowMonth = (double) x[10];
+		double commuteAllowFraction = (double) x[11];
 		int displayAtr  = 0;
-		return DetailItemDto.fromDomain(categoryAtr, itemAtr, itemCode, "", value.doubleValue(), linePosition, colPosition, deductAtr, displayAtr, taxATR, true);
+		return DetailItemDto.fromDomain(categoryAtr, itemAtr, itemCode, "", value.doubleValue(), linePosition, colPosition,
+										deductAtr, displayAtr, taxATR, limitAmount, commuteAllowTaxImpose,commuteAllowMonth, commuteAllowFraction, true);
 	}
 
 	@Override

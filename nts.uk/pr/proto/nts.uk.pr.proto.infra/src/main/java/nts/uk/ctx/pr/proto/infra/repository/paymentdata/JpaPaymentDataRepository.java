@@ -223,10 +223,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.averagePayATR = detail.getAveragePayAtr();//
 		entity.deductAttribute = detail.getDeductionAtr().value; //
 		entity.itemAtr = detail.getItemAtr().value; //
-		entity.commuteAllowTaxImpose = 0;
+		entity.commuteAllowTaxImpose = BigDecimal.valueOf(detail.getCommuteAllowTaxImpose());
 		entity.commuteAllowMonth = BigDecimal.valueOf(detail.getCommuteAllowMonth());
-		entity.commuteAllowFraction = 0;		
-		entity.commuteAllowFraction = 0;
+		entity.commuteAllowFraction = BigDecimal.valueOf(detail.getCommuteAllowFraction());
 
 		return entity;
 	}

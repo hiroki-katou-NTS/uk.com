@@ -73,8 +73,15 @@ public class DetailItem extends DomainObject {
 	@Getter
 	private int limitAmount;
 	
+
+	@Getter
+	private double commuteAllowTaxImpose;
+	
 	@Getter
 	private double commuteAllowMonth;
+	
+	@Getter
+	private double commuteAllowFraction;
 
 	/**
 	 * Constructor
