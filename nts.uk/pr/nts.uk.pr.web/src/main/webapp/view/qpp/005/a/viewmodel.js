@@ -116,14 +116,14 @@ var nts;
                                 var self = this;
                                 $('#pơpup-orientation').ntsPopup('show');
                             };
-                            ScreenModel.prototype.openSetupTaxItem = function () {
-                                var _this = this;
+                            ScreenModel.prototype.openSetupTaxItem = function (value) {
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(function () {
+                                nts.uk.ui.windows.setShared("value", value);
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '入力欄の背景色について' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
                                     self.startPage();
-                                    return _this;
+                                    return self;
                                 });
                             };
                             /**

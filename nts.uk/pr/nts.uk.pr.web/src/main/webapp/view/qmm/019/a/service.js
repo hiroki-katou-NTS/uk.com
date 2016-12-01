@@ -77,7 +77,6 @@ var qmm019;
                         var linePosition = 1;
                         var sortedLines = $("#" + category.categoryAtr).sortable("toArray");
                         var _loop_1 = function(itemLine) {
-                            //for (let line of category.lines()) {
                             var line = _.find(category.lines(), function (lineDetail) {
                                 return lineDetail.rowId === itemLine.toString();
                             });
@@ -103,6 +102,8 @@ var qmm019;
                                     detailCommand.push({
                                         categoryAtr: category.categoryAtr,
                                         itemCode: detail.itemCode(),
+                                        updateItemCode: detail.updateItemCode(),
+                                        added: detail.added(),
                                         autoLineId: detail.autoLineId(),
                                         itemPosColumn: itemPosColumn,
                                         calculationMethod: detail.calculationMethod(),
@@ -343,6 +344,8 @@ var qmm019;
                 model.Line = Line;
                 var ItemDetail = (function () {
                     function ItemDetail(itemObject, screenModel) {
+                        this.updateItemCode = ko.observable("");
+                        this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
                         this.screenModel = ko.observable(screenModel);
@@ -384,9 +387,22 @@ var qmm019;
                         nts.uk.ui.windows.setShared('param', param);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(function () {
                             var itemResult = nts.uk.ui.windows.getShared('itemResult');
-                            self.itemCode(itemResult.itemCode);
+                            if (data.itemAbName() === "+") {
+                                // Them moi
+                                self.itemCode(itemResult.itemCode);
+                                self.added(true);
+                            }
+                            else {
+                                if (self.added()) {
+                                    // Sửa một detail đang được Thêm mới
+                                    self.itemCode(itemResult.itemCode);
+                                }
+                                else {
+                                    // Update
+                                    self.updateItemCode(itemResult.itemCode);
+                                }
+                            }
                             self.itemAbName(itemResult.itemAbName);
-                            self.categoryAtr(itemResult.categoryAtr);
                             self.sumScopeAtr(itemResult.sumScopeAtr);
                             //self.setOffItemCode(itemResult.setOffItemCode);
                             //self.commuteAtr(itemResult.commuteAtr);
@@ -394,13 +410,13 @@ var qmm019;
                             self.distributeSet(itemResult.distributeSet);
                             self.distributeWay(itemResult.distributeWay);
                             self.personalWageCode(itemResult.personalWageCode);
-                            self.isUseHighError(itemResult.isUseHighError);
+                            self.isUseHighError(itemResult.isUseHighError ? 0 : 1);
                             self.errRangeHigh(itemResult.errRangeHigh);
-                            self.isUseLowError(itemResult.isUseLowError);
+                            self.isUseLowError(itemResult.isUseLowError ? 0 : 1);
                             self.errRangeLow(itemResult.errRangeLow);
-                            self.isUseHighAlam(itemResult.isUseHighAlam);
+                            self.isUseHighAlam(itemResult.isUseHighAlam ? 0 : 1);
                             self.alamRangeHigh(itemResult.alamRangeHigh);
-                            self.isUseLowAlam(itemResult.isUseLowAlam);
+                            self.isUseLowAlam(itemResult.isUseLowAlam ? 0 : 1);
                             self.alamRangeLow(itemResult.alamRangeLow);
                             return _this;
                         });
