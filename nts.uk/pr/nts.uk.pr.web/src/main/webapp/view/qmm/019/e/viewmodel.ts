@@ -25,6 +25,7 @@ module qmm019.e.viewmodel {
          // start function
         start(): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred<any>();
             var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
             var startYm = nts.uk.ui.windows.getShared('startYm');
             self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
@@ -36,10 +37,7 @@ module qmm019.e.viewmodel {
                 alert(res);    
              })
             
-            var dfd = $.Deferred<any>();
             dfd.resolve();
-            
-            
             // Return.
             return dfd.promise();    
         }
