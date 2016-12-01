@@ -73,9 +73,6 @@ var qmm019;
                     self.comboboxList.removeAll();
                     _.forEach(self.layouts(), function (layout) {
                         var stmtCode = layout.stmtCode;
-                        //                if(stmtCode.length == 1){
-                        //                    stmtCode = "0" + layout.stmtCode;
-                        //                }
                         self.comboboxList.push(new ItemCombobox(stmtCode, layout.stmtName));
                     });
                 };
@@ -91,13 +88,14 @@ var qmm019;
                 ScreenModel.prototype.createNewLayout = function () {
                     var self = this;
                     if (self.checkData()) {
+                        self.createData();
                         if ($("#newCreate").is(":checked")) {
-                            self.createNewData();
+                            self.createlayout().checkCopy = false;
                         }
                         else {
                             //印字行数　＞　最大印字行数　の場合
                             //メッセージ( ER030 )を表示する
-                            self.createCopyData();
+                            self.createlayout().checkCopy = true;
                         }
                         g.service.createLayout(self.createlayout()).done(function () {
                             alert('追加しました。');
@@ -129,9 +127,13 @@ var qmm019;
                     }
                     //コードの重複チェックを行う
                     var isStorage = false;
+                    var stmtCd = $('#INP_001').val().trim();
+                    if (stmtCd.length < 2)
+                        stmtCd = '0' + stmtCd;
                     _.forEach(self.layouts(), function (layout) {
-                        if (+$('#INP_001').val() === +layout.stmtCode) {
-                            alert('入力した' + $('#INP_001').val() + 'は既に存在しています。\r\n' + $('#INP_001').val() + 'を確認してください。');
+                        if (stmtCd == layout.stmtCode) {
+                            alert('入力した' + stmtCd + 'は既に存在しています。\r\n' + stmtCd + 'を確認してください。');
+                            $('#INP_001').val(stmtCd);
                             $('#INP_001').focus();
                             isStorage = true;
                             return false;
@@ -142,26 +144,16 @@ var qmm019;
                     }
                     return true;
                 };
-                ScreenModel.prototype.createNewData = function () {
+                ScreenModel.prototype.createData = function () {
                     var self = this;
-                    self.createlayout({
-                        checkCopy: false,
-                        stmtCodeCopied: self.createNewSelect() + "",
-                        startYmCopied: self.startYmCopy(),
-                        stmtCode: $('#INP_001').val(),
-                        startYm: +$('#INP_003').val().replace('/', ''),
-                        layoutAtr: 3,
-                        stmtName: $('#INP_002').val() + "",
-                        endYm: 999912
-                    });
-                };
-                ScreenModel.prototype.createCopyData = function () {
-                    var self = this;
+                    var stmtCd = $('#INP_001').val().trim();
+                    if (stmtCd.length < 2)
+                        stmtCd = '0' + stmtCd;
                     self.createlayout({
                         checkCopy: true,
-                        stmtCodeCopied: self.createNewSelect() + "",
+                        stmtCodeCopied: self.createNewSelect(),
                         startYmCopied: self.startYmCopy(),
-                        stmtCode: $('#INP_001').val(),
+                        stmtCode: stmtCd,
                         startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,
                         stmtName: $('#INP_002').val() + "",

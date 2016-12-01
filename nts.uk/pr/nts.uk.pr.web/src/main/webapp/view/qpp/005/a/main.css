@@ -24,10 +24,13 @@
 
 .i-left {
 	float: left;
-	line-height: 30px;
 	padding: 0px 10px;
 	background: #C7F391;
 	border-right: 1px solid #d2d2d2;
+}
+
+.i-left>label {
+	line-height: 30px;
 }
 
 .i-right {
@@ -86,7 +89,7 @@ table.tb-category, th, td {
 	text-align: center;
 	float: left;
 	width: 100%;
-	height: 20px;
+	height: 19px;
 	background: #C7F391;
 	border-bottom: 1px solid #726e6e;
 }
@@ -104,6 +107,7 @@ table.tb-category, th, td {
 	width: 97%;
 	text-align: right !important;
 	padding: 0px 3px 0px 0px;
+	line-height: 19px;
 }
 
 #txt-remarks {
@@ -143,7 +147,7 @@ table.tb-category, th, td {
 }
 
 .switchButton {
-	margin-left: 30px;
+	/**margin-left: 30px;*/
 }
 
 .seperator {
@@ -158,8 +162,8 @@ table.tb-category, th, td {
 }
 
 .txt-btlink {
-	color: #0D86D1;
-	font-weight: bold;
+	color: #4A8BF5;
+	font-weight: 600;
 	text-decoration: underline;
 	cursor: pointer;
 	float: right;
