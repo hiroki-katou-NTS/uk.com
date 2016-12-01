@@ -213,14 +213,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// calculate payment detail
 		Map<CategoryAtr, List<DetailItem>> payDetail = paymentDetailService.calculatePayValue(param);
 		
-		// get layout master detail
-		List<LayoutMasterDetail> layoutDetailMasterList = layoutMasterDetailList.stream()
-				.filter(x -> CategoryAtr.PAYMENT == x.getCategoryAtr() && SumScopeAtr.INCLUDED == x.getSumScopeAtr())
-				.collect(Collectors.toList());
-
 		// convert to domain
-		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutDetailMasterList);
-		List<DetailItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutDetailMasterList);
+		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutMasterDetailList);
+		List<DetailItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutMasterDetailList);
 		List<PrintPositionCategory> positionCategoryList = Helper.createPositionCategory(payDetail, lineList);
 		List<DetailItem> detailPersonTimeList = payDetail.get(CategoryAtr.PERSONAL_TIME);
 		List<DetailItem> detailArticleList = payDetail.get(CategoryAtr.ARTICLES);
@@ -230,9 +225,12 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				detailPaymentList, detailDeductionList, detailPersonTimeList, detailArticleList, positionCategoryList, payDay);
 		
 		// Save detail payment with calculate payment
-		DetailItem detailPaymentTotal = this.createDataDetailItem(loginInfo.companyCode(), "F003", paymentHead.calculateTotalPayment(), CategoryAtr.PAYMENT, lineList, layoutMasterDetailList);
-		DetailItem detailDeductionTotal = this.createDataDetailItem(loginInfo.companyCode(), "F114", paymentHead.calculateDeductionTotalPayment(), CategoryAtr.DEDUCTION, lineList, layoutMasterDetailList);
-		DetailItem detailAmount = this.createDataDetailItem(loginInfo.companyCode(), "F309", paymentHead.amountOfPay(), CategoryAtr.ARTICLES, lineList, layoutMasterDetailList);
+		double totalPayment = Payment.calculateTotalPayment(Helper.detailItemByTotalPayment(payDetail, layoutMasterDetailList));
+		DetailItem detailPaymentTotal = this.createDataDetailItem(loginInfo.companyCode(), "F003", totalPayment, CategoryAtr.PAYMENT, lineList, layoutMasterDetailList);
+		double deductionTotalPayment = Payment.calculateDeductionTotalPayment(Helper.layoutMasterByDeductionTotalPayment(payDetail, layoutMasterDetailList)); 
+		DetailItem detailDeductionTotal = this.createDataDetailItem(loginInfo.companyCode(), "F114", deductionTotalPayment, CategoryAtr.DEDUCTION, lineList, layoutMasterDetailList);
+		double amount = Payment.amountOfPay(totalPayment, deductionTotalPayment);
+		DetailItem detailAmount = this.createDataDetailItem(loginInfo.companyCode(), "F309", amount, CategoryAtr.ARTICLES, lineList, layoutMasterDetailList);
 		
 		detailPaymentList = updateDetailItem(paymentHead.existsDetailPaymentItem(CategoryAtr.PAYMENT, new ItemCode("F003")), detailPaymentList, detailPaymentTotal);
 		detailDeductionList = updateDetailItem(paymentHead.existsDetailDeductionItem(CategoryAtr.DEDUCTION, new ItemCode("F114")), detailDeductionList, detailDeductionTotal);
@@ -243,7 +241,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// create data
 		paymentDataRepo.add(paymentHead);
 	}
-
+	
 	/**
 	 * Convert to domain object.
 	 * 

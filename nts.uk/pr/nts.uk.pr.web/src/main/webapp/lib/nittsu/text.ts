@@ -320,8 +320,8 @@
                 var constraintName = this.args.constraintName;
                 if (constraintName === "EmployeeCode") {
                     var constraint = this.args.constraint;
-                    var filldirection: string = this.args.editorOption.filldirection();
-                    var fillcharacter: string = this.args.editorOption.fillcharacter();
+                    var filldirection: string = this.args.editorOption.filldirection;
+                    var fillcharacter: string = this.args.editorOption.fillcharacter;
                     var length: number = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
                     return formatEmployeeCode(source, filldirection, fillcharacter, length);
                 }
