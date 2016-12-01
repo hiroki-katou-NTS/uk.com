@@ -26,7 +26,10 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
-	private final String SELECT_DETAIL = SELECT_ALL_DETAILS 
+	private final String SELECT_DETAIL = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
 	private final String SELECT_ALL_DETAILS_BY_CATEGORY = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
@@ -169,7 +172,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		return this.queryProxy().query(SELECT_DETAIL, QstmtStmtLayoutDetail.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd)
-				.setParameter("startYM", startYm)
+				.setParameter("strYm", startYm)
 				.setParameter("itemCd", itemCd)
 				.getSingle(c -> toDomain(c));
 				

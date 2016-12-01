@@ -39,10 +39,10 @@ var nts;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var placeholder = ko.unwrap(option.placeholder);
-                        var width = ko.unwrap(option.width);
-                        var textalign = ko.unwrap(option.textalign);
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var placeholder = option.placeholder;
+                        var width = option.width;
+                        var textalign = option.textalign;
                         (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
                         (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);
@@ -93,8 +93,8 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.update = function ($input, data) {
-                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var textmode = ko.unwrap(editorOption.textmode);
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        var textmode = editorOption.textmode;
                         $input.attr('type', textmode);
                         _super.prototype.update.call(this, $input, data);
                     };
@@ -102,7 +102,7 @@ var nts;
                         return new nts.uk.ui.option.TextEditorOption();
                     };
                     TextEditorProcessor.prototype.getFormatter = function (data) {
-                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constrain = validation.getConstraint(constraintName);
                         return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
@@ -123,13 +123,13 @@ var nts;
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
-                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
-                        return new uk.text.NumberFormatter({ option: ko.toJS(option) });
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        return new uk.text.NumberFormatter({ option: option });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
-                        return new validation.NumberValidator(constraintName, ko.toJS(option));
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        return new validation.NumberValidator(constraintName, option);
                     };
                     return NumberEditorProcessor;
                 }(EditorProcessor));
@@ -142,13 +142,13 @@ var nts;
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
-                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
-                        return new uk.text.TimeFormatter({ option: ko.toJS(option) });
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        return new uk.text.TimeFormatter({ option: option });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
-                        return new validation.TimeValidator(constraintName, ko.toJS(option));
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        return new validation.TimeValidator(constraintName, option);
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
@@ -158,7 +158,7 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     MultilineEditorProcessor.prototype.update = function ($input, data) {
-                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var resizeable = ko.unwrap(editorOption.resizeable);
                         $input.css('resize', (resizeable) ? "both" : "none");
                         _super.prototype.update.call(this, $input, data);
@@ -167,7 +167,7 @@ var nts;
                         return new ui_1.option.MultilineEditorOption();
                     };
                     MultilineEditorProcessor.prototype.getFormatter = function (data) {
-                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constrain = validation.getConstraint(constraintName);
                         return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });

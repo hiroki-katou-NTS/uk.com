@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -35,6 +37,9 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
 	
+	@Inject
+	private PaymentDateMasterRepository payDateMasterRepository;
+	
 	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;
 
@@ -46,6 +51,12 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		
 		
 		Payment payment = context.getCommand().toDomain(companyCode);
+		LocalDate mPayDate = this.payDateMasterRepository.find(
+				companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(), 
+				payment.getSparePayAtr().value, payment.getProcessingNo().v()).map(d-> d.getStandardDate()).orElse(LocalDate.now());
+		
+		payment.setStandardDate(mPayDate);
+		
 		payment.validate();
 
 		// check data
