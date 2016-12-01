@@ -75,7 +75,9 @@ module nts.uk.pr.view.qpp005 {
                 // TODO: Check error input
 
                 qpp005.service.register(self.paymentDataResult()).done(function(res) {
-
+                    
+                }).fail(function (res) {
+                    alert(res.message);
                 });
             }
 
@@ -146,6 +148,11 @@ module nts.uk.pr.view.qpp005 {
                     return self;
                 });
             }
+            
+            toggleHeader() {                
+                $('#content-header').toggle('slow');
+                $('img', '#btToggle').toggle();
+            }
             /**
              * auto Calculate item total
              */
@@ -206,6 +213,7 @@ module nts.uk.pr.view.qpp005 {
         export class PaymentDataResultViewModel {
             paymentHeader: PaymentDataHeaderViewModel;
             categories: Array<LayoutMasterCategoryViewModel>;
+            remarks: string;
         }
 
         // header

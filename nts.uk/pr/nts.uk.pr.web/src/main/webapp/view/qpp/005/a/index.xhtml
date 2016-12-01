@@ -11,6 +11,7 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.proto.dom.paymentdata.Comment
+				nts.uk.ctx.pr.proto.dom.paymentdata.PaymentRemarks
 			</com:ValidatorScript>
 			<!-- 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" /> -->
 			<!-- 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" /> -->
@@ -39,7 +40,10 @@
 				<div id="content-header">
 					<ui:include src="header-area.xhtml" />
 				</div>
-
+					<a id="btToggle" style="cursor: pointer;" data-bind="click: toggleHeader">
+						<img id="imgToggle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAQCAYAAADarae1AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAMbSURBVHja7JlLT/JaFIafDQgVRFuw5VKwiokxJsRf4B937ED9BSY6oTduFajcKW2/kc05Z3RyciYWd7IHO9lpsrKervWud4uXl5d4NBqRzWb5XYe3oiiiWq2Sm81mTCaTgwUhjmOEEAcLQhiGZLNZckIIMpkMmUzmoJIfRRFCCLLZLFEUEccxmUzm4KD4jjt3SAF/71KpxPn5OVdXV5ycnGDbNo7jMJvN2O12CRCHBEXqQfj+2/P5PIqicHl5Sb1ep1wuJ3dkWeb29pbpdIrjONi2zWKxYL/fH0yVSC0IYRgihECWZZrNJu12m2q1miR1s9nQ7/dZLpfU63Wq1SqqqqKqKt1ul8FggG3bDAYDFosFQKrbZypBEEJgGAadTgdVVcnn8wAEQcBkMsGyLGzbZj6fE4YhkiShKAqGYdBoNCiXy+i6jq7rbDYbhsMhHx8fjEajXxB+UisolUrc399zenpKHMd8fX3R6/VwHAfP8wA4PT2l2+1SLpexbZvRaMTr6yuSJKGqKu12m2azSbFYxDAM8vk8nuclleYXhB9QDQBWqxWTyYRer4frugRBwPHxMZ1Oh1arRaPR4OjoCIDr62vm8zmO42BZFq7rYlkWxWIRXde5uLggCIJUawXx+PgYD4fDVPkIQghyuRzr9ZpcLoemabTbbVqtFsViMZkifN9nu90iyzKFQiGpKL7vY5omruvy+fmJEIJCoUAQBKnUUpqmpVMjxHFMoVDg5uaGVquFLMuJ0Ntut7iui2majMdjdrsdZ2dn1Go1DMOgUqmgKAqKonB3d8d0OsWyLEzTTCUIqW0NcRwjSRIPDw/IspxQ3+/3E79guVz+zUCazWZMp1Pe39+pVCo0m010XUdRFDRNQ9M0arUaT09PiRH1C8IPccqEEPi+j23bmKaJ7/uJL/DPMfCvZ8/zGI/HvL29UalUEtGYdj8hlWIxCAKen5+Zz+dsNpsk0f9GB33fDYKAwWBAv9+nVCohSVKq3yVSCcJ+v8fzvOQt4b9+5zvp6/Wa1WqVbkMpiiLCMExlcHEc/+8KO41TQxiG/BkAzumBoFBBebsAAAAASUVORK5CYII=" />
+						<img style="display: none" id="imgToggle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAQCAYAAADarae1AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAMrSURBVHja7JlLT/JaFIaf3ZYPEGrlfmmBxHghTpz4/51qHBmNl5iIXFsulgKCXGx7RjTfmZzEnJHFlXTUvQe761lrvfutuL6+9geDAbIs8xu7F57nkclkUBzHwbbtnQXB932EEDsLguu6yLKMIoRAkiQkSQrN4YQQaJrGcrlkPp8jhAie7wCyrZhYLIaqqkynUzabTajA8X0fSZJQwljhkiRxfn7O/v4+vV6PdruNbdusViu24P/Xfs/zUBQFTdOoVqsYhgHA5eUl6/U6lB0kdCD8ncxkMsnJyQnHx8eMx2O63S69Xg/btnFdN4Biu14IQSKRQNd1DMMgn88HI9NxnGBNGCN0IAgh8H2fm5sb+v0+lUqFVCpFOp0mnU5zdnaGbds0m036/T6TyYQ/f/6Qy+WoVquUy2Wi0WgwFmzbptPp0Gw2g47yC8IPE0FPT088Pj6SyWQol8tUq1U0TSOXy5HL5VitVjiOQzQaRdO0IMmLxYJOp0O73WYwGPD19UU8Hg8g+wXhh4wFRVG4uLggEonQarXodrvc3t5yf39PPp+nUqmg6zqqqlIoFADYbDaYpkmn06Hb7fL5+UkkEqFcLlOr1YjFYlxdXbFYLH41wk+CIRqNUiqV0HWdxWIRiMbhcIhpmsTjcfL5PIZhMJvNaLVaTKdTALLZLPV6nVqthqqqCCGCd2G9boZSI3iex8PDA+v1mkKhwN7eHkdHRxweHjKbzTBNk2aziWmaNBoNZFlGVVXq9TqVSoV0Ok0kEgFgvV4zHA55fX1luVyG6pq9ExrBsiwsyyKZTFIsFjEMg2KxiKZpaJrG6ekp7+/vWJZFIpGgVCoRi8WCqh+NRrTbbXq9Ho7j4Pt+qE230IKwrdz5fM7LywuNRoNkMolhGOi6TiqVIpvNks1mgz2z2QzLsnh7e2M8HgeeQVi7wE6A8PeokGUZz/OYTCaMx2Oen585ODgI/IKPjw8ajQaj0ehfTuQu2e7Krhx0m1xJknBdl+FwyGg04u7uDs/zAkdyV/+5hAYEz/O+DcbWb9hC4vv+t32CsIwNxfM8XNdll+P/mEQ//du5rovruvwzAOo0j0cCWB5JAAAAAElFTkSuQmCC" />
+					</a>
 				<div id="events">
 					<div data-bind="ntsFormLabel: {}">支給入力</div>
 					<button>↰</button>
@@ -97,7 +101,7 @@
 <!-- 														<input class="disabled txt-btlink" data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" /> -->
 													</com:ko-if>
 													<com:ko-if bind="taxAtr() !== 3 &amp;&amp; taxAtr() !== 4">
-														<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+														<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 0, currencyformat: 'JPY', currencyposition: 'left' })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 													</com:ko-if>
 												</com:ko-if>
 											</td>
@@ -115,8 +119,9 @@
 						</table>
 					</div>
 					<div id="remarks">
-						<div>備考</div>
-						<textarea id="txt-remarks">今月より資格手当に「システム監査技術者（30,000円）が支給されます。
+						<div style="float: left; width: 90%" data-bind="ntsFormLabel: {constraint: 'PaymentRemarks', inline: true}">備考</div>
+						<textarea id="txt-remarks" 
+							data-bind="ntsMultilineEditor: {value: remarks, constraint: 'PaymentRemarks', option: new nts.uk.ui.option.MultilineEditorOption({placeholder: '今月より資格手当に「システム監査技術者（30,000円）が支給されます。'})}">
 						</textarea>
 
 					</div>
