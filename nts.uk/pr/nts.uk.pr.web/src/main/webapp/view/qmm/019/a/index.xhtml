@@ -30,7 +30,7 @@
             <ui:define name="content">
             	
             	<div id="functions-area">
-            		<button onclick="nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'})">新規レイアウト</button>
+            		<button data-bind="click: openGDialog">新規レイアウト</button>
             		<button id="A_BTN_001" class="proceed" data-bind="click : registerLayout">登録</button>
             		<button>Excel出力</button>
             		<button id="A_BTN_004">マスタ修正ログ</button>
