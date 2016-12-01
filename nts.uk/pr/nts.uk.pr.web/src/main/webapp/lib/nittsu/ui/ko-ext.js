@@ -122,12 +122,12 @@ var nts;
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
-                        var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
                         return new uk.text.NumberFormatter({ option: ko.toJS(option) });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
                         return new validation.NumberValidator(constraintName, ko.toJS(option));
                     };
                     return NumberEditorProcessor;
@@ -141,12 +141,12 @@ var nts;
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
-                        var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
                         return new uk.text.TimeFormatter({ option: ko.toJS(option) });
                     };
                     TimeEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+                        var option = (data.option !== undefined) ? data.option : this.getDefaultOption();
                         return new validation.TimeValidator(constraintName, ko.toJS(option));
                     };
                     return TimeEditorProcessor;
