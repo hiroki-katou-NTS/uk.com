@@ -82,8 +82,9 @@ var qmm019;
                 };
                 ScreenModel.prototype.chooseItem = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared('selectedName', self.selectedName());
-                    nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
+                    var item = _.find(self.itemList(), function (item) { return item.wageCode === self.selectedCode(); });
+                    nts.uk.ui.windows.setShared('selectedName', item.wageName);
+                    nts.uk.ui.windows.setShared('selectedCode', item.wageCode);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeDialog = function () {

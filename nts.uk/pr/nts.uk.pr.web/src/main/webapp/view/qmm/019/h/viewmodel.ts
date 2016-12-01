@@ -92,8 +92,9 @@ module qmm019.h.viewmodel {
 
         chooseItem() {
             var self = this;
-            nts.uk.ui.windows.setShared('selectedName', self.selectedName());
-            nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
+            var item = _.find(self.itemList(), function(item) {return item.wageCode === self.selectedCode()});
+            nts.uk.ui.windows.setShared('selectedName', item.wageName);
+            nts.uk.ui.windows.setShared('selectedCode', item.wageCode);
             nts.uk.ui.windows.close();
         }
 
