@@ -94,7 +94,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 		LayoutMasterCategory category = new LayoutMasterCategory(new CompanyCode(companyCode),
 				layout.getStartYM(), 
 				layout.getStmtCode(),
-				CategoryAtr.ARTICLES,
+				CategoryAtr.PAYMENT,
 				layout.getEndYm(), 
 				new CategoryPosition(1));
 		this.categoryRepo.add(category);
@@ -106,30 +106,30 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				new CategoryPosition(2));
 		this.categoryRepo.add(category);
 		//データベース登録[明細書マスタ行.INS-1] を実施する
-		createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, "0", 1);
-		createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, "1", 2);
-		createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, "2", 3);
-		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "0", 1);
-		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "1", 2);
+		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "0", 1);
+		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "1", 2);
+		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "2", 3);
+		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "3", 1);
+		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "4", 2);
 		//データベース登録[明細書マスタ明細.INS-1] を実施する
 		//支給3項目
 		createDetailDefault(layout,
 				companyCode,
-				CategoryAtr.ARTICLES,
+				CategoryAtr.PAYMENT,
 				"F001",
 				"0",
 				9,
 				SumScopeAtr.EXCLUDED);
 		createDetailDefault(layout,
 				companyCode,
-				CategoryAtr.ARTICLES,
+				CategoryAtr.PAYMENT,
 				"F002",
 				"1",
 				9,
 				SumScopeAtr.EXCLUDED);
 		createDetailDefault(layout,
 				companyCode,
-				CategoryAtr.ARTICLES,
+				CategoryAtr.PAYMENT,
 				"F003",
 				"2",
 				9,
@@ -196,9 +196,9 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F114",
-				"3",
+				"4",
 				9,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.EXCLUDED);
 	}
 	private void createDetailDefault(LayoutMaster layout, 
 			String companyCode,
