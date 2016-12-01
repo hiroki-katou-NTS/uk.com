@@ -138,7 +138,7 @@ module nts.uk.pr.view.qpp005 {
             openSetupTaxItem(value) {
                 var self = this;
                 nts.uk.ui.windows.setShared("value", value);
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
 
@@ -248,10 +248,17 @@ module nts.uk.pr.view.qpp005 {
             deductAtr: number;
             displayAtr: number;
             taxAtr: number;
+            limitAmount: number;
+            commuteAllowTaxImpose: number;
+            commuteAllowMonth: number;
+            commuteAllowFraction: number;
             isCreated: boolean;
+            option: KnockoutComputed<any>;
 
             constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number,
-                columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number, isCreated: boolean) {
+                columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number,
+                limitAmount: number, commuteAllowTaxImpose: number, commuteAllowMonth: number, commuteAllowFraction: number,
+                isCreated: boolean) {
                 var self = this;
                 self.categoryAtr = categoryAtr;
                 self.itemAtr = itemAtr;
@@ -263,7 +270,20 @@ module nts.uk.pr.view.qpp005 {
                 self.deductAtr = deductAtr;
                 self.displayAtr = displayAtr;
                 self.taxAtr = taxAtr;
+                self.limitAmount = limitAmount;
+                self.commuteAllowTaxImpose = commuteAllowTaxImpose;
+                self.commuteAllowMonth = commuteAllowMonth;
+                self.commuteAllowFraction = commuteAllowFraction;
                 self.isCreated = isCreated;
+                self.option = ko.computed(function() {
+                    if (self.itemAtr === 0) {
+                        return ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'time' }));
+                    } else if (self.itemAtr === 1) {
+                        return ko.mapping.fromJS(new option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
+                    } else if (self.itemAtr == 2 || self.itemAtr === 3) {
+                        return ko.mapping.fromJS(new option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' }));
+                    }
+                });
             }
         }
 

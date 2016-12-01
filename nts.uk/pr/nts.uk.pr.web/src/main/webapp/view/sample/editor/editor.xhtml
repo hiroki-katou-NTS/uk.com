@@ -16,12 +16,6 @@
 				nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
 				nts.arc.time.YearMonth
 			</com:ValidatorScript>
-			
-			<!-- Do not include this CSS -->
-			<link rel="stylesheet" type="text/css" href="editor.css" />
-			
-			<script src="../../../lib/nittsu/ui/textbox-options.js"></script>
-			<script src="start.js"></script>
 			<script>
 			__viewContext.primitiveValueConstraints.EmployeeCode = {
 					valueType: 'String',
@@ -29,6 +23,12 @@
 					maxLength: 10,
 				};
 			</script>
+			
+			<!-- Do not include this CSS -->
+			<link rel="stylesheet" type="text/css" href="editor.css" />
+			
+			<script src="../../../lib/nittsu/ui/textbox-options.js"></script>
+			<script src="start.js"></script>
           </ui:define>
           
           <ui:define name="content">
@@ -182,6 +182,138 @@
 							</tbody>
 						</table>
 					</div>
+					<hr/>
+                    <div class="cf">
+                        <h2>MultilineEditor</h2>
+                        <div data-bind="with: multilineeditor">
+                            <textarea data-name="Area Editor" data-bind="ntsMultilineEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}"></textarea>
+                            <br/><br/>
+                            <!-- Direct Binding -->
+                            <span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+                            <span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+                        </div>
+                        <br/>
+                        <!-- ViewModel -->
+                        <div class="cf">
+                            <h3>MultilineEditor ViewModel</h3>
+                            <table>
+                                <colgroup>
+                                    <col width="200px" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th><h4>ViewModel</h4></th>
+                                        <th><h4>Description</h4></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>value</td>
+                                        <td>
+                                            <b>Type:</b> string<br/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>constraint<br/><i>(optional)</i></td>
+                                        <td>
+                                            <b>Type:</b> string<br/>
+                                            Validate constraint for editor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>required<br/><i>(optional)</i></td>
+                                        <td>
+                                            <b>Type:</b> boolean<br/>
+                                            <b>Default:</b> false<br/>
+                                            Set required for editor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>enable<br/><i>(optional)</i></td>
+                                        <td>
+                                            <b>Type:</b> boolean<br/>
+                                            <b>Default:</b> true<br/>
+                                            Set enable/disable for editor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>readonly<br/><i>(optional)</i></td>
+                                        <td>
+                                            <b>Type:</b> boolean<br/>
+                                            <b>Default:</b> false<br/>
+                                            Set readonly for editor
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>option<br/><i>(optional)</i></td>
+                                        <td>
+                                            <b>Type:</b> object<br/>
+                                            <b>Default:</b> MultilineEditorOption()<br/>
+                                            <b>Members:</b><br/>
+                                            <i>MultilineEditorOption</i>: Option for multiline editor
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <pre style="float:left">MultilineEditor: {
+    value: ko.observable('For Lordaeron'),
+    constraint: '',
+    required: ko.observable(false),
+    enable: ko.observable(true),
+    option: ko.mapping.fromJS(new MultilineEditorOption())
+}</pre>
+                        </div>
+                        <!-- API -->
+                        <h3>MultilineEditor Option API</h3>
+                        <table>
+                            <colgroup>
+                                <col width="200px" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th><h4>MultilineEditorOption</h4></th>
+                                    <th><h4>Description</h4></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>resizeable</td>
+                                    <td>
+                                        <b>Type:</b> boolean<br/>
+                                        <b>Default:</b> false<br/>
+                                        Set resizeable for textarea
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>placeholder</td>
+                                    <td>
+                                        <b>Type:</b> string<br/>
+                                        <b>Default:</b> ""<br/>
+                                        Hint text for the control
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>width</td>
+                                    <td>
+                                        <b>Type:</b> string<br/>
+                                        <b>Default:</b> ""<br/>
+                                        Set width for the control
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>textalign</td>
+                                    <td>
+                                        <b>Type:</b> string<br/>
+                                        <b>Default:</b> "left"<br/>
+                                        <b>Members:</b><br/>
+                                        <i>left</i>: Align text to left<br/>
+                                        <i>right</i>: Align text to right<br/>
+                                        <i>center</i>: Align text to center
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 					<hr/>
 					<div class="cf">
 						<h2>NumberEditor</h2>
