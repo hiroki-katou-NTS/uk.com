@@ -44,5 +44,7 @@ __viewContext.ready(function () {
         }
     };
     // developer's view model
+    var dirty = new nts.uk.ui.DirtyChecker(vm.numbereditor.value);
+    nts.uk.ui.confirmSave(dirty);
     this.bind(vm);
 });

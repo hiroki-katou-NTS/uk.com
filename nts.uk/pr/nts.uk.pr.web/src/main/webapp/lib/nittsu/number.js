@@ -35,10 +35,10 @@ var nts;
                 if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
                     return value;
                 }
-                var groupseperator = formatOption.groupseperator() ? formatOption.groupseperator() : ',';
-                var grouplength = formatOption.grouplength() ? formatOption.grouplength() : 0;
-                var decimalseperator = formatOption.decimalseperator() ? formatOption.decimalseperator() : ".";
-                var decimallength = formatOption.decimallength() ? formatOption.decimallength() : 0;
+                var groupseperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
+                var grouplength = formatOption.grouplength ? formatOption.grouplength : 0;
+                var decimalseperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
+                var decimallength = formatOption.decimallength ? formatOption.decimallength : 0;
                 var formattedValue = "";
                 var stringValue = uk.text.replaceAll(value.toString(), groupseperator, '');
                 var isMinus = stringValue.charAt(0) === '-';
@@ -60,6 +60,7 @@ var nts;
                 else {
                     values[1] = values[1].substr(0, decimallength);
                 }
+                values[1] = uk.text.splitString(values[1], decimallength, '0');
                 return (isMinus ? '-' : '') + formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);
             }
             ntsNumber.formatNumber = formatNumber;

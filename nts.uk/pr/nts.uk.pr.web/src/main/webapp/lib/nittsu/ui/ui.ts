@@ -1,5 +1,5 @@
 ﻿module nts.uk.ui {
-     
+
     export module windows {
 
         var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -8,7 +8,7 @@
             autoOpen: false,
             draggable: true,
             resizable: false,
-            create: function (event) {
+            create: function(event) {
                 $(event.target).dialog('widget').css({ position: 'fixed' });
             }
         };
@@ -38,11 +38,11 @@
             static createSubWindow(parent: ScreenWindow) {
                 return new ScreenWindow(util.randomId(), false, parent);
             }
-            
+
             setGlobal(globalContext: any) {
                 this.globalContext = globalContext;
             }
-            
+
             setTitle(newTitle: string) {
                 if (this.isRoot) {
                     this.globalContext.title = newTitle;
@@ -50,15 +50,15 @@
                     this.$dialog.dialog('option', { title: newTitle });
                 }
             }
-            
+
             setupAsDialog(path: string, options: any) {
-                
+
                 options.close = () => {
                     this.dispose();
                 };
 
                 this.build$dialog(options);
-                
+
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
@@ -66,37 +66,37 @@
                         width: this.globalContext.dialogSize.width,
                         height: this.globalContext.dialogSize.height,
                         title: options.title || "dialog",
-                        beforeClose: function () {
+                        beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
                         }
                     }).dialog('open');
                 });
-                
+
                 this.globalContext.location.href = request.resolvePath(path);
             }
-            
+
             build$dialog(options: any) {
-               this.$dialog = $('<div/>')
+                this.$dialog = $('<div/>')
                     .css({
                         padding: 'initial',
                         overflow: 'hidden'
                     })
                     .appendTo($('body'))
                     .dialog(options);
-                
+
                 this.$iframe = $('<iframe/>').css({
-                        width: '100%',
-                        height: '100%'
-                    })
+                    width: '100%',
+                    height: '100%'
+                })
                     .appendTo(this.$dialog);
-                
+
                 this.setGlobal((<any>this.$iframe[0]).contentWindow);
             }
-            
+
             onClosed(callback: () => {}) {
                 this.onClosedHandler = callback;
             }
-            
+
             close() {
                 if (this.isRoot) {
                     window.close();
@@ -104,10 +104,10 @@
                     this.$dialog.dialog('close');
                 }
             }
-            
+
             dispose() {
                 _.defer(() => this.onClosedHandler());
-                
+
                 // delay 2 seconds to avoid IE error when any JS is running in destroyed iframe
                 setTimeout(() => {
                     this.$iframe.remove();
@@ -146,20 +146,20 @@
                 this.windows[subWindow.id] = subWindow;
 
                 options = $.extend({}, DEFAULT_DIALOG_OPTIONS, options);
-                
+
                 subWindow.setupAsDialog(path, options);
 
                 return subWindow;
             }
-            
+
             getShared(key: string): any {
                 return this.shared[key];
             }
-            
+
             setShared(key: string, data: any) {
                 this.shared[key] = data;
             }
-            
+
             close(id: string) {
                 var target = this.windows[id];
                 delete this.windows[id];
@@ -172,7 +172,7 @@
 
         if (util.isInFrame()) {
             var parent: any = window.parent;
-            container = <ScreenWindowContainer> (parent.nts.uk.ui.windows.container);
+            container = <ScreenWindowContainer>(parent.nts.uk.ui.windows.container);
         } else {
             selfId = MAIN_WINDOW_ID;
             container = new ScreenWindowContainer();
@@ -181,15 +181,15 @@
         export function getShared(key: string): any {
             return container.getShared(key);
         }
-            
+
         export function setShared(key: string, data: any) {
             container.setShared(key, data);
         }
-        
+
         export function getSelf() {
             return container.windows[selfId];
         }
-        
+
         export function close(windowId?: string) {
             windowId = util.orDefault(windowId, selfId);
             container.close(windowId);
@@ -214,17 +214,17 @@
             }
         }
     }
-    
+
     export function localize(textId: string): string {
         return textId;
     }
-         
+
     export module dialog {
-                
+
         function createNoticeDialog(text, buttons) {
-            var $control = $('<div/>').addClass('control');            
+            var $control = $('<div/>').addClass('control');
             text = text.replace(/\n/g, '<br />');
-            
+
             var $this = $('<div/>').addClass('notice-dialog')
                 .append($('<div/>').addClass('text').append(text))
                 .append($control)
@@ -234,21 +234,21 @@
                     modal: true,
                     closeOnEscape: false,
                     buttons: buttons,
-                    open: function () {
+                    open: function() {
                         $(this).closest('.ui-dialog').css('z-index', 120001);
                         $('.ui-widget-overlay').last().css('z-index', 120000);
                         $(this).parent().find('.ui-dialog-buttonset > button:first-child').focus();
                         $(this).parent().find('.ui-dialog-buttonset > button').removeClass('ui-button ui-corner-all ui-widget');
                     },
-                    close: function (event) {
+                    close: function(event) {
                         $(this).dialog('destroy');
                         $(event.target).remove();
                     }
                 });
-            
+
             return $this;
         }
-        
+
         /**
          * Show information dialog.
          * 
@@ -256,41 +256,42 @@
          *            text information text
          * @returns handler
          */
-        export function info(text){
+        export function info(text) {
             var $dialog = $('<div/>').hide();
-            
-            $(function () {
+
+            $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
                 });
             })
-            
-            return function (text) {
-        
+
+            return function(text) {
+
                 var then = $.noop;
-                
-                setTimeout(function () {
+
+                setTimeout(function() {
                     var $this = createNoticeDialog(
                         text,
                         [
-                            {text: "はい",
-                               "class": "large",
-                               click: function(){
+                            {
+                                text: "はい",
+                                "class": "large",
+                                click: function() {
                                     $this.dialog('close');
                                     then();
-                               }
-                             }
+                                }
+                            }
                         ]);
                 }, 0);
-                
+
                 return {
-                    then: function (callback) {
+                    then: function(callback) {
                         then = callback;
                     }
                 };
             };
         };
-        
+
         /**
          * Show alert dialog.
          * 
@@ -301,7 +302,7 @@
         export function alert(text) {
             return info(text);
         };
-        
+
         /**
          * Show confirm dialog.
          * 
@@ -315,85 +316,143 @@
             var handleCancel = $.noop;
             var handleThen = $.noop;
             var hasCancelButton = false;
-            
+
             var handlers = {
-                ifYes: function (handler) {
+                ifYes: function(handler) {
                     handleYes = handler;
                     return handlers;
                 },
-                ifNo: function (handler) {
+                ifNo: function(handler) {
                     handleNo = handler;
                     return handlers;
                 },
-                ifCancel: function (handler) {
+                ifCancel: function(handler) {
                     hasCancelButton = true;
                     handleCancel = handler;
                     return handlers;
                 },
-                then: function (handler) {
+                then: function(handler) {
                     handleThen = handler;
                     return handlers;
                 }
             };
-        
-            setTimeout(function () {
-                
+
+            setTimeout(function() {
+
                 var buttons = [];
                 // yes button
-                buttons.push({text: "はい",
-                           "class": "yes large danger",
-                           click: function(){
-                                $this.dialog('close');
-                                handleYes();
-                                handleThen();
-                           }
-                         });
+                buttons.push({
+                    text: "はい",
+                    "class": "yes large danger",
+                    click: function() {
+                        $this.dialog('close');
+                        handleYes();
+                        handleThen();
+                    }
+                });
                 // no button
-                buttons.push({text: "いいえ",
-                               "class": "no large",
-                               click: function(){
-                                    $this.dialog('close');
-                                    handleNo();
-                                    handleThen();
-                               }
-                             });
+                buttons.push({
+                    text: "いいえ",
+                    "class": "no large",
+                    click: function() {
+                        $this.dialog('close');
+                        handleNo();
+                        handleThen();
+                    }
+                });
                 // cancel button
                 if (hasCancelButton) {
-                    buttons.push({text: "Cancel",
-                               "class": "cancel large",
-                               click: function(){
-                                    $this.dialog('close');
-                                    handleCancel();
-                                    handleThen();
-                               }
-                             });
+                    buttons.push({
+                        text: "Cancel",
+                        "class": "cancel large",
+                        click: function() {
+                            $this.dialog('close');
+                            handleCancel();
+                            handleThen();
+                        }
+                    });
                 }
-                
+
                 var $this = createNoticeDialog(text, buttons);
             });
-        
+
             return handlers;
         };
     }
-    
-    
+     
+    export var confirmSave: (dirtyChecker: DirtyChecker) => any;
+    confirmSave = function(dirtyChecker: DirtyChecker) {
+        var frame = windows.getSelf();
+        if (frame.$dialog === undefined || frame.$dialog === null) {
+            confirmSaveWindow(dirtyChecker);
+        } else {
+            confirmSaveDialog(dirtyChecker, frame.$dialog);
+        }
+    }
+    function confirmSaveWindow(dirtyChecker: DirtyChecker) {
+
+        var beforeunloadHandler = function(e) {
+            if (dirtyChecker.isDirty()) {
+                return "ban co muon save hok?";
+                //                return nts.ui.message('Com_0000105');
+            }
+        };
+
+        confirmSaveEnable(beforeunloadHandler);
+    }
+
+    function confirmSaveDialog(dirtyChecker: DirtyChecker, dialog: JQuery) {
+        //        dialog* any;
+        var beforeunloadHandler = function(e) {
+            if (dirtyChecker.isDirty()) {
+                e.preventDefault();
+                nts.uk.ui.dialog.confirm("Are you sure you want to leave the page?")
+                    .ifYes(function() {
+                        dirtyChecker.reset();
+                        dialog.dialog("close");
+                    }).ifNo(function() {
+                    })
+                //                return nts.ui.message('Com_0000105');
+            }
+        };
+
+        confirmSaveEnableDialog(beforeunloadHandler, dialog);
+    }
+
+    export function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
+        dialog.on("dialogbeforeclose", beforeunloadHandler);
+    };
+
+    export function confirmSaveDisableDialog(dialog) {
+        dialog.on("dialogbeforeclose", function() { });
+    };
+
+    export function confirmSaveEnable(beforeunloadHandler) {
+        $(window).bind('beforeunload', beforeunloadHandler);
+    };
+
+    export function confirmSaveDisable() {
+        $(window).unbind('beforeunload');
+    };
+
     export class DirtyChecker {
-        
+
         targetViewModel: KnockoutObservable<any>;
         initialState: string;
-        
+
         constructor(targetViewModelObservable: KnockoutObservable<any>) {
             this.targetViewModel = targetViewModelObservable;
+            this.initialState = this.getCurrentState();
         }
-        
+
         getCurrentState() {
             return ko.mapping.toJSON(this.targetViewModel());
         }
-        
+
         reset() {
             this.initialState = this.getCurrentState();
         }
-        
+
         isDirty() {
             return this.initialState !== this.getCurrentState();
         }

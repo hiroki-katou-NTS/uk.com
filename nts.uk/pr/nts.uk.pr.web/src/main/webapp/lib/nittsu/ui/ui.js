@@ -237,7 +237,8 @@ var nts;
                         var then = $.noop;
                         setTimeout(function () {
                             var $this = createNoticeDialog(text, [
-                                { text: "はい",
+                                {
+                                    text: "はい",
                                     "class": "large",
                                     click: function () {
                                         $this.dialog('close');
@@ -302,7 +303,8 @@ var nts;
                     setTimeout(function () {
                         var buttons = [];
                         // yes button
-                        buttons.push({ text: "はい",
+                        buttons.push({
+                            text: "はい",
                             "class": "yes large danger",
                             click: function () {
                                 $this.dialog('close');
@@ -311,7 +313,8 @@ var nts;
                             }
                         });
                         // no button
-                        buttons.push({ text: "いいえ",
+                        buttons.push({
+                            text: "いいえ",
                             "class": "no large",
                             click: function () {
                                 $this.dialog('close');
@@ -321,7 +324,8 @@ var nts;
                         });
                         // cancel button
                         if (hasCancelButton) {
-                            buttons.push({ text: "Cancel",
+                            buttons.push({
+                                text: "Cancel",
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
@@ -337,9 +341,62 @@ var nts;
                 dialog.confirm = confirm;
                 ;
             })(dialog = ui.dialog || (ui.dialog = {}));
+            ui.confirmSave = function (dirtyChecker) {
+                var frame = windows.getSelf();
+                if (frame.$dialog === undefined || frame.$dialog === null) {
+                    confirmSaveWindow(dirtyChecker);
+                }
+                else {
+                    confirmSaveDialog(dirtyChecker, frame.$dialog);
+                }
+            };
+            function confirmSaveWindow(dirtyChecker) {
+                var beforeunloadHandler = function (e) {
+                    if (dirtyChecker.isDirty()) {
+                        return "ban co muon save hok?";
+                    }
+                };
+                confirmSaveEnable(beforeunloadHandler);
+            }
+            function confirmSaveDialog(dirtyChecker, dialog) {
+                //        dialog* any;
+                var beforeunloadHandler = function (e) {
+                    if (dirtyChecker.isDirty()) {
+                        e.preventDefault();
+                        nts.uk.ui.dialog.confirm("Are you sure you want to leave the page?")
+                            .ifYes(function () {
+                            dirtyChecker.reset();
+                            dialog.dialog("close");
+                        }).ifNo(function () {
+                        });
+                    }
+                };
+                confirmSaveEnableDialog(beforeunloadHandler, dialog);
+            }
+            function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
+                dialog.on("dialogbeforeclose", beforeunloadHandler);
+            }
+            ui.confirmSaveEnableDialog = confirmSaveEnableDialog;
+            ;
+            function confirmSaveDisableDialog(dialog) {
+                dialog.on("dialogbeforeclose", function () { });
+            }
+            ui.confirmSaveDisableDialog = confirmSaveDisableDialog;
+            ;
+            function confirmSaveEnable(beforeunloadHandler) {
+                $(window).bind('beforeunload', beforeunloadHandler);
+            }
+            ui.confirmSaveEnable = confirmSaveEnable;
+            ;
+            function confirmSaveDisable() {
+                $(window).unbind('beforeunload');
+            }
+            ui.confirmSaveDisable = confirmSaveDisable;
+            ;
             var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
                     this.targetViewModel = targetViewModelObservable;
+                    this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
                     return ko.mapping.toJSON(this.targetViewModel());

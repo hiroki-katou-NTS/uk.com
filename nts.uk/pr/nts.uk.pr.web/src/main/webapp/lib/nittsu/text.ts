@@ -305,6 +305,15 @@
                 return padLeft(code, fillcharacter, length);
         }
         
+        export function splitString(str: string, decimallength: number, char: string){
+            if (str === undefined || decimallength > str.length) {
+                str = text.padRight(str ? str : "", char, str ? decimallength : decimallength + 1);
+            } else {
+                str = str.substr(0, decimallength);
+            }
+            return str;
+        }
+        
         export class StringFormatter implements format.IFormatter {
             args: any;
             
@@ -348,9 +357,9 @@
             
             format(source: any): string {
                 var result;
-                if(this.option.option.inputFormat() === "yearmonth"){
+                if(this.option.option.inputFormat === "yearmonth"){
                     result = time.parseYearMonth(source);
-                }else if(this.option.option.inputFormat() === "time"){
+                }else if(this.option.option.inputFormat === "time"){
                     result = time.parseTime(source, true);    
                 }else {
                     result = time.ResultParseTime.failed();

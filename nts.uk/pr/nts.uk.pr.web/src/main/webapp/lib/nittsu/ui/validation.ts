@@ -70,8 +70,8 @@
             var result = new ValidationResult();
             var isDecimalNumber = false;
             if(this.option !== undefined){
-                isDecimalNumber = (this.option.decimallength() > 0)
-                inputText = text.replaceAll(inputText, this.option.groupseperator(), '');    
+                isDecimalNumber = (this.option.decimallength > 0)
+                inputText = text.replaceAll(inputText, this.option.groupseperator, '');    
             }
             
             if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
@@ -79,7 +79,7 @@
                 return result;
             }
             var value = isDecimalNumber ? 
-                ntsNumber.getDecimal(inputText, this.option.decimallength()) : parseInt(inputText);
+                ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
 
             if (this.constraint !== null) {
                 if (this.constraint.max !== undefined && value > this.constraint.max) {
@@ -91,7 +91,12 @@
                     return result;
                 }
             }
-            result.success(inputText);
+//            if(inputText.indexOf(this.option.decimalseperator()) >= 0){
+//                var values = inputText.split(this.option.decimalseperator());
+//                values[1] = text.splitString(values[1], this.option.decimallength(), '0');
+//                inputText = values[0] + this.option.decimalseperator() + values[1];
+//            }
+            result.success(value);
             return result;
         }
     }
@@ -108,9 +113,9 @@
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
             var parseResult;
-            if (this.option.inputFormat() === "yearmonth") {
+            if (this.option.inputFormat === "yearmonth") {
                 parseResult = time.parseYearMonth(inputText);
-            } else if (this.option.inputFormat() === "time") {
+            } else if (this.option.inputFormat === "time") {
                 parseResult = time.parseTime(inputText, false);
             }else {
                 parseResult = time.ResultParseTime.failed();

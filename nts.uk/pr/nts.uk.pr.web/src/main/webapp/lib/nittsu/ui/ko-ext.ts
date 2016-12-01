@@ -114,14 +114,14 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
-            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            return new text.NumberFormatter({ option: option });
+            var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+            return new text.NumberFormatter({ option: ko.toJS(option) });
         }
 
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            return new validation.NumberValidator(constraintName, option);
+            var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+            return new validation.NumberValidator(constraintName, ko.toJS(option));
         }
     }
 
@@ -133,14 +133,14 @@ module nts.uk.ui.koExtentions {
         }
 
         getFormatter(data: any): format.IFormatter {
-            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            return new text.TimeFormatter({ option: option });
+            var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+            return new text.TimeFormatter({ option: ko.toJS(option) });
         }
 
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-            return new validation.TimeValidator(constraintName, option);
+            var option = (data.option !== undefined) ? data.option : ko.mapping.fromJS(this.getDefaultOption());
+            return new validation.TimeValidator(constraintName, ko.toJS(option));
         }
     }
 
