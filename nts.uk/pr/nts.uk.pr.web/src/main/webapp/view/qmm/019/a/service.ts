@@ -371,9 +371,14 @@ module qmm019.a {
                     this.screenModel = ko.observable(screenModel);
                     this.itemCode = ko.observable(itemObject.itemCode);
                     this.itemAbName = ko.observable(itemObject.itemAbName);
-                    if(itemObject.itemCode === "F003" || itemObject.itemCode === "F114"){
-                        this.isRequired = ko.observable(true);
-                    } 
+                    if (itemObject.categoryAtr === 0 && 
+                            (itemObject.itemCode === "F001" || itemObject.itemCode === "F002" || itemObject.itemCode === "F003")){
+                            this.isRequired = ko.observable(true);
+                    }
+                    if (itemObject.categoryAtr === 1 && 
+                            (itemObject.itemCode === "F114")){
+                            this.isRequired = ko.observable(true);
+                    }
                     this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
                     this.categoryAtr = ko.observable(itemObject.categoryAtr);
                     this.autoLineId = ko.observable(itemObject.autoLineId);
