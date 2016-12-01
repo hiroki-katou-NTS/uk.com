@@ -6,7 +6,8 @@ var qmm019;
         (function (service) {
             var paths = {
                 getItemsByCategory: "pr/proto/item/findall/bycategory/{0}",
-                getItem: "pr/proto/item/find/{categoryAtr}/{itemCode}"
+                getItem: "pr/proto/item/find/{categoryAtr}/{itemCode}",
+                getLayoutMasterDetail: "pr/proto/layout/findlayoutdetail/{0}/{1}/{2}/{3}"
             };
             function getItemsByCategory(categoryAtr) {
                 var dfd = $.Deferred();
@@ -22,6 +23,20 @@ var qmm019;
                 return dfd.promise();
             }
             service.getItemsByCategory = getItemsByCategory;
+            function getLayoutMasterDetail(stmtCode, startYm, categoryAtr, itemCd) {
+                var dfd = $.Deferred();
+                var objectItem = { stmtCode: stmtCode, startYm: startYm, categoryAtr: categoryAtr, itemCd: itemCd };
+                var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, startYm, categoryAtr(), itemCd);
+                nts.uk.request.ajax(_path)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getLayoutMasterDetail = getLayoutMasterDetail;
             function getItem(categoryAtr, itemCode) {
                 var dfd = $.Deferred();
                 var objectItem = { categoryAtr: categoryAtr, itemCode: itemCode };
