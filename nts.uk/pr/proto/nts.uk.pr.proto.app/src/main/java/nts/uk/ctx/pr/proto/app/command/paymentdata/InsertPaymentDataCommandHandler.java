@@ -43,12 +43,17 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 		payment.setStandardDate(mPayDate);
 		payment.validate();
 
-		this.paymentDataRepository.insertHeader(payment);
-		// update detail
-		this.registerDetail(payment, payment.getDetailPaymentItems());
-		this.registerDetail(payment, payment.getDetailArticleItems());
-		this.registerDetail(payment, payment.getDetailDeductionItems());
-		this.registerDetail(payment, payment.getDetailPersonalTimeItems());
+		try {
+			this.paymentDataRepository.insertHeader(payment);
+			// update detail
+			this.registerDetail(payment, payment.getDetailPaymentItems());
+			this.registerDetail(payment, payment.getDetailArticleItems());
+			this.registerDetail(payment, payment.getDetailDeductionItems());
+			this.registerDetail(payment, payment.getDetailPersonalTimeItems());
+		} catch (Exception e) {
+			throw e;
+		}
+		
 	}
 
 	/**

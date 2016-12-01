@@ -14,7 +14,7 @@
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
-			    <script>var dialogSize = { width: 600, height: 700 };</script>
+			    <script>var dialogSize = { width: 560, height: 400 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
             </ui:define>
             
@@ -28,7 +28,7 @@
 							<label id="LBL_002" data-bind="text: selectLayoutCode">01</label>
 							<label id="LBL_003" data-bind="text: selectLayoutName">正社員用明細書</label>
 							<label id="">（</label>
-							<label id="LBL_004" data-bind="text: selectLayoutStartYm">2016/04</label>
+							<label id="LBL_004" data-bind="text: layoutStartYm">2016/04</label>
 							<label id="">　　～　　</label>
 							<label id="LBL_005" data-bind="text: selectLayoutEndYm"></label>
 							<label id="">）</label>
@@ -40,8 +40,8 @@
 						<br/><br/>
 						<div class = "selectStyle">
 							<div id="SEL_001">
-								<input type="radio" name="layoutSelect" id="layoutDetele" checked="checked" /> 履歴を削除する<br /><br />
-				  				<input type="radio" name="layoutSelect" id="layoutUpdate" /> 履歴を修正する<br />
+								<input type="radio" name="layoutSelect" id="layoutDetele" /> 履歴を削除する<br /><br />
+				  				<input type="radio" name="layoutSelect" id="layoutUpdate"  checked="checked" /> 履歴を修正する<br />
 							</div>							
 							<div>
 								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/><br />
@@ -55,7 +55,7 @@
 						<hr></hr>
 						<div class = "bottomStype">
 							<button class="x-large proceed" id = "BTN_001" data-bind = "click: layoutProcess">決定</button>
-							<button class="large" id="BTN_002">キャンセル</button><br />
+							<button class="large" id="BTN_002" data-bind = "click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>
 	           	</div>

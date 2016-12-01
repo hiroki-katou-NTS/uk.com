@@ -46,8 +46,8 @@
 							<button>検索</button>
 						</div>
 						<div>
-							<button id="A_BTN_007" onclick="nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'})">履歴追加</button>
-							<button id="A_BTN_008">履歴編集</button>
+							<button id="A_BTN_007" data-bind="click: openADialog">履歴追加</button>
+							<button id="A_BTN_008" data-bind="click: openEDialog">履歴編集</button>
 						</div>
 						<div >
 							<table id="treegrid2"
@@ -101,17 +101,22 @@
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 						
 						<div data-bind="foreach: categories">
-							<div id="group-root">
+							<div data-bind="attr: {id: 'group-' + categoryAtr}" class="group-root">
 								<div id="group-title">
 									<a class="button-setting" data-bind="visible: hasSetting, click: categoryClick"></a>
 									<span data-bind="text: categoryName"></span>
 								</div>
-								<div class="all-line">
+								<div class="all-line" data-bind="attr: {id: categoryAtr}">
 									<div data-bind="foreach: lines">
-										<div class="row" data-bind="attr: {id: rowId, class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
+										<div class="row" data-bind="attr: {
+																	id: rowId, 
+																	class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
 											<div><a class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick"></a></div>
 											<div data-bind="foreach: details">
-									            <span data-bind="click: itemClick, attr: {class: isRequired() ? 'fixed-button ui-state-disabled li-on-row' : itemAbName() !== '+' ? 'button-with-text li-on-row' : 'li-on-row'}">
+									            <span data-bind="click: itemClick, 
+									            			attr: {
+									            				id: itemCode,
+									            				class: isRequired() ? 'fixed-button ui-state-disabled li-on-row' : itemAbName() !== '+' ? 'button-with-text li-on-row' : 'li-on-row'}">
 									                <a data-bind="text: itemAbName"></a>
 									            </span>
 											</div>
@@ -123,7 +128,9 @@
 								</div>
 							</div>
 						</div>
-						
+						<button id="btnKintai" class="addCategoryButton" data-bind="click: addKintaiCategory, visible: notHasKintai">+ 勤怠エリアを追加する</button>
+						<br/>
+						<button id="btnKiji" class="addCategoryButton" data-bind="click: addKijiCategory, visible: notHasKiji">+ 記事エリアを追加する</button>
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
             		</div>
             	</div>

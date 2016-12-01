@@ -4,6 +4,7 @@ var qmm019;
     (function (d) {
         var viewmodel;
         (function (viewmodel) {
+            var option = nts.uk.ui.option;
             var ScreenModel = (function () {
                 /**
                  * Init screen model.
@@ -17,11 +18,12 @@ var qmm019;
                     self.selectStmtCode = ko.observable(null);
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
-                    //sau nay gan lai
-                    self.layoutSelect = ko.observable("01");
+                    self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
                     self.valueSel001 = ko.observable("");
                     self.createlayout = ko.observable(null);
                     self.startYmHis = ko.observable(null);
+                    console.log(option);
+                    self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                 }
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -62,15 +64,15 @@ var qmm019;
                             self.selectStmtCode(stmtCode);
                             self.selectStmtName(layout.stmtName);
                             self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                            self.valueSel001('最新の履歴' + layout.startYm + 'から引き継ぐ');
-                            self.startYmHis = layout.startYm;
+                            self.valueSel001('最新の履歴（' + nts.uk.time.formatYearMonth(layout.startYm) + '）から引き継ぐ');
+                            self.startYmHis(layout.startYm);
                             return false;
                         }
                     });
                 };
                 ScreenModel.prototype.createHistoryLayout = function () {
                     var self = this;
-                    var selectYm = self.startYmHis;
+                    var selectYm = self.startYmHis();
                     var inputYm = $("#INP_001").val().replace('/', '');
                     if (+inputYm < +selectYm
                         || +inputYm == +selectYm) {
@@ -78,40 +80,37 @@ var qmm019;
                         return false;
                     }
                     else {
+                        self.createData();
                         if ($("#copyCreate").is(":checked")) {
-                            self.copyCreateData();
+                            self.createlayout().checkContinue = true;
                         }
                         else {
-                            self.newCreateData();
+                            self.createlayout().checkContinue = false;
                         }
                         d.service.createLayoutHistory(self.createlayout()).done(function () {
                             alert("追加しました。");
+                            nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);
+                            nts.uk.ui.windows.close();
                         });
                     }
                 };
-                ScreenModel.prototype.copyCreateData = function () {
+                ScreenModel.prototype.createData = function () {
                     var self = this;
-                    self.createlayout({
-                        checkContinue: true,
-                        stmtCode: self.selectStmtCode(),
-                        startYm: +(self.selectStartYm().replace('/', '')),
-                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
-                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
-                        layoutAtr: 3
-                    });
-                };
-                ScreenModel.prototype.newCreateData = function () {
-                    var self = this;
+                    var start = +$('#INP_001').val().replace('/', '');
                     self.createlayout({
                         checkContinue: false,
                         stmtCode: self.selectStmtCode(),
-                        startYm: +(self.selectStartYm().replace('/', '')),
-                        endYm: (+(self.selectStartYm().replace('/', '')) - 1),
-                        startPrevious: +nts.uk.time.formatYearMonth($('#INP_001').val()),
-                        layoutAtr: 3
+                        startYm: start,
+                        endYm: start,
+                        startPrevious: self.startYmHis(),
+                        layoutAtr: 3,
+                        stmtName: ""
                     });
+                };
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
                 };
                 return ScreenModel;
             }());

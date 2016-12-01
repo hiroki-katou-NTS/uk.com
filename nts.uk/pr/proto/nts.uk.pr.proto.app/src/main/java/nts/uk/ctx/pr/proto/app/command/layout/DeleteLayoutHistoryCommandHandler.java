@@ -76,9 +76,10 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		Optional<LayoutMaster> layoutBefore = layoutRepository.getHistoryBefore(command.getCompanyCode(),
 				command.getStmtCode(),
 				command.getStartYm() - 1);
-		if (layoutBefore.isPresent()) {
+		if (layoutBefore != null
+			&& layoutBefore.isPresent()) {
 			LayoutMaster layout = layoutBefore.get();
-			layout.setEndYm(new YearMonth(999912));
+			layout.setEndYm(new YearMonth(command.getEndYm()));
 			layoutRepository.update(layout);
 		}
 		
@@ -93,7 +94,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 								category.getStartYM(),
 								category.getStmtCode(),
 								category.getCtAtr(),
-								new YearMonth(999912),
+								new YearMonth(command.getEndYm()),
 								category.getCtgPos());
 					}).collect(Collectors.toList());
 			this.categoryRepository.update(lstCategoryUP);
@@ -110,7 +111,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 						return LayoutMasterLine.createFromDomain(line.getCompanyCode(),
 								line.getStartYM(), 
 								line.getStmtCode(), 
-								new YearMonth(999912), 
+								new YearMonth(command.getEndYm()), 
 								line.getAutoLineId(), 
 								line.getCategoryAtr(), 
 								line.getLineDispayAttribute(), 
@@ -130,7 +131,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 								org.getCompanyCode(), 
 								org.getLayoutCode(), 
 								org.getStartYm(),
-								new YearMonth(999912), 
+								new YearMonth(command.getEndYm()), 
 								org.getCategoryAtr(), 
 								org.getItemCode(), 
 								org.getAutoLineId(), 

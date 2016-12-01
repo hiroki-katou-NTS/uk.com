@@ -56,10 +56,20 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 		return domain;
 	}
+	private QstmtStmtLayoutLinesPK toEntityPk(LayoutMasterLine domain) {
+		val entityPk = new QstmtStmtLayoutLinesPK();
+		entityPk.companyCd = domain.getCompanyCode().v();
+		entityPk.stmtCd = domain.getStmtCode().v();
+		entityPk.strYm = domain.getStartYM().v();
+		entityPk.ctgAtr = domain.getCategoryAtr().value;
+		entityPk.autoLineId = domain.getAutoLineId().v();
 
+		return entityPk;
+	}
+	
 	private QstmtStmtLayoutLines toEntity(LayoutMasterLine domain) {
 		val entity = new QstmtStmtLayoutLines();
-
+		entity.qstmtStmtLayoutLinesPk = new QstmtStmtLayoutLinesPK();
 		entity.qstmtStmtLayoutLinesPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutLinesPk.stmtCd = domain.getStmtCode().v();
 		entity.qstmtStmtLayoutLinesPk.strYm = domain.getStartYM().v();
@@ -101,21 +111,30 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public void add(List<LayoutMasterLine> lines) {
-		this.commandProxy().insertAll(lines);
+		for(LayoutMasterLine line : lines){
+			this.commandProxy().insert(toEntity(line));
+		}
+		
 	}
 
 	@Override
 	public void update(List<LayoutMasterLine> lines) {
-		this.commandProxy().updateAll(lines);
+		for(LayoutMasterLine line : lines){
+			this.commandProxy().update(toEntity(line));
+		}
+		
 	}
 
 	@Override
 	public void remove(List<LayoutMasterLine> lines) {
-		List<QstmtStmtLayoutLines> linesEntity = lines.stream().map(
+
+		List<QstmtStmtLayoutLinesPK> linesEntityPk = lines.stream().map(
 				line -> {
-							return this.toEntity(line); 
+							return this.toEntityPk(line); 
 						}).collect(Collectors.toList());
-		this.commandProxy().removeAll(linesEntity);
+		
+		this.commandProxy().removeAll(QstmtStmtLayoutLines.class, linesEntityPk);
+
 	}
 
 	@Override

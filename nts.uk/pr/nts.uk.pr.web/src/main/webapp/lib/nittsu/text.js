@@ -215,6 +215,10 @@ var nts;
                 return result;
             }
             text_1.charPadding = charPadding;
+            function replaceAll(str, find, replace) {
+                return str.split(find).join(replace);
+            }
+            text_1.replaceAll = replaceAll;
             /**
              * Type of characters
              */
@@ -227,14 +231,11 @@ var nts;
                 CharType.prototype.validate = function (text) {
                     var result = new uk.ui.validation.ValidationResult();
                     if (this.validator(text)) {
-                        result.isValid = true;
+                        return true;
                     }
                     else {
-                        result.isValid = false;
-                        result.errorMessage = 'invalid text';
+                        return false;
                     }
-                    result.parsedValue = text;
-                    return result;
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
                     return this.viewName + this.getViewLength(maxLength) + '文字';
@@ -265,15 +266,64 @@ var nts;
                 return charType;
             }
             text_1.getCharType = getCharType;
+            function formatEmployeeCode(code, filldirection, fillcharacter, length) {
+                if (filldirection === "left")
+                    return padLeft(code, fillcharacter, length);
+                else
+                    return padRight(code, fillcharacter, length);
+            }
+            text_1.formatEmployeeCode = formatEmployeeCode;
             var StringFormatter = (function () {
-                function StringFormatter(option) {
+                function StringFormatter(args) {
+                    this.args = args;
                 }
                 StringFormatter.prototype.format = function (source) {
+                    var constraintName = this.args.constraintName;
+                    if (constraintName === "EmployeeCode") {
+                        var constraint = this.args.constraint;
+                        var filldirection = this.args.editorOption.filldirection();
+                        var fillcharacter = this.args.editorOption.fillcharacter();
+                        var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
+                        return formatEmployeeCode(source, filldirection, fillcharacter, length);
+                    }
                     return source;
                 };
                 return StringFormatter;
             }());
             text_1.StringFormatter = StringFormatter;
+            var NumberFormatter = (function () {
+                function NumberFormatter(option) {
+                    this.option = option;
+                }
+                NumberFormatter.prototype.format = function (source) {
+                    return uk.ntsNumber.formatNumber(source, this.option.option);
+                };
+                return NumberFormatter;
+            }());
+            text_1.NumberFormatter = NumberFormatter;
+            var TimeFormatter = (function () {
+                function TimeFormatter(option) {
+                    this.option = option;
+                }
+                TimeFormatter.prototype.format = function (source) {
+                    var result;
+                    if (this.option.option.inputFormat() === "yearmonth") {
+                        result = uk.time.parseYearMonth(source);
+                    }
+                    else if (this.option.option.inputFormat() === "time") {
+                        result = uk.time.parseTime(source, true);
+                    }
+                    else {
+                        result = uk.time.ResultParseTime.failed();
+                    }
+                    if (result.success) {
+                        return result.format();
+                    }
+                    return source;
+                };
+                return TimeFormatter;
+            }());
+            text_1.TimeFormatter = TimeFormatter;
         })(text = uk.text || (uk.text = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

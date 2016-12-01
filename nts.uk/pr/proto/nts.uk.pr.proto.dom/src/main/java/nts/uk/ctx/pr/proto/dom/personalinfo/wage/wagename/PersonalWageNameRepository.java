@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 
+
 @RequestScoped
 public interface PersonalWageNameRepository {
 	
@@ -14,4 +15,5 @@ public interface PersonalWageNameRepository {
 	 * @return
 	 */
 	List<PersonalWageNameMaster> getPersonalWageName(String companyCode, int categoryAtr);
+	
 }

@@ -50,8 +50,10 @@ var nts;
                             $input.width(width);
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
-                        var formatter = this.getFormatter(data);
-                        $input.val(formatter.format(getValue()));
+                        var formatted = $input.ntsError('hasError')
+                            ? getValue()
+                            : this.getFormatter(data).format(getValue());
+                        $input.val(formatted);
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
                         return {};
@@ -64,14 +66,35 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
+                var DynamicEditorProcessor = (function (_super) {
+                    __extends(DynamicEditorProcessor, _super);
+                    function DynamicEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    DynamicEditorProcessor.prototype.getValidator = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return validation.createValidator(constraintName);
+                    };
+                    DynamicEditorProcessor.prototype.getFormatter = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        if (constraint) {
+                            switch (constraint.valueType) {
+                                case 'String': return new uk.text.StringFormatter({ constraintName: constraintName });
+                            }
+                        }
+                        return new uk.format.NoFormatter();
+                    };
+                    return DynamicEditorProcessor;
+                }(EditorProcessor));
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
                         _super.apply(this, arguments);
                     }
                     TextEditorProcessor.prototype.update = function ($input, data) {
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var textmode = ko.unwrap(option.textmode);
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var textmode = ko.unwrap(editorOption.textmode);
                         $input.attr('type', textmode);
                         _super.prototype.update.call(this, $input, data);
                     };
@@ -79,13 +102,15 @@ var nts;
                         return new nts.uk.ui.option.TextEditorOption();
                     };
                     TextEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return new uk.text.StringFormatter({ constraintName: constraintName });
+                        var constrain = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return validation.createValidator(constraintName);
-                        ;
+                        return new validation.StringValidator(constraintName, required);
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
@@ -94,22 +119,38 @@ var nts;
                     function NumberEditorProcessor() {
                         _super.apply(this, arguments);
                     }
-                    NumberEditorProcessor.prototype.update = function ($input, data) {
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
-                        var textmode = ko.unwrap(option.textmode);
-                        $input.attr('type', 'text');
-                        _super.prototype.update.call(this, $input, data);
-                    };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
-                        return new uk.format.NoFormatter();
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new uk.text.NumberFormatter({ option: option });
                     };
                     NumberEditorProcessor.prototype.getValidator = function (data) {
-                        return new validation.NoValidator();
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new validation.NumberValidator(constraintName, option);
                     };
                     return NumberEditorProcessor;
+                }(EditorProcessor));
+                var TimeEditorProcessor = (function (_super) {
+                    __extends(TimeEditorProcessor, _super);
+                    function TimeEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    TimeEditorProcessor.prototype.getDefaultOption = function () {
+                        return new nts.uk.ui.option.TimeEditorOption();
+                    };
+                    TimeEditorProcessor.prototype.getFormatter = function (data) {
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new uk.text.TimeFormatter({ option: option });
+                    };
+                    TimeEditorProcessor.prototype.getValidator = function (data) {
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        return new validation.TimeValidator(constraintName, option);
+                    };
+                    return TimeEditorProcessor;
                 }(EditorProcessor));
                 /**
                  * Editor
@@ -131,6 +172,19 @@ var nts;
                     };
                     return NtsEditorBindingHandler;
                 }());
+                var NtsDynamicEditorBindingHandler = (function (_super) {
+                    __extends(NtsDynamicEditorBindingHandler, _super);
+                    function NtsDynamicEditorBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new DynamicEditorProcessor().init($(element), valueAccessor());
+                    };
+                    NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new DynamicEditorProcessor().update($(element), valueAccessor());
+                    };
+                    return NtsDynamicEditorBindingHandler;
+                }(NtsEditorBindingHandler));
                 /**
                  * TextEditor
                  */
@@ -183,68 +237,14 @@ var nts;
                      * Init.
                      */
                     NtsTimeEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var setValue = data.value;
-                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var $input = $(element);
-                        $input.change(function () {
-                            var newText = $input.val();
-                            var result;
-                            if (option.inputFormat() === "yearmonth") {
-                                result = uk.time.parseYearMonth(newText);
-                            }
-                            else {
-                                result = uk.time.parseTime(newText);
-                            }
-                            if (result.success) {
-                                $input.ntsError('clear');
-                                $input.val(result.format());
-                                setValue(result.toValue());
-                            }
-                            else {
-                                $input.ntsError('set', 'invalid time');
-                                setValue(newText);
-                            }
-                        });
+                        new TimeEditorProcessor().init($(element), valueAccessor());
                     };
                     /**
                      * Update
                      */
                     NtsTimeEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
-                        var data = valueAccessor();
-                        var getValue = data.value;
-                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-                        var option = (viewModel.option !== undefined) ? ko.unwrap(viewModel.option) : ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption());
-                        var placeholder = ko.unwrap(option.placeholder);
-                        var width = ko.unwrap(option.width);
-                        var textalign = ko.unwrap(option.textalign);
-                        var $input = $(element);
-                        $input.attr('type', 'text');
-                        (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
-                        (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
-                        $input.attr('placeholder', placeholder);
-                        if (width.trim() != "")
-                            $input.width(width);
-                        if (textalign.trim() != "")
-                            $input.css('text-align', textalign);
-                        if (data.value() !== undefined && data.value() !== null) {
-                            var result;
-                            if (option.inputFormat() === "yearmonth") {
-                                result = uk.time.parseYearMonth(data.value());
-                            }
-                            else {
-                                result = uk.time.parseTime(data.value(), true);
-                            }
-                            if (result.success) {
-                                $input.val(result.format());
-                            }
-                            else {
-                                $input.val(data.value());
-                            }
-                        }
+                        new TimeEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTimeEditorBindingHandler;
                 }());
@@ -409,8 +409,10 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = $("#ntsErrorDialog");
-                        if (autoclose === true && errors.length == 0)
+                        if (autoclose === true && errors.length == 0) {
+                            option.show(false);
                             show = false;
+                        }
                         if (show == true) {
                             $dialog.dialog("open");
                             // Create Error Table
@@ -1101,6 +1103,7 @@ var nts;
                             if (olds.length > 0 && olds[0] == singleValue) {
                                 return;
                             }
+                            $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
                     };
@@ -1270,10 +1273,123 @@ var nts;
                     };
                     return NtsLinkButtonBindingHandler;
                 }());
+                /**
+                 * Datepicker binding handler
+                 */
+                var DatePickerBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function DatePickerBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Container.
+                        var container = $(element);
+                        var date = ko.unwrap(data.value());
+                        container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
+                        container.datepicker({
+                            format: 'yyyy/mm/dd',
+                            language: 'ja'
+                        }).on('changeDate', function (ev) {
+                            data.value(ev.date);
+                            container.datepicker('hide');
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return DatePickerBindingHandler;
+                }());
+                /**
+                 * TabPanel Binding Handler
+                 */
+                var TabPanelBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function TabPanelBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Get tab list.
+                        var tabs = ko.unwrap(data.dataSource);
+                        // Container.
+                        var container = $(element);
+                        // Create title.
+                        container.prepend('<ul></ul>');
+                        var titleContainer = container.children('ul');
+                        for (var i = 0; i < tabs.length; i++) {
+                            var id = tabs[i].id;
+                            var title = tabs[i].title;
+                            titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
+                            // Wrap content.
+                            var content = tabs[i].content;
+                            container.children(content).wrap('<div id="' + id + '"></div>');
+                        }
+                        container.tabs({
+                            activate: function (evt, ui) {
+                                data.active(ui.newPanel[0].id);
+                                container.children('ul').children('.ui-tabs-active').addClass('active');
+                                container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
+                                container.children('ul').children('.ui-state-disabled').addClass('disabled');
+                                container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                            }
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Get tab list.
+                        var tabs = ko.unwrap(data.dataSource);
+                        // Container.
+                        var container = $(element);
+                        // Select tab.
+                        var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
+                        var indexActive = tabs.indexOf(activeTab);
+                        container.tabs("option", "active", indexActive);
+                        // Disable & visible tab.
+                        tabs.forEach(function (tab) {
+                            if (tab.enable()) {
+                                container.tabs("enable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').show();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
+                            }
+                            else {
+                                container.tabs("disable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').hide();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
+                            }
+                            if (!tab.visible()) {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
+                            }
+                            else {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
+                            }
+                        });
+                    };
+                    return TabPanelBindingHandler;
+                }());
+                ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
+                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
                 ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+                ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

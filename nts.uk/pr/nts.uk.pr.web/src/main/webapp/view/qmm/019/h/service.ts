@@ -1,10 +1,13 @@
 module qmm019.h.service {
     var paths = {
-        getLayoutInfor: "pr/proto/layout/findalllayout"
+        getAll: "pr/proto/personalwage/findalls/{0}",
+
     }
-    export function getAllLayout(): JQueryPromise<Array<model.LayoutMasterModel>> {
+
+    export function getPersonalWageNames(categoryAtr : number): JQueryPromise<Array<model.PersonalWageNameDto>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getLayoutInfor)
+        var _path = nts.uk.text.format(paths.getAll, categoryAtr);
+        nts.uk.request.ajax(_path)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -13,10 +16,22 @@ module qmm019.h.service {
             })
         return dfd.promise();
     }
-      export module model {
-    export interface LayoutMasterModel {
-        personalWageName: String;
-        companyCode: String;
+
+    export module model {
+        export interface LayoutMasterModel {
+            personalWageName: String;
+            companyCode: String;
+        }
     }
-          }
+
+    export module model {
+        // layout
+        export class PersonalWageNameDto {
+            companyCode: string;
+            categoryAtr: number;
+            personalWageCode: string;
+            personalWageName: string;
+        }
+
+    }
 }

@@ -7,7 +7,6 @@
 	
 	margin-left: 152px;
 	margin-top: 15px;
-
 	
 }
 
@@ -24,7 +23,6 @@ hr {
     border-style: inset;
     border-width: 1px;
 }
-
 
 .radio-1 {
 
@@ -56,6 +54,11 @@ hr {
 	
 	margin-left: 52px;
 	margin-top: 5px;
+	  width: 20px;
+  height: 20px;
+  border-radius: 11px;
+  border: 2px solid #004c97;
+  background-color: #7FFF00;
 	
 	
 }

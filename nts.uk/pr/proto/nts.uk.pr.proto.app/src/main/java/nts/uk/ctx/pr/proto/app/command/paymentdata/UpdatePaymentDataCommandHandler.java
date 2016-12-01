@@ -7,15 +7,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.CategoryCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.DetailItemCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.LineCommandBase;
-import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
@@ -56,7 +52,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 						cate.getLines());
 			}
 		} else {
-			throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+			throw new BusinessException("更新対象のデータが存在しません");
 		}
 		
 		// update payment header
@@ -81,7 +77,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 				boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
 						item.getCategoryAtr(), item.getItemCode());
 				if (!isExistDetails) {
-					throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません"));
+					throw new BusinessException(("更新対象のデータが存在しません"));
 				}
 			}
 		});

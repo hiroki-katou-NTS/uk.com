@@ -72,6 +72,9 @@ public class DetailItem extends DomainObject {
 
 	@Getter
 	private int limitAmount;
+	
+	@Getter
+	private double commuteAllowMonth;
 
 	/**
 	 * Constructor
@@ -165,14 +168,23 @@ public class DetailItem extends DomainObject {
 		this.itemPosition = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
 		return this;
 	}
+	
+	/**
+	 * Add info: commute Allow Month
+	 * @param commuteAllowMonth
+	 * @return
+	 */
+	public DetailItem additionalInfo(double commuteAllowMonth) {
+		this.commuteAllowMonth = commuteAllowMonth;
+		return this;
+	}
 
 	/**
 	 * Create data for detail item (using for create data)
 	 * 
 	 */
 	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
-//		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
-//				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, ItemAtr.TIMES);
-		return null;
+		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
+				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, ItemAtr.TIMES, null);
 	}
 }

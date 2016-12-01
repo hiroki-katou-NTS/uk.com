@@ -65,6 +65,8 @@ module qpp004.l.viewmodel {
                 
                 self.processingState(0);
                 self.processingStateText("データの作成中");    
+            } else {
+                self.stopTimer();
             }
             
             _.forEach(data.personIdList, function(personId){
@@ -74,7 +76,7 @@ module qpp004.l.viewmodel {
                         
                     // Resolve start page dfd after load all data.
                     $.when(self.createPaymentData(personId, data, index())).done(function(res){
-                        if (res && res.length > 0) {
+                        if (res) {
                             self.errorList.push(res);
                         }
                         
@@ -128,7 +130,7 @@ module qpp004.l.viewmodel {
                    personId: personId.id,
                    personName: personId.name, 
                    errorMessage: res.message,
-                   contenError: nts.uk.text.format("{0} (社員CD: {1})", res.message, personId.id)
+                   contenError: nts.uk.text.format("{0} (社員CD: {1})", res.message, personId.code)
                 };
                 
                 dfd.resolve(error); 

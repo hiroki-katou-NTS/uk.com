@@ -4,60 +4,57 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<link rel="stylesheet" type="text/css" href="style.css" />
-			<script
-				src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
-			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
-			<script
-				src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
-			<script src="start.js" />
 			<script src="viewmodel.js" />
 			<script src="service.js" />
+			<script src="start.js" />
 			<script>var dialogSize = { width: 450, height: 800 };</script>
 			<style>
-.nts-list-box * {
-	box-sizing: border-box
-}
-</style>
+				.nts-list-box * {
+					box-sizing: border-box
+				}
+			</style>
 		</ui:define>
-		  <ui:define name="content">
-            	<div id="contents-area">
-					<div class="cf1">
-						<div><label id="LBL_001">個人金額コードを選択してください。</label></div><br />
-						<br />
-						
-						<div data-bind="with: listBox">
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											   optionsValue: 'id',
-											   optionsText: 'name',
-											   multiple: false,
-											   value: selectedCode,
-											   enable: true,
-											   rows: 20,
-											   columns: [
-													{ prop: 'id', length: 4 },
-													{ prop: 'name', length: 20 }
-											   ]}"
-							class="cf"></div>
-					</div></div>
-					<div >
-						<!--  <a data-bind="text: listBox.selectedCode()">コード</a>
-						<a data-bind="text: listBox.selectedName()">名称</a> -->
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="cf1">
+					<div>
+						<label id="LBL_001">個人金額コードを選択してください。</label>
 					</div>
 					<br /> <br />
-					
-						<br/>
-						<hr></hr>
-						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001" data-bind="click: chooseItem" >決定</button>
-							<button class="large" id="BTN_002" value="cancel" data-bind="click: closeDialog" >キャンセル</button><br />
-						</div>
+					<div>
+						<div id="list-box" data-bind="ntsListBox: {options: itemList,
+ 											   optionsValue: 'wageCode', 
+ 											   optionsText: 'wageName', 
+ 											   multiple: false, 
+ 											   value: selectedCode, 
+ 											   enable: true, 
+ 											   rows: 20, 
+ 											   columns: [ 
+ 													{ prop: 'wageCode', length: 4 }, 
+ 													{ prop: 'wageName', length: 20 } 
+ 											   ]}" class="cf"></div> 
 					</div>
-            </ui:define>
+				</div>
+<!-- 				<div> -->
+<!-- 					<a data-bind="text: listBox.selectedCode()">コード</a> -->
+<!-- 					<a data-bind="text: listBox.selectedName()">名称</a>  -->
+<!-- 				</div> -->
+				<br /> <br /> <br />
+				<hr></hr>
+				<div class="bottomStype">
+					<button class="x-large proceed" id="BTN_001"
+						data-bind="click: chooseItem">決定</button>
+					<button class="large" id="BTN_002" value="cancel"
+						data-bind="click: closeDialog">キャンセル</button>
+					<br />
+				</div>
+			</div>
+		</ui:define>
 	</ui:composition>
 </body>
 </html>

@@ -50,6 +50,15 @@
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
+						<h3>Employee Code</h3>
+						<div data-bind="with: employeeeditor">
+							<input data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<br/><br/>
+							<!-- Direct Binding -->
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
+						<br/>
 						<!-- ViewModel -->
 						<div class="cf">
 							<h3>TextEditor ViewModel</h3>
@@ -556,184 +565,6 @@
 						</table>
 					</div>
 					<hr/>
-					<div class="cf">
-						<h2>MaskEditor</h2>
-						<div data-bind="with: maskeditor">
-							<input data-bind="ntsMaskEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
-							<br/><br/>
-							<!-- Direct Binding -->
-							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
-							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
-						</div>
-						<br/>
-						<!-- ViewModel -->
-						<div class="cf">
-							<h3>MaskEditor ViewModel</h3>
-							<table>
-								<colgroup>
-									<col width="200px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th><h4>ViewModel</h4></th>
-										<th><h4>Description</h4></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>value</td>
-										<td>
-											<b>Type:</b> string<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>constraint<br/><i>(optional)</i></td>
-										<td>
-											<b>Type:</b> string<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>required<br/><i>(optional)</i></td>
-										<td>
-											<b>Type:</b> boolean<br/>
-											<b>Default:</b> false<br/>
-											Set required for editor
-										</td>
-									</tr>
-									<tr>
-										<td>enable<br/><i>(optional)</i></td>
-										<td>
-											<b>Type:</b> boolean<br/>
-											<b>Default:</b> true<br/>
-											Set enable/disable for editor
-										</td>
-									</tr>
-									<tr>
-										<td>readonly<br/><i>(optional)</i></td>
-										<td>
-											<b>Type:</b> boolean<br/>
-											<b>Default:</b> false<br/>
-											Set readonly for editor
-										</td>
-									</tr>
-									<tr>
-										<td>option<br/><i>(optional)</i></td>
-										<td>
-											<b>Type:</b> object<br/>
-											<b>Members:</b><br/>
-											<i>EmployeeCodeEditorOption</i>: Option for EmployeeCode editor<br/>
-											<i>MaskEditorOption</i>: Option for CardNumber editor
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<pre style="float:left">maskeditor: {
-	value: ko.observable(1200),
-	constraint: 'CompanyCode',
-	required: ko.observable(false),
-	enable: ko.observable(true),
-	option: ko.mapping.fromJS(new EmployeeCodeEditorOption())
-}</pre>
-						</div>
-						<!-- API -->
-						<h3>MaskEditor API</h3>
-						<table>
-							<colgroup>
-								<col width="200px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>EmployeeCodeEditorOption</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>blankdirection</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> "left"<br/>
-										<b>Members:</b><br/>
-										<i>left</i>: Blank space fill to left<br/>
-										<i>right</i>: Blank space fill to right<br/>
-										Set direction for blank space
-									</td>
-								</tr>					
-								<tr>
-									<td>blankfill</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> ""<br/>
-										Fill blank with character
-									</td>
-								</tr>
-								<tr>
-									<td>placeholder</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> ""<br/>
-										Hint text for the control
-									</td>
-								</tr>
-								<tr>
-									<td>width</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> ""<br/>
-										Set width for the control
-									</td>
-								</tr>
-								<tr>
-									<td>textalign</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> "right"<br/>
-										<b>Members:</b><br/>
-										<i>left</i>: Align text to left<br/>
-										<i>right</i>: Align text to right<br/>
-										<i>center</i>: Align text to center
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table>
-							<thead>
-								<tr>
-									<th><h4>CardEditorOption</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>placeholder</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> ""<br/>
-										Hint text for the control
-									</td>
-								</tr>
-								<tr>
-									<td>width</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> ""<br/>
-										Set width for the control
-									</td>
-								</tr>
-								<tr>
-									<td>textalign</td>
-									<td>
-										<b>Type:</b> string<br/>
-										<b>Default:</b> "right"<br/>
-										<b>Members:</b><br/>
-										<i>left</i>: Align text to left<br/>
-										<i>right</i>: Align text to right<br/>
-										<i>center</i>: Align text to center
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
 				</div>
           	</div>
           </ui:define>

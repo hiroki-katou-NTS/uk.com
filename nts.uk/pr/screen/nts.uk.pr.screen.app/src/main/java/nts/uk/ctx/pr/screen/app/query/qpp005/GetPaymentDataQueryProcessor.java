@@ -106,13 +106,17 @@ public class GetPaymentDataQueryProcessor {
 				});
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, processingYM, stmtCode)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
-		int startYM = layout.getStartYM().v();
+		List<LayoutMaster> mLayouts = this.layoutMasterRepository.findAll(companyCode, stmtCode, processingYM);
+		if (mLayouts.isEmpty()) {
+			throw new BusinessException("対象データがありません。");
+		}
+
+		LayoutMaster mLayout = mLayouts.get(0);
+		int startYM = mLayout.getStartYM().v();
 
 		// get 明細書マスタカテゴリ
 		List<LayoutMasterCategory> mCates = this.layoutMasterCategoryRepository.getCategories(companyCode,
-				layout.getStmtCode().v(), startYM);
+				mLayout.getStmtCode().v(), startYM);
 
 		// get 明細書マスタ行
 		List<LayoutMasterLine> mLines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
@@ -127,7 +131,7 @@ public class GetPaymentDataQueryProcessor {
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(), PROCESSING_NO,
 				PAY_BONUS_ATR, processingYM, 0);
 
-		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, layout, optPHeader,
+		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, mLayout, optPHeader,
 				mCates, mLines);
 
 		result.setCategories(mergeDataToLayout(mCates, mLines, mDetails, detailItems, mItems));
@@ -153,17 +157,17 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), payment.getDependentNumber().v(),
-					payment.getSpecificationCode().v(), layout.getStmtName().v(), payment.getMakeMethodFlag().value,
-					query.getEmployeeCode(), payment.getComment().v(), true,
-					printPosCates
-					));
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(),
+					payment.getDependentNumber().v(), payment.getSpecificationCode().v(), layout.getStmtName().v(),
+					payment.getMakeMethodFlag().value, query.getEmployeeCode(), payment.getComment().v(), true,
+					printPosCates));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(layout.getStartYM().v(), null, layout.getStmtCode().v(),
-					layout.getStmtName().v(), null, query.getEmployeeCode(), "", false, printPosCates));
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), null,
+					layout.getStmtCode().v(), layout.getStmtName().v(), null, query.getEmployeeCode(), "", false,
+					printPosCates));
 
 			return new ArrayList<>();
 		}
@@ -191,6 +195,9 @@ public class GetPaymentDataQueryProcessor {
 			String ctName = category.getCtAtr().toName();
 
 			Long lineCounts = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr).count();
+			if (lineCounts == 0) {
+				continue;
+			}
 			List<LayoutMasterLine> fLines = lines.stream().filter(x -> x.getCategoryAtr().value == ctAtr)
 					.collect(Collectors.toList());
 			List<LineDto> lineItems = getDetailItems(fLines, details, datas, ctAtr, mItems);

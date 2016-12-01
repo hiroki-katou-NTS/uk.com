@@ -13,8 +13,10 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.QpwmtPersonalWageName;
 public class JpaPersonalWageNameRepository extends JpaRepository implements PersonalWageNameRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QpwmtPersonalWageName c";
 	private final String SELECT_ALL_PERSONAL = SELECT_NO_WHERE
-			+ " WHERE c.pprmtPersonWagePK.ccd = :companyCode"
-			+ " AND c.pprmtPersonWagePK.ctgAtr = :categoryAtr";
+			+ " WHERE c.qpwmtPersonalWageNamePK.ccd = :companyCode"
+			+ " AND c.qpwmtPersonalWageNamePK.ctgAtr = :categoryAtr";
+	
+
 	@Override
 	public List<PersonalWageNameMaster> getPersonalWageName(String companyCode, int categoryAtr) {
 		return this.queryProxy().query(SELECT_ALL_PERSONAL, QpwmtPersonalWageName.class)
@@ -32,4 +34,6 @@ public class JpaPersonalWageNameRepository extends JpaRepository implements Pers
 		entity.toDomain(domain);
 		return domain;
 	}
+
+
 }

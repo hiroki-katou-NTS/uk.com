@@ -49,12 +49,15 @@ var qpp004;
                         self.processingState(0);
                         self.processingStateText("データの作成中");
                     }
+                    else {
+                        self.stopTimer();
+                    }
                     _.forEach(data.personIdList, function (personId) {
                         if (self.buttonStatus().status == 1) {
                             index(index() + 1);
                             // Resolve start page dfd after load all data.
                             $.when(self.createPaymentData(personId, data, index())).done(function (res) {
-                                if (res && res.length > 0) {
+                                if (res) {
                                     self.errorList.push(res);
                                 }
                                 self.processingNumberOfPerson(index());
@@ -100,7 +103,7 @@ var qpp004;
                             personId: personId.id,
                             personName: personId.name,
                             errorMessage: res.message,
-                            contenError: nts.uk.text.format("{0} (社員CD: {1})", res.message, personId.id)
+                            contenError: nts.uk.text.format("{0} (社員CD: {1})", res.message, personId.code)
                         };
                         dfd.resolve(error);
                     });

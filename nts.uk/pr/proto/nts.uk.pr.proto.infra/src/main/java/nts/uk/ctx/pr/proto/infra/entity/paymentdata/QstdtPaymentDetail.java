@@ -69,7 +69,7 @@ public class QstdtPaymentDetail {
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_ALLOW_MONTH")
-	public int commuteAllowMonth;
+	public BigDecimal commuteAllowMonth;
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_ALLOW_FRACTION")

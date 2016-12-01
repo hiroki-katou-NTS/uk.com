@@ -31,4 +31,13 @@ public interface ItemMasterRepository {
 	 * @return list Item Master
 	 */
 	Optional<ItemMaster> getItemMaster(String companyCode, int categoryAtr, String itemCode);
+	
+	/**
+	 * Find item master
+	 * @param companyCode company code
+	 * @param categoryAtr category attribute
+	 * @param itemCode item code
+	 * @return item master
+	 */
+	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
 }

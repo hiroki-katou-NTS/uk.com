@@ -39,16 +39,22 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	private LayoutMasterLineRepository lineRepo;
 	@Inject
 	private LayoutMasterDetailRepository detailRepo;
+	@Inject
+	private CreateLayoutCommandHandler layoutCommandHandler;
 	
 	@Override
 	protected void handle(CommandHandlerContext<CreateLayoutHistoryCommand> context) {
 		CreateLayoutHistoryCommand command = context.getCommand();
+		
 		String companyCode = AppContexts.user().companyCode();
 		
-		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartYm(), command.getStmtCode())
+		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartPrevious(), command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		
-		LayoutMaster layoutNew = command.toDomain(layoutOrigin.getStmtName().v());
+		LayoutMaster layoutNew = command.toDomain(command.getStartYm(),
+				999912,
+				command.getLayoutAtr(),
+				layoutOrigin.getStmtName().v());
 		
 		//Validate follow EAP
 		if (layoutNew.getStartYM().compareTo(layoutOrigin.getStartYM()) < 0){
@@ -56,22 +62,24 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
 		}
 		
-		//Insert follow EAP
+		//データベース登録[明細書マスタ.INS-1]を実施する
 		layoutNew.validate();
 		layoutRepo.add(layoutNew);
-		
+		//「最新の履歴から引き継ぐ」を選択した場合
 		if (command.isCheckContinue()) {
 			copyFromPreviousHistory(command, companyCode);
+		}else{
+			layoutCommandHandler.createNewData(layoutNew, companyCode);
 		}
-		
-		layoutOrigin.adjustForNextHistory(layoutNew);
-		layoutRepo.update(layoutOrigin);
+		//「初めから作成する。」を選択した場合
+		// and　「最新の履歴から引き継ぐ」を選択した場合 更新データ
+		updateData(command, companyCode, layoutOrigin);
 	}
 
 	private void copyFromPreviousHistory(CreateLayoutHistoryCommand command, String companyCode) {
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartYm());
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartYm());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartYm());
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
 		
 		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(
 				org -> {
@@ -80,7 +88,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							new YearMonth(command.getStartYm()), 
 							org.getStmtCode(), 
 							org.getCtAtr(), 
-							new YearMonth(command.getEndYm()), 
+							new YearMonth(999912), 
 							org.getCtgPos());
 				}).collect(Collectors.toList());
 		
@@ -90,7 +98,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCompanyCode(), 
 							new YearMonth(command.getStartYm()), 
 							org.getStmtCode(), 
-							new YearMonth(command.getEndYm()), 
+							new YearMonth(999912), 
 							org.getAutoLineId(), 
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
@@ -103,7 +111,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCompanyCode(), 
 							org.getLayoutCode(), 
 							new YearMonth(command.getStartYm()), 
-							new YearMonth(command.getEndYm()), 
+							new YearMonth(999912), 
 							org.getCategoryAtr(), 
 							org.getItemCode(), 
 							org.getAutoLineId(), 
@@ -123,5 +131,63 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		lineRepo.add(linesNew);
 		detailRepo.add(detailsNew);
 	}
-
+	
+	private void updateData(CreateLayoutHistoryCommand command, String companyCode, LayoutMaster layoutOrigin){
+		YearMonth endYm = new YearMonth(command.getEndYm()).previousMonth();
+		//データベース更新[明細書マスタ.UPD-2] を実施する
+		layoutOrigin.setEndYm(endYm);
+		this.layoutRepo.update(layoutOrigin);
+		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
+		List<LayoutMasterCategory> lstCategory = this.categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), 999912);
+		List<LayoutMasterCategory> categoriesNew = lstCategory.stream().map(
+				org -> {
+					return LayoutMasterCategory.createFromDomain(
+							org.getCompanyCode(), 
+							org.getStartYM(), 
+							org.getStmtCode(), 
+							org.getCtAtr(), 
+							endYm, 
+							org.getCtgPos());
+				}).collect(Collectors.toList());
+		this.categoryRepo.update(categoriesNew);
+		//データベース更新[明細書マスタ行.UPD-2] を実施する
+		List<LayoutMasterLine> lstLine = this.lineRepo.getLinesBefore(companyCode, command.getStmtCode(), 999912);
+		List<LayoutMasterLine> linesNew = lstLine.stream().map(
+				org ->{
+					return LayoutMasterLine.createFromDomain(
+							org.getCompanyCode(), 
+							org.getStartYM(), 
+							org.getStmtCode(), 
+							endYm, 
+							org.getAutoLineId(), 
+							org.getCategoryAtr(), 
+							org.getLineDispayAttribute(), 
+							org.getLinePosition());
+				}).collect(Collectors.toList());
+		this.lineRepo.update(linesNew);
+		//データベース更新[明細書マスタ明細.UPD-2] を実施する
+		List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), 999912);
+		List<LayoutMasterDetail> detailsNew = lstDetail.stream().map(
+				org -> {
+					return LayoutMasterDetail.createFromDomain(
+							org.getCompanyCode(), 
+							org.getLayoutCode(), 
+							org.getStartYm(), 
+							endYm, 
+							org.getCategoryAtr(), 
+							org.getItemCode(), 
+							org.getAutoLineId(), 
+							org.getItemPosColumn(), 
+							org.getError(), 
+							org.getCalculationMethod(), 
+							org.getDistribute(), 
+							org.getDisplayAtr(), 
+							org.getAlarm(), 
+							org.getSumScopeAtr(), 
+							org.getSetOffItemCode(), 
+							org.getCommuteAtr(), 
+							org.getPersonalWageCode());
+				}).collect(Collectors.toList());
+		this.detailRepo.update(detailsNew);
+	}
 }
