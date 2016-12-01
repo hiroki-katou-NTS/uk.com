@@ -76,7 +76,7 @@
 										<com:ko-if bind="itemCode() !== ''">
 											<td><span data-bind="text: itemName"></span> 
 												<com:ko-if bind="itemAtr() === 0">
-													<input data-bind="ntsTimeEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+													<input data-bind="ntsTimeEditor: {value: value, option: new nts.uk.ui.option.TimeEditorOption({ inputFormat: ko.observable('time') })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 												</com:ko-if> 
 												<com:ko-if bind="itemAtr() === 1">
 													<com:ko-if bind="taxAtr() === 3 || taxAtr() === 4">
@@ -86,7 +86,7 @@
 <!-- 														<input class="disabled txt-btlink" data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />	 -->
 													</com:ko-if>
 													<com:ko-if bind="taxAtr() !== 3 &amp;&amp; taxAtr() !== 4">
-														<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+														<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 													</com:ko-if>															
 												</com:ko-if> 
 												<com:ko-if bind="itemAtr() === 2 || itemAtr() === 3">
@@ -97,7 +97,7 @@
 <!-- 														<input class="disabled txt-btlink" data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" /> -->
 													</com:ko-if>
 													<com:ko-if bind="taxAtr() !== 3 &amp;&amp; taxAtr() !== 4">
-														<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+														<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 													</com:ko-if>
 												</com:ko-if>
 											</td>
