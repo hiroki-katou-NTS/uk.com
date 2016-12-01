@@ -14,9 +14,8 @@
 
 .green-div {
 	display: inline-block;
-	padding: 5px;
-	background-color: #E0F59E;
-	color: #0D86D1;
+    padding: 5px 15px;
+	background-color: #edf496;
 	cursor: pointer;
     margin-left: 10px;
 }
