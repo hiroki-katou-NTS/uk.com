@@ -42,5 +42,11 @@ public class PaymentDataWebService extends WebService {
 	public void add(UpdatePaymentDataCommand command) {
 		this.updateData.handle(command);
 	}
+	
+	@POST
+	@Path("findCommute")
+	public void findCommute(UpdatePaymentDataCommand command) {
+		this.updateData.handle(command);
+	}
 
 }

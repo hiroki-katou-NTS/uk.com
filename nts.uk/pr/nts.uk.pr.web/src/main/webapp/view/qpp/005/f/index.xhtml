@@ -15,7 +15,11 @@
 			<script src="start.js"></script>
 			<script src="viewmodel.js"></script>
 			<script src="service.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
 			<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
+			<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+			
 		</ui:define>
 
 		<ui:define name="content">
@@ -27,13 +31,13 @@
 			<div class="floatLeft seperator"></div>
 			
 			<div class="floatLeft checkBoxHead">
-				<div class="textCheckBox" id="SEL_001" data-bind="ntsCheckBox: { checked: totalCheck.isChecked}">
+				<div class="textCheckBox" id="SEL_001" data-bind="ntsCheckBox: { checked: totalCommuteCheck.isChecked}">
 					通勤費　合計
 				</div>
 			</div>
 			
 			<div class="floatLeft divMargin divPadding" style="width:85%;">
-				<div data-bind="with: numberEditor" style="display:inline-block;">
+				<div data-bind="with: totalCommuteEditor" style="display:inline-block;">
 					<input id="INP_001" data-bind="ntsNumberEditor: {value: value, option: option, enable: isEnable}" />
 				</div>
 				
@@ -43,9 +47,9 @@
 					課税通勤費
 				</div>
 				
-				<input id="INP_002" value="sdfsdfs" data-bind="enable: IsEnableText()" style="margin-left: 2%;width:80px;">
-					
-				</input>
+				<div data-bind="with: taxCommuteEditor" style="display:inline-block;margin-left: 2%;" >
+					<input id="INP_002"  data-bind="ntsNumberEditor: {value: value, option: option, enable: isEnable}" />
+				</div>
 			</div>
 			
 			<div class="floatLeft" style="margin-top:10px; margin-left:182px;">			
@@ -70,25 +74,36 @@
 			</div>
 			
 			<div class="floatLeft divMargin divPadding" style="width:85%;">
-				<input id="INP_003" data-bind="enable: oneMonthCheck.isChecked" value="sdfsdfs"  style="width:80px;">
-					
-				</input>
+				<div data-bind="with: oneMonthCommuteEditor" style="display:inline-block;">
+					<input id="INP_003" data-bind="ntsNumberEditor: {value: value, option: option, enable: isEnable}" />
+				</div>
 				
 				<label id="LBL_010" style="margin-left: 5%;">通勤費 合計 ÷</label>
 				
-				<input id="SEL_004"></input>
-				
+				<div data-bind="with: commuteDividedByMonth" style="display:inline-block;vertical-align: middle;">
+					<div id="SEL_004" style="width:100px; heigth:27px;"
+						data-bind="ntsComboBox: {options: commuteItems,
+										optionsValue: 'code',
+										value: selectedCode,
+										optionsText: 'name',
+										enable: isEnable(),
+										columns: [
+											{ prop: 'name', length: 6 },
+										]}">
+					</div>
+				</div>
+
 				<label id="LBL_011" style="margin-left: 2%;width:80px;">の金額を</label>
 			</div>
 			
 			<div class="floatLeft " style="width:85%; display:table; margin-top:10px;">
 				<label id="LBL_009" style=" width:60px; display:table-cell; text-align: center;">余り<br/>（端数）</label>
 				
-				<input id="INP_004" data-bind="enable: oneMonthCheck.isChecked" value="sdfsdfs"  style="width:80px;display:table-cell; margin-left:10px; ">
-					
-				</input>
+				<div data-bind="with: oneMonthCommuteEditor" style="width:80px;display:table-cell; padding-left:10px;">
+					<input id="INP_004" data-bind="ntsNumberEditor: {value: value, option: option, enable: isEnable}" />
+				</div>
 				
-				<label id="LBL_012" style="padding-left: 18px;display: table-cell; vertical-align: middle;">「１ヵ月分通勤費」「余り（端数）」に設定します。</label>
+				<label id="LBL_012" style="padding-left: 29px;display: table-cell;">「１ヵ月分通勤費」「余り（端数）」に設定します。</label>
 			</div>
 			
 			<div class="floatLeft seperator" style="width:100%; margin-left: 0px;"></div>
