@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
@@ -336,12 +335,12 @@ public class Payment extends AggregateRoot {
 	 * Calculate total payment
 	 * @return
 	 */
-	public double calculateTotalPayment() {
-		if (this.detailPaymentItems == null) {
+	public static double calculateTotalPayment(List<DetailItem> detailPaymentList) {
+		if (detailPaymentList == null) {
 			return 0.0;
 		}
 		
-		return this.detailPaymentItems.stream()
+		return detailPaymentList.stream()
 				.filter(x -> !itemCodeSpecialList().contains(x.getItemCode().v()))
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
@@ -350,12 +349,12 @@ public class Payment extends AggregateRoot {
 	 * Calculate deduction total payment
 	 * @return
 	 */
-	public double calculateDeductionTotalPayment() {
-		if (this.detailDeductionItems == null) {
+	public static double calculateDeductionTotalPayment(List<DetailItem> detailDeductionList) {
+		if (detailDeductionList == null) {
 			return 0.0;
 		}
 		
-		return this.detailDeductionItems.stream()
+		return detailDeductionList.stream()
 				.filter(x -> !itemCodeSpecialList().contains(x.getItemCode().v()))
 				.collect(Collectors.summingDouble(x -> x.getValue()));
 	}
@@ -364,8 +363,8 @@ public class Payment extends AggregateRoot {
 	 * calculate amount of payment
 	 * @return
 	 */
-	public double amountOfPay() {
-		return this.calculateTotalPayment() - this.calculateDeductionTotalPayment();
+	public static double amountOfPay(double totalPayment, double deductionTotalPayment) {
+		return totalPayment - deductionTotalPayment;
 	}
 	
 	/**
@@ -402,7 +401,7 @@ public class Payment extends AggregateRoot {
 	 * Item code list include(TotalPayment, DeductionTotalPayment, amountOfPay)
 	 * @return
 	 */
-	private List<String> itemCodeSpecialList() {
+	private static List<String> itemCodeSpecialList() {
 		return Arrays.asList("F003", "F114", "F309");
 	}
 }
