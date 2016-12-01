@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.screen.app.query.qpp005.result;
 
+import lombok.Getter;
 import lombok.Value;
 
 @Value
@@ -46,13 +47,38 @@ public class DetailItemDto {
 	 */
 	Integer taxAtr;
 
+	private Integer limitAmount;
+
+	@Getter
+	private Double commuteAllowTaxImpose;
+
+	@Getter
+	private Double commuteAllowMonth;
+
+	@Getter
+	private Double commuteAllowFraction;
+
 	boolean isCreated;
 
-	public static DetailItemDto fromDomain(int categoryAtr, Integer itemAtr, String itemCode, String itemName,
-			Double value, int linePosition, int colPosition, Integer deductAtr, Integer displayAtr, Integer taxAtr,
+	public static DetailItemDto fromDomain(
+			int categoryAtr, 
+			Integer itemAtr, 
+			String itemCode, 
+			String itemName,
+			Double value, 
+			int linePosition, 
+			int colPosition, 
+			Integer deductAtr, 
+			Integer displayAtr, 
+			Integer taxAtr,
+			Integer limitAmount, 
+			Double commuteAllowTaxImpose, 
+			Double commuteAllowMonth, 
+			Double commuteAllowFraction,
 			boolean isCreated) {
 		return new DetailItemDto(categoryAtr, itemAtr, itemCode, itemName, value, linePosition, colPosition, deductAtr,
-				displayAtr, taxAtr, isCreated);
+				displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction,
+				isCreated);
 
 	}
 }
