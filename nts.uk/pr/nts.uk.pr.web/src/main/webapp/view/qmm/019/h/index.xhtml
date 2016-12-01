@@ -12,7 +12,7 @@
 			<script src="viewmodel.js" />
 			<script src="service.js" />
 			<script src="start.js" />
-			<script>var dialogSize = { width: 450, height: 800 };</script>
+			<script>var dialogSize = { width: 450, height: 610 };</script>
 			<style>
 				.nts-list-box * {
 					box-sizing: border-box
@@ -25,7 +25,7 @@
 					<div>
 						<label id="LBL_001">個人金額コードを選択してください。</label>
 					</div>
-					<br /> <br />
+					<br /> 
 					<div>
 						<div id="list-box" data-bind="ntsListBox: {options: itemList,
  											   optionsValue: 'wageCode', 
@@ -33,7 +33,7 @@
  											   multiple: false, 
  											   value: selectedCode, 
  											   enable: true, 
- 											   rows: 20, 
+ 											   rows: 15, 
  											   columns: [ 
  													{ prop: 'wageCode', length: 4 }, 
  													{ prop: 'wageName', length: 20 } 
@@ -44,7 +44,7 @@
 <!-- 					<a data-bind="text: listBox.selectedCode()">コード</a> -->
 <!-- 					<a data-bind="text: listBox.selectedName()">名称</a>  -->
 <!-- 				</div> -->
-				<br /> <br /> <br />
+				<br /> 
 				<hr></hr>
 				<div class="bottomStype">
 					<button class="x-large proceed" id="BTN_001"

@@ -22,6 +22,7 @@ var qmm019;
             viewmodel.ItemDto = ItemDto;
             var ListBox = (function () {
                 function ListBox(listItemDto, currentItemCode, isUpdate) {
+                    this.itemDtoSelected = ko.observable();
                     var self = this;
                     // set list item dto
                     self.listItemDto = listItemDto;
@@ -42,23 +43,7 @@ var qmm019;
                     });
                     // get item selected
                     var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
-                    self.itemDtoSelected = ko.observable(item);
-                    //self.itemList = ko.observableArray([
-                    //    new ItemModel('001', '名前１'),
-                    //    new ItemModel('002', '名前2'),
-                    //    new ItemModel('003', '名前3'),
-                    //    new ItemModel('004', '名前4'),
-                    //    new ItemModel('005', '名前5'),
-                    //    new ItemModel('006', '名前6'),
-                    //    new ItemModel('008', '名前8'),
-                    //     new ItemModel('009', '名前9'),
-                    //      new ItemModel('010', '名前10'),
-                    //      new ItemModel('011', '名前1１'),
-                    //     new ItemModel('012', '名前12'),
-                    //       new ItemModel('013', '名前13'),
-                    //     new ItemModel('014', '名前14'),
-                    //      new ItemModel('015', '名前15'),
-                    //  ]);
+                    self.itemDtoSelected(ko.observable(item));
                     //subcribe list box's change
                     self.selectedCode.subscribe(function (codeChange) {
                         var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
@@ -105,6 +90,8 @@ var qmm019;
             viewmodel.SwitchButton = SwitchButton;
             var ScreenModel = (function () {
                 function ScreenModel(data) {
+                    this.wageCode = ko.observable('');
+                    this.wageName = ko.observable('');
                     var self = this;
                     self.paramItemCode = data.itemCode;
                     self.paramCategoryAtr = ko.observable(data.categoryId);
@@ -193,9 +180,11 @@ var qmm019;
                 };
                 ScreenModel.prototype.openHDialog = function () {
                     var _this = this;
+                    var self = this;
+                    nts.uk.ui.windows.setShared('categoryAtr', self.paramCategoryAtr());
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(function () {
-                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
-                        alert(selectedCode);
+                        self.wageCode(nts.uk.ui.windows.getShared('selectedCode'));
+                        self.wageName(nts.uk.ui.windows.getShared('selectedName'));
                         return _this;
                     });
                 };
@@ -225,25 +214,22 @@ var qmm019;
                     if (calculationMethod == 0 && self.paramCategoryAtr() == 0) {
                         commuteAtr = self.comboBoxCommutingClassification().selectedCode();
                     }
-                    if (calculationMethod == 1 && self.paramCategoryAtr() == 0) {
-                        personalWageCode = '';
-                    }
-                    if (calculationMethod == 1 && self.paramCategoryAtr() == 1) {
-                        personalWageCode = '';
+                    if (calculationMethod == 1 && (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1)) {
+                        personalWageCode = self.wageCode();
                     }
                     if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1 || self.paramCategoryAtr() == 2) {
-                        isUseHighError = itemSelected.checkUseHighError();
-                        errRangeHigh = itemSelected.errRangeHigh();
-                        isUseLowError = itemSelected.checkUseLowError();
-                        errRangeLow = itemSelected.errRangeLow();
-                        isUseHighAlam = itemSelected.checkUseHighAlam();
-                        alamRangeHigh = itemSelected.alamRangeHigh();
-                        isUseLowAlam = itemSelected.checkUseLowAlam();
-                        alamRangeLow = itemSelected.alamRangeLow();
+                        isUseHighError = itemSelected().checkUseHighError();
+                        errRangeHigh = itemSelected().errRangeHigh();
+                        isUseLowError = itemSelected().checkUseLowError();
+                        errRangeLow = itemSelected().errRangeLow();
+                        isUseHighAlam = itemSelected().checkUseHighAlam();
+                        alamRangeHigh = itemSelected().alamRangeHigh();
+                        isUseLowAlam = itemSelected().checkUseLowAlam();
+                        alamRangeLow = itemSelected().alamRangeLow();
                     }
                     var data = {
-                        itemCode: itemSelected.itemCode(),
-                        itemAbName: itemSelected.itemAbName(),
+                        itemCode: itemSelected().itemCode(),
+                        itemAbName: itemSelected().itemAbName(),
                         categoryAtr: self.paramCategoryAtr(),
                         sumScopeAtr: sumScopeAtr,
                         commuteAtr: commuteAtr,
