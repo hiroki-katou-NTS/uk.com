@@ -62,7 +62,7 @@ public class LayoutMasterDetailDto {
 				domain.getItemCode().v(), 
 				domain.getAutoLineId().v(),
 				domain.getItemPosColumn().v(),
-				domain.getItemAbName().v(),
+				domain.getItemAbName() == null ? "" : domain.getItemAbName().v(),
 				domain.getSumScopeAtr().value,
 				domain.getSetOffItemCode().v(),
 				domain.getCommuteAtr().value,

@@ -28,6 +28,12 @@ module qmm019.f.viewmodel {
         alamRangeHigh: KnockoutObservable<number>;
         checkUseLowAlam: KnockoutObservable<boolean>;
         alamRangeLow: KnockoutObservable<number>;
+        commuteAtr: KnockoutObservable<number> = ko.observable(0);
+        calculationMethod: KnockoutObservable<number> = ko.observable(0);
+        distributeSet: KnockoutObservable<number> = ko.observable(0);
+        distributeWay: KnockoutObservable<number> = ko.observable(0);
+        personalWageCode: KnockoutObservable<string> = ko.observable('');
+        sumScopeAtr: KnockoutObservable<number> = ko.observable(0);
 
         //        constructor(companyCode, itemCode, categoryAtr, itemAbName, checkUseHighError, errRangeHigh, checkUseLowError, errRangeLow, checkUseHighAlam, alamRangeHigh, checkUseLowAlam, alamRangeLow) {
         //            var self = this;
@@ -57,28 +63,57 @@ module qmm019.f.viewmodel {
         itemDtoSelected: KnockoutObservable<any> = ko.observable();
         listItemDto: Array<ItemDto>;
 
-        constructor(listItemDto, currentItemCode, isUpdate) {
+        constructor(listItemDto, currentItemCode, isUpdate, stmtCode, startYm, categoryAtr) {
             var self = this;
             // set list item dto
             self.listItemDto = listItemDto;
             self.itemName = ko.observable('');
-            if(isUpdate == false){
+            if (isUpdate == false) {
                 self.selectedCode = ko.observable(self.listItemDto[0].itemCode);
+                // get item selected
+                var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
+                self.itemDtoSelected(ko.observable(item));
             } else {
                 self.selectedCode = ko.observable(currentItemCode);
+                service.getLayoutMasterDetail(stmtCode, startYm, categoryAtr, currentItemCode).done(function(data) {
+                    var item = {
+                        companyCode: ko.observable(null),
+                        itemCode: ko.observable(data.itemCode),
+                        categoryAtr: ko.observable(data.categoryAtr),
+                        itemAbName: ko.observable(data.itemAbName),
+                        checkUseHighError: ko.observable(data.isUseHighError == 1),
+                        errRangeHigh: ko.observable(data.errRangeHigh),
+                        checkUseLowError: ko.observable(data.isUseLowError == 1),
+                        errRangeLow: ko.observable(data.errRangeLow),
+                        checkUseHighAlam: ko.observable(data.isUseHighAlam == 1),
+                        alamRangeHigh: ko.observable(data.alamRangeHigh),
+                        checkUseLowAlam: ko.observable(data.isUseLowAlam == 1),
+                        alamRangeLow: ko.observable(data.alamRangeLow),
+                        commuteAtr: ko.observable(data.commuteAtr),
+                        calculationMethod: ko.observable(data.calculationMethod),
+                        distributeSet: ko.observable(data.distributeSet),
+                        distributeWay: ko.observable(data.distributeWay),
+                        personalWageCode: ko.observable(data.personalWageCode),
+                        sumScopeAtr: ko.observable(data.sumScopeAtr)
+                    };
+                    self.itemDtoSelected(ko.observable(item));
+                });
             }
             self.currentCode = ko.observable(0);
             self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
-            
+
             // bind list item dto to list item model
             self.itemList = ko.observableArray([]);
             _.forEach(self.listItemDto, function(item) {
                 self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
             });
-            // get item selected
-            var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
-            self.itemDtoSelected(ko.observable(item));
+            self.selectedName = ko.computed(function() {
+                var item = _.find(self.itemList(), function(item) {
+                    return item.id == self.selectedCode();
+                });
+                return item.name;
+            });
 
             //subcribe list box's change
             self.selectedCode.subscribe(function(codeChange) {
@@ -122,9 +157,9 @@ module qmm019.f.viewmodel {
         constructor() {
             var self = this;
             self.distributeSet = ko.observableArray([
-                { code: '0', name: '按分しない' },
-                { code: '1', name: '按分する' },
-                { code: '2', name: '月１回支給' }
+                { code: 0, name: '按分しない' },
+                { code: 1, name: '按分する' },
+                { code: 2, name: '月１回支給' }
             ]);
             self.selectedRuleCode = ko.observable('1');
         }
@@ -144,12 +179,16 @@ module qmm019.f.viewmodel {
         wageName: KnockoutObservable<string> = ko.observable('');
         paramIsUpdate: boolean;
         listItemDto: any;
+        paramStmtCode: String;
+        paramStartYm: number;
 
         constructor(data) {
             var self = this;
             self.paramItemCode = data.itemCode;
             self.paramCategoryAtr = ko.observable(data.categoryId);
             self.paramIsUpdate = data.isUpdate;
+            self.paramStmtCode = data.stmtCode;
+            self.paramStartYm = data.startYm;
 
             var itemListSumScopeAtr = ko.observableArray([
                 new ItemModel(0, '対象外'),
@@ -231,7 +270,7 @@ module qmm019.f.viewmodel {
             $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function(data) {
                 if (data !== null) {
                     self.listItemDto = data;
-                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate));
+                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate, self.paramStmtCode, self.paramStartYm, self.paramCategoryAtr));
                 }
                 else {
                     self.listItemDto = ko.observableArray();

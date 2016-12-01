@@ -23,6 +23,8 @@ import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
 import nts.uk.ctx.pr.proto.app.find.layout.LayoutMasterFinder;
 import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryDto;
 import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryFinder;
+import nts.uk.ctx.pr.proto.app.find.layout.detail.LayoutMasterDetailDto;
+import nts.uk.ctx.pr.proto.app.find.layout.detail.LayoutMasterDetailFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/proto/layout")
@@ -43,6 +45,8 @@ public class LayoutWebService extends WebService {
 	private LayoutMasterFinder find;
 	@Inject
 	private LayoutMasterCategoryFinder categoryFinder;
+	@Inject
+	private LayoutMasterDetailFinder detailFinder;
 	
 	@POST
 	@Path("findalllayout")
@@ -53,6 +57,12 @@ public class LayoutWebService extends WebService {
 	@Path("findlayout/{stmtCode}/{startYm}")
 	public LayoutDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm){
 		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, startYm).get();
+	}
+	@POST
+	@Path("findlayoutdetail/{stmtCode}/{startYm}/{categoryAtr}/{itemCd}")
+	public LayoutMasterDetailDto getDetail(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm,
+			@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCd") String itemCd){
+		return this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).get();
 	}
 	@POST
 	@Path("findCategoies/full/{layoutCd}/{startYm}")
