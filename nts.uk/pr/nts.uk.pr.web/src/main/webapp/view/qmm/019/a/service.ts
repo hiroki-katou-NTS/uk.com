@@ -393,15 +393,14 @@ module qmm019.a {
                     this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
                     this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
                 }
-                //TODO: goi man hinh chi tiet
                 itemClick(data, event) {
                     var self = this;
-//                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
-//                    self.itemAbName("dfdfd");
                     var param = {
                         categoryId: data.categoryAtr(),
                         itemCode: data.itemCode(),
-                        isUpdate: data.itemAbName() === "+" ? false : true
+                        isUpdate: data.itemAbName() === "+" ? false : true,
+                        startYm: self.screenModel().layoutMaster().startYm,
+                        stmtCode: self.screenModel().layoutMaster().stmtCode
                     };    
                     nts.uk.ui.windows.setShared('param', param);
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(() => {
