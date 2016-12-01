@@ -41,12 +41,18 @@ public class DetailItemDto {
 
 	Integer displayAtr;
 
+	/**
+	 * 課税区分
+	 */
+	Integer taxAtr;
+
 	boolean isCreated;
 
 	public static DetailItemDto fromDomain(int categoryAtr, Integer itemAtr, String itemCode, String itemName,
-			Double value, int linePosition, int colPosition, Integer deductAtr, Integer displayAtr, boolean isCreated) {
+			Double value, int linePosition, int colPosition, Integer deductAtr, Integer displayAtr, Integer taxAtr,
+			boolean isCreated) {
 		return new DetailItemDto(categoryAtr, itemAtr, itemCode, itemName, value, linePosition, colPosition, deductAtr,
-				displayAtr, isCreated);
+				displayAtr, taxAtr, isCreated);
 
 	}
 }

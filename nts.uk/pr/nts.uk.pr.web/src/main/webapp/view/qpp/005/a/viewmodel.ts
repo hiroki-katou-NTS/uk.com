@@ -135,6 +135,16 @@ module nts.uk.pr.view.qpp005 {
                 $('#pơpup-orientation').ntsPopup('show');
             }
 
+            openSetupTaxItem() {
+                var self = this;
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
+                    var employee = nts.uk.ui.windows.getShared('employee');
+                    self.employee(employee);
+
+                    self.startPage();
+                    return this;
+                });
+            }
             /**
              * auto Calculate item total
              */
@@ -236,10 +246,11 @@ module nts.uk.pr.view.qpp005 {
             linePosition: number;
             deductAtr: number;
             displayAtr: number;
+            taxAtr: number;
             isCreated: boolean;
 
             constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number,
-                columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, isCreated: boolean) {
+                columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number, isCreated: boolean) {
                 var self = this;
                 self.categoryAtr = categoryAtr;
                 self.itemAtr = itemAtr;
@@ -250,6 +261,7 @@ module nts.uk.pr.view.qpp005 {
                 self.linePosition = linePosition;
                 self.deductAtr = deductAtr;
                 self.displayAtr = displayAtr;
+                self.taxAtr = taxAtr;
                 self.isCreated = isCreated;
             }
         }

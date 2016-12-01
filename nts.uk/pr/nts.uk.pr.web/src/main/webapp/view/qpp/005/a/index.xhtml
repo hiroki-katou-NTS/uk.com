@@ -74,20 +74,33 @@
 								<tr>
 									<com:ko-foreach bind="details">
 										<com:ko-if bind="itemCode() !== ''">
-											<td><span data-bind="text: itemName"></span> <com:ko-if
-													bind="itemAtr === 0">
-													<input
-														data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.index()+ '_'+  $index()}" />
-												</com:ko-if> <com:ko-if bind="itemAtr() === 0">
-													<input
-														data-bind="ntsTimeEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
-												</com:ko-if> <com:ko-if bind="itemAtr() === 1">
-													<input
-														data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
-												</com:ko-if> <com:ko-if bind="itemAtr() === 2 || itemAtr() === 3">
-													<input
-														data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
-												</com:ko-if></td>
+											<td><span data-bind="text: itemName"></span> 
+												<com:ko-if bind="itemAtr() === 0">
+													<input data-bind="ntsTimeEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+												</com:ko-if> 
+												<com:ko-if bind="itemAtr() === 1">
+													<com:ko-if bind="taxAtr() === 3 || taxAtr() === 4">
+														<a class="txt-btlink" data-bind="click: $root.openSetupTaxItem, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}">
+															<span data-bind="text: value"></span>
+														</a>
+<!-- 														<input class="disabled txt-btlink" data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />	 -->
+													</com:ko-if>
+													<com:ko-if bind="taxAtr() !== 3 &amp;&amp; taxAtr() !== 4">
+														<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+													</com:ko-if>															
+												</com:ko-if> 
+												<com:ko-if bind="itemAtr() === 2 || itemAtr() === 3">
+													<com:ko-if bind="taxAtr() === 3 || taxAtr() === 4">
+														<a class="txt-btlink" data-bind="click: $root.openSetupTaxItem, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}">
+															<span data-bind="text: value"></span>
+														</a>
+<!-- 														<input class="disabled txt-btlink" data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" /> -->
+													</com:ko-if>
+													<com:ko-if bind="taxAtr() !== 3 &amp;&amp; taxAtr() !== 4">
+														<input data-bind="ntsNumberEditor: {value: value}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+													</com:ko-if>
+												</com:ko-if>
+											</td>
 										</com:ko-if>
 										<com:ko-if bind="itemCode() === ''">
 											<td><span data-bind="text: itemName"></span> 

@@ -116,6 +116,16 @@ var nts;
                                 var self = this;
                                 $('#pơpup-orientation').ntsPopup('show');
                             };
+                            ScreenModel.prototype.openSetupTaxItem = function () {
+                                var _this = this;
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(function () {
+                                    var employee = nts.uk.ui.windows.getShared('employee');
+                                    self.employee(employee);
+                                    self.startPage();
+                                    return _this;
+                                });
+                            };
                             /**
                              * auto Calculate item total
                              */
@@ -197,7 +207,7 @@ var nts;
                         viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                         // item
                         var DetailItemViewModel = (function () {
-                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, isCreated) {
+                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, isCreated) {
                                 var self = this;
                                 self.categoryAtr = categoryAtr;
                                 self.itemAtr = itemAtr;
@@ -208,6 +218,7 @@ var nts;
                                 self.linePosition = linePosition;
                                 self.deductAtr = deductAtr;
                                 self.displayAtr = displayAtr;
+                                self.taxAtr = taxAtr;
                                 self.isCreated = isCreated;
                             }
                             return DetailItemViewModel;

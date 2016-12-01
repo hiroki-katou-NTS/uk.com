@@ -102,6 +102,7 @@ table.tb-category, th, td {
 .tb-category td>input {
 	border: none;
 	width: 100%;
+	text-align: right !important;
 }
 
 #txt-remarks {
@@ -153,4 +154,11 @@ table.tb-category, th, td {
 .buttonFrame {
 	width: 85%;
 	margin: 5px 0px 0px 17px;
+}
+
+.txt-btlink {
+	color: #0D86D1;
+	font-weight: bold;
+	text-decoration: underline;
+	cursor: pointer;
 }
