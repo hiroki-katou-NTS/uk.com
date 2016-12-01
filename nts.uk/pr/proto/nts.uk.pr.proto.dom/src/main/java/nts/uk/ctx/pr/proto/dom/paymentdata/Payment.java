@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
@@ -110,6 +109,9 @@ public class Payment extends AggregateRoot {
 
 	@Getter
 	private Comment comment;
+	
+	@Getter
+	private PaymentRemarks remarks;
 	
 	@Getter
 	private List<DetailItem> detailPaymentItems = new ArrayList<>();
