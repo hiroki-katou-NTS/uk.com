@@ -5,8 +5,8 @@ __viewContext.ready(function() {
         categoryId: param.categoryId,
         itemCode: param.itemCode,
         isUpdate: param.isUpdate,
-        startYm: 201604,
-        stmtCode: '01'
+        startYm: param.startYm,
+        stmtCode: param.stmtCode
     }
     
     var screenModel = new qmm019.f.viewmodel.ScreenModel(data);
