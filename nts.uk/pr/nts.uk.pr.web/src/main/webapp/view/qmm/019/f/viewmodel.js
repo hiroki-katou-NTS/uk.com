@@ -16,12 +16,18 @@ var qmm019;
             //get the model from app
             var ItemDto = (function () {
                 function ItemDto() {
+                    this.commuteAtr = ko.observable(0);
+                    this.calculationMethod = ko.observable(0);
+                    this.distributeSet = ko.observable(0);
+                    this.distributeWay = ko.observable(0);
+                    this.personalWageCode = ko.observable('');
+                    this.sumScopeAtr = ko.observable(0);
                 }
                 return ItemDto;
             }());
             viewmodel.ItemDto = ItemDto;
             var ListBox = (function () {
-                function ListBox(listItemDto, currentItemCode, isUpdate) {
+                function ListBox(listItemDto, currentItemCode, isUpdate, stmtCode, startYm, categoryAtr) {
                     this.itemDtoSelected = ko.observable();
                     var self = this;
                     // set list item dto
@@ -29,9 +35,35 @@ var qmm019;
                     self.itemName = ko.observable('');
                     if (isUpdate == false) {
                         self.selectedCode = ko.observable(self.listItemDto[0].itemCode);
+                        // get item selected
+                        var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
+                        self.itemDtoSelected(ko.observable(item));
                     }
                     else {
                         self.selectedCode = ko.observable(currentItemCode);
+                        f.service.getLayoutMasterDetail(stmtCode, startYm, categoryAtr, currentItemCode).done(function (data) {
+                            var item = {
+                                companyCode: ko.observable(null),
+                                itemCode: ko.observable(data.itemCode),
+                                categoryAtr: ko.observable(data.categoryAtr),
+                                itemAbName: ko.observable(data.itemAbName),
+                                checkUseHighError: ko.observable(data.isUseHighError == 1),
+                                errRangeHigh: ko.observable(data.errRangeHigh),
+                                checkUseLowError: ko.observable(data.isUseLowError == 1),
+                                errRangeLow: ko.observable(data.errRangeLow),
+                                checkUseHighAlam: ko.observable(data.isUseHighAlam == 1),
+                                alamRangeHigh: ko.observable(data.alamRangeHigh),
+                                checkUseLowAlam: ko.observable(data.isUseLowAlam == 1),
+                                alamRangeLow: ko.observable(data.alamRangeLow),
+                                commuteAtr: ko.observable(data.commuteAtr),
+                                calculationMethod: ko.observable(data.calculationMethod),
+                                distributeSet: ko.observable(data.distributeSet),
+                                distributeWay: ko.observable(data.distributeWay),
+                                personalWageCode: ko.observable(data.personalWageCode),
+                                sumScopeAtr: ko.observable(data.sumScopeAtr)
+                            };
+                            self.itemDtoSelected(ko.observable(item));
+                        });
                     }
                     self.currentCode = ko.observable(0);
                     self.isEnable = ko.observable(true);
@@ -41,9 +73,12 @@ var qmm019;
                     _.forEach(self.listItemDto, function (item) {
                         self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
                     });
-                    // get item selected
-                    var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
-                    self.itemDtoSelected(ko.observable(item));
+                    self.selectedName = ko.computed(function () {
+                        var item = _.find(self.itemList(), function (item) {
+                            return item.id == self.selectedCode();
+                        });
+                        return item.name;
+                    });
                     //subcribe list box's change
                     self.selectedCode.subscribe(function (codeChange) {
                         var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
@@ -79,9 +114,9 @@ var qmm019;
                 function SwitchButton() {
                     var self = this;
                     self.distributeSet = ko.observableArray([
-                        { code: '0', name: '按分しない' },
-                        { code: '1', name: '按分する' },
-                        { code: '2', name: '月１回支給' }
+                        { code: 0, name: '按分しない' },
+                        { code: 1, name: '按分する' },
+                        { code: 2, name: '月１回支給' }
                     ]);
                     self.selectedRuleCode = ko.observable('1');
                 }
@@ -96,6 +131,8 @@ var qmm019;
                     self.paramItemCode = data.itemCode;
                     self.paramCategoryAtr = ko.observable(data.categoryId);
                     self.paramIsUpdate = data.isUpdate;
+                    self.paramStmtCode = data.stmtCode;
+                    self.paramStartYm = data.startYm;
                     var itemListSumScopeAtr = ko.observableArray([
                         new ItemModel(0, '対象外'),
                         new ItemModel(1, '対象内'),
@@ -168,7 +205,7 @@ var qmm019;
                     $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function (data) {
                         if (data !== null) {
                             self.listItemDto = data;
-                            self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate));
+                            self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate, self.paramStmtCode, self.paramStartYm, self.paramCategoryAtr));
                         }
                         else {
                             self.listItemDto = ko.observableArray();
