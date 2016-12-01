@@ -415,6 +415,9 @@ module qmm019.a {
                     nts.uk.ui.windows.setShared('param', param);
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(() => {
                         var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
+                        
+                        if (itemResult === undefined) return this;
+                        
                         if (data.itemAbName() === "+") {
                             // Them moi
                             self.itemCode(itemResult.itemCode);
@@ -423,7 +426,7 @@ module qmm019.a {
                             if (self.added()) {
                                 // Sửa một detail đang được Thêm mới
                                 self.itemCode(itemResult.itemCode);    
-                            } else {
+                            } else if (itemResult.itemCode !== self.itemCode()){
                                 // Update
                                 self.updateItemCode(itemResult.itemCode);    
                             }
@@ -437,13 +440,13 @@ module qmm019.a {
                         self.distributeSet(itemResult.distributeSet);
                         self.distributeWay(itemResult.distributeWay);
                         self.personalWageCode(itemResult.personalWageCode);
-                        self.isUseHighError(itemResult.isUseHighError ? 0 :1);
+                        self.isUseHighError(itemResult.isUseHighError ? 1 : 0);
                         self.errRangeHigh(itemResult.errRangeHigh);
-                        self.isUseLowError(itemResult.isUseLowError ? 0 :1);
+                        self.isUseLowError(itemResult.isUseLowError ? 1 : 0);
                         self.errRangeLow(itemResult.errRangeLow);
-                        self.isUseHighAlam(itemResult.isUseHighAlam ? 0 :1);
+                        self.isUseHighAlam(itemResult.isUseHighAlam ? 1 : 0);
                         self.alamRangeHigh(itemResult.alamRangeHigh);
-                        self.isUseLowAlam(itemResult.isUseLowAlam ? 0 :1);
+                        self.isUseLowAlam(itemResult.isUseLowAlam ? 1 : 0);
                         self.alamRangeLow(itemResult.alamRangeLow);
                         
                         return this;
