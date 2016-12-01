@@ -11,6 +11,12 @@ module qmm019.a {
         categories: KnockoutObservableArray<service.model.Category>;
         notHasKintai: KnockoutObservable<boolean> = ko.observable(false);
         notHasKiji: KnockoutObservable<boolean> = ko.observable(false);
+        startYm: KnockoutObservable<string> = ko.observable("");
+        endYm: KnockoutObservable<string> = ko.observable("");
+        totalNormalLine: KnockoutObservable<string> = ko.observable("0行");
+        totalNormalLineNumber: KnockoutObservable<number> = ko.observable(0);
+        totalGrayLine: KnockoutObservable<string> = ko.observable("（+非表示0行）");
+        totalGrayLineNumber: KnockoutObservable<number> = ko.observable(0);
         
         constructor() {
             var self = this;
@@ -27,16 +33,34 @@ module qmm019.a {
                 });
                 if (layoutFind !== undefined){
                     self.layoutMaster(layoutFind);  
+                    self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
+                    self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
                         .done(function(listResult : Array<service.model.Category>){
                             self.categories(listResult);
+                            self.calculateLine();
                             self.checkKintaiKiji();
                             self.bindSortable();
                     });
                 }
             });
         }
-
+        calculateLine() {
+            var self = this;
+            self.totalNormalLineNumber(0);
+            self.totalGrayLineNumber(0);
+            for (let category of self.categories()) {
+                for (let line of category.lines()){
+                    if (line.isRemoved || category.isRemoved) continue;
+                    if (!line.isDisplayOnPrint)
+                        self.totalGrayLineNumber(self.totalGrayLineNumber() + 1);
+                    else 
+                        self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);    
+                }
+            }
+            self.totalNormalLine(self.totalNormalLineNumber() + "行");
+            self.totalGrayLine("（+非表示" + self.totalGrayLineNumber() + "行）");    
+        }        
         checkKintaiKiji(){
             var self = this;
             var findKintai = _.find(self.categories(), function(category){
@@ -96,7 +120,8 @@ module qmm019.a {
                     return layout.stmtCode === layoutMax.stmtCode;
                 });
                 _.forEach(childLayouts, function(child) {
-                    children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], child.startYm + " ~ " + child.endYm));
+                    children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], 
+                            nts.uk.time.formatYearMonth(child.startYm) + " ~ " + nts.uk.time.formatYearMonth(child.endYm)));
                 });
                 self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
             });

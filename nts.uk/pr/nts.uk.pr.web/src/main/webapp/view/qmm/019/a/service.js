@@ -238,16 +238,20 @@ var qmm019;
                                 if (data.categoryAtr === 3)
                                     self.screenModel().notHasKiji(true);
                             }
+                            self.screenModel().calculateLine();
                             return _this;
                         });
                     };
                     Category.prototype.addLine = function () {
                         var _this = this;
+                        var self = this;
+                        if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {
+                            return this;
+                        }
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === undefined)
                                 return _this;
-                            var self = _this;
                             var autoLineId = "lineIdTemp-" + self.lines().length;
                             var listItemDetail = new Array;
                             for (var i = 1; i <= 9; i++) {
@@ -268,6 +272,7 @@ var qmm019;
                                 line.setPrint(false);
                             }
                             self.lines.push(line);
+                            self.screenModel().calculateLine();
                             self.screenModel().bindSortable();
                             self.screenModel().destroySortable();
                             self.screenModel().bindSortable();
@@ -321,6 +326,7 @@ var qmm019;
                                     self.isRemoved = true;
                                 }
                             }
+                            self.screenModel().calculateLine();
                             return _this;
                         });
                     };

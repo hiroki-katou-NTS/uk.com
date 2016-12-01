@@ -229,15 +229,18 @@ module qmm019.a {
                             if (data.categoryAtr === 3)
                                 self.screenModel().notHasKiji(true);
                         }
+                        self.screenModel().calculateLine();
                         return this;
                     });
                 }
                 addLine(){
+                    var self = this;
+                    if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {return this;}
+                    
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === undefined) return this;
                         
-                        var self = this;
                         let autoLineId : string = "lineIdTemp-" + self.lines().length;
                         let listItemDetail: Array<ItemDetail> = new Array;
                         for(let i: number = 1; i <= 9; i++) {
@@ -259,6 +262,7 @@ module qmm019.a {
                             line.setPrint(false);                           
                         }
                         self.lines.push(line);
+                        self.screenModel().calculateLine();
                         
                         self.screenModel().bindSortable();
                         self.screenModel().destroySortable();
@@ -321,6 +325,7 @@ module qmm019.a {
                                 self.isRemoved = true;
                             }
                         }
+                        self.screenModel().calculateLine();
                         return this;
                     });
                 }
