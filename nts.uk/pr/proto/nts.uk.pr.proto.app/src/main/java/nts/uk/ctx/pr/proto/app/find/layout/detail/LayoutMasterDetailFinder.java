@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
 public class LayoutMasterDetailFinder {
@@ -38,12 +39,13 @@ public class LayoutMasterDetailFinder {
 	 * @param itemCd
 	 * @return
 	 */
-	public Optional<LayoutMasterDetailDto> getDetail(String companyCd
-			, String stmtCd
+	public Optional<LayoutMasterDetailDto> getDetail(
+			  String stmtCd
 			, int startYm
 			, int categoryAtr
 			, String itemCd){
-		return this.repository.getDetail(companyCd, stmtCd, startYm, categoryAtr, itemCd)
+		
+		return this.repository.getDetail(AppContexts.user().companyCode(), stmtCd, startYm, categoryAtr, itemCd)
 				.map(item -> LayoutMasterDetailDto.fromDomain(item));
 	}
 }

@@ -82,13 +82,16 @@
 	            ]
 	        });
 	        $("#ig-grid tbody").selectable({
+		        start: clearSelected,
 	        	stop: customSelectRow,
 	        	distance: 30,
 	        	filter: "tr"
 	        });
+	        function clearSelected(){
+	        	$('#ig-grid .ui-selected').removeClass("ui-selected");
+	        }
 	        function customSelectRow(){
 		        $grid = $('#ig-grid');
-	        	$grid.igGridSelection("clearSelection");
 		        var rows = $grid.find('.ui-selected');
 		        rows.each(function(index){
 		        	$grid.igGridSelection("selectRow", ($grid.igGrid("getElementInfo", $(this)).rowIndex));

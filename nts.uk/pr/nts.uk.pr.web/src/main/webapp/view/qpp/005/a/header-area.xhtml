@@ -8,11 +8,11 @@
 <body>
 
 	<ui:composition>
-		<div>
+		<div id="header-are">
 			<div id="h-left">
 				<div class="h-item" style="margin: 3px 0px !important;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
-						<h:outputText value="対象年月" />
+						<label>対象年月</label>
 					</div>
 					<div class="i-right">
 						<label data-bind="text: nts.uk.time.formatYearMonth(processingYM())"></label>
@@ -21,82 +21,81 @@
 				<div class="clear"></div>
 				<div class="h-item" >
 					<div class="i-left">
-						<button data-bind="click: openEmployeeList"
-							style="height: 25px !important;">対象者</button>
-						<button id="prev" style="height: 25px !important;" data-bind="click: prevEmployee">⇦</button>
-						<button id="next" style="height: 25px !important;" data-bind="click: nextEmployee">⇨</button>
+						<button data-bind="click: openEmployeeList">対象者</button>
+						<button id="prev" data-bind="click: prevEmployee">⇦</button>
+						<button id="next" data-bind="click: nextEmployee">⇨</button>
 					</div>
 					<div class="i-right" data-bind="with: employee">
 						<input id="employeeCode" data-name="employeeCode" data-bind="value: code" disabled="disabled" />
 						<span data-bind="text: name"></span>
 					</div>
 					<div class="i-left">
-						<h:outputText value="部門" />
+						<label>部門</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="1234567890　第三八開発部" />
+						<label>1234567890　第三八開発部</label>
 					</div>
 				</div>
 				<div class="clear"></div>
 				<div class="h-item" style="border-top: none;">
 					<div class="i-left">
-						<h:outputText value="雇用" />
+						<label>雇用</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="01　正社員○○○" />
+						<label>01　正社員○○○</label>
 					</div>
 					<div class="i-left">
-						<h:outputText value="分類" />
+						<label>分類</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="1234567890　分類○○○○" />
+						<label>1234567890　分類○○○○</label>
 					</div>
 					<div class="i-left">
-						<h:outputText value="職位" />
+						<label>職位</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="00001　正社員○○○" />
+						<label>00001　正社員○○○</label>
 					</div>
 				</div>
 
 				<div class="clear"></div>
 				<div class="h-item" style="margin: 3px 0px 0px 0px !important;">
 					<div class="i-left">
-						<h:outputText value="健診保険" />
+						<label>健診保険</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="01等級（介護保険：対象）" />
+						<label>01等級（介護保険：対象）</label>
 					</div>
 					<div class="i-left">
-						<h:outputText value="雇用保険" />
+						<label>雇用保険</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="加入" />
+						<label>加入</label>
 					</div>
 					<div class="i-left">
-						<h:outputText value="税区分" />
+						<label>税区分</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="甲（機械計算）" />
+						<label>甲（機械計算）</label>
 					</div>
 				</div>
 
 				<div class="clear"></div>
 				<div class="h-item" style="border-top: none;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
-						<h:outputText value="厚生年金" />
+						<label>厚生年金</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="01等級" />
+						<label>01等級</label>
 					</div>
 					<div class="i-left">
-						<h:outputText value="雇用保険率" />
+						<label>雇用保険率</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="A" />
+						<label>A</label>
 					</div>
 					<div class="i-left">
-						<h:outputText value="扶養人数（所得税）" />
+						<label>扶養人数（所得税）</label>
 					</div>
 					<div class="i-right" data-bind="text: dependentNumber"></div>
 				</div>
@@ -104,24 +103,25 @@
 				<div class="clear"></div>
 				<div class="h-item" style="margin: 3px 0px 0px 0px !important;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
-						<h:outputText value="明細書レイアウト" />
+						<label>明細書レイアウト</label>
 					</div>
 					<div class="i-right">
 						<div class="i-right" data-bind="text: specificationCode"></div>
 						<div class="i-right" data-bind="text: specificationName"></div>
 					</div>
 					<div class="i-left">
-						<h:outputText value="明細書作成方法" />
+						<label>明細書作成方法</label>
 					</div>
 					<div class="i-right">
-						<h:outputText value="勤怠システム連動" />
+						<label>勤怠システム連動</label>
 					</div>
 				</div>
 			</div>
 
 			<div id="h-right" data-bind="with: paymentDataResult().paymentHeader">
 				<div data-bind="ntsFormLabel: {constraint: 'Comment', inline: true}">メモ</div>
-				<textarea id="txt-header-comment">今月より資格手当に「システム監査技術者（30,000円）が支給されます。
+				<textarea id="txt-header-comment" 
+					data-bind="ntsMultilineEditor: {value: comment, constraint: 'Comment', option: new nts.uk.ui.option.MultilineEditorOption({placeholder: '今月より資格手当に「システム監査技術者（30,000円）が支給されます。'})}">
 			</textarea>
 			</div>
 		</div>

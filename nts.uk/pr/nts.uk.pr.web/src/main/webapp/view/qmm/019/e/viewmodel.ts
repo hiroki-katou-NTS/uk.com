@@ -25,21 +25,17 @@ module qmm019.e.viewmodel {
          // start function
         start(): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred<any>();
             var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
             var startYm = nts.uk.ui.windows.getShared('startYm');
             self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-             service.getLayout(layoutCode, startYm).done(void function(layout : service.model.LayoutMasterDto){
+            service.getLayout(layoutCode, startYm).done(function(layout: service.model.LayoutMasterDto){
                  self.selectLayout(layout);
                  self.startDiaglog();                 
-                 
+                 dfd.resolve();
              }).fail(function(res){
                 alert(res);    
              })
-            
-            var dfd = $.Deferred<any>();
-            dfd.resolve();
-            
-            
             // Return.
             return dfd.promise();    
         }
@@ -47,10 +43,7 @@ module qmm019.e.viewmodel {
         startDiaglog(): any{
             var self = this;
             var layout = self.selectLayout();
-            var code = layout.stmtCode.trim();
-//            if(code.length < 2){
-//               code = "0" + code;
-//            }
+            var code = layout.stmtCode;
             self.selectLayoutCode(code);
             self.selectLayoutName(layout.stmtName);
             self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));

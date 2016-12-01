@@ -2,6 +2,12 @@
    margin-top: 20px;
 }
 
+.separate-1 {
+	margin-top: 5px;
+	margin-right: 10px;
+	margin-bottom: 5px;
+}
+
 .notification-area {
 	background-color: #eee;
 	padding: 15px 7px;

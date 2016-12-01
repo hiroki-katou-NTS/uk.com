@@ -86,15 +86,15 @@ var nts;
                         var result = new ValidationResult();
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
-                            isDecimalNumber = (this.option.decimallength() > 0);
-                            inputText = uk.text.replaceAll(inputText, this.option.groupseperator(), '');
+                            isDecimalNumber = (this.option.decimallength > 0);
+                            inputText = uk.text.replaceAll(inputText, this.option.groupseperator, '');
                         }
                         if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
                             result.fail('invalid number');
                             return result;
                         }
                         var value = isDecimalNumber ?
-                            uk.ntsNumber.getDecimal(inputText, this.option.decimallength()) : parseInt(inputText);
+                            uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
                         if (this.constraint !== null) {
                             if (this.constraint.max !== undefined && value > this.constraint.max) {
                                 result.fail('invalid number');
@@ -105,7 +105,12 @@ var nts;
                                 return result;
                             }
                         }
-                        result.success(inputText);
+                        //            if(inputText.indexOf(this.option.decimalseperator()) >= 0){
+                        //                var values = inputText.split(this.option.decimalseperator());
+                        //                values[1] = text.splitString(values[1], this.option.decimallength(), '0');
+                        //                inputText = values[0] + this.option.decimalseperator() + values[1];
+                        //            }
+                        result.success(value);
                         return result;
                     };
                     return NumberValidator;
@@ -119,10 +124,10 @@ var nts;
                     TimeValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
                         var parseResult;
-                        if (this.option.inputFormat() === "yearmonth") {
+                        if (this.option.inputFormat === "yearmonth") {
                             parseResult = uk.time.parseYearMonth(inputText);
                         }
-                        else if (this.option.inputFormat() === "time") {
+                        else if (this.option.inputFormat === "time") {
                             parseResult = uk.time.parseTime(inputText, false);
                         }
                         else {

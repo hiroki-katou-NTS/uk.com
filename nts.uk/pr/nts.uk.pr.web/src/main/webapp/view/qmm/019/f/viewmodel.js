@@ -16,44 +16,69 @@ var qmm019;
             //get the model from app
             var ItemDto = (function () {
                 function ItemDto() {
+                    this.commuteAtr = ko.observable(0);
+                    this.calculationMethod = ko.observable(0);
+                    this.distributeSet = ko.observable(0);
+                    this.distributeWay = ko.observable(0);
+                    this.personalWageCode = ko.observable('');
+                    this.sumScopeAtr = ko.observable(0);
                 }
                 return ItemDto;
             }());
             viewmodel.ItemDto = ItemDto;
             var ListBox = (function () {
-                function ListBox(listItemDto, currentItemCode) {
+                function ListBox(listItemDto, currentItemCode, isUpdate, stmtCode, startYm, categoryAtr) {
+                    this.itemDtoSelected = ko.observable();
                     var self = this;
+                    // set list item dto
+                    self.listItemDto = listItemDto;
                     self.itemName = ko.observable('');
-                    self.selectedCode = ko.observable(currentItemCode);
+                    if (isUpdate == false) {
+                        self.selectedCode = ko.observable(self.listItemDto[0].itemCode);
+                        // get item selected
+                        var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
+                        self.itemDtoSelected(ko.observable(item));
+                    }
+                    else {
+                        self.selectedCode = ko.observable(currentItemCode);
+                        f.service.getLayoutMasterDetail(stmtCode, startYm, categoryAtr, currentItemCode).done(function (data) {
+                            var item = {
+                                companyCode: ko.observable(null),
+                                itemCode: ko.observable(data.itemCode),
+                                categoryAtr: ko.observable(data.categoryAtr),
+                                itemAbName: ko.observable(data.itemAbName),
+                                checkUseHighError: ko.observable(data.isUseHighError == 1),
+                                errRangeHigh: ko.observable(data.errRangeHigh),
+                                checkUseLowError: ko.observable(data.isUseLowError == 1),
+                                errRangeLow: ko.observable(data.errRangeLow),
+                                checkUseHighAlam: ko.observable(data.isUseHighAlam == 1),
+                                alamRangeHigh: ko.observable(data.alamRangeHigh),
+                                checkUseLowAlam: ko.observable(data.isUseLowAlam == 1),
+                                alamRangeLow: ko.observable(data.alamRangeLow),
+                                commuteAtr: ko.observable(data.commuteAtr),
+                                calculationMethod: ko.observable(data.calculationMethod),
+                                distributeSet: ko.observable(data.distributeSet),
+                                distributeWay: ko.observable(data.distributeWay),
+                                personalWageCode: ko.observable(data.personalWageCode),
+                                sumScopeAtr: ko.observable(data.sumScopeAtr)
+                            };
+                            self.itemDtoSelected(ko.observable(item));
+                        });
+                    }
                     self.currentCode = ko.observable(0);
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
-                    // set list item dto
-                    self.listItemDto = listItemDto;
                     // bind list item dto to list item model
                     self.itemList = ko.observableArray([]);
                     _.forEach(self.listItemDto, function (item) {
                         self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
                     });
-                    // get item selected
-                    var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
-                    self.itemDtoSelected = ko.observable(item);
-                    //self.itemList = ko.observableArray([
-                    //    new ItemModel('001', '名前１'),
-                    //    new ItemModel('002', '名前2'),
-                    //    new ItemModel('003', '名前3'),
-                    //    new ItemModel('004', '名前4'),
-                    //    new ItemModel('005', '名前5'),
-                    //    new ItemModel('006', '名前6'),
-                    //    new ItemModel('008', '名前8'),
-                    //     new ItemModel('009', '名前9'),
-                    //      new ItemModel('010', '名前10'),
-                    //      new ItemModel('011', '名前1１'),
-                    //     new ItemModel('012', '名前12'),
-                    //       new ItemModel('013', '名前13'),
-                    //     new ItemModel('014', '名前14'),
-                    //      new ItemModel('015', '名前15'),
-                    //  ]);
+                    self.selectedName = ko.computed(function () {
+                        var item = _.find(self.itemList(), function (item) {
+                            return item.id == self.selectedCode();
+                        });
+                        return item.name;
+                    });
                     //subcribe list box's change
                     self.selectedCode.subscribe(function (codeChange) {
                         var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
@@ -89,9 +114,9 @@ var qmm019;
                 function SwitchButton() {
                     var self = this;
                     self.distributeSet = ko.observableArray([
-                        { code: '0', name: '按分しない' },
-                        { code: '1', name: '按分する' },
-                        { code: '2', name: '月１回支給' }
+                        { code: 0, name: '按分しない' },
+                        { code: 1, name: '按分する' },
+                        { code: 2, name: '月１回支給' }
                     ]);
                     self.selectedRuleCode = ko.observable('1');
                 }
@@ -100,10 +125,14 @@ var qmm019;
             viewmodel.SwitchButton = SwitchButton;
             var ScreenModel = (function () {
                 function ScreenModel(data) {
+                    this.wageCode = ko.observable('');
+                    this.wageName = ko.observable('');
                     var self = this;
                     self.paramItemCode = data.itemCode;
                     self.paramCategoryAtr = ko.observable(data.categoryId);
-                    self.isUpdate = data.isUpdate;
+                    self.paramIsUpdate = data.isUpdate;
+                    self.paramStmtCode = data.stmtCode;
+                    self.paramStartYm = data.startYm;
                     var itemListSumScopeAtr = ko.observableArray([
                         new ItemModel(0, '対象外'),
                         new ItemModel(1, '対象内'),
@@ -176,7 +205,7 @@ var qmm019;
                     $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function (data) {
                         if (data !== null) {
                             self.listItemDto = data;
-                            self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode));
+                            self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate, self.paramStmtCode, self.paramStartYm, self.paramCategoryAtr));
                         }
                         else {
                             self.listItemDto = ko.observableArray();
@@ -188,9 +217,11 @@ var qmm019;
                 };
                 ScreenModel.prototype.openHDialog = function () {
                     var _this = this;
+                    var self = this;
+                    nts.uk.ui.windows.setShared('categoryAtr', self.paramCategoryAtr());
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(function () {
-                        var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
-                        alert(selectedCode);
+                        self.wageCode(nts.uk.ui.windows.getShared('selectedCode'));
+                        self.wageName(nts.uk.ui.windows.getShared('selectedName'));
                         return _this;
                     });
                 };
@@ -220,25 +251,22 @@ var qmm019;
                     if (calculationMethod == 0 && self.paramCategoryAtr() == 0) {
                         commuteAtr = self.comboBoxCommutingClassification().selectedCode();
                     }
-                    if (calculationMethod == 1 && self.paramCategoryAtr() == 0) {
-                        personalWageCode = '';
-                    }
-                    if (calculationMethod == 1 && self.paramCategoryAtr() == 1) {
-                        personalWageCode = '';
+                    if (calculationMethod == 1 && (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1)) {
+                        personalWageCode = self.wageCode();
                     }
                     if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1 || self.paramCategoryAtr() == 2) {
-                        isUseHighError = itemSelected.checkUseHighError();
-                        errRangeHigh = itemSelected.errRangeHigh();
-                        isUseLowError = itemSelected.checkUseLowError();
-                        errRangeLow = itemSelected.errRangeLow();
-                        isUseHighAlam = itemSelected.checkUseHighAlam();
-                        alamRangeHigh = itemSelected.alamRangeHigh();
-                        isUseLowAlam = itemSelected.checkUseLowAlam();
-                        alamRangeLow = itemSelected.alamRangeLow();
+                        isUseHighError = itemSelected().checkUseHighError();
+                        errRangeHigh = itemSelected().errRangeHigh();
+                        isUseLowError = itemSelected().checkUseLowError();
+                        errRangeLow = itemSelected().errRangeLow();
+                        isUseHighAlam = itemSelected().checkUseHighAlam();
+                        alamRangeHigh = itemSelected().alamRangeHigh();
+                        isUseLowAlam = itemSelected().checkUseLowAlam();
+                        alamRangeLow = itemSelected().alamRangeLow();
                     }
                     var data = {
-                        itemCode: itemSelected.itemCode(),
-                        itemAbName: itemSelected.itemAbName(),
+                        itemCode: itemSelected().itemCode(),
+                        itemAbName: itemSelected().itemAbName(),
                         categoryAtr: self.paramCategoryAtr(),
                         sumScopeAtr: sumScopeAtr,
                         commuteAtr: commuteAtr,

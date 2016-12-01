@@ -9,10 +9,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
-import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
@@ -235,18 +233,43 @@ public class GetPaymentDataQueryProcessor {
 
 							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
 									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
-
-							Double value = datas.stream()
-									.filter(x -> x.getCategoryAtr() == ctAtr
-											&& x.getItemCode().equals(d.getItemCode().v()))
-									.findFirst().map(x -> x.getValue()).orElse(null);
-
-							return DetailItemDto.fromDomain(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
-									mItem.getItemAbName().v(), value, mLine.getLinePosition().v(),
-									d.getItemPosColumn().v(), mItem.getDeductAttribute().value, d.getDisplayAtr().value,
+							boolean isTaxtAtr = mItem.getTaxAtr().value == 3 || mItem.getTaxAtr().value == 4;
+							Optional<DetailItemDto> dValue = datas.stream().filter(
+									x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
+									.findFirst();
+							Integer limitAmount;
+							Double value, comuteAllowTax, commuteAllowMonth, commuteAllowFraction;
+							if (dValue.isPresent()) {
+								DetailItemDto iValue = dValue.get();
+								value = iValue.getValue();
+								limitAmount = iValue.getLimitAmount();
+								comuteAllowTax = iValue.getCommuteAllowTaxImpose();
+								commuteAllowMonth = iValue.getCommuteAllowMonth();
+								commuteAllowFraction = iValue.getCommuteAllowFraction();
+							} else {
+								value = isTaxtAtr ? 0.0: null;
+								limitAmount = null;
+								comuteAllowTax = 0.0;
+								commuteAllowMonth = 0.0;
+								commuteAllowFraction = 0.0;
+							}
+							return DetailItemDto.fromDomain(
+									ctAtr, 
+									mItem.getItemAtr().value, 
+									d.getItemCode().v(),
+									mItem.getItemAbName().v(),value,
+									mLine.getLinePosition().v(), 
+									d.getItemPosColumn().v(),
+									mItem.getDeductAttribute().value, 
+									d.getDisplayAtr().value, 
+									mItem.getTaxAtr().value,
+									limitAmount,
+									comuteAllowTax,
+									commuteAllowMonth,
+									commuteAllowFraction,
 									value != null);
 						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i,
-								null, null, false));
+								null, null, null, null,null,null,null, false));
 
 				items.add(detailItem);
 			}

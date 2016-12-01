@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.proto.dom.layout.detail.SumScopeAtr;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
@@ -30,7 +30,6 @@ class Helper {
 		
 		return payDetail.get(CategoryAtr.DEDUCTION).stream()
 			.filter(c -> layoutDetailMasterList.stream().anyMatch(x -> x.getItemCode().equals(c.getItemCode())))
-			.map(x -> toDetailDeductionItem(x))
 			.collect(Collectors.toList());
 	}
 	
@@ -51,14 +50,17 @@ class Helper {
 		return result;
 	}
 
-	/**
-	 * Convert to detail deduction
-	 * @param detailItem
-	 * @return
-	 */
-	private static DetailItem toDetailDeductionItem(DetailItem detailItem) {
-//		return new DetailItem(detailItem.getItemCode(), detailItem.getValue(), detailItem.getCorrectFlag(),
-//				detailItem.getSocialInsuranceAtr(), detailItem.getLaborInsuranceAtr(), detailItem.getCategoryAtr(), detailItem.getDeductionAtr(), detailItem.getItemAtr());
-		return null;
+	/** get payment detail to calculate total payment **/
+	static List<DetailItem> detailItemByTotalPayment(Map<CategoryAtr, List<DetailItem>> payDetail, List<LayoutMasterDetail> layoutMasterDetailList) {
+		return payDetail.get(CategoryAtr.PAYMENT).stream()
+				.filter(c -> layoutMasterDetailList.stream().anyMatch(x -> x.getItemCode().equals(c.getItemCode()) && SumScopeAtr.INCLUDED == x.getSumScopeAtr()))
+				.collect(Collectors.toList());
+	}
+	
+	/** get payment detail to calculate deduction total payment **/
+	static List<DetailItem> layoutMasterByDeductionTotalPayment(Map<CategoryAtr, List<DetailItem>> payDetail, List<LayoutMasterDetail> layoutMasterDetailList) {
+		return payDetail.get(CategoryAtr.DEDUCTION).stream()
+				.filter(c -> layoutMasterDetailList.stream().anyMatch(x -> x.getItemCode().equals(c.getItemCode()) && SumScopeAtr.INCLUDED == x.getSumScopeAtr()))
+				.collect(Collectors.toList());
 	}
 }

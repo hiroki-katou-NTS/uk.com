@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.proto.app.command.paymentdata;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -9,12 +11,16 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.CategoryCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.DetailItemCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.LineCommandBase;
+import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
+import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
+import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,6 +37,9 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
 	
+	@Inject
+	private PaymentDateMasterRepository payDateMasterRepository;
+	
 	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;
 
@@ -42,14 +51,20 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 		
 		
 		Payment payment = context.getCommand().toDomain(companyCode);
+		LocalDate mPayDate = this.payDateMasterRepository.find(
+				companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(), 
+				payment.getSparePayAtr().value, payment.getProcessingNo().v()).map(d-> d.getStandardDate()).orElse(LocalDate.now());
+		
+		payment.setStandardDate(mPayDate);
+		
 		payment.validate();
 
 		// check data
 		boolean isExistHeader = this.paymentDataRepository.isExistHeader(companyCode, personId, PAY_BONUS_ATR, baseYM);
 		if (isExistHeader) {
 			for (CategoryCommandBase cate : context.getCommand().getCategories()) {
-				this.checkIfAllItemsExist(companyCode, personId, baseYM,
-						cate.getLines());
+				this.checkIfAllItemsExist(companyCode, personId, payment.getProcessingNo().v(), baseYM,
+						cate.getLines(), payment.getPayBonusAtr(), payment.getSparePayAtr());
 			}
 		} else {
 			throw new BusinessException("更新対象のデータが存在しません");
@@ -70,12 +85,12 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 * @param categoryAtr
 	 * @param items
 	 */
-	private void checkIfAllItemsExist(String companyCode, String personId, int baseYM, List<LineCommandBase> lines) {
+	private void checkIfAllItemsExist(String companyCode, String personId, int processingNo, int baseYM, List<LineCommandBase> lines, PayBonusAtr payBonusAtr, SparePayAtr sparePayAtr) {
 		lines.stream().forEach(x-> {
-			List<DetailItemCommandBase> items = x.getDetails();
+			List<DetailItemCommandBase> items = x.getDetails().stream().filter(t -> !StringUtil.isNullOrEmpty(t.getItemCode(), true) && !t.isCreated()).collect(Collectors.toList());
 			for (DetailItemCommandBase item : items) {
-				boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, baseYM,
-						item.getCategoryAtr(), item.getItemCode());
+				boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, processingNo, baseYM,
+						item.getCategoryAtr(), item.getItemCode(), payBonusAtr.value, sparePayAtr.value);
 				if (!isExistDetails) {
 					throw new BusinessException(("更新対象のデータが存在しません"));
 				}
@@ -92,7 +107,8 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	 */
 	private void registerDetail(Payment payment, CategoryCommandBase category) {
 		category.getLines().stream().forEach(x-> {
-			for (DetailItemCommandBase item : x.getDetails()) {
+			List<DetailItemCommandBase> details = x.getDetails().stream().filter(t -> !StringUtil.isNullOrEmpty(t.getItemCode(), true)).collect(Collectors.toList());
+			for (DetailItemCommandBase item : details) {
 				
 				DetailItem detailItem = DetailItem.createFromJavaType(
 						item.getItemCode(), 

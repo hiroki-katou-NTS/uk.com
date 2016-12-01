@@ -3,6 +3,7 @@ module nts.uk.pr.view.qpp005 {
 
         var screenModel = new nts.uk.pr.view.qpp005.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
             var categoryPayment: nts.uk.pr.view.qpp005.viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[0];
             var categoryDeduct: nts.uk.pr.view.qpp005.viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[1];
             var categoryArticle: nts.uk.pr.view.qpp005.viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[3];
@@ -24,7 +25,7 @@ module nts.uk.pr.view.qpp005 {
 
             utils.gridSetup(screenModel.switchButton().selectedRuleCode());
         });
-        this.bind(screenModel);
+//        this.bind(screenModel);
     });
 
     export module utils {

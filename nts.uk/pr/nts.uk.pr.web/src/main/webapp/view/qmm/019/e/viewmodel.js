@@ -21,27 +21,24 @@ var qmm019;
                 // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
+                    var dfd = $.Deferred();
                     var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
                     var startYm = nts.uk.ui.windows.getShared('startYm');
                     self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-                    e.service.getLayout(layoutCode, startYm).done(void function (layout) {
+                    e.service.getLayout(layoutCode, startYm).done(function (layout) {
                         self.selectLayout(layout);
                         self.startDiaglog();
+                        dfd.resolve();
                     }).fail(function (res) {
                         alert(res);
                     });
-                    var dfd = $.Deferred();
-                    dfd.resolve();
                     // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.startDiaglog = function () {
                     var self = this;
                     var layout = self.selectLayout();
-                    var code = layout.stmtCode.trim();
-                    //            if(code.length < 2){
-                    //               code = "0" + code;
-                    //            }
+                    var code = layout.stmtCode;
                     self.selectLayoutCode(code);
                     self.selectLayoutName(layout.stmtName);
                     self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));

@@ -77,7 +77,6 @@ var qmm019;
                         var linePosition = 1;
                         var sortedLines = $("#" + category.categoryAtr).sortable("toArray");
                         var _loop_1 = function(itemLine) {
-                            //for (let line of category.lines()) {
                             var line = _.find(category.lines(), function (lineDetail) {
                                 return lineDetail.rowId === itemLine.toString();
                             });
@@ -103,6 +102,8 @@ var qmm019;
                                     detailCommand.push({
                                         categoryAtr: category.categoryAtr,
                                         itemCode: detail.itemCode(),
+                                        updateItemCode: detail.updateItemCode(),
+                                        added: detail.added(),
                                         autoLineId: detail.autoLineId(),
                                         itemPosColumn: itemPosColumn,
                                         calculationMethod: detail.calculationMethod(),
@@ -237,16 +238,20 @@ var qmm019;
                                 if (data.categoryAtr === 3)
                                     self.screenModel().notHasKiji(true);
                             }
+                            self.screenModel().calculateLine();
                             return _this;
                         });
                     };
                     Category.prototype.addLine = function () {
                         var _this = this;
+                        var self = this;
+                        if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {
+                            return this;
+                        }
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === undefined)
                                 return _this;
-                            var self = _this;
                             var autoLineId = "lineIdTemp-" + self.lines().length;
                             var listItemDetail = new Array;
                             for (var i = 1; i <= 9; i++) {
@@ -267,6 +272,7 @@ var qmm019;
                                 line.setPrint(false);
                             }
                             self.lines.push(line);
+                            self.screenModel().calculateLine();
                             self.screenModel().bindSortable();
                             self.screenModel().destroySortable();
                             self.screenModel().bindSortable();
@@ -320,6 +326,7 @@ var qmm019;
                                     self.isRemoved = true;
                                 }
                             }
+                            self.screenModel().calculateLine();
                             return _this;
                         });
                     };
@@ -343,12 +350,19 @@ var qmm019;
                 model.Line = Line;
                 var ItemDetail = (function () {
                     function ItemDetail(itemObject, screenModel) {
+                        this.updateItemCode = ko.observable("");
+                        this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
                         this.screenModel = ko.observable(screenModel);
                         this.itemCode = ko.observable(itemObject.itemCode);
                         this.itemAbName = ko.observable(itemObject.itemAbName);
-                        if (itemObject.itemCode === "F003" || itemObject.itemCode === "F114") {
+                        if (itemObject.categoryAtr === 0 &&
+                            (itemObject.itemCode === "F001" || itemObject.itemCode === "F002" || itemObject.itemCode === "F003")) {
+                            this.isRequired = ko.observable(true);
+                        }
+                        if (itemObject.categoryAtr === 1 &&
+                            (itemObject.itemCode === "F114")) {
                             this.isRequired = ko.observable(true);
                         }
                         this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
@@ -370,23 +384,35 @@ var qmm019;
                         this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
                         this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
                     }
-                    //TODO: goi man hinh chi tiet
                     ItemDetail.prototype.itemClick = function (data, event) {
                         var _this = this;
                         var self = this;
-                        //                    alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
-                        //                    self.itemAbName("dfdfd");
                         var param = {
                             categoryId: data.categoryAtr(),
                             itemCode: data.itemCode(),
-                            isUpdate: data.itemAbName() === "+" ? false : true
+                            isUpdate: data.itemAbName() === "+" ? false : true,
+                            startYm: self.screenModel().layoutMaster().startYm,
+                            stmtCode: self.screenModel().layoutMaster().stmtCode
                         };
                         nts.uk.ui.windows.setShared('param', param);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(function () {
                             var itemResult = nts.uk.ui.windows.getShared('itemResult');
-                            self.itemCode(itemResult.itemCode);
+                            if (data.itemAbName() === "+") {
+                                // Them moi
+                                self.itemCode(itemResult.itemCode);
+                                self.added(true);
+                            }
+                            else {
+                                if (self.added()) {
+                                    // Sửa một detail đang được Thêm mới
+                                    self.itemCode(itemResult.itemCode);
+                                }
+                                else {
+                                    // Update
+                                    self.updateItemCode(itemResult.itemCode);
+                                }
+                            }
                             self.itemAbName(itemResult.itemAbName);
-                            self.categoryAtr(itemResult.categoryAtr);
                             self.sumScopeAtr(itemResult.sumScopeAtr);
                             //self.setOffItemCode(itemResult.setOffItemCode);
                             //self.commuteAtr(itemResult.commuteAtr);
@@ -394,13 +420,13 @@ var qmm019;
                             self.distributeSet(itemResult.distributeSet);
                             self.distributeWay(itemResult.distributeWay);
                             self.personalWageCode(itemResult.personalWageCode);
-                            self.isUseHighError(itemResult.isUseHighError);
+                            self.isUseHighError(itemResult.isUseHighError ? 0 : 1);
                             self.errRangeHigh(itemResult.errRangeHigh);
-                            self.isUseLowError(itemResult.isUseLowError);
+                            self.isUseLowError(itemResult.isUseLowError ? 0 : 1);
                             self.errRangeLow(itemResult.errRangeLow);
-                            self.isUseHighAlam(itemResult.isUseHighAlam);
+                            self.isUseHighAlam(itemResult.isUseHighAlam ? 0 : 1);
                             self.alamRangeHigh(itemResult.alamRangeHigh);
-                            self.isUseLowAlam(itemResult.isUseLowAlam);
+                            self.isUseLowAlam(itemResult.isUseLowAlam ? 0 : 1);
                             self.alamRangeLow(itemResult.alamRangeLow);
                             return _this;
                         });

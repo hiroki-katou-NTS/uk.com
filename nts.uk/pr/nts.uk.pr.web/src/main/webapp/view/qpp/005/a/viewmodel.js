@@ -67,6 +67,8 @@ var nts;
                                 var self = this;
                                 // TODO: Check error input
                                 qpp005.service.register(self.paymentDataResult()).done(function (res) {
+                                }).fail(function (res) {
+                                    alert(res.message);
                                 });
                             };
                             /** Event click: 対象者*/
@@ -115,6 +117,20 @@ var nts;
                             ScreenModel.prototype.openGridSetting = function () {
                                 var self = this;
                                 $('#pơpup-orientation').ntsPopup('show');
+                            };
+                            ScreenModel.prototype.openSetupTaxItem = function (value) {
+                                var self = this;
+                                nts.uk.ui.windows.setShared("value", value);
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(function () {
+                                    var employee = nts.uk.ui.windows.getShared('employee');
+                                    self.employee(employee);
+                                    self.startPage();
+                                    return self;
+                                });
+                            };
+                            ScreenModel.prototype.toggleHeader = function () {
+                                $('#content-header').toggle('slow');
+                                $('img', '#btToggle').toggle();
                             };
                             /**
                              * auto Calculate item total
@@ -197,7 +213,7 @@ var nts;
                         viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                         // item
                         var DetailItemViewModel = (function () {
-                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, isCreated) {
+                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated) {
                                 var self = this;
                                 self.categoryAtr = categoryAtr;
                                 self.itemAtr = itemAtr;
@@ -208,7 +224,23 @@ var nts;
                                 self.linePosition = linePosition;
                                 self.deductAtr = deductAtr;
                                 self.displayAtr = displayAtr;
+                                self.taxAtr = taxAtr;
+                                self.limitAmount = limitAmount;
+                                self.commuteAllowTaxImpose = commuteAllowTaxImpose;
+                                self.commuteAllowMonth = commuteAllowMonth;
+                                self.commuteAllowFraction = commuteAllowFraction;
                                 self.isCreated = isCreated;
+                                self.option = ko.computed(function () {
+                                    if (self.itemAtr === 0) {
+                                        return ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'time' }));
+                                    }
+                                    else if (self.itemAtr === 1) {
+                                        return ko.mapping.fromJS(new option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
+                                    }
+                                    else if (self.itemAtr == 2 || self.itemAtr === 3) {
+                                        return ko.mapping.fromJS(new option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' }));
+                                    }
+                                });
                             }
                             return DetailItemViewModel;
                         }());

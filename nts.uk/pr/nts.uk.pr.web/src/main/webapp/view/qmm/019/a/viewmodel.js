@@ -7,6 +7,12 @@ var qmm019;
             function ScreenModel() {
                 this.notHasKintai = ko.observable(false);
                 this.notHasKiji = ko.observable(false);
+                this.startYm = ko.observable("");
+                this.endYm = ko.observable("");
+                this.totalNormalLine = ko.observable("0行");
+                this.totalNormalLineNumber = ko.observable(0);
+                this.totalGrayLine = ko.observable("（+非表示0行）");
+                this.totalGrayLineNumber = ko.observable(0);
                 var self = this;
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
@@ -20,15 +26,37 @@ var qmm019;
                     });
                     if (layoutFind !== undefined) {
                         self.layoutMaster(layoutFind);
+                        self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
+                        self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                         a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
                             .done(function (listResult) {
                             self.categories(listResult);
+                            self.calculateLine();
                             self.checkKintaiKiji();
                             self.bindSortable();
                         });
                     }
                 });
             }
+            ScreenModel.prototype.calculateLine = function () {
+                var self = this;
+                self.totalNormalLineNumber(0);
+                self.totalGrayLineNumber(0);
+                for (var _i = 0, _a = self.categories(); _i < _a.length; _i++) {
+                    var category = _a[_i];
+                    for (var _b = 0, _c = category.lines(); _b < _c.length; _b++) {
+                        var line = _c[_b];
+                        if (line.isRemoved || category.isRemoved)
+                            continue;
+                        if (!line.isDisplayOnPrint)
+                            self.totalGrayLineNumber(self.totalGrayLineNumber() + 1);
+                        else
+                            self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);
+                    }
+                }
+                self.totalNormalLine(self.totalNormalLineNumber() + "行");
+                self.totalGrayLine("（+非表示" + self.totalGrayLineNumber() + "行）");
+            };
             ScreenModel.prototype.checkKintaiKiji = function () {
                 var self = this;
                 var findKintai = _.find(self.categories(), function (category) {
@@ -82,7 +110,7 @@ var qmm019;
                         return layout.stmtCode === layoutMax.stmtCode;
                     });
                     _.forEach(childLayouts, function (child) {
-                        children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], child.startYm + " ~ " + child.endYm));
+                        children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], nts.uk.time.formatYearMonth(child.startYm) + " ~ " + nts.uk.time.formatYearMonth(child.endYm)));
                     });
                     self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
                 });
@@ -120,7 +148,9 @@ var qmm019;
                     return;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () { return void {}; });
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                    self.start();
+                });
             };
             ScreenModel.prototype.openEDialog = function () {
                 var self = this;
@@ -129,7 +159,15 @@ var qmm019;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () { return void {}; });
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
+                    self.start();
+                });
+            };
+            ScreenModel.prototype.openGDialog = function () {
+                var self = this;
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
+                    self.start();
+                });
             };
             return ScreenModel;
         }());

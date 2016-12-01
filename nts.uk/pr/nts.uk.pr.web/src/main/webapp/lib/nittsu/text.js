@@ -273,6 +273,16 @@ var nts;
                     return padRight(code, fillcharacter, length);
             }
             text_1.formatEmployeeCode = formatEmployeeCode;
+            function splitString(str, decimallength, char) {
+                if (str === undefined || decimallength > str.length) {
+                    str = text.padRight(str ? str : "", char, str ? decimallength : decimallength + 1);
+                }
+                else {
+                    str = str.substr(0, decimallength);
+                }
+                return str;
+            }
+            text_1.splitString = splitString;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
@@ -281,8 +291,8 @@ var nts;
                     var constraintName = this.args.constraintName;
                     if (constraintName === "EmployeeCode") {
                         var constraint = this.args.constraint;
-                        var filldirection = this.args.editorOption.filldirection();
-                        var fillcharacter = this.args.editorOption.fillcharacter();
+                        var filldirection = this.args.editorOption.filldirection;
+                        var fillcharacter = this.args.editorOption.fillcharacter;
                         var length = (constraint && constraint.maxLength) ? constraint.maxLength : 10;
                         return formatEmployeeCode(source, filldirection, fillcharacter, length);
                     }
@@ -307,10 +317,10 @@ var nts;
                 }
                 TimeFormatter.prototype.format = function (source) {
                     var result;
-                    if (this.option.option.inputFormat() === "yearmonth") {
+                    if (this.option.option.inputFormat === "yearmonth") {
                         result = uk.time.parseYearMonth(source);
                     }
-                    else if (this.option.option.inputFormat() === "time") {
+                    else if (this.option.option.inputFormat === "time") {
                         result = uk.time.parseTime(source, true);
                     }
                     else {

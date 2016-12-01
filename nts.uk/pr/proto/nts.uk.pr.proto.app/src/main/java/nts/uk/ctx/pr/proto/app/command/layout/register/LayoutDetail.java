@@ -12,6 +12,10 @@ public class LayoutDetail {
 	private int categoryAtr;	
 	/**項目CD */
 	private String itemCode;
+	/** new itemCode for update*/
+	private String updateItemCode;
+	/** khi detail nay là thêm mới thì added = true*/
+	private boolean added;
 	/**自動採番された行番号	 */
 	private String autoLineId;
 	/**項目位置（列）	 */

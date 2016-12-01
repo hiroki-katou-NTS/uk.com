@@ -54,12 +54,10 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
-	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
-		List<QstdtPaymentDetail> paymentItems = this.queryProxy().query(SELECT_ITEM, QstdtPaymentDetail.class)
-				.setParameter("CCD", companyCode).setParameter("PID", personId).setParameter("CTG_ATR", categoryAtr)
-				.setParameter("PROCESSING_YM", baseYM).setParameter("ITEM_CD", itemCode).getList();
-
-		return !paymentItems.isEmpty();
+	public boolean isExistDetail(String companyCode, String personId, int processingNo, int baseYM, int categoryAtr, String itemCode, int payBonusAtr, int sparePayAtr) {
+		QstdtPaymentDetailPK key = new QstdtPaymentDetailPK(companyCode, personId, processingNo, payBonusAtr, baseYM, sparePayAtr, categoryAtr, itemCode);
+		Optional<QstdtPaymentDetail> detail = this.queryProxy().find(key, QstdtPaymentDetail.class);
+		return detail.isPresent();
 	}
 
 	@Override
@@ -223,10 +221,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.averagePayATR = detail.getAveragePayAtr();//
 		entity.deductAttribute = detail.getDeductionAtr().value; //
 		entity.itemAtr = detail.getItemAtr().value; //
-		entity.commuteAllowTaxImpose = 0;
+		entity.commuteAllowTaxImpose = BigDecimal.valueOf(detail.getCommuteAllowTaxImpose());
 		entity.commuteAllowMonth = BigDecimal.valueOf(detail.getCommuteAllowMonth());
-		entity.commuteAllowFraction = 0;		
-		entity.commuteAllowFraction = 0;
+		entity.commuteAllowFraction = BigDecimal.valueOf(detail.getCommuteAllowFraction());
 
 		return entity;
 	}

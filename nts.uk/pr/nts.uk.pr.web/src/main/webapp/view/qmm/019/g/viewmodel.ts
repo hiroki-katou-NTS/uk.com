@@ -88,17 +88,13 @@ module qmm019.g.viewmodel {
             self.comboboxList.removeAll();
             _.forEach(self.layouts(), function(layout){
                 var stmtCode = layout.stmtCode;
-//                if(stmtCode.length == 1){
-//                    stmtCode = "0" + layout.stmtCode;
-//                }
-                    
                 self.comboboxList.push(new ItemCombobox(stmtCode, layout.stmtName));
             });          
         }
         buildComboboxChange(layoutCd) : void {
             var self = this;
             _.forEach(self.layouts(), function(layout){
-                if(layout.stmtCode.trim() == layoutCd){
+                if(layout.stmtCode == layoutCd){
                     self.startYmCopy(layout.startYm);
                     return false;    
                 }
@@ -109,19 +105,20 @@ module qmm019.g.viewmodel {
             
             if(self.checkData())
             {
-                   if($("#newCreate").is(":checked")){
-                       self.createNewData();
-                    }else{
-                       //印字行数　＞　最大印字行数　の場合
-                       //メッセージ( ER030 )を表示する
-                        self.createCopyData();    
-                    }
-                    service.createLayout(self.createlayout()).done(function(){
-                        alert('追加しました。');    
-                        nts.uk.ui.windows.close();
-                    }).fail(function(res){
-                        alert(res);    
-                    })
+               self.createData();
+               if($("#newCreate").is(":checked")){
+                   self.createlayout().checkCopy = false;
+                }else{
+                   //印字行数　＞　最大印字行数　の場合
+                   //メッセージ( ER030 )を表示する
+                    self.createlayout().checkCopy = true;
+                }
+                service.createLayout(self.createlayout()).done(function(){
+                    alert('追加しました。');    
+                    nts.uk.ui.windows.close();
+                }).fail(function(res){
+                    alert(res);    
+                })
              }
         }
         
@@ -147,9 +144,13 @@ module qmm019.g.viewmodel {
             }
             //コードの重複チェックを行う
             var isStorage = false;
+            var stmtCd = $('#INP_001').val().trim();
+            if(stmtCd.length < 2)
+                stmtCd = '0' + stmtCd;
             _.forEach(self.layouts(), function(layout){
-                if(+$('#INP_001').val() === +layout.stmtCode){
-                    alert('入力した'+$('#INP_001').val()+'は既に存在しています。\r\n'+$('#INP_001').val()+'を確認してください。');
+                if(stmtCd == layout.stmtCode){
+                    alert('入力した'+stmtCd+'は既に存在しています。\r\n'+stmtCd+'を確認してください。');
+                    $('#INP_001').val(stmtCd);
                     $('#INP_001').focus();
                     isStorage = true;
                     return false;
@@ -162,32 +163,22 @@ module qmm019.g.viewmodel {
             return true; 
         }
         
-        createNewData(): any{
-            var self = this;         
-            self.createlayout({
-                checkCopy: false,
-                stmtCodeCopied: self.createNewSelect() + "",
-                startYmCopied: self.startYmCopy(),
-                stmtCode: $('#INP_001').val(),
-                startYm: + $('#INP_003').val().replace('/',''),
-                layoutAtr: 3,
-                stmtName: $('#INP_002').val() + "",
-                endYm: 999912
-            });   
-        }
         
-        createCopyData(): any{
-             var self = this;
+        createData(): any{
+            var self = this;
+            var stmtCd = $('#INP_001').val().trim();
+            if(stmtCd.length < 2)
+                stmtCd = '0' + stmtCd;
             self.createlayout({
                 checkCopy: true,
-                stmtCodeCopied: self.createNewSelect() + "",
+                stmtCodeCopied: self.createNewSelect(),
                 startYmCopied: self.startYmCopy(),
-                stmtCode: $('#INP_001').val() + "",
+                stmtCode: stmtCd,
                 startYm: + $('#INP_003').val().replace('/',''),
                 layoutAtr: 3,
                 stmtName: $('#INP_002').val() + "",
                 endYm: 999912
-            });             
+            }); 
         }
         
        closeDialog(): any{
