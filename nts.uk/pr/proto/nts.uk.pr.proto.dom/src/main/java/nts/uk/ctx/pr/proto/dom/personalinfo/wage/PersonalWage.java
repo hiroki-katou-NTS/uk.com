@@ -3,18 +3,18 @@ package nts.uk.ctx.pr.proto.dom.personalinfo.wage;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode;
 import nts.uk.shr.com.primitive.PersonId;
 
 public class PersonalWage extends AggregateRoot {
 	/** person wage code **/
 	@Getter
-	private String wageCode;
+	private PersonalWageCode wageCode;
 	
 	/**
 	 * Person wage value.
@@ -41,7 +41,7 @@ public class PersonalWage extends AggregateRoot {
 	private YearMonth endYearMonth;
 
 	public PersonalWage(BigDecimal wageValue, PersonId personId, CompanyCode companyCode, CategoryAtr categoryAtr,
-			YearMonth startYearMonth, YearMonth endYearMonth, String wageCode) {
+			YearMonth startYearMonth, YearMonth endYearMonth, PersonalWageCode wageCode) {
 		super();
 		this.wageValue = wageValue;
 		this.personId = personId;
@@ -60,7 +60,7 @@ public class PersonalWage extends AggregateRoot {
 	public static PersonalWage createFromJavaType(BigDecimal wageValue, String personId, String companyCode,
 			int categoryAtr, int startYearMonth, int endYearMonth, String wageCode) {
 		return new PersonalWage(wageValue, new PersonId(personId), new CompanyCode(companyCode),
-				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), YearMonth.of(startYearMonth), YearMonth.of(endYearMonth), wageCode);
+				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class), YearMonth.of(startYearMonth), YearMonth.of(endYearMonth), new PersonalWageCode(wageCode));
 	}
 
 }

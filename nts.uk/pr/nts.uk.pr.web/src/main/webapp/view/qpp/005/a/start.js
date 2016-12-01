@@ -11,6 +11,7 @@ var nts;
                     __viewContext.ready(function () {
                         var screenModel = new nts.uk.pr.view.qpp005.viewmodel.ScreenModel();
                         screenModel.startPage().done(function () {
+                            __viewContext.bind(screenModel);
                             var categoryPayment = screenModel.paymentDataResult().categories()[0];
                             var categoryDeduct = screenModel.paymentDataResult().categories()[1];
                             var categoryArticle = screenModel.paymentDataResult().categories()[3];
@@ -29,7 +30,7 @@ var nts;
                             });
                             utils.gridSetup(screenModel.switchButton().selectedRuleCode());
                         });
-                        this.bind(screenModel);
+                        //        this.bind(screenModel);
                     });
                     var utils;
                     (function (utils) {

@@ -1,8 +1,10 @@
 package nts.uk.ctx.pr.proto.dom.paymentdata.service.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -50,16 +52,26 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		PersonalCommuteFee commute = commuteList.get(0);
 		
 		// LAYOUT_DETAIL with CTR_ATR = 0
-		val detailsOfCategoryPayment = layoutMasterDetailList.stream()
+		List<DetailItem> detailsOfCategoryPayment = new ArrayList<>(); 
+		layoutMasterDetailList.stream()
 			.filter(l -> l.isCategoryPayment())
-			.map(l -> createDetailOfCategoryPayment(param, l, commute))
-			.collect(Collectors.toList());
+			.forEach(l -> {
+				DetailItem item = createDetailOfCategoryPayment(param, l, commute);
+				if (item != null) {
+					detailsOfCategoryPayment.add(item);
+				}
+			});
 		
 		// LAYOUT_DETAIL with CTR_ATR = 1
-		val detailsOfCategoryDeduction = layoutMasterDetailList.stream()
+		List<DetailItem> detailsOfCategoryDeduction = new ArrayList<>(); 
+		layoutMasterDetailList.stream()
 				.filter(l -> l.isCategoryDeduction())
-				.map(l -> createDetailOfCategoryDeduction(param, l))
-				.collect(Collectors.toList());
+				.forEach(l -> {
+					DetailItem item = createDetailOfCategoryDeduction(param, l);
+					if (item != null) {
+						detailsOfCategoryDeduction.add(item);
+					}
+				});
 		
 		// LAYOUT_DETAIL with CTR_ATR = 2
 		val detailsOfCategoryPersonalTime = layoutMasterDetailList.stream()
@@ -117,11 +129,14 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		
 		if (layout.isCalMethodPesonalInfomation()) {
 			// get personal wage
-			PersonalWage personalWage = param.getPersonalWageList().stream()
-					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemMaster.getItemCode().v()))).findFirst()
-					.orElseThrow(() -> new RuntimeException("システムエラー PersonalWage: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v())); 
+			Optional<PersonalWage> personalWage = param.getPersonalWageList().stream()
+					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(layout.getPersonalWageCode())).findFirst();
+					//.orElseThrow(() -> new RuntimeException("システムエラー PersonalWage: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v())); 
+			if (!personalWage.isPresent()) {
+				return null;
+			}
 			
-			return this.createDataDetailItem(itemMaster, personalWage.getWageValue().doubleValue(), layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
+			return this.createDataDetailItem(itemMaster, personalWage.get().getWageValue().doubleValue(), layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
 			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
 		} else {
@@ -184,12 +199,15 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		// check tax attribute
 		if (itemMaster.isTaxTaxationOrTaxFreeLimitOrTaxFreeUnLimit()) { // tax_atr = 0 || 1 || 2
 			// get personal wage
-			PersonalWage personalWage = param.getPersonalWageList().stream()
-					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(getPersonalWageCode(itemCode))).findFirst()
-					.orElseThrow(() -> new RuntimeException("システムエラー PersonalWage: itemCode="+ itemCode + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v())); 
+			Optional<PersonalWage> personalWage = param.getPersonalWageList().stream()
+					.filter(x -> x.getCategoryAtr() == itemMaster.getCategoryAtr() && x.getWageCode().equals(itemLayoutMasterDetail.getPersonalWageCode())).findFirst();
+					//.orElseThrow(() -> new RuntimeException("システムエラー PersonalWage: itemCode="+ itemCode + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v())); 
+			if (!personalWage.isPresent()) {
+				return null;
+			}
 			
 			return this.createDataDetailItem(
-					itemMaster, personalWage.getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr(), 
+					itemMaster, personalWage.get().getWageValue().doubleValue(), itemLayoutMasterDetail.getCategoryAtr(), 
 					param.getLineList(), itemLayoutMasterDetail.getAutoLineId().v(), itemLayoutMasterDetail.getItemPosColumn().v(), 0);
 		} else if (itemMaster.isTaxCommutingoCostOrCommutingExpense()) { // tax_atr = 3 || 4
 			
@@ -247,20 +265,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			return 0;
 		}
 	}
-	
-	/**
-	 * Get personal wage code from item code.
-	 * @param itemCode
-	 * @return
-	 */
-	private String getPersonalWageCode(String itemCode) {
-		if (itemCode == null || itemCode == "") {
-			return itemCode;
-		}
 		
-		return itemCode.substring(2);
-	}
-	
 	/**
 	 * Create data for detail item
 	 * @param itemMaster

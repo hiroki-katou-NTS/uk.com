@@ -31,7 +31,9 @@ public class ViewContext extends UIComponentBase {
         writeRootPath(context, rw);
         rw.write(",");
         
-        rw.write("};</script>");
+        rw.write("};");
+        rw.write("__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};");
+        rw.write("</script>");
         
     }
     

@@ -138,8 +138,8 @@ module qmm019.a {
                 return;
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(() => void {
-                
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(function(): any {
+                window.location.reload(true);
             });
         }
         openEDialog(){
@@ -149,8 +149,14 @@ module qmm019.a {
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(() => void {
-                });
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴の編集'}).onClosed(function(): any  {
+                window.location.reload(true);
+            });
+        }
+        openGDialog(){
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'}).onClosed(function(): any  {
+                window.location.reload(true);
+            });
         }
     }
     export class NodeTest {

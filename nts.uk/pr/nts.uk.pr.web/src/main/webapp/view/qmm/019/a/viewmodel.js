@@ -120,7 +120,9 @@ var qmm019;
                     return;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () { return void {}; });
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                    window.location.reload(true);
+                });
             };
             ScreenModel.prototype.openEDialog = function () {
                 var self = this;
@@ -129,7 +131,14 @@ var qmm019;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () { return void {}; });
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
+                    window.location.reload(true);
+                });
+            };
+            ScreenModel.prototype.openGDialog = function () {
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
+                    window.location.reload(true);
+                });
             };
             return ScreenModel;
         }());

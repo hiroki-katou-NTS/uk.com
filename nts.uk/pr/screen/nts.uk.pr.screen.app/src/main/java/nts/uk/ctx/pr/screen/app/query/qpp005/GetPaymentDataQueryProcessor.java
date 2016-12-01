@@ -235,18 +235,18 @@ public class GetPaymentDataQueryProcessor {
 
 							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
 									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
-
+							boolean isTaxtAtr = mItem.getTaxAtr().value == 3 || mItem.getTaxAtr().value == 4;
 							Double value = datas.stream()
 									.filter(x -> x.getCategoryAtr() == ctAtr
 											&& x.getItemCode().equals(d.getItemCode().v()))
-									.findFirst().map(x -> x.getValue()).orElse(null);
+									.findFirst().map(x -> x.getValue()).orElse(isTaxtAtr ? 0.0 : null);
 
 							return DetailItemDto.fromDomain(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
 									mItem.getItemAbName().v(), value, mLine.getLinePosition().v(),
 									d.getItemPosColumn().v(), mItem.getDeductAttribute().value, d.getDisplayAtr().value,
-									value != null);
+									mItem.getTaxAtr().value, value != null);
 						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i,
-								null, null, false));
+								null, null, null, false));
 
 				items.add(detailItem);
 			}
