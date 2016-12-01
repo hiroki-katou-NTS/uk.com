@@ -78,12 +78,13 @@ public class JpaPaymentDataQueryRepository extends JpaRepository implements Paym
 		int deductAtr = (int)x[6];
 		int taxATR = (int)x[7];
 		int limitAmount =(int) x[8];
-		double commuteAllowTaxImpose = (double) x[9];
-		double commuteAllowMonth = (double) x[10];
-		double commuteAllowFraction = (double) x[11];
+		BigDecimal commuteAllowTaxImpose = (BigDecimal) x[9];
+		BigDecimal commuteAllowMonth = (BigDecimal) x[10];
+		BigDecimal commuteAllowFraction = (BigDecimal) x[11];
 		int displayAtr  = 0;
 		return DetailItemDto.fromDomain(categoryAtr, itemAtr, itemCode, "", value.doubleValue(), linePosition, colPosition,
-										deductAtr, displayAtr, taxATR, limitAmount, commuteAllowTaxImpose,commuteAllowMonth, commuteAllowFraction, true);
+										deductAtr, displayAtr, taxATR, limitAmount, commuteAllowTaxImpose.doubleValue(),
+										commuteAllowMonth.doubleValue(), commuteAllowFraction.doubleValue(), true);
 	}
 
 	@Override
