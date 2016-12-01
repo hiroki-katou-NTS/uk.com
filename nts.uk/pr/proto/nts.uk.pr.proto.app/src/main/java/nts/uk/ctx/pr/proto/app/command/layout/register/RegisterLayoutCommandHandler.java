@@ -10,6 +10,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
@@ -65,14 +66,13 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			}
 		}
 
-		List<LayoutMasterDetail> detailsFromDB = detailRepo.getDetails(companyCode, stmtCode, startYm);
 		for(LayoutDetail detailCommand : command.getDetailCommand()){
 			if (detailCommand.getItemCode().contains("itemTemp-")){
 				continue;
 			}
-			if (detailsFromDB.stream().filter(c ->
-						c.getItemCode().v().equals(detailCommand.getItemCode())
-						&& c.getCategoryAtr().value == detailCommand.getCategoryAtr()).findAny().isPresent()) {
+			if (!detailCommand.isAdded() && detailCommand.getUpdateItemCode().equals("")) {
+				// Khong phai là Thêm mới và không phải là Update ItemCode thì 
+				// chỉ update thường:
 				detailRepo.update(LayoutMasterDetail.createFromJavaType(companyCode, 
 						stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
 						detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
@@ -84,19 +84,26 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
 						detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
 						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
-			} else {
-				detailRepo.add(LayoutMasterDetail.createFromJavaType(companyCode, 
-						stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
-						detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
-						detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(), 
-						detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), 
-						detailCommand.getPersonalWageCode(), detailCommand.getSetOffItemCode(), 
-						detailCommand.getCommuteAtr(), detailCommand.getIsErrorUseHigh(), 
-						detailCommand.getErrorRangeHigh(), detailCommand.getIsErrorUserLow(), 
-						detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
-						detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
-						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
+				continue;
 			}
+			if (!detailCommand.getUpdateItemCode().equals("")) {
+				// day la update
+				detailRepo.remove(companyCode, stmtCode, startYm, detailCommand.getCategoryAtr(), detailCommand.getItemCode());
+				detailCommand.setItemCode(detailCommand.getUpdateItemCode());
+			} 
+			
+			//dành cho Thêm mới và update itemCode
+			detailRepo.add(LayoutMasterDetail.createFromJavaType(companyCode, 
+					stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
+					detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
+					detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(), 
+					detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), 
+					detailCommand.getPersonalWageCode(), detailCommand.getSetOffItemCode(), 
+					detailCommand.getCommuteAtr(), detailCommand.getIsErrorUseHigh(), 
+					detailCommand.getErrorRangeHigh(), detailCommand.getIsErrorUserLow(), 
+					detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
+					detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
+					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
 		}
 	}
 
@@ -128,7 +135,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 				lineRepo.add(LayoutMasterLine.createFromJavaType(companyCode, 
 						startYm, stmtCode, 
 						layoutCommand.getEndYm(), 
-						lineCommand.getAutoLineId(), 
+						IdentifierUtil.randomUniqueId(), 
 						lineCommand.getLineDisplayAtr(), 
 						lineCommand.getLinePosition(), 
 						lineCommand.getCategoryAtr()));
@@ -140,15 +147,15 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			String stmtCode, int startYm) {
 		if (command.getListCategoryAtrDeleted().size() > 0) {
 			for(Integer categoryAtr : command.getListCategoryAtrDeleted()){
-				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
+				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
+						companyCode, stmtCode, startYm, categoryAtr);
+				detailRepo.remove(detailsDelete);
 				
 				List<LayoutMasterLine> linesDelete = lineRepo.getLines(companyCode, stmtCode, 
 						startYm, categoryAtr);
 				lineRepo.remove(linesDelete);
 				
-				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByCategory(
-						companyCode, stmtCode, startYm, categoryAtr);
-				detailRepo.remove(detailsDelete);
+				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
 			}
 		}
 		

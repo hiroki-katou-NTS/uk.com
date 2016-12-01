@@ -94,6 +94,19 @@ var nts;
                     return CurrencyEditorOption;
                 }(NumberEditorOption));
                 option_1.CurrencyEditorOption = CurrencyEditorOption;
+                var MultilineEditorOption = (function (_super) {
+                    __extends(MultilineEditorOption, _super);
+                    function MultilineEditorOption(option) {
+                        _super.call(this);
+                        // Default value
+                        this.resizeable = (option && option.resizeable !== undefined) ? option.resizeable : false;
+                        this.placeholder = (option && option.placeholder) ? option.placeholder : "";
+                        this.width = (option && option.width) ? option.width : "";
+                        this.textalign = (option && option.textalign) ? option.textalign : "left";
+                    }
+                    return MultilineEditorOption;
+                }(EditorOptionBase));
+                option_1.MultilineEditorOption = MultilineEditorOption;
             })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

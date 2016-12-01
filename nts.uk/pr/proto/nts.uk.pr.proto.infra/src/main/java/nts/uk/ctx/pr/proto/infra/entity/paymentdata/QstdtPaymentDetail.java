@@ -65,15 +65,15 @@ public class QstdtPaymentDetail {
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_ALLOW_TAX_IMPOSE")
-	public int commuteAllowTaxImpose;
+	public BigDecimal commuteAllowTaxImpose;
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_ALLOW_MONTH")
-	public int commuteAllowMonth;
+	public BigDecimal commuteAllowMonth;
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_ALLOW_FRACTION")
-	public int commuteAllowFraction;
+	public BigDecimal commuteAllowFraction;
 	
 	@Basic(optional = false)
 	@Column(name = "LINE_POS")

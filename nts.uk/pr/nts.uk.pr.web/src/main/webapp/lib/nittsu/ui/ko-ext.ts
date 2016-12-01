@@ -13,8 +13,8 @@ module nts.uk.ui.koExtentions {
             $input.change(() => {
                 var newText = $input.val();
                 var result = validator.validate(newText);
+                $input.ntsError('clear');
                 if (result.isValid) {
-                    $input.ntsError('clear');
                     setValue(result.parsedValue);
                     $input.val(formatter.format(result.parsedValue));
                 } else {
@@ -82,7 +82,7 @@ module nts.uk.ui.koExtentions {
     }
 
     class TextEditorProcessor extends EditorProcessor {
-
+        
         update($input: JQuery, data: any) {
             var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
             var textmode: string = ko.unwrap(editorOption.textmode);
@@ -102,8 +102,9 @@ module nts.uk.ui.koExtentions {
         }
 
         getValidator(data: any): validation.IValidator {
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return validation.createValidator(constraintName);
+            return new validation.StringValidator(constraintName, required);
         }
     }
 
@@ -143,8 +144,34 @@ module nts.uk.ui.koExtentions {
             return new validation.TimeValidator(constraintName, ko.toJS(option));
         }
     }
+    
+    class MultilineEditorProcessor extends EditorProcessor {
+        
+        update($input: JQuery, data: any) {
+            var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var resizeable: string = ko.unwrap(editorOption.resizeable);
+            $input.css('resize', (resizeable) ? "both" : "none");
+            super.update($input, data);
+        }
 
+        getDefaultOption(): any {
+            return new option.MultilineEditorOption();
+        }
 
+        getFormatter(data: any): format.IFormatter {
+            var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constrain = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+        }
+
+        getValidator(data: any): validation.IValidator {
+            var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            return new validation.StringValidator(constraintName, required);
+        }
+    }
+    
     /**
      * Editor
      */
@@ -168,11 +195,11 @@ module nts.uk.ui.koExtentions {
     class NtsDynamicEditorBindingHandler extends NtsEditorBindingHandler {
 
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new DinamicEditorProcessor().init($(element), valueAccessor());
+            new DynamicEditorProcessor().init($(element), valueAccessor());
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new DinamicEditorProcessor().update($(element), valueAccessor());
+            new DynamicEditorProcessor().update($(element), valueAccessor());
         }
     }
 
@@ -237,6 +264,26 @@ module nts.uk.ui.koExtentions {
         }
     }
 
+    /**
+     * MultilineEditor
+     */
+    class NtsMultilineEditorBindingHandler extends NtsEditorBindingHandler {
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new MultilineEditorProcessor().init($(element), valueAccessor());
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            new MultilineEditorProcessor().update($(element), valueAccessor());
+        }
+    }
+    
     /**
      * Multi Checkbox
      */
@@ -398,8 +445,10 @@ module nts.uk.ui.koExtentions {
 
             var $dialog = $("#ntsErrorDialog");
 
-            if (autoclose === true && errors.length == 0)
+            if (autoclose === true && errors.length == 0) {
+                option.show(false);
                 show = false;
+            }
             if (show == true) {
                 $dialog.dialog("open");
                 // Create Error Table
@@ -1372,7 +1421,7 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             var date = ko.unwrap(data.value());
-            container.attr('value', nts.uk.time.formatDate(date, 'yyyy/mm/dd'));
+            container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
             container.datepicker({
                 format: 'yyyy/mm/dd',
                 language: 'ja'
@@ -1388,7 +1437,85 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
     }
-    
+    /**
+     * TabPanel Binding Handler
+     */
+    class TabPanelBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            // Get tab list.
+            var tabs: Array<any> = ko.unwrap(data.dataSource);
+            // Container.
+            var container = $(element);
+
+            // Create title.
+            container.prepend('<ul></ul>');
+            var titleContainer = container.children('ul');
+            for (var i = 0; i < tabs.length; i++) {
+                var id = tabs[i].id;
+                var title = tabs[i].title;
+                titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
+
+                // Wrap content.
+                var content = tabs[i].content;
+                container.children(content).wrap('<div id="' + id + '"></div>')
+            }
+            container.tabs({
+                activate: function(evt: Event, ui: any) {
+                    data.active(ui.newPanel[0].id);
+                    container.children('ul').children('.ui-tabs-active').addClass('active');
+                    container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
+                    container.children('ul').children('.ui-state-disabled').addClass('disabled');
+                    container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                }
+            });
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            // Get tab list.
+            var tabs: Array<any> = ko.unwrap(data.dataSource);
+            // Container.
+            var container = $(element);
+            // Select tab.
+            var activeTab = tabs.filter(tab => { return tab.id == data.active(); })[0];
+            var indexActive = tabs.indexOf(activeTab);
+            container.tabs("option", "active", indexActive);
+
+            // Disable & visible tab.
+            tabs.forEach(tab => {
+                if (tab.enable()) {
+                    container.tabs("enable", '#' + tab.id);
+                    container.children('#' + tab.id).children('div').show();
+                    container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
+                } else {
+                    container.tabs("disable", '#' + tab.id);
+                    container.children('#' + tab.id).children('div').hide();
+                    container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
+                }
+                if (!tab.visible()) {
+                    container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
+                } else {
+                    container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
+                }
+            });
+        }
+    }
+    ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
     ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
@@ -1398,6 +1525,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
+    ko.bindingHandlers['ntsMultilineEditor'] = new NtsMultilineEditorBindingHandler();
     ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
     ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();

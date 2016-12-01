@@ -23,8 +23,8 @@ var nts;
                         $input.change(function () {
                             var newText = $input.val();
                             var result = validator.validate(newText);
+                            $input.ntsError('clear');
                             if (result.isValid) {
-                                $input.ntsError('clear');
                                 setValue(result.parsedValue);
                                 $input.val(formatter.format(result.parsedValue));
                             }
@@ -108,8 +108,9 @@ var nts;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return validation.createValidator(constraintName);
+                        return new validation.StringValidator(constraintName, required);
                     };
                     return TextEditorProcessor;
                 }(EditorProcessor));
@@ -151,6 +152,33 @@ var nts;
                     };
                     return TimeEditorProcessor;
                 }(EditorProcessor));
+                var MultilineEditorProcessor = (function (_super) {
+                    __extends(MultilineEditorProcessor, _super);
+                    function MultilineEditorProcessor() {
+                        _super.apply(this, arguments);
+                    }
+                    MultilineEditorProcessor.prototype.update = function ($input, data) {
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var resizeable = ko.unwrap(editorOption.resizeable);
+                        $input.css('resize', (resizeable) ? "both" : "none");
+                        _super.prototype.update.call(this, $input, data);
+                    };
+                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
+                        return new ui_1.option.MultilineEditorOption();
+                    };
+                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
+                        var editorOption = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constrain = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+                    };
+                    MultilineEditorProcessor.prototype.getValidator = function (data) {
+                        var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        return new validation.StringValidator(constraintName, required);
+                    };
+                    return MultilineEditorProcessor;
+                }(EditorProcessor));
                 /**
                  * Editor
                  */
@@ -177,10 +205,10 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DinamicEditorProcessor().init($(element), valueAccessor());
+                        new DynamicEditorProcessor().init($(element), valueAccessor());
                     };
                     NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DinamicEditorProcessor().update($(element), valueAccessor());
+                        new DynamicEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsDynamicEditorBindingHandler;
                 }(NtsEditorBindingHandler));
@@ -247,6 +275,28 @@ var nts;
                     };
                     return NtsTimeEditorBindingHandler;
                 }());
+                /**
+                 * MultilineEditor
+                 */
+                var NtsMultilineEditorBindingHandler = (function (_super) {
+                    __extends(NtsMultilineEditorBindingHandler, _super);
+                    function NtsMultilineEditorBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsMultilineEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new MultilineEditorProcessor().init($(element), valueAccessor());
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsMultilineEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new MultilineEditorProcessor().update($(element), valueAccessor());
+                    };
+                    return NtsMultilineEditorBindingHandler;
+                }(NtsEditorBindingHandler));
                 /**
                  * Multi Checkbox
                  */
@@ -408,8 +458,10 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = $("#ntsErrorDialog");
-                        if (autoclose === true && errors.length == 0)
+                        if (autoclose === true && errors.length == 0) {
+                            option.show(false);
                             show = false;
+                        }
                         if (show == true) {
                             $dialog.dialog("open");
                             // Create Error Table
@@ -1288,7 +1340,7 @@ var nts;
                         // Container.
                         var container = $(element);
                         var date = ko.unwrap(data.value());
-                        container.attr('value', nts.uk.time.formatDate(date, 'yyyy/mm/dd'));
+                        container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
                             format: 'yyyy/mm/dd',
                             language: 'ja'
@@ -1304,6 +1356,83 @@ var nts;
                     };
                     return DatePickerBindingHandler;
                 }());
+                /**
+                 * TabPanel Binding Handler
+                 */
+                var TabPanelBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function TabPanelBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Get tab list.
+                        var tabs = ko.unwrap(data.dataSource);
+                        // Container.
+                        var container = $(element);
+                        // Create title.
+                        container.prepend('<ul></ul>');
+                        var titleContainer = container.children('ul');
+                        for (var i = 0; i < tabs.length; i++) {
+                            var id = tabs[i].id;
+                            var title = tabs[i].title;
+                            titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
+                            // Wrap content.
+                            var content = tabs[i].content;
+                            container.children(content).wrap('<div id="' + id + '"></div>');
+                        }
+                        container.tabs({
+                            activate: function (evt, ui) {
+                                data.active(ui.newPanel[0].id);
+                                container.children('ul').children('.ui-tabs-active').addClass('active');
+                                container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
+                                container.children('ul').children('.ui-state-disabled').addClass('disabled');
+                                container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                            }
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Get tab list.
+                        var tabs = ko.unwrap(data.dataSource);
+                        // Container.
+                        var container = $(element);
+                        // Select tab.
+                        var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
+                        var indexActive = tabs.indexOf(activeTab);
+                        container.tabs("option", "active", indexActive);
+                        // Disable & visible tab.
+                        tabs.forEach(function (tab) {
+                            if (tab.enable()) {
+                                container.tabs("enable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').show();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
+                            }
+                            else {
+                                container.tabs("disable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').hide();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
+                            }
+                            if (!tab.visible()) {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
+                            }
+                            else {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
+                            }
+                        });
+                    };
+                    return TabPanelBindingHandler;
+                }());
+                ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
                 ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
@@ -1313,6 +1442,7 @@ var nts;
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
+                ko.bindingHandlers['ntsMultilineEditor'] = new NtsMultilineEditorBindingHandler();
                 ko.bindingHandlers['ntsDialog'] = new NtsDialogBindingHandler();
                 ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();

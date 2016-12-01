@@ -24,10 +24,13 @@
 
 .i-left {
 	float: left;
-	line-height: 30px;
 	padding: 0px 10px;
 	background: #C7F391;
 	border-right: 1px solid #d2d2d2;
+}
+
+.i-left>label {
+	line-height: 30px;
 }
 
 .i-right {
@@ -86,14 +89,25 @@ table.tb-category, th, td {
 	text-align: center;
 	float: left;
 	width: 100%;
-	height: 20px;
+	height: 19px;
 	background: #C7F391;
 	border-bottom: 1px solid #726e6e;
 }
 
+.sp-readonly {
+	float: left;
+	width: 100%;
+	height: 20px;
+	background: #fff !important;
+	border: none !important;
+}
+
 .tb-category td>input {
 	border: none;
-	width: 100%;
+	width: 97%;
+	text-align: right !important;
+	padding: 0px 3px 0px 0px;
+	line-height: 19px;
 }
 
 #txt-remarks {
@@ -101,7 +115,7 @@ table.tb-category, th, td {
 	border-radius: 5px;
 	margin: 5px 0px 0px 0px;
 	width: 50%;
-	height: 80px;
+	height: 65px;
 }
 
 .disabled {
@@ -112,7 +126,7 @@ table.tb-category, th, td {
 
 #grid-setting {
 	display: inline-block;
-	float:right;
+	float: right;
 }
 
 #btSetting {
@@ -122,4 +136,36 @@ table.tb-category, th, td {
 	height: 25px;
 	width: 28px;
 }
+
+#pơpup-orientation {
+	width: 235px;
+	height: 90px;
+}
+
+.contentFrame {
+	margin: 0px auto;
+}
+
+.switchButton {
+	/**margin-left: 30px;*/
+}
+
+.seperator {
+	border-top: 1px solid gray;
+	width: 90%;
+	margin: 5px auto;
+}
+
+.buttonFrame {
+	width: 85%;
+	margin: 5px 0px 0px 17px;
+}
+
+.txt-btlink {
+	color: #4A8BF5;
+	font-weight: 600;
+	text-decoration: underline;
+	cursor: pointer;
+	float: right;
+	padding: 0px 3px 0px 0px;
 }

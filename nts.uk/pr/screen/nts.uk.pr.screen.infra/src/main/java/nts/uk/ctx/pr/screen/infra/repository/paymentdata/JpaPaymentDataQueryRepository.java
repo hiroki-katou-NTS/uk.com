@@ -1,9 +1,11 @@
 package nts.uk.ctx.pr.screen.infra.repository.paymentdata;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.screen.app.query.qpp005.PaymentDataQueryRepository;
 import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
@@ -11,14 +13,14 @@ import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
 @RequestScoped
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
-	private String SELECT_ALL = " SELECT d, i.ITEM_NAME, i.itemAtr" +
-								" FROM QstdtPaymentDetail d JOIN QcamtItem i ON d.QstdtPaymentDetailPK.companyCode = i.QcamtItemPK.ccd" +
-																	" AND d.QstdtPaymentDetailPK.categoryATR = i.QcamtItemPK.ctgAtr" +
-																	" AND d.QstdtPaymentDetailPK.itemCode = i.QcamtItemPK.itemCd" +
-								" WHERE d.QstdtPaymentDetailPK.companyCode = :CCD" +
-										" AND d.QstdtPaymentDetailPK.PID = :PID" +
-										" AND d.QstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR" +
-										" AND d.QstdtPaymentDetailPK.processingYM = :PROCESSING_YM";
+	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "
+										+ "d.linePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"
+										+ "d.commuteAllowTaxImpose, d.commuteAllowMonth, d.commuteAllowFraction" +
+										" FROM QstdtPaymentDetail d " +
+										" WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" +
+												" AND d.qstdtPaymentDetailPK.personId = :PID" +
+												" AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR" +
+												" AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM";
 	
 	
 	private String SELECT_ITEM_BY_CATEGORY = " SELECT d, i.itemName" +
@@ -58,12 +60,31 @@ public class JpaPaymentDataQueryRepository extends JpaRepository implements Paym
 	@Override
 	public List<DetailItemDto> findAll(String companyCode, String personId, int payBonusAtr, int processingYm) {
 		return this.queryProxy()
-						.query(SELECT_ALL, DetailItemDto.class)
+						.query(SELECT_ALL, Object[].class)
 							.setParameter("CCD", companyCode)
 							.setParameter("PID", personId)
 							.setParameter("PAY_BONUS_ATR", payBonusAtr)
 							.setParameter("PROCESSING_YM", processingYm)
-						.getList();
+						.getList(x -> toDomain(x));
+	}
+	
+	private DetailItemDto toDomain(Object[] x) {
+		int categoryAtr = (int)x[0]; 
+		int itemAtr = (int)x[1];
+		String itemCode = (String)x[2];
+		BigDecimal value = (BigDecimal)x[3];
+		int linePosition = (int)x[4];
+		int colPosition = (int)x[5];
+		int deductAtr = (int)x[6];
+		int taxATR = (int)x[7];
+		int limitAmount =(int) x[8];
+		BigDecimal commuteAllowTaxImpose = (BigDecimal) x[9];
+		BigDecimal commuteAllowMonth = (BigDecimal) x[10];
+		BigDecimal commuteAllowFraction = (BigDecimal) x[11];
+		int displayAtr  = 0;
+		return DetailItemDto.fromDomain(categoryAtr, itemAtr, itemCode, "", value.doubleValue(), linePosition, colPosition,
+										deductAtr, displayAtr, taxATR, limitAmount, commuteAllowTaxImpose.doubleValue(),
+										commuteAllowMonth.doubleValue(), commuteAllowFraction.doubleValue(), true);
 	}
 
 	@Override

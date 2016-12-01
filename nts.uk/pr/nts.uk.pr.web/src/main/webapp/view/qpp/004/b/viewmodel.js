@@ -14,9 +14,10 @@ var qpp004;
             }());
             viewmodel.Step = Step;
             var ItemModel = (function () {
-                function ItemModel(id, name) {
+                function ItemModel(id, code, name) {
                     var self = this;
                     this.id = id;
+                    this.code = code;
                     this.name = name;
                 }
                 return ItemModel;
@@ -26,16 +27,16 @@ var qpp004;
                 function Listbox() {
                     var self = this;
                     self.itemList = ko.observableArray([
-                        new qpp004.b.viewmodel.ItemModel('A00000000001', '日通　社員１'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000002', '日通　社員2'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000003', '日通　社員3'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000004', '日通　社員4'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000005', '日通　社員5'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000006', '日通　社員6'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000007', '日通　社員7'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000008', '日通　社員8'),
-                        new qpp004.b.viewmodel.ItemModel('A00000000009', '日通　社員9'),
-                        new qpp004.b.viewmodel.ItemModel('A000000000010', '日通　社員１0'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000001', 'A00000000001', '日通　社員１'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000002', 'A00000000002', '日通　社員2'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000003', 'A00000000003', '日通　社員3'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000004', 'A00000000004', '日通　社員4'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000005', 'A00000000005', '日通　社員5'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000006', 'A00000000006', '日通　社員6'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000007', 'A00000000007', '日通　社員7'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000008', 'A00000000008', '日通　社員8'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000009', 'A00000000009', '日通　社員9'),
+                        new qpp004.b.viewmodel.ItemModel('A00000000000000000000000000000000010', 'A00000000010', '日通　社員１0'),
                     ]);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable(3);
@@ -104,6 +105,9 @@ var qpp004;
                     };
                     nts.uk.ui.windows.setShared("data", data);
                     nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成", dialogClass: "no-close" });
+                };
+                ScreenModel.prototype.backqpp004a = function () {
+                    nts.uk.request.jump("/view/qpp/004/a/index.xhtml", {});
                 };
                 return ScreenModel;
             }());

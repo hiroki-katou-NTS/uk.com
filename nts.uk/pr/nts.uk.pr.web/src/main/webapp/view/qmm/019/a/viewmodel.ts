@@ -5,11 +5,12 @@ module qmm019.a {
         //Khai bao bien
         itemList: KnockoutObservableArray<NodeTest>;
         singleSelectedCode: KnockoutObservable<string>;
-//        selectedCode: KnockoutObservableArray<NodeTest>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutMaster: KnockoutObservable<service.model.LayoutMasterDto>;
         categories: KnockoutObservableArray<service.model.Category>;
+        notHasKintai: KnockoutObservable<boolean> = ko.observable(false);
+        notHasKiji: KnockoutObservable<boolean> = ko.observable(false);
         
         constructor() {
             var self = this;
@@ -29,13 +30,25 @@ module qmm019.a {
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
                         .done(function(listResult : Array<service.model.Category>){
                             self.categories(listResult);
+                            self.checkKintaiKiji();
                             self.bindSortable();
                     });
                 }
             });
         }
 
-        
+        checkKintaiKiji(){
+            var self = this;
+            var findKintai = _.find(self.categories(), function(category){
+               return category.categoryAtr === 2; 
+            });
+            self.notHasKintai(findKintai === undefined);
+            
+            var findKiji = _.find(self.categories(), function(category){
+               return category.categoryAtr === 3; 
+            });
+            self.notHasKiji(findKiji === undefined);    
+        }
         bindSortable() {
             var self = this;
             $(".row").sortable({
@@ -92,10 +105,31 @@ module qmm019.a {
         registerLayout() {
             var self = this;
             service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                
+                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                    .done(function(listResult : Array<service.model.Category>){
+                        self.categories(listResult);
+                        self.checkKintaiKiji();
+                        self.bindSortable();
+                });
             }).fail(function(err){
                 alert(err);    
             });
+        }
+        
+        addKintaiCategory() {
+            var self = this;
+            let category: service.model.Category = new service.model.Category([], 2, self);
+            self.categories.push(category);
+            self.notHasKintai(false);
+            self.bindSortable();
+        }
+        
+        addKijiCategory() {
+            var self = this;
+            let category: service.model.Category = new service.model.Category([], 3, self);
+            self.categories.push(category);
+            self.notHasKiji(false);
+            self.bindSortable();
         }
         
         openADialog() {
@@ -104,8 +138,8 @@ module qmm019.a {
                 return;
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(() => void {
-                
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(function(): any {
+                self.start();
             });
         }
         openEDialog(){
@@ -115,8 +149,15 @@ module qmm019.a {
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(() => void {
-                });
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴の編集'}).onClosed(function(): any  {
+                self.start();
+            });
+        }
+        openGDialog(){
+            var self = this;
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'}).onClosed(function(): any  {
+                self.start();
+            });
         }
     }
     export class NodeTest {

@@ -1,5 +1,5 @@
 module qmm019.d.viewmodel {
-    
+    import option = nts.uk.ui.option;
     export class ScreenModel {
         selectLayoutAtr: KnockoutObservable<string>;
         itemList: KnockoutObservableArray<ItemModel>;
@@ -12,6 +12,7 @@ module qmm019.d.viewmodel {
         valueSel001:   KnockoutObservable<string>;
         createlayout:  KnockoutObservable<service.model.LayoutMasterDto>;
         startYmHis: KnockoutObservable<number>;
+        timeEditorOption: KnockoutObservable<any>;
         /**
          * Init screen model.
          */
@@ -24,11 +25,12 @@ module qmm019.d.viewmodel {
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
-            //sau nay gan lai
-            self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));//ko.observable("01");
+            self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
             self.valueSel001 = ko.observable("");
             self.createlayout = ko.observable(null);
             self.startYmHis = ko.observable(null);
+            console.log(option);
+            self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
         } 
         
         start(): JQueryPromise<any> {
@@ -73,8 +75,8 @@ module qmm019.d.viewmodel {
                     self.selectStmtCode(stmtCode);
                     self.selectStmtName(layout.stmtName);
                     self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                    self.valueSel001('最新の履歴'+ layout.startYm +'から引き継ぐ')
-                    self.startYmHis = layout.startYm;
+                    self.valueSel001('最新の履歴（'+ nts.uk.time.formatYearMonth(layout.startYm) +'）から引き継ぐ')
+                    self.startYmHis(layout.startYm);
                     return false;                    
                 }
             });     
@@ -82,7 +84,7 @@ module qmm019.d.viewmodel {
         
        createHistoryLayout(): any{
            var self = this;
-           var selectYm = self.startYmHis;
+           var selectYm = self.startYmHis();
             var inputYm =$("#INP_001").val().replace('/','');
             if(+inputYm < +selectYm
               || + inputYm == +selectYm){
@@ -107,14 +109,16 @@ module qmm019.d.viewmodel {
        }
        createData(): any{
            var self = this;
-           var startPreviou = +$('#INP_001').val().replace('/','');
+           var start = +$('#INP_001').val().replace('/','');
+           
            self.createlayout({
                checkContinue: false,
                stmtCode: self.selectStmtCode(),
-               startYm: +self.startYmHis,
-               endYm: (startPreviou - 1),
-               startPrevious: startPreviou,
-               layoutAtr: 3
+               startYm: start,
+               endYm: start,
+               startPrevious: self.startYmHis(),
+               layoutAtr: 3,
+               stmtName: ""
           });
        }
         closeDialog(): any{

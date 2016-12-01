@@ -25,21 +25,17 @@ module qmm019.e.viewmodel {
          // start function
         start(): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred<any>();
             var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
             var startYm = nts.uk.ui.windows.getShared('startYm');
             self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-             service.getLayout(layoutCode, startYm).done(function(layout){
+            service.getLayout(layoutCode, startYm).done(function(layout: service.model.LayoutMasterDto){
                  self.selectLayout(layout);
                  self.startDiaglog();                 
-                 
+                 dfd.resolve();
              }).fail(function(res){
                 alert(res);    
              })
-            
-            var dfd = $.Deferred<any>();
-            dfd.resolve();
-            
-            
             // Return.
             return dfd.promise();    
         }
@@ -47,10 +43,7 @@ module qmm019.e.viewmodel {
         startDiaglog(): any{
             var self = this;
             var layout = self.selectLayout();
-            var code = layout.stmtCode.trim();
-            if(code.length < 2){
-               code = "0" + code;
-            }
+            var code = layout.stmtCode;
             self.selectLayoutCode(code);
             self.selectLayoutName(layout.stmtName);
             self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));
@@ -82,12 +75,24 @@ module qmm019.e.viewmodel {
             var layoutInfor = self.selectLayout();
             layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/','');
             layoutInfor.startYm = +$("#INP_001").val().replace('/','');
-            service.updateLayout(layoutInfor).done(function(){
+            //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
+            if(layoutInfor.startYmOriginal > layoutInfor.startYm
+            || layoutInfor.startYm > +self.selectLayoutEndYm().replace('/','')){
+                alert("履歴の期間が重複しています。");
+                return false;
+            }
+            else if (layoutInfor.startYmOriginal == layoutInfor.startYm){
                 alert("履歴を修正しました。");
-                 nts.uk.ui.windows.close();
-            }).fail(function(res){
-                alert(res);    
-            })
+                nts.uk.ui.windows.close();
+                return false;    
+            }else{
+                service.updateLayout(layoutInfor).done(function(){
+                    alert("履歴を修正しました。");
+                     nts.uk.ui.windows.close();
+                }).fail(function(res){
+                    alert(res);    
+                })
+            }
         }
         
         closeDialog() {

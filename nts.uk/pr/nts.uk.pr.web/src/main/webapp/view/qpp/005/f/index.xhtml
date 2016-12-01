@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 600, height: 450 };</script>
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+ 			</com:ValidatorScript>
+			<link rel="stylesheet" type="text/css" href="main.css" />
+			<script src="start.js"></script>
+			<script src="viewmodel.js"></script>
+			<script src="service.js"></script>
+			<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div class="floatLeft divMargin">
+				<label id="LBL_001">001</label>
+				<label id="LBL_002">Vu Dinh Dung</label>
+			</div>
+			
+			<div class="floatLeft seperator"></div>
+			
+			<div class="floatLeft checkBoxHead">
+				<div class="textCheckBox" id="SEL_001" data-bind="ntsCheckBox: { checked: totalCheck.isChecked}">
+					通勤費　合計
+				</div>
+			</div>
+			
+			<div class="floatLeft divMargin divPadding" style="width:85%;">
+				<div data-bind="with: numberEditor" style="display:inline-block;">
+					<input id="INP_001" data-bind="ntsNumberEditor: {value: value, option: option, enable: isEnable}" />
+				</div>
+				
+				<label id="LBL_003" style="margin-left: 5%;"> 内 </label>
+				
+				<div id="SEL_002" style="margin-left: 5%; display:inline-block;font-size:8pt;" data-bind="ntsCheckBox: { checked: taxCommuteCheck.isChecked}">
+					課税通勤費
+				</div>
+				
+				<input id="INP_002" value="sdfsdfs" data-bind="enable: IsEnableText()" style="margin-left: 2%;width:80px;">
+					
+				</input>
+			</div>
+			
+			<div class="floatLeft" style="margin-top:10px; margin-left:182px;">			
+				<label id="LBL_004">※課税通勤費が０円の場合、全額非課税通勤費</label>
+			</div>
+			
+			<div class="floatLeft" style="margin-top:10px; margin-left:182px;">			
+				<label id="LBL_005">※設定されている限度額</label>
+			</div>
+			
+			<div class="floatLeft" style="margin-top:10px; margin-left:182px;">			
+				<label id="LBL_006" style=" margin-left:35px;">001</label>
+				<label id="LBL_007">Thue thu nhap</label>
+				<label id="LBL_008" style=" margin-left:15px;">100000</label>
+			</div>
+			
+			
+			<div class="floatLeft checkBoxHead">
+				<div class="textCheckBox" id="SEL_003" data-bind="ntsCheckBox: { checked: oneMonthCheck.isChecked}">
+					１ヵ月分通勤費
+				</div>
+			</div>
+			
+			<div class="floatLeft divMargin divPadding" style="width:85%;">
+				<input id="INP_003" data-bind="enable: oneMonthCheck.isChecked" value="sdfsdfs"  style="width:80px;">
+					
+				</input>
+				
+				<label id="LBL_010" style="margin-left: 5%;">通勤費 合計 ÷</label>
+				
+				<input id="SEL_004"></input>
+				
+				<label id="LBL_011" style="margin-left: 2%;width:80px;">の金額を</label>
+			</div>
+			
+			<div class="floatLeft " style="width:85%; display:table; margin-top:10px;">
+				<label id="LBL_009" style=" width:60px; display:table-cell; text-align: center;">余り<br/>（端数）</label>
+				
+				<input id="INP_004" data-bind="enable: oneMonthCheck.isChecked" value="sdfsdfs"  style="width:80px;display:table-cell; margin-left:10px; ">
+					
+				</input>
+				
+				<label id="LBL_012" style="padding-left: 18px;display: table-cell; vertical-align: middle;">「１ヵ月分通勤費」「余り（端数）」に設定します。</label>
+			</div>
+			
+			<div class="floatLeft seperator" style="width:100%; margin-left: 0px;"></div>
+			
+			<div class="floatLeft divMargin">
+				<button class="x-large" style="margin-left: 190px; background-color: #A4EEB0">設定</button>
+				<button class="large" style="margin-left: 20px;" >キャンセル</button>
+			</div>
+			
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

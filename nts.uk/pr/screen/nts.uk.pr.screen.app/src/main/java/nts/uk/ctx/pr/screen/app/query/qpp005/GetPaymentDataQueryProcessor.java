@@ -106,13 +106,17 @@ public class GetPaymentDataQueryProcessor {
 				});
 
 		// get 明細書マスタ
-		LayoutMaster layout = this.layoutMasterRepository.getLayout(companyCode, processingYM, stmtCode)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("対象データがありません。")));
-		int startYM = layout.getStartYM().v();
+		List<LayoutMaster> mLayouts = this.layoutMasterRepository.findAll(companyCode, stmtCode, processingYM);
+		if (mLayouts.isEmpty()) {
+			throw new BusinessException("対象データがありません。");
+		}
+
+		LayoutMaster mLayout = mLayouts.get(0);
+		int startYM = mLayout.getStartYM().v();
 
 		// get 明細書マスタカテゴリ
 		List<LayoutMasterCategory> mCates = this.layoutMasterCategoryRepository.getCategories(companyCode,
-				layout.getStmtCode().v(), startYM);
+				mLayout.getStmtCode().v(), startYM);
 
 		// get 明細書マスタ行
 		List<LayoutMasterLine> mLines = this.layoutMasterLineRepository.getLines(companyCode, stmtCode, startYM);
@@ -127,7 +131,7 @@ public class GetPaymentDataQueryProcessor {
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(), PROCESSING_NO,
 				PAY_BONUS_ATR, processingYM, 0);
 
-		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, layout, optPHeader,
+		List<DetailItemDto> detailItems = getDetailItems(query, result, companyCode, processingYM, mLayout, optPHeader,
 				mCates, mLines);
 
 		result.setCategories(mergeDataToLayout(mCates, mLines, mDetails, detailItems, mItems));
@@ -153,17 +157,17 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), payment.getDependentNumber().v(),
-					payment.getSpecificationCode().v(), layout.getStmtName().v(), payment.getMakeMethodFlag().value,
-					query.getEmployeeCode(), payment.getComment().v(), true,
-					printPosCates
-					));
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(),
+					payment.getDependentNumber().v(), payment.getSpecificationCode().v(), layout.getStmtName().v(),
+					payment.getMakeMethodFlag().value, query.getEmployeeCode(), payment.getComment().v(), true,
+					printPosCates));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), null, layout.getStmtCode().v(),
-					layout.getStmtName().v(), null, query.getEmployeeCode(), "", false, printPosCates));
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), null,
+					layout.getStmtCode().v(), layout.getStmtName().v(), null, query.getEmployeeCode(), "", false,
+					printPosCates));
 
 			return new ArrayList<>();
 		}
@@ -231,18 +235,43 @@ public class GetPaymentDataQueryProcessor {
 
 							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
 									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
-
-							Double value = datas.stream()
-									.filter(x -> x.getCategoryAtr() == ctAtr
-											&& x.getItemCode().equals(d.getItemCode().v()))
-									.findFirst().map(x -> x.getValue()).orElse(null);
-
-							return DetailItemDto.fromDomain(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
-									mItem.getItemAbName().v(), value, mLine.getLinePosition().v(),
-									d.getItemPosColumn().v(), mItem.getDeductAttribute().value, d.getDisplayAtr().value,
+							boolean isTaxtAtr = mItem.getTaxAtr().value == 3 || mItem.getTaxAtr().value == 4;
+							Optional<DetailItemDto> dValue = datas.stream().filter(
+									x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
+									.findFirst();
+							Integer limitAmount;
+							Double value, comuteAllowTax, commuteAllowMonth, commuteAllowFraction;
+							if (dValue.isPresent()) {
+								DetailItemDto iValue = dValue.get();
+								value = iValue.getValue();
+								limitAmount = iValue.getLimitAmount();
+								comuteAllowTax = iValue.getCommuteAllowTaxImpose();
+								commuteAllowMonth = iValue.getCommuteAllowMonth();
+								commuteAllowFraction = iValue.getCommuteAllowFraction();
+							} else {
+								value = isTaxtAtr ? 0.0: null;
+								limitAmount = null;
+								comuteAllowTax = 0.0;
+								commuteAllowMonth = 0.0;
+								commuteAllowFraction = 0.0;
+							}
+							return DetailItemDto.fromDomain(
+									ctAtr, 
+									mItem.getItemAtr().value, 
+									d.getItemCode().v(),
+									mItem.getItemAbName().v(),value,
+									mLine.getLinePosition().v(), 
+									d.getItemPosColumn().v(),
+									mItem.getDeductAttribute().value, 
+									d.getDisplayAtr().value, 
+									mItem.getTaxAtr().value,
+									limitAmount,
+									comuteAllowTax,
+									commuteAllowMonth,
+									commuteAllowFraction,
 									value != null);
 						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i,
-								null, null, false));
+								null, null, null, null,null,null,null, false));
 
 				items.add(detailItem);
 			}

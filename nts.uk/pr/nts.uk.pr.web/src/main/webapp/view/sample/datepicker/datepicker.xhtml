@@ -10,18 +10,13 @@
          <ui:define name="htmlHead">
          	<link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
          	<link rel="stylesheet" type="text/css" href="css/datepicker.css" />
-         	<script>var dialogSize = { width: 300, height: 200 };</script>
          	
-			<com:ValidatorScript>
-				nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-				nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
-				nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
-			</com:ValidatorScript>
+         	
+			
 			<script src="js/bootstrap.js"></script>
 			<script src="js/bootstrap-datepicker.js"></script>
 			<script src="js/bootstrap-datepicker.ja.js"></script>
-			<script src="js/viewmodel.js"></script>
-			<script src="js/start.js"></script>
+			
          </ui:define>
          
          <ui:define name="content">
@@ -30,11 +25,14 @@
 					<div class="column right cf">
 						<div>
 							<input id="date-picker" data-bind="ntsDatePicker: {value: date}"></input>
-							<span data-bind="text: nts.uk.time.formatDate(date, 'yyyy/mm/dd')"></span>
+							<!--  <span data-bind="text: nts.uk.time.formatDate(date, 'yyyy/mm/dd')"></span> -->
 						</div>
 					</div>
 				</div>
 			</div>
+			Your selected date is <span data-bind="text: formatDate"></span>
+			<script src="js/viewmodel.js"></script>
+			<script src="js/start.js"></script>
          </ui:define>
  	</ui:composition>
 	</body>

@@ -37,7 +37,7 @@
 
         switch (constraint.valueType) {
             case 'String':
-                return new StringValidator(constraintName);
+                return new StringValidator(constraintName, null);
         }
 
         return new NoValidator();
@@ -45,15 +45,41 @@
 
 
     export class StringValidator implements IValidator {
-
+        constraint: any;
         charType: text.CharType;
-
-        constructor(primitiveValueName: string) {
+        required: boolean;
+        
+        constructor(primitiveValueName: string, required: boolean) {
+            this.constraint = getConstraint(primitiveValueName);
             this.charType = text.getCharType(primitiveValueName);
+            this.required = required;
         }
-
+        
         validate(inputText: string): ValidationResult {
-            return this.charType.validate(inputText);
+            var result = new ValidationResult();
+            
+            if (this.required !== undefined) {
+                if (!checkRequired(inputText)) {
+                    result.fail('This field is required');
+                    return result;
+                }
+            }
+            
+            if (this.charType !== null) {
+                if (!this.charType.validate(inputText)) {
+                    result.fail('Invalid text');
+                    return result;
+                }
+            }
+            
+            if (this.constraint !== null && this.constraint.maxLength !== undefined) {
+                if (text.countHalf(inputText) > this.constraint.maxLength) {
+                    result.fail('Max length for this input is ' + this.constraint.maxLength);
+                    return result;
+                }
+            }
+            result.success(inputText);
+            return result;
         }
     }
 
@@ -128,6 +154,14 @@
             return result;
         }
     }
+     
+    function checkRequired(value: any): boolean {
+        if (value === undefined || value === null || value.length == 0) {
+            return false;
+        }
+        return true;
+    }
+     
     export function getConstraint(primitiveValueName: string) {
         var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
         if (constraint === undefined)

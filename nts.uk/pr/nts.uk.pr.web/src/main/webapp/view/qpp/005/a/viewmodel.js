@@ -36,11 +36,18 @@ var nts;
                                 });
                                 self.employeeList = ko.observableArray(employees);
                                 self.employee(employees[0]);
+                                // グリッド設定
+                                self.switchButton = ko.observable(new SwitchButton());
+                                self.visible = ko.observable(self.switchButton().selectedRuleCode() == 'vnext');
+                                self.switchButton().selectedRuleCode.subscribe(function (newValue) {
+                                    self.visible(newValue == 'vnext');
+                                    qpp005.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                });
                             }
                             ScreenModel.prototype.startPage = function () {
                                 var self = this;
                                 var dfd = $.Deferred();
-                                qpp005.service.getPaymentData(self.employee().personId(), self.employee().code()).done(function (res) {
+                                qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function (res) {
                                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
                                     var categoryPayment = self.paymentDataResult().categories()[0];
                                     var categoryDeduct = self.paymentDataResult().categories()[1];
@@ -49,8 +56,8 @@ var nts;
                                     self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
                                     dfd.resolve();
                                 }).fail(function (res) {
-                                    // Alert message
-                                    alert(res);
+                                    $('.tb-category').css('display', 'none');
+                                    alert(res.message);
                                 });
                                 // Return.
                                 return dfd.promise();
@@ -66,7 +73,7 @@ var nts;
                             ScreenModel.prototype.openEmployeeList = function () {
                                 var _this = this;
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qpp/005/dlgemployeelist/index.xhtml', { title: '社員選択' }).onClosed(function () {
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/c/index.xhtml', { title: '社員選択' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
                                     self.startPage();
@@ -95,14 +102,28 @@ var nts;
                                 self.employee(self.employeeList()[eIdx + 1]);
                                 self.startPage();
                             };
-                            ScreenModel.prototype.openGridSetting = function () {
+                            ScreenModel.prototype.openColorSettingGuide = function () {
                                 var _this = this;
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qpp/005/b/index.xhtml', { title: 'グリッド設定' }).onClosed(function () {
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
                                     self.startPage();
                                     return _this;
+                                });
+                            };
+                            ScreenModel.prototype.openGridSetting = function () {
+                                var self = this;
+                                $('#pơpup-orientation').ntsPopup('show');
+                            };
+                            ScreenModel.prototype.openSetupTaxItem = function (value) {
+                                var self = this;
+                                nts.uk.ui.windows.setShared("value", value);
+                                nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(function () {
+                                    var employee = nts.uk.ui.windows.getShared('employee');
+                                    self.employee(employee);
+                                    self.startPage();
+                                    return self;
                                 });
                             };
                             /**
@@ -133,14 +154,24 @@ var nts;
                         }());
                         viewmodel.ScreenModel = ScreenModel;
                         ;
-                        //        private parseResultDtoToViewModel(resultDto) {
-                        //              //        }
+                        var SwitchButton = (function () {
+                            function SwitchButton() {
+                                var self = this;
+                                self.roundingRules = ko.observableArray([
+                                    { code: 'vnext', name: '縦方向' },
+                                    { code: 'hnext', name: '横方向' }
+                                ]);
+                                self.selectedRuleCode = ko.observable('hnext');
+                            }
+                            return SwitchButton;
+                        }());
+                        viewmodel.SwitchButton = SwitchButton;
                         var Employee = (function () {
                             function Employee(personId, code, name) {
                                 var self = this;
-                                self.personId = ko.observable(personId);
-                                self.code = ko.observable(code);
-                                self.name = ko.observable(name);
+                                self.personId = personId;
+                                self.code = code;
+                                self.name = name;
                             }
                             return Employee;
                         }());
@@ -176,7 +207,7 @@ var nts;
                         viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                         // item
                         var DetailItemViewModel = (function () {
-                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, isCreated) {
+                            function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated) {
                                 var self = this;
                                 self.categoryAtr = categoryAtr;
                                 self.itemAtr = itemAtr;
@@ -187,7 +218,23 @@ var nts;
                                 self.linePosition = linePosition;
                                 self.deductAtr = deductAtr;
                                 self.displayAtr = displayAtr;
+                                self.taxAtr = taxAtr;
+                                self.limitAmount = limitAmount;
+                                self.commuteAllowTaxImpose = commuteAllowTaxImpose;
+                                self.commuteAllowMonth = commuteAllowMonth;
+                                self.commuteAllowFraction = commuteAllowFraction;
                                 self.isCreated = isCreated;
+                                self.option = ko.computed(function () {
+                                    if (self.itemAtr === 0) {
+                                        return ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'time' }));
+                                    }
+                                    else if (self.itemAtr === 1) {
+                                        return ko.mapping.fromJS(new option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
+                                    }
+                                    else if (self.itemAtr == 2 || self.itemAtr === 3) {
+                                        return ko.mapping.fromJS(new option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' }));
+                                    }
+                                });
                             }
                             return DetailItemViewModel;
                         }());

@@ -7,7 +7,7 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.proto.dom.layout.LayoutName
@@ -18,6 +18,7 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="service.js" />
 			<com:stylefile path="main.css" />
+			<script>var dialogSize = { width: 1300, height: 650 };</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -29,7 +30,7 @@
 					<br /> <br />
 					<div class="form-label">
 						<label>コード/名称</label><input style="margin-left: 20px;" type="text" />
-						<button style="width: 68px;" data-bind="click: openHDialog">検索</button>
+						<button style="width: 68px;">検索</button>
 					</div>
 					<br /> <br />
 					<div data-bind="with: listBox">
@@ -39,6 +40,7 @@
 											   optionsText: 'name',
 											   multiple: false,
 											   value: selectedCode,
+											   test: itemDtoSelected,
 											   enable: true,
 											   rows: 15,
 											   columns: [
@@ -51,15 +53,18 @@
 					<button style="width: 300px;" class="disabled">↑項目名の登録を行う</button>
 				</div>
 				<div class="right-content">
-					<div class="form-label">
-						<label>コード/名称</label> <a data-bind="text: listBox.selectedCode()">コード</a>
-						<a data-bind="text: listBox.itemDtoSelected().itemAbName">名称</a>
+					<div class="form-label" data-bind="with: listBox">
+						<label>コード/名称</label> <a data-bind="text: selectedCode">コード</a> <span
+							data-bind="with: itemDtoSelected"><a
+							data-bind="text: itemAbName">名称</a></span>
 					</div>
 					<br /> <br />
-					<div data-bind="with: comboBoxSumScopeAtr, visible: isCategoryAtrEqual0() || isCategoryAtrEqual1()" class="form-label required">
-						<label>内訳項目</label>
-						<div style="margin:-5px 0 0 30px; float: right" id="combo-box1"
-							data-bind="ntsComboBox: {
+					<div data-bind="if: checkDisplayComboBoxCalcMethod()">
+						<div style="margin-bottom: 15px;"
+							data-bind="with: comboBoxSumScopeAtr" class="form-label required">
+							<label>内訳項目</label>
+							<div style="margin: -5px 0 0 30px; float: right" id="combo-box1"
+								data-bind="ntsComboBox: {
 							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
@@ -69,14 +74,14 @@
 							columns: [
 								{ prop: 'name', length: 10 },
 							]}"
-							class="cf"></div>
-					</div>
-					<br /> <br />
-					<div style="margin-bottom: 5px;" data-bind="with: comboBoxCalcMethod0, visible: isCategoryAtrEqual0() || isCategoryAtrEqual1()"
-						class="form-label required">
-						<label>計算方法</label>
-						<div style="margin:-5px 0 0 30px; float: right" id="combo-box2"
-							data-bind="ntsComboBox: {
+								class="cf"></div>
+						</div>
+						<br />
+						<div style="margin-bottom: 5px;"
+							data-bind="with: comboBoxCalcMethod" class="form-label required">
+							<label>計算方法</label>
+							<div style="margin: -5px 0 0 30px; float: right" id="combo-box2"
+								data-bind="ntsComboBox: {
 							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
@@ -86,16 +91,28 @@
 							columns: [
 								{ prop: 'name', length: 10 },
 							]}"
-							class="cf"></div>
-					</div>
+								class="cf"></div>
+						</div>
 
-					<hr />
-					<!-- CategoryAtr = 0 and select 手入力 -->
-					<div style="margin-bottom: 5px;" data-bind="with: comboBoxCommutingClassification, visible: isCategoryAtrEqual1() &amp;&amp; $root.content.comboBoxCalcMethod0.isManualInput()"
-						class="form-label">
-						<label style="float: left">計算方法</label>
-						<div style="margin:-5px 0 0 30px; float: left" id="combo-box9"
-							data-bind="ntsComboBox: {
+						<hr />
+
+						<!-- CategoryAtr = 0||1 and select 個人情報参照-->
+						<div>
+							<div class="form-label required"
+								data-bind="visible: checkPersonalInformationReference()">
+								<label>コード/名称</label>
+								<button data-bind="click: openHDialog" style="margin-left: 17px; width: 71px;">参照</button>
+								<a>コード</a> <a>名称</a>
+							</div>
+						</div>
+						<!-- CategoryAtr = 0 and select 手入力 -->
+						<div>
+							<div style="margin-bottom: 5px;"
+								data-bind="with: $root.content.comboBoxCommutingClassification, visible: isCategoryAtrEqual0() &amp;&amp; checkManualInput()"
+								class="form-label">
+								<label style="float: left">計算方法</label>
+								<div style="margin: -5px 0 0 30px; float: left" id="combo-box9"
+									data-bind="ntsComboBox: {
 							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
@@ -105,26 +122,30 @@
 							columns: [
 								{ prop: 'name', length: 10 },
 							]}"
-							class="cf"></div>
-					</div>
-					<br/>
-					<div class="form-label">
-						<label style="float: left;">按分設定</label>
-						<div style="float: left; margin-left: 45px;"
-							data-bind="with: switchButton">
-							<div id="switchButtonTest"
-								data-bind="ntsSwitchButton: {
+									class="cf"></div>
+							</div>
+						</div>
+
+						<br />
+						<div class="form-label">
+							<label style="float: left;">按分設定</label>
+							<div style="float: left; margin-left: 45px;"
+								data-bind="with: switchButton">
+								<div id="switchButtonTest"
+									data-bind="ntsSwitchButton: {
 									options: distributeSet,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedRuleCode }"
-								class="cf"></div>
+									class="cf"></div>
+							</div>
 						</div>
-					</div>
-					<br />
-					<div style="margin-left: 115px;" data-bind="with: comboBoxDistributeWay">
-						<div id="combo-box3"
-							data-bind="ntsComboBox: {
+						<br/>
+						<br />
+						<div style="margin-left: 115px;"
+							data-bind="with: comboBoxDistributeWay">
+							<div id="combo-box3"
+								data-bind="ntsComboBox: {
 							options: itemList,
 							optionsValue: 'id',
 							value: selectedCode,
@@ -134,47 +155,59 @@
 							columns: [
 								{ prop: 'name', length: 10 },
 							]}"
-							class="cf"></div>
+								class="cf"></div>
+						</div>
+						<br />
 					</div>
-					<br />
-					<div class="form-label">
-						<label>上限チェック</label> <a style="float: right;">を超える場合</a> 
-						<input data-bind="enable: listBox.itemDtoSelected().isUseHighError, value: listBox.itemDtoSelected().errRangeHigh" style="float: right; margin-left: 20px;" type="text" />
-						<div style="float: right; margin-left: 45px;">
-							<div id="checkBoxErrRangeHigh"
-								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseHighError, text: 'エラー'}"
-								class="cf"></div>
+					<div data-bind="ifnot: isCategoryAtrEqual3()">
+						<div class="form-label"
+							data-bind="with: listBox().itemDtoSelected">
+							<label>上限チェック</label> <a style="float: right;">を超える場合</a> <input
+								data-bind="enable: checkUseHighError, value: errRangeHigh"
+								style="float: right; margin-left: 20px;" type="text" />
+							<div style="float: right; margin-left: 45px;">
+								<div id="checkBoxErrRangeHigh"
+									data-bind="ntsCheckBox: { checked: checkUseHighError, text: 'エラー'}"
+									class="cf"></div>
+							</div>
+							<br /> <br />
+							<div style="float: left; margin-left: 115px;">
+								<div id="checkBoxAlRangeHigh"
+									data-bind="ntsCheckBox: { checked: checkUseHighAlam, text: 'アラーム'}"
+									class="cf"></div>
+							</div>
+							<input data-bind="enable: checkUseHighAlam, value: alamRangeHigh"
+								style="float: left; margin-left: 9px;" type="text" /> <a
+								style="float: left;">を超える場合</a>
 						</div>
-						<br /> <br />
-						<div style="float: left; margin-left: 115px;">
-							<div id="checkBoxAlRangeHigh"
-								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseHighAlam, text: 'アラーム'}"
-								class="cf"></div>
+						<br /> <br /> <br />
+						<div class="form-label"
+							data-bind="with: listBox().itemDtoSelected">
+							<label>下限チェック</label> <a style="float: right;">未満の場合</a> <input
+								data-bind="enable: checkUseLowError, value: errRangeLow"
+								style="float: right; margin-left: 20px;" type="text" />
+							<div style="float: right; margin-left: 45px;">
+								<div id="checkBoxErrRangeLowAtr"
+									data-bind="ntsCheckBox: { checked: checkUseLowError, text: 'エラー'}"
+									class="cf"></div>
+							</div>
+							<br /> <br />
+							<div style="float: left; margin-left: 115px;">
+								<div id="checkBoxAlRangeHigh"
+									data-bind="ntsCheckBox: { checked: checkUseLowAlam, text: 'アラーム'}"
+									class="cf"></div>
+							</div>
+							<input data-bind="enable: checkUseLowAlam, value: alamRangeLow"
+								style="float: left; margin-left: 9px;" type="text" /> <a
+								style="float: left;">未満の場合</a>
 						</div>
-						<input data-bind="enable: listBox.itemDtoSelected().isUseHighAlam, value: listBox.itemDtoSelected().alamRangeHigh" style="float: left; margin-left: 9px;" type="text" /> <a
-							style="float: left;">を超える場合</a>
+						<br /> <br /> <br /> <br /> <span>※エラーの場合は、データ登録されません。</span>
+						<br /> <br /> <span style="margin-left: 15px;">アラームの場合は、メッセージが表示されます。（データは登録されます）
+						</span>
+						<hr/>
+						<button data-bind="click: returnBackData" style ="margin-left: 50px" class="x-large proceed">設定</button>
+						<button data-bind="click: close" style ="margin-left: 15px">キャンセル</button>
 					</div>
-					<br /> <br /> <br />
-					<div class="form-label">
-						<label>下限チェック</label> <a style="float: right;">未満の場合</a> 
-						<input data-bind="enable: listBox.itemDtoSelected().isUseLowError, value: listBox.itemDtoSelected().errRangeLow" style="float: right; margin-left: 20px;" type="text" />
-						<div style="float: right; margin-left: 45px;">
-							<div id="checkBoxErrRangeLowAtr"
-								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseLowError, text: 'エラー'}"
-								class="cf"></div>
-						</div>
-						<br /> <br />
-						<div style="float: left; margin-left: 115px;">
-							<div id="checkBoxAlRangeHigh"
-								data-bind="ntsCheckBox: { checked: listBox.itemDtoSelected().isUseLowAlam, text: 'アラーム'}"
-								class="cf"></div>
-						</div>
-						<input data-bind="enable: listBox.itemDtoSelected().isUseLowAlam, value: listBox.itemDtoSelected().alamRangeLow" style="float: left; margin-left: 9px;" type="text" /> <a
-							style="float: left;">未満の場合</a>
-					</div>
-					<br /> <br/> <br/> <br />
-					<span>※エラーの場合は、データ登録されません。</span> <br/><br/>
-					<span style="margin-left: 15px;">アラームの場合は、メッセージが表示されます。（データは登録されます） </span>
 				</div>
 			</div>
 		</ui:define>

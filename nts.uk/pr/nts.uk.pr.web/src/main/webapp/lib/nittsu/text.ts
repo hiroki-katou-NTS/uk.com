@@ -240,15 +240,10 @@
             validate(text: string) {
                 var result = new ui.validation.ValidationResult();
                 if (this.validator(text)) {
-                    result.isValid = true;
+                    return true;
                 } else {
-                    result.isValid = false;
-                    result.errorMessage = 'invalid text';
+                    return false;
                 }
-                
-                result.parsedValue = text;
-    
-                return result;
             }
             
             buildConstraintText(maxLength: number) {
@@ -300,9 +295,9 @@
         
         export function formatEmployeeCode(code: string, filldirection: string, fillcharacter: string, length: number): string {
             if (filldirection === "left")
-                return padRight(code, fillcharacter, length);
-            else
                 return padLeft(code, fillcharacter, length);
+            else
+                return padRight(code, fillcharacter, length);
         }
         
         export function splitString(str: string, decimallength: number, char: string){

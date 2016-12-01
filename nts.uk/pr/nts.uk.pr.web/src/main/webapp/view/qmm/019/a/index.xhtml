@@ -30,7 +30,7 @@
             <ui:define name="content">
             	
             	<div id="functions-area">
-            		<button onclick="nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'})">新規レイアウト</button>
+            		<button data-bind="click: openGDialog">新規レイアウト</button>
             		<button id="A_BTN_001" class="proceed" data-bind="click : registerLayout">登録</button>
             		<button>Excel出力</button>
             		<button id="A_BTN_004">マスタ修正ログ</button>
@@ -101,14 +101,16 @@
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 						
 						<div data-bind="foreach: categories">
-							<div id="group-root">
+							<div data-bind="attr: {id: 'group-' + categoryAtr}" class="group-root">
 								<div id="group-title">
 									<a class="button-setting" data-bind="visible: hasSetting, click: categoryClick"></a>
 									<span data-bind="text: categoryName"></span>
 								</div>
 								<div class="all-line" data-bind="attr: {id: categoryAtr}">
 									<div data-bind="foreach: lines">
-										<div class="row" data-bind="attr: {id: rowId, class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
+										<div class="row" data-bind="attr: {
+																	id: rowId, 
+																	class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
 											<div><a class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick"></a></div>
 											<div data-bind="foreach: details">
 									            <span data-bind="click: itemClick, 
@@ -126,7 +128,9 @@
 								</div>
 							</div>
 						</div>
-						
+						<button id="btnKintai" class="addCategoryButton" data-bind="click: addKintaiCategory, visible: notHasKintai">+ 勤怠エリアを追加する</button>
+						<br/>
+						<button id="btnKiji" class="addCategoryButton" data-bind="click: addKijiCategory, visible: notHasKiji">+ 記事エリアを追加する</button>
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
             		</div>
             	</div>

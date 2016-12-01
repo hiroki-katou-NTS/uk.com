@@ -15,6 +15,7 @@ module qmm019.g.viewmodel {
         timeEditorOption: KnockoutObservable<any>;
         createlayout: KnockoutObservable<service.model.LayoutMasterDto>;
         createNewSelect: KnockoutObservable<string>;
+        startYmCopy: KnockoutObservable<number>;
         
         /**
          * Init screen model.
@@ -22,7 +23,7 @@ module qmm019.g.viewmodel {
         constructor() {
             var self = this;
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observable("2");
+            self.selectedCodes = ko.observable("3");
             self.layouts = ko.observableArray([]);
             self.itemList = ko.observableArray([]);   
             self.comboboxList = ko.observableArray([]);
@@ -35,6 +36,7 @@ module qmm019.g.viewmodel {
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
             self.createlayout = ko.observable(null);
             self.createNewSelect = ko.observable(null);
+            self.startYmCopy = ko.observable(null);
         }   
         
         // start function
@@ -57,6 +59,7 @@ module qmm019.g.viewmodel {
             self.selectLayoutCode.subscribe(function(newValue){
                 self.selectLayoutCode(newValue);
                 self.createNewSelect(newValue);
+                self.buildComboboxChange(newValue);
             })
             //start ym
             var d = new Date();
@@ -85,71 +88,43 @@ module qmm019.g.viewmodel {
             self.comboboxList.removeAll();
             _.forEach(self.layouts(), function(layout){
                 var stmtCode = layout.stmtCode;
-                if(stmtCode.length == 1){
-                    stmtCode = "0" + layout.stmtCode;
-                }
-                    
                 self.comboboxList.push(new ItemCombobox(stmtCode, layout.stmtName));
             });          
         }
-        
         buildComboboxChange(layoutCd) : void {
             var self = this;
-//            _.forEach(self.layouts(), function(layout){
-//                if(layout.stmtCode.trim() == layoutCd){
-//                    self.selectStmtCode(layoutCd);
-//                    self.selectStmtName(layout.stmtName);
-//                    
-//                    if(layout.layoutAtr == 0) {
-//                        self.layoutAtrStr("（レーザー　A4　縦向き　1人）");
-//                    }else if (layout.layoutAtr == 1){
-//                        self.layoutAtrStr("（レーザー　A4　縦向き　2人）");
-//                    }else if (layout.layoutAtr == 2){
-//                        self.layoutAtrStr("（レーザー　A4　縦向き　3人）");
-//                    }else if (layout.layoutAtr == 3){
-//                        self.layoutAtrStr("（レーザー　A4　横向き　2人）");
-//                    }else if (layout.layoutAtr == 4){
-//                        self.layoutAtrStr("（レーザー(圧着式)　縦向き　1人）");
-//                    }else if (layout.layoutAtr == 5){
-//                        self.layoutAtrStr("（レーザー(圧着式)　横向き　1人）");
-//                    }else if (layout.layoutAtr == 6){
-//                        self.layoutAtrStr("（ドットプリンタ　連続用紙　1人）");
-//                    }else if (layout.layoutAtr == 7){
-//                        self.layoutAtrStr("（PAYS単票）");
-//                    }else if (layout.layoutAtr == 8){
-//                        self.layoutAtrStr("（PAYS連続）");
-//                    }
-//                    return false;
-//                }    
-//            });
+            _.forEach(self.layouts(), function(layout){
+                if(layout.stmtCode == layoutCd){
+                    self.startYmCopy(layout.startYm);
+                    return false;    
+                }
+            })
         }
-        
         createNewLayout(): any{
             var self = this;
             
             if(self.checkData())
             {
-                   if($("#newCreate").is(":checked")){
-                       self.createNewData();
-                    }else{
-                       //印字行数　＞　最大印字行数　の場合
-                       //メッセージ( ER030 )を表示する
-                       
-                       
-                        self.createCopyData();    
-                    }
-                    service.createLayout(self.createlayout()).done(function(){
-                        alert('追加しました。');    
-                        nts.uk.ui.windows.close();
-                    }).fail(function(res){
-                        alert(res);    
-                    })
+               self.createData();
+               if($("#newCreate").is(":checked")){
+                   self.createlayout().checkCopy = false;
+                }else{
+                   //印字行数　＞　最大印字行数　の場合
+                   //メッセージ( ER030 )を表示する
+                    self.createlayout().checkCopy = true;
+                }
+                service.createLayout(self.createlayout()).done(function(){
+                    alert('追加しました。');    
+                    nts.uk.ui.windows.close();
+                }).fail(function(res){
+                    alert(res);    
+                })
              }
         }
         
         checkData(): any{
             var self = this;
-              //登録時チェック処理
+            //登録時チェック処理
             var mess = "が入力されていません";
             //必須項目の未入力チェックを行う
             if($('#INP_001').val() == ''){
@@ -169,9 +144,13 @@ module qmm019.g.viewmodel {
             }
             //コードの重複チェックを行う
             var isStorage = false;
+            var stmtCd = $('#INP_001').val().trim();
+            if(stmtCd.length < 2)
+                stmtCd = '0' + stmtCd;
             _.forEach(self.layouts(), function(layout){
-                if(+$('#INP_001').val() === +layout.stmtCode){
-                    alert('入力した'+$('#INP_001').val()+'は既に存在しています。\r\n'+$('#INP_001').val()+'を確認してください。');
+                if(stmtCd == layout.stmtCode){
+                    alert('入力した'+stmtCd+'は既に存在しています。\r\n'+stmtCd+'を確認してください。');
+                    $('#INP_001').val(stmtCd);
                     $('#INP_001').focus();
                     isStorage = true;
                     return false;
@@ -184,32 +163,22 @@ module qmm019.g.viewmodel {
             return true; 
         }
         
-        createNewData(): any{
-            var self = this;         
-            self.createlayout({
-                checkCopy: false,
-                stmtCodeCopied: self.createNewSelect() + "",
-                startYmCopied: + self.selectStartYm().replace('/', ''),
-                stmtCode: $('#INP_001').val(),
-                startYm: + $('#INP_003').val().replace('/',''),
-                layoutAtr: 3,
-                stmtName: $('#INP_002').val() + "",
-                endYm: 999912
-            });   
-        }
         
-        createCopyData(): any{
-             var self = this;
+        createData(): any{
+            var self = this;
+            var stmtCd = $('#INP_001').val().trim();
+            if(stmtCd.length < 2)
+                stmtCd = '0' + stmtCd;
             self.createlayout({
                 checkCopy: true,
-                stmtCodeCopied: self.createNewSelect() + "",
-                startYmCopied: + self.selectStartYm().replace('/', ''),
-                stmtCode: $('#INP_001').val() + "",
+                stmtCodeCopied: self.createNewSelect(),
+                startYmCopied: self.startYmCopy(),
+                stmtCode: stmtCd,
                 startYm: + $('#INP_003').val().replace('/',''),
                 layoutAtr: 3,
                 stmtName: $('#INP_002').val() + "",
                 endYm: 999912
-            });             
+            }); 
         }
         
        closeDialog(): any{

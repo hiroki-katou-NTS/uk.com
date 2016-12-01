@@ -25,8 +25,9 @@ module nts.uk.ui.errors {
         }
         
         addError(error: ErrorListItem) {
-            // TODO: ignore duplicated item
-            this.errors.push(error);
+            var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
+            if (duplicate.length == 0)
+                this.errors.push(error);
         }
         
         removeErrorByElement($element: JQuery) {

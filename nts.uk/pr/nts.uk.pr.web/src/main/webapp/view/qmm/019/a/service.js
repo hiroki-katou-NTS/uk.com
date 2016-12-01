@@ -71,22 +71,12 @@ var qmm019;
                     if (category.isRemoved === true) {
                         // Truong hop remove category thi remove luon line va detail
                         listCategoryAtrDeleted.push(category.categoryAtr);
-                        var linePosition = 1;
-                        for (var _a = 0, _b = category.lines(); _a < _b.length; _a++) {
-                            var line = _b[_a];
-                            listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
-                            for (var _c = 0, _d = line.details; _c < _d.length; _c++) {
-                                var detail = _d[_c];
-                                listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
-                            }
-                        }
                     }
                     else {
                         categoryCommand.push({ categoryAtr: category.categoryAtr, categoryPosition: categoryPosition });
                         var linePosition = 1;
                         var sortedLines = $("#" + category.categoryAtr).sortable("toArray");
                         var _loop_1 = function(itemLine) {
-                            //for (let line of category.lines()) {
                             var line = _.find(category.lines(), function (lineDetail) {
                                 return lineDetail.rowId === itemLine.toString();
                             });
@@ -97,7 +87,9 @@ var qmm019;
                                     lineDisplayAtr: line.lineDispayAtr });
                             }
                             else {
-                                listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
+                                if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
+                                    listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
+                                }
                             }
                             linePosition++;
                             var itemPosColumn = 1;
@@ -110,6 +102,8 @@ var qmm019;
                                     detailCommand.push({
                                         categoryAtr: category.categoryAtr,
                                         itemCode: detail.itemCode(),
+                                        updateItemCode: detail.updateItemCode(),
+                                        added: detail.added(),
                                         autoLineId: detail.autoLineId(),
                                         itemPosColumn: itemPosColumn,
                                         calculationMethod: detail.calculationMethod(),
@@ -134,13 +128,13 @@ var qmm019;
                                 }
                                 itemPosColumn++;
                             };
-                            for (var _e = 0, sortedItemCodes_1 = sortedItemCodes; _e < sortedItemCodes_1.length; _e++) {
-                                var item = sortedItemCodes_1[_e];
+                            for (var _a = 0, sortedItemCodes_1 = sortedItemCodes; _a < sortedItemCodes_1.length; _a++) {
+                                var item = sortedItemCodes_1[_a];
                                 _loop_2(item);
                             }
                         };
-                        for (var _f = 0, sortedLines_1 = sortedLines; _f < sortedLines_1.length; _f++) {
-                            var itemLine = sortedLines_1[_f];
+                        for (var _b = 0, sortedLines_1 = sortedLines; _b < sortedLines_1.length; _b++) {
+                            var itemLine = sortedLines_1[_b];
                             _loop_1(itemLine);
                         }
                     }
@@ -190,9 +184,9 @@ var qmm019;
                         this.lines = ko.observableArray([]);
                         this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
-                                return new model.ItemDetail(detail);
+                                return new model.ItemDetail(detail, screenModel);
                             });
-                            return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
+                            return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition, screenModel);
                         }));
                         this.categoryAtr = categoryAtr;
                         switch (categoryAtr) {
@@ -217,90 +211,77 @@ var qmm019;
                         }
                     }
                     Category.prototype.categoryClick = function (data, event) {
+                        var _this = this;
                         var self = this;
-                        //TODO: di den man hinh ...
-                        //alert(data.categoryName);
-                        self.screenModel().start();
+                        nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml').onClosed(function () {
+                            var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                            if (selectedCode === "1") {
+                                // cho phep print all row
+                                for (var _i = 0, _a = self.lines(); _i < _a.length; _i++) {
+                                    var line = _a[_i];
+                                    line.setPrint(true);
+                                }
+                            }
+                            else if (selectedCode === "2") {
+                                // Gray - Khong cho print all row
+                                for (var _b = 0, _c = self.lines(); _b < _c.length; _b++) {
+                                    var line = _c[_b];
+                                    line.setPrint(false);
+                                }
+                            }
+                            else if (selectedCode === "3") {
+                                // Xoa category
+                                $("#group-" + data.categoryAtr).addClass("removed");
+                                self.isRemoved = true;
+                                if (data.categoryAtr === 2)
+                                    self.screenModel().notHasKintai(true);
+                                if (data.categoryAtr === 3)
+                                    self.screenModel().notHasKiji(true);
+                            }
+                            return _this;
+                        });
                     };
                     Category.prototype.addLine = function () {
-                        var self = this;
-                        var autoLineId = "lineIdTemp-" + self.lines().length;
-                        var itemDetailObj1 = { itemCode: "itemTemp-1", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj2 = { itemCode: "itemTemp-2", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj3 = { itemCode: "itemTemp-3", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj4 = { itemCode: "itemTemp-4", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj5 = { itemCode: "itemTemp-5", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj6 = { itemCode: "itemTemp-6", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj7 = { itemCode: "itemTemp-7", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj8 = { itemCode: "itemTemp-8", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        var itemDetailObj9 = { itemCode: "itemTemp-9", itemAbName: "+", isRequired: false, itemPosColumn: 1,
-                            categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
-                            setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
-                            distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
-                            errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                            alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 };
-                        self.lines.push(new Line(self.categoryAtr, ([
-                            new ItemDetail(itemDetailObj1),
-                            new ItemDetail(itemDetailObj2),
-                            new ItemDetail(itemDetailObj3),
-                            new ItemDetail(itemDetailObj4),
-                            new ItemDetail(itemDetailObj5),
-                            new ItemDetail(itemDetailObj6),
-                            new ItemDetail(itemDetailObj7),
-                            new ItemDetail(itemDetailObj8),
-                            new ItemDetail(itemDetailObj9)
-                        ]), autoLineId, 1, self.lines.length));
-                        a.ScreenModel.prototype.bindSortable();
-                        a.ScreenModel.prototype.destroySortable();
-                        a.ScreenModel.prototype.bindSortable();
+                        var _this = this;
+                        nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml').onClosed(function () {
+                            var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                            if (selectedCode === undefined)
+                                return _this;
+                            var self = _this;
+                            var autoLineId = "lineIdTemp-" + self.lines().length;
+                            var listItemDetail = new Array;
+                            for (var i = 1; i <= 9; i++) {
+                                listItemDetail.push(new ItemDetail({ itemCode: "itemTemp-" + i, itemAbName: "+", isRequired: false, itemPosColumn: i,
+                                    categoryAtr: self.categoryAtr, autoLineId: autoLineId, sumScopeAtr: 0,
+                                    setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
+                                    distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
+                                    errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
+                                    alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 }, self.screenModel()));
+                            }
+                            var line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length, self.screenModel());
+                            if (selectedCode === "1") {
+                                // cho phep print
+                                line.setPrint(true);
+                            }
+                            else if (selectedCode === "2") {
+                                // Gray - Khong cho print
+                                line.setPrint(false);
+                            }
+                            self.lines.push(line);
+                            self.screenModel().bindSortable();
+                            self.screenModel().destroySortable();
+                            self.screenModel().bindSortable();
+                            return _this;
+                        });
                     };
                     return Category;
                 }());
                 model.Category = Category;
                 var Line = (function () {
-                    function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition) {
+                    function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition, screenModel) {
                         this.hasRequiredItem = false;
                         this.isRemoved = false;
+                        this.screenModel = ko.observable(screenModel);
                         this.details = itemDetails;
                         this.autoLineId = autoLineId;
                         this.rowId = categoryAtr + autoLineId;
@@ -321,28 +302,61 @@ var qmm019;
                         this.categoryAtr = categoryAtr;
                     }
                     Line.prototype.lineClick = function (data, event) {
+                        var _this = this;
                         var self = this;
-                        //TODO: goi man hinh khac
-                        if (data.hasRequiredItem === false) {
-                            $("#" + data.rowId).addClass("ground-gray");
-                            self.isRemoved = true;
+                        nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml').onClosed(function () {
+                            var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
+                            if (selectedCode === "1") {
+                                // cho phep print
+                                self.setPrint(true);
+                            }
+                            else if (selectedCode === "2") {
+                                // Gray - Khong cho print
+                                self.setPrint(false);
+                            }
+                            else if (selectedCode === "3") {
+                                // Xoa line
+                                if (data.hasRequiredItem === false) {
+                                    $("#" + data.rowId).addClass("removed");
+                                    self.isRemoved = true;
+                                }
+                            }
+                            return _this;
+                        });
+                    };
+                    Line.prototype.setPrint = function (allowPrint) {
+                        var self = this;
+                        if (allowPrint === true) {
+                            // cho phep print
+                            $("#" + self.rowId).removeClass("ground-gray");
+                            self.isDisplayOnPrint = true;
+                            self.lineDispayAtr = 1;
+                        }
+                        else {
+                            // Gray - Khong cho print
+                            $("#" + self.rowId).addClass("ground-gray");
+                            self.isDisplayOnPrint = false;
+                            self.lineDispayAtr = 0;
                         }
                     };
                     return Line;
                 }());
                 model.Line = Line;
                 var ItemDetail = (function () {
-                    //                itemCode: string, itemAbName: string, isRequired: boolean, itemPosColumn: number,
-                    //                            categoryAtr: number, autoLineId: string, sumScopeAtr: number, calculationMethod: number,
-                    //                            distributeSet: number, distributeWay: number, personalWageCode: string, isUseHighError: number,
-                    //                            errRangeHigh: number, isUseLowError: number, errRangeLow: number, isUseHighAlam: number,
-                    //                            alamRangeHigh: number, isUseLowAlam: number, alamRangeLow: number
-                    function ItemDetail(itemObject) {
+                    function ItemDetail(itemObject, screenModel) {
+                        this.updateItemCode = ko.observable("");
+                        this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
+                        this.screenModel = ko.observable(screenModel);
                         this.itemCode = ko.observable(itemObject.itemCode);
                         this.itemAbName = ko.observable(itemObject.itemAbName);
-                        if (itemObject.itemCode === "F003" || itemObject.itemCode === "F114") {
+                        if (itemObject.categoryAtr === 0 &&
+                            (itemObject.itemCode === "F001" || itemObject.itemCode === "F002" || itemObject.itemCode === "F003")) {
+                            this.isRequired = ko.observable(true);
+                        }
+                        if (itemObject.categoryAtr === 1 &&
+                            (itemObject.itemCode === "F114")) {
                             this.isRequired = ko.observable(true);
                         }
                         this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
@@ -364,9 +378,52 @@ var qmm019;
                         this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
                         this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
                     }
-                    //TODO: goi man hinh chi tiet
                     ItemDetail.prototype.itemClick = function (data, event) {
-                        alert(data.itemAbName() + " ~~~ " + data.itemPosColumn());
+                        var _this = this;
+                        var self = this;
+                        var param = {
+                            categoryId: data.categoryAtr(),
+                            itemCode: data.itemCode(),
+                            isUpdate: data.itemAbName() === "+" ? false : true,
+                            startYm: self.screenModel().layoutMaster().startYm,
+                            stmtCode: self.screenModel().layoutMaster().stmtCode
+                        };
+                        nts.uk.ui.windows.setShared('param', param);
+                        nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(function () {
+                            var itemResult = nts.uk.ui.windows.getShared('itemResult');
+                            if (data.itemAbName() === "+") {
+                                // Them moi
+                                self.itemCode(itemResult.itemCode);
+                                self.added(true);
+                            }
+                            else {
+                                if (self.added()) {
+                                    // Sửa một detail đang được Thêm mới
+                                    self.itemCode(itemResult.itemCode);
+                                }
+                                else {
+                                    // Update
+                                    self.updateItemCode(itemResult.itemCode);
+                                }
+                            }
+                            self.itemAbName(itemResult.itemAbName);
+                            self.sumScopeAtr(itemResult.sumScopeAtr);
+                            //self.setOffItemCode(itemResult.setOffItemCode);
+                            //self.commuteAtr(itemResult.commuteAtr);
+                            self.calculationMethod(itemResult.calculationMethod);
+                            self.distributeSet(itemResult.distributeSet);
+                            self.distributeWay(itemResult.distributeWay);
+                            self.personalWageCode(itemResult.personalWageCode);
+                            self.isUseHighError(itemResult.isUseHighError ? 0 : 1);
+                            self.errRangeHigh(itemResult.errRangeHigh);
+                            self.isUseLowError(itemResult.isUseLowError ? 0 : 1);
+                            self.errRangeLow(itemResult.errRangeLow);
+                            self.isUseHighAlam(itemResult.isUseHighAlam ? 0 : 1);
+                            self.alamRangeHigh(itemResult.alamRangeHigh);
+                            self.isUseLowAlam(itemResult.isUseLowAlam ? 0 : 1);
+                            self.alamRangeLow(itemResult.alamRangeLow);
+                            return _this;
+                        });
                     };
                     return ItemDetail;
                 }());

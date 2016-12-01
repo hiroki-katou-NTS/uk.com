@@ -19,6 +19,10 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                 }
+                                ScreenModel.prototype.close = function () {
+                                    nts.uk.ui.windows.close();
+                                };
+                                ;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
