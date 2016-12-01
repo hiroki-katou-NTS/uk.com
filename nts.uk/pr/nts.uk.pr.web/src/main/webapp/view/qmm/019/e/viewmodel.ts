@@ -43,7 +43,7 @@ module qmm019.e.viewmodel {
         startDiaglog(): any{
             var self = this;
             var layout = self.selectLayout();
-            var code = layout.stmtCode.trim();
+            var code = layout.stmtCode;
 //            if(code.length < 2){
 //               code = "0" + code;
 //            }

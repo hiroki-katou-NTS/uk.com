@@ -38,7 +38,7 @@ var qmm019;
                 ScreenModel.prototype.startDiaglog = function () {
                     var self = this;
                     var layout = self.selectLayout();
-                    var code = layout.stmtCode.trim();
+                    var code = layout.stmtCode;
                     //            if(code.length < 2){
                     //               code = "0" + code;
                     //            }

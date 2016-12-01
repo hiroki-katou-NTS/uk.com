@@ -82,7 +82,7 @@ var qmm019;
                 ScreenModel.prototype.buildComboboxChange = function (layoutCd) {
                     var self = this;
                     _.forEach(self.layouts(), function (layout) {
-                        if (layout.stmtCode.trim() == layoutCd) {
+                        if (layout.stmtCode == layoutCd) {
                             self.startYmCopy(layout.startYm);
                             return false;
                         }
@@ -161,7 +161,7 @@ var qmm019;
                         checkCopy: true,
                         stmtCodeCopied: self.createNewSelect() + "",
                         startYmCopied: self.startYmCopy(),
-                        stmtCode: $('#INP_001').val() + "",
+                        stmtCode: $('#INP_001').val(),
                         startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,
                         stmtName: $('#INP_002').val() + "",
