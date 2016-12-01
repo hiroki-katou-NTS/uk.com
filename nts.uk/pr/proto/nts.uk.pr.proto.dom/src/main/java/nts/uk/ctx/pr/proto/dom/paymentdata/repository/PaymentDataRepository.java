@@ -3,7 +3,9 @@ package nts.uk.ctx.pr.proto.dom.paymentdata.repository;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
+import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
 public interface PaymentDataRepository {
@@ -49,7 +51,7 @@ public interface PaymentDataRepository {
 	 * @param itemCode
 	 * @return
 	 */
-	boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode);
+	boolean isExistDetail(String companyCode, String personId, int processingNo, int baseYM, int categoryAtr, String itemCode, int payBonusAtr, int sparePayAtr);
 
 	/**
 	 * import new data payment detail
