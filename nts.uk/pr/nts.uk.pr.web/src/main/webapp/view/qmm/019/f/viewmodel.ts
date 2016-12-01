@@ -57,17 +57,20 @@ module qmm019.f.viewmodel {
         itemDtoSelected: KnockoutObservable<any>;
         listItemDto: Array<ItemDto>;
 
-        constructor(listItemDto, currentItemCode) {
+        constructor(listItemDto, currentItemCode, isUpdate) {
             var self = this;
-
-            self.itemName = ko.observable('');
-            self.selectedCode = ko.observable(currentItemCode);
-            self.currentCode = ko.observable(0);
-
-            self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
             // set list item dto
             self.listItemDto = listItemDto;
+            self.itemName = ko.observable('');
+            if(isUpdate == false){
+                self.selectedCode = ko.observable(self.listItemDto[0].itemCode);
+            } else {
+                self.selectedCode = ko.observable(currentItemCode);
+            }
+            self.currentCode = ko.observable(0);
+            self.isEnable = ko.observable(true);
+            self.selectedCodes = ko.observableArray([]);
+            
             // bind list item dto to list item model
             self.itemList = ko.observableArray([]);
             _.forEach(self.listItemDto, function(item) {
@@ -154,14 +157,14 @@ module qmm019.f.viewmodel {
         itemCode: KnockoutObservable<String>;
         paramItemCode: String;
         paramCategoryAtr: KnockoutObservable<number>;
-        isUpdate: boolean;
+        paramIsUpdate: boolean;
         listItemDto: any;
 
         constructor(data) {
             var self = this;
             self.paramItemCode = data.itemCode;
             self.paramCategoryAtr = ko.observable(data.categoryId);
-            self.isUpdate = data.isUpdate;
+            self.paramIsUpdate = data.isUpdate;
 
             var itemListSumScopeAtr = ko.observableArray([
                 new ItemModel(0, '対象外'),
@@ -243,7 +246,7 @@ module qmm019.f.viewmodel {
             $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function(data) {
                 if (data !== null) {
                     self.listItemDto = data;
-                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode));
+                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate));
                 }
                 else {
                     self.listItemDto = ko.observableArray();
