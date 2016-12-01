@@ -1,0 +1,37 @@
+.seperator{
+	border-top:1px solid gray; 
+	width:95%; 
+	margin-top:10px;
+	margin-left: 10px;
+}
+
+.divMargin{
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+.checkBoxHead{
+	margin-left: 10px;
+	margin-top: 10px;
+	background-color:#00B050; 
+	width:90%; 
+	height:30px; 
+	padding-left:4%; 
+	padding-top:8px;
+}
+
+.floatLeft{
+	float:left;
+}
+
+.textCheckBox{
+	color:white;
+}
+
+.divPadding{
+	padding-left:10%;
+}
+
+.verticalTop{
+	vertical-align: top;
+}

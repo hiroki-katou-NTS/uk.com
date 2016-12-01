@@ -45,6 +45,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	@Override
 	protected void handle(CommandHandlerContext<CreateLayoutHistoryCommand> context) {
 		CreateLayoutHistoryCommand command = context.getCommand();
+		
 		String companyCode = AppContexts.user().companyCode();
 		
 		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartPrevious(), command.getStmtCode())
@@ -132,8 +133,9 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	}
 	
 	private void updateData(CreateLayoutHistoryCommand command, String companyCode, LayoutMaster layoutOrigin){
+		YearMonth endYm = new YearMonth(command.getEndYm()).previousMonth();
 		//データベース更新[明細書マスタ.UPD-2] を実施する
-		layoutOrigin.setEndYm(new YearMonth(command.getEndYm()));
+		layoutOrigin.setEndYm(endYm);
 		this.layoutRepo.update(layoutOrigin);
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
 		List<LayoutMasterCategory> lstCategory = this.categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), 999912);
@@ -144,7 +146,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getStartYM(), 
 							org.getStmtCode(), 
 							org.getCtAtr(), 
-							new YearMonth(command.getEndYm()), 
+							endYm, 
 							org.getCtgPos());
 				}).collect(Collectors.toList());
 		this.categoryRepo.update(categoriesNew);
@@ -156,7 +158,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCompanyCode(), 
 							org.getStartYM(), 
 							org.getStmtCode(), 
-							new YearMonth(command.getEndYm()), 
+							endYm, 
 							org.getAutoLineId(), 
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
@@ -171,7 +173,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCompanyCode(), 
 							org.getLayoutCode(), 
 							org.getStartYm(), 
-							new YearMonth(command.getEndYm()), 
+							endYm, 
 							org.getCategoryAtr(), 
 							org.getItemCode(), 
 							org.getAutoLineId(), 

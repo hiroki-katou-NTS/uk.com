@@ -9,29 +9,30 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.proto.app.find.layout.LayoutDto;
-import nts.uk.ctx.pr.proto.app.find.layout.category.LayoutMasterCategoryDto;
 import nts.uk.ctx.pr.proto.app.find.personalinfo.wage.PersonalWageNameDto;
 import nts.uk.ctx.pr.proto.app.find.personalinfo.wage.PersonalWageNameFinder;
 import nts.uk.shr.com.context.AppContexts;
+
+
 
 @Path("pr/proto/personalwage")
 @Produces("application/json")
 public class PersonalWageWebService extends WebService {
 
 	@Inject
-	private PersonalWageNameFinder find;
+	private PersonalWageNameFinder findPersonalWageName;
 
-//	@POST
-//	@Path("findPersonalWageName")
-//	public List<PersonalWageNameDto> getPersonalWageNames(){
-//		return this.find.getPersonalWageNames(AppContexts.user().companyCode());		
-//	}
-//	
 
+	
 	@POST
-	@Path("findPersonalWageName/full/{companyCode}/{categoryAtr}")
-	public List<PersonalWageNameDto> getPersonalWageName(@PathParam("companyCode") String companyCode, @PathParam("categoryAtr") int categoryAtr){
-		return this.find.getPersonalWageName(companyCode, categoryAtr);
+	@Path("findalls/{categoryAtr}")
+	public List<PersonalWageNameDto> getAll(@PathParam("categoryAtr") int categoryAtr){
+		String companyCode = AppContexts.user().companyCode();
+		return this.findPersonalWageName.getPersonalWageName(companyCode, categoryAtr);		
 	}
+
+	
+	
+	
+	
 }

@@ -7,6 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageNameRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
 public class PersonalWageNameFinder {
@@ -17,11 +18,6 @@ public class PersonalWageNameFinder {
 		return this.repository.getPersonalWageName(companyCode, categoryAtr).stream()
 				.map(item -> PersonalWageNameDto.fromDomain(item))
 				.collect(Collectors.toList());
-	}
+	}	
 	
-	public List<PersonalWageNameDto> getPersonalWageNames(String companyCode){
-		return this.repository.getPersonalWageNames(companyCode).stream()
-				.map(item -> PersonalWageNameDto.fromDomain(item))
-				.collect(Collectors.toList());
-	}
 }

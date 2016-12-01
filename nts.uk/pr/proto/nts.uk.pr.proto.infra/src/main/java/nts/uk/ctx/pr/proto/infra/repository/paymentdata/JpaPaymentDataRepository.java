@@ -25,16 +25,16 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
 			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
-	private String SELECT_ITEM = " SELECT d" + " FROM QstdtPaymentDetail d"
-			+ " WHERE d.qstdtPaymentHeaderPK.companyCode = :CCD" + " AND d.qstdtPaymentHeaderPK.personId = :PID"
-			+ " AND d.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM"
+	private String SELECT_ITEM = " SELECT d FROM QstdtPaymentDetail d"
+			+ " WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" + " AND d.qstdtPaymentHeaderPK.personId = :PID"
+			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
 			+ " AND d.qstdtPaymentHeaderPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentHeaderPK.itemCode = :ITEM_CD";
 
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
-			return this.queryProxy().find(new QstdtPaymentHeaderPK(companyCode, personId, processingNo, payBonusAttribute,
-					processingYM, sparePayAttribute), QstdtPaymentHeader.class).map(c -> toDomain(c));
+		return this.queryProxy().find(new QstdtPaymentHeaderPK(companyCode, personId, processingNo, payBonusAttribute,
+				processingYM, sparePayAttribute), QstdtPaymentHeader.class).map(c -> toDomain(c));
 	}
 
 	@Override
@@ -47,10 +47,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public boolean isExistHeader(String companyCode, String personId, int payBonusAttribute, int processingYM) {
 		List<QstdtPaymentHeader> pHeader = this.queryProxy().query(SELECT_HEADER, QstdtPaymentHeader.class)
-				.setParameter("CCD", companyCode)
-				.setParameter("PID", personId).setParameter("PAY_BONUS_ATR", payBonusAttribute)
-				.setParameter("PROCESSING_YM", processingYM)
-				.getList();
+				.setParameter("CCD", companyCode).setParameter("PID", personId)
+				.setParameter("PAY_BONUS_ATR", payBonusAttribute).setParameter("PROCESSING_YM", processingYM).getList();
 
 		return !pHeader.isEmpty();
 	}
@@ -58,12 +56,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public boolean isExistDetail(String companyCode, String personId, int baseYM, int categoryAtr, String itemCode) {
 		List<QstdtPaymentDetail> paymentItems = this.queryProxy().query(SELECT_ITEM, QstdtPaymentDetail.class)
-				.setParameter("CCD", companyCode)
-				.setParameter("PID", personId)
-				.setParameter("CTG_ATR", categoryAtr)
-				.setParameter("PROCESSING_YM", baseYM)
-				.setParameter("ITEM_CD", itemCode)
-				.getList();
+				.setParameter("CCD", companyCode).setParameter("PID", personId).setParameter("CTG_ATR", categoryAtr)
+				.setParameter("PROCESSING_YM", baseYM).setParameter("ITEM_CD", itemCode).getList();
 
 		return !paymentItems.isEmpty();
 	}
@@ -71,9 +65,9 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public void add(Payment payment) {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
-		
+
 		this.commandProxy().getEntityManager().persist(paymentHeader);
-		
+
 		for (DetailItem item : payment.getDetailPaymentItems()) {
 			this.insertDetail(payment, item);
 		}
@@ -97,10 +91,10 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	@Override
 	public void insertHeader(Payment payment) {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
-		
+
 		this.commandProxy().insert(paymentHeader);
 	}
-	
+
 	@Override
 	public void insertDetail(Payment payment, DetailItem item) {
 		QstdtPaymentDetail paymentDetail = toPaymentDetailEntity(payment, item);
@@ -131,7 +125,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				entity.pensionInsuranceGrade, entity.pensionAverageEarn, entity.employmentInsuranceAtr,
 				entity.dependentNumber, entity.workInsuranceCalculateAtr, entity.insuredAtr, entity.bonusTaxRate,
 				entity.calcFlag, entity.makeMethodFlag, entity.comment);
-//		entity.toDomain(domain);
+		// entity.toDomain(domain);
 		return domain;
 	}
 
@@ -143,7 +137,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	 */
 	private static QstdtPaymentHeader toPaymentHeaderEntity(Payment domain) {
 		QstdtPaymentHeader entity = new QstdtPaymentHeader();
-//		entity.fromDomain(domain);
+		// entity.fromDomain(domain);
 		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
 				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value);
@@ -166,27 +160,27 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.calcFlag = domain.getCalcFlag().value;
 		entity.makeMethodFlag = domain.getMakeMethodFlag().value;
 		entity.comment = domain.getComment().v();
-		
+
 		PrintPositionCategory item0 = domain.getPrintCategories().get(0);
 		entity.printPositionCategoryATR1 = item0.getCategoryAtr().value;
 		entity.printPositionCategoryLines1 = item0.getLines().v();
-		
+
 		PrintPositionCategory item1 = domain.getPrintCategories().get(1);
 		entity.printPositionCategoryATR2 = item1.getCategoryAtr().value;
 		entity.printPositionCategoryLines2 = item1.getLines().v();
-		
+
 		PrintPositionCategory item2 = domain.getPrintCategories().get(2);
 		entity.printPositionCategoryATR3 = item2.getCategoryAtr().value;
 		entity.printPositionCategoryLines3 = item2.getLines().v();
-		
+
 		PrintPositionCategory item3 = domain.getPrintCategories().get(3);
 		entity.printPositionCategoryATR4 = item3.getCategoryAtr().value;
 		entity.printPositionCategoryLines4 = item3.getLines().v();
-		
+
 		PrintPositionCategory item4 = domain.getPrintCategories().get(4);
 		entity.printPositionCategoryATR5 = item4.getCategoryAtr().value;
 		entity.printPositionCategoryLines5 = item4.getLines().v();
-		
+
 		// add by EAP 06.データ作成（実行）-登録処理 (update 28.11.2016)
 		entity.companyName = "日通システム株式会社";
 		entity.employmentCode = "0000000001";
@@ -198,8 +192,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.classificationName = "分類";
 		entity.positionCode = "0000000001";
 		entity.positionName = "職位";
-//		entity.specificationName = "";
-		
+		// entity.specificationName = "";
+
 		return entity;
 	}
 
@@ -212,11 +206,11 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	 */
 	private QstdtPaymentDetail toPaymentDetailEntity(Payment domain, DetailItem detail) {
 		QstdtPaymentDetail entity = new QstdtPaymentDetail();
-		//entity.fromDomain(domain);
+		// entity.fromDomain(domain);
 		entity.qstdtPaymentDetailPK = new QstdtPaymentDetailPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
-				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value,
-				detail.getCategoryAtr().value, detail.getItemCode().v());
+				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value, detail.getCategoryAtr().value,
+				detail.getItemCode().v());
 		entity.value = BigDecimal.valueOf(detail.getValue());
 		entity.correctFlag = detail.getCorrectFlag().value;
 		entity.taxATR = domain.getTaxAtr().value;
@@ -224,15 +218,16 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
 		entity.columnPosition = detail.getItemPosition().getColumnPosition().v();
 		entity.linePosition = detail.getItemPosition().getLinePosition().v();
-		entity.limitAmount = detail.getLimitAmount(); //QCAM_ITEM.LIMIT_MNY
-		entity.fixPayATR = detail.getFixPayAtr() ; //FIX_PAY_ATR
+		entity.limitAmount = detail.getLimitAmount(); // QCAM_ITEM.LIMIT_MNY
+		entity.fixPayATR = detail.getFixPayAtr(); // FIX_PAY_ATR
 		entity.averagePayATR = detail.getAveragePayAtr();//
 		entity.deductAttribute = detail.getDeductionAtr().value; //
 		entity.itemAtr = detail.getItemAtr().value; //
 		entity.commuteAllowTaxImpose = 0;
-		entity.commuteAllowMonth = 0;
+		entity.commuteAllowMonth = BigDecimal.valueOf(detail.getCommuteAllowMonth());
 		entity.commuteAllowFraction = 0;		
-		
+		entity.commuteAllowFraction = 0;
+
 		return entity;
 	}
 

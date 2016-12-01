@@ -28,7 +28,7 @@ module qmm019.e.viewmodel {
             var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
             var startYm = nts.uk.ui.windows.getShared('startYm');
             self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-             service.getLayout(layoutCode, startYm).done(function(layout){
+             service.getLayout(layoutCode, startYm).done(void function(layout : service.model.LayoutMasterDto){
                  self.selectLayout(layout);
                  self.startDiaglog();                 
                  
@@ -48,9 +48,9 @@ module qmm019.e.viewmodel {
             var self = this;
             var layout = self.selectLayout();
             var code = layout.stmtCode.trim();
-            if(code.length < 2){
-               code = "0" + code;
-            }
+//            if(code.length < 2){
+//               code = "0" + code;
+//            }
             self.selectLayoutCode(code);
             self.selectLayoutName(layout.stmtName);
             self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));

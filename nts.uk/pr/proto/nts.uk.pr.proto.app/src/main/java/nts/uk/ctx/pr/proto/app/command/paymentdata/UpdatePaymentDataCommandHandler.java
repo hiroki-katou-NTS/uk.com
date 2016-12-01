@@ -7,15 +7,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.CategoryCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.DetailItemCommandBase;
 import nts.uk.ctx.pr.proto.app.command.paymentdata.base.LineCommandBase;
-import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;

@@ -72,6 +72,9 @@ public class DetailItem extends DomainObject {
 
 	@Getter
 	private int limitAmount;
+	
+	@Getter
+	private double commuteAllowMonth;
 
 	/**
 	 * Constructor
@@ -163,6 +166,16 @@ public class DetailItem extends DomainObject {
 	 */
 	public DetailItem additionalInfo(int linePosition, int columnPosition) {
 		this.itemPosition = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
+		return this;
+	}
+	
+	/**
+	 * Add info: commute Allow Month
+	 * @param commuteAllowMonth
+	 * @return
+	 */
+	public DetailItem additionalInfo(double commuteAllowMonth) {
+		this.commuteAllowMonth = commuteAllowMonth;
 		return this;
 	}
 
