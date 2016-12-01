@@ -21,6 +21,7 @@ var qmm019;
                 // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
+                    var dfd = $.Deferred();
                     var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
                     var startYm = nts.uk.ui.windows.getShared('startYm');
                     self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
@@ -30,7 +31,6 @@ var qmm019;
                     }).fail(function (res) {
                         alert(res);
                     });
-                    var dfd = $.Deferred();
                     dfd.resolve();
                     // Return.
                     return dfd.promise();
