@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qpp._005.b {
+module nts.uk.pr.view.qpp005.b {
 
     export module viewmodel {
 
@@ -14,11 +14,6 @@ module nts.uk.pr.view.qpp._005.b {
                 ]);
                 self.selectedRuleCode = ko.observable('2');
             }
-            
-//             checkSwitchValue() {
-//                var self = this;
-//                self.visible = self.selectedRuleCode() == '1' ? ko.observable(true) : ko.observable(false);
-//            }
         }
 
         export class ScreenModel {
