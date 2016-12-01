@@ -8,7 +8,9 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 600, height: 450 };</script>
-
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+ 			</com:ValidatorScript>
 			<link rel="stylesheet" type="text/css" href="main.css" />
 			<script src="start.js"></script>
 			<script src="viewmodel.js"></script>

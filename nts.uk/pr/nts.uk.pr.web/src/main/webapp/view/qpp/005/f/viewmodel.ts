@@ -18,7 +18,7 @@ module nts.uk.pr.view.qpp005.f {
                 self.taxCommuteCheck.isChecked = ko.observable(false);
                 
                 self.numberEditor = new NumberEditor();
-                self.numberEditor.isEnable = self.oneMonthCheck.isChecked;
+                self.numberEditor.isEnable = self.totalCheck.isChecked;
                 self.numberEditor.value = ko.observable("10000");
             }
             
@@ -42,11 +42,11 @@ module nts.uk.pr.view.qpp005.f {
         export class NumberEditor{
             isEnable: KnockoutObservable<boolean>;
             value: KnockoutObservable<string>;
-            option: nts.uk.ui.option.CurrencyEditorOption;
+            option: ui.option.CurrencyEditorOption;
             
             constructor() {
                 var self = this;
-                self.option = new nts.uk.ui.option.CurrencyEditorOption({grouplength: 3, currencyformat: 'JPY', width: '80'});
+                self.option = ko.mapping.fromJS(new ui.option.CurrencyEditorOption({grouplength: 3, currencyformat: 'JPY', width: '80'}));
             }
         }
     }

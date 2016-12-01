@@ -1,49 +1,6 @@
 module qmm019.h.viewmodel {
     import option = nts.uk.ui.option;
 
-
-//    export class ItemModel {
-//        //        id: any;
-//        //        name: any;
-//        //        constructor(id, name) {
-//        //            var self = this;
-//        //            this.id        //            this.name = name;
-//
-//        companyCode: any;
-//        personalWageName: any;
-//        constructor(companyCode, personalWageName) {
-//            var self = this;
-//            this.companyCode = companyCode;
-//            this.personalWageName = personalWageName;
-//        }
-//
-//
-//    }
-//    export class ListBox {
-//        
-//        itemName: KnockoutObservable<any>;
-//        currentCode: KnockoutObservable<any>;
-//        selectedCode: KnockoutObservable<any>;
-//        selectedName: KnockoutObservable<any>;
-//        isEnable: KnockoutObservable<any>;
-//        selectedCodes: KnockoutObservableArray<any>;
-//        personalWages: KnockoutObservableArray<service.model.PersonalWageNameDto>;
-//        
-//
-//        constructor() {
-//            var self = this;
-//            self.itemList = ko.observableArray([]);
-//            self.personalWages = ko.observableArray([]);
-//
-//            self.itemName = ko.observable('');
-//            self.currentCode = ko.observable('0');
-//            self.selectedCode = ko.observable('01');
-//            self.isEnable = ko.observable(true);
-//            self.selectedCodes = ko.observableArray([]);
-//            
-//        }
-//
-//    }
     export class ScreenModel {
         itemList: KnockoutObservableArray<ItemWage>;
         personalWages: KnockoutObservableArray<service.model.PersonalWageNameDto>;
@@ -76,8 +33,7 @@ module qmm019.h.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            //var categoryAtr = ko.observable(nts.uk.ui.windows.getShared('categoryAtr'));
-             var categoryAtr = 1;
+            var categoryAtr = nts.uk.ui.windows.getShared('categoryAtr');
             service.getPersonalWageNames(categoryAtr).done(function(data: any){
                 self.personalWages(data);
                 self.buildItemList();
@@ -92,8 +48,9 @@ module qmm019.h.viewmodel {
 
         chooseItem() {
             var self = this;
-            nts.uk.ui.windows.setShared('selectedName', self.selectedName());
-            nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
+            var item = _.find(self.itemList(), function(item) {return item.wageCode === self.selectedCode()});
+            nts.uk.ui.windows.setShared('selectedName', item.wageName);
+            nts.uk.ui.windows.setShared('selectedCode', item.wageCode);
             nts.uk.ui.windows.close();
         }
 

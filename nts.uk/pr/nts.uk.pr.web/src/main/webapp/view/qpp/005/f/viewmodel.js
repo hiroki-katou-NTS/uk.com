@@ -21,7 +21,7 @@ var nts;
                                     self.taxCommuteCheck = new CheckBox();
                                     self.taxCommuteCheck.isChecked = ko.observable(false);
                                     self.numberEditor = new NumberEditor();
-                                    self.numberEditor.isEnable = self.oneMonthCheck.isChecked;
+                                    self.numberEditor.isEnable = self.totalCheck.isChecked;
                                     self.numberEditor.value = ko.observable("10000");
                                 }
                                 ScreenModel.prototype.IsEnableText = function () {
@@ -44,7 +44,7 @@ var nts;
                             var NumberEditor = (function () {
                                 function NumberEditor() {
                                     var self = this;
-                                    self.option = new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, currencyformat: 'JPY', width: '80' });
+                                    self.option = ko.mapping.fromJS(new uk.ui.option.CurrencyEditorOption({ grouplength: 3, currencyformat: 'JPY', width: '80' }));
                                 }
                                 return NumberEditor;
                             }());
