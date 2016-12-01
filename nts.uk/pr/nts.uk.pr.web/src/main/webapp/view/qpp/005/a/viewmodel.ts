@@ -135,14 +135,15 @@ module nts.uk.pr.view.qpp005 {
                 $('#pơpup-orientation').ntsPopup('show');
             }
 
-            openSetupTaxItem() {
+            openSetupTaxItem(value) {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
+                nts.uk.ui.windows.setShared("value", value);
+                nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
 
                     self.startPage();
-                    return this;
+                    return self;
                 });
             }
             /**
