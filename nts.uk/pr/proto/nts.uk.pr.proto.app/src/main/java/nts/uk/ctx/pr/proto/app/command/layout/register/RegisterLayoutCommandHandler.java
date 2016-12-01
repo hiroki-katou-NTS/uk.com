@@ -66,14 +66,13 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			}
 		}
 
-		List<LayoutMasterDetail> detailsFromDB = detailRepo.getDetails(companyCode, stmtCode, startYm);
 		for(LayoutDetail detailCommand : command.getDetailCommand()){
 			if (detailCommand.getItemCode().contains("itemTemp-")){
 				continue;
 			}
-			if (detailsFromDB.stream().filter(c ->
-						c.getItemCode().v().equals(detailCommand.getItemCode())
-						&& c.getCategoryAtr().value == detailCommand.getCategoryAtr()).findAny().isPresent()) {
+			if (!detailCommand.isAdded() && detailCommand.getUpdateItemCode().equals("")) {
+				// Khong phai là Thêm mới và không phải là Update ItemCode thì 
+				// chỉ update thường:
 				detailRepo.update(LayoutMasterDetail.createFromJavaType(companyCode, 
 						stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
 						detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
@@ -85,19 +84,26 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
 						detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
 						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
-			} else {
-				detailRepo.add(LayoutMasterDetail.createFromJavaType(companyCode, 
-						stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
-						detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
-						detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(), 
-						detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), 
-						detailCommand.getPersonalWageCode(), detailCommand.getSetOffItemCode(), 
-						detailCommand.getCommuteAtr(), detailCommand.getIsErrorUseHigh(), 
-						detailCommand.getErrorRangeHigh(), detailCommand.getIsErrorUserLow(), 
-						detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
-						detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
-						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
+				continue;
 			}
+			if (!detailCommand.getUpdateItemCode().equals("")) {
+				// day la update
+				detailRepo.remove(companyCode, stmtCode, startYm, detailCommand.getCategoryAtr(), detailCommand.getItemCode());
+				detailCommand.setItemCode(detailCommand.getUpdateItemCode());
+			} 
+			
+			//dành cho Thêm mới và update itemCode
+			detailRepo.add(LayoutMasterDetail.createFromJavaType(companyCode, 
+					stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
+					detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
+					detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(), 
+					detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), 
+					detailCommand.getPersonalWageCode(), detailCommand.getSetOffItemCode(), 
+					detailCommand.getCommuteAtr(), detailCommand.getIsErrorUseHigh(), 
+					detailCommand.getErrorRangeHigh(), detailCommand.getIsErrorUserLow(), 
+					detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
+					detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
+					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
 		}
 	}
 

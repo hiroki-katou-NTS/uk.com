@@ -68,22 +68,11 @@ module qmm019.a {
                 if (category.isRemoved === true) {
                     // Truong hop remove category thi remove luon line va detail
                     listCategoryAtrDeleted.push(category.categoryAtr);
-                    
-//                    let linePosition = 1;
-//                    for (let line of category.lines()) {
-//                        if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
-//                            listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});  
-//                            for (let detail of line.details) {
-//                                listItemCodeDeleted.push({categoryAtr: category.categoryAtr, itemCode: detail.itemCode()});
-//                            }
-//                        }
-//                    }
                 } else {
                     categoryCommand.push({categoryAtr: category.categoryAtr, categoryPosition: categoryPosition});
                     let linePosition = 1;
                     let sortedLines = $("#" + category.categoryAtr).sortable("toArray");
                     for (let itemLine of sortedLines) {
-                    //for (let line of category.lines()) {
                         let line : model.Line = _.find(category.lines(), function(lineDetail){
                             return lineDetail.rowId === itemLine.toString();
                         });
@@ -108,6 +97,8 @@ module qmm019.a {
                                 detailCommand.push({
                                     categoryAtr: category.categoryAtr, 
                                     itemCode: detail.itemCode(),
+                                    updateItemCode: detail.updateItemCode(),
+                                    added: detail.added(),
                                     autoLineId: detail.autoLineId(),
                                     itemPosColumn: itemPosColumn,
                                     calculationMethod: detail.calculationMethod(),
@@ -351,6 +342,8 @@ module qmm019.a {
         
             export class ItemDetail {
                 itemCode: KnockoutObservable<string>;
+                updateItemCode:  KnockoutObservable<string> = ko.observable("");
+                added: KnockoutObservable<boolean> = ko.observable(false);
                 itemAbName: KnockoutObservable<string>;
                 isRequired: KnockoutObservable<boolean> = ko.observable(false);
                 itemPosColumn: KnockoutObservable<number>;
@@ -413,10 +406,21 @@ module qmm019.a {
                     nts.uk.ui.windows.setShared('param', param);
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml').onClosed(() => {
                         var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
+                        if (data.itemAbName() === "+") {
+                            // Them moi
+                            self.itemCode(itemResult.itemCode);
+                            self.added(true);
+                        } else {
+                            if (self.added()) {
+                                // Sửa một detail đang được Thêm mới
+                                self.itemCode(itemResult.itemCode);    
+                            } else {
+                                // Update
+                                self.updateItemCode(itemResult.itemCode);    
+                            }
+                        }
                         
-                        self.itemCode(itemResult.itemCode);
                         self.itemAbName(itemResult.itemAbName);
-                        self.categoryAtr(itemResult.categoryAtr);
                         self.sumScopeAtr(itemResult.sumScopeAtr);
                         //self.setOffItemCode(itemResult.setOffItemCode);
                         //self.commuteAtr(itemResult.commuteAtr);
@@ -424,13 +428,13 @@ module qmm019.a {
                         self.distributeSet(itemResult.distributeSet);
                         self.distributeWay(itemResult.distributeWay);
                         self.personalWageCode(itemResult.personalWageCode);
-                        self.isUseHighError(itemResult.isUseHighError);
+                        self.isUseHighError(itemResult.isUseHighError ? 0 :1);
                         self.errRangeHigh(itemResult.errRangeHigh);
-                        self.isUseLowError(itemResult.isUseLowError);
+                        self.isUseLowError(itemResult.isUseLowError ? 0 :1);
                         self.errRangeLow(itemResult.errRangeLow);
-                        self.isUseHighAlam(itemResult.isUseHighAlam);
+                        self.isUseHighAlam(itemResult.isUseHighAlam ? 0 :1);
                         self.alamRangeHigh(itemResult.alamRangeHigh);
-                        self.isUseLowAlam(itemResult.isUseLowAlam);
+                        self.isUseLowAlam(itemResult.isUseLowAlam ? 0 :1);
                         self.alamRangeLow(itemResult.alamRangeLow);
                         
                         return this;
