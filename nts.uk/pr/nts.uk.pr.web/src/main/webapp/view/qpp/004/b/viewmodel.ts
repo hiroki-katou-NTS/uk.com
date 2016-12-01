@@ -127,5 +127,9 @@ module qpp004.b.viewmodel {
             nts.uk.ui.windows.setShared("data", data);
             nts.uk.ui.windows.sub.modal("/view/qpp/004/l/index.xhtml", { title: "給与データの作成", dialogClass: "no-close" });
         }
+        
+        backqpp004a() : any {
+            nts.uk.request.jump("/view/qpp/004/a/index.xhtml", {});    
+        }
     }
 }
