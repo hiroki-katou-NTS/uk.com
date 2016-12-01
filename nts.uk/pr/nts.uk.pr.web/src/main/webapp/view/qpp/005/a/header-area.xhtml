@@ -8,7 +8,7 @@
 <body>
 
 	<ui:composition>
-		<div>
+		<div id="header-are">
 			<div id="h-left">
 				<div class="h-item" style="margin: 3px 0px !important;" data-bind="with: paymentDataResult().paymentHeader">
 					<div class="i-left">
@@ -120,7 +120,8 @@
 
 			<div id="h-right" data-bind="with: paymentDataResult().paymentHeader">
 				<div data-bind="ntsFormLabel: {constraint: 'Comment', inline: true}">メモ</div>
-				<textarea id="txt-header-comment">今月より資格手当に「システム監査技術者（30,000円）が支給されます。
+				<textarea id="txt-header-comment" 
+					data-bind="ntsMultilineEditor: {value: comment, constraint: 'Comment', option: new nts.uk.ui.option.MultilineEditorOption({placeholder: '今月より資格手当に「システム監査技術者（30,000円）が支給されます。'})}">
 			</textarea>
 			</div>
 		</div>

@@ -67,6 +67,8 @@ var nts;
                                 var self = this;
                                 // TODO: Check error input
                                 qpp005.service.register(self.paymentDataResult()).done(function (res) {
+                                }).fail(function (res) {
+                                    alert(res.message);
                                 });
                             };
                             /** Event click: 対象者*/
@@ -125,6 +127,10 @@ var nts;
                                     self.startPage();
                                     return self;
                                 });
+                            };
+                            ScreenModel.prototype.toggleHeader = function () {
+                                $('#content-header').toggle('slow');
+                                $('img', '#btToggle').toggle();
                             };
                             /**
                              * auto Calculate item total
