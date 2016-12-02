@@ -137,7 +137,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		layoutOrigin.setEndYm(endYm);
 		this.layoutRepo.update(layoutOrigin);
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
-		List<LayoutMasterCategory> lstCategory = this.categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), 999912);
+		List<LayoutMasterCategory> lstCategory = this.categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
 		List<LayoutMasterCategory> categoriesNew = lstCategory.stream().map(
 				org -> {
 					return LayoutMasterCategory.createFromDomain(
@@ -150,7 +150,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 				}).collect(Collectors.toList());
 		this.categoryRepo.update(categoriesNew);
 		//データベース更新[明細書マスタ行.UPD-2] を実施する
-		List<LayoutMasterLine> lstLine = this.lineRepo.getLinesBefore(companyCode, command.getStmtCode(), 999912);
+		List<LayoutMasterLine> lstLine = this.lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
 		List<LayoutMasterLine> linesNew = lstLine.stream().map(
 				org ->{
 					return LayoutMasterLine.createFromDomain(
@@ -165,7 +165,8 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 				}).collect(Collectors.toList());
 		this.lineRepo.update(linesNew);
 		//データベース更新[明細書マスタ明細.UPD-2] を実施する
-		List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), 999912);
+//		List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), 999912);
+		List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
 		List<LayoutMasterDetail> detailsNew = lstDetail.stream().map(
 				org -> {
 					return LayoutMasterDetail.createFromDomain(

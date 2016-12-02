@@ -63,7 +63,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
                                     var employee = nts.uk.ui.windows.getShared('employee');
-                                    //var baseYearmonth = nts.uk.ui.windows.getShared('yearmonth');                
+                                    var baseYearmonth = nts.uk.ui.windows.getShared('processingYM');
                                     // Set value for 通勤費合計 textbox 
                                     self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
                                     // Set value for 課税通勤費 textbox 
@@ -72,12 +72,31 @@ var nts;
                                     self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
                                     // Set value for 余り textbox 
                                     self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
-                                    qpp005.f.service.getCommute(employee.personId, 201604).done(function (res) {
+                                    qpp005.f.service.getCommute(employee.personId, baseYearmonth).done(function (res) {
                                         qpp005.f.service.getCommuteNotaxLimit("01").done(function (res) {
                                             self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode, res.commuNotaxLimitName, res.commuNotaxLimitValue));
                                         });
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.settingButtonClick = function () {
+                                    var self = this;
+                                    var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
+                                    // Check checked item
+                                    if (!self.totalCommuteCheck.isChecked() || !self.oneMonthCheck.isChecked()) {
+                                        alert("対象データがありません。");
+                                        return;
+                                    }
+                                    // Check item is exist
+                                    if (detailItemFromParentScreen.itemCode == "") {
+                                        alert("更新対象のデータが存在しません。");
+                                        return;
+                                    }
+                                    nts.uk.ui.windows.setShared('commuteNotax', ko.toJS(self.commuteNotaxLimitItem()));
+                                    nts.uk.ui.windows.close();
+                                };
+                                ScreenModel.prototype.cancelButtonClick = function () {
+                                    nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
