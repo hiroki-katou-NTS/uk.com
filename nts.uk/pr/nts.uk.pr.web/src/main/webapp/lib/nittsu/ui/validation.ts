@@ -140,6 +140,8 @@
                 parseResult = time.parseTime(inputText, false);
             }else if(this.option.inputFormat === "timeofday") {
                 parseResult = time.parseTimeOfTheDay(inputText);
+            }else if(this.option.inputFormat === "yearmonthdate") {
+                parseResult = time.parseYearMonthDate(inputText);
             }else {
                 parseResult = time.ResultParseTime.failed();
             }

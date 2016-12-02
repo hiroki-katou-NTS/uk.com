@@ -230,6 +230,59 @@
         if(minute < 0 || minute > 59) return ResultParseTimeOfTheDay.failed("invalid minute");
         return ResultParseTimeOfTheDay.succeeded(hour,minute);
      }
+     
+     export class ResultParseYearMonthDate extends ParseResult{
+        year: number;
+        month: number;
+        date: number;
+        msg: string;
+        constructor(success, year?, month?, date?, msg?) {
+            super(success);
+            this.year = year;
+            this.month = month;
+            this.date = date;
+            this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
+        }
+        
+        static succeeded(year, month, date) {
+            return new ResultParseYearMonthDate(true, year, month, date);
+        }
+     
+        static failed(msg?) {
+            return new ResultParseYearMonthDate(false,msg); 
+        }
+        
+        format() {
+            if(!this.success){
+                return "";
+            }
+            return this.year + '/' + text.padLeft(String(this.month), '0', 2) + text.padLeft(String(this.date), '0', 2);
+        }
+        
+        toValue() {
+            if(!this.success){
+                return 0;
+            }
+            return (this.year * 10000 + this.month * 100 + this.date);
+        }
+        getMsg() {return this.msg;}
+    }
+    export function parseYearMonthDate(yearMonthDate: any): ResultParseYearMonthDate{
+        if(yearMonthDate === undefined || yearMonthDate === null){
+            return ResultParseYearMonthDate.failed("full date can not empty!");
+        }
+        if(!(yearMonthDate instanceof String)){
+            yearMonthDate = yearMonthDate.toString();
+        }
+        yearMonthDate = yearMonthDate.replaceAll("/","");
+        if(yearMonthDate.length != 8) return ResultParseYearMonthDate.failed("full date format must be yyyy/mm/dd or yyyymmdd");
+        var checkNum = yearMonthDate.replaceAll("[0-9]","");
+        if(checkNum.length === 0) return ResultParseYearMonthDate.failed("full date must contain digits and slashes only"); 
+        var year = parseInt(yearMonthDate.substring(0,4));
+        var month = parseInt(yearMonthDate.substring(4,6));
+        var date = parseInt(yearMonthDate.substring(6));
+        return ResultParseYearMonthDate.succeeded(year,month,date);
+    } 
     /**
     * 日付をフォーマットする
     * @param  {Date}   date     日付
