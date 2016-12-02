@@ -16,6 +16,7 @@ var nts;
                                 var self = this;
                                 self.isHandInput = ko.observable(true);
                                 self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
+                                self.backupData = ko.observable(new PaymentDataResultViewModel());
                                 self.categories = ko.observable(new CategoriesList());
                                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                                 self.employee = ko.observable();
@@ -49,6 +50,8 @@ var nts;
                                 var dfd = $.Deferred();
                                 qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function (res) {
                                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
+                                    self.paymentDataResult().__ko_mapping__ = undefined;
+                                    self.backupData(self.paymentDataResult());
                                     var categoryPayment = self.paymentDataResult().categories()[0];
                                     var categoryDeduct = self.paymentDataResult().categories()[1];
                                     var categoryArticle = self.paymentDataResult().categories()[3];

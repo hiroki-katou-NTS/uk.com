@@ -98,7 +98,7 @@ table.tb-category, th, td {
 	float: left;
 	width: 100%;
 	height: 20px;
-	background: #fff !important;
+	background: #f2f2f2 !important;
 	border: none !important;
 }
 
@@ -169,4 +169,8 @@ table.tb-category, th, td {
 	cursor: pointer;
 	float: right;
 	padding: 0px 3px 0px 0px;
+}
+
+.item-grey {
+	background: #f2f2f2;
 }

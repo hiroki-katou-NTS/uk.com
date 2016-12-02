@@ -5,18 +5,20 @@ module nts.uk.pr.view.qpp005 {
         export class ScreenModel {
             isHandInput: KnockoutObservable<boolean>;
             paymentDataResult: KnockoutObservable<PaymentDataResultViewModel>;
+            backupData: KnockoutObservable<PaymentDataResultViewModel>;
             categories: KnockoutObservable<CategoriesList>;
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
             employeeList: KnockoutObservableArray<any>;
             switchButton: KnockoutObservable<SwitchButton>;
             visible: KnockoutObservable<any>;
-
+            
 
             constructor() {
                 var self = this;
                 self.isHandInput = ko.observable(true);
                 self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
+                self.backupData = ko.observable(new PaymentDataResultViewModel());
                 self.categories = ko.observable(new CategoriesList());
                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                 self.employee = ko.observable<Employee>();
@@ -53,7 +55,9 @@ module nts.uk.pr.view.qpp005 {
                 qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
 
                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
-
+                    self.paymentDataResult().__ko_mapping__ = undefined;
+                    self.backupData(self.paymentDataResult());
+                    
                     var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
                     var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
                     var categoryArticle: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[3];

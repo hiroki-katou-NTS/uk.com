@@ -25,14 +25,15 @@ module nts.uk.pr.view.qpp005 {
 
             utils.gridSetup(screenModel.switchButton().selectedRuleCode());
         });
-//        this.bind(screenModel);
+        //        this.bind(screenModel);
     });
 
     export module utils {
         export function gridSetup(orientation) {
+            window.bakData = [];
             $('.tb-category').each(function() {
-
                 var tblid = this.id;
+
 
                 var $tbl = $("#" + tblid);
                 window.orientation = orientation;
@@ -45,7 +46,10 @@ module nts.uk.pr.view.qpp005 {
                         var input = tblid + '_' + r + '_' + c;
                         var $input = $('#' + input);
 
-                        if (input === lastItemId) $input.addClass('disabled');
+                        if (input === lastItemId) {
+                            $input.addClass('disabled');
+                            $input.addClass('item-grey');
+                        }
                         if ($input.length === 1 && input !== lastItemId) vlist.push($input);
                     }
                 }
@@ -55,7 +59,10 @@ module nts.uk.pr.view.qpp005 {
                 }
 
                 window.hlist = [];
-                $tbl.find('input').not('.disabled').each(function() { hlist.push($(this)); });
+                $tbl.find('input').not('.disabled').each(function() {
+                    hlist.push($(this));
+                    bakData.push(new itemBAK(this.id, $(this).val()));
+                });
                 for (var i = 0; i < hlist.length; i++) {
                     var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
                     hlist[i].data('hnext', next);
@@ -67,11 +74,23 @@ module nts.uk.pr.view.qpp005 {
                         return false;
                     }
                 });
-                
-                $tbl.on('change', 'input', function (e) {
-                    $(this).data(orientation);
+
+                $tbl.on('change', 'input', function(e) {
+                    $(e.currentTarget).css('background', '#bdd7ee')
                 });
             });
+        }
+
+        export class itemBAK {
+            id: string;
+            value: number;
+            
+            constructor(id: string, value: number) {
+                var self = this;
+                
+                self.id = id;
+                self.value = value;
+            }
         }
     }
 }
