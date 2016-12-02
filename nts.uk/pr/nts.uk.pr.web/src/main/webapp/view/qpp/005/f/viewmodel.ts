@@ -71,7 +71,7 @@ module nts.uk.pr.view.qpp005.f {
             start(): JQueryPromise<any>{
                 var self = this;
                 var dfd=$.Deferred();
-                
+                var value = nts.uk.ui.windows.getShared('value');
                 return dfd.promise();
             }
         }

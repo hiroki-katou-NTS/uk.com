@@ -64,6 +64,7 @@ var nts;
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    var value = nts.uk.ui.windows.getShared('value');
                                     return dfd.promise();
                                 };
                                 return ScreenModel;
