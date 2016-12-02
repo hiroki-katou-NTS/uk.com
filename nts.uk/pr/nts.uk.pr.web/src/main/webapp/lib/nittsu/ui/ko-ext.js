@@ -122,16 +122,22 @@ var nts;
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        $input.css({ 'text-align': 'right' });
+                        $input.wrap("<div class='nts-input' />");
+                        var parent = $input.parent();
+                        parent.css({ 'width': '100%' });
+                        var width = option.width ? option.width : '93.5%';
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                            var parent = $input.parent();
                             if (!parent.hasClass('currencyLeft') && !parent.hasClass('currencyRight')) {
                                 $input.wrap("<span class = 'currency " +
                                     (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') + "' />");
-                                var paddingLeft = option.currencyposition === 'left' ? '10px' : '';
-                                var paddingRight = option.currencyposition === 'right' ? '10px' : '';
-                                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight });
-                                $input.width(160);
+                                var paddingLeft = option.currencyposition === 'left' ? '12px' : '';
+                                var paddingRight = option.currencyposition === 'right' ? '12px' : '';
+                                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width });
                             }
+                        }
+                        else {
+                            $input.css({ 'paddingLeft': '12px', 'width': width });
                         }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
@@ -153,6 +159,16 @@ var nts;
                     function TimeEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    TimeEditorProcessor.prototype.update = function ($input, data) {
+                        _super.prototype.update.call(this, $input, data);
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        $input.css({ 'text-align': 'right' });
+                        $input.wrap("<div class='nts-input' />");
+                        var parent = $input.parent();
+                        parent.css({ 'width': '100%' });
+                        var width = option.width ? option.width : '93.5%';
+                        $input.css({ 'paddingLeft': '12px', 'width': width });
+                    };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };

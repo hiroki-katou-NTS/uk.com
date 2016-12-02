@@ -19,12 +19,14 @@
 	&.currencyLeft:after {
 		content: 'Åè';
 		left: 0;
+		top: 0;
 		text-align: left;
 	}
 	
 	&.currencyRight:after {
 		content: '$';
 		right: 0;
+		top: 0;
 		text-align: right;
 	}
 	
