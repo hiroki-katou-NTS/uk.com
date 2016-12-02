@@ -856,7 +856,7 @@ module nts.uk.ui.koExtentions {
                 selected: function(event, ui) {
                   
                 },
-                start: function(event, ui) {
+                stop: function(event, ui) {
 
                     // If not Multi Select.
                     if (!isMultiSelect) {
