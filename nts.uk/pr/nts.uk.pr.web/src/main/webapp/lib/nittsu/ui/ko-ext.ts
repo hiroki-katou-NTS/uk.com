@@ -82,7 +82,7 @@ module nts.uk.ui.koExtentions {
     }
 
     class TextEditorProcessor extends EditorProcessor {
-        
+
         update($input: JQuery, data: any) {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var textmode: string = editorOption.textmode;
@@ -109,22 +109,22 @@ module nts.uk.ui.koExtentions {
     }
 
     class NumberEditorProcessor extends EditorProcessor {
-        
-        update($input: JQuery, data: any){
+
+        update($input: JQuery, data: any) {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            
-            if(option.currencyformat !== undefined && option.currencyformat !== null){
+
+            if (option.currencyformat !== undefined && option.currencyformat !== null) {
                 var parent = $input.parent();
-                if(!parent.hasClass('currencyLeft') && !parent.hasClass('currencyRight')){
-                    $input.wrap("<span class = 'currency "+ 
-                    (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') +"' />");
+                if (!parent.hasClass('currencyLeft') && !parent.hasClass('currencyRight')) {
+                    $input.wrap("<span class = 'currency " +
+                        (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') + "' />");
                     var paddingLeft = option.currencyposition === 'left' ? '10px' : '';
                     var paddingRight = option.currencyposition === 'right' ? '10px' : '';
-                    $input.css({'paddingLeft': paddingLeft, 'paddingRight': paddingRight});
-                    $input.width(160);    
+                    $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight });
+                    $input.width(160);
                 }
-            }    
+            }
         }
 
         getDefaultOption(): any {
@@ -161,9 +161,9 @@ module nts.uk.ui.koExtentions {
             return new validation.TimeValidator(constraintName, option);
         }
     }
-    
+
     class MultilineEditorProcessor extends EditorProcessor {
-        
+
         update($input: JQuery, data: any) {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var resizeable: string = ko.unwrap(editorOption.resizeable);
@@ -188,7 +188,7 @@ module nts.uk.ui.koExtentions {
             return new validation.StringValidator(constraintName, required);
         }
     }
-    
+
     /**
      * Editor
      */
@@ -300,7 +300,7 @@ module nts.uk.ui.koExtentions {
             new MultilineEditorProcessor().update($(element), valueAccessor());
         }
     }
-    
+
     /**
      * Multi Checkbox
      */
@@ -848,13 +848,12 @@ module nts.uk.ui.koExtentions {
             // Create changing event.
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
-                
             });
 
             // Bind selectable.
             selectListBoxContainer.selectable({
+
                 selected: function(event, ui) {
-                  
                 },
                 stop: function(event, ui) {
 
@@ -884,6 +883,8 @@ module nts.uk.ui.koExtentions {
                 unselecting: function(event, ui) {
                     $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 }
+
+
             });
 
             // Fire event.
@@ -894,27 +895,38 @@ module nts.uk.ui.koExtentions {
                 // Create changing event.
                 var changingEvent = new CustomEvent("selectionChanging", {
                     detail: itemsSelected,
-                    
                 });
 
                 // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                if (!changingEvent.returnValue) {
+                
+                data.value(itemsSelected);
+
+                // Create event changed.
+                var changedEvent = new CustomEvent("selectionChanged", {
+                    detail: itemsSelected,
+                    bubbles: true,
+                    cancelable: false
+                });
+
+                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
+                
+                /*if (!changingEvent.returnValue) {
                     // revert select.
                     $(this).val(selectedValue);
-                    data.value(selectedValue);
-                } else {
-                    data.value(itemsSelected);
 
-                    // Create event changed.
-                    var changedEvent = new CustomEvent("selectionChanged", {
-                        detail: itemsSelected,
-                        
-                    });
-
-                    // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
-                    document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
                 }
+                data.value(itemsSelected);
+
+                // Create event changed.
+                var changedEvent = new CustomEvent("selectionChanged", {
+                    detail: itemsSelected,
+                });
+
+                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                document.getElementById(container.attr('id')).dispatchEvent(changedEvent);*/
+
             }));
 
             // Create method.

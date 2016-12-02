@@ -868,20 +868,29 @@ var nts;
                             });
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (!changingEvent.returnValue) {
+                            data.value(itemsSelected);
+                            // Create event changed.
+                            var changedEvent = new CustomEvent("selectionChanged", {
+                                detail: itemsSelected,
+                                bubbles: true,
+                                cancelable: false
+                            });
+                            // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                            document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
+                            /*if (!changingEvent.returnValue) {
                                 // revert select.
                                 $(this).val(selectedValue);
-                                data.value(selectedValue);
+            
                             }
-                            else {
-                                data.value(itemsSelected);
-                                // Create event changed.
-                                var changedEvent = new CustomEvent("selectionChanged", {
-                                    detail: itemsSelected,
-                                });
-                                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
-                                document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
-                            }
+                            data.value(itemsSelected);
+            
+                            // Create event changed.
+                            var changedEvent = new CustomEvent("selectionChanged", {
+                                detail: itemsSelected,
+                            });
+            
+                            // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                            document.getElementById(container.attr('id')).dispatchEvent(changedEvent);*/
                         }));
                         // Create method.
                         $.fn.deselectAll = function () {

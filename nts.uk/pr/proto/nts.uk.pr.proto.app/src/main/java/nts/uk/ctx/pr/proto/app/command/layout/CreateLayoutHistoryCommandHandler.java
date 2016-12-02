@@ -91,6 +91,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							new YearMonth(999912), 
 							org.getCtgPos());
 				}).collect(Collectors.toList());
+		categoryRepo.add(categoriesNew);
 		
 		List<LayoutMasterLine> linesNew = linesOrigin.stream().map(
 				org ->{
@@ -104,6 +105,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getLineDispayAttribute(), 
 							org.getLinePosition());
 				}).collect(Collectors.toList());
+		lineRepo.add(linesNew);
 		
 		List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(
 				org -> {
@@ -126,9 +128,6 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCommuteAtr(), 
 							org.getPersonalWageCode());
 				}).collect(Collectors.toList());
-		
-		categoryRepo.add(categoriesNew);
-		lineRepo.add(linesNew);
 		detailRepo.add(detailsNew);
 	}
 	

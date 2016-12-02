@@ -137,7 +137,7 @@ module nts.uk.pr.view.qpp005 {
                 $('#pơpup-orientation').ntsPopup('show');
             }
 
-            openSetupTaxItem(value) {
+            openSetupTaxItem(screenModel, value) {
                 var self = this;
                 nts.uk.ui.windows.setShared("value", ko.toJS(value));
                 nts.uk.ui.windows.setShared("employee", ko.toJS(self.employee()));

@@ -56,15 +56,14 @@ var nts;
                                      */
                                     self.commuteDividedByMonth = new CommuteDividedByMonth();
                                     self.commuteDividedByMonth.isEnable = self.oneMonthCheck.isChecked;
+                                    self.commuteNotaxLimitItem = ko.observable();
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
                                     var employee = nts.uk.ui.windows.getShared('employee');
-                                    var nowYearMonth = new Date();
-                                    //Get current year month
-                                    var baseYearmonth = nowYearMonth.getFullYear().toString() + (nowYearMonth.getMonth() + 1).toString();
+                                    //var baseYearmonth = nts.uk.ui.windows.getShared('yearmonth');                
                                     // Set value for 通勤費合計 textbox 
                                     self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
                                     // Set value for 課税通勤費 textbox 
@@ -73,6 +72,11 @@ var nts;
                                     self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
                                     // Set value for 余り textbox 
                                     self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
+                                    qpp005.f.service.getCommute(employee.personId, 201604).done(function (res) {
+                                        qpp005.f.service.getCommuteNotaxLimit("01").done(function (res) {
+                                            self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode, res.commuNotaxLimitName, res.commuNotaxLimitValue));
+                                        });
+                                    });
                                     return dfd.promise();
                                 };
                                 return ScreenModel;
@@ -111,6 +115,11 @@ var nts;
                                 }
                                 return CommuteDividedByMonth;
                             }());
+                            function CommuteNotaxLimitItem(code, name, value) {
+                                this.code = code;
+                                this.name = name;
+                                this.value = value;
+                            }
                             function CommuteDividedItemsByMonth(code, name) {
                                 this.code = code;
                                 this.name = name;
