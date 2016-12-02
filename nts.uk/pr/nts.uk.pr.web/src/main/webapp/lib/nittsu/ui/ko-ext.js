@@ -827,14 +827,12 @@ var nts;
                         // Create changing event.
                         var changeEvent = new CustomEvent("selectionChange", {
                             detail: {},
-                            bubbles: true,
-                            cancelable: true,
                         });
                         // Bind selectable.
                         selectListBoxContainer.selectable({
                             selected: function (event, ui) {
                             },
-                            stop: function (event, ui) {
+                            start: function (event, ui) {
                                 // If not Multi Select.
                                 if (!isMultiSelect) {
                                     $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
@@ -867,8 +865,6 @@ var nts;
                             // Create changing event.
                             var changingEvent = new CustomEvent("selectionChanging", {
                                 detail: itemsSelected,
-                                bubbles: true,
-                                cancelable: true,
                             });
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
@@ -882,8 +878,6 @@ var nts;
                                 // Create event changed.
                                 var changedEvent = new CustomEvent("selectionChanged", {
                                     detail: itemsSelected,
-                                    bubbles: true,
-                                    cancelable: false
                                 });
                                 // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                                 document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
@@ -891,14 +885,14 @@ var nts;
                         }));
                         // Create method.
                         $.fn.deselectAll = function () {
-                            $(this.selector).data('value', '');
-                            $(this.selector + ' > .nts-list-box > li').removeClass("ui-selected");
-                            $(this.selector + ' > .nts-list-box > li > div').removeClass("ui-selected");
-                            $(this.selector).trigger("selectionChange");
+                            $(this).data('value', '');
+                            $(this).find('.nts-list-box > li').removeClass("ui-selected");
+                            $(this).find('.nts-list-box > li > div').removeClass("ui-selected");
+                            $(this).trigger("selectionChange");
                         };
                         $.fn.selectAll = function () {
-                            $(this.selector + ' > .nts-list-box > li').addClass("ui-selected");
-                            $(this.selector + ' > .nts-list-box').data("ui-selectable")._mouseStop(null);
+                            $(this).find('.nts-list-box > li').addClass("ui-selected");
+                            $(this).find('.nts-list-box').data("ui-selectable")._mouseStop(null);
                         };
                         $.fn.ntsListBox = function (method) {
                             switch (method) {

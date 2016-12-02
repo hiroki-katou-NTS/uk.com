@@ -80,7 +80,7 @@ module qmm019.f.viewmodel {
                         companyCode: ko.observable(null),
                         itemCode: ko.observable(data.itemCode),
                         categoryAtr: ko.observable(data.categoryAtr),
-                        itemAbName: ko.observable(data.itemAbName),
+                        itemAbName: ko.observable(self.selectedName()),
                         checkUseHighError: ko.observable(data.isUseHighError == 1),
                         errRangeHigh: ko.observable(data.errRangeHigh),
                         checkUseLowError: ko.observable(data.isUseLowError == 1),
@@ -357,6 +357,7 @@ module qmm019.f.viewmodel {
         }
 
         close() {
+            nts.uk.ui.windows.setShared('itemResult', undefined);
             nts.uk.ui.windows.close();
         }
 

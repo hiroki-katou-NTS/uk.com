@@ -120,7 +120,7 @@ var nts;
                             };
                             ScreenModel.prototype.openSetupTaxItem = function (value) {
                                 var self = this;
-                                nts.uk.ui.windows.setShared("value", value);
+                                nts.uk.ui.windows.setShared("value", ko.toJS(value));
                                 nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
@@ -193,7 +193,15 @@ var nts;
                         viewmodel.PaymentDataResultViewModel = PaymentDataResultViewModel;
                         // header
                         var PaymentDataHeaderViewModel = (function () {
-                            function PaymentDataHeaderViewModel() {
+                            function PaymentDataHeaderViewModel(dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
+                                var self = this;
+                                self.dependentNumber = dependentNumber;
+                                self.specificationCode = specificationCode;
+                                self.makeMethodFlag = makeMethodFlag;
+                                self.employeeCode = employeeCode;
+                                self.comment = ko.observable(comment);
+                                self.printPositionCategories = printPositionCategories;
+                                self.isCreated = isCreated;
                             }
                             return PaymentDataHeaderViewModel;
                         }());

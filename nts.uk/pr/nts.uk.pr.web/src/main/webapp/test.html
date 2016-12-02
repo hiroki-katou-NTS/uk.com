@@ -42,6 +42,7 @@ hr {
 <script src="lib/nittsu/ui/jquery-ext.js"></script>
 <script src="lib/nittsu/ui/ko-ext.js"></script>
 <script src="lib/nittsu/ui/ui.js"></script>
+<script src="lib/nittsu/iefix.js"></script>
 <script>
 	var __viewContext = __viewContext || {};
 	__viewContext.primitiveValueConstraints = {
@@ -262,6 +263,12 @@ hr {
 				this.custom = 'Random' + new Date().getTime();
 			}
 			
+            $('.ntsRadioBox').on('click', function() {
+                if ($(this).hasClass('disabled'))
+                    return;
+                $(this).find('input[type=radio]').prop("checked", true);
+            });
+			
 			ko.applyBindings(vm);
 			
 		});
@@ -304,13 +311,17 @@ hr {
 	<hr />
 	<div data-bind="with: checkbox">
 		<h2>CheckBox</h2>
-		<div id="checkBoxTest1"
+		<div style="background:#2ecc71;padding:5px;margin:5px 0;"><div id="checkBoxTest1"
 			data-bind="ntsCheckBox: { checked: isHealthInsurance, text: 'Txt_HealthInsurance', enable: isEnable }"
-			class="cf"></div>
+			class="cf outline"></div></div>
 		<div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: isEnable}"
 			class="cf">This is test text for enable</div>
 		Your selected state:
 		<div data-bind="text: isHealthInsurance"></div>
+		<!-- Test theme -->
+		<div style="background:#2ecc71;padding:5px;margin:5px 0;"><span class="outline ntsRadioBox"><input type="radio" name="testradio"/><label><span></span>Enable</label></span></div>
+		<span class="ntsRadioBox"><input type="radio" name="testradio"/><label><span></span>Enable</label></span>
+		<span class="ntsRadioBox"><input type="radio" name="testradio"/><label><span></span>Enable</label></span>
 	</div>
 	<hr />
 	<div data-bind="with: combobox">
