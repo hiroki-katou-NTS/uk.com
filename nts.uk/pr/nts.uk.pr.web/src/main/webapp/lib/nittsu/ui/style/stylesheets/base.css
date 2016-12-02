@@ -1369,12 +1369,14 @@ button.nts-switch-button.selected:hover {
 .currency.currencyLeft:after {
   content: '￥';
   left: 0;
+  top: 0;
   text-align: left;
 }
-/* line 25, ../sass/components/_currency.scss */
+/* line 26, ../sass/components/_currency.scss */
 .currency.currencyRight:after {
   content: '$';
   right: 0;
+  top: 0;
   text-align: right;
 }
 
