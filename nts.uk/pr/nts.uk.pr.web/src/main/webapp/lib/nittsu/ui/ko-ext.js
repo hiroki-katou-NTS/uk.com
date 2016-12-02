@@ -832,7 +832,7 @@ var nts;
                         selectListBoxContainer.selectable({
                             selected: function (event, ui) {
                             },
-                            start: function (event, ui) {
+                            stop: function (event, ui) {
                                 // If not Multi Select.
                                 if (!isMultiSelect) {
                                     $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
