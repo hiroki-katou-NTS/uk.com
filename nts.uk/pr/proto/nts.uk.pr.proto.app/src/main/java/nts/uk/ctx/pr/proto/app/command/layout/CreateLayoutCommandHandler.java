@@ -266,7 +266,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 		}
 
 		//[明細書マスタ行]の明細書コード = G_SEL_002で選択している項目の明細書コード	　AND　[明細書マスタ行]の終了年月 = 999912
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied(), command.getStartYmCopied());
+		List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied(), 999912);
 		if(!linesOrigin.isEmpty())
 		{
 			List<LayoutMasterLine> linesNew = linesOrigin.stream().map(

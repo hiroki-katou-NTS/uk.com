@@ -78,7 +78,7 @@
 								<tr>
 									<com:ko-foreach bind="details">
 										<com:ko-if bind="itemCode() !== ''">
-											<td><span data-bind="text: itemName"></span> 
+											<td><label data-bind="text: itemName"></label> 
 												<com:ko-if bind="itemAtr() === 0">
 													<input data-bind="ntsTimeEditor: {value: value, option: new nts.uk.ui.option.TimeEditorOption({ inputFormat: ko.observable('time') })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
 												</com:ko-if> 
@@ -107,8 +107,8 @@
 											</td>
 										</com:ko-if>
 										<com:ko-if bind="itemCode() === ''">
-											<td><span data-bind="text: itemName"></span> 
-											<span class="sp-readonly"></span>
+											<td><label data-bind="text: itemName"></label> 
+											<label class="sp-readonly"></label>
 											</td>
 										</com:ko-if>
 

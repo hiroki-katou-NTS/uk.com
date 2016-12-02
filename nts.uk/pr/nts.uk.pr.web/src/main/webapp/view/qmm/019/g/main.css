@@ -5,7 +5,7 @@
 	padding-right: 100px;
 }
 #INP_003, #INP_001{
-	width: 50px;
+	width: 55px;
 }
 #LBL_004{
 	padding-right: 93px;
@@ -29,7 +29,7 @@
 }
 .bottomStype{
 	margin-top: 20px;
-	margin-left: 200px;
+	margin-left: 350px;
 }
 #BTN_001{
 	margin-right: 20px;
@@ -37,6 +37,7 @@
 .lstBox{
 	border: 2px solid gray;
     margin-left: 150px;
+    margin-top: 5px;
     padding-top: 5px;
     width: 750px;
     height: 205px;

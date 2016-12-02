@@ -50,9 +50,9 @@ var qmm019;
                         self.buildComboboxChange(newValue);
                     });
                     //start ym
-                    var d = new Date();
-                    var ym = d.getFullYear() + '/' + (d.getMonth() + 1);
-                    self.selectStartYm(ym);
+                    //            var d = new Date();
+                    //            var ym = d.getFullYear() + '/' + (d.getMonth() + 1);
+                    //            self.selectStartYm(ym);
                     dfd.resolve();
                     // Return.
                     return dfd.promise();
@@ -81,6 +81,7 @@ var qmm019;
                     _.forEach(self.layouts(), function (layout) {
                         if (layout.stmtCode == layoutCd) {
                             self.startYmCopy(layout.startYm);
+                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             return false;
                         }
                     });
@@ -98,7 +99,7 @@ var qmm019;
                             self.createlayout().checkCopy = true;
                         }
                         g.service.createLayout(self.createlayout()).done(function () {
-                            alert('追加しました。');
+                            //alert('追加しました。');    
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);
@@ -152,7 +153,7 @@ var qmm019;
                     self.createlayout({
                         checkCopy: true,
                         stmtCodeCopied: self.createNewSelect(),
-                        startYmCopied: self.startYmCopy(),
+                        startYmCopied: +self.startYmCopy,
                         stmtCode: stmtCd,
                         startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,

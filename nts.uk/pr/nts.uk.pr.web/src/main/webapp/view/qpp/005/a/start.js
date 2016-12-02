@@ -69,6 +69,9 @@ var nts;
                                         return false;
                                     }
                                 });
+                                $tbl.on('change', 'input', function (e) {
+                                    $(this).data(orientation);
+                                });
                             });
                         }
                         utils.gridSetup = gridSetup;
