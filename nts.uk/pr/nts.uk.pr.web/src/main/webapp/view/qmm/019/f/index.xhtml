@@ -100,7 +100,8 @@
 							<div class="form-label required"
 								data-bind="visible: checkPersonalInformationReference()">
 								<label>コード/名称</label>
-								<button data-bind="click: openHDialog" style="margin-left: 17px; width: 71px;">参照</button>
+								<button data-bind="click: openHDialog"
+									style="margin-left: 17px; width: 71px;">参照</button>
 								<a>コード</a> <a>名称</a>
 							</div>
 						</div>
@@ -139,8 +140,7 @@
 									class="cf"></div>
 							</div>
 						</div>
-						<br/>
-						<br />
+						<br /> <br />
 						<div style="margin-left: 115px;"
 							data-bind="with: comboBoxDistributeWay">
 							<div id="combo-box3"
@@ -203,10 +203,11 @@
 						<br /> <br /> <br /> <br /> <span>※エラーの場合は、データ登録されません。</span>
 						<br /> <br /> <span style="margin-left: 15px;">アラームの場合は、メッセージが表示されます。（データは登録されます）
 						</span>
-						<hr/>
-						<button data-bind="click: returnBackData" style ="margin-left: 50px" class="x-large proceed">設定</button>
-						<button data-bind="click: close" style ="margin-left: 15px">キャンセル</button>
 					</div>
+					<hr />
+					<button data-bind="click: returnBackData" style="margin-left: 50px"
+						class="x-large proceed">設定</button>
+					<button data-bind="click: close" style="margin-left: 15px">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

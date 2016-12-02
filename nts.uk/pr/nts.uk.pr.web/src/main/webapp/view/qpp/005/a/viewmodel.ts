@@ -75,8 +75,8 @@ module nts.uk.pr.view.qpp005 {
                 // TODO: Check error input
 
                 qpp005.service.register(self.paymentDataResult()).done(function(res) {
-                    
-                }).fail(function (res) {
+
+                }).fail(function(res) {
                     alert(res.message);
                 });
             }
@@ -139,7 +139,7 @@ module nts.uk.pr.view.qpp005 {
 
             openSetupTaxItem(value) {
                 var self = this;
-                nts.uk.ui.windows.setShared("value", value);
+                nts.uk.ui.windows.setShared("value", ko.toJS(value));
                 nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
@@ -148,8 +148,8 @@ module nts.uk.pr.view.qpp005 {
                     return self;
                 });
             }
-            
-            toggleHeader() {                
+
+            toggleHeader() {
                 $('#content-header').toggle('slow');
                 $('img', '#btToggle').toggle();
             }
@@ -223,9 +223,22 @@ module nts.uk.pr.view.qpp005 {
             specificationName: string;
             makeMethodFlag: number;
             employeeCode: string;
-            comment: string;
+            comment: KnockoutObservable<string>;
             printPositionCategories: Array<PrintPositionCategoryViewModel>;
             isCreated: boolean;
+
+            constructor(dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
+                printPositionCategories: Array<PrintPositionCategoryViewModel>, isCreated: boolean) {
+                var self = this;
+
+                self.dependentNumber = dependentNumber;
+                self.specificationCode = specificationCode;
+                self.makeMethodFlag = makeMethodFlag;
+                self.employeeCode = employeeCode;
+                self.comment = ko.observable(comment);
+                self.printPositionCategories = printPositionCategories;
+                self.isCreated = isCreated;
+            }
         }
 
         export class PrintPositionCategoryViewModel {

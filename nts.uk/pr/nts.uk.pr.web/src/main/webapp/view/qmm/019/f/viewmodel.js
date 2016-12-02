@@ -46,7 +46,7 @@ var qmm019;
                                 companyCode: ko.observable(null),
                                 itemCode: ko.observable(data.itemCode),
                                 categoryAtr: ko.observable(data.categoryAtr),
-                                itemAbName: ko.observable(data.itemAbName),
+                                itemAbName: ko.observable(self.selectedName()),
                                 checkUseHighError: ko.observable(data.isUseHighError == 1),
                                 errRangeHigh: ko.observable(data.errRangeHigh),
                                 checkUseLowError: ko.observable(data.isUseLowError == 1),
@@ -288,6 +288,7 @@ var qmm019;
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.close = function () {
+                    nts.uk.ui.windows.setShared('itemResult', undefined);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.checkManualInput = function () {
