@@ -325,6 +325,14 @@
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
+						<div data-bind="with: currencyeditor">
+							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<br/><br/>
+						</div>
+						<div data-bind="with: currencyeditor2">
+							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<br/><br/>
+						</div>
 						<!-- ViewModel -->
 						<div class="cf">
 							<h3>NumberEditor ViewModel</h3>

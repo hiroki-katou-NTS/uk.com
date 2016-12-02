@@ -119,6 +119,21 @@ var nts;
                     function NumberEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    NumberEditorProcessor.prototype.update = function ($input, data) {
+                        _super.prototype.update.call(this, $input, data);
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        if (option.currencyformat !== undefined && option.currencyformat !== null) {
+                            var parent = $input.parent();
+                            if (!parent.hasClass('currencyLeft') && !parent.hasClass('currencyRight')) {
+                                $input.wrap("<span class = 'currency " +
+                                    (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') + "' />");
+                                var paddingLeft = option.currencyposition === 'left' ? '10px' : '';
+                                var paddingRight = option.currencyposition === 'right' ? '10px' : '';
+                                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight });
+                                $input.width(160);
+                            }
+                        }
+                    };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };

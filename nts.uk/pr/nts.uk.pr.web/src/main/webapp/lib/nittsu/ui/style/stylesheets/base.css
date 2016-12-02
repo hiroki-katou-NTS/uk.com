@@ -353,7 +353,7 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI é╞é╠îôé╦ìçéóé┼background-coloré╔é═!importanté¬òKùvé┴é█éóüH */
+  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
 }
 /* line 28, ../sass/components/_button.scss */
 button:hover {
@@ -1236,6 +1236,37 @@ button.nts-switch-button.selected:hover {
   display: list-item;
 }
 
+/* line 1, ../sass/components/_currency.scss */
+.currency {
+  position: relative;
+}
+/* line 4, ../sass/components/_currency.scss */
+.currency.currencyLeft input[type="text"] {
+  padding-left: 10px;
+}
+/* line 8, ../sass/components/_currency.scss */
+.currency.currencyRight input[type="text"] {
+  padding-right: 10px;
+}
+/* line 13, ../sass/components/_currency.scss */
+.currency:after {
+  position: absolute;
+  content: ' ';
+  color: #999;
+}
+/* line 19, ../sass/components/_currency.scss */
+.currency.currencyLeft:after {
+  content: '￥';
+  left: 0;
+  text-align: left;
+}
+/* line 25, ../sass/components/_currency.scss */
+.currency.currencyRight:after {
+  content: '$';
+  right: 0;
+  text-align: right;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -1253,7 +1284,7 @@ button.nts-switch-button.selected:hover {
   padding: 10px;
 }
 
-/* line 17, ../sass/base.scss */
+/* line 18, ../sass/base.scss */
 body {
   font-size: 14px;
   font-family: "Meiryo UI";
