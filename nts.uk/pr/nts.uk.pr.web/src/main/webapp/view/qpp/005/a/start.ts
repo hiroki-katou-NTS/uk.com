@@ -61,7 +61,7 @@ module nts.uk.pr.view.qpp005 {
                 window.hlist = [];
                 $tbl.find('input').not('.disabled').each(function() {
                     hlist.push($(this));
-                    bakData.push(new itemBAK(this.id, $(this).val()));
+                    bakData.push(new itemBAK(this.id, $(this).val(), $(this).css('backgroundColor')));
                 });
                 for (var i = 0; i < hlist.length; i++) {
                     var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
@@ -76,7 +76,18 @@ module nts.uk.pr.view.qpp005 {
                 });
 
                 $tbl.on('change', 'input', function(e) {
-                    $(e.currentTarget).css('background', '#bdd7ee')
+                    var nId = this.id;
+                    var nVal = $(this).val();
+                    
+                    var include = ko.utils.arrayFirst(window.bakData, function(item) {
+                        return item.id === nId && item.value === nVal;
+                    });
+
+                    if (include) {
+                        $(e.currentTarget).css('background', include.color);
+                    } else {
+                        $(e.currentTarget).css('background', '#bdd7ee');
+                    }
                 });
             });
         }
@@ -84,12 +95,14 @@ module nts.uk.pr.view.qpp005 {
         export class itemBAK {
             id: string;
             value: number;
-            
-            constructor(id: string, value: number) {
+            color: string;
+
+            constructor(id: string, value: number, color: string) {
                 var self = this;
-                
+
                 self.id = id;
                 self.value = value;
+                self.color = color;
             }
         }
     }
