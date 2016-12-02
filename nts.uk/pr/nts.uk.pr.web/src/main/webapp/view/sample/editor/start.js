@@ -35,22 +35,6 @@ __viewContext.ready(function () {
             enable: ko.observable(true),
             readonly: ko.observable(false)
         },
-        // CurrencyEditor
-        currencyeditor: {
-            value: ko.observable(1200),
-            constraint: '',
-            option: new editorOption.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: "JPY", currencyposition: 'right' }),
-            enable: ko.observable(true),
-            readonly: ko.observable(false)
-        },
-        // CurrencyEditor
-        currencyeditor2: {
-            value: ko.observable(200000),
-            constraint: '',
-            option: new editorOption.CurrencyEditorOption({ grouplength: 4, decimallength: 2, currencyformat: "USD", currencyposition: 'left' }),
-            enable: ko.observable(true),
-            readonly: ko.observable(false)
-        },
         // TimeEditor
         timeeditor: {
             value: ko.observable(-1222),
