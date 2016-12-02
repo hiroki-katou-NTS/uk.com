@@ -10,6 +10,7 @@ module nts.uk.ui.koExtentions {
             var formatter = this.getFormatter(data);
             var setValue: (newText: string) => {} = data.value;
 
+            $input.addClass('nts-editor');
             $input.change(() => {
                 var newText = $input.val();
                 var result = validator.validate(newText);

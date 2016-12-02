@@ -20,6 +20,7 @@ var nts;
                         var validator = this.getValidator(data);
                         var formatter = this.getFormatter(data);
                         var setValue = data.value;
+                        $input.addClass('nts-editor');
                         $input.change(function () {
                             var newText = $input.val();
                             var result = validator.validate(newText);

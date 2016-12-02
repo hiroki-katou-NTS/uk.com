@@ -194,8 +194,8 @@ div.popup-panel {
   NtsEditor
 *****************************/
 /* line 96, ../sass/components/_commons.scss */
-input[type="text"].error {
-  border: 1px solid #f33;
+.nts-editor.error {
+  border-color: #ff6666;
 }
 
 /*****************************

@@ -12,7 +12,7 @@ var nts;
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
                         if (action === "set") {
-                            $control.data(DATA_HAS_ERROR, true);
+                            $control.data(DATA_HAS_ERROR, true).addClass('error');
                             ui.errors.add({
                                 location: $control.data('name') || "",
                                 message: message,
@@ -20,7 +20,7 @@ var nts;
                             });
                         }
                         if (action === "clear") {
-                            $control.data(DATA_HAS_ERROR, false);
+                            $control.data(DATA_HAS_ERROR, false).removeClass('error');
                             ui.errors.removeByElement($control);
                         }
                         if (action === 'hasError') {
