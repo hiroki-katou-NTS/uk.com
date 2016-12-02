@@ -66,7 +66,11 @@ module nts.uk.pr.view.qpp005 {
                         $(this).data(orientation).focus();
                         return false;
                     }
-                })
+                });
+                
+                $tbl.on('change', 'input', function (e) {
+                    $(this).data(orientation);
+                });
             });
         }
     }
