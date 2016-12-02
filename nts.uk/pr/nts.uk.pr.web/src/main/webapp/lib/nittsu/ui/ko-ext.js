@@ -830,18 +830,11 @@ var nts;
                         });
                         // Bind selectable.
                         selectListBoxContainer.selectable({
-                            selected: function (event, ui) {
-                            },
                             stop: function (event, ui) {
-                                // If not Multi Select.
-                                if (!isMultiSelect) {
-                                    $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
-                                    $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
-                                }
                                 // Add selected value.
                                 var data = isMultiSelect ? [] : '';
                                 var i = 0;
-                                $("li.ui-selected").each(function (index, opt) {
+                                $(".ui-selected").each(function (index, opt) {
                                     var optValue = $(opt).data('value');
                                     if (!isMultiSelect) {
                                         data = optValue;
@@ -852,11 +845,11 @@ var nts;
                                 });
                                 container.data('value', data);
                                 // fire event change.
+                                var changeEvent = new CustomEvent("selectionChange", {
+                                    detail: container.data('value')
+                                });
                                 document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
                             },
-                            unselecting: function (event, ui) {
-                                $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected');
-                            }
                         });
                         // Fire event.
                         container.on('selectionChange', (function (e) {
@@ -871,17 +864,14 @@ var nts;
                             if (!changingEvent.returnValue) {
                                 // revert select.
                                 $(this).val(selectedValue);
-                                data.value(selectedValue);
                             }
-                            else {
-                                data.value(itemsSelected);
-                                // Create event changed.
-                                var changedEvent = new CustomEvent("selectionChanged", {
-                                    detail: itemsSelected,
-                                });
-                                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
-                                document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
-                            }
+                            data.value(itemsSelected);
+                            // Create event changed.
+                            var changedEvent = new CustomEvent("change", {
+                                detail: itemsSelected,
+                            });
+                            // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                            document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
                         }));
                         // Create method.
                         $.fn.deselectAll = function () {
