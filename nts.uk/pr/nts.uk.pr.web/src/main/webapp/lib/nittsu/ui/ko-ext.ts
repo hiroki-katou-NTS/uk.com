@@ -115,20 +115,21 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
             $input.css({'text-align': 'right'});
-            $input.wrap("<div class='nts-input' />");
-            var parent = $input.parent();
-            parent.css({'width':'100%'});
-            var width = option.width ? option.width : '93.5%';
-            if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                if (!parent.hasClass('currencyLeft') && !parent.hasClass('currencyRight')) {
+            if(!$input.parent().hasClass('nts-input') && !$input.parent().hasClass('currencyLeft') 
+                && !$input.parent().hasClass('currencyRight')){
+                $input.wrap("<div class='nts-input' />");
+                var parent = $input.parent();
+                parent.css({'width':'100%'});
+                var width = option.width ? option.width : '93.5%';
+                if (option.currencyformat !== undefined && option.currencyformat !== null) {
                     $input.wrap("<span class = 'currency " +
                         (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') + "' />");
                     var paddingLeft = option.currencyposition === 'left' ? '12px' : '';
                     var paddingRight = option.currencyposition === 'right' ? '12px' : '';
                     $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width });
-                }
-            }else{
-                $input.css({'paddingLeft': '12px', 'width': width });
+                }else{
+                    $input.css({'paddingLeft': '12px', 'width': width });
+                }    
             }
         }
 
