@@ -1,8 +1,8 @@
 module nts.uk.pr.view.qpp005.f {
     export module service {
         var servicePath = {
-            getCommute: "pr/proto/commute/findCommute",
-            getCommuteNotaxLimit: "pr/proto/paymentdata/findCommuteNotaxLimit",
+            getCommute: "pr/proto/commute/findCommute/{0}/{1}",
+            getCommuteNotaxLimit: "pr/proto/paymentdata/findCommuteNotaxLimit/{0}",
         };
 
         export function getCommute(personId: string, startYearmonth: number): any {

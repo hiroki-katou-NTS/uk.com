@@ -118,7 +118,7 @@ var nts;
                                 var self = this;
                                 $('#pơpup-orientation').ntsPopup('show');
                             };
-                            ScreenModel.prototype.openSetupTaxItem = function (value) {
+                            ScreenModel.prototype.openSetupTaxItem = function (screenModel, value) {
                                 var self = this;
                                 nts.uk.ui.windows.setShared("value", ko.toJS(value));
                                 nts.uk.ui.windows.setShared("employee", ko.toJS(self.employee()));

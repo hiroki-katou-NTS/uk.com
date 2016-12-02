@@ -60,10 +60,10 @@
 				<label id="LBL_005">※設定されている限度額</label>
 			</div>
 			
-			<div class="floatLeft" style="margin-top:10px; margin-left:182px;">			
-				<label id="LBL_006" style=" margin-left:35px;">001</label>
-				<label id="LBL_007">Thue thu nhap</label>
-				<label id="LBL_008" style=" margin-left:15px;">100000</label>
+			<div class="floatLeft" data-bind="with: commuteNotaxLimitItem" style="margin-top:10px; margin-left:182px;">			
+				<label id="LBL_006" style=" margin-left:35px;" data-bind="text: code"></label>
+				<label id="LBL_007" data-bind="text: name"></label>
+				<label id="LBL_008" style=" margin-left:15px;" data-bind="text: value"></label>
 			</div>
 			
 			
