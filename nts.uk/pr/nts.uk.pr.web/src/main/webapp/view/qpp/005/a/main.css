@@ -104,10 +104,10 @@ table.tb-category, th, td {
 
 .tb-category td input {
 	border: none;
-	width: 93% !important;
+	/**width: 93% !important;
 	text-align: right !important;
 	padding: 0px 0px 0px 10px !important;
-	line-height: 19px;
+	line-height: 19px;*/
 }
 
 #txt-remarks {
