@@ -479,11 +479,12 @@ module nts.uk.ui.koExtentions {
             var show: boolean = ko.unwrap(option.show);
 
             var $dialog = $("#ntsErrorDialog");
-
-            if (autoclose === true && errors.length == 0) {
+            
+            // TODO: Change autoclose do not close when clear error then add again. Or use another method
+            /*if (autoclose === true && errors.length == 0) {
                 option.show(false);
                 show = false;
-            }
+            }*/
             if (show == true) {
                 $dialog.dialog("open");
                 // Create Error Table
