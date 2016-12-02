@@ -13,8 +13,8 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                getCommute: "pr/proto/commute/findCommute",
-                                getCommuteNotaxLimit: "pr/proto/paymentdata/findCommuteNotaxLimit",
+                                getCommute: "pr/proto/commute/findCommute/{0}/{1}",
+                                getCommuteNotaxLimit: "pr/proto/paymentdata/findCommuteNotaxLimit/{0}",
                             };
                             function getCommute(personId, startYearmonth) {
                                 var dfd = $.Deferred();

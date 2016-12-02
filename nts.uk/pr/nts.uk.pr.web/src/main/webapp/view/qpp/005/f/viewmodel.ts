@@ -10,6 +10,7 @@ module nts.uk.pr.view.qpp005.f {
             oneMonthCommuteEditor: NumberEditor;
             oneMonthRemainderEditor: NumberEditor;
             commuteDividedByMonth: CommuteDividedByMonth;
+            commuteNotaxLimitItem : KnockoutObservable<any>;
             
             constructor() {
                 var self = this;
@@ -62,6 +63,8 @@ module nts.uk.pr.view.qpp005.f {
                  */
                 self.commuteDividedByMonth = new CommuteDividedByMonth();
                 self.commuteDividedByMonth.isEnable = self.oneMonthCheck.isChecked;
+                
+                self.commuteNotaxLimitItem = ko.observable();
             }
             
             start(): JQueryPromise<any>{
@@ -69,10 +72,7 @@ module nts.uk.pr.view.qpp005.f {
                 var dfd=$.Deferred();
                 var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
                 var employee = nts.uk.ui.windows.getShared('employee');
-                var nowYearMonth = new Date();
-                
-                //Get current year month
-                var baseYearmonth = nowYearMonth.getFullYear().toString() + (nowYearMonth.getMonth() + 1).toString();
+                //var baseYearmonth = nts.uk.ui.windows.getShared('yearmonth');                
                 
                 // Set value for 通勤費合計 textbox 
                 self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
@@ -86,7 +86,13 @@ module nts.uk.pr.view.qpp005.f {
                 // Set value for 余り textbox 
                 self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
                 
-               
+                qpp005.f.service.getCommute(employee.personId, 201604).done(function(res: any) {
+                    qpp005.f.service.getCommuteNotaxLimit("01").done(function(res:any){
+                        self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode,
+                                                                                             res.commuNotaxLimitName, 
+                                                                                             res.commuNotaxLimitValue));
+                    })
+                })
                 return dfd.promise();
             }
         }
@@ -131,6 +137,12 @@ module nts.uk.pr.view.qpp005.f {
                                     ])
                 self.selectedCode = ko.observable("1");
             }            
+        }
+        
+        function CommuteNotaxLimitItem(code, name, value){
+            this.code = code;
+            this.name = name;
+            this.value = value;
         }
         
         function CommuteDividedItemsByMonth(code, name){
