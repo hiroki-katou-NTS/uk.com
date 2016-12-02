@@ -109,6 +109,23 @@ module nts.uk.ui.koExtentions {
     }
 
     class NumberEditorProcessor extends EditorProcessor {
+        
+        update($input: JQuery, data: any){
+            super.update($input, data);
+            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            
+            if(option.currencyformat !== undefined && option.currencyformat !== null){
+                var parent = $input.parent();
+                if(!parent.hasClass('currencyLeft') && !parent.hasClass('currencyRight')){
+                    $input.wrap("<span class = 'currency "+ 
+                    (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') +"' />");
+                    var paddingLeft = option.currencyposition === 'left' ? '10px' : '';
+                    var paddingRight = option.currencyposition === 'right' ? '10px' : '';
+                    $input.css({'paddingLeft': paddingLeft, 'paddingRight': paddingRight});
+                    $input.width(160);    
+                }
+            }    
+        }
 
         getDefaultOption(): any {
             return new nts.uk.ui.option.NumberEditorOption();

@@ -13,7 +13,7 @@ var nts;
                 var result;
                 var num = parseInt(String(yearMonth));
                 var year = String(Math.floor(num / 100));
-                var month = uk.text.charPadding(String(num % 100), '0', true, 2);
+                var month = nts.uk.text.charPadding(String(num % 100), '0', true, 2);
                 result = year + '/' + month;
                 return result;
             }
@@ -40,11 +40,12 @@ var nts;
             }());
             var ResultParseTime = (function (_super) {
                 __extends(ResultParseTime, _super);
-                function ResultParseTime(success, minus, hours, minutes) {
+                function ResultParseTime(success, minus, hours, minutes, msg) {
                     _super.call(this, success);
                     this.minus = minus;
                     this.hours = hours;
                     this.minutes = minutes;
+                    this.msg = msg || "invalid time format";
                 }
                 ResultParseTime.succeeded = function (minus, hours, minutes) {
                     return new ResultParseTime(true, minus, hours, minutes);
@@ -64,6 +65,7 @@ var nts;
                     }
                     return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
                 };
+                ResultParseTime.prototype.getMsg = function () { return this.msg; };
                 return ResultParseTime;
             }(ParseResult));
             time_1.ResultParseTime = ResultParseTime;
@@ -105,16 +107,17 @@ var nts;
             time_1.parseTime = parseTime;
             var ResultParseYearMonth = (function (_super) {
                 __extends(ResultParseYearMonth, _super);
-                function ResultParseYearMonth(success, year, month) {
+                function ResultParseYearMonth(success, year, month, msg) {
                     _super.call(this, success);
                     this.year = year;
                     this.month = month;
+                    this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
                 ResultParseYearMonth.succeeded = function (year, month) {
                     return new ResultParseYearMonth(true, year, month);
                 };
-                ResultParseYearMonth.failed = function () {
-                    return new ResultParseYearMonth(false);
+                ResultParseYearMonth.failed = function (msg) {
+                    return new ResultParseYearMonth(false, msg);
                 };
                 ResultParseYearMonth.prototype.format = function () {
                     if (!this.success) {
@@ -128,24 +131,25 @@ var nts;
                     }
                     return (this.year * 100 + this.month);
                 };
+                ResultParseYearMonth.prototype.getMsg = function () { return this.msg; };
                 return ResultParseYearMonth;
             }(ParseResult));
             time_1.ResultParseYearMonth = ResultParseYearMonth;
             function parseYearMonth(yearMonth) {
                 if (yearMonth === undefined || yearMonth === null) {
-                    return ResultParseYearMonth.failed();
+                    return ResultParseYearMonth.failed("yearmonth can not empty!");
                 }
                 if (!(yearMonth instanceof String)) {
                     yearMonth = yearMonth.toString();
                 }
                 var stringLengh = yearMonth.length;
                 if ((stringLengh < 6 || stringLengh > 7) || yearMonth.split('/').length > 2) {
-                    return ResultParseYearMonth.failed();
+                    return ResultParseYearMonth.failed("invalid format. must be yyyymm or yyyy/mm!");
                 }
                 var indexOf = yearMonth.lastIndexOf('/');
                 var year, month;
                 if (indexOf > -1 && indexOf !== 4) {
-                    return ResultParseYearMonth.failed();
+                    return ResultParseYearMonth.failed('invalid format. must be yyyy/mm');
                 }
                 else if (indexOf === 4) {
                     year = yearMonth.split('/')[0];
@@ -162,6 +166,59 @@ var nts;
                 return ResultParseYearMonth.succeeded(parseInt(year), parseInt(month));
             }
             time_1.parseYearMonth = parseYearMonth;
+            var ResultParseTimeOfTheDay = (function (_super) {
+                __extends(ResultParseTimeOfTheDay, _super);
+                function ResultParseTimeOfTheDay(success, hour, minute, msg) {
+                    _super.call(this, success);
+                    this.hour = hour;
+                    this.minute = minute;
+                    this.msg = msg || "time of the days must in format hh:mm with hour in range 0-23; minute in range 00-59";
+                }
+                ResultParseTimeOfTheDay.succeeded = function (hour, minute) {
+                    return new ResultParseTimeOfTheDay(true, hour, minute);
+                };
+                ResultParseTimeOfTheDay.failed = function (msg) {
+                    return new ResultParseTimeOfTheDay(false, msg);
+                };
+                ResultParseTimeOfTheDay.prototype.format = function () {
+                    if (!this.success) {
+                        return "";
+                    }
+                    return this.hour + ':' + uk.text.padLeft(String(this.minute), '0', 2);
+                };
+                ResultParseTimeOfTheDay.prototype.toValue = function () {
+                    if (!this.success) {
+                        return 0;
+                    }
+                    return (this.hour * 100 + this.minute);
+                };
+                ResultParseTimeOfTheDay.prototype.getMsg = function () { return this.msg; };
+                return ResultParseTimeOfTheDay;
+            }(ParseResult));
+            time_1.ResultParseTimeOfTheDay = ResultParseTimeOfTheDay;
+            function parseTimeOfTheDay(timeOfDay) {
+                if (timeOfDay === undefined || timeOfDay === null) {
+                    return ResultParseTimeOfTheDay.failed("time of the day cannot be empty!");
+                }
+                if (!(timeOfDay instanceof String)) {
+                    timeOfDay = timeOfDay.toString();
+                }
+                timeOfDay = timeOfDay.replace(":", "");
+                var checkNum = timeOfDay.replaceAll("[0-9]", "");
+                var stringLength = checkNum.length;
+                if (stringLength < 3 || stringLength > 4)
+                    return ResultParseTimeOfTheDay.failed("invalid time of the day format");
+                if (checkNum.length > 0)
+                    return ResultParseTimeOfTheDay.failed("time of the day accept digits and ':' only");
+                var hour = parseInt(checkNum.substring(0, stringLength - 2));
+                var minute = parseInt(checkNum.substring(stringLength - 2));
+                if (hour < 0 || hour > 23)
+                    return ResultParseTimeOfTheDay.failed("invalid hour");
+                if (minute < 0 || minute > 59)
+                    return ResultParseTimeOfTheDay.failed("invalid minute");
+                return ResultParseTimeOfTheDay.succeeded(hour, minute);
+            }
+            time_1.parseTimeOfTheDay = parseTimeOfTheDay;
             /**
             * 日付をフォーマットする
             * @param  {Date}   date     日付

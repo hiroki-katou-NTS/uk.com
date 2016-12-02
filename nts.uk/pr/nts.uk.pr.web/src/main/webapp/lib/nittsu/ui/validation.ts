@@ -46,7 +46,7 @@
 
     export class StringValidator implements IValidator {
         constraint: any;
-        charType: text.CharType;
+        charType: nts.uk.text.CharType;
         required: boolean;
         
         constructor(primitiveValueName: string, required: boolean) {
@@ -96,8 +96,8 @@
             var result = new ValidationResult();
             var isDecimalNumber = false;
             if(this.option !== undefined){
-                isDecimalNumber = (this.option.decimallength > 0)
-                inputText = text.replaceAll(inputText, this.option.groupseperator, '');    
+                isDecimalNumber = (this.option.decimallength() > 0)
+                inputText = text.replaceAll(inputText, this.option.groupseperator(), '');    
             }
             
             if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
@@ -105,7 +105,7 @@
                 return result;
             }
             var value = isDecimalNumber ? 
-                ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
+                ntsNumber.getDecimal(inputText, this.option.decimallength()) : parseInt(inputText);
 
             if (this.constraint !== null) {
                 if (this.constraint.max !== undefined && value > this.constraint.max) {
@@ -117,12 +117,7 @@
                     return result;
                 }
             }
-//            if(inputText.indexOf(this.option.decimalseperator()) >= 0){
-//                var values = inputText.split(this.option.decimalseperator());
-//                values[1] = text.splitString(values[1], this.option.decimallength(), '0');
-//                inputText = values[0] + this.option.decimalseperator() + values[1];
-//            }
-            result.success(value);
+            result.success(inputText);
             return result;
         }
     }
@@ -139,22 +134,24 @@
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
             var parseResult;
-            if (this.option.inputFormat === "yearmonth") {
+            if (this.option.inputFormat() === "yearmonth") {
                 parseResult = time.parseYearMonth(inputText);
-            } else if (this.option.inputFormat === "time") {
+            } else if (this.option.inputFormat() === "time") {
                 parseResult = time.parseTime(inputText, false);
+            }else if(this.option.inputFormat() === "timeofday") {
+                parseResult = time.parseTimeOfTheDay(inputText);
             }else {
                 parseResult = time.ResultParseTime.failed();
             }
             if(parseResult.success){
                 result.success(parseResult.toValue());
             }else{
-                result.fail('invalid time');
+                result.fail(parseResult.getMsg());
             }
             return result;
         }
     }
-     
+   
     function checkRequired(value: any): boolean {
         if (value === undefined || value === null || value.length == 0) {
             return false;
