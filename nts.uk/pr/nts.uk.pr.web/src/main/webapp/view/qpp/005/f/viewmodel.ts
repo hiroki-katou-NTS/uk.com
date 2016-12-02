@@ -36,7 +36,6 @@ module nts.uk.pr.view.qpp005.f {
                  */
                 self.totalCommuteEditor = new NumberEditor();
                 self.totalCommuteEditor.isEnable = self.totalCommuteCheck.isChecked;
-                self.totalCommuteEditor.value = ko.observable("10000");
                 
                 /**
                  * 課税通勤費 テキストボックス（金額）
@@ -45,21 +44,18 @@ module nts.uk.pr.view.qpp005.f {
                 self.taxCommuteEditor.isEnable = ko.computed(function(){
                     return  self.totalCommuteCheck.isChecked() && self.taxCommuteCheck.isChecked();    
                 });
-                self.taxCommuteEditor.value = ko.observable("200000");
                 
                 /**
                  * 1か月分通勤費 テキストボックス（金額）
                  */
                 self.oneMonthCommuteEditor = new NumberEditor();
                 self.oneMonthCommuteEditor.isEnable = self.oneMonthCheck.isChecked;
-                self.oneMonthCommuteEditor.value = ko.observable("250000");
                 
                 /**
                  * 余り（端数）
                  */
                 self.oneMonthRemainderEditor = new NumberEditor();
                 self.oneMonthRemainderEditor.isEnable = self.oneMonthCheck.isChecked;
-                self.oneMonthRemainderEditor.value = ko.observable("300000");
                 
                 /**
                  * Commute items
@@ -71,7 +67,26 @@ module nts.uk.pr.view.qpp005.f {
             start(): JQueryPromise<any>{
                 var self = this;
                 var dfd=$.Deferred();
-                var value = nts.uk.ui.windows.getShared('value');
+                var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
+                var employee = nts.uk.ui.windows.getShared('employee');
+                var nowYearMonth = new Date();
+                
+                //Get current year month
+                var baseYearmonth = nowYearMonth.getFullYear().toString() + (nowYearMonth.getMonth() + 1).toString();
+                
+                // Set value for 通勤費合計 textbox 
+                self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
+                
+                // Set value for 課税通勤費 textbox 
+                self.taxCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowTaxImpose);
+                
+                // Set value for  1か月分通勤費 textbox 
+                self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
+                 
+                // Set value for 余り textbox 
+                self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
+                
+               
                 return dfd.promise();
             }
         }

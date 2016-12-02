@@ -121,6 +121,7 @@ var nts;
                             ScreenModel.prototype.openSetupTaxItem = function (value) {
                                 var self = this;
                                 nts.uk.ui.windows.setShared("value", ko.toJS(value));
+                                nts.uk.ui.windows.setShared("employee", ko.toJS(self.employee));
                                 nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
