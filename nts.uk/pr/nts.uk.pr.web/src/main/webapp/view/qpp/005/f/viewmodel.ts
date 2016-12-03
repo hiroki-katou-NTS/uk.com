@@ -138,7 +138,8 @@ module nts.uk.pr.view.qpp005.f {
             
             constructor() {
                var self = this;
-                self.option = ko.mapping.fromJS(new ui.option.CurrencyEditorOption({grouplength: 3, 
+                self.option = ko.mapping.fromJS(new ui.option.CurrencyEditorOption({grouplength: 3,
+                                                                                    decimallength:0,
                                                                                     currencyformat: 'JPY', 
                                                                                     width: "80"}));
             }           
