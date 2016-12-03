@@ -92,7 +92,10 @@ var nts;
                                         alert("更新対象のデータが存在しません。");
                                         return;
                                     }
-                                    nts.uk.ui.windows.setShared('commuteNotax', ko.toJS(self.commuteNotaxLimitItem()));
+                                    nts.uk.ui.windows.setShared('totalCommuteEditor', ko.toJS(self.totalCommuteEditor.value));
+                                    nts.uk.ui.windows.setShared('taxCommuteEditor', ko.toJS(self.taxCommuteEditor.value));
+                                    nts.uk.ui.windows.setShared('oneMonthCommuteEditor', ko.toJS(self.oneMonthCommuteEditor.value));
+                                    nts.uk.ui.windows.setShared('oneMonthRemainderEditor', ko.toJS(self.oneMonthRemainderEditor.value));
                                     nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.cancelButtonClick = function () {
