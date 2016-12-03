@@ -12,7 +12,7 @@
 	padding-right: 20px;
 }
 #INP_001{
-	width: 50px;	
+	width: 50px !important;	
 }
 .inlineInfor{
 	display: flex;
@@ -44,4 +44,7 @@
 }
 #header{
 	display: none;
+}
+.timeInput{
+	display: flex;
 }

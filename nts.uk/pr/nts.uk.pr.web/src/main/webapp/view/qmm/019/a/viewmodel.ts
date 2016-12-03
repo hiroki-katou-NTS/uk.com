@@ -4,6 +4,8 @@ module qmm019.a {
     export class ScreenModel {
         //Khai bao bien
         itemList: KnockoutObservableArray<NodeTest>;
+        itemListFull: Array<NodeTest> = [];
+        itemListSearch: Array<NodeTest> = [];
         singleSelectedCode: KnockoutObservable<string>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
@@ -44,6 +46,20 @@ module qmm019.a {
                     });
                 }
             });
+        }
+        
+        searchLayout() {
+            var self = this;
+            var textSearch: string = $("#A_INP_001").val();
+            self.itemList([]);
+            if (textSearch.trim().length === 0){
+                self.itemList(self.itemListFull);
+            } else {
+                self.itemListSearch = _.filter(self.itemListFull, function(item) {
+                    return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
+                });
+                self.itemList(self.itemListSearch);
+            }
         }
         calculateLine() {
             var self = this;
@@ -112,7 +128,7 @@ module qmm019.a {
 
         buildTreeDataSource(): any {
             var self = this;
-            self.itemList.removeAll();
+            var items = [];
             _.forEach(self.layoutsMax(), function(layoutMax) {
                 var children = [];
 
@@ -123,8 +139,10 @@ module qmm019.a {
                     children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], 
                             nts.uk.time.formatYearMonth(child.startYm) + " ~ " + nts.uk.time.formatYearMonth(child.endYm)));
                 });
-                self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
+                items.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
             });
+            self.itemList(items);
+            self.itemListFull = items;
         }
         
         registerLayout() {
@@ -164,8 +182,8 @@ module qmm019.a {
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(function(): any {
-                //self.start();
-                window.location.reload(true);
+                self.start();
+                //window.location.reload(true);
 
             });
         }
@@ -177,15 +195,15 @@ module qmm019.a {
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
             nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴の編集'}).onClosed(function(): any  {
-                //self.start();
-                window.location.reload(true);
+                self.start();
+                //window.location.reload(true);
             });
         }
         openGDialog(){
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'}).onClosed(function(): any  {
-                //self.start();
-                window.location.reload(true);
+                self.start();
+                //window.location.reload(true);
             });
         }
     }
