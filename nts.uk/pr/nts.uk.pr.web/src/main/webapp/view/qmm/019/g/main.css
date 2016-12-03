@@ -2,10 +2,11 @@
 	padding-right: 20px;
 }
 #LBL_005{
-	padding-right: 100px;
+	padding-right: 95px;
 }
 #INP_003, #INP_001{
-	width: 55px;
+	width: 55px !important;
+	padding-left: 0px !important;
 }
 #LBL_004{
 	padding-right: 93px;
@@ -47,4 +48,7 @@
 }
 #header{
 	display: none;
+}
+.timeLayout{
+	display: flex;
 }
