@@ -25,14 +25,15 @@ module nts.uk.pr.view.qpp005 {
 
             utils.gridSetup(screenModel.switchButton().selectedRuleCode());
         });
-//        this.bind(screenModel);
+        //        this.bind(screenModel);
     });
 
     export module utils {
         export function gridSetup(orientation) {
+            window.bakData = [];
             $('.tb-category').each(function() {
-
                 var tblid = this.id;
+
 
                 var $tbl = $("#" + tblid);
                 window.orientation = orientation;
@@ -45,7 +46,10 @@ module nts.uk.pr.view.qpp005 {
                         var input = tblid + '_' + r + '_' + c;
                         var $input = $('#' + input);
 
-                        if (input === lastItemId) $input.addClass('disabled');
+                        if (input === lastItemId) {
+                            $input.addClass('disabled');
+                            $input.addClass('item-grey');
+                        }
                         if ($input.length === 1 && input !== lastItemId) vlist.push($input);
                     }
                 }
@@ -55,7 +59,10 @@ module nts.uk.pr.view.qpp005 {
                 }
 
                 window.hlist = [];
-                $tbl.find('input').not('.disabled').each(function() { hlist.push($(this)); });
+                $tbl.find('input').not('.disabled').each(function() {
+                    hlist.push($(this));
+                    bakData.push(new itemBAK(this.id, $(this).val(), $(this).css('backgroundColor')));
+                });
                 for (var i = 0; i < hlist.length; i++) {
                     var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
                     hlist[i].data('hnext', next);
@@ -66,8 +73,37 @@ module nts.uk.pr.view.qpp005 {
                         $(this).data(orientation).focus();
                         return false;
                     }
-                })
+                });
+
+                $tbl.on('change', 'input', function(e) {
+                    var nId = this.id;
+                    var nVal = $(this).val();
+                    
+                    var include = ko.utils.arrayFirst(window.bakData, function(item) {
+                        return item.id === nId && item.value === nVal;
+                    });
+
+                    if (include) {
+                        $(e.currentTarget).css('background', include.color);
+                    } else {
+                        $(e.currentTarget).css('background', '#bdd7ee');
+                    }
+                });
             });
+        }
+
+        export class itemBAK {
+            id: string;
+            value: number;
+            color: string;
+
+            constructor(id: string, value: number, color: string) {
+                var self = this;
+
+                self.id = id;
+                self.value = value;
+                self.color = color;
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
 <head>
 <title>Test Page</title>
 <meta charset="UTF-8">
-
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link rel="stylesheet" type="text/css" href="lib/generic/jqueryui/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
 <link rel="stylesheet" type="text/css" href="lib/generic/igniteui/css/structure/infragistics.css" />
@@ -383,7 +383,9 @@ hr {
 		<!-- Multiple is false -->
 		<span data-bind="text: selectedCode()"></span>
 		<!-- Multiple is true -->
-		<span data-bind="text: selectedCodes()"></span> <br /> <label
+		<span data-bind="text: selectedCodes()"></span> <br />
+		<span data-bind="text: selectedCodes().length"></span> <br />
+		 <label
 			class="status"> <input type="checkbox"
 			data-bind="checked: isEnable">Enable
 		</label>

@@ -119,6 +119,28 @@ var nts;
                     function NumberEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    NumberEditorProcessor.prototype.update = function ($input, data) {
+                        _super.prototype.update.call(this, $input, data);
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        $input.css({ 'text-align': 'right' });
+                        if (!$input.parent().hasClass('nts-input') && !$input.parent().hasClass('currencyLeft')
+                            && !$input.parent().hasClass('currencyRight')) {
+                            $input.wrap("<div class='nts-input' />");
+                            var parent = $input.parent();
+                            parent.css({ 'width': '100%' });
+                            var width = option.width ? option.width : '93.5%';
+                            if (option.currencyformat !== undefined && option.currencyformat !== null) {
+                                $input.wrap("<span class = 'currency " +
+                                    (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') + "' />");
+                                var paddingLeft = option.currencyposition === 'left' ? '12px' : '';
+                                var paddingRight = option.currencyposition === 'right' ? '12px' : '';
+                                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width });
+                            }
+                            else {
+                                $input.css({ 'paddingLeft': '12px', 'width': width });
+                            }
+                        }
+                    };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
@@ -138,6 +160,16 @@ var nts;
                     function TimeEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    TimeEditorProcessor.prototype.update = function ($input, data) {
+                        _super.prototype.update.call(this, $input, data);
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        $input.css({ 'text-align': 'right' });
+                        $input.wrap("<div class='nts-input' />");
+                        var parent = $input.parent();
+                        parent.css({ 'width': '100%' });
+                        var width = option.width ? option.width : '93.5%';
+                        $input.css({ 'paddingLeft': '12px', 'width': width });
+                    };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
@@ -458,10 +490,11 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = $("#ntsErrorDialog");
-                        if (autoclose === true && errors.length == 0) {
+                        // TODO: Change autoclose do not close when clear error then add again. Or use another method
+                        /*if (autoclose === true && errors.length == 0) {
                             option.show(false);
                             show = false;
-                        }
+                        }*/
                         if (show == true) {
                             $dialog.dialog("open");
                             // Create Error Table
@@ -817,7 +850,7 @@ var nts;
                         selectListBoxContainer.selectable({
                             selected: function (event, ui) {
                             },
-                            start: function (event, ui) {
+                            stop: function (event, ui) {
                                 // If not Multi Select.
                                 if (!isMultiSelect) {
                                     $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
@@ -853,20 +886,15 @@ var nts;
                             });
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                            if (!changingEvent.returnValue) {
-                                // revert select.
-                                $(this).val(selectedValue);
-                                data.value(selectedValue);
-                            }
-                            else {
-                                data.value(itemsSelected);
-                                // Create event changed.
-                                var changedEvent = new CustomEvent("selectionChanged", {
-                                    detail: itemsSelected,
-                                });
-                                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
-                                document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
-                            }
+                            data.value(itemsSelected);
+                            // Create event changed.
+                            var changedEvent = new CustomEvent("selectionChanged", {
+                                detail: itemsSelected,
+                                bubbles: true,
+                                cancelable: false
+                            });
+                            // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                            document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
                         }));
                         // Create method.
                         $.fn.deselectAll = function () {

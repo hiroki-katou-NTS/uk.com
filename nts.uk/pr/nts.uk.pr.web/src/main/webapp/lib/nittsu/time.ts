@@ -5,7 +5,7 @@
         var result: string;
         var num = parseInt(String(yearMonth));
         var year = String(Math.floor(num / 100));
-        var month = text.charPadding(String(num % 100), '0', true, 2);
+        var month = nts.uk.text.charPadding(String(num % 100), '0', true, 2);
         result = year + '/' + month;
         return result;
     }
@@ -38,18 +38,20 @@
         abstract format();
         
         abstract toValue();
+        abstract getMsg();
     }
      
     export class ResultParseTime extends ParseResult{
         minus: boolean;
         hours: number;
         minutes: number;
-        
-        constructor(success, minus?, hours?, minutes?) {
+        msg: string;
+        constructor(success, minus?, hours?, minutes?, msg?) {
             super(success);
             this.minus = minus;
             this.hours = hours;
             this.minutes = minutes;
+            this.msg = msg || "invalid time format";
         }
         
         static succeeded(minus, hours, minutes) {
@@ -73,6 +75,7 @@
             }
             return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
         }
+        getMsg() {return this.msg;}
     }
      
     export function parseTime(time: any, isMinutes?: boolean): ResultParseTime {
@@ -116,19 +119,20 @@
     export class ResultParseYearMonth extends ParseResult{
         year: number;
         month: number;
-        
-        constructor(success, year?, month?) {
+        msg: string;
+        constructor(success, year?, month?, msg?) {
             super(success);
             this.year = year;
             this.month = month;
+            this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
         }
         
         static succeeded(year, month) {
             return new ResultParseYearMonth(true, year, month);
         }
      
-        static failed() {
-            return new ResultParseYearMonth(false);
+        static failed(msg?) {
+            return new ResultParseYearMonth(false,msg); 
         }
         
         format() {
@@ -144,23 +148,24 @@
             }
             return (this.year * 100 + this.month);
         }
+        getMsg() {return this.msg;}
     }
      
     export function parseYearMonth(yearMonth: any): ResultParseYearMonth{
         if(yearMonth === undefined || yearMonth === null){
-            return ResultParseYearMonth.failed();
+            return ResultParseYearMonth.failed("yearmonth can not empty!");
         }
         if(!(yearMonth instanceof String)){
             yearMonth = yearMonth.toString();
         }
         var stringLengh = yearMonth.length;
         if((stringLengh < 6 || stringLengh > 7) || yearMonth.split('/').length > 2){
-            return ResultParseYearMonth.failed();
+            return ResultParseYearMonth.failed("invalid format. must be yyyymm or yyyy/mm!");
         }
         var indexOf = yearMonth.lastIndexOf('/');
         var year, month;
         if(indexOf > -1 && indexOf !== 4){
-            return ResultParseYearMonth.failed();
+            return ResultParseYearMonth.failed('invalid format. must be yyyy/mm');
         }else if(indexOf === 4) {
             year = yearMonth.split('/')[0];
             month = yearMonth.split('/')[1];
@@ -175,8 +180,109 @@
         
         return ResultParseYearMonth.succeeded(parseInt(year), parseInt(month));
     } 
-     
     
+    export class ResultParseTimeOfTheDay extends ParseResult {
+        hour: number;
+        minute: number;
+        msg: string;
+        constructor(success, hour?, minute?, msg?) {
+            super(success);
+            this.hour = hour;
+            this.minute = minute;
+            this.msg = msg || "time of the days must in format hh:mm with hour in range 0-23; minute in range 00-59";
+        }
+        static succeeded(hour,minute) {
+            return new ResultParseTimeOfTheDay(true,hour,minute);
+        }
+        static failed(msg?) {
+            return new ResultParseTimeOfTheDay(false,msg);
+        }
+        format() {
+            if(!this.success){
+                return "";
+            }
+            return this.hour + ':' + text.padLeft(String(this.minute), '0', 2);
+        }
+        toValue() {
+            if(!this.success){
+                return 0;
+            }
+            return (this.hour * 100 + this.minute);       
+        }
+        getMsg() {return this.msg;}
+    }
+    
+     export function parseTimeOfTheDay(timeOfDay: any): ResultParseTimeOfTheDay{
+        if(timeOfDay === undefined || timeOfDay === null){
+            return ResultParseTimeOfTheDay.failed("time of the day cannot be empty!");
+        }
+        if(!(timeOfDay instanceof String)){
+            timeOfDay = timeOfDay.toString();
+        }
+        timeOfDay = timeOfDay.replace(":","");
+        var checkNum = timeOfDay.replaceAll("[0-9]","");
+        var stringLength = checkNum.length;
+        if(stringLength < 3 || stringLength > 4) return ResultParseTimeOfTheDay.failed("invalid time of the day format");
+        if(checkNum.length > 0) return ResultParseTimeOfTheDay.failed("time of the day accept digits and ':' only");
+        var hour = parseInt(checkNum.substring(0,stringLength-2));
+        var minute = parseInt(checkNum.substring(stringLength-2));
+        if(hour < 0 || hour > 23) return ResultParseTimeOfTheDay.failed("invalid hour");
+        if(minute < 0 || minute > 59) return ResultParseTimeOfTheDay.failed("invalid minute");
+        return ResultParseTimeOfTheDay.succeeded(hour,minute);
+     }
+     
+     export class ResultParseYearMonthDate extends ParseResult{
+        year: number;
+        month: number;
+        date: number;
+        msg: string;
+        constructor(success, year?, month?, date?, msg?) {
+            super(success);
+            this.year = year;
+            this.month = month;
+            this.date = date;
+            this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
+        }
+        
+        static succeeded(year, month, date) {
+            return new ResultParseYearMonthDate(true, year, month, date);
+        }
+     
+        static failed(msg?) {
+            return new ResultParseYearMonthDate(false,msg); 
+        }
+        
+        format() {
+            if(!this.success){
+                return "";
+            }
+            return this.year + '/' + text.padLeft(String(this.month), '0', 2) + text.padLeft(String(this.date), '0', 2);
+        }
+        
+        toValue() {
+            if(!this.success){
+                return 0;
+            }
+            return (this.year * 10000 + this.month * 100 + this.date);
+        }
+        getMsg() {return this.msg;}
+    }
+    export function parseYearMonthDate(yearMonthDate: any): ResultParseYearMonthDate{
+        if(yearMonthDate === undefined || yearMonthDate === null){
+            return ResultParseYearMonthDate.failed("full date can not empty!");
+        }
+        if(!(yearMonthDate instanceof String)){
+            yearMonthDate = yearMonthDate.toString();
+        }
+        yearMonthDate = yearMonthDate.replaceAll("/","");
+        if(yearMonthDate.length != 8) return ResultParseYearMonthDate.failed("full date format must be yyyy/mm/dd or yyyymmdd");
+        var checkNum = yearMonthDate.replaceAll("[0-9]","");
+        if(checkNum.length === 0) return ResultParseYearMonthDate.failed("full date must contain digits and slashes only"); 
+        var year = parseInt(yearMonthDate.substring(0,4));
+        var month = parseInt(yearMonthDate.substring(4,6));
+        var date = parseInt(yearMonthDate.substring(6));
+        return ResultParseYearMonthDate.succeeded(year,month,date);
+    } 
     /**
     * 日付をフォーマットする
     * @param  {Date}   date     日付

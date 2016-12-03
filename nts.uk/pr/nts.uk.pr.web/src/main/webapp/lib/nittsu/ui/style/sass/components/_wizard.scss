@@ -82,13 +82,10 @@ $wizard_image_size: 60px;
 	    position: relative;
 	    display: block;
 	    width: 100%;
-		.number {
-		    font-size: 1.429em;
-		}
+	    
+		.number {font-size: 1.429em;}
 		
-		> ul > li {
-		    width: 25%;
-		}
+		> ul > li {width: 25%;}
 		
 		a,
 		a:hover,
@@ -99,7 +96,7 @@ $wizard_image_size: 60px;
 		    @include border-radius(5px);
 		    color: #fff;
 		    float: right;
-		    width: 65%;
+		    width: 75%;
 		    min-height: 50px;
 		    word-wrap: break-word;
 		    cursor: default;
@@ -137,17 +134,30 @@ $wizard_image_size: 60px;
 		> ul > .nts-steps {
 			float: left;
 		} 
-		> ul > .end > a,
-		> ul > .end > a:hover,
-		> ul > .end > a:active{
-			background-color: $wizard_background_color;
-			color: #000;
-			width: 80%;
-			margin-top: 10px;
-			width: calc(100% - 25px);
-			width: -webkit-calc(100% - 25px);
-			width: -moz-calc(100% - 25px);
+		> ul > .end {
+			> a, > a:hover, > a:active{
+				display:table;
+				background-color: $wizard_background_color;
+				color: #000;
+				width: 80%;
+				font-size:1.8em;
+				margin-top: 10px;
+				text-align: center;
+				width: calc(100% - 25px);
+				width: -webkit-calc(100% - 25px);
+				width: -moz-calc(100% - 25px);
+				
+				> div{display:table-cell;padding:0;vertical-align:middle;}
+			}
+			&.current a,
+			&.current a:hover,
+			&.current a:active {
+				color: #fff;
+			    background: #4fce3a;
+			    box-shadow: 0 0 0 1px #fff inset;
+			}
 		}
+		
 		> ul > li > .nts-steps-middle {
 		    height: 100%;
 		    float: left;
@@ -176,9 +186,9 @@ $wizard_image_size: 60px;
 			box-sizing: border-box;
 		}
 		> ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
-		    width: -webkit-calc(100% - 33px);
-		    width: -moz-calc(100% - 33px);
-		    width: calc(100% - 33px);
+		    width: -webkit-calc(100% - 62px);
+		    width: -moz-calc(100% - 62px);
+		    width: calc(100% - 62px);
 		    height: 5px;
 		    background-color: white;
 		    z-index: 1;

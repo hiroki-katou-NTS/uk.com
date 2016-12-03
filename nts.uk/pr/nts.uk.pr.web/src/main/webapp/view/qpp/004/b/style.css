@@ -6,6 +6,11 @@
 	margin-bottom: 5px;
 }
 
+#functions-area a.backqpp004a {
+	text-decoration: none;
+	color: #000000;
+}
+
 .fit-space {
 	height: 100%;
 	width: 100%;
@@ -35,9 +40,10 @@
 }
 
 .fix-button {
-	text-align: left;
-	padding: 5px;
-	width: 300px;
+    text-align: left;
+    padding: 0 12px !important;
+    width: 300px;
+    font-size: 14px !important;
 }
 
 .steps {

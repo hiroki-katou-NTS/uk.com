@@ -105,12 +105,7 @@ var nts;
                                 return result;
                             }
                         }
-                        //            if(inputText.indexOf(this.option.decimalseperator()) >= 0){
-                        //                var values = inputText.split(this.option.decimalseperator());
-                        //                values[1] = text.splitString(values[1], this.option.decimallength(), '0');
-                        //                inputText = values[0] + this.option.decimalseperator() + values[1];
-                        //            }
-                        result.success(value);
+                        result.success(inputText);
                         return result;
                     };
                     return NumberValidator;
@@ -130,6 +125,12 @@ var nts;
                         else if (this.option.inputFormat === "time") {
                             parseResult = uk.time.parseTime(inputText, false);
                         }
+                        else if (this.option.inputFormat === "timeofday") {
+                            parseResult = uk.time.parseTimeOfTheDay(inputText);
+                        }
+                        else if (this.option.inputFormat === "yearmonthdate") {
+                            parseResult = uk.time.parseYearMonthDate(inputText);
+                        }
                         else {
                             parseResult = uk.time.ResultParseTime.failed();
                         }
@@ -137,7 +138,7 @@ var nts;
                             result.success(parseResult.toValue());
                         }
                         else {
-                            result.fail('invalid time');
+                            result.fail(parseResult.getMsg());
                         }
                         return result;
                     };

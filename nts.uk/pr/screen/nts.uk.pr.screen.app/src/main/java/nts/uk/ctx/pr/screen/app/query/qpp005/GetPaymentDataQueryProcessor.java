@@ -155,7 +155,7 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(),
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM,
 					payment.getDependentNumber().v(), payment.getSpecificationCode().v(), layout.getStmtName().v(),
 					payment.getMakeMethodFlag().value, query.getEmployeeCode(), payment.getComment().v(), true,
 					printPosCates));
@@ -163,7 +163,7 @@ public class GetPaymentDataQueryProcessor {
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), layout.getStartYM().v(), null,
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM, null,
 					layout.getStmtCode().v(), layout.getStmtName().v(), null, query.getEmployeeCode(), "", false,
 					printPosCates));
 

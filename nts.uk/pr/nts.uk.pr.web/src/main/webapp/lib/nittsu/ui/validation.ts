@@ -46,7 +46,7 @@
 
     export class StringValidator implements IValidator {
         constraint: any;
-        charType: text.CharType;
+        charType: nts.uk.text.CharType;
         required: boolean;
         
         constructor(primitiveValueName: string, required: boolean) {
@@ -117,12 +117,7 @@
                     return result;
                 }
             }
-//            if(inputText.indexOf(this.option.decimalseperator()) >= 0){
-//                var values = inputText.split(this.option.decimalseperator());
-//                values[1] = text.splitString(values[1], this.option.decimallength(), '0');
-//                inputText = values[0] + this.option.decimalseperator() + values[1];
-//            }
-            result.success(value);
+            result.success(inputText);
             return result;
         }
     }
@@ -143,18 +138,22 @@
                 parseResult = time.parseYearMonth(inputText);
             } else if (this.option.inputFormat === "time") {
                 parseResult = time.parseTime(inputText, false);
+            }else if(this.option.inputFormat === "timeofday") {
+                parseResult = time.parseTimeOfTheDay(inputText);
+            }else if(this.option.inputFormat === "yearmonthdate") {
+                parseResult = time.parseYearMonthDate(inputText);
             }else {
                 parseResult = time.ResultParseTime.failed();
             }
             if(parseResult.success){
                 result.success(parseResult.toValue());
             }else{
-                result.fail('invalid time');
+                result.fail(parseResult.getMsg());
             }
             return result;
         }
     }
-     
+   
     function checkRequired(value: any): boolean {
         if (value === undefined || value === null || value.length == 0) {
             return false;

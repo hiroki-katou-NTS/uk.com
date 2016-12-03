@@ -106,18 +106,16 @@ module nts.uk.ui.option {
             this.decimalseperator = (option && option.decimalseperator) ? option.decimalseperator : ".";
             this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
             this.currencyformat = (option && option.currencyformat) ? option.currencyformat : "JPY";
-            this.currencyposition = (option && option.currencyposition) ? option.currencyposition : "";
-            // TODO: Write ()=> to return string instead of check
-            switch(this.currencyformat) {
-                case "JPY":
-                    this.currencyposition = "left"; break;
-                case "USD":
-                    this.currencyposition = "right"; break;
-            }
+            this.currencyposition = (option && option.currencyposition) ? option.currencyposition : getCurrencyPosition(this.currencyformat);
+            
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
         }
+    }
+    
+    function getCurrencyPosition(currencyformat): string{
+        return currenryPosition[currencyformat] === null ? "right" : currenryPosition[currencyformat];
     }
         
     // Multiline Editor Option
@@ -144,4 +142,9 @@ module nts.uk.ui.option {
     type TextMode = "text" | "password";
     type FillDirection = "left" |"right";
     type Currency = "JPY" | "USD";
+    
+    var currenryPosition = {
+        "JPY" : "left",
+        "USD" : "right"
+    }
 }

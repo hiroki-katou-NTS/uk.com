@@ -85,7 +85,7 @@ table.tb-category, th, td {
 	width: 100px;
 }
 
-.tb-category td>span {
+.tb-category td>label {
 	text-align: center;
 	float: left;
 	width: 100%;
@@ -98,16 +98,16 @@ table.tb-category, th, td {
 	float: left;
 	width: 100%;
 	height: 20px;
-	background: #fff !important;
+	background: #f2f2f2 !important;
 	border: none !important;
 }
 
-.tb-category td>input {
+.tb-category td input {
 	border: none;
-	width: 97%;
+	/**width: 93% !important;
 	text-align: right !important;
-	padding: 0px 3px 0px 0px;
-	line-height: 19px;
+	padding: 0px 0px 0px 10px !important;
+	line-height: 19px;*/
 }
 
 #txt-remarks {
@@ -169,4 +169,8 @@ table.tb-category, th, td {
 	cursor: pointer;
 	float: right;
 	padding: 0px 3px 0px 0px;
+}
+
+.item-grey {
+	background: #f2f2f2;
 }

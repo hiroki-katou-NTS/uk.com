@@ -1,0 +1,33 @@
+.currency {
+	position: relative;
+	
+	&.currencyLeft input[type="text"] {
+		padding-left: 10px;
+	}
+	
+	&.currencyRight input[type="text"] {
+		padding-right: 10px;
+	}
+	
+	
+	&:after {
+		position: absolute;
+		content: ' ';
+		color:#999;
+	}
+	
+	&.currencyLeft:after {
+		content: 'Åè';
+		left: 0;
+		top: 0;
+		text-align: left;
+	}
+	
+	&.currencyRight:after {
+		content: '$';
+		right: 0;
+		top: 0;
+		text-align: right;
+	}
+	
+}

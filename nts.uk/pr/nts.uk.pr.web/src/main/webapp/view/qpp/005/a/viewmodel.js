@@ -16,6 +16,7 @@ var nts;
                                 var self = this;
                                 self.isHandInput = ko.observable(true);
                                 self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
+                                self.backupData = ko.observable(new PaymentDataResultViewModel());
                                 self.categories = ko.observable(new CategoriesList());
                                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                                 self.employee = ko.observable();
@@ -49,6 +50,8 @@ var nts;
                                 var dfd = $.Deferred();
                                 qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function (res) {
                                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
+                                    self.paymentDataResult().__ko_mapping__ = undefined;
+                                    self.backupData(self.paymentDataResult());
                                     var categoryPayment = self.paymentDataResult().categories()[0];
                                     var categoryDeduct = self.paymentDataResult().categories()[1];
                                     var categoryArticle = self.paymentDataResult().categories()[3];
@@ -118,9 +121,11 @@ var nts;
                                 var self = this;
                                 $('#pơpup-orientation').ntsPopup('show');
                             };
-                            ScreenModel.prototype.openSetupTaxItem = function (value) {
+                            ScreenModel.prototype.openSetupTaxItem = function (screenModel, value) {
                                 var self = this;
                                 nts.uk.ui.windows.setShared("value", ko.toJS(value));
+                                nts.uk.ui.windows.setShared("employee", ko.toJS(self.employee()));
+                                nts.uk.ui.windows.setShared("processingYM", self.paymentDataResult().paymentHeader.processingYM);
                                 nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(function () {
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     self.employee(employee);
@@ -193,8 +198,10 @@ var nts;
                         viewmodel.PaymentDataResultViewModel = PaymentDataResultViewModel;
                         // header
                         var PaymentDataHeaderViewModel = (function () {
-                            function PaymentDataHeaderViewModel(dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
+                            function PaymentDataHeaderViewModel(personId, processingYM, dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
                                 var self = this;
+                                self.personId = personId;
+                                self.processingYM = processingYM;
                                 self.dependentNumber = dependentNumber;
                                 self.specificationCode = specificationCode;
                                 self.makeMethodFlag = makeMethodFlag;

@@ -35,6 +35,7 @@ var nts;
                     var utils;
                     (function (utils) {
                         function gridSetup(orientation) {
+                            window.bakData = [];
                             $('.tb-category').each(function () {
                                 var tblid = this.id;
                                 var $tbl = $("#" + tblid);
@@ -47,8 +48,10 @@ var nts;
                                     for (var r = 0; r < countRows; r++) {
                                         var input = tblid + '_' + r + '_' + c;
                                         var $input = $('#' + input);
-                                        if (input === lastItemId)
+                                        if (input === lastItemId) {
                                             $input.addClass('disabled');
+                                            $input.addClass('item-grey');
+                                        }
                                         if ($input.length === 1 && input !== lastItemId)
                                             vlist.push($input);
                                     }
@@ -58,7 +61,10 @@ var nts;
                                     vlist[i].data('vnext', next);
                                 }
                                 window.hlist = [];
-                                $tbl.find('input').not('.disabled').each(function () { hlist.push($(this)); });
+                                $tbl.find('input').not('.disabled').each(function () {
+                                    hlist.push($(this));
+                                    bakData.push(new itemBAK(this.id, $(this).val(), $(this).css('backgroundColor')));
+                                });
                                 for (var i = 0; i < hlist.length; i++) {
                                     var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
                                     hlist[i].data('hnext', next);
@@ -69,9 +75,32 @@ var nts;
                                         return false;
                                     }
                                 });
+                                $tbl.on('change', 'input', function (e) {
+                                    var nId = this.id;
+                                    var nVal = $(this).val();
+                                    var include = ko.utils.arrayFirst(window.bakData, function (item) {
+                                        return item.id === nId && item.value === nVal;
+                                    });
+                                    if (include) {
+                                        $(e.currentTarget).css('background', include.color);
+                                    }
+                                    else {
+                                        $(e.currentTarget).css('background', '#bdd7ee');
+                                    }
+                                });
                             });
                         }
                         utils.gridSetup = gridSetup;
+                        var itemBAK = (function () {
+                            function itemBAK(id, value, color) {
+                                var self = this;
+                                self.id = id;
+                                self.value = value;
+                                self.color = color;
+                            }
+                            return itemBAK;
+                        }());
+                        utils.itemBAK = itemBAK;
                     })(utils = qpp005.utils || (qpp005.utils = {}));
                 })(qpp005 = view.qpp005 || (view.qpp005 = {}));
             })(view = pr.view || (pr.view = {}));

@@ -10,6 +10,7 @@ module nts.uk.pr.view.qpp005.f {
             oneMonthCommuteEditor: NumberEditor;
             oneMonthRemainderEditor: NumberEditor;
             commuteDividedByMonth: CommuteDividedByMonth;
+            commuteNotaxLimitItem : KnockoutObservable<any>;
             
             constructor() {
                 var self = this;
@@ -36,7 +37,6 @@ module nts.uk.pr.view.qpp005.f {
                  */
                 self.totalCommuteEditor = new NumberEditor();
                 self.totalCommuteEditor.isEnable = self.totalCommuteCheck.isChecked;
-                self.totalCommuteEditor.value = ko.observable("10000");
                 
                 /**
                  * 課税通勤費 テキストボックス（金額）
@@ -45,34 +45,79 @@ module nts.uk.pr.view.qpp005.f {
                 self.taxCommuteEditor.isEnable = ko.computed(function(){
                     return  self.totalCommuteCheck.isChecked() && self.taxCommuteCheck.isChecked();    
                 });
-                self.taxCommuteEditor.value = ko.observable("200000");
                 
                 /**
                  * 1か月分通勤費 テキストボックス（金額）
                  */
                 self.oneMonthCommuteEditor = new NumberEditor();
                 self.oneMonthCommuteEditor.isEnable = self.oneMonthCheck.isChecked;
-                self.oneMonthCommuteEditor.value = ko.observable("250000");
                 
                 /**
                  * 余り（端数）
                  */
                 self.oneMonthRemainderEditor = new NumberEditor();
                 self.oneMonthRemainderEditor.isEnable = self.oneMonthCheck.isChecked;
-                self.oneMonthRemainderEditor.value = ko.observable("300000");
                 
                 /**
                  * Commute items
                  */
                 self.commuteDividedByMonth = new CommuteDividedByMonth();
                 self.commuteDividedByMonth.isEnable = self.oneMonthCheck.isChecked;
+                
+                self.commuteNotaxLimitItem = ko.observable();
             }
             
             start(): JQueryPromise<any>{
                 var self = this;
                 var dfd=$.Deferred();
-                var value = nts.uk.ui.windows.getShared('value');
+                var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
+                var employee = nts.uk.ui.windows.getShared('employee');
+                var baseYearmonth = nts.uk.ui.windows.getShared('processingYM');                
+                
+                // Set value for 通勤費合計 textbox 
+                self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
+                
+                // Set value for 課税通勤費 textbox 
+                self.taxCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowTaxImpose);
+                
+                // Set value for  1か月分通勤費 textbox 
+                self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
+                 
+                // Set value for 余り textbox 
+                self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
+                
+                qpp005.f.service.getCommute(employee.personId, baseYearmonth).done(function(res: any) {
+                    qpp005.f.service.getCommuteNotaxLimit("01").done(function(res:any){
+                        self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode,
+                                                                             res.commuNotaxLimitName, 
+                                                                             res.commuNotaxLimitValue));
+                    })
+                })
                 return dfd.promise();
+            }
+            
+            settingButtonClick(){
+                var self = this;
+                var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
+                
+                // Check checked item
+                if(!self.totalCommuteCheck.isChecked() || !self.oneMonthCheck.isChecked()){
+                    alert("対象データがありません。");
+                    return;   
+                }
+                
+                // Check item is exist
+                if(detailItemFromParentScreen.itemCode == ""){
+                    alert("更新対象のデータが存在しません。");
+                    return;
+                }
+                
+                nts.uk.ui.windows.setShared('commuteNotax', ko.toJS(self.commuteNotaxLimitItem()));
+                nts.uk.ui.windows.close();
+            }
+            
+            cancelButtonClick(){
+                nts.uk.ui.windows.close();    
             }
         }
         
@@ -116,6 +161,12 @@ module nts.uk.pr.view.qpp005.f {
                                     ])
                 self.selectedCode = ko.observable("1");
             }            
+        }
+        
+        function CommuteNotaxLimitItem(code, name, value){
+            this.code = code;
+            this.name = name;
+            this.value = value;
         }
         
         function CommuteDividedItemsByMonth(code, name){

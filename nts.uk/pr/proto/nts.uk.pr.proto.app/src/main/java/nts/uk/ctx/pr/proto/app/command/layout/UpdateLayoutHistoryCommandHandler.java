@@ -86,9 +86,9 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 
 	private void updatePreviousObject(UpdateLayoutHistoryCommand command, String companyCode,
 			LayoutMaster layoutOrigin) {
-		List<LayoutMasterCategory> categoriesBefore = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
-		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
-		List<LayoutMasterDetail> detailsBefore = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), layoutOrigin.getEndYm().v() - 1);
+		List<LayoutMasterCategory> categoriesBefore = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCode(), command.getStartYmOriginal() - 1);
+		List<LayoutMasterLine> linesBefore = lineRepo.getLinesBefore(companyCode, command.getStmtCode(), command.getStartYmOriginal() - 1);
+		List<LayoutMasterDetail> detailsBefore = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), command.getStartYmOriginal() - 1);
 		List<LayoutMasterCategory> categoriesUpdate = categoriesBefore.stream().map(
 				org -> {
 					return LayoutMasterCategory.createFromDomain(

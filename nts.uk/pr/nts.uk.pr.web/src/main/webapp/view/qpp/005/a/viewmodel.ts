@@ -5,18 +5,20 @@ module nts.uk.pr.view.qpp005 {
         export class ScreenModel {
             isHandInput: KnockoutObservable<boolean>;
             paymentDataResult: KnockoutObservable<PaymentDataResultViewModel>;
+            backupData: KnockoutObservable<PaymentDataResultViewModel>;
             categories: KnockoutObservable<CategoriesList>;
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
             employeeList: KnockoutObservableArray<any>;
             switchButton: KnockoutObservable<SwitchButton>;
             visible: KnockoutObservable<any>;
-
+            
 
             constructor() {
                 var self = this;
                 self.isHandInput = ko.observable(true);
                 self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
+                self.backupData = ko.observable(new PaymentDataResultViewModel());
                 self.categories = ko.observable(new CategoriesList());
                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                 self.employee = ko.observable<Employee>();
@@ -53,7 +55,9 @@ module nts.uk.pr.view.qpp005 {
                 qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
 
                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
-
+                    self.paymentDataResult().__ko_mapping__ = undefined;
+                    self.backupData(self.paymentDataResult());
+                    
                     var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
                     var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
                     var categoryArticle: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[3];
@@ -137,9 +141,11 @@ module nts.uk.pr.view.qpp005 {
                 $('#pơpup-orientation').ntsPopup('show');
             }
 
-            openSetupTaxItem(value) {
+            openSetupTaxItem(screenModel, value) {
                 var self = this;
                 nts.uk.ui.windows.setShared("value", ko.toJS(value));
+                nts.uk.ui.windows.setShared("employee", ko.toJS(self.employee()));
+                nts.uk.ui.windows.setShared("processingYM", self.paymentDataResult().paymentHeader.processingYM);
                 nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
                     self.employee(employee);
@@ -218,6 +224,8 @@ module nts.uk.pr.view.qpp005 {
 
         // header
         export class PaymentDataHeaderViewModel {
+            personId: string;
+            processingYM: number;
             dependentNumber: number;
             specificationCode: string;
             specificationName: string;
@@ -227,10 +235,12 @@ module nts.uk.pr.view.qpp005 {
             printPositionCategories: Array<PrintPositionCategoryViewModel>;
             isCreated: boolean;
 
-            constructor(dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
+            constructor(personId: string, processingYM: number, dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
                 printPositionCategories: Array<PrintPositionCategoryViewModel>, isCreated: boolean) {
                 var self = this;
-
+                
+                self.personId = personId;
+                self.processingYM = processingYM;
                 self.dependentNumber = dependentNumber;
                 self.specificationCode = specificationCode;
                 self.makeMethodFlag = makeMethodFlag;
