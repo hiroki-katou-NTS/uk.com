@@ -79,7 +79,8 @@ module nts.uk.pr.view.qpp005.a {
                 // TODO: Check error input
 
                 qpp005.a.service.register(self.paymentDataResult()).done(function(res) {
-
+                    self.startPage();
+                    utils.gridSetup(self.switchButton().selectedRuleCode());
                 }).fail(function(res) {
                     alert(res.message);
                 });
@@ -101,8 +102,9 @@ module nts.uk.pr.view.qpp005.a {
             prevEmployee() {
                 var self = this;
 
-                var eIdx = _.indexOf(self.employeeList(), self.employee());
-                var eSize = self.employeeList().length;
+                var eIdx = _.findIndex(self.employeeList(), function(o) {
+                    return o.personId === self.employee().personId && o.code === self.employee().code;
+                });
                 if (eIdx === 0) {
                     return;
                 }
@@ -115,7 +117,9 @@ module nts.uk.pr.view.qpp005.a {
             nextEmployee() {
                 var self = this;
 
-                var eIdx = _.indexOf(self.employeeList(), self.employee());
+                var eIdx = _.findIndex(self.employeeList(), function(o) {
+                    return o.personId === self.employee().personId && o.code === self.employee().code;
+                });
                 var eSize = self.employeeList().length;
                 if (eIdx === eSize - 1) {
                     return;
@@ -153,11 +157,11 @@ module nts.uk.pr.view.qpp005.a {
                     var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
 
                     var bakData = self.backupData();
-                    
-                    var nId = 'ct'+ value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
+
+                    var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
                     qpp005.a.utils.setBackgroundColorForItem(window.bakData, nId, totalCommuteEditor);
-                    
-                    value.value(totalCommuteEditor == ''? 0: totalCommuteEditor);
+
+                    value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
                     value.commuteAllowTaxImpose = taxCommuteEditor;
                     value.commuteAllowMonth = oneMonthCommuteEditor;
                     value.commuteAllowFraction = oneMonthRemainderEditor;

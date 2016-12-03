@@ -72,6 +72,8 @@ var nts;
                                     var self = this;
                                     // TODO: Check error input
                                     qpp005.a.service.register(self.paymentDataResult()).done(function (res) {
+                                        self.startPage();
+                                        a.utils.gridSetup(self.switchButton().selectedRuleCode());
                                     }).fail(function (res) {
                                         alert(res.message);
                                     });
@@ -90,8 +92,9 @@ var nts;
                                 /** Event: Previous employee */
                                 ScreenModel.prototype.prevEmployee = function () {
                                     var self = this;
-                                    var eIdx = _.indexOf(self.employeeList(), self.employee());
-                                    var eSize = self.employeeList().length;
+                                    var eIdx = _.findIndex(self.employeeList(), function (o) {
+                                        return o.personId === self.employee().personId && o.code === self.employee().code;
+                                    });
                                     if (eIdx === 0) {
                                         return;
                                     }
@@ -101,7 +104,9 @@ var nts;
                                 /** Event: Next employee */
                                 ScreenModel.prototype.nextEmployee = function () {
                                     var self = this;
-                                    var eIdx = _.indexOf(self.employeeList(), self.employee());
+                                    var eIdx = _.findIndex(self.employeeList(), function (o) {
+                                        return o.personId === self.employee().personId && o.code === self.employee().code;
+                                    });
                                     var eSize = self.employeeList().length;
                                     if (eIdx === eSize - 1) {
                                         return;
