@@ -1,12 +1,13 @@
-module nts.uk.pr.view.qpp005 {
+module nts.uk.pr.view.qpp005.a {
+//    import viewmodel = nts.uk.pr.view.qpp005.a.viewmodel;
     __viewContext.ready(function() {
 
-        var screenModel = new nts.uk.pr.view.qpp005.viewmodel.ScreenModel();
+        var screenModel = new nts.uk.pr.view.qpp005.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            var categoryPayment: nts.uk.pr.view.qpp005.viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[0];
-            var categoryDeduct: nts.uk.pr.view.qpp005.viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[1];
-            var categoryArticle: nts.uk.pr.view.qpp005.viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[3];
+//            var categoryPayment: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[0];
+//            var categoryDeduct: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[1];
+//            var categoryArticle: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[3];
 
             //        var $paymentLastItem = 'ct' + (<any>categoryPayment).categoryAttribute() + '_' + ((<any>categoryPayment).lineCounts() - 1) + '_8';
             //        $("#" + $paymentLastItem).addClass('disabled');
@@ -31,6 +32,7 @@ module nts.uk.pr.view.qpp005 {
     export module utils {
         export function gridSetup(orientation) {
             window.bakData = [];
+            window.lastItems = [];
             $('.tb-category').each(function() {
                 var tblid = this.id;
 
@@ -49,8 +51,12 @@ module nts.uk.pr.view.qpp005 {
                         if (input === lastItemId) {
                             $input.addClass('disabled');
                             $input.addClass('item-grey');
+                            lastItems.push(new itemBAK(input, $input.val(), $input.css('backgroundColor')));
                         }
-                        if ($input.length === 1 && input !== lastItemId) vlist.push($input);
+                        if ($input.length === 1 && input !== lastItemId) {
+                            vlist.push($input);
+                            bakData.push(new itemBAK(input, $input.val(), $input.css('backgroundColor')));
+                        }
                     }
                 }
                 for (var i = 0; i < vlist.length; i++) {
@@ -61,7 +67,6 @@ module nts.uk.pr.view.qpp005 {
                 window.hlist = [];
                 $tbl.find('input').not('.disabled').each(function() {
                     hlist.push($(this));
-                    bakData.push(new itemBAK(this.id, $(this).val(), $(this).css('backgroundColor')));
                 });
                 for (var i = 0; i < hlist.length; i++) {
                     var next = (i === hlist.length - 1) ? hlist[0] : hlist[i + 1];
@@ -78,18 +83,32 @@ module nts.uk.pr.view.qpp005 {
                 $tbl.on('change', 'input', function(e) {
                     var nId = this.id;
                     var nVal = $(this).val();
-                    
-                    var include = ko.utils.arrayFirst(window.bakData, function(item) {
-                        return item.id === nId && item.value === nVal;
-                    });
 
-                    if (include) {
-                        $(e.currentTarget).css('background', include.color);
-                    } else {
-                        $(e.currentTarget).css('background', '#bdd7ee');
-                    }
+                    setBackgroundColorForItem(window.bakData, nId, nVal);
                 });
             });
+        }
+
+        export function setBackgroundColorForItem(bakData, nId, nVal) {
+            var include = ko.utils.arrayFirst(bakData, function(item) {
+                return item.id === nId && item.value === nVal;
+            });
+
+            if (include) {
+                $("#" + nId).css('background', include.color);
+            } else {
+                $("#" + nId).css('background', '#bdd7ee');
+            }
+            
+            var ctId = nId.split('_')[0];
+            if(ctId === 'ct0') {
+                $("#"+ window.lastItems[0].id).css('background', '#f4b084');
+                $("#"+ window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');    
+            }
+             if(ctId === 'ct1') {
+                $("#"+ window.lastItems[1].id).css('background', '#f4b084');
+                $("#"+ window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');    
+            }
         }
 
         export class itemBAK {
