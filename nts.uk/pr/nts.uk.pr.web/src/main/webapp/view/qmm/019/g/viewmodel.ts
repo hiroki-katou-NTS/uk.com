@@ -141,7 +141,7 @@ module qmm019.g.viewmodel {
             }
             //
             if(isNaN($('#INP_001').val())){
-                alert('コードを確認してください。')
+                alert('コードを確認してください。');
                 $('#INP_001').focus();
                 return false;
             }
