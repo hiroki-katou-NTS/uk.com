@@ -5,6 +5,8 @@ var qmm019;
     (function (a) {
         var ScreenModel = (function () {
             function ScreenModel() {
+                this.itemListFull = [];
+                this.itemListSearch = [];
                 this.notHasKintai = ko.observable(false);
                 this.notHasKiji = ko.observable(false);
                 this.startYm = ko.observable("");
@@ -38,6 +40,20 @@ var qmm019;
                     }
                 });
             }
+            ScreenModel.prototype.searchLayout = function () {
+                var self = this;
+                var textSearch = $("#A_INP_001").val();
+                self.itemList([]);
+                if (textSearch.trim().length === 0) {
+                    self.itemList(self.itemListFull);
+                }
+                else {
+                    self.itemListSearch = _.filter(self.itemListFull, function (item) {
+                        return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
+                    });
+                    self.itemList(self.itemListSearch);
+                }
+            };
             ScreenModel.prototype.calculateLine = function () {
                 var self = this;
                 self.totalNormalLineNumber(0);
@@ -103,7 +119,7 @@ var qmm019;
             };
             ScreenModel.prototype.buildTreeDataSource = function () {
                 var self = this;
-                self.itemList.removeAll();
+                var items = [];
                 _.forEach(self.layoutsMax(), function (layoutMax) {
                     var children = [];
                     var childLayouts = _.filter(self.layouts(), function (layout) {
@@ -112,8 +128,10 @@ var qmm019;
                     _.forEach(childLayouts, function (child) {
                         children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], nts.uk.time.formatYearMonth(child.startYm) + " ~ " + nts.uk.time.formatYearMonth(child.endYm)));
                     });
-                    self.itemList.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
+                    items.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
                 });
+                self.itemList(items);
+                self.itemListFull = items;
             };
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
@@ -149,8 +167,8 @@ var qmm019;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
-                    //self.start();
-                    window.location.reload(true);
+                    self.start();
+                    //window.location.reload(true);
                 });
             };
             ScreenModel.prototype.openEDialog = function () {
@@ -161,15 +179,15 @@ var qmm019;
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
-                    //self.start();
-                    window.location.reload(true);
+                    self.start();
+                    //window.location.reload(true);
                 });
             };
             ScreenModel.prototype.openGDialog = function () {
                 var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
-                    //self.start();
-                    window.location.reload(true);
+                    self.start();
+                    //window.location.reload(true);
                 });
             };
             return ScreenModel;
