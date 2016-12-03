@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:stylefile path="catalog.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="catalog.js" />
+				<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+			</ui:define>
+			<ui:define name="content">				
+				<div id="contents-area" class="cf">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Required files</h1>
+						<h2>Let add required files</h2>
+						<p>Well, we will need some script to run right? We'll use TypeScript for better reading and maintain. This is how we usually setup:</p>
+						<pre><![CDATA[<com:scriptfile path="start.js" />
+<com:scriptfile path="viewmodel.js" />
+<com:scriptfile path="service.js" />]]></pre>
+						<ul>
+							<li><b>start.js:</b> Setup how your page start. Usually bind your viewmodel here</li>
+							<li><b>viewmodel.js:</b> Defined your viewmodel here</li>
+							<li><b>service.js:</b> Get data from server</li>
+						</ul>
+						<h2>start.ts</h2>
+						<p>In this file we will setup to create viewmodel and binding it.</p>
+						<pre><![CDATA[module nts.uk.pr.view.test {
+	__viewContext.ready(function() {
+		var screenModel = new nts.uk.pr.view.test.viewmodel.ScreenModel();
+		__viewContext.bind(screenModel);
+	});
+}]]></pre>
+						<p>__viewContext will be automatic created by Kiban. It has 2 properties you'll need to take a look:</p>
+						<ul>
+							<li><b>ready(callback: () => void):</b> Pass your function here to callback after page is loaded</li>
+							<li><b>bind(viewModel: any):</b> Pass your viewmodel here to binding it</li>
+						</ul>
+						<div class="footer cf">
+							<button class="previous large" data-href="/nts.uk.pr.web/view/sample/catalog.xhtml">Previous</button>
+							<button class="next proceed large" data-href="#">Next</button>
+						</div>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
