@@ -1147,9 +1147,12 @@ module nts.uk.ui.koExtentions {
 
             width = width ? width : '100%';
             var width = ko.unwrap(data.width);
-            var headers = ko.unwrap(data.headers);
-            var displayColumns: Array<any> = [{ headerText: headers[0] || "コード", key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1] || "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+            var headers = ["コード","コード／名称"];
+            if(data.headers) {
+                headers = ko.unwrap(data.headers);
+            }
+            var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
