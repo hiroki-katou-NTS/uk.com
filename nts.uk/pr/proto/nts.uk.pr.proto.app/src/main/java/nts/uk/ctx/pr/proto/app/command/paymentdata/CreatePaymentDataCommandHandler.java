@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.proto.app.command.paymentdata;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -29,7 +28,6 @@ import nts.uk.ctx.pr.proto.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
-import nts.uk.ctx.pr.proto.dom.layout.detail.SumScopeAtr;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LineDispAtr;
@@ -124,7 +122,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 
 		// get base date
 		GeneralDate currentDate = GeneralDate.today();
-		YearMonth baseYearMonth = YearMonth.of(currentDate.year(), currentDate.month());
+		YearMonth baseYearMonth = currentDate.yearMonth();
 				
 		// get basic calculate
 		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode())

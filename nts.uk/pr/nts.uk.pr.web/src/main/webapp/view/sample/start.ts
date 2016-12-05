@@ -14,6 +14,12 @@ __viewContext.ready(function () {
 
     var vm = {
         hoge: ko.observable('aaa'),
+        
+        dynamic: {
+            value: ko.observable(1),
+            constraint: ko.observable('LayoutCode')
+        },
+        
         timer: new nts.uk.ui.sharedvm.KibanTimer('test'),
         start: function(){
             this.timer.start();    

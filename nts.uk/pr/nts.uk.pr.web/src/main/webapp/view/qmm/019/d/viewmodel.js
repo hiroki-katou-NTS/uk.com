@@ -88,7 +88,7 @@ var qmm019;
                             self.createlayout().checkContinue = false;
                         }
                         d.service.createLayoutHistory(self.createlayout()).done(function () {
-                            alert("追加しました。");
+                            //alert("追加しました。"); 
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);

@@ -7,25 +7,25 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 600, height: 450 };</script>
+			<script>var dialogSize = { width: 600, height: 485 };</script>
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
  			</com:ValidatorScript>
 			<link rel="stylesheet" type="text/css" href="main.css" />
-			<script src="start.js"></script>
-			<script src="viewmodel.js"></script>
-			<script src="service.js"></script>
 			<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
 			<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
 			<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
 			<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
+			<script src="start.js"></script>
+			<script src="viewmodel.js"></script>
+			<script src="service.js"></script>
 			
 		</ui:define>
 
 		<ui:define name="content">
 			<div class="floatLeft divMargin">
-				<label id="LBL_001">001</label>
-				<label id="LBL_002">Vu Dinh Dung</label>
+				<label id="LBL_001" data-bind="text: itemCode">001</label>
+				<label id="LBL_002" data-bind="text: itemName">Vu Dinh Dung</label>
 			</div>
 			
 			<div class="floatLeft seperator"></div>

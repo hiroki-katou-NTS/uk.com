@@ -11,23 +11,35 @@ var nts;
                     var DATA_HAS_ERROR = 'haserror';
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
-                        if (action === "set") {
-                            $control.data(DATA_HAS_ERROR, true);
-                            ui.errors.add({
-                                location: $control.data('name') || "",
-                                message: message,
-                                $control: $control
-                            });
+                        var result;
+                        switch (action) {
+                            case 'set':
+                                return setError($control, message);
+                            case 'clear':
+                                return clearErrors($control);
+                            case 'hasError':
+                                return hasError($control);
                         }
-                        if (action === "clear") {
-                            $control.data(DATA_HAS_ERROR, false);
-                            ui.errors.removeByElement($control);
-                        }
-                        if (action === 'hasError') {
-                            return $control.data(DATA_HAS_ERROR) === true;
-                        }
-                        return this;
                     };
+                    function setError($control, message) {
+                        $control.data(DATA_HAS_ERROR, true);
+                        ui.errors.add({
+                            location: $control.data('name') || "",
+                            message: message,
+                            $control: $control
+                        });
+                        $control.addClass('error');
+                        return $control;
+                    }
+                    function clearErrors($control) {
+                        $control.data(DATA_HAS_ERROR, false);
+                        ui.errors.removeByElement($control);
+                        $control.removeClass('error');
+                        return $control;
+                    }
+                    function hasError($control) {
+                        return $control.data(DATA_HAS_ERROR) === true;
+                    }
                 })(ntsError || (ntsError = {}));
                 var ntsPopup;
                 (function (ntsPopup) {

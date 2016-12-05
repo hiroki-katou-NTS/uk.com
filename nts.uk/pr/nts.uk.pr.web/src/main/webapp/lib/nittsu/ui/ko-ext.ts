@@ -5,12 +5,12 @@ module nts.uk.ui.koExtentions {
     class EditorProcessor {
 
         init($input: JQuery, data: any) {
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var validator = this.getValidator(data);
-            var formatter = this.getFormatter(data);
             var setValue: (newText: string) => {} = data.value;
 
+            $input.addClass('nts-editor');
             $input.change(() => {
+                var validator = this.getValidator(data);
+                var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -29,13 +29,13 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var placeholder: string = option.placeholder;
-            var width: string = option.width;
-            var textalign: string = option.textalign;
-
-            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
-            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
+            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var placeholder: string = ko.unwrap(option.placeholder || '');
+            var width: string = ko.unwrap(option.width || '');
+            var textalign: string = ko.unwrap(option.textalign || '');
+            
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
             $input.attr('placeholder', placeholder);
             if (width.trim() != "")
                 $input.width(width);
@@ -65,6 +65,16 @@ module nts.uk.ui.koExtentions {
 
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            if (constraint) {
+                if(constraint.valueType === 'String') {
+                    return validation.createValidator(constraintName);
+                } else if(data.option) {
+                    var option = ko.unwrap(data.option);
+                   
+                    return validation.createValidator(constraintName, option);
+                }
+            }
             return validation.createValidator(constraintName);
         }
 
@@ -72,8 +82,17 @@ module nts.uk.ui.koExtentions {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             if (constraint) {
-                switch (constraint.valueType) {
-                    case 'String': return new text.StringFormatter({ constraintName: constraintName });
+                if(constraint.valueType === 'String') {
+                    return new text.StringFormatter(data);
+                } else if(data.option) {
+                    var option = ko.unwrap(data.option);
+                    //If inputFormat presented, this is Date or Time Editor
+                    if(option.inputFormat) {
+                        return new text.TimeFormatter({ option: option });
+                    } else  {
+                        return new nts.uk.text.NumberFormatter({option: option})
+                       
+                    } 
                 }
             }
 
@@ -97,8 +116,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
@@ -133,7 +152,7 @@ module nts.uk.ui.koExtentions {
             }
         }
 
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.NumberEditorOption();
         }
 
@@ -164,7 +183,7 @@ module nts.uk.ui.koExtentions {
             $input.css({'paddingLeft': '12px', 'width': width });
         }
         
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.TimeEditorOption();
         }
 
@@ -196,8 +215,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
@@ -1147,9 +1166,12 @@ module nts.uk.ui.koExtentions {
 
             width = width ? width : '100%';
             var width = ko.unwrap(data.width);
-
-            var displayColumns: Array<any> = [{ headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+            var headers = ["コード","コード／名称"];
+            if(data.headers) {
+                headers = ko.unwrap(data.headers);
+            }
+            var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
@@ -1246,6 +1268,7 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
+
 
     class WizardBindingHandler implements KnockoutBindingHandler {
         /**
