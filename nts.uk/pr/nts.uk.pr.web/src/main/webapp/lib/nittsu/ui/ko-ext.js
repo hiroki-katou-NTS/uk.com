@@ -74,14 +74,34 @@ var nts;
                     }
                     DynamicEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        if (constraint) {
+                            if (constraint.valueType === 'String') {
+                                return validation.createValidator(constraintName);
+                            }
+                            else if (data.option) {
+                                var option = ko.unwrap(data.option);
+                                return validation.createValidator(constraintName, option);
+                            }
+                        }
                         return validation.createValidator(constraintName);
                     };
                     DynamicEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         if (constraint) {
-                            switch (constraint.valueType) {
-                                case 'String': return new uk.text.StringFormatter({ constraintName: constraintName });
+                            if (constraint.valueType === 'String') {
+                                return new uk.text.StringFormatter(data);
+                            }
+                            else if (data.option) {
+                                var option = ko.unwrap(data.option);
+                                //If inputFormat presented, this is Date or Time Editor
+                                if (option.inputFormat) {
+                                    return new uk.text.TimeFormatter({ option: option });
+                                }
+                                else {
+                                    return new nts.uk.text.NumberFormatter({ option: option });
+                                }
                             }
                         }
                         return new uk.format.NoFormatter();
@@ -105,8 +125,8 @@ var nts;
                     TextEditorProcessor.prototype.getFormatter = function (data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constrain = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
@@ -142,7 +162,7 @@ var nts;
                             }
                         }
                     };
-                    NumberEditorProcessor.prototype.getDefaultOption = function () {
+                    NumberEditorProcessor.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
@@ -171,7 +191,7 @@ var nts;
                         var width = option.width ? option.width : '93.5%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
-                    TimeEditorProcessor.prototype.getDefaultOption = function () {
+                    TimeEditorProcessor.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
@@ -202,8 +222,8 @@ var nts;
                     MultilineEditorProcessor.prototype.getFormatter = function (data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constrain = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
                     };
                     MultilineEditorProcessor.prototype.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;

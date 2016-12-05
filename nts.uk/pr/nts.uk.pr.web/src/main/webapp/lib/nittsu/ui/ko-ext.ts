@@ -65,6 +65,16 @@ module nts.uk.ui.koExtentions {
 
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            if (constraint) {
+                if(constraint.valueType === 'String') {
+                    return validation.createValidator(constraintName);
+                } else if(data.option) {
+                    var option = ko.unwrap(data.option);
+                   
+                    return validation.createValidator(constraintName, option);
+                }
+            }
             return validation.createValidator(constraintName);
         }
 
@@ -72,8 +82,17 @@ module nts.uk.ui.koExtentions {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             if (constraint) {
-                switch (constraint.valueType) {
-                    case 'String': return new text.StringFormatter({ constraintName: constraintName });
+                if(constraint.valueType === 'String') {
+                    return new text.StringFormatter(data);
+                } else if(data.option) {
+                    var option = ko.unwrap(data.option);
+                    //If inputFormat presented, this is Date or Time Editor
+                    if(option.inputFormat) {
+                        return new text.TimeFormatter({ option: option });
+                    } else  {
+                        return new nts.uk.text.NumberFormatter({option: option})
+                       
+                    } 
                 }
             }
 
@@ -97,8 +116,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
@@ -133,7 +152,7 @@ module nts.uk.ui.koExtentions {
             }
         }
 
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.NumberEditorOption();
         }
 
@@ -164,7 +183,7 @@ module nts.uk.ui.koExtentions {
             $input.css({'paddingLeft': '12px', 'width': width });
         }
         
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.TimeEditorOption();
         }
 
@@ -196,8 +215,8 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
         }
 
         getValidator(data: any): validation.IValidator {
