@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+				<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>ComboBox</h1>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-overview">Overview</a></li>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-overview" class="cf">
+									<div>
+										<input data-bind="value: itemName"></input>
+										<button data-bind="click: addOptions">Add Item</button>
+									</div>
+									<br />
+									<div id="combo-box"
+										data-bind="ntsComboBox: {options: itemList,
+														optionsValue: 'code',
+														value: selectedCode,
+														optionsText: 'name',
+														editable: isEditable(),
+														enable: isEnable(),
+														columns: [
+															{ prop: 'code', length: 4 },
+															{ prop: 'name', length: 10 },
+														]}"
+										class="cf"></div>
+									<button data-bind="click: removeByCode">Remove Item</button>
+									<br />
+							
+									<div class="status">
+										<label><input type="checkbox" data-bind="checked: isEnable" />Enable</label>
+										<label><input type="checkbox" data-bind="checked: isEditable" />Editable</label>
+									</div>
+									<div>
+										Your selected code: <span data-bind="text:selectedCode"></span>
+									</div>
+								</div>
+								<div id="tabs-html" class="cf">
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>
