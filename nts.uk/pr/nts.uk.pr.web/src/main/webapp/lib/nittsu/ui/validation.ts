@@ -34,10 +34,11 @@
         if (constraint === null) {
             return new NoValidator();
         }
-        if(option) {
-            if (constraint.valueType === 'String') {
+        if (constraint.valueType === 'String') {
                 return new StringValidator(constraintName);
-            } else if(option.inputFormat) {
+        }
+        if(option) {          
+            if(option.inputFormat) {
                 //If inputFormat presented, this is Date or Time Editor                 
                 return new TimeValidator(constraintName, option);
             } else  {
