@@ -286,7 +286,7 @@ module qmm019.f.viewmodel {
         openHDialog() {
             var self = this;
             nts.uk.ui.windows.setShared('categoryAtr', self.paramCategoryAtr());
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml').onClosed(() => {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/h/index.xhtml',{title: '明細レイアウトの作成＞個人金額コードの選択'}).onClosed(() => {
                 self.wageCode(nts.uk.ui.windows.getShared('selectedCode'));
                 self.wageName(nts.uk.ui.windows.getShared('selectedName'));
                 return this;
