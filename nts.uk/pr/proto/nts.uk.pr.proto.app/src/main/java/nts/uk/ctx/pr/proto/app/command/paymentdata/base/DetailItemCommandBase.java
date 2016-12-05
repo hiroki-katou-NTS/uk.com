@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.proto.app.command.paymentdata.base;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 
@@ -62,6 +63,11 @@ public class DetailItemCommandBase {
 		}else {
 			this.linePosition = linePosition;
 		}
+		
+		if ("".equals(this.value)) {
+			throw new BusinessException("入力にエラーがあります。");	
+		}
+		
 		return DetailItem.createFromJavaType(
 				this.itemCode, 
 				this.value, 

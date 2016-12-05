@@ -77,13 +77,42 @@ module nts.uk.pr.view.qpp005.a {
             register() {
                 var self = this;
                 // TODO: Check error input
+                if (!self.validator()) {
+                    alert('入力にエラーがあります。');
+                    return false;
+                }
 
                 qpp005.a.service.register(self.paymentDataResult()).done(function(res) {
-                    self.startPage();
-                    utils.gridSetup(self.switchButton().selectedRuleCode());
+                    self.startPage().done(function() {
+                        utils.gridSetup(self.switchButton().selectedRuleCode());
+                    });
                 }).fail(function(res) {
                     alert(res.message);
                 });
+            }
+
+            validator() {
+                var self = this;
+                var data = self.paymentDataResult().categories();
+                var result = true;
+                _.forEach(data, (cate) => {
+                    var lines = cate.lines();
+                    _.forEach(lines, (line) => {
+                        var include = ko.utils.arrayFirst(line.details(), function(item) {
+                            return item.itemCode() != "" && (item.value() === '' || item.value() === null);
+                        });
+
+                        if (include) {
+                            result = false;
+                            return false;
+                        }
+                    });
+                    if (!result)
+                        return false;
+
+                });
+
+                return result;
             }
 
             /** Event click: 対象者*/
@@ -110,7 +139,9 @@ module nts.uk.pr.view.qpp005.a {
                 }
 
                 self.employee(self.employeeList()[eIdx - 1]);
-                self.startPage();
+                self.startPage().done(function() {
+                    utils.gridSetup(self.switchButton().selectedRuleCode());
+                });
             }
 
             /** Event: Next employee */
@@ -126,7 +157,10 @@ module nts.uk.pr.view.qpp005.a {
                 }
 
                 self.employee(self.employeeList()[eIdx + 1]);
-                self.startPage();
+
+                self.startPage().done(function() {
+                    utils.gridSetup(self.switchButton().selectedRuleCode());
+                });
             }
 
             openColorSettingGuide() {
@@ -234,7 +268,19 @@ module nts.uk.pr.view.qpp005.a {
         export class PaymentDataResultViewModel {
             paymentHeader: PaymentDataHeaderViewModel;
             categories: Array<LayoutMasterCategoryViewModel>;
-            remarks: string;
+            remarks: KnockoutObservable<string>;
+            remarkCount: KnockoutComputed<string>;
+
+            constructor(paymentHeader: PaymentDataHeaderViewModel, categories: Array<LayoutMasterCategoryViewModel>, remarks: string) {
+                var self = this;
+
+                self.paymentHeader = paymentHeader;
+                self.categories = categories;
+                self.remarks = ko.observable(remarks);
+                self.remarkCount = ko.computed(function() {
+                    return nts.uk.text.format('入力文字数：{0}文字', self.remarks() == undefined ? 0: self.remarks().length);
+                });
+            }
         }
 
         // header
