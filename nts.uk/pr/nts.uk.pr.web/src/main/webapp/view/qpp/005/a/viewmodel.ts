@@ -1,10 +1,11 @@
-module nts.uk.pr.view.qpp005 {
+module nts.uk.pr.view.qpp005.a {
     import option = nts.uk.ui.option;
 
     export module viewmodel {
         export class ScreenModel {
             isHandInput: KnockoutObservable<boolean>;
             paymentDataResult: KnockoutObservable<PaymentDataResultViewModel>;
+            backupData: KnockoutObservable<PaymentDataResultViewModel>;
             categories: KnockoutObservable<CategoriesList>;
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
@@ -17,6 +18,7 @@ module nts.uk.pr.view.qpp005 {
                 var self = this;
                 self.isHandInput = ko.observable(true);
                 self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
+                self.backupData = ko.observable(new PaymentDataResultViewModel());
                 self.categories = ko.observable(new CategoriesList());
                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                 self.employee = ko.observable<Employee>();
@@ -43,16 +45,18 @@ module nts.uk.pr.view.qpp005 {
                 self.visible = ko.observable(self.switchButton().selectedRuleCode() == 'vnext');
                 self.switchButton().selectedRuleCode.subscribe(function(newValue) {
                     self.visible(newValue == 'vnext');
-                    qpp005.utils.gridSetup(self.switchButton().selectedRuleCode());
+                    qpp005.a.utils.gridSetup(self.switchButton().selectedRuleCode());
                 });
             }
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
 
-                qpp005.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
+                qpp005.a.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
 
                     ko.mapping.fromJS(res, {}, self.paymentDataResult());
+                    self.paymentDataResult().__ko_mapping__ = undefined;
+                    self.backupData(self.paymentDataResult());
 
                     var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
                     var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
@@ -74,8 +78,9 @@ module nts.uk.pr.view.qpp005 {
                 var self = this;
                 // TODO: Check error input
 
-                qpp005.service.register(self.paymentDataResult()).done(function(res) {
-
+                qpp005.a.service.register(self.paymentDataResult()).done(function(res) {
+                    self.startPage();
+                    utils.gridSetup(self.switchButton().selectedRuleCode());
                 }).fail(function(res) {
                     alert(res.message);
                 });
@@ -97,8 +102,9 @@ module nts.uk.pr.view.qpp005 {
             prevEmployee() {
                 var self = this;
 
-                var eIdx = _.indexOf(self.employeeList(), self.employee());
-                var eSize = self.employeeList().length;
+                var eIdx = _.findIndex(self.employeeList(), function(o) {
+                    return o.personId === self.employee().personId && o.code === self.employee().code;
+                });
                 if (eIdx === 0) {
                     return;
                 }
@@ -111,7 +117,9 @@ module nts.uk.pr.view.qpp005 {
             nextEmployee() {
                 var self = this;
 
-                var eIdx = _.indexOf(self.employeeList(), self.employee());
+                var eIdx = _.findIndex(self.employeeList(), function(o) {
+                    return o.personId === self.employee().personId && o.code === self.employee().code;
+                });
                 var eSize = self.employeeList().length;
                 if (eIdx === eSize - 1) {
                     return;
@@ -141,12 +149,23 @@ module nts.uk.pr.view.qpp005 {
                 var self = this;
                 nts.uk.ui.windows.setShared("value", ko.toJS(value));
                 nts.uk.ui.windows.setShared("employee", ko.toJS(self.employee()));
-                nts.uk.ui.windows.setShared("processingYM", self.paymentDataResult().paymentHeader.processingYM);
+                nts.uk.ui.windows.setShared("processingYM", self.paymentDataResult().paymentHeader.processingYM());
                 nts.uk.ui.windows.sub.modal('/view/qpp/005/f/index.xhtml', { title: '通勤費の設定' }).onClosed(() => {
-                    var employee = nts.uk.ui.windows.getShared('employee');
-                    self.employee(employee);
+                    var totalCommuteEditor = nts.uk.ui.windows.getShared('totalCommuteEditor');
+                    var taxCommuteEditor = nts.uk.ui.windows.getShared('taxCommuteEditor');
+                    var oneMonthCommuteEditor = nts.uk.ui.windows.getShared('oneMonthCommuteEditor');
+                    var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
 
-                    self.startPage();
+                    var bakData = self.backupData();
+
+                    var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
+                    qpp005.a.utils.setBackgroundColorForItem(window.bakData, nId, totalCommuteEditor);
+
+                    value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
+                    value.commuteAllowTaxImpose = taxCommuteEditor;
+                    value.commuteAllowMonth = oneMonthCommuteEditor;
+                    value.commuteAllowFraction = oneMonthRemainderEditor;
+                    //                    self.startPage();
                     return self;
                 });
             }
@@ -234,7 +253,7 @@ module nts.uk.pr.view.qpp005 {
             constructor(personId: string, processingYM: number, dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
                 printPositionCategories: Array<PrintPositionCategoryViewModel>, isCreated: boolean) {
                 var self = this;
-                
+
                 self.personId = personId;
                 self.processingYM = processingYM;
                 self.dependentNumber = dependentNumber;

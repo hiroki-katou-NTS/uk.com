@@ -128,6 +128,9 @@ var nts;
                         else if (this.option.inputFormat === "timeofday") {
                             parseResult = uk.time.parseTimeOfTheDay(inputText);
                         }
+                        else if (this.option.inputFormat === "yearmonthdate") {
+                            parseResult = uk.time.parseYearMonthDate(inputText);
+                        }
                         else {
                             parseResult = uk.time.ResultParseTime.failed();
                         }

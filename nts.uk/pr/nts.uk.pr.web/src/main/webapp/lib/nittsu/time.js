@@ -219,6 +219,56 @@ var nts;
                 return ResultParseTimeOfTheDay.succeeded(hour, minute);
             }
             time_1.parseTimeOfTheDay = parseTimeOfTheDay;
+            var ResultParseYearMonthDate = (function (_super) {
+                __extends(ResultParseYearMonthDate, _super);
+                function ResultParseYearMonthDate(success, year, month, date, msg) {
+                    _super.call(this, success);
+                    this.year = year;
+                    this.month = month;
+                    this.date = date;
+                    this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
+                }
+                ResultParseYearMonthDate.succeeded = function (year, month, date) {
+                    return new ResultParseYearMonthDate(true, year, month, date);
+                };
+                ResultParseYearMonthDate.failed = function (msg) {
+                    return new ResultParseYearMonthDate(false, msg);
+                };
+                ResultParseYearMonthDate.prototype.format = function () {
+                    if (!this.success) {
+                        return "";
+                    }
+                    return this.year + '/' + uk.text.padLeft(String(this.month), '0', 2) + uk.text.padLeft(String(this.date), '0', 2);
+                };
+                ResultParseYearMonthDate.prototype.toValue = function () {
+                    if (!this.success) {
+                        return 0;
+                    }
+                    return (this.year * 10000 + this.month * 100 + this.date);
+                };
+                ResultParseYearMonthDate.prototype.getMsg = function () { return this.msg; };
+                return ResultParseYearMonthDate;
+            }(ParseResult));
+            time_1.ResultParseYearMonthDate = ResultParseYearMonthDate;
+            function parseYearMonthDate(yearMonthDate) {
+                if (yearMonthDate === undefined || yearMonthDate === null) {
+                    return ResultParseYearMonthDate.failed("full date can not empty!");
+                }
+                if (!(yearMonthDate instanceof String)) {
+                    yearMonthDate = yearMonthDate.toString();
+                }
+                yearMonthDate = yearMonthDate.replaceAll("/", "");
+                if (yearMonthDate.length != 8)
+                    return ResultParseYearMonthDate.failed("full date format must be yyyy/mm/dd or yyyymmdd");
+                var checkNum = yearMonthDate.replaceAll("[0-9]", "");
+                if (checkNum.length === 0)
+                    return ResultParseYearMonthDate.failed("full date must contain digits and slashes only");
+                var year = parseInt(yearMonthDate.substring(0, 4));
+                var month = parseInt(yearMonthDate.substring(4, 6));
+                var date = parseInt(yearMonthDate.substring(6));
+                return ResultParseYearMonthDate.succeeded(year, month, date);
+            }
+            time_1.parseYearMonthDate = parseYearMonthDate;
             /**
             * 日付をフォーマットする
             * @param  {Date}   date     日付

@@ -14,7 +14,7 @@
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
-			    <script>var dialogSize = { width: 560, height: 400 };</script>
+			    <script>var dialogSize = { width: 570, height: 400 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
             </ui:define>
             
@@ -23,7 +23,7 @@
             	
             	<div id="contents-area">
 					<div class="cf">
-						<div class="form-label inline">
+						<div class="form-label inline required">
 							<label id="LBL_001">対象データ</label>
 							<label id="LBL_002" data-bind="text: selectLayoutCode">01</label>
 							<label id="LBL_003" data-bind="text: selectLayoutName">正社員用明細書</label>
@@ -34,19 +34,19 @@
 							<label id="">）</label>
 						</div><br />
 						<br />
-						<div class = "form-label inline">
+						<div class = "form-label inline required">
 							<label id="LBL_006">編集方法の選択</label>
 						</div>
 						<br/><br/>
 						<div class = "selectStyle">
 							<div id="SEL_001">
-								<input type="radio" name="layoutSelect" id="layoutDetele" /> 履歴を削除する<br /><br />
-				  				<input type="radio" name="layoutSelect" id="layoutUpdate"  checked="checked" /> 履歴を修正する<br />
+								<input type="radio" name="layoutSelect" id="layoutDetele" checked="checked" /> 履歴を削除する<br /><br />
+				  				<input type="radio" name="layoutSelect" id="layoutUpdate"  /> 履歴を修正する<br />
 							</div>							
 							<div>
 								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/><br />
 								<label id="LBL_008">開始年月</label>
-								<input  id = "INP_001" data-bind="value: selectLayoutStartYm"></input>
+								<input  id = "INP_001" maxlength="7" style="ime-mode: inactive" data-bind="value: selectLayoutStartYm"></input>
 								<label id="">　　～　　</label>
 								<label id = "LBL_009" data-bind="text: selectLayoutEndYm"></label>
 							</div>

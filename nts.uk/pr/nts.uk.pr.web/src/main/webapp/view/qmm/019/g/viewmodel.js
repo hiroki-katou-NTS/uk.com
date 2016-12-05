@@ -49,10 +49,7 @@ var qmm019;
                         self.createNewSelect(newValue);
                         self.buildComboboxChange(newValue);
                     });
-                    //start ym
-                    var d = new Date();
-                    var ym = d.getFullYear() + '/' + (d.getMonth() + 1);
-                    self.selectStartYm(ym);
+                    $('#INP_001').focus();
                     dfd.resolve();
                     // Return.
                     return dfd.promise();
@@ -81,6 +78,7 @@ var qmm019;
                     _.forEach(self.layouts(), function (layout) {
                         if (layout.stmtCode == layoutCd) {
                             self.startYmCopy(layout.startYm);
+                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             return false;
                         }
                     });
@@ -98,7 +96,7 @@ var qmm019;
                             self.createlayout().checkCopy = true;
                         }
                         g.service.createLayout(self.createlayout()).done(function () {
-                            alert('追加しました。');
+                            //alert('追加しました。');    
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);
@@ -108,7 +106,7 @@ var qmm019;
                 ScreenModel.prototype.checkData = function () {
                     var self = this;
                     //登録時チェック処理
-                    var mess = "が入力されていません";
+                    var mess = "が入力されていません。";
                     //必須項目の未入力チェックを行う
                     if ($('#INP_001').val() == '') {
                         alert("コード" + mess);
@@ -123,6 +121,12 @@ var qmm019;
                     if ($('INP_003').val() == '') {
                         alert('開始年月' + mess);
                         $('#INP_003').focus();
+                        return false;
+                    }
+                    //
+                    if (isNaN($('#INP_001').val())) {
+                        alert('コードを確認してください。');
+                        $('#INP_001').focus();
                         return false;
                     }
                     //コードの重複チェックを行う
@@ -152,7 +156,7 @@ var qmm019;
                     self.createlayout({
                         checkCopy: true,
                         stmtCodeCopied: self.createNewSelect(),
-                        startYmCopied: self.startYmCopy(),
+                        startYmCopied: +self.startYmCopy,
                         stmtCode: stmtCd,
                         startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,

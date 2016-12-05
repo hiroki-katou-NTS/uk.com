@@ -63,7 +63,7 @@ module qmm019.e.viewmodel {
         dataDelete():any{
             var self = this;
             service.deleteLayout(self.selectLayout()).done(function(){
-                alert("履歴を削除しました。");
+                //alert("履歴を削除しました。");
                  nts.uk.ui.windows.close();
             }).fail(function(res){
                 alert(res);    
@@ -82,12 +82,12 @@ module qmm019.e.viewmodel {
                 return false;
             }
             else if (layoutInfor.startYmOriginal == layoutInfor.startYm){
-                alert("履歴を修正しました。");
+                //alert("履歴を修正しました。");
                 nts.uk.ui.windows.close();
                 return false;    
             }else{
                 service.updateLayout(layoutInfor).done(function(){
-                    alert("履歴を修正しました。");
+                    //alert("履歴を修正しました。");
                      nts.uk.ui.windows.close();
                 }).fail(function(res){
                     alert(res);    

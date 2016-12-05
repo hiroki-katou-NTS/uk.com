@@ -15,7 +15,7 @@
 				<script src="start.js" />
 				<script src="viewmodel.js" />
 				<script src="service.js" />
-			    <script>var dialogSize = { width: 950, height: 700 };</script>
+			    <script>var dialogSize = { width: 960, height: 710 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
 				<script>
 					__viewContext.primitiveValueConstraints = {
@@ -57,23 +57,21 @@
 						<div>
 							<div class ="form-label inline required">
 								<label id = "LBL_004" >コード/名称</label>
-								<input  id = "INP_001" maxlength="2"></input>
-								<input  id = "INP_002" ></input>
+								<input  id = "INP_001" style="ime-mode: inactive" maxlength="2"></input>
+								<input  id = "INP_002" maxlength="20"></input>
 							</div><br/>
 							<br/>
-							<div class ="form-label inline required">
-								<label id = "LBL_005">開始年月</label>
-								<input id = "INP_003" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input>
+							<div class ="timeLayout">
+								<div class ="form-label inline required"><label id = "LBL_005">開始年月</label></div>
+								<div><input id = "INP_003" style="ime-mode: inactive" maxlength="7" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input></div>
 								<!-- 入力した開始年月を和暦で表記 -->
-								<label id = "LBL_006"></label>
+								<div><label id = "LBL_006"></label></div>
 							</div><br/>
-							<br/>
 							<div class ="form-label inline required">
 								<label id = "LBL_007">レイアウトパターンの選択</label>
 								<label id = "LBL_008">※コピーして作成する場合、コピー元のレイアウトより表示項目が少ない項目は選択できません。</label>
 							</div>
 						</div>
-						<br/>
 						<div class = "lstBox">						
 						<div id = "LST_001"
 							data-bind="ntsListBox: {options: itemList,

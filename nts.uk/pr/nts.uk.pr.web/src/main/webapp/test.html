@@ -383,7 +383,9 @@ hr {
 		<!-- Multiple is false -->
 		<span data-bind="text: selectedCode()"></span>
 		<!-- Multiple is true -->
-		<span data-bind="text: selectedCodes()"></span> <br /> <label
+		<span data-bind="text: selectedCodes()"></span> <br />
+		<span data-bind="text: selectedCodes().length"></span> <br />
+		 <label
 			class="status"> <input type="checkbox"
 			data-bind="checked: isEnable">Enable
 		</label>
