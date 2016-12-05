@@ -208,7 +208,7 @@ hr {
 						new Node('0001-2', 'サービス部2', []),
 						new Node('0001-3', 'サービス部3', [])
 					]), new Node('0002', '開発部', [])]),
-					headers: ko.observableArray(["Item Value Header","Item Text Header", "Custom"]),
+					headers: ko.observableArray(["Item Value Header","Item Text Header", "Auto generated Field"]),
 					selectedCode: ko.observableArray([]),
 					singleSelectedCode: ko.observable(null),
 					index: 0,
@@ -407,6 +407,7 @@ hr {
 					optionsText: 'nodeText',
 					multiple: true,
 					enable: true,
+					extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
 					showCheckBox: true}"
 				class="cf">
 			</table>
@@ -429,6 +430,7 @@ hr {
 					showCheckBox: false}"
 				class="cf">
 			</table>
+			<!-- extColums is optional -->
 		</div>
 		<!-- <div style="float: left; margin-right: 15px;">
 			<h2>test</h2>

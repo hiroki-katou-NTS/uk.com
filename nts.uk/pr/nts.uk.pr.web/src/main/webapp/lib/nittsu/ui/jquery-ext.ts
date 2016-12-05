@@ -31,12 +31,16 @@ module nts.uk.ui.jqueryExtentions {
                 $control: $control
             });
             
+            $control.addClass('error');
+            
             return $control;
         }
         
         function clearErrors($control: JQuery) {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
+            
+            $control.removeClass('error');
             
             return $control;
         }
