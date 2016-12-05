@@ -208,7 +208,7 @@ module qmm019.a {
                 }
                 categoryClick(data, event) {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml',{title: 'カテゴリの設定'}).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/k/index.xhtml',{title: '明細レイアウトの作成＞カテゴリの設定'}).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === "1") {
                             // cho phep print all row
@@ -237,7 +237,7 @@ module qmm019.a {
                     var self = this;
                     if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {return this;}
                     
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml',{title: '行追加'}).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml',{title: '明細レイアウトの作成＞＋行追加'}).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === undefined) return this;
                         
@@ -310,7 +310,7 @@ module qmm019.a {
                 }
                 lineClick(data: Line, event) {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml', {title: '行の設定'}).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/j/index.xhtml', {title: '明細レイアウトの作成＞行の設定'}).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                         if (selectedCode === "1") {
                             // cho phep print
