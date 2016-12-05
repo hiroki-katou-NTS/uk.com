@@ -11,7 +11,7 @@ var qpp004;
                 function ScreenModel() {
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
-                    self.selectedPaymetnProcessing = ko.observable(null);
+                    self.selectedPaymetnProcessing = ko.observable('');
                     self.displayCurrentYearMonthProcessing = ko.observable(null);
                     self.currentPaymentDateProcessing = ko.observable(null);
                     self.selectedPaymetnProcessing.subscribe(function (newValue) {
