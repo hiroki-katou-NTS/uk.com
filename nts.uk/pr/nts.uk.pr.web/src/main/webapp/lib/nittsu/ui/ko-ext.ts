@@ -5,13 +5,12 @@ module nts.uk.ui.koExtentions {
     class EditorProcessor {
 
         init($input: JQuery, data: any) {
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var validator = this.getValidator(data);
-            var formatter = this.getFormatter(data);
             var setValue: (newText: string) => {} = data.value;
 
             $input.addClass('nts-editor');
             $input.change(() => {
+                var validator = this.getValidator(data);
+                var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -30,13 +29,13 @@ module nts.uk.ui.koExtentions {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-            var placeholder: string = option.placeholder;
-            var width: string = option.width;
-            var textalign: string = option.textalign;
-
-            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
-            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
+            var option: any = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+            var placeholder: string = ko.unwrap(option.placeholder || '');
+            var width: string = ko.unwrap(option.width || '');
+            var textalign: string = ko.unwrap(option.textalign || '');
+            
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
             $input.attr('placeholder', placeholder);
             if (width.trim() != "")
                 $input.width(width);

@@ -16,12 +16,12 @@ var nts;
                     function EditorProcessor() {
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var validator = this.getValidator(data);
-                        var formatter = this.getFormatter(data);
+                        var _this = this;
                         var setValue = data.value;
                         $input.addClass('nts-editor');
                         $input.change(function () {
+                            var validator = _this.getValidator(data);
+                            var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -40,10 +40,10 @@ var nts;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
-                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        var placeholder = option.placeholder;
-                        var width = option.width;
-                        var textalign = option.textalign;
+                        var option = (data.option !== undefined) ? ko.unwrap(data.option) : ko.mapping.fromJS(this.getDefaultOption());
+                        var placeholder = ko.unwrap(option.placeholder || '');
+                        var width = ko.unwrap(option.width || '');
+                        var textalign = ko.unwrap(option.textalign || '');
                         (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
                         (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
                         $input.attr('placeholder', placeholder);

@@ -1,6 +1,6 @@
-﻿interface JQuery {
+interface JQuery {
     ntsPopup(args: any): JQuery;
-    ntsError(action: string, param?: any): JQuery;
+    ntsError(action: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -8,28 +8,41 @@ module nts.uk.ui.jqueryExtentions {
     module ntsError {
         var DATA_HAS_ERROR = 'haserror';
         
-        $.fn.ntsError = function (action: string, message: string) {
+        $.fn.ntsError = function (action: string, message: string): any {
             var $control = $(this);
             
-            if (action === "set") {
-                $control.data(DATA_HAS_ERROR, true).addClass('error');
-                ui.errors.add({
-                    location: $control.data('name') || "",
-                    message: message,
-                    $control: $control
-                });
+            var result;
+            switch (action) {
+                case 'set':
+                    return setError($control, message);
+                case 'clear':
+                    return clearErrors($control);
+                case 'hasError':
+                    return hasError($control);
             }
             
-            if (action === "clear") {
-                $control.data(DATA_HAS_ERROR, false).removeClass('error');
-                ui.errors.removeByElement($control);
-            }
+        }
+        
+        function setError($control: JQuery, message: string) {
+            $control.data(DATA_HAS_ERROR, true);
+            ui.errors.add({
+                location: $control.data('name') || "",
+                message: message,
+                $control: $control
+            });
             
-            if (action === 'hasError') {
-                return $control.data(DATA_HAS_ERROR) === true;
-            }
+            return $control;
+        }
+        
+        function clearErrors($control: JQuery) {
+            $control.data(DATA_HAS_ERROR, false);
+            ui.errors.removeByElement($control);
             
-            return this;
+            return $control;
+        }
+        
+        function hasError($control: JQuery) {
+            return $control.data(DATA_HAS_ERROR) === true;
         }
     }
     
