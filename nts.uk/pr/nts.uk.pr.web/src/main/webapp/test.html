@@ -208,6 +208,7 @@ hr {
 						new Node('0001-2', 'サービス部2', []),
 						new Node('0001-3', 'サービス部3', [])
 					]), new Node('0002', '開発部', [])]),
+					headers: ko.observableArray(["Item Value Header","Item Text Header", "Custom"]),
 					selectedCode: ko.observableArray([]),
 					singleSelectedCode: ko.observable(null),
 					index: 0,
@@ -399,6 +400,7 @@ hr {
 					width: 500,
 					height: 500,
 					options: items1,
+					headers: headers,
 					selectedValues: selectedCode,
 					optionsValue: 'code',
 					optionsChild: 'childs',
@@ -417,17 +419,18 @@ hr {
 					height: 500,
 					options: items2,
 					value: singleSelectedCode,
+					headers: headers,
 					optionsValue: 'code',
 					optionsChild: 'childs',
 					optionsText: 'nodeText',
 					multiple: false,
 					enable: true,
-					extColumns: [{headerText: 'Custom', key: 'custom', width: '150px', dataType: 'string'}],
+					extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
 					showCheckBox: false}"
 				class="cf">
 			</table>
 		</div>
-		<div style="float: left; margin-right: 15px;">
+		<!-- <div style="float: left; margin-right: 15px;">
 			<h2>test</h2>
 			<table id="treegrid3"
 				data-bind="ntsTreeGridView:{
@@ -435,6 +438,7 @@ hr {
 					height: 500,
 					options: items2,
 					value: singleSelectedCode,
+					headers: headers,
 					optionsValue: 'code',
 					optionsChild: 'childs',
 					optionsText: 'nodeText',
@@ -443,7 +447,7 @@ hr {
 					showCheckBox: true}"
 				class="cf">
 			</table>
-		</div>
+		</div>-->
 		<div style="float: left">
 			Your multiple selected code:
 			<!-- ko foreach: selectedCode -->

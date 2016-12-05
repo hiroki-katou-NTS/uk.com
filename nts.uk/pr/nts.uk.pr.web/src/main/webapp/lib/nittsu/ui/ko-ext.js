@@ -1090,8 +1090,9 @@ var nts;
                         height = height ? height : '100%';
                         width = width ? width : '100%';
                         var width = ko.unwrap(data.width);
-                        var displayColumns = [{ headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                            { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+                        var headers = ko.unwrap(data.headers);
+                        var displayColumns = [{ headerText: headers[0] || "コード", key: optionsValue, dataType: "string", hidden: true },
+                            { headerText: headers[1] || "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }

@@ -1147,9 +1147,9 @@ module nts.uk.ui.koExtentions {
 
             width = width ? width : '100%';
             var width = ko.unwrap(data.width);
-
-            var displayColumns: Array<any> = [{ headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                { headerText: "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
+            var headers = ko.unwrap(data.headers);
+            var displayColumns: Array<any> = [{ headerText: headers[0] || "コード", key: optionsValue, dataType: "string", hidden: true },
+                { headerText: headers[1] || "コード／名称", key: optionsText, width: "200px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
@@ -1246,6 +1246,7 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
+
 
     class WizardBindingHandler implements KnockoutBindingHandler {
         /**
