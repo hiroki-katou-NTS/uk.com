@@ -1,6 +1,6 @@
 $(function(){
-
 	$(document).tooltip();
+	
 	$("#side-menu").load("/nts.uk.pr.web/view/sample/catalog/sidemenu.xhtml", function(){
 	    $("#side-menu a").each(function () {
 	        var href = $(this).attr('href');
@@ -8,6 +8,7 @@ $(function(){
 	            $(this).addClass('active');
 	        }
 	    });
+	    $("#content").css("min-height", $("#side-menu").outerHeight());
 	});
 	
 	$('button').click(function(){
@@ -18,4 +19,5 @@ $(function(){
 		$(this).html($(this).html().replace("<!--[CDATA[","").replace("]]-->",""));
 	})
 	
+	$(".tabs").tabs();
 });
