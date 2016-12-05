@@ -5,12 +5,24 @@ module nts.uk.ui.errors {
         errors: KnockoutObservableArray<ErrorListItem>;
         option: any;
         occurs: KnockoutComputed<boolean>;
+        allResolved: JQueryCallback;
         
         constructor() {
             this.title = "エラー一覧"
             this.errors = ko.observableArray([]);
             this.option = ko.mapping.fromJS(new option.ErrorDialogOption());
             this.occurs = ko.computed(() => this.errors().length !== 0);
+            this.allResolved = $.Callbacks();
+            
+            this.errors.subscribe(() => {
+                if (this.errors.length === 0) {
+                    this.allResolved.fire();
+                }
+            });
+            
+            this.allResolved.add(() => {
+                this.hide();
+            });
         }
         
         closeButtonClicked() {

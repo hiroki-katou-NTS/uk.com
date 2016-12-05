@@ -13,6 +13,15 @@ var nts;
                         this.errors = ko.observableArray([]);
                         this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
+                        this.allResolved = $.Callbacks();
+                        this.errors.subscribe(function () {
+                            if (_this.errors.length === 0) {
+                                _this.allResolved.fire();
+                            }
+                        });
+                        this.allResolved.add(function () {
+                            _this.hide();
+                        });
                     }
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
                     };
