@@ -15,6 +15,7 @@ var qmm019;
                 this.totalNormalLineNumber = ko.observable(0);
                 this.totalGrayLine = ko.observable("（+非表示0行）");
                 this.totalGrayLineNumber = ko.observable(0);
+                this.allowClick = ko.observable(true);
                 var self = this;
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
@@ -52,6 +53,9 @@ var qmm019;
                         return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
                     });
                     self.itemList(self.itemListSearch);
+                    if (self.itemListSearch.length === 0) {
+                        nts.uk.ui.dialog.alert("対象データがありません。");
+                    }
                 }
             };
             ScreenModel.prototype.calculateLine = function () {
@@ -102,14 +106,20 @@ var qmm019;
                 var self = this;
                 var dfd = $.Deferred();
                 a.service.getAllLayout().done(function (layouts) {
-                    self.layouts(layouts);
-                    a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
-                        self.layoutsMax(layoutsMax);
-                        self.buildTreeDataSource();
-                        var firstLayout = _.first(self.layouts());
-                        self.singleSelectedCode(firstLayout.stmtCode + ";" + firstLayout.startYm);
+                    if (layouts.length > 0) {
+                        self.layouts(layouts);
+                        a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
+                            self.layoutsMax(layoutsMax);
+                            self.buildTreeDataSource();
+                            var firstLayout = _.first(self.layouts());
+                            self.singleSelectedCode(firstLayout.stmtCode + ";" + firstLayout.startYm);
+                            dfd.resolve();
+                        });
+                    }
+                    else {
+                        self.allowClick(false);
                         dfd.resolve();
-                    });
+                    }
                 }).fail(function (res) {
                     // Alert message
                     alert(res);

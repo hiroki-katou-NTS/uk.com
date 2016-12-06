@@ -31,9 +31,9 @@
             	
             	<div id="functions-area">
             		<button data-bind="click: openGDialog">新規レイアウト</button>
-            		<button id="A_BTN_001" class="proceed" data-bind="click : registerLayout">登録</button>
-            		<button>Excel出力</button>
-            		<button id="A_BTN_004">マスタ修正ログ</button>
+            		<button id="A_BTN_001" class="proceed" data-bind="click : registerLayout, enable: allowClick()">登録</button>
+            		<button data-bind="enable: allowClick()">Excel出力</button>
+            		<button id="A_BTN_004"  data-bind="enable: allowClick()">マスタ修正ログ</button>
             		<a href="#">計算式の登録へ</a>
             		<a href="#">明細書の紐付けへ</a>
             	</div>
@@ -46,8 +46,8 @@
 							<button data-bind="click: searchLayout">検索</button>
 						</div>
 						<div>
-							<button id="A_BTN_007" data-bind="click: openADialog">履歴追加</button>
-							<button id="A_BTN_008" data-bind="click: openEDialog">履歴編集</button>
+							<button id="A_BTN_007" data-bind="click: openADialog, enable: allowClick()">履歴追加</button>
+							<button id="A_BTN_008" data-bind="click: openEDialog, enable: allowClick()">履歴編集</button>
 						</div>
 						<div >
 							<table id="treegrid2"
@@ -96,11 +96,11 @@
             				<div data-bind="ntsFormLabel: { required: true }">
 	            				<label id="A_LBL_012">明細書レイアウト</label>
 	           				</div>
-	           				<button id="A_BTN_009">印刷プレビュー</button>
+	           				<button id="A_BTN_009" data-bind="enable: allowClick()">印刷プレビュー</button>
             			</div>
 <!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 						
-						<div data-bind="foreach: categories">
+						<div data-bind="foreach: categories, visible: allowClick()">
 							<div data-bind="attr: {id: 'group-' + categoryAtr}" class="group-root">
 								<div id="group-title">
 									<a class="button-setting" data-bind="visible: hasSetting, click: categoryClick"></a>

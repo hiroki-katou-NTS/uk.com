@@ -19,6 +19,7 @@ module qmm019.a {
         totalNormalLineNumber: KnockoutObservable<number> = ko.observable(0);
         totalGrayLine: KnockoutObservable<string> = ko.observable("（+非表示0行）");
         totalGrayLineNumber: KnockoutObservable<number> = ko.observable(0);
+        allowClick: KnockoutObservable<boolean> = ko.observable(true);
         
         constructor() {
             var self = this;
@@ -59,6 +60,9 @@ module qmm019.a {
                     return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
                 });
                 self.itemList(self.itemListSearch);
+                if (self.itemListSearch.length === 0){
+                    nts.uk.ui.dialog.alert("対象データがありません。");
+                }
             }
         }
         calculateLine() {
@@ -110,14 +114,21 @@ module qmm019.a {
             var dfd = $.Deferred<any>();
 
             service.getAllLayout().done(function(layouts: Array<service.model.LayoutMasterDto>) {
-                self.layouts(layouts);
-                service.getLayoutsWithMaxStartYm().done(function(layoutsMax: Array<service.model.LayoutMasterDto>) {
-                    self.layoutsMax(layoutsMax);
-                    self.buildTreeDataSource();
-                    let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
-                    self.singleSelectedCode(firstLayout.stmtCode + ";" + firstLayout.startYm);
-                    dfd.resolve();
-                });
+                if (layouts.length > 0) {
+                
+                    self.layouts(layouts);
+                    service.getLayoutsWithMaxStartYm().done(function(layoutsMax: Array<service.model.LayoutMasterDto>) {
+                        self.layoutsMax(layoutsMax);
+                        self.buildTreeDataSource();
+                        let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
+                        self.singleSelectedCode(firstLayout.stmtCode + ";" + firstLayout.startYm);
+                        dfd.resolve();
+                    });
+                    
+                } else {
+                    self.allowClick(false);
+                    dfd.resolve();    
+                }
             }).fail(function(res) {
                 // Alert message
                 alert(res);
