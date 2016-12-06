@@ -1,13 +1,15 @@
 package nts.uk.ctx.pr.proto.app.find.personalinfo.commute;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFee;
 
-@Value
-public class CommuteDto {
-	Double commuNotaxLimitPubNo;
-	
-	public static CommuteDto fromDomain(PersonalCommuteFee domain){
-		return new CommuteDto(domain.getCommuteNoTaxLimitPublishNo().doubleValue());
-	}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CommuteDto {	
+	private String commuNotaxLimitCode;
+	private String commuNotaxLimitName;
+	private double commuNotaxLimitValue;
 }

@@ -13,23 +13,11 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                getCommute: "pr/proto/commute/findCommute/{0}/{1}",
-                                getCommuteNotaxLimit: "pr/proto/paymentdata/findCommuteNotaxLimit/{0}",
+                                getCommuteNotaxLimit: "pr/proto/paymentdata/findCommuteNotaxLimit/{0}/{1}",
                             };
-                            function getCommute(personId, startYearmonth) {
+                            function getCommuteNotaxLimit(personId, startYearmonth) {
                                 var dfd = $.Deferred();
-                                var _path = nts.uk.text.format(servicePath.getCommute, personId, startYearmonth);
-                                nts.uk.request.ajax(_path).done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.getCommute = getCommute;
-                            function getCommuteNotaxLimit(commuNotaxLimitCode) {
-                                var dfd = $.Deferred();
-                                var _path = nts.uk.text.format(servicePath.getCommuteNotaxLimit, commuNotaxLimitCode);
+                                var _path = nts.uk.text.format(servicePath.getCommuteNotaxLimit, personId, startYearmonth);
                                 nts.uk.request.ajax(_path).done(function (res) {
                                     dfd.resolve(res);
                                 }).fail(function (res) {

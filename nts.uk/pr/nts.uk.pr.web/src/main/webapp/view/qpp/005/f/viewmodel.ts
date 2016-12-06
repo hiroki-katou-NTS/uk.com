@@ -100,13 +100,14 @@ module nts.uk.pr.view.qpp005.f {
                 // Set value for 余り textbox 
                 self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
                 
-                qpp005.f.service.getCommute(employee.personId, baseYearmonth).done(function(res: any) {
-                    qpp005.f.service.getCommuteNotaxLimit("01").done(function(res:any){
+                qpp005.f.service.getCommuteNotaxLimit(employee.personId, baseYearmonth).done(function(res:any){
+                    if(res != null){
                         self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode,
-                                                                             res.commuNotaxLimitName, 
-                                                                             res.commuNotaxLimitValue));
-                    })
+                                                                     res.commuNotaxLimitName, 
+                                                                     res.commuNotaxLimitValue));    
+                    }
                 })
+                    
                 return dfd.promise();
             }
             
