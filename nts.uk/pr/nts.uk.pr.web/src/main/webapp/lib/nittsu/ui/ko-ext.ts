@@ -65,19 +65,67 @@ module nts.uk.ui.koExtentions {
 
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            return validation.createValidator(constraintName);
+            var constraint = validation.getConstraint(constraintName);
+            if(data.editortype) {
+                var editortype = ko.unwrap(data.editortype);
+                switch(editortype) {
+                   
+                   case 'numbereditor':
+                      return NumberEditorProcessor.getValidator(data);
+                   case 'timeeditor':
+                      return TimeEditorProcessor.getValidator(data);
+                   case 'multilineeditor':
+                      return MultilineEditorProcessor.getValidator(data);
+                   default: 
+                      return TextEditorProcessor.getValidator(data);   
+                }
+            } else {
+                if (constraint) {
+                    if(constraint.valueType === 'String') {
+                        return validation.createValidator(constraintName);
+                    } else if(data.option) {
+                        var option = ko.unwrap(data.option);
+                       
+                        return validation.createValidator(constraintName, option);
+                    }
+                }
+                return validation.createValidator(constraintName);
+            }
         }
 
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            if (constraint) {
-                switch (constraint.valueType) {
-                    case 'String': return new text.StringFormatter({ constraintName: constraintName });
+            if(data.editortype) {
+                var editortype = ko.unwrap(data.editortype);
+                switch(editortype) {
+                   
+                   case 'numbereditor':
+                      return NumberEditorProcessor.getFormatter(data);
+                   case 'timeeditor':
+                      return TimeEditorProcessor.getFormatter(data);
+                   case 'multilineeditor':
+                      return MultilineEditorProcessor.getFormatter(data);
+                   default: 
+                      return TextEditorProcessor.getFormatter(data);   
                 }
-            }
-
-            return new format.NoFormatter();
+            } else {
+                if (constraint) {
+                    if(constraint.valueType === 'String') {
+                        return new text.StringFormatter(data);
+                    } else if(data.option) {
+                        var option = ko.unwrap(data.option);
+                        //If inputFormat presented, this is Date or Time Editor
+                        if(option.inputFormat) {
+                            return new text.TimeFormatter({ option: option });
+                        } else  {
+                            return new nts.uk.text.NumberFormatter({option: option})
+                           
+                        } 
+                    }
+                }
+                return new format.NoFormatter();
+            }        
         }
     }
 
@@ -90,18 +138,18 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
         }
 
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.TextEditorOption();
         }
 
-        getFormatter(data: any): format.IFormatter {
+        static getFormatter(data: any): format.IFormatter {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
         }
 
-        getValidator(data: any): validation.IValidator {
+        static getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             return new validation.StringValidator(constraintName, required);
@@ -133,16 +181,16 @@ module nts.uk.ui.koExtentions {
             }
         }
 
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.NumberEditorOption();
         }
 
-        getFormatter(data: any): format.IFormatter {
+        static getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             return new text.NumberFormatter({ option: option });
         }
 
-        getValidator(data: any): validation.IValidator {
+        static getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             return new validation.NumberValidator(constraintName, option);
@@ -164,16 +212,16 @@ module nts.uk.ui.koExtentions {
             $input.css({'paddingLeft': '12px', 'width': width });
         }
         
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new nts.uk.ui.option.TimeEditorOption();
         }
 
-        getFormatter(data: any): format.IFormatter {
+        static getFormatter(data: any): format.IFormatter {
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             return new text.TimeFormatter({ option: option });
         }
 
-        getValidator(data: any): validation.IValidator {
+        static getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             return new validation.TimeValidator(constraintName, option);
@@ -189,18 +237,18 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
         }
 
-        getDefaultOption(): any {
+        static getDefaultOption(): any {
             return new option.MultilineEditorOption();
         }
 
-        getFormatter(data: any): format.IFormatter {
+        static getFormatter(data: any): format.IFormatter {
             var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constrain = validation.getConstraint(constraintName);
-            return new text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+            var constraint = validation.getConstraint(constraintName);
+            return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
         }
 
-        getValidator(data: any): validation.IValidator {
+        static getValidator(data: any): validation.IValidator {
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             return new validation.StringValidator(constraintName, required);

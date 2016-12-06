@@ -1,13 +1,13 @@
 module nts.uk.pr.view.qpp005.a {
-//    import viewmodel = nts.uk.pr.view.qpp005.a.viewmodel;
+    //    import viewmodel = nts.uk.pr.view.qpp005.a.viewmodel;
     __viewContext.ready(function() {
 
         var screenModel = new nts.uk.pr.view.qpp005.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-//            var categoryPayment: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[0];
-//            var categoryDeduct: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[1];
-//            var categoryArticle: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[3];
+            //            var categoryPayment: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[0];
+            //            var categoryDeduct: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[1];
+            //            var categoryArticle: viewmodel.LayoutMasterCategoryViewModel = (<any>screenModel).paymentDataResult().categories()[3];
 
             //        var $paymentLastItem = 'ct' + (<any>categoryPayment).categoryAttribute() + '_' + ((<any>categoryPayment).lineCounts() - 1) + '_8';
             //        $("#" + $paymentLastItem).addClass('disabled');
@@ -99,15 +99,15 @@ module nts.uk.pr.view.qpp005.a {
             } else {
                 $("#" + nId).css('background', '#bdd7ee');
             }
-            
+
             var ctId = nId.split('_')[0];
-            if(ctId === 'ct0') {
-                $("#"+ window.lastItems[0].id).css('background', '#f4b084');
-                $("#"+ window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');    
+            if (ctId === 'ct0') {
+                $("#" + window.lastItems[0].id).css('background', '#f4b084');
+                $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
             }
-             if(ctId === 'ct1') {
-                $("#"+ window.lastItems[1].id).css('background', '#f4b084');
-                $("#"+ window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');    
+            if (ctId === 'ct1') {
+                $("#" + window.lastItems[1].id).css('background', '#f4b084');
+                $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
             }
         }
 

@@ -33,3 +33,5 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 #content .footer{margin-top:35px;}
 #content .footer button.previous{float: left;}
 #content .footer button.next{float: right;}
+
+.ui-widget{font-family: "Meiryo UI";}

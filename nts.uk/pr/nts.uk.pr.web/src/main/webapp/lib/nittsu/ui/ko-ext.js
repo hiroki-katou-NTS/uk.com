@@ -74,17 +74,67 @@ var nts;
                     }
                     DynamicEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        return validation.createValidator(constraintName);
+                        var constraint = validation.getConstraint(constraintName);
+                        if (data.editortype) {
+                            var editortype = ko.unwrap(data.editortype);
+                            switch (editortype) {
+                                case 'numbereditor':
+                                    return NumberEditorProcessor.getValidator(data);
+                                case 'timeeditor':
+                                    return TimeEditorProcessor.getValidator(data);
+                                case 'multilineeditor':
+                                    return MultilineEditorProcessor.getValidator(data);
+                                default:
+                                    return TextEditorProcessor.getValidator(data);
+                            }
+                        }
+                        else {
+                            if (constraint) {
+                                if (constraint.valueType === 'String') {
+                                    return validation.createValidator(constraintName);
+                                }
+                                else if (data.option) {
+                                    var option = ko.unwrap(data.option);
+                                    return validation.createValidator(constraintName, option);
+                                }
+                            }
+                            return validation.createValidator(constraintName);
+                        }
                     };
                     DynamicEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        if (constraint) {
-                            switch (constraint.valueType) {
-                                case 'String': return new uk.text.StringFormatter({ constraintName: constraintName });
+                        if (data.editortype) {
+                            var editortype = ko.unwrap(data.editortype);
+                            switch (editortype) {
+                                case 'numbereditor':
+                                    return NumberEditorProcessor.getFormatter(data);
+                                case 'timeeditor':
+                                    return TimeEditorProcessor.getFormatter(data);
+                                case 'multilineeditor':
+                                    return MultilineEditorProcessor.getFormatter(data);
+                                default:
+                                    return TextEditorProcessor.getFormatter(data);
                             }
                         }
-                        return new uk.format.NoFormatter();
+                        else {
+                            if (constraint) {
+                                if (constraint.valueType === 'String') {
+                                    return new uk.text.StringFormatter(data);
+                                }
+                                else if (data.option) {
+                                    var option = ko.unwrap(data.option);
+                                    //If inputFormat presented, this is Date or Time Editor
+                                    if (option.inputFormat) {
+                                        return new uk.text.TimeFormatter({ option: option });
+                                    }
+                                    else {
+                                        return new nts.uk.text.NumberFormatter({ option: option });
+                                    }
+                                }
+                            }
+                            return new uk.format.NoFormatter();
+                        }
                     };
                     return DynamicEditorProcessor;
                 }(EditorProcessor));
@@ -99,16 +149,16 @@ var nts;
                         $input.attr('type', textmode);
                         _super.prototype.update.call(this, $input, data);
                     };
-                    TextEditorProcessor.prototype.getDefaultOption = function () {
+                    TextEditorProcessor.getDefaultOption = function () {
                         return new nts.uk.ui.option.TextEditorOption();
                     };
-                    TextEditorProcessor.prototype.getFormatter = function (data) {
+                    TextEditorProcessor.getFormatter = function (data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constrain = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
                     };
-                    TextEditorProcessor.prototype.getValidator = function (data) {
+                    TextEditorProcessor.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         return new validation.StringValidator(constraintName, required);
@@ -142,14 +192,14 @@ var nts;
                             }
                         }
                     };
-                    NumberEditorProcessor.prototype.getDefaultOption = function () {
+                    NumberEditorProcessor.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
-                    NumberEditorProcessor.prototype.getFormatter = function (data) {
+                    NumberEditorProcessor.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new uk.text.NumberFormatter({ option: option });
                     };
-                    NumberEditorProcessor.prototype.getValidator = function (data) {
+                    NumberEditorProcessor.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new validation.NumberValidator(constraintName, option);
@@ -171,14 +221,14 @@ var nts;
                         var width = option.width ? option.width : '93.5%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
-                    TimeEditorProcessor.prototype.getDefaultOption = function () {
+                    TimeEditorProcessor.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
-                    TimeEditorProcessor.prototype.getFormatter = function (data) {
+                    TimeEditorProcessor.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new uk.text.TimeFormatter({ option: option });
                     };
-                    TimeEditorProcessor.prototype.getValidator = function (data) {
+                    TimeEditorProcessor.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new validation.TimeValidator(constraintName, option);
@@ -196,16 +246,16 @@ var nts;
                         $input.css('resize', (resizeable) ? "both" : "none");
                         _super.prototype.update.call(this, $input, data);
                     };
-                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
+                    MultilineEditorProcessor.getDefaultOption = function () {
                         return new ui_1.option.MultilineEditorOption();
                     };
-                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
+                    MultilineEditorProcessor.getFormatter = function (data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constrain = validation.getConstraint(constraintName);
-                        return new uk.text.StringFormatter({ constraintName: constraintName, constrain: constrain, editorOption: editorOption });
+                        var constraint = validation.getConstraint(constraintName);
+                        return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
                     };
-                    MultilineEditorProcessor.prototype.getValidator = function (data) {
+                    MultilineEditorProcessor.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         return new validation.StringValidator(constraintName, required);

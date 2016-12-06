@@ -89,6 +89,7 @@ var qmm019;
                             else {
                                 if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
                                     listAutoLineIdDeleted.push({ categoryAtr: category.categoryAtr, autoLineId: line.autoLineId });
+                                    return "continue";
                                 }
                             }
                             linePosition++;
@@ -135,7 +136,8 @@ var qmm019;
                         };
                         for (var _b = 0, sortedLines_1 = sortedLines; _b < sortedLines_1.length; _b++) {
                             var itemLine = sortedLines_1[_b];
-                            _loop_1(itemLine);
+                            var state_2 = _loop_1(itemLine);
+                            if (state_2 === "continue") continue;
                         }
                     }
                     categoryPosition++;

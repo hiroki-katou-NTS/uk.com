@@ -29,17 +29,23 @@
         }
     }
 
-    export function createValidator(constraintName: string): IValidator {
+    export function createValidator(constraintName: string, option?: any): IValidator {
         var constraint = getConstraint(constraintName);
         if (constraint === null) {
             return new NoValidator();
         }
-
-        switch (constraint.valueType) {
-            case 'String':
-                return new StringValidator(constraintName, null);
+        if (constraint.valueType === 'String') {
+                return new StringValidator(constraintName);
         }
-
+        if(option) {          
+            if(option.inputFormat) {
+                //If inputFormat presented, this is Date or Time Editor                 
+                return new TimeValidator(constraintName, option);
+            } else  {
+                return new NumberValidator(constraintName, option);
+                //currencyformat presented, this is CurrencyEditor
+            } 
+        }
         return new NoValidator();
     }
 
@@ -49,7 +55,7 @@
         charType: nts.uk.text.CharType;
         required: boolean;
         
-        constructor(primitiveValueName: string, required: boolean) {
+        constructor(primitiveValueName: string, required?: boolean) {
             this.constraint = getConstraint(primitiveValueName);
             this.charType = text.getCharType(primitiveValueName);
             this.required = required;
@@ -58,7 +64,7 @@
         validate(inputText: string): ValidationResult {
             var result = new ValidationResult();
             
-            if (this.required !== undefined) {
+            if (this.required !== undefined && this.required !== false) {
                 if (!checkRequired(inputText)) {
                     result.fail('This field is required');
                     return result;

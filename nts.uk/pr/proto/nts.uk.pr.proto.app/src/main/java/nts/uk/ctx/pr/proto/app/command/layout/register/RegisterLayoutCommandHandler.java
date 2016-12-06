@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.proto.app.command.layout.register;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -49,17 +51,19 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		LayoutMaster layoutRegister = layoutCommand.toDomain(layoutOrg.getLayoutAtr().value);
 		layoutRepo.update(layoutRegister);
 		
+		Map<String, String> mapNewLineIdTemp = new HashMap<>();
+		
 		//Follow EAP: 03.明細レイアウトの作成-登録処理
 		//Follow EAP: 03.1.明細書マスタカテゴリ登録処理
 		categoryProcess(command, layoutCommand, companyCode, stmtCode, startYm);
 		//Follow EAP: 03.2.明細書マスタ行登録処理
-		lineProcess(command, layoutCommand, companyCode, stmtCode, startYm);
+		lineProcess(command, layoutCommand, companyCode, stmtCode, startYm, mapNewLineIdTemp);
 		//Follow EAP: 03.3.明細書マスタ明細登録処理
-		detailProcess(command, layoutCommand, companyCode, stmtCode, startYm);
+		detailProcess(command, layoutCommand, companyCode, stmtCode, startYm, mapNewLineIdTemp);
 	}
 
 	private void detailProcess(RegisterLayoutCommand command, Layout layoutCommand, String companyCode,
-			String stmtCode, int startYm) {
+			String stmtCode, int startYm, Map<String, String> mapLineIdTemp) {
 		if (command.getListItemCodeDeleted().size() > 0) {
 			for(LayoutDetail detailDeleteCommand : command.getListItemCodeDeleted()){
 				detailRepo.remove(companyCode, stmtCode, startYm, detailDeleteCommand.getCategoryAtr(), detailDeleteCommand.getItemCode());
@@ -75,7 +79,9 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 				// chỉ update thường:
 				detailRepo.update(LayoutMasterDetail.createFromJavaType(companyCode, 
 						stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
-						detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
+						detailCommand.getItemCode(), 
+						detailCommand.getAutoLineId(), 
+						detailCommand.getDisplayAtr(), 
 						detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(), 
 						detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), 
 						detailCommand.getPersonalWageCode(), detailCommand.getSetOffItemCode(), 
@@ -92,10 +98,15 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 				detailCommand.setItemCode(detailCommand.getUpdateItemCode());
 			} 
 			
+			String autoLineId = "";
+			autoLineId = mapLineIdTemp.get(detailCommand.getAutoLineId()) == null 
+							? detailCommand.getAutoLineId() : mapLineIdTemp.get(detailCommand.getAutoLineId());
 			//dành cho Thêm mới và update itemCode
 			detailRepo.add(LayoutMasterDetail.createFromJavaType(companyCode, 
 					stmtCode, startYm, layoutCommand.getEndYm(), detailCommand.getCategoryAtr(), 
-					detailCommand.getItemCode(), detailCommand.getAutoLineId(), detailCommand.getDisplayAtr(), 
+					detailCommand.getItemCode(), 
+					autoLineId,
+					detailCommand.getDisplayAtr(), 
 					detailCommand.getSumScopeAtr(), detailCommand.getCalculationMethod(), 
 					detailCommand.getDistributeWay(), detailCommand.getDistributeSet(), 
 					detailCommand.getPersonalWageCode(), detailCommand.getSetOffItemCode(), 
@@ -108,17 +119,17 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 	}
 
 	private void lineProcess(RegisterLayoutCommand command, Layout layoutCommand, String companyCode,
-			String stmtCode, int startYm) {
+			String stmtCode, int startYm, Map<String, String> mapLineIdTemp) {
 		if (command.getListAutoLineIdDeleted().size() > 0) {
 			for(LayoutLine lineDeleteCommand : command.getListAutoLineIdDeleted()){
-				lineRepo.remove(companyCode, startYm, lineDeleteCommand.getAutoLineId(), 
-						lineDeleteCommand.getCategoryAtr(), stmtCode);
-								
 				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByLine(lineDeleteCommand.getAutoLineId());
 				detailRepo.remove(detailsDelete);
+				
+				lineRepo.remove(companyCode, startYm, lineDeleteCommand.getAutoLineId(), 
+						lineDeleteCommand.getCategoryAtr(), stmtCode);
 			}
 		}
-
+		
 		List<LayoutMasterLine> linesFromDB = lineRepo.getLines(companyCode, stmtCode, startYm);
 		for(LayoutLine lineCommand : command.getLineCommand()){
 			if (linesFromDB.stream().filter(c ->
@@ -132,10 +143,11 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						lineCommand.getLinePosition(), 
 						lineCommand.getCategoryAtr()));
 			} else {
+				mapLineIdTemp.put(lineCommand.getAutoLineId(), IdentifierUtil.randomUniqueId());
 				lineRepo.add(LayoutMasterLine.createFromJavaType(companyCode, 
 						startYm, stmtCode, 
 						layoutCommand.getEndYm(), 
-						IdentifierUtil.randomUniqueId(), 
+						mapLineIdTemp.get(lineCommand.getAutoLineId()), 
 						lineCommand.getLineDisplayAtr(), 
 						lineCommand.getLinePosition(), 
 						lineCommand.getCategoryAtr()));

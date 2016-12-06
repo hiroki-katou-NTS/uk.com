@@ -67,6 +67,12 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS(new editorOption.TimeEditorOption({inputFormat: 'yearmonth'})),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
+            }, 
+            file: {
+                file: new nts.uk.ui.file.FileDownload("/file/company/print"), 
+                print: function(){
+                    this.file.print();                          
+                }   
             }
         };
      // developer's view model

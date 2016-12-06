@@ -17,7 +17,6 @@
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
-				<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
             </ui:define>
             
             <ui:define name="content">
@@ -25,28 +24,26 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>FormLabel</h1>
-						<article>
-							<h2>Overview</h2>
-							<p>
-				            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br /><br />
-				            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br /><br />
-				            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br /><br />
-				            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: true, required: true, enable: true}">レイアウトコード</div><br />
-							</p>
-						</article>
 						<article class="cf">
-							<h2>Code</h2>
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-1">HTML Binding</a></li>
-									<li><a href="#tabs-2">ViewModel</a></li>
-									<li><a href="#tabs-3">Aenean lacinia</a></li>
+									<li><a href="#tabs-overview">Overview</a></li>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
-								<div id="tabs-1" class="cf">
+								<div id="tabs-overview" class="cf" data-bind="with: labelViewModel">
+					            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br /><br />
+					            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br /><br />
+					            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br /><br />
+					            	<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
+								</div>
+								<div id="tabs-html" class="cf">
+									<h2>Code</h2>
 									<pre><![CDATA[<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
 <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div>
 <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div>
-<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: true, required: true, enable: true}">レイアウトコード</div>]]></pre>
+<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div>]]></pre>
+									<h2>API</h2>
 									<table>
 										<colgroup>
 											<col width="200px" />
@@ -69,7 +66,7 @@
 												<td>inline<br/><i>(optional)</i></td>
 												<td>
 													<b>Type:</b> boolean<br/>
-													<b>Default:</b> false<br/>
+													<b>Default:</b> true<br/>
 													Set Label display in 1 line
 												</td>
 											</tr>
@@ -92,7 +89,8 @@
 										</tbody>
 									</table>
 								</div>
-								<div id="tabs-2">
+								<div id="tabs-viewmodel" class="cf">
+									<h2>Code</h2>
 									<pre><![CDATA[labelViewModel: {
 	constraint: 'LayoutCode',
 	inline: ko.observable(true),
@@ -100,14 +98,11 @@
 	enable: ko.observable(true)
 }]]></pre>
 								</div>
-								<div id="tabs-3">
-								
-								</div>
 							</div>
 						</article>
 						<div class="footer cf">
-							<button class="previous large" data-href="/nts.uk.pr.web/view/sample/catalog/overview-component.xhtml">Previous</button>
-							<button class="next proceed large" data-href="/nts.uk.pr.web/view/sample/catalog/overview-component.xhtml">Next</button>
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
 						</div>
             		</div>
            		</div>
