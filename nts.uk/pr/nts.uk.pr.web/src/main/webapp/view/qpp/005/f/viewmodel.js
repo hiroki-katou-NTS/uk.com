@@ -57,6 +57,11 @@ var nts;
                                     self.commuteDividedByMonth = new CommuteDividedByMonth();
                                     self.commuteDividedByMonth.isEnable = self.oneMonthCheck.isChecked;
                                     self.commuteNotaxLimitItem = ko.observable();
+                                    /**
+                                     * item code, item name
+                                     */
+                                    self.itemCode = ko.observable("");
+                                    self.itemName = ko.observable("");
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -64,6 +69,9 @@ var nts;
                                     var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
                                     var employee = nts.uk.ui.windows.getShared('employee');
                                     var baseYearmonth = nts.uk.ui.windows.getShared('processingYM');
+                                    // Set item code and item name value
+                                    self.itemCode(detailItemFromParentScreen.itemCode);
+                                    self.itemName(detailItemFromParentScreen.itemName);
                                     // Set value for 通勤費合計 textbox 
                                     self.totalCommuteEditor.value = ko.observable(detailItemFromParentScreen.value);
                                     // Set value for 課税通勤費 textbox 

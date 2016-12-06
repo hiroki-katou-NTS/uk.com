@@ -99,7 +99,7 @@ public class GetPaymentDataQueryProcessor {
 		// get stmtCode
 		String stmtCode = this.personalPSRepository.find(companyCode, query.getPersonId(), processingYM)
 				.map(o -> o.getPaymentDetailCode().v()).orElseGet(() -> {
-					return this.companyAllotSettingRepository.find(companyCode, processingYM).get()
+					return this.companyAllotSettingRepository.find(companyCode).get()
 							.getPaymentDetailCode().v();
 				});
 
@@ -163,7 +163,7 @@ public class GetPaymentDataQueryProcessor {
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM, null,
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM, 0,
 					layout.getStmtCode().v(), layout.getStmtName().v(), null, query.getEmployeeCode(), "", false,
 					printPosCates));
 
@@ -292,7 +292,7 @@ public class GetPaymentDataQueryProcessor {
 			List<LayoutMasterLine> lines) {
 		List<PrintPositionCategoryDto> result = new ArrayList<>();
 
-		for (int i = 1; i <= 5; i++) {
+		for (int i = 1; i <= 4; i++) {
 			result.add(this.getPrintPosition(mCates, lines, i));
 		}
 

@@ -32,8 +32,10 @@ var nts;
                                     }
                                 });
                                 utils.gridSetup(screenModel.switchButton().selectedRuleCode());
+                            }).fail(function () {
+                                __viewContext.bind(screenModel);
                             });
-                            //        this.bind(screenModel);
+                            //         __viewContext.bind(screenModel);
                         });
                         var utils;
                         (function (utils) {

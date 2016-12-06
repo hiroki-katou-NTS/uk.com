@@ -25,11 +25,6 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
 			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
-	private String SELECT_ITEM = " SELECT d FROM QstdtPaymentDetail d"
-			+ " WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" + " AND d.qstdtPaymentHeaderPK.personId = :PID"
-			+ " AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM"
-			+ " AND d.qstdtPaymentHeaderPK.categoryATR = :CTG_ATR" + " AND d.qstdtPaymentHeaderPK.itemCode = :ITEM_CD";
-
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
@@ -54,8 +49,10 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	}
 
 	@Override
-	public boolean isExistDetail(String companyCode, String personId, int processingNo, int baseYM, int categoryAtr, String itemCode, int payBonusAtr, int sparePayAtr) {
-		QstdtPaymentDetailPK key = new QstdtPaymentDetailPK(companyCode, personId, processingNo, payBonusAtr, baseYM, sparePayAtr, categoryAtr, itemCode);
+	public boolean isExistDetail(String companyCode, String personId, int processingNo, int baseYM, int categoryAtr,
+			String itemCode, int payBonusAtr, int sparePayAtr) {
+		QstdtPaymentDetailPK key = new QstdtPaymentDetailPK(companyCode, personId, processingNo, payBonusAtr, baseYM,
+				sparePayAtr, categoryAtr, itemCode);
 		Optional<QstdtPaymentDetail> detail = this.queryProxy().find(key, QstdtPaymentDetail.class);
 		return detail.isPresent();
 	}
@@ -175,10 +172,14 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.printPositionCategoryATR4 = item3.getCategoryAtr().value;
 		entity.printPositionCategoryLines4 = item3.getLines().v();
 
-		PrintPositionCategory item4 = domain.getPrintCategories().get(4);
-		entity.printPositionCategoryATR5 = item4.getCategoryAtr().value;
-		entity.printPositionCategoryLines5 = item4.getLines().v();
-
+		if (domain.getPrintCategories().size() >= 5) {
+			PrintPositionCategory item4 = domain.getPrintCategories().get(4);
+			entity.printPositionCategoryATR5 = item4.getCategoryAtr().value;
+			entity.printPositionCategoryLines5 = item4.getLines().v();
+		} else {
+			entity.printPositionCategoryATR5 = 9;
+			entity.printPositionCategoryLines5 = -1;
+		}
 		// add by EAP 06.データ作成（実行）-登録処理 (update 28.11.2016)
 		entity.companyName = "日通システム株式会社";
 		entity.employmentCode = "0000000001";

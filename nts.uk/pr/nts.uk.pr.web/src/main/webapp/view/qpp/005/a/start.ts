@@ -25,8 +25,10 @@ module nts.uk.pr.view.qpp005.a {
             });
 
             utils.gridSetup(screenModel.switchButton().selectedRuleCode());
+        }).fail(function() {
+            __viewContext.bind(screenModel);
         });
-        //        this.bind(screenModel);
+        //         __viewContext.bind(screenModel);
     });
 
     export module utils {

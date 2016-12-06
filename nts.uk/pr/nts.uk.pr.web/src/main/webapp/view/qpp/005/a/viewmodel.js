@@ -63,6 +63,7 @@ var nts;
                                     }).fail(function (res) {
                                         $('.tb-category').css('display', 'none');
                                         alert(res.message);
+                                        dfd.reject();
                                     });
                                     // Return.
                                     return dfd.promise();

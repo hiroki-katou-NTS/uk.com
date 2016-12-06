@@ -68,6 +68,7 @@ module nts.uk.pr.view.qpp005.a {
                 }).fail(function(res) {
                     $('.tb-category').css('display', 'none');
                     alert(res.message);
+                    dfd.reject();
                 });
                 // Return.
                 return dfd.promise();
