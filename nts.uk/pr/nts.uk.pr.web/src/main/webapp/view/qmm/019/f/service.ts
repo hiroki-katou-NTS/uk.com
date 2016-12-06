@@ -22,7 +22,7 @@ module qmm019.f.service {
     export function getLayoutMasterDetail(stmtCode: String, startYm: number, categoryAtr: number, itemCd: String): JQueryPromise<model.ItemDetailModel> {
         var dfd = $.Deferred<model.ItemDetailModel>();
         var objectItem = {stmtCode: stmtCode, startYm: startYm, categoryAtr: categoryAtr, itemCd: itemCd};
-        var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, startYm, categoryAtr(), itemCd);
+        var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, startYm, categoryAtr, itemCd);
         nts.uk.request.ajax(_path)
             .done(function(res: model.ItemDetailModel) {
                 dfd.resolve(res);

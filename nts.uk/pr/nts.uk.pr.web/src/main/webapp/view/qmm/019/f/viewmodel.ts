@@ -1,7 +1,5 @@
 module qmm019.f.viewmodel {
 
-
-
     export class ItemModel {
         id: any;
         name: any;
@@ -10,8 +8,6 @@ module qmm019.f.viewmodel {
             this.id = id;
             this.name = name;
         }
-
-
     }
 
     //get the model from app
@@ -34,22 +30,6 @@ module qmm019.f.viewmodel {
         distributeWay: KnockoutObservable<number> = ko.observable(0);
         personalWageCode: KnockoutObservable<string> = ko.observable('');
         sumScopeAtr: KnockoutObservable<number> = ko.observable(0);
-
-        //        constructor(companyCode, itemCode, categoryAtr, itemAbName, checkUseHighError, errRangeHigh, checkUseLowError, errRangeLow, checkUseHighAlam, alamRangeHigh, checkUseLowAlam, alamRangeLow) {
-        //            var self = this;
-        //            self.companyCode = ko.observable(companyCode);
-        //            self.itemCode = ko.observable(itemCode);
-        //            self.categoryAtr = ko.observable(categoryAtr);
-        //            self.itemAbName = ko.observable(itemAbName);
-        //            self.checkUseHighError = ko.observable(checkUseHighError);
-        //            self.errRangeHigh = ko.observable(errRangeHigh);
-        //            self.checkUseLowError = ko.observable(checkUseLowError);
-        //            self.errRangeLow = ko.observable(errRangeLow);
-        //            self.checkUseHighAlam = ko.observable(checkUseHighAlam);
-        //            self.alamRangeHigh = ko.observable(alamRangeHigh);
-        //            self.checkUseLowAlam = ko.observable(checkUseLowAlam);
-        //            self.alamRangeLow = ko.observable(alamRangeLow);
-        //        }
     }
 
     export class ListBox {
@@ -75,12 +55,13 @@ module qmm019.f.viewmodel {
                 self.itemDtoSelected(ko.observable(item));
             } else {
                 self.selectedCode = ko.observable(currentItemCode);
-                service.getLayoutMasterDetail(stmtCode, startYm, categoryAtr, currentItemCode).done(function(data) {
+                service.getLayoutMasterDetail(stmtCode, 
+                                startYm, categoryAtr, currentItemCode).done(function(data) {
                     var item = {
                         companyCode: ko.observable(null),
                         itemCode: ko.observable(data.itemCode),
-                        categoryAtr: ko.observable(data.categoryAtr),
                         itemAbName: ko.observable(self.selectedName()),
+                        categoryAtr: ko.observable(data.categoryAtr),
                         checkUseHighError: ko.observable(data.isUseHighError == 1),
                         errRangeHigh: ko.observable(data.errRangeHigh),
                         checkUseLowError: ko.observable(data.isUseLowError == 1),
@@ -270,7 +251,42 @@ module qmm019.f.viewmodel {
             $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function(data) {
                 if (data !== null) {
                     self.listItemDto = data;
-                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, self.paramIsUpdate, self.paramStmtCode, self.paramStartYm, self.paramCategoryAtr));
+                    
+                    var item = {};
+                    if (self.paramIsUpdate == false) {
+//                        self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, 
+//                            self.paramIsUpdate, self.paramStmtCode, self.paramStartYm, self.paramCategoryAtr(), item));
+                    } else {
+                        service.getLayoutMasterDetail(self.paramStmtCode, 
+                                    self.paramStartYm, self.paramCategoryAtr(), self.paramItemCode).done(function(data) {
+                            item = {
+                                companyCode: ko.observable(null),
+                                itemCode: ko.observable(data.itemCode),
+                                categoryAtr: ko.observable(data.categoryAtr),
+                                checkUseHighError: ko.observable(data.isUseHighError == 1),
+                                errRangeHigh: ko.observable(data.errRangeHigh),
+                                checkUseLowError: ko.observable(data.isUseLowError == 1),
+                                errRangeLow: ko.observable(data.errRangeLow),
+                                checkUseHighAlam: ko.observable(data.isUseHighAlam == 1),
+                                alamRangeHigh: ko.observable(data.alamRangeHigh),
+                                checkUseLowAlam: ko.observable(data.isUseLowAlam == 1),
+                                alamRangeLow: ko.observable(data.alamRangeLow),
+                                commuteAtr: ko.observable(data.commuteAtr),
+                                calculationMethod: ko.observable(data.calculationMethod),
+                                distributeSet: ko.observable(data.distributeSet),
+                                distributeWay: ko.observable(data.distributeWay),
+                                personalWageCode: ko.observable(data.personalWageCode),
+                                sumScopeAtr: ko.observable(data.sumScopeAtr)
+                            };
+                                        
+                            self.comboBoxSumScopeAtr().selectedCode(data.sumScopeAtr);
+                            self.comboBoxCalcMethod().selectedCode(data.calculationMethod);
+                            self.comboBoxDistributeWay().selectedCode(data.distributeWay);
+                            self.switchButton().selectedRuleCode(data.distributeSet);
+                        });
+                    }
+                    self.listBox = ko.observable(new ListBox(self.listItemDto, self.paramItemCode, 
+                        self.paramIsUpdate, self.paramStmtCode, self.paramStartYm, self.paramCategoryAtr()));
                 }
                 else {
                     self.listItemDto = ko.observableArray();
@@ -334,7 +350,7 @@ module qmm019.f.viewmodel {
             }
             var data = {
                 itemCode: itemSelected().itemCode(),
-                itemAbName: itemSelected().itemAbName(),
+                itemAbName: self.listBox().selectedName(),
                 categoryAtr: self.paramCategoryAtr(),
                 sumScopeAtr: sumScopeAtr,
                 commuteAtr: commuteAtr,
