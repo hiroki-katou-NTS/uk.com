@@ -6,9 +6,6 @@ module sample.wizard.viewmodel {
         stepSelected: KnockoutObservable<Step>;
         user: KnockoutObservable<User>;
         
-        /**
-         * Constructor.
-         */
         constructor() {
             var self = this;
             self.stepList = [
@@ -24,7 +21,7 @@ module sample.wizard.viewmodel {
         }
         
         begin() {
-            //$('#wizard').begin();
+            $('#wizard').begin();
         }
         end() {
             $('#wizard').end();
@@ -45,9 +42,6 @@ module sample.wizard.viewmodel {
         }
     }
     
-    /**
-     * Class Step model.
-     */
     export class Step {
         id: string;
         content: string;

@@ -27,42 +27,40 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>ComboBox</h1>
+						<h2>Overview</h2>
+						<div>
+							<input data-bind="value: itemName"></input>
+							<button data-bind="click: addOptions">Add Item</button>
+						</div>
+						<br />
+						<div id="combo-box"
+							data-bind="ntsComboBox: {options: itemList,
+											optionsValue: 'code',
+											value: selectedCode,
+											optionsText: 'name',
+											editable: isEditable(),
+											enable: isEnable(),
+											columns: [
+												{ prop: 'code', length: 4 },
+												{ prop: 'name', length: 10 },
+											]}"
+							class="cf"></div>
+						<button data-bind="click: removeByCode">Remove Item</button>
+						<br />
+				
+						<div class="status">
+							<label><input type="checkbox" data-bind="checked: isEnable" />Enable</label>
+							<label><input type="checkbox" data-bind="checked: isEditable" />Editable</label>
+						</div>
+						<div>
+							Your selected code: <span data-bind="text:selectedCode"></span>
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-overview">Overview</a></li>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
-								<div id="tabs-overview" class="cf">
-									<div>
-										<input data-bind="value: itemName"></input>
-										<button data-bind="click: addOptions">Add Item</button>
-									</div>
-									<br />
-									<div id="combo-box"
-										data-bind="ntsComboBox: {options: itemList,
-														optionsValue: 'code',
-														value: selectedCode,
-														optionsText: 'name',
-														editable: isEditable(),
-														enable: isEnable(),
-														columns: [
-															{ prop: 'code', length: 4 },
-															{ prop: 'name', length: 10 },
-														]}"
-										class="cf"></div>
-									<button data-bind="click: removeByCode">Remove Item</button>
-									<br />
-							
-									<div class="status">
-										<label><input type="checkbox" data-bind="checked: isEnable" />Enable</label>
-										<label><input type="checkbox" data-bind="checked: isEditable" />Editable</label>
-									</div>
-									<div>
-										Your selected code: <span data-bind="text:selectedCode"></span>
-									</div>
-								</div>
 								<div id="tabs-html" class="cf">
 								</div>
 								<div id="tabs-viewmodel" class="cf">
