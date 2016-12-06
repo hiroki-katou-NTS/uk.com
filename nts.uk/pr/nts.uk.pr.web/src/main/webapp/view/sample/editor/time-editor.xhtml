@@ -12,11 +12,24 @@
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	
 				<com:ValidatorScript>
-				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+					nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode
+					nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
+					nts.arc.time.YearMonth
    				</com:ValidatorScript>
+   				<!-- Because there isn't any EmployeeCode domain entity yet. I'll create it manual -->
+				<script>
+				__viewContext.primitiveValueConstraints.EmployeeCode = {
+						valueType: 'String',
+						charType: 'Numeric',
+						maxLength: 10,
+					};
+				</script>
 				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="/lib/nittsu/ui/file.js" />
+				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
 				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
             </ui:define>
             
@@ -24,29 +37,20 @@
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>TabPanel</h1>
+						<h1>TimeEditor</h1>
 						<h2>Overview</h2>
-						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}" style="width: 500px">
-							<div class="tab-content-1">
-								<span>Tab Content 1</span><br/>
-							</div>
-							<div class="tab-content-2">
-								<span>Tab Content 2</span><br/>
-							</div>
-							<div class="tab-content-3">
-								<span>Tab Content 3</span><br/>
-							</div>
-							<div class="tab-content-4" data-bind="with: user">
-								<span>User Name:</span><br/> 
-								<input type="text" data-bind="value: name" /><br/> 
-								Current User Name is: <span data-bind="text: name"></span>
-							</div>
-						</div><br/>
-						<div data-bind="foreach: tabs">
-							<span data-bind="text: title + ' :'"></span>
-							<label><input type="checkbox" data-bind="checked: enable"/>Enable</label>
-							<label><input type="checkbox" data-bind="checked: visible"/>Visible</label>
-							<br/>
+						<div data-bind="with: timeeditor">
+							<h3>Time (HH:mm)</h3>
+							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
+						<br/>
+						<div data-bind="with: yearmontheditor">
+							<h3>YearMonth (yyyy/MM)</h3>
+							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<article class="cf">
 							<div class="tabs">
