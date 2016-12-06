@@ -1,9 +1,11 @@
 __viewContext.ready(function () {
-    var vm = {
-        checkbox: {
-            checked: ko.observable(true),
-            enable: ko.observable(true),
+    var ScreenModel = (function () {
+        function ScreenModel() {
+            var self = this;
+            self.checked = ko.observable(true);
+            self.enable = ko.observable(true);
         }
-    };
-    this.bind(vm);
+        return ScreenModel;
+    }());
+    this.bind(new ScreenModel());
 });

@@ -257,38 +257,31 @@
          * @returns handler
          */
         export function info(text) {
+            var then = $.noop;
             var $dialog = $('<div/>').hide();
-
             $(function() {
                 $dialog.appendTo('body').dialog({
                     autoOpen: false
                 });
             })
 
-            return function(text) {
-
-                var then = $.noop;
-
-                setTimeout(function() {
-                    var $this = createNoticeDialog(
-                        text,
-                        [
-                            {
-                                text: "はい",
-                                "class": "large",
-                                click: function() {
-                                    $this.dialog('close');
-                                    then();
-                                }
-                            }
-                        ]);
-                }, 0);
-
-                return {
-                    then: function(callback) {
-                        then = callback;
-                    }
-                };
+            setTimeout(function() {
+                var $this = createNoticeDialog(
+                    text,
+                    [{
+                        text: "はい",
+                        "class": "large",
+                        click: function() {
+                            $this.dialog('close');
+                            then();
+                        }
+                    }]);
+            }, 0);
+            
+            return {
+                then: function(callback) {
+                    then = callback;
+                }
             };
         };
 

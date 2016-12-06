@@ -227,31 +227,27 @@ var nts;
                  * @returns handler
                  */
                 function info(text) {
+                    var then = $.noop;
                     var $dialog = $('<div/>').hide();
                     $(function () {
                         $dialog.appendTo('body').dialog({
                             autoOpen: false
                         });
                     });
-                    return function (text) {
-                        var then = $.noop;
-                        setTimeout(function () {
-                            var $this = createNoticeDialog(text, [
-                                {
-                                    text: "はい",
-                                    "class": "large",
-                                    click: function () {
-                                        $this.dialog('close');
-                                        then();
-                                    }
+                    setTimeout(function () {
+                        var $this = createNoticeDialog(text, [{
+                                text: "はい",
+                                "class": "large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    then();
                                 }
-                            ]);
-                        }, 0);
-                        return {
-                            then: function (callback) {
-                                then = callback;
-                            }
-                        };
+                            }]);
+                    }, 0);
+                    return {
+                        then: function (callback) {
+                            then = callback;
+                        }
                     };
                 }
                 dialog.info = info;
