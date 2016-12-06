@@ -24,17 +24,15 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>CheckBox</h1>
+						<h2>Overview</h2>
+						<div id="checkBoxTest1" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple but elegant checkbox' }" class="cf"></div>
+						<div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: enable }" class="cf">This is test enable</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-overview">Overview</a></li>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
-								<div id="tabs-overview" class="cf" data-bind="with: checkbox">
-									<div id="checkBoxTest1" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple but elegant checkbox' }" class="cf"></div>
-									<div id="checkBoxTest2" data-bind="ntsCheckBox: { checked: enable }" class="cf">This is test enable</div>
-								</div>
 								<div id="tabs-html" class="cf">
 								</div>
 								<div id="tabs-viewmodel" class="cf">

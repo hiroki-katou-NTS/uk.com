@@ -79,13 +79,13 @@ var nts;
                             var editortype = ko.unwrap(data.editortype);
                             switch (editortype) {
                                 case 'numbereditor':
-                                    return NumberEditorProcessor.getValidator(data);
+                                    return NumberEditorProcessor.prototype.getValidator(data);
                                 case 'timeeditor':
-                                    return TimeEditorProcessor.getValidator(data);
+                                    return TimeEditorProcessor.prototype.getValidator(data);
                                 case 'multilineeditor':
-                                    return MultilineEditorProcessor.getValidator(data);
+                                    return MultilineEditorProcessor.prototype.getValidator(data);
                                 default:
-                                    return TextEditorProcessor.getValidator(data);
+                                    return TextEditorProcessor.prototype.getValidator(data);
                             }
                         }
                         else {
@@ -108,13 +108,13 @@ var nts;
                             var editortype = ko.unwrap(data.editortype);
                             switch (editortype) {
                                 case 'numbereditor':
-                                    return NumberEditorProcessor.getFormatter(data);
+                                    return NumberEditorProcessor.prototype.getFormatter(data);
                                 case 'timeeditor':
-                                    return TimeEditorProcessor.getFormatter(data);
+                                    return TimeEditorProcessor.prototype.getFormatter(data);
                                 case 'multilineeditor':
-                                    return MultilineEditorProcessor.getFormatter(data);
+                                    return MultilineEditorProcessor.prototype.getFormatter(data);
                                 default:
-                                    return TextEditorProcessor.getFormatter(data);
+                                    return TextEditorProcessor.prototype.getFormatter(data);
                             }
                         }
                         else {
@@ -149,16 +149,16 @@ var nts;
                         $input.attr('type', textmode);
                         _super.prototype.update.call(this, $input, data);
                     };
-                    TextEditorProcessor.getDefaultOption = function () {
+                    TextEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TextEditorOption();
                     };
-                    TextEditorProcessor.getFormatter = function (data) {
+                    TextEditorProcessor.prototype.getFormatter = function (data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
                     };
-                    TextEditorProcessor.getValidator = function (data) {
+                    TextEditorProcessor.prototype.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         return new validation.StringValidator(constraintName, required);
@@ -192,14 +192,14 @@ var nts;
                             }
                         }
                     };
-                    NumberEditorProcessor.getDefaultOption = function () {
+                    NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
-                    NumberEditorProcessor.getFormatter = function (data) {
+                    NumberEditorProcessor.prototype.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new uk.text.NumberFormatter({ option: option });
                     };
-                    NumberEditorProcessor.getValidator = function (data) {
+                    NumberEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new validation.NumberValidator(constraintName, option);
@@ -221,14 +221,14 @@ var nts;
                         var width = option.width ? option.width : '93.5%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
-                    TimeEditorProcessor.getDefaultOption = function () {
+                    TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
-                    TimeEditorProcessor.getFormatter = function (data) {
+                    TimeEditorProcessor.prototype.getFormatter = function (data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new uk.text.TimeFormatter({ option: option });
                     };
-                    TimeEditorProcessor.getValidator = function (data) {
+                    TimeEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         return new validation.TimeValidator(constraintName, option);
@@ -246,16 +246,16 @@ var nts;
                         $input.css('resize', (resizeable) ? "both" : "none");
                         _super.prototype.update.call(this, $input, data);
                     };
-                    MultilineEditorProcessor.getDefaultOption = function () {
+                    MultilineEditorProcessor.prototype.getDefaultOption = function () {
                         return new ui_1.option.MultilineEditorOption();
                     };
-                    MultilineEditorProcessor.getFormatter = function (data) {
+                    MultilineEditorProcessor.prototype.getFormatter = function (data) {
                         var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: editorOption });
                     };
-                    MultilineEditorProcessor.getValidator = function (data) {
+                    MultilineEditorProcessor.prototype.getValidator = function (data) {
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         return new validation.StringValidator(constraintName, required);
@@ -1419,11 +1419,10 @@ var nts;
                         var date = ko.unwrap(data.value());
                         container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
-                            format: 'yyyy/mm/dd',
-                            language: 'ja'
-                        }).on('changeDate', function (ev) {
-                            data.value(ev.date);
-                            container.datepicker('hide');
+                            dateFormat: 'yy/mm/dd'
+                        });
+                        container.on('change', function (event) {
+                            data.value(new Date(container.val()));
                         });
                     };
                     /**

@@ -16,7 +16,6 @@
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
             </ui:define>
             
@@ -24,11 +23,9 @@
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>DatePicker</h1>
+						<h1>Switch</h1>
 						<h2>Overview</h2>
-						<input id="date-picker" data-bind="ntsDatePicker: {value: date}"></input>
-						<br/><br/>
-						<span data-bind="text: date"></span>
+						<div id="switchButtonTest" class="cf" data-bind="ntsSwitchButton: {options: roundingRules, optionsValue: 'code', optionsText: 'name', value: selectedRuleCode }"></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

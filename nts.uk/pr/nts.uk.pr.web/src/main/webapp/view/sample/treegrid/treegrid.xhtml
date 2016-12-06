@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+				<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>TreeGrid</h1>
+						<h2>Overview</h2>
+						<button data-bind="click: resetSelection">Reset</button>
+						<button data-bind="click: changeDataSource">Next Datasource</button>
+						<div class="cf">
+							<div style="float:left">
+								<h3>Single Selection</h3>
+								<table id="treegrid2"
+									data-bind="ntsTreeGridView:{
+										width: 700,
+										height: 500,
+										options: items2,
+										value: singleSelectedCode,
+										headers: headers,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: false,
+										enable: true,
+										extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
+										showCheckBox: false}"
+									class="cf">
+								</table>
+							</div>
+							<div style="float:left">
+								<br/><br/>
+								<h4>Your single selected code:</h4>
+								<span data-bind="text: singleSelectedCode"></span>
+							</div>
+						</div>
+						<div class="cf">
+							<div style="float: left;">
+								<h3>Multi Selection</h3>
+								<table id="treegrid"
+									data-bind="ntsTreeGridView:{
+										width: 500,
+										height: 500,
+										options: items1,
+										selectedValues: selectedCode,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,
+										extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
+										showCheckBox: true}"
+									class="cf">
+								</table>
+							</div>
+							<div style="float:left">
+								<br/><br/>
+								<h4>Your multiple selected code:</h4>
+								<com:ko-foreach bind="selectedCode">
+									<div data-bind="text: $data"></div>
+								</com:ko-foreach>
+							</div>
+						</div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

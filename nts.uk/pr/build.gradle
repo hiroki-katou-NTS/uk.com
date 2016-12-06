@@ -193,6 +193,7 @@ project (':file:nts.uk.pr.file.ws') {
 project (':file:nts.uk.pr.file.infra') {
 	dependencies {
  	 	compile project (':proto:nts.uk.pr.proto.dom')
+	    compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 artifactory {

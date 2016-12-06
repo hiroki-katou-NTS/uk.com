@@ -24,19 +24,17 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>FormLabel</h1>
+						<h2>Overview</h2>
+		            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br /><br />
+		            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br /><br />
+		            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br /><br />
+		            	<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-overview">Overview</a></li>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
-								<div id="tabs-overview" class="cf" data-bind="with: labelViewModel">
-					            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br /><br />
-					            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br /><br />
-					            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br /><br />
-					            	<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
-								</div>
 								<div id="tabs-html" class="cf">
 									<h2>Code</h2>
 									<pre><![CDATA[<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
