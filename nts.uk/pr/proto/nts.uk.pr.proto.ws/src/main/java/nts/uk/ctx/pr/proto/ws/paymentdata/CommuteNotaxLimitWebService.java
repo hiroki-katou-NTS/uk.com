@@ -8,18 +8,18 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.proto.app.find.paymentdata.CommuteNotaxLimitDto;
-import nts.uk.ctx.pr.proto.app.find.paymentdata.CommuteNotaxLimitFinder;
+import nts.uk.ctx.pr.proto.app.find.personalinfo.commute.CommuteFinder;
 
 @Path("pr/proto/paymentdata")
 @Produces("application/json")
 public class CommuteNotaxLimitWebService extends WebService {
 	
 	@Inject
-	private CommuteNotaxLimitFinder commuteNotaxLimitFinder;
+	private CommuteFinder commuteNotaxLimitFinder;
 	
 	@POST
-	@Path("findCommuteNotaxLimit/{commuNotaxLimitCode}")
-	public CommuteNotaxLimitDto findCommuteNotaxLimit(@PathParam("commuNotaxLimitCode") String commuNotaxLimitCode){
-		return commuteNotaxLimitFinder.find(commuNotaxLimitCode).orElse(null);
+	@Path("findCommuteNotaxLimit/{personId}/{baseYearMonth}")
+	public CommuteNotaxLimitDto findCommuteNotaxLimit(@PathParam("personId") String personId,@PathParam("baseYearMonth") int baseYearMonth ){
+		return commuteNotaxLimitFinder.find(personId, baseYearMonth);
 	}
 }

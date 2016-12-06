@@ -80,10 +80,10 @@ var nts;
                                     self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
                                     // Set value for 余り textbox 
                                     self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
-                                    qpp005.f.service.getCommute(employee.personId, baseYearmonth).done(function (res) {
-                                        qpp005.f.service.getCommuteNotaxLimit("01").done(function (res) {
+                                    qpp005.f.service.getCommuteNotaxLimit(employee.personId, baseYearmonth).done(function (res) {
+                                        if (res != null) {
                                             self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode, res.commuNotaxLimitName, res.commuNotaxLimitValue));
-                                        });
+                                        }
                                     });
                                     return dfd.promise();
                                 };

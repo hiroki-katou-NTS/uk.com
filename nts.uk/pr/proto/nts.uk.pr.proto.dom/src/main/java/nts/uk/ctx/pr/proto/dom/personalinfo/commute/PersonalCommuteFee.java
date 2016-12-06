@@ -25,7 +25,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * Commute no tax limit publish number;
 	 */
 	@Getter
-	private BigDecimal commuteNoTaxLimitPublishNo;
+	private String commuteNoTaxLimitPublishNo;
 
 	@Getter
 	private List<PersonalCommuteValue> commutes;
@@ -47,7 +47,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * @param commute5 other information
 	 * @param personId person id
 	 */
-	public PersonalCommuteFee(BigDecimal commuteNoTaxLimitPrivateNo, BigDecimal commuteNoTaxLimitPublishNo,
+	public PersonalCommuteFee(BigDecimal commuteNoTaxLimitPrivateNo, String commuteNoTaxLimitPublishNo,
 			PersonalCommuteValue commute1, PersonalCommuteValue commute2, PersonalCommuteValue commute3,
 			PersonalCommuteValue commute4, PersonalCommuteValue commute5, PersonId personId) {
 		super();
@@ -68,7 +68,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * @return PersonalCommuteFee
 	 */
 	public static PersonalCommuteFee createFromJavaType(BigDecimal commuteNoTaxLimitPrivateNo,
-			BigDecimal commuteNoTaxLimitPublishNo, PersonalCommuteValue commute1, PersonalCommuteValue commute2,
+			String commuteNoTaxLimitPublishNo, PersonalCommuteValue commute1, PersonalCommuteValue commute2,
 			PersonalCommuteValue commute3, PersonalCommuteValue commute4, PersonalCommuteValue commute5,
 			String personId) {
 		return new PersonalCommuteFee(commuteNoTaxLimitPrivateNo, commuteNoTaxLimitPublishNo, commute1, commute2,

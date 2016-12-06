@@ -1419,11 +1419,10 @@ var nts;
                         var date = ko.unwrap(data.value());
                         container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
-                            format: 'yyyy/mm/dd',
-                            language: 'ja'
-                        }).on('changeDate', function (ev) {
-                            data.value(ev.date);
-                            container.datepicker('hide');
+                            dateFormat: 'yy/mm/dd'
+                        });
+                        container.on('change', function (event) {
+                            data.value(new Date(container.val()));
                         });
                     };
                     /**

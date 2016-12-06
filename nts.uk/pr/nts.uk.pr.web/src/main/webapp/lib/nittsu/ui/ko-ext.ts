@@ -1507,12 +1507,11 @@ module nts.uk.ui.koExtentions {
             var date = ko.unwrap(data.value());
             container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
             container.datepicker({
-                format: 'yyyy/mm/dd',
-                language: 'ja'
-            }).on('changeDate', (ev: any) => {
-                data.value(ev.date);
-                container.datepicker('hide');
-            })
+                dateFormat: 'yy/mm/dd'
+            });
+            container.on('change',(event: any) => {
+                data.value(new Date(container.val()));
+            });
         }
 
         /**
