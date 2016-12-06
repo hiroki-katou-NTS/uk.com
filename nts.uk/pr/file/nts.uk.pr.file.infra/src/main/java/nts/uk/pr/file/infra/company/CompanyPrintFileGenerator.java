@@ -2,8 +2,14 @@ package nts.uk.pr.file.infra.company;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+
+import com.aspose.cells.SaveFormat;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.WorkbookDesigner;
 
 import nts.arc.layer.infra.file.FileGenerator;
 import nts.arc.layer.infra.file.FileGeneratorContext;
@@ -11,21 +17,38 @@ import nts.arc.layer.infra.file.FileGeneratorContext;
 @RequestScoped
 public class CompanyPrintFileGenerator extends FileGenerator{
 
+	private final String fileName = "report/company.xlsx";
+	
 	@Override
 	protected void generate(FileGeneratorContext context) {
 		try {
-			System.out.print("1");
-			OutputStream output = context.createOutputFileStream("company.txt");
-			for (int i = 0; i < 10; i++) {
-				for (int j = 0; j < 10; j++) {
-					for (int k = 0; k < 100; k++) {
-						output.write(("test " + i + "-" + j + "-" + k + "/n").getBytes());
-					}
-				}
+			List<CompanyDto> companies = new ArrayList<>();
+			OutputStream output = context.createOutputFileStream("company.xlsx");
+			for (int i = 0; i < 1000; i++) {
+				CompanyDto company = new CompanyDto();
+				company.setCode("Code " + (i + 1));
+				company.setName("Name " + (i + 1));
+				company.setCount(i);
+				companies.add(company);
 			}
-			System.out.print("2");
-			output.close();
+	        WorkbookDesigner designer = new WorkbookDesigner();
+			Workbook workbook = null;
+	        try {
+	            workbook = new Workbook(Thread.currentThread()
+	                    .getContextClassLoader().getResourceAsStream(fileName));
+	        } catch (Exception e) {
+	            throw new RuntimeException("Report template not found");
+	        }
+
+	        designer.setWorkbook(workbook);
+	        String header = "Company Report";
+	        designer.setDataSource("Header", header);
+	        designer.setDataSource("Company", companies);
+	        designer.process(true);
+			designer.getWorkbook().save(output, SaveFormat.XLSX);
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

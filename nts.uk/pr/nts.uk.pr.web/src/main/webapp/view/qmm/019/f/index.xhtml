@@ -18,7 +18,7 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="service.js" />
 			<com:stylefile path="main.css" />
-			<script>var dialogSize = { width: 1300, height: 650 };</script>
+			<script>var dialogSize = { width: 1000, height: 650 };</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -27,10 +27,10 @@
 					<div class="form-label">
 						<label>項目区分</label> <a>支給項目</a>
 					</div>
-					<br /> <br />
-					<div class="form-label">
+					<br />
+					<div class="form-label" style="margin-top: 5px;">
 						<label>コード/名称</label><input style="margin-left: 20px;" type="text" />
-						<button style="width: 68px;">検索</button>
+						<button style="width: 68px; margin-top: 10px">検索</button>
 					</div>
 					<br /> <br />
 					<div data-bind="with: listBox">

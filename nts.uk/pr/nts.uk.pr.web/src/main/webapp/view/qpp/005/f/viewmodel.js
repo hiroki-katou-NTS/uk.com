@@ -84,6 +84,9 @@ var nts;
                                         if (res != null) {
                                             self.commuteNotaxLimitItem(new CommuteNotaxLimitItem(res.commuNotaxLimitCode, res.commuNotaxLimitName, res.commuNotaxLimitValue));
                                         }
+                                        else {
+                                            self.commuteNotaxLimitItem(new CommuteNotaxLimitItem("00", "未設定", ""));
+                                        }
                                     });
                                     return dfd.promise();
                                 };
@@ -91,7 +94,7 @@ var nts;
                                     var self = this;
                                     var detailItemFromParentScreen = nts.uk.ui.windows.getShared('value');
                                     // Check checked item
-                                    if (!self.totalCommuteCheck.isChecked() || !self.oneMonthCheck.isChecked()) {
+                                    if (!self.totalCommuteCheck.isChecked() && !self.oneMonthCheck.isChecked()) {
                                         alert("対象データがありません。");
                                         return;
                                     }
@@ -149,7 +152,7 @@ var nts;
                             function CommuteNotaxLimitItem(code, name, value) {
                                 this.code = code;
                                 this.name = name;
-                                this.value = value;
+                                this.value = nts.uk.ntsNumber.formatNumber(value, { grouplength: 3 });
                             }
                             function CommuteDividedItemsByMonth(code, name) {
                                 this.code = code;
