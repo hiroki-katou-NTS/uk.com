@@ -84,6 +84,7 @@ module qmm019.a {
                         } else {
                             if (_.includes(line.autoLineId, "lineIdTemp-") === false) {
                                 listAutoLineIdDeleted.push({categoryAtr: category.categoryAtr, autoLineId: line.autoLineId});
+                                continue;
                             }
                         }    
                         linePosition++;

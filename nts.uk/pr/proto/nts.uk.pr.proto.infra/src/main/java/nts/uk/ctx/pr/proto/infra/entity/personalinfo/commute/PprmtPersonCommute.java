@@ -24,7 +24,7 @@ public class PprmtPersonCommute {
 	public int endYm;
 	
 	@Column(name ="COMMU_NOTAX_LIMIT_PUB_NO")
-	public BigDecimal commuNotaxLimitPubNo;
+	public String commuNotaxLimitPubNo;
 	
 	@Column(name ="COMMU_NOTAX_LIMIT_PRI_NO")
 	public BigDecimal commuNotaxLimitPriNo;

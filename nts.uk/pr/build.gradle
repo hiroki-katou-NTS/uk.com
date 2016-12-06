@@ -89,7 +89,7 @@ subprojects {
         compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	    
 	    compile group: 'nts.gul', name: 'nts.gul', version: '0.7'
-	    compile group: 'nts.arc', name: 'nts.arc', version: '0.9.8'
+	    compile group: 'nts.arc', name: 'nts.arc', version: '0.9.8.1'
 	}
 }
 
@@ -166,6 +166,8 @@ project ('nts.uk.pr.web') {
 		runtime project (':screen:nts.uk.pr.screen.ws')
 		runtime project (':screen:nts.uk.pr.screen.app')
 		runtime project (':screen:nts.uk.pr.screen.infra')
+		runtime project (':file:nts.uk.pr.file.ws')
+		runtime project (':file:nts.uk.pr.file.infra')
 	}
 }
 project (':screen:nts.uk.pr.screen.ws') {
@@ -181,6 +183,17 @@ project (':screen:nts.uk.pr.screen.app') {
 project (':screen:nts.uk.pr.screen.infra') {
 	dependencies {
 		compile project (':screen:nts.uk.pr.screen.app')
+	}
+}
+project (':file:nts.uk.pr.file.ws') {
+	dependencies {
+		compile project (':file:nts.uk.pr.file.infra')
+	}
+}
+project (':file:nts.uk.pr.file.infra') {
+	dependencies {
+ 	 	compile project (':proto:nts.uk.pr.proto.dom')
+	    compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
 artifactory {

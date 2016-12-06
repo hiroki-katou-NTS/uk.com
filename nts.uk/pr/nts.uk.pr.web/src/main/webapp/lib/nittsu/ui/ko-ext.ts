@@ -66,37 +66,66 @@ module nts.uk.ui.koExtentions {
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            if (constraint) {
-                if(constraint.valueType === 'String') {
-                    return validation.createValidator(constraintName);
-                } else if(data.option) {
-                    var option = ko.unwrap(data.option);
+            if(data.editortype) {
+                var editortype = ko.unwrap(data.editortype);
+                switch(editortype) {
                    
-                    return validation.createValidator(constraintName, option);
+                   case 'numbereditor':
+                      return NumberEditorProcessor.prototype.getValidator(data);
+                   case 'timeeditor':
+                      return TimeEditorProcessor.prototype.getValidator(data);
+                   case 'multilineeditor':
+                      return MultilineEditorProcessor.prototype.getValidator(data);
+                   default: 
+                      return TextEditorProcessor.prototype.getValidator(data);   
                 }
+            } else {
+                if (constraint) {
+                    if(constraint.valueType === 'String') {
+                        return validation.createValidator(constraintName);
+                    } else if(data.option) {
+                        var option = ko.unwrap(data.option);
+                       
+                        return validation.createValidator(constraintName, option);
+                    }
+                }
+                return validation.createValidator(constraintName);
             }
-            return validation.createValidator(constraintName);
         }
 
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            if (constraint) {
-                if(constraint.valueType === 'String') {
-                    return new text.StringFormatter(data);
-                } else if(data.option) {
-                    var option = ko.unwrap(data.option);
-                    //If inputFormat presented, this is Date or Time Editor
-                    if(option.inputFormat) {
-                        return new text.TimeFormatter({ option: option });
-                    } else  {
-                        return new nts.uk.text.NumberFormatter({option: option})
-                       
-                    } 
+            if(data.editortype) {
+                var editortype = ko.unwrap(data.editortype);
+                switch(editortype) {
+                   
+                   case 'numbereditor':
+                      return NumberEditorProcessor.prototype.getFormatter(data);
+                   case 'timeeditor':
+                      return TimeEditorProcessor.prototype.getFormatter(data);
+                   case 'multilineeditor':
+                      return MultilineEditorProcessor.prototype.getFormatter(data);
+                   default: 
+                      return TextEditorProcessor.prototype.getFormatter(data);   
                 }
-            }
-
-            return new format.NoFormatter();
+            } else {
+                if (constraint) {
+                    if(constraint.valueType === 'String') {
+                        return new text.StringFormatter(data);
+                    } else if(data.option) {
+                        var option = ko.unwrap(data.option);
+                        //If inputFormat presented, this is Date or Time Editor
+                        if(option.inputFormat) {
+                            return new text.TimeFormatter({ option: option });
+                        } else  {
+                            return new nts.uk.text.NumberFormatter({option: option})
+                           
+                        } 
+                    }
+                }
+                return new format.NoFormatter();
+            }        
         }
     }
 
@@ -152,7 +181,7 @@ module nts.uk.ui.koExtentions {
             }
         }
 
-        static getDefaultOption(): any {
+        getDefaultOption(): any {
             return new nts.uk.ui.option.NumberEditorOption();
         }
 
@@ -183,7 +212,7 @@ module nts.uk.ui.koExtentions {
             $input.css({'paddingLeft': '12px', 'width': width });
         }
         
-        static getDefaultOption(): any {
+        getDefaultOption(): any {
             return new nts.uk.ui.option.TimeEditorOption();
         }
 
@@ -1478,12 +1507,11 @@ module nts.uk.ui.koExtentions {
             var date = ko.unwrap(data.value());
             container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
             container.datepicker({
-                format: 'yyyy/mm/dd',
-                language: 'ja'
-            }).on('changeDate', (ev: any) => {
-                data.value(ev.date);
-                container.datepicker('hide');
-            })
+                dateFormat: 'yy/mm/dd'
+            });
+            container.on('change',(event: any) => {
+                data.value(new Date(container.val()));
+            });
         }
 
         /**

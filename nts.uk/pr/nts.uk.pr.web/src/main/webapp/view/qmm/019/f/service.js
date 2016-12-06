@@ -26,7 +26,7 @@ var qmm019;
             function getLayoutMasterDetail(stmtCode, startYm, categoryAtr, itemCd) {
                 var dfd = $.Deferred();
                 var objectItem = { stmtCode: stmtCode, startYm: startYm, categoryAtr: categoryAtr, itemCd: itemCd };
-                var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, startYm, categoryAtr(), itemCd);
+                var _path = nts.uk.text.format(paths.getLayoutMasterDetail, stmtCode, startYm, categoryAtr, itemCd);
                 nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);

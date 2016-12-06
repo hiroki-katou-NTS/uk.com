@@ -5,9 +5,6 @@ var sample;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
-                /**
-                 * Constructor.
-                 */
                 function ScreenModel() {
                     var self = this;
                     self.stepList = [
@@ -22,7 +19,7 @@ var sample;
                     self.user = ko.observable(new User('U1', 'User 1'));
                 }
                 ScreenModel.prototype.begin = function () {
-                    //$('#wizard').begin();
+                    $('#wizard').begin();
                 };
                 ScreenModel.prototype.end = function () {
                     $('#wizard').end();
@@ -44,9 +41,6 @@ var sample;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-             * Class Step model.
-             */
             var Step = (function () {
                 function Step(id, content) {
                     this.id = id;

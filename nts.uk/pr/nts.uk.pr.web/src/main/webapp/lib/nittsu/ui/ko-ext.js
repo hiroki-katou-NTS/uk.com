@@ -75,36 +75,66 @@ var nts;
                     DynamicEditorProcessor.prototype.getValidator = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        if (constraint) {
-                            if (constraint.valueType === 'String') {
-                                return validation.createValidator(constraintName);
-                            }
-                            else if (data.option) {
-                                var option = ko.unwrap(data.option);
-                                return validation.createValidator(constraintName, option);
+                        if (data.editortype) {
+                            var editortype = ko.unwrap(data.editortype);
+                            switch (editortype) {
+                                case 'numbereditor':
+                                    return NumberEditorProcessor.prototype.getValidator(data);
+                                case 'timeeditor':
+                                    return TimeEditorProcessor.prototype.getValidator(data);
+                                case 'multilineeditor':
+                                    return MultilineEditorProcessor.prototype.getValidator(data);
+                                default:
+                                    return TextEditorProcessor.prototype.getValidator(data);
                             }
                         }
-                        return validation.createValidator(constraintName);
+                        else {
+                            if (constraint) {
+                                if (constraint.valueType === 'String') {
+                                    return validation.createValidator(constraintName);
+                                }
+                                else if (data.option) {
+                                    var option = ko.unwrap(data.option);
+                                    return validation.createValidator(constraintName, option);
+                                }
+                            }
+                            return validation.createValidator(constraintName);
+                        }
                     };
                     DynamicEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        if (constraint) {
-                            if (constraint.valueType === 'String') {
-                                return new uk.text.StringFormatter(data);
-                            }
-                            else if (data.option) {
-                                var option = ko.unwrap(data.option);
-                                //If inputFormat presented, this is Date or Time Editor
-                                if (option.inputFormat) {
-                                    return new uk.text.TimeFormatter({ option: option });
-                                }
-                                else {
-                                    return new nts.uk.text.NumberFormatter({ option: option });
-                                }
+                        if (data.editortype) {
+                            var editortype = ko.unwrap(data.editortype);
+                            switch (editortype) {
+                                case 'numbereditor':
+                                    return NumberEditorProcessor.prototype.getFormatter(data);
+                                case 'timeeditor':
+                                    return TimeEditorProcessor.prototype.getFormatter(data);
+                                case 'multilineeditor':
+                                    return MultilineEditorProcessor.prototype.getFormatter(data);
+                                default:
+                                    return TextEditorProcessor.prototype.getFormatter(data);
                             }
                         }
-                        return new uk.format.NoFormatter();
+                        else {
+                            if (constraint) {
+                                if (constraint.valueType === 'String') {
+                                    return new uk.text.StringFormatter(data);
+                                }
+                                else if (data.option) {
+                                    var option = ko.unwrap(data.option);
+                                    //If inputFormat presented, this is Date or Time Editor
+                                    if (option.inputFormat) {
+                                        return new uk.text.TimeFormatter({ option: option });
+                                    }
+                                    else {
+                                        return new nts.uk.text.NumberFormatter({ option: option });
+                                    }
+                                }
+                            }
+                            return new uk.format.NoFormatter();
+                        }
                     };
                     return DynamicEditorProcessor;
                 }(EditorProcessor));
@@ -162,7 +192,7 @@ var nts;
                             }
                         }
                     };
-                    NumberEditorProcessor.getDefaultOption = function () {
+                    NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
                     };
                     NumberEditorProcessor.prototype.getFormatter = function (data) {
@@ -191,7 +221,7 @@ var nts;
                         var width = option.width ? option.width : '93.5%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
-                    TimeEditorProcessor.getDefaultOption = function () {
+                    TimeEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.TimeEditorOption();
                     };
                     TimeEditorProcessor.prototype.getFormatter = function (data) {
@@ -1389,11 +1419,10 @@ var nts;
                         var date = ko.unwrap(data.value());
                         container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
-                            format: 'yyyy/mm/dd',
-                            language: 'ja'
-                        }).on('changeDate', function (ev) {
-                            data.value(ev.date);
-                            container.datepicker('hide');
+                            dateFormat: 'yy/mm/dd'
+                        });
+                        container.on('change', function (event) {
+                            data.value(new Date(container.val()));
                         });
                     };
                     /**

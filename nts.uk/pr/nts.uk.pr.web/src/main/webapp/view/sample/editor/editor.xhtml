@@ -27,6 +27,7 @@
 			<!-- Do not include this CSS -->
 			<link rel="stylesheet" type="text/css" href="editor.css" />
 			
+			<script src="../../../lib/nittsu/ui/file.js"></script>
 			<script src="../../../lib/nittsu/ui/textbox-options.js"></script>
 			<script src="start.js"></script>
           </ui:define>
@@ -39,6 +40,9 @@
           	<div id="contents-area">
 				<div class="">
 					<h2><a href="../../../test.html">&#9665;</a> Editor</h2>
+					<div data-bind="with: file">
+						<button data-bind="click: print">test file</button>
+					</div>
 					<hr/>
 					<div class="cf">
 						<h2>TextEditor</h2>
