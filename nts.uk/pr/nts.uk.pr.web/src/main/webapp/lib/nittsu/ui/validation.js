@@ -33,14 +33,22 @@ var nts;
                     return ValidationResult;
                 }());
                 validation.ValidationResult = ValidationResult;
-                function createValidator(constraintName) {
+                function createValidator(constraintName, option) {
                     var constraint = getConstraint(constraintName);
                     if (constraint === null) {
                         return new NoValidator();
                     }
-                    switch (constraint.valueType) {
-                        case 'String':
-                            return new StringValidator(constraintName, null);
+                    if (constraint.valueType === 'String') {
+                        return new StringValidator(constraintName);
+                    }
+                    if (option) {
+                        if (option.inputFormat) {
+                            //If inputFormat presented, this is Date or Time Editor                 
+                            return new TimeValidator(constraintName, option);
+                        }
+                        else {
+                            return new NumberValidator(constraintName, option);
+                        }
                     }
                     return new NoValidator();
                 }
@@ -53,7 +61,7 @@ var nts;
                     }
                     StringValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        if (this.required !== undefined) {
+                        if (this.required !== undefined && this.required !== false) {
                             if (!checkRequired(inputText)) {
                                 result.fail('This field is required');
                                 return result;

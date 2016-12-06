@@ -71,12 +71,37 @@ var nts;
                                 ScreenModel.prototype.register = function () {
                                     var self = this;
                                     // TODO: Check error input
+                                    if (!self.validator()) {
+                                        alert('入力にエラーがあります。');
+                                        return false;
+                                    }
                                     qpp005.a.service.register(self.paymentDataResult()).done(function (res) {
-                                        self.startPage();
-                                        a.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                        self.startPage().done(function () {
+                                            a.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                        });
                                     }).fail(function (res) {
                                         alert(res.message);
                                     });
+                                };
+                                ScreenModel.prototype.validator = function () {
+                                    var self = this;
+                                    var data = self.paymentDataResult().categories();
+                                    var result = true;
+                                    _.forEach(data, function (cate) {
+                                        var lines = cate.lines();
+                                        _.forEach(lines, function (line) {
+                                            var include = ko.utils.arrayFirst(line.details(), function (item) {
+                                                return item.itemCode() != "" && (item.value() === '' || item.value() === null);
+                                            });
+                                            if (include) {
+                                                result = false;
+                                                return false;
+                                            }
+                                        });
+                                        if (!result)
+                                            return false;
+                                    });
+                                    return result;
                                 };
                                 /** Event click: 対象者*/
                                 ScreenModel.prototype.openEmployeeList = function () {
@@ -99,7 +124,9 @@ var nts;
                                         return;
                                     }
                                     self.employee(self.employeeList()[eIdx - 1]);
-                                    self.startPage();
+                                    self.startPage().done(function () {
+                                        a.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                    });
                                 };
                                 /** Event: Next employee */
                                 ScreenModel.prototype.nextEmployee = function () {
@@ -112,7 +139,9 @@ var nts;
                                         return;
                                     }
                                     self.employee(self.employeeList()[eIdx + 1]);
-                                    self.startPage();
+                                    self.startPage().done(function () {
+                                        a.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                    });
                                 };
                                 ScreenModel.prototype.openColorSettingGuide = function () {
                                     var _this = this;
@@ -207,7 +236,14 @@ var nts;
                               * Model namespace.
                            */
                             var PaymentDataResultViewModel = (function () {
-                                function PaymentDataResultViewModel() {
+                                function PaymentDataResultViewModel(paymentHeader, categories, remarks) {
+                                    var self = this;
+                                    self.paymentHeader = paymentHeader;
+                                    self.categories = categories;
+                                    self.remarks = ko.observable(remarks);
+                                    self.remarkCount = ko.computed(function () {
+                                        return nts.uk.text.format('入力文字数：{0}文字', self.remarks() == undefined ? 0 : self.remarks().length);
+                                    });
                                 }
                                 return PaymentDataResultViewModel;
                             }());

@@ -31,29 +31,26 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 
 	@Inject
 	private PaymentDateMasterRepository payDateMasterRepository;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		Payment payment = context.getCommand().toDomain(companyCode);	
-		LocalDate mPayDate = this.payDateMasterRepository.find(
-				companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(), 
-				payment.getSparePayAtr().value, payment.getProcessingNo().v()).map(d-> d.getStandardDate()).orElse(LocalDate.now());
-		
+		Payment payment = context.getCommand().toDomain(companyCode);
+		LocalDate mPayDate = this.payDateMasterRepository
+				.find(companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(),
+						payment.getSparePayAtr().value, payment.getProcessingNo().v())
+				.map(d -> d.getStandardDate()).orElse(LocalDate.now());
+
 		payment.setStandardDate(mPayDate);
 		payment.validate();
 
-		try {
-			this.paymentDataRepository.insertHeader(payment);
-			// update detail
-			this.registerDetail(payment, payment.getDetailPaymentItems());
-			this.registerDetail(payment, payment.getDetailArticleItems());
-			this.registerDetail(payment, payment.getDetailDeductionItems());
-			this.registerDetail(payment, payment.getDetailPersonalTimeItems());
-		} catch (Exception e) {
-			throw e;
-		}
-		
+		this.paymentDataRepository.insertHeader(payment);
+		// update detail
+		this.registerDetail(payment, payment.getDetailPaymentItems());
+		this.registerDetail(payment, payment.getDetailArticleItems());
+		this.registerDetail(payment, payment.getDetailDeductionItems());
+		this.registerDetail(payment, payment.getDetailPersonalTimeItems());
+
 	}
 
 	/**

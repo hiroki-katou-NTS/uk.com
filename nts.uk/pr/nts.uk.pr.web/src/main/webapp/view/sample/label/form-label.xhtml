@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>FormLabel</h1>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-overview">Overview</a></li>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-overview" class="cf" data-bind="with: labelViewModel">
+					            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br /><br />
+					            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br /><br />
+					            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br /><br />
+					            	<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
+								</div>
+								<div id="tabs-html" class="cf">
+									<h2>Code</h2>
+									<pre><![CDATA[<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
+<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div>
+<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div>
+<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>constraint<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Validate constraint for editor. Error message will automatic display by this constraint
+												</td>
+											</tr>
+											<tr>
+												<td>inline<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set Label display in 1 line
+												</td>
+											</tr>
+											<tr>
+												<td>required<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Define that field is required. Change color of Label to orange
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													Define that field is disable or enable. Change text of Label to grey
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+									<h2>Code</h2>
+									<pre><![CDATA[labelViewModel: {
+	constraint: 'LayoutCode',
+	inline: ko.observable(true),
+	required: ko.observable(true),
+	enable: ko.observable(true)
+}]]></pre>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

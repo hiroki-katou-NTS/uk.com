@@ -13,7 +13,7 @@ module qpp004.a.viewmodel {
             var self = this;
             
             self.paymentDateProcessingList = ko.observableArray([]);
-            self.selectedPaymetnProcessing = ko.observable(null);
+            self.selectedPaymetnProcessing = ko.observable('');
             self.displayCurrentYearMonthProcessing = ko.observable(null);
             self.currentPaymentDateProcessing = ko.observable(null);
             
