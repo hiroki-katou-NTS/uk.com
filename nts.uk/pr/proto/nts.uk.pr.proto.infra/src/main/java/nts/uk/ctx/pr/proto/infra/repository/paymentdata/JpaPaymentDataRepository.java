@@ -112,7 +112,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	 */
 	private static Payment toDomain(QstdtPaymentHeader entity) {
 		val domain = Payment.createFromJavaType(entity.qstdtPaymentHeaderPK.companyCode,
-				entity.qstdtPaymentHeaderPK.personId, entity.qstdtPaymentHeaderPK.processingNo,
+				entity.qstdtPaymentHeaderPK.personId, entity.employeeName, entity.qstdtPaymentHeaderPK.processingNo,
 				entity.qstdtPaymentHeaderPK.payBonusAtr, entity.qstdtPaymentHeaderPK.processingYM,
 				entity.qstdtPaymentHeaderPK.sparePayAtr, entity.standardDate, entity.specificationCode,
 				entity.residenceCode, entity.residenceName, entity.healthInsuranceGrade,
@@ -136,6 +136,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.qstdtPaymentHeaderPK = new QstdtPaymentHeaderPK(domain.getCompanyCode().v(), domain.getPersonId().v(),
 				domain.getProcessingNo().v().intValue(), domain.getPayBonusAtr().value,
 				domain.getProcessingYM().v().intValue(), domain.getSparePayAtr().value);
+		entity.employeeName = domain.getPersonName().v();
 		entity.standardDate = domain.getStandardDate();
 		entity.specificationCode = domain.getSpecificationCode().v();
 		entity.residenceCode = domain.getResidenceCode().v();

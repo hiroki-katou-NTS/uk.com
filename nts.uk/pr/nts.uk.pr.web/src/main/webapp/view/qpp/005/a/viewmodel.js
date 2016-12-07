@@ -76,7 +76,7 @@ var nts;
                                         alert('入力にエラーがあります。');
                                         return false;
                                     }
-                                    qpp005.a.service.register(self.paymentDataResult()).done(function (res) {
+                                    qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function (res) {
                                         self.startPage().done(function () {
                                             a.utils.gridSetup(self.switchButton().selectedRuleCode());
                                         });
@@ -251,9 +251,10 @@ var nts;
                             viewmodel.PaymentDataResultViewModel = PaymentDataResultViewModel;
                             // header
                             var PaymentDataHeaderViewModel = (function () {
-                                function PaymentDataHeaderViewModel(personId, processingYM, dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
+                                function PaymentDataHeaderViewModel(personId, personName, processingYM, dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
                                     var self = this;
                                     self.personId = personId;
+                                    self.personName = personName;
                                     self.processingYM = processingYM;
                                     self.dependentNumber = dependentNumber;
                                     self.specificationCode = specificationCode;

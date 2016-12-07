@@ -40,7 +40,10 @@ public class Payment extends AggregateRoot {
 
 	@Getter
 	private final PersonId personId;
-
+	
+	@Getter
+	private PersonName personName;
+	
 	@Getter
 	private final ProcessingNo processingNo;
 
@@ -131,6 +134,7 @@ public class Payment extends AggregateRoot {
 	public Payment(
 				CompanyCode companyCode, 
 				PersonId personId, 
+				PersonName personName,
 				ProcessingNo processingNo, 
 				PayBonusAtr  payBonusAtr,
 				YearMonth processingYM, 
@@ -158,6 +162,7 @@ public class Payment extends AggregateRoot {
 		super();
 		this.companyCode = companyCode;
 		this.personId = personId;
+		this.personName = personName;
 		this.processingNo = processingNo;
 		this. payBonusAtr =  payBonusAtr;
 		this.processingYM = processingYM;
@@ -186,6 +191,7 @@ public class Payment extends AggregateRoot {
 	public static Payment createFromJavaType(
 							String companyCode, 
 							String personId, 
+							String personName,
 							int processingNo, 
 							int  payBonusAtr,
 							int processingYM, 
@@ -214,6 +220,7 @@ public class Payment extends AggregateRoot {
 		return new Payment(
 					new CompanyCode(companyCode),
 					new PersonId(personId),
+					new PersonName(personName),
 					new ProcessingNo(processingNo),
 					EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
 					new YearMonth(processingYM),
@@ -237,72 +244,6 @@ public class Payment extends AggregateRoot {
 					EnumAdaptor.valueOf(calcFlag, CalcFlag.class),
 					EnumAdaptor.valueOf(makeMethodFlag, MakeMethodFlag.class),
 					new Comment(comment));
-	}
-	
-	public static Payment AddOrUpdateFromJavaType(String companyCode, 
-							String personId, 
-							int processingNo, 
-							int  payBonusAtr,
-							int processingYM, 
-							int sparePayAtr, 
-							LocalDate standardDate,
-							String specificationCode, 
-							String residenceCode, 
-							String residenceName,
-							int healthInsuranceGrade, 
-							int healthInsuranceAverageEarn,
-							int ageContinuationInsureAtr, 
-							int tenureAtr, 
-							int taxAtr,
-							int pensionInsuranceGrade, 
-							int pensionAverageEarn,
-							int employmentInsuranceAtr, 
-							int dependentNumber,
-							int workInsuranceCalculateAtr, 
-							int insuredAtr, 
-							int bonusTaxRate,
-							int calcFlag, 
-							int makeMethodFlag,
-							String comment,
-							List<DetailItem> detailPaymentItems,
-							List<DetailItem> detailDeductionItems,
-							List<DetailItem> detailPersonalTimeItems,
-							List<DetailItem> detailArticleItems
-							) {
-		
-		Payment payment =  new Payment(
-				new CompanyCode(companyCode),
-				new PersonId(personId),
-				new ProcessingNo(processingNo),
-				EnumAdaptor.valueOf( payBonusAtr, PayBonusAtr.class),
-				new YearMonth(processingYM),
-				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
-				standardDate,
-				new SpecificationCode(specificationCode),
-				new ResidenceCode(residenceCode),
-				new ResidenceName(residenceName),
-				new HealthInsuranceGrade(healthInsuranceGrade),
-				new HealthInsuranceAverageEarn(healthInsuranceAverageEarn),
-				EnumAdaptor.valueOf(ageContinuationInsureAtr, AgeContinuationInsureAtr.class),
-				EnumAdaptor.valueOf(tenureAtr, TenureAtr.class),
-				EnumAdaptor.valueOf(taxAtr, TaxAtr.class),
-				new PensionInsuranceGrade(pensionInsuranceGrade),
-				new PensionAverageEarn(pensionAverageEarn),
-				EnumAdaptor.valueOf(employmentInsuranceAtr, EmploymentInsuranceAtr.class),
-				new DependentNumber(dependentNumber),
-				EnumAdaptor.valueOf(workInsuranceCalculateAtr, WorkInsuranceCalculateAtr.class),
-				EnumAdaptor.valueOf(insuredAtr, InsuredAtr.class),
-				new BonusTaxRate(bonusTaxRate),
-				EnumAdaptor.valueOf(calcFlag, CalcFlag.class),
-				EnumAdaptor.valueOf(makeMethodFlag, MakeMethodFlag.class),
-				new Comment(comment));
-		
-		payment.setDetailPaymentItems(detailPaymentItems);
-		payment.setDetailDeductionItems(detailDeductionItems);
-		payment.setDetailPersonalTimeItems(detailPersonalTimeItems);
-		payment.setDetailArticleItems(detailArticleItems);
-		
-		return payment;
 	}
 	
 	public void setDetailPaymentItems(List<DetailItem> items) {

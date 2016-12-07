@@ -15,6 +15,8 @@ import lombok.Setter;
 public class CreatePaymentDataCommand {
 	private String personId;
 	
+	private String personName;
+	
 	private int processingNo;
 	
 	/**

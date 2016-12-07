@@ -39,6 +39,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.MakeMethodFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
+import nts.uk.ctx.pr.proto.dom.paymentdata.PersonName;
 import nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SpecificationCode;
@@ -141,7 +142,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				baseYearMonth,
 				payCalBasicInfo,
 				payDay,
-				command.getPersonId());
+				command.getPersonId(),
+				command.getPersonName()
+				);
 	}
 
 	/**
@@ -154,7 +157,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 			YearMonth baseYearMonth,
 			PaymentCalculationBasicInformation payCalBasicInfo,
 			PaymentDateMaster payDay,
-			String personId) {
+			String personId, 
+			String personName) {
 		// check exists
 		boolean isExists = paymentDataCheckService.isExists(loginInfo.companyCode(), personId, PayBonusAtr.SALARY, processingYearMonth.v());
 		if (isExists) {
@@ -219,7 +223,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		List<DetailItem> detailArticleList = payDetail.get(CategoryAtr.ARTICLES);
 				
 		Payment paymentHead = this.toDomain(
-				loginInfo.companyCode(), personId, processingNo, processingYearMonth, stmtCode,
+				loginInfo.companyCode(), personId, personName, processingNo, processingYearMonth, stmtCode,
 				detailPaymentList, detailDeductionList, detailPersonTimeList, detailArticleList, positionCategoryList, payDay);
 		
 		// Save detail payment with calculate payment
@@ -245,12 +249,13 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * 
 	 * @return domain
 	 */
-	private Payment toDomain(String companyCode, String personId, int processingNo, YearMonth processingYearMonth, String stmtCode,
+	private Payment toDomain(String companyCode, String personId, String personName, int processingNo, YearMonth processingYearMonth, String stmtCode,
 			List<DetailItem> detailPaymentList, List<DetailItem> detailDeductionList, List<DetailItem> detailPersonTimeList, List<DetailItem> detailArticleList,
 			List<PrintPositionCategory> positionCategoryList, PaymentDateMaster payDay) {
 		Payment payment = new Payment(
 				new CompanyCode(companyCode), 
 				new PersonId(personId),
+				new PersonName(personName),
 				new ProcessingNo(processingNo), 
 				PayBonusAtr.SALARY, 
 				processingYearMonth, 

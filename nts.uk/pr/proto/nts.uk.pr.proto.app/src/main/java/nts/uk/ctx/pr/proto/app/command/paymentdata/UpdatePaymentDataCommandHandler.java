@@ -110,6 +110,10 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 			List<DetailItemCommandBase> details = x.getDetails().stream().filter(t -> !StringUtil.isNullOrEmpty(t.getItemCode(), true)).collect(Collectors.toList());
 			for (DetailItemCommandBase item : details) {
 				
+				if ("".equals(item.getValue())) {
+					throw new BusinessException("入力にエラーがあります。");
+				}
+				
 				DetailItem detailItem = DetailItem.createFromJavaType(
 						item.getItemCode(), 
 						item.getValue(),

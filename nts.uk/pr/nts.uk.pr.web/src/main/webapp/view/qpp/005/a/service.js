@@ -31,11 +31,12 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getPaymentData = getPaymentData;
-                            function register(paymentData) {
+                            function register(employee, paymentData) {
                                 var result = {
                                     paymentHeader: ko.toJS(paymentData.paymentHeader),
                                     categories: ko.toJS(paymentData.categories)
                                 };
+                                result.paymentHeader.personName = employee.name;
                                 var isCreated = result.paymentHeader.created;
                                 if (!isCreated) {
                                     return nts.uk.request.ajax(servicePath.insertData, result);

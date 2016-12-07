@@ -83,7 +83,7 @@ module nts.uk.pr.view.qpp005.a {
                     return false;
                 }
 
-                qpp005.a.service.register(self.paymentDataResult()).done(function(res) {
+                qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function(res) {
                     self.startPage().done(function() {
                         utils.gridSetup(self.switchButton().selectedRuleCode());
                     });
@@ -287,6 +287,7 @@ module nts.uk.pr.view.qpp005.a {
         // header
         export class PaymentDataHeaderViewModel {
             personId: string;
+            personName: string;
             processingYM: number;
             dependentNumber: number;
             specificationCode: string;
@@ -297,11 +298,12 @@ module nts.uk.pr.view.qpp005.a {
             printPositionCategories: Array<PrintPositionCategoryViewModel>;
             isCreated: boolean;
 
-            constructor(personId: string, processingYM: number, dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
+            constructor(personId: string, personName: string, processingYM: number, dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
                 printPositionCategories: Array<PrintPositionCategoryViewModel>, isCreated: boolean) {
                 var self = this;
 
                 self.personId = personId;
+                self.personName = personName;
                 self.processingYM = processingYM;
                 self.dependentNumber = dependentNumber;
                 self.specificationCode = specificationCode;
