@@ -955,6 +955,20 @@ var nts;
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
                         }));
+                        container.on('validate', (function (e) {
+                            // Check empty value
+                            var itemsSelected = container.data('value');
+                            var required = container.data('required');
+                            if (required) {
+                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                                    console.log('ListBox selection must not be empty');
+                                }
+                                else {
+                                    selectListBoxContainer.ntsError('clear');
+                                }
+                            }
+                        }));
                         // Create method.
                         $.fn.deselectAll = function () {
                             $(this).data('value', '');
@@ -1114,19 +1128,7 @@ var nts;
                             $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                             container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
-                        container.on('selectionChanged', (function (e) {
-                            // Check empty value
-                            var itemsSelected = container.data('value');
-                            var required = container.data('required');
-                            if (required) {
-                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                                }
-                                else {
-                                    selectListBoxContainer.ntsError('clear');
-                                }
-                            }
-                        }));
+                        //container.trigger('validate');                   
                     };
                     return ListBoxBindingHandler;
                 }());

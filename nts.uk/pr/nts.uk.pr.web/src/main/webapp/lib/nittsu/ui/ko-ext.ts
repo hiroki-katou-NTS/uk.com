@@ -985,7 +985,21 @@ module nts.uk.ui.koExtentions {
                 
                 
             }));
-
+            
+            container.on('validate', (function(e: Event) {
+                // Check empty value
+                
+                    var itemsSelected: any = container.data('value');
+                    var required = container.data('required');
+                    if(required) {
+                        if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                            selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                            console.log('ListBox selection must not be empty');
+                        } else {
+                            selectListBoxContainer.ntsError('clear');                       
+                        }
+                    }
+            }));
             // Create method.
             $.fn.deselectAll = function() {
                 $(this).data('value', '');
@@ -1156,21 +1170,7 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-            container.on('selectionChanged', (function(e: Event) {
-                // Check empty value
-                var itemsSelected: any = container.data('value');
-                var required = container.data('required');
-                if(required) {
-                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                        
-                    } else {
-                        selectListBoxContainer.ntsError('clear');
-                     
-                    }
-                }
-            }));
-           
+            //container.trigger('validate');                   
         }
     }
 
