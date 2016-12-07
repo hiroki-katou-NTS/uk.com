@@ -134,12 +134,11 @@ public class DetailItem extends DomainObject {
 	 * @param itemAtr
 	 *            itemAtr
 	 */
-	public DetailItem additionalInfo(int limitAmount, int fixPayAtr, int averagePayAtr, int itemAtr) {
+	public void additionalInfo(int limitAmount, int fixPayAtr, int averagePayAtr, int itemAtr) {
 		this.limitAmount = limitAmount;
 		this.fixPayAtr = fixPayAtr;
 		this.averagePayAtr = averagePayAtr;
 		this.itemAtr = EnumAdaptor.valueOf(itemAtr, ItemAtr.class);
-		return this;
 	}
 
 	/**
@@ -154,13 +153,12 @@ public class DetailItem extends DomainObject {
 	 * @param deductionAtr
 	 *            deductionAtr
 	 */
-	public DetailItem additionalInfo(CorrectFlag correctFlag, int socialInsuranceAtr, int laborInsuranceAtr,
+	public void additionalInfo(CorrectFlag correctFlag, int socialInsuranceAtr, int laborInsuranceAtr,
 			DeductionAtr deductionAtr) {
 		this.correctFlag = correctFlag;
 		this.socialInsuranceAtr = EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class);
 		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class);
 		this.deductionAtr = deductionAtr;
-		return this;
 	}
 
 	/**
@@ -171,9 +169,8 @@ public class DetailItem extends DomainObject {
 	 * @param columnPosition
 	 *            columnPosition
 	 */
-	public DetailItem additionalInfo(int linePosition, int columnPosition) {
+	public void additionalInfo(int linePosition, int columnPosition) {
 		this.itemPosition = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
-		return this;
 	}
 	
 	/**
@@ -181,9 +178,8 @@ public class DetailItem extends DomainObject {
 	 * @param commuteAllowMonth
 	 * @return
 	 */
-	public DetailItem additionalInfo(double commuteAllowMonth) {
+	public void additionalInfo(double commuteAllowMonth) {
 		this.commuteAllowMonth = commuteAllowMonth;
-		return this;
 	}
 
 	/**

@@ -24,7 +24,7 @@
 
     /*similar with Math.trunc, get integer value from decimal*/
     export var trunc: (value: number) => number;
-    trunc = (typeof Math.trunc === 'function') ? Math.trunc : value => value > 0 ? Math.floor(value) : Math.ceil(value);
+    trunc = (typeof (<any>Math).trunc === 'function') ? (<any>Math).trunc : value => value > 0 ? Math.floor(value) : Math.ceil(value);
     
     export function getDecimal(value: any, scale: number){
         var scaleX = Math.pow(10, scale);
