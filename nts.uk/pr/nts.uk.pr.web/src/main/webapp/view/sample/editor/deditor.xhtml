@@ -48,6 +48,8 @@
 						
 						<div data-bind="with: dynamiceditor">
 							<h2>Dynamic Editor (version="<span data-bind="text: constraint"></span>")</h2>
+							<select data-bind="options: constraints, value: constraint"></select>
+							<p/><br/>
 							<input id="testPushError" data-name="テスト" data-bind="ntsDynamicEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 							<br/><br/>
 							<!-- Direct Binding -->

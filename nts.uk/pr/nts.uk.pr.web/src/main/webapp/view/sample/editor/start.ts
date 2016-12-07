@@ -18,7 +18,8 @@ __viewContext.ready(function () {
             self.dynamiceditor = {
                 editortype: 'texteditor',
                 value: ko.observable(''),
-                constraint: 'ResidenceCode',
+                constraint: ko.observable('ResidenceCode'),
+                constraints: ko.observableArray(['ResidenceCode','EmployeeCode']),
                 option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
                 enable: ko.observable(true),
                 readonly: ko.observable(false) 
