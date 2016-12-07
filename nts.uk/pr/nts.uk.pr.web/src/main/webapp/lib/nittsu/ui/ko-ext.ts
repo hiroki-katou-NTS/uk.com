@@ -770,9 +770,9 @@ module nts.uk.ui.koExtentions {
             var optionValue = ko.unwrap(data.optionsValue);
             var optionText = ko.unwrap(data.optionsText);
             var selectedValue = ko.unwrap(data.value);
-            var editable = data.editable;
-            var enable: boolean = data.enable;
-            var columns: Array<any> = data.columns;
+            var editable = ko.unwrap(data.editable);
+            var enable: boolean = ko.unwrap(data.enable);
+            var columns: Array<any> = ko.unwrap(data.columns);
 
             // Container.
             var container = $(element);

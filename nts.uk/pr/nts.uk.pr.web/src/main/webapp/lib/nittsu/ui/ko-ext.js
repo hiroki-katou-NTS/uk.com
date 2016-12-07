@@ -768,9 +768,9 @@ var nts;
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
-                        var editable = data.editable;
-                        var enable = data.enable;
-                        var columns = data.columns;
+                        var editable = ko.unwrap(data.editable);
+                        var enable = ko.unwrap(data.enable);
+                        var columns = ko.unwrap(data.columns);
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';
