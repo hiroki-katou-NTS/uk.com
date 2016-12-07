@@ -7,6 +7,8 @@ var qmm019;
             function ScreenModel() {
                 this.itemListFull = [];
                 this.itemListSearch = [];
+                this.queueSearchResult = [];
+                this.textSearch = "";
                 this.notHasKintai = ko.observable(false);
                 this.notHasKiji = ko.observable(false);
                 this.startYm = ko.observable("");
@@ -44,18 +46,33 @@ var qmm019;
             }
             ScreenModel.prototype.searchLayout = function () {
                 var self = this;
-                var textSearch = $("#A_INP_001").val();
-                self.itemList([]);
-                if (textSearch.trim().length === 0) {
-                    self.itemList(self.itemListFull);
+                var textSearch = $("#A_INP_001").val().trim();
+                if (textSearch.length === 0) {
+                    nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
                 }
                 else {
-                    self.itemListSearch = _.filter(self.itemListFull, function (item) {
-                        return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
-                    });
-                    self.itemList(self.itemListSearch);
+                    if (self.textSearch !== textSearch) {
+                        self.itemListSearch = _.filter(self.itemListFull, function (item) {
+                            return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
+                        });
+                        self.queueSearchResult = [];
+                        for (var _i = 0, _a = self.itemListSearch; _i < _a.length; _i++) {
+                            var item = _a[_i];
+                            for (var _b = 0, _c = item.childs; _b < _c.length; _b++) {
+                                var child = _c[_b];
+                                self.queueSearchResult.push(child);
+                            }
+                        }
+                        self.textSearch = textSearch;
+                    }
                     if (self.itemListSearch.length === 0) {
                         nts.uk.ui.dialog.alert("対象データがありません。");
+                    }
+                    else {
+                        var firstResult = _.first(self.queueSearchResult);
+                        self.singleSelectedCode(firstResult.code);
+                        self.queueSearchResult.shift();
+                        self.queueSearchResult.push(firstResult);
                     }
                 }
             };

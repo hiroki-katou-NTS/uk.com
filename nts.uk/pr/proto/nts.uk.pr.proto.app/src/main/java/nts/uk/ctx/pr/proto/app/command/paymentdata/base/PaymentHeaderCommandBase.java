@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 public class PaymentHeaderCommandBase {
 
 	private String personId;
-	
+
 	private String personName;
 
 	private int processingNo = 1;
@@ -32,6 +32,8 @@ public class PaymentHeaderCommandBase {
 	private LocalDate standardDate;
 
 	private String specificationCode;
+
+	private String specificationName;
 
 	private String residenceCode = "000001";
 
@@ -75,11 +77,11 @@ public class PaymentHeaderCommandBase {
 	 * @return domain
 	 */
 	public Payment toDomain(String companyCode) {
-		Payment payment = Payment.createFromJavaType(companyCode, this.personId, this.personName, this.processingNo, this.payBonusAtr,
-				this.processingYM, this.sparePayAtr, this.standardDate, this.specificationCode, this.residenceCode,
-				this.residenceName, this.healthInsuranceGrade, this.healthInsuranceAverageEarn,
-				this.ageContinuationInsureAtr, this.tenureAtr, this.taxAtr, this.pensionInsuranceGrade,
-				this.pensionAverageEarn, this.employmentInsuranceAtr, this.dependentNumber,
+		Payment payment = Payment.createFromJavaType(companyCode, this.personId, this.personName, this.processingNo,
+				this.payBonusAtr, this.processingYM, this.sparePayAtr, this.standardDate, this.specificationCode,
+				this.specificationName, this.residenceCode, this.residenceName, this.healthInsuranceGrade,
+				this.healthInsuranceAverageEarn, this.ageContinuationInsureAtr, this.tenureAtr, this.taxAtr,
+				this.pensionInsuranceGrade, this.pensionAverageEarn, this.employmentInsuranceAtr, this.dependentNumber,
 				this.workInsuranceCalculateAtr, this.insuredAtr, this.bonusTaxRate, this.calcFlag, this.makeMethodFlag,
 				this.comment);
 

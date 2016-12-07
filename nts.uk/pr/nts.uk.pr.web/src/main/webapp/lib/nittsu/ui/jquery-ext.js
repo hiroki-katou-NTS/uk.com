@@ -11,26 +11,30 @@ var nts;
                     var DATA_HAS_ERROR = 'haserror';
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
-                        var result;
+                        if (action === 'haserror') {
+                            var result = true;
+                            $control.each(function (index) {
+                                var $item = $(this);
+                                result = result && hasError($item);
+                            });
+                            return result;
+                        }
+                        else {
+                            $control.each(function (index) {
+                                var $item = $(this);
+                                $item = processErrorOnItem($item, message, action);
+                            });
+                        }
+                    };
+                    //function for set and clear error
+                    function processErrorOnItem($control, message, action) {
                         switch (action) {
                             case 'set':
                                 return setError($control, message);
                             case 'clear':
-                                var x = [];
-                                for (var i = 0; i < $control.length; i++) {
-                                    x.push(clearErrors($($control[i])));
-                                }
-                                return x;
-                            //                    return clearErrors($control);
-                            case 'hasError':
-                                for (var i = 0; i < $control.length; i++) {
-                                    if (hasError($($control[i]))) {
-                                        return true;
-                                    }
-                                }
-                                return false;
+                                return clearErrors($control);
                         }
-                    };
+                    }
                     function setError($control, message) {
                         $control.data(DATA_HAS_ERROR, true);
                         ui.errors.add({
@@ -38,7 +42,7 @@ var nts;
                             message: message,
                             $control: $control
                         });
-                        $control.parent().addClass('error');
+                        $control.addClass('error');
                         return $control;
                     }
                     function clearErrors($control) {

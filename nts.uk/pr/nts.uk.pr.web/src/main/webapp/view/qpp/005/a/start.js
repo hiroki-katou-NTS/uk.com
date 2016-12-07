@@ -83,23 +83,26 @@ var nts;
                                             return false;
                                         }
                                     });
-                                    $tbl.on('change', 'input', function (e) {
-                                        var nId = this.id;
-                                        var nVal = $(this).val();
-                                        setBackgroundColorForItem(window.bakData, nId, nVal);
-                                    });
+                                    //                $tbl.on('change', 'input', function(e) {
+                                    //                    var nId = this.id;
+                                    //                    var nVal = $(this).val();
+                                    //
+                                    //                    setBackgroundColorForItem(nId, nVal);
+                                    //                });
                                 });
                             }
                             utils.gridSetup = gridSetup;
-                            function setBackgroundColorForItem(bakData, nId, nVal) {
-                                var include = ko.utils.arrayFirst(bakData, function (item) {
+                            function setBackgroundColorForItem(nId, nVal) {
+                                var include = ko.utils.arrayFirst(window.bakData, function (item) {
                                     return item.id === nId && item.value === nVal;
                                 });
+                                var isCorrectFlag = false;
                                 if (include) {
                                     $("#" + nId).css('background', include.color);
                                 }
                                 else {
                                     $("#" + nId).css('background', '#bdd7ee');
+                                    isCorrectFlag = true;
                                 }
                                 var ctId = nId.split('_')[0];
                                 if (ctId === 'ct0') {
@@ -110,6 +113,7 @@ var nts;
                                     $("#" + window.lastItems[1].id).css('background', '#f4b084');
                                     $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
                                 }
+                                return isCorrectFlag;
                             }
                             utils.setBackgroundColorForItem = setBackgroundColorForItem;
                             var itemBAK = (function () {

@@ -6,6 +6,8 @@ module qmm019.a {
         itemList: KnockoutObservableArray<NodeTest>;
         itemListFull: Array<NodeTest> = [];
         itemListSearch: Array<NodeTest> = [];
+        queueSearchResult: Array<NodeTest> = [];
+        textSearch: string = "";
         singleSelectedCode: KnockoutObservable<string>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
         layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
@@ -52,17 +54,30 @@ module qmm019.a {
         
         searchLayout() {
             var self = this;
-            var textSearch: string = $("#A_INP_001").val();
-            self.itemList([]);
-            if (textSearch.trim().length === 0){
-                self.itemList(self.itemListFull);
+            var textSearch: string = $("#A_INP_001").val().trim();
+            
+            if (textSearch.length === 0){
+                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
             } else {
-                self.itemListSearch = _.filter(self.itemListFull, function(item) {
-                    return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
-                });
-                self.itemList(self.itemListSearch);
+                if (self.textSearch !== textSearch) {
+                    self.itemListSearch = _.filter(self.itemListFull, function(item) {
+                        return _.includes(item.code, textSearch) || _.includes(item.name, textSearch);
+                    });
+                    self.queueSearchResult = [];
+                    for (let item of self.itemListSearch) {
+                        for (let child of item.childs) {
+                            self.queueSearchResult.push(child);    
+                        }
+                    }
+                    self.textSearch = textSearch;
+                }
                 if (self.itemListSearch.length === 0){
                     nts.uk.ui.dialog.alert("対象データがありません。");
+                } else {
+                    let firstResult: NodeTest = _.first(self.queueSearchResult);
+                    self.singleSelectedCode(firstResult.code);
+                    self.queueSearchResult.shift();
+                    self.queueSearchResult.push(firstResult);
                 }
             }
         }

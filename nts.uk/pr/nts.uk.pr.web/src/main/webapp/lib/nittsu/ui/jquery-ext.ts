@@ -4,35 +4,37 @@ interface JQuery {
 }
 
 module nts.uk.ui.jqueryExtentions {
-
+    
     module ntsError {
         var DATA_HAS_ERROR = 'haserror';
-
-        $.fn.ntsError = function(action: string, message: string): any {
-            var $control = $(this);
-
-            var result;
+        
+        $.fn.ntsError = function (action: string, message: string): any {
+            var $control = $(this);                   
+            if(action === 'haserror') {
+               var result = true;
+               $control.each(function(index) {
+                    var $item = $(this);
+                    result = result && hasError($item);
+               });
+               return result; 
+            } else {
+               $control.each(function(index) {
+                    var $item = $(this);
+                    $item = processErrorOnItem($item, message, action);
+               }); 
+            }
+            
+        }
+        //function for set and clear error
+        function processErrorOnItem($control: JQuery, message: string, action: string) {
             switch (action) {
                 case 'set':
                     return setError($control, message);
+                    
                 case 'clear':
-                    var x = [];
-                    for (var i = 0; i < $control.length; i++) {
-                        x.push(clearErrors($($control[i])));
-                    }
-                    return x;
-                //                    return clearErrors($control);
-                case 'hasError':    
-                    for (var i = 0; i < $control.length; i++) {
-                        if(hasError($($control[i]))){
-                            return true;    
-                        }
-                    }
-                    return false;
-            }
-
+                    return clearErrors($control);                 
+           }       
         }
-
         function setError($control: JQuery, message: string) {
             $control.data(DATA_HAS_ERROR, true);
             ui.errors.add({
@@ -40,83 +42,83 @@ module nts.uk.ui.jqueryExtentions {
                 message: message,
                 $control: $control
             });
-
-            $control.parent().addClass('error');
-
+            
+            $control.addClass('error');
+            
             return $control;
         }
-
+        
         function clearErrors($control: JQuery) {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
-
+            
             $control.removeClass('error');
-
+            
             return $control;
         }
-
+        
         function hasError($control: JQuery) {
             return $control.data(DATA_HAS_ERROR) === true;
         }
     }
-
+    
     module ntsPopup {
         let DATA_INSTANCE_NAME = 'nts-popup-panel';
-
-        $.fn.ntsPopup = function() {
-
+        
+        $.fn.ntsPopup = function () {
+            
             if (arguments.length === 1) {
                 var p: any = arguments[0];
                 if (_.isPlainObject(p)) {
                     return init.apply(this, arguments);
                 }
             }
-
+            
             if (typeof arguments[0] === 'string') {
                 return handleMethod.apply(this, arguments);
             }
         }
-
+        
         function init(param): JQuery {
             var popup = new NtsPopupPanel($(this), param.position);
-
-            _.defer(function() {
-                $(window).mousedown(function(e) {
+            
+            _.defer(function () {
+                $(window).mousedown(function (e) {
                     if ($(e.target).closest(popup.$panel).length === 0) {
                         popup.hide();
                     }
                 });
             });
-
+            
             return popup.$panel;
         }
-
+        
         function handleMethod() {
             var methodName: string = arguments[0];
             var popup: NtsPopupPanel = $(this).data(DATA_INSTANCE_NAME);
-
+            
             switch (methodName) {
                 case 'show':
                     popup.show();
                     break;
             }
         }
-
+        
         class NtsPopupPanel {
-
+            
             $panel: JQuery;
             position: any;
-
+            
             constructor($panel: JQuery, position: any) {
-
+                
                 this.position = position;
-
+                
                 this.$panel = $panel
                     .data(DATA_INSTANCE_NAME, this)
                     .addClass('popup-panel')
                     .appendTo('body');
             }
-
+            
             show() {
                 this.$panel
                     .css({
@@ -128,7 +130,7 @@ module nts.uk.ui.jqueryExtentions {
                         visibility: 'visible'
                     });
             }
-
+            
             hide() {
                 this.$panel.css({
                     display: 'none'

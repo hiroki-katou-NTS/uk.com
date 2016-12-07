@@ -61,6 +61,9 @@ public class Payment extends AggregateRoot {
 
 	@Getter
 	private SpecificationCode specificationCode;
+	
+	@Getter
+	private SpecificationName specificationName;
 
 	@Getter
 	private ResidenceCode residenceCode;
@@ -141,6 +144,7 @@ public class Payment extends AggregateRoot {
 				SparePayAtr sparePayAtr, 
 				LocalDate standardDate,
 				SpecificationCode specificationCode, 
+				SpecificationName specificationName,
 				ResidenceCode residenceCode, 
 				ResidenceName residenceName,
 				HealthInsuranceGrade healthInsuranceGrade, 
@@ -169,6 +173,7 @@ public class Payment extends AggregateRoot {
 		this.sparePayAtr = sparePayAtr;
 		this.standardDate = standardDate;
 		this.specificationCode = specificationCode;
+		this.specificationName = specificationName;
 		this.residenceCode = residenceCode;
 		this.residenceName = residenceName;
 		this.healthInsuranceGrade = healthInsuranceGrade;
@@ -198,6 +203,7 @@ public class Payment extends AggregateRoot {
 							int sparePayAtr, 
 							LocalDate standardDate,
 							String specificationCode, 
+							String specificationName,
 							String residenceCode, 
 							String residenceName,
 							int healthInsuranceGrade, 
@@ -227,6 +233,7 @@ public class Payment extends AggregateRoot {
 					EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class),
 					standardDate,
 					new SpecificationCode(specificationCode),
+					new SpecificationName(specificationName),
 					new ResidenceCode(residenceCode),
 					new ResidenceName(residenceName),
 					new HealthInsuranceGrade(healthInsuranceGrade),

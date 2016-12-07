@@ -35,7 +35,7 @@ public class DetailItemCommandBase {
 	/**
 	 * 修正フラグ
 	 */
-	int correctFlag = 0;
+	int correctFlag;
 
 	/**
 	 * 社保対象区分
