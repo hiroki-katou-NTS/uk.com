@@ -89,6 +89,7 @@ var qpp004;
                     var dfd = $.Deferred();
                     var parameter = {
                         personId: personId.id,
+                        personName: personId.name,
                         processingNo: data.processingNo,
                         processingYearMonth: data.processingYearMonth
                     };

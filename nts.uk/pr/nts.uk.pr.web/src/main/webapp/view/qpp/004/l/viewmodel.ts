@@ -115,6 +115,7 @@ module qpp004.l.viewmodel {
             
             var parameter = {
                     personId: personId.id,
+                    personName: personId.name,
                     processingNo: data.processingNo,
                     processingYearMonth: data.processingYearMonth
                 };
