@@ -892,8 +892,10 @@ var nts;
                         var enable = data.enable;
                         var columns = data.columns;
                         var rows = data.rows;
+                        var required = data.required || false;
                         // Container.
                         var container = $(element);
+                        container.data('required', required);
                         // Default value.
                         var selectSize = 6;
                         // Create select.
@@ -1112,22 +1114,19 @@ var nts;
                             $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                             container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
-                        if (selectListBoxContainer.parent().css('display') != 'none') {
-                            if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
-                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                        container.on('selectionChanged', (function (e) {
+                            // Check empty value
+                            var itemsSelected = container.data('value');
+                            var required = container.data('required');
+                            if (required) {
+                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                                }
+                                else {
+                                    selectListBoxContainer.ntsError('clear');
+                                }
                             }
-                            else {
-                                selectListBoxContainer.ntsError('clear');
-                            }
-                        }
-                        else if (selectListBoxContainer.css('display') != 'none') {
-                            if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
-                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                            }
-                            else {
-                                selectListBoxContainer.ntsError('clear');
-                            }
-                        }
+                        }));
                     };
                     return ListBoxBindingHandler;
                 }());

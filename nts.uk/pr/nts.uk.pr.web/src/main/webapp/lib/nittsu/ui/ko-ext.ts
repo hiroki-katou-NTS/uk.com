@@ -904,10 +904,10 @@ module nts.uk.ui.koExtentions {
             var enable: boolean = data.enable;
             var columns: Array<any> = data.columns;
             var rows = data.rows;
-
+            var required = data.required || false;
             // Container.
             var container = $(element);
-
+            container.data('required',required);    
             // Default value.
             var selectSize = 6;
 
@@ -1156,23 +1156,21 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-            if(selectListBoxContainer.parent().css('display') != 'none'){
-                if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
-                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                    
-                } else {
-                    selectListBoxContainer.ntsError('clear');
-                    
+            container.on('selectionChanged', (function(e: Event) {
+                // Check empty value
+                var itemsSelected: any = container.data('value');
+                var required = container.data('required');
+                if(required) {
+                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                        
+                    } else {
+                        selectListBoxContainer.ntsError('clear');
+                     
+                    }
                 }
-           } else if(selectListBoxContainer.css('display') != 'none') {
-                if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
-                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                    
-                } else {
-                    selectListBoxContainer.ntsError('clear');
-                    
-                }
-           }
+            }));
+           
         }
     }
 
