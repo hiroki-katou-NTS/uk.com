@@ -1112,6 +1112,22 @@ var nts;
                             $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                             container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
+                        if (selectListBoxContainer.parent().css('display') != 'none') {
+                            if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
+                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                            }
+                            else {
+                                selectListBoxContainer.ntsError('clear');
+                            }
+                        }
+                        else if (selectListBoxContainer.css('display') != 'none') {
+                            if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
+                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                            }
+                            else {
+                                selectListBoxContainer.ntsError('clear');
+                            }
+                        }
                     };
                     return ListBoxBindingHandler;
                 }());

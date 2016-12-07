@@ -198,10 +198,15 @@ div.popup-panel {
   border-color: #ff6666;
 }
 
+/* line 100, ../sass/components/_commons.scss */
+.error {
+  border: 1px solid #ff6666;
+}
+
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 105, ../sass/components/_commons.scss */
+/* line 107, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: inline-block;
@@ -217,7 +222,7 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 118, ../sass/components/_commons.scss */
+/* line 120, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
@@ -353,7 +358,7 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
+  /* IgniteUI é╞é╠îôé╦ìçéóé┼background-coloré╔é═!importanté¬òKùvé┴é█éóüH */
 }
 /* line 28, ../sass/components/_button.scss */
 button:hover {
@@ -1367,7 +1372,7 @@ button.nts-switch-button.selected:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: '￥';
+  content: 'üÅ';
   left: 0;
   top: 0;
   text-align: left;

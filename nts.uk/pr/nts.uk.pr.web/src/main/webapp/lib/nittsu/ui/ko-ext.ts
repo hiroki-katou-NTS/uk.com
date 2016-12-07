@@ -756,6 +756,7 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
         }
 
         /**
@@ -953,7 +954,8 @@ module nts.uk.ui.koExtentions {
                     $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 }
 
-
+                
+                
             });
 
             // Fire event.
@@ -1007,6 +1009,7 @@ module nts.uk.ui.koExtentions {
                         break;
                 }
             }
+          
         }
 
         /**
@@ -1153,7 +1156,23 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-
+            if(selectListBoxContainer.parent().css('display') != 'none'){
+                if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
+                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                    
+                } else {
+                    selectListBoxContainer.ntsError('clear');
+                    
+                }
+           } else if(selectListBoxContainer.css('display') != 'none') {
+                if (selectedValue === undefined || selectedValue === null || selectedValue.length == 0) {
+                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                    
+                } else {
+                    selectListBoxContainer.ntsError('clear');
+                    
+                }
+           }
         }
     }
 
