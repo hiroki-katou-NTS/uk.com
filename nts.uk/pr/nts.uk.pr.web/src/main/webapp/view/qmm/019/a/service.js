@@ -95,6 +95,11 @@ var qmm019;
                             linePosition++;
                             var itemPosColumn = 1;
                             var sortedItemCodes = $("#" + line.rowId).sortable("toArray");
+                            // Vì item mà required thì ko được sortable nên cần kiểm tra để thêm item này vào còn save.
+                            if (line.hasRequiredItem) {
+                                var detailRequired = _.last(line.details);
+                                sortedItemCodes.push(detailRequired.itemCode());
+                            }
                             var _loop_2 = function(item) {
                                 var detail = _.find(line.details, function (itemDetail) {
                                     return itemDetail.itemCode() === item.toString();

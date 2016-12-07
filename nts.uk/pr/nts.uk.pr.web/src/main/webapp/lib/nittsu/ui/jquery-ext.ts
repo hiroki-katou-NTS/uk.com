@@ -9,20 +9,32 @@ module nts.uk.ui.jqueryExtentions {
         var DATA_HAS_ERROR = 'haserror';
         
         $.fn.ntsError = function (action: string, message: string): any {
-            var $control = $(this);
-            
-            var result;
-            switch (action) {
-                case 'set':
-                    return setError($control, message);
-                case 'clear':
-                    return clearErrors($control);
-                case 'hasError':
-                    return hasError($control);
+            var $control = $(this);                   
+            if(action === 'haserror') {
+               var result = true;
+               $control.each(function(index) {
+                    var $item = $(this);
+                    result = result && hasError($item);
+               });
+               return result; 
+            } else {
+               $control.each(function(index) {
+                    var $item = $(this);
+                    $item = processErrorOnItem($item, message, action);
+               }); 
             }
             
         }
-        
+        //function for set and clear error
+        function processErrorOnItem($control: JQuery, message: string, action: string) {
+            switch (action) {
+                case 'set':
+                    return setError($control, message);
+                    
+                case 'clear':
+                    return clearErrors($control);                 
+           }       
+        }
         function setError($control: JQuery, message: string) {
             $control.data(DATA_HAS_ERROR, true);
             ui.errors.add({
