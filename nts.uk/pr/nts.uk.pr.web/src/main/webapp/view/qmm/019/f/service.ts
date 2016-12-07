@@ -66,6 +66,7 @@ module qmm019.f.service {
             alamRangeHigh: number;
             isUseLowAlam: number;
             alamRangeLow: number;
+            taxAtr: number;
         }
     }
 }
