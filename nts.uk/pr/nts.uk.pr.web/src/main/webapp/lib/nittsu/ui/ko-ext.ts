@@ -82,11 +82,15 @@ module nts.uk.ui.koExtentions {
             } else {
                 if (constraint) {
                     if(constraint.valueType === 'String') {
-                        return validation.createValidator(constraintName);
+                        return TextEditorProcessor.prototype.getValidator(data);
                     } else if(data.option) {
                         var option = ko.unwrap(data.option);
-                       
-                        return validation.createValidator(constraintName, option);
+                        //If inputFormat presented, this is Date or Time Editor
+                        if(option.inputFormat) {
+                            return TimeEditorProcessor.prototype.getValidator(data);
+                        } else  {
+                            return NumberEditorProcessor.prototype.getValidator(data);                           
+                        } 
                     }
                 }
                 return validation.createValidator(constraintName);
@@ -98,8 +102,7 @@ module nts.uk.ui.koExtentions {
             var constraint = validation.getConstraint(constraintName);
             if(data.editortype) {
                 var editortype = ko.unwrap(data.editortype);
-                switch(editortype) {
-                   
+                switch(editortype) {              
                    case 'numbereditor':
                       return NumberEditorProcessor.prototype.getFormatter(data);
                    case 'timeeditor':
@@ -112,15 +115,14 @@ module nts.uk.ui.koExtentions {
             } else {
                 if (constraint) {
                     if(constraint.valueType === 'String') {
-                        return new text.StringFormatter(data);
+                        return TextEditorProcessor.prototype.getFormatter(data);
                     } else if(data.option) {
                         var option = ko.unwrap(data.option);
                         //If inputFormat presented, this is Date or Time Editor
                         if(option.inputFormat) {
-                            return new text.TimeFormatter({ option: option });
+                            return TimeEditorProcessor.prototype.getFormatter(data);
                         } else  {
-                            return new nts.uk.text.NumberFormatter({option: option})
-                           
+                            return NumberEditorProcessor.prototype.getFormatter(data);                           
                         } 
                     }
                 }

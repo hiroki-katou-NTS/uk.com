@@ -3,6 +3,7 @@ import editorOption = nts.uk.ui.option;
 __viewContext.ready(function () {
     class ScreenModel {
         texteditor: any;
+        dynamiceditor: any;
         employeeeditor: any;
         multilineeditor: any;
         numbereditor: any;
@@ -14,6 +15,15 @@ __viewContext.ready(function () {
         
         constructor() {
             var self = this;
+            self.dynamiceditor = {
+                editortype: 'texteditor',
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
+                enable: ko.observable(true),
+                readonly: ko.observable(false) 
+            };
+                      
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),

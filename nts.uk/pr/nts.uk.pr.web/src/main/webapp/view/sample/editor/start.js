@@ -3,6 +3,14 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
+            self.dynamiceditor = {
+                editortype: 'texteditor',
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),

@@ -91,11 +91,17 @@ var nts;
                         else {
                             if (constraint) {
                                 if (constraint.valueType === 'String') {
-                                    return validation.createValidator(constraintName);
+                                    return TextEditorProcessor.prototype.getValidator(data);
                                 }
                                 else if (data.option) {
                                     var option = ko.unwrap(data.option);
-                                    return validation.createValidator(constraintName, option);
+                                    //If inputFormat presented, this is Date or Time Editor
+                                    if (option.inputFormat) {
+                                        return TimeEditorProcessor.prototype.getValidator(data);
+                                    }
+                                    else {
+                                        return NumberEditorProcessor.prototype.getValidator(data);
+                                    }
                                 }
                             }
                             return validation.createValidator(constraintName);
@@ -120,16 +126,16 @@ var nts;
                         else {
                             if (constraint) {
                                 if (constraint.valueType === 'String') {
-                                    return new uk.text.StringFormatter(data);
+                                    return TextEditorProcessor.prototype.getFormatter(data);
                                 }
                                 else if (data.option) {
                                     var option = ko.unwrap(data.option);
                                     //If inputFormat presented, this is Date or Time Editor
                                     if (option.inputFormat) {
-                                        return new uk.text.TimeFormatter({ option: option });
+                                        return TimeEditorProcessor.prototype.getFormatter(data);
                                     }
                                     else {
-                                        return new nts.uk.text.NumberFormatter({ option: option });
+                                        return NumberEditorProcessor.prototype.getFormatter(data);
                                     }
                                 }
                             }
