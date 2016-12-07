@@ -1170,7 +1170,7 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-            container.trigger('validate');                   
+            //container.trigger('validate');                   
         }
     }
 
