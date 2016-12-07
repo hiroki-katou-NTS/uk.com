@@ -194,7 +194,7 @@ module nts.uk.pr.view.qpp005.a {
                     var bakData = self.backupData();
 
                     var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
-                    qpp005.a.utils.setBackgroundColorForItem(window.bakData, nId, totalCommuteEditor);
+                    qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor);
 
                     value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
                     value.commuteAllowTaxImpose = taxCommuteEditor;
@@ -338,6 +338,7 @@ module nts.uk.pr.view.qpp005.a {
             itemCode: string;
             itemName: string;
             value: KnockoutObservable<number>;
+            correctFlag: number;
             columnPosition: number;
             linePosition: number;
             deductAtr: number;
@@ -348,9 +349,8 @@ module nts.uk.pr.view.qpp005.a {
             commuteAllowMonth: number;
             commuteAllowFraction: number;
             isCreated: boolean;
-            option: KnockoutComputed<any>;
 
-            constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number,
+            constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, correctFlag: number,
                 columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number,
                 limitAmount: number, commuteAllowTaxImpose: number, commuteAllowMonth: number, commuteAllowFraction: number,
                 isCreated: boolean) {
@@ -370,14 +370,9 @@ module nts.uk.pr.view.qpp005.a {
                 self.commuteAllowMonth = commuteAllowMonth;
                 self.commuteAllowFraction = commuteAllowFraction;
                 self.isCreated = isCreated;
-                self.option = ko.computed(function() {
-                    if (self.itemAtr === 0) {
-                        return ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'time' }));
-                    } else if (self.itemAtr === 1) {
-                        return ko.mapping.fromJS(new option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
-                    } else if (self.itemAtr == 2 || self.itemAtr === 3) {
-                        return ko.mapping.fromJS(new option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' }));
-                    }
+                self.value.subscribe(function() {
+                    var nId = 'ct' + self.categoryAtr + '_' + (self.linePosition - 1) + '_' + (self.columnPosition - 1);
+                    qpp005.a.utils.setBackgroundColorForItem(nId, self.value());
                 });
             }
         }

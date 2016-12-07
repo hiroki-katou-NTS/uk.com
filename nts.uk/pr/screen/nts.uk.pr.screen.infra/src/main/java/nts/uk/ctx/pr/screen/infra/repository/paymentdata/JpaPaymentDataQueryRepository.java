@@ -15,7 +15,7 @@ public class JpaPaymentDataQueryRepository extends JpaRepository implements Paym
 	
 	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "
 										+ "d.linePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"
-										+ "d.commuteAllowTaxImpose, d.commuteAllowMonth, d.commuteAllowFraction" +
+										+ "d.commuteAllowTaxImpose, d.commuteAllowMonth, d.commuteAllowFraction, d.correctFlag" +
 										" FROM QstdtPaymentDetail d " +
 										" WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" +
 												" AND d.qstdtPaymentDetailPK.personId = :PID" +
@@ -81,8 +81,9 @@ public class JpaPaymentDataQueryRepository extends JpaRepository implements Paym
 		BigDecimal commuteAllowTaxImpose = (BigDecimal) x[9];
 		BigDecimal commuteAllowMonth = (BigDecimal) x[10];
 		BigDecimal commuteAllowFraction = (BigDecimal) x[11];
+		int correctFlag = (int) x[12];
 		int displayAtr  = 0;
-		return DetailItemDto.fromDomain(categoryAtr, itemAtr, itemCode, "", value.doubleValue(), linePosition, colPosition,
+		return DetailItemDto.fromDomain(categoryAtr, itemAtr, itemCode, "", value.doubleValue(),correctFlag, linePosition, colPosition,
 										deductAtr, displayAtr, taxATR, limitAmount, commuteAllowTaxImpose.doubleValue(),
 										commuteAllowMonth.doubleValue(), commuteAllowFraction.doubleValue(), true);
 	}

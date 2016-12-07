@@ -29,6 +29,11 @@ public class DetailItemDto {
 	Double value;
 
 	/**
+	 * 修正フラグ
+	 */
+	int correctFlag;
+	
+	/**
 	 * 行
 	 */
 	int linePosition;
@@ -66,6 +71,7 @@ public class DetailItemDto {
 			String itemCode, 
 			String itemName,
 			Double value, 
+			int correctFlag,
 			int linePosition, 
 			int colPosition, 
 			Integer deductAtr, 
@@ -76,7 +82,7 @@ public class DetailItemDto {
 			Double commuteAllowMonth, 
 			Double commuteAllowFraction,
 			boolean isCreated) {
-		return new DetailItemDto(categoryAtr, itemAtr, itemCode, itemName, value, linePosition, colPosition, deductAtr,
+		return new DetailItemDto(categoryAtr, itemAtr, itemCode, itemName, value, correctFlag, linePosition, colPosition, deductAtr,
 				displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction,
 				isCreated);
 

@@ -114,7 +114,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		val domain = Payment.createFromJavaType(entity.qstdtPaymentHeaderPK.companyCode,
 				entity.qstdtPaymentHeaderPK.personId, entity.employeeName, entity.qstdtPaymentHeaderPK.processingNo,
 				entity.qstdtPaymentHeaderPK.payBonusAtr, entity.qstdtPaymentHeaderPK.processingYM,
-				entity.qstdtPaymentHeaderPK.sparePayAtr, entity.standardDate, entity.specificationCode,
+				entity.qstdtPaymentHeaderPK.sparePayAtr, entity.standardDate, entity.specificationCode, entity.specificationName,
 				entity.residenceCode, entity.residenceName, entity.healthInsuranceGrade,
 				entity.healthInsuranceAverageEarn, entity.ageContinuationInsureAtr, entity.tenureAtr, entity.taxAtr,
 				entity.pensionInsuranceGrade, entity.pensionAverageEarn, entity.employmentInsuranceAtr,
@@ -139,6 +139,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.employeeName = domain.getPersonName().v();
 		entity.standardDate = domain.getStandardDate();
 		entity.specificationCode = domain.getSpecificationCode().v();
+		entity.specificationName = domain.getSpecificationName().v();
 		entity.residenceCode = domain.getResidenceCode().v();
 		entity.residenceName = domain.getResidenceName().v();
 		entity.healthInsuranceAverageEarn = domain.getHealthInsuranceAverageEarn().v().intValue();

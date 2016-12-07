@@ -157,14 +157,14 @@ public class GetPaymentDataQueryProcessor {
 			Payment payment = optPHeader.get();
 			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM,
 					payment.getDependentNumber().v(), payment.getSpecificationCode().v(), layout.getStmtName().v(),
-					payment.getMakeMethodFlag().value, query.getEmployeeCode(), payment.getComment().v(), true,
+					query.getEmployeeCode(), payment.getComment().v(), true,
 					printPosCates));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
 			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM, 0,
-					layout.getStmtCode().v(), layout.getStmtName().v(), null, query.getEmployeeCode(), "", false,
+					layout.getStmtCode().v(), layout.getStmtName().v(), query.getEmployeeCode(), "", false,
 					printPosCates));
 
 			return new ArrayList<>();
@@ -237,38 +237,45 @@ public class GetPaymentDataQueryProcessor {
 							Optional<DetailItemDto> dValue = datas.stream().filter(
 									x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
 									.findFirst();
-							Integer limitAmount;
-							Double value, comuteAllowTax, commuteAllowMonth, commuteAllowFraction;
 							if (dValue.isPresent()) {
 								DetailItemDto iValue = dValue.get();
-								value = iValue.getValue();
-								limitAmount = iValue.getLimitAmount();
-								comuteAllowTax = iValue.getCommuteAllowTaxImpose();
-								commuteAllowMonth = iValue.getCommuteAllowMonth();
-								commuteAllowFraction = iValue.getCommuteAllowFraction();
+								return DetailItemDto.fromDomain(
+										ctAtr, 
+										mItem.getItemAtr().value, 
+										d.getItemCode().v(),
+										mItem.getItemAbName().v(),
+										iValue.getValue(),
+										iValue.getCorrectFlag(),
+										mLine.getLinePosition().v(), 
+										d.getItemPosColumn().v(),
+										mItem.getDeductAttribute().value, 
+										d.getDisplayAtr().value, 
+										mItem.getTaxAtr().value,
+										iValue.getLimitAmount(),
+										iValue.getCommuteAllowTaxImpose(),
+										iValue.getCommuteAllowMonth(),
+										iValue.getCommuteAllowFraction(),
+										iValue.getValue() != null);
 							} else {
-								value = isTaxtAtr ? 0.0: null;
-								limitAmount = null;
-								comuteAllowTax = 0.0;
-								commuteAllowMonth = 0.0;
-								commuteAllowFraction = 0.0;
+								return DetailItemDto.fromDomain(
+										ctAtr, 
+										mItem.getItemAtr().value, 
+										d.getItemCode().v(),
+										mItem.getItemAbName().v(),
+										isTaxtAtr ? 0.0: null,
+										1,
+										mLine.getLinePosition().v(), 
+										d.getItemPosColumn().v(),
+										mItem.getDeductAttribute().value, 
+										d.getDisplayAtr().value, 
+										mItem.getTaxAtr().value,
+										null,
+										0.0,
+										0.0,
+										0.0,
+										false);
 							}
-							return DetailItemDto.fromDomain(
-									ctAtr, 
-									mItem.getItemAtr().value, 
-									d.getItemCode().v(),
-									mItem.getItemAbName().v(),value,
-									mLine.getLinePosition().v(), 
-									d.getItemPosColumn().v(),
-									mItem.getDeductAttribute().value, 
-									d.getDisplayAtr().value, 
-									mItem.getTaxAtr().value,
-									limitAmount,
-									comuteAllowTax,
-									commuteAllowMonth,
-									commuteAllowFraction,
-									value != null);
-						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, mLine.getLinePosition().v(), i,
+						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, 0, mLine.getLinePosition().v(), i,
 								null, null, null, null,null,null,null, false));
 
 				items.add(detailItem);

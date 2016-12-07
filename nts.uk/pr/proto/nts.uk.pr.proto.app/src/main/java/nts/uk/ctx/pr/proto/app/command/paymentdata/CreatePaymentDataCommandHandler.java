@@ -43,6 +43,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.PersonName;
 import nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.SpecificationCode;
+import nts.uk.ctx.pr.proto.dom.paymentdata.SpecificationName;
 import nts.uk.ctx.pr.proto.dom.paymentdata.TenureAtr;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
@@ -223,7 +224,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		List<DetailItem> detailArticleList = payDetail.get(CategoryAtr.ARTICLES);
 				
 		Payment paymentHead = this.toDomain(
-				loginInfo.companyCode(), personId, personName, processingNo, processingYearMonth, stmtCode,
+				loginInfo.companyCode(), personId, personName, processingNo, processingYearMonth, stmtCode, layoutMaster.getStmtName().v(),
 				detailPaymentList, detailDeductionList, detailPersonTimeList, detailArticleList, positionCategoryList, payDay);
 		
 		// Save detail payment with calculate payment
@@ -249,7 +250,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	 * 
 	 * @return domain
 	 */
-	private Payment toDomain(String companyCode, String personId, String personName, int processingNo, YearMonth processingYearMonth, String stmtCode,
+	private Payment toDomain(String companyCode, String personId, String personName, int processingNo, YearMonth processingYearMonth, String stmtCode, String stmtName,
 			List<DetailItem> detailPaymentList, List<DetailItem> detailDeductionList, List<DetailItem> detailPersonTimeList, List<DetailItem> detailArticleList,
 			List<PrintPositionCategory> positionCategoryList, PaymentDateMaster payDay) {
 		Payment payment = new Payment(
@@ -262,6 +263,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				SparePayAtr.NORMAL,
 				payDay.getStandardDate(),
 				new SpecificationCode(stmtCode), 
+				new SpecificationName(stmtName),
 				new ResidenceCode("000001"), 
 				new ResidenceName("住民税納付先"), 
 				new HealthInsuranceGrade(5), 

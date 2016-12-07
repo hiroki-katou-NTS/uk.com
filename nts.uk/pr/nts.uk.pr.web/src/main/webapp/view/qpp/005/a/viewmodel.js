@@ -170,7 +170,7 @@ var nts;
                                         var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
                                         var bakData = self.backupData();
                                         var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
-                                        qpp005.a.utils.setBackgroundColorForItem(window.bakData, nId, totalCommuteEditor);
+                                        qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor);
                                         value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
                                         value.commuteAllowTaxImpose = taxCommuteEditor;
                                         value.commuteAllowMonth = oneMonthCommuteEditor;
@@ -282,7 +282,7 @@ var nts;
                             viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                             // item
                             var DetailItemViewModel = (function () {
-                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated) {
+                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated) {
                                     var self = this;
                                     self.categoryAtr = categoryAtr;
                                     self.itemAtr = itemAtr;
@@ -299,16 +299,9 @@ var nts;
                                     self.commuteAllowMonth = commuteAllowMonth;
                                     self.commuteAllowFraction = commuteAllowFraction;
                                     self.isCreated = isCreated;
-                                    self.option = ko.computed(function () {
-                                        if (self.itemAtr === 0) {
-                                            return ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: 'time' }));
-                                        }
-                                        else if (self.itemAtr === 1) {
-                                            return ko.mapping.fromJS(new option.NumberEditorOption({ grouplength: 3, decimallength: 1 }));
-                                        }
-                                        else if (self.itemAtr == 2 || self.itemAtr === 3) {
-                                            return ko.mapping.fromJS(new option.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: 'JPY', currencyposition: 'left' }));
-                                        }
+                                    self.value.subscribe(function () {
+                                        var nId = 'ct' + self.categoryAtr + '_' + (self.linePosition - 1) + '_' + (self.columnPosition - 1);
+                                        qpp005.a.utils.setBackgroundColorForItem(nId, self.value());
                                     });
                                 }
                                 return DetailItemViewModel;
