@@ -22,6 +22,7 @@ var qmm019;
                     this.distributeWay = ko.observable(0);
                     this.personalWageCode = ko.observable('');
                     this.sumScopeAtr = ko.observable(0);
+                    this.taxAtr = ko.observable(0);
                 }
                 return ItemDto;
             }());
@@ -106,6 +107,7 @@ var qmm019;
                     }
                     self.itemName = ko.observable('');
                     self.selectedCode = ko.observable(null);
+                    self.enable = ko.observable(true);
                 }
                 return ComboBox;
             }());
@@ -118,7 +120,7 @@ var qmm019;
                         { code: 1, name: '按分する' },
                         { code: 2, name: '月１回支給' }
                     ]);
-                    self.selectedRuleCode = ko.observable('1');
+                    self.selectedRuleCode = ko.observable(1);
                 }
                 return SwitchButton;
             }());
@@ -127,17 +129,35 @@ var qmm019;
                 function ScreenModel(data) {
                     this.wageCode = ko.observable('');
                     this.wageName = ko.observable('');
+                    this.itemAtr = ko.observable('支給項目');
                     var self = this;
                     self.paramItemCode = data.itemCode;
                     self.paramCategoryAtr = ko.observable(data.categoryId);
                     self.paramIsUpdate = data.isUpdate;
                     self.paramStmtCode = data.stmtCode;
                     self.paramStartYm = data.startYm;
+                    self.taxAtr = data.taxAtr;
+                    if (self.paramCategoryAtr() === 0) {
+                        self.itemAtr("支給項目");
+                    }
+                    else if (self.paramCategoryAtr() === 1) {
+                        self.itemAtr('控除項目');
+                    }
+                    else if (self.paramCategoryAtr() === 2) {
+                        self.itemAtr('勤怠項目');
+                    }
+                    else if (self.paramCategoryAtr() === 3) {
+                        self.itemAtr(' 記事項目');
+                    }
                     var itemListSumScopeAtr = ko.observableArray([
-                        new ItemModel(0, '対象外'),
-                        new ItemModel(1, '対象内'),
-                        new ItemModel(2, '対象外（現物）'),
-                        new ItemModel(3, '対象内（現物）')
+                        new ItemModel(0, '合計対象外'),
+                        new ItemModel(1, '合計対象内'),
+                        new ItemModel(2, '合計対象外（現物）'),
+                        new ItemModel(3, '合計対象内（現物）')
+                    ]);
+                    var itemListSumScopeAtr1 = ko.observableArray([
+                        new ItemModel(0, '合計対象外'),
+                        new ItemModel(1, '合計対象内')
                     ]);
                     var itemListCalcMethod0 = ko.observableArray([
                         new ItemModel(0, '手入力'),
@@ -163,12 +183,19 @@ var qmm019;
                         new ItemModel(0, '交通機関'),
                         new ItemModel(1, '交通用具')
                     ]);
-                    self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
                     if (self.paramCategoryAtr() == 0) {
+                        //計算方法
                         self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod0));
+                        //内訳区分
+                        //「合計対象内（現物）」と「合計対象外（現物）」は項目区分が「支給項目」の場合のみ表示
+                        self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
                     }
                     else if (self.paramCategoryAtr() == 1) {
+                        //計算方法
+                        //6 支給相殺は項目区分が「控除項目」の場合のみ表示する。
                         self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod1));
+                        //内訳区分
+                        self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr1));
                     }
                     self.comboBoxDistributeWay = ko.observable(new ComboBox(itemListDistributeWay));
                     self.comboBoxCommutingClassification = ko.observable(new ComboBox(itemListCommutingClassification));
@@ -201,6 +228,15 @@ var qmm019;
                     var self = this;
                     // Page load dfd.
                     var dfd = $.Deferred();
+                    self.switchButton().selectedRuleCode.subscribe(function (newValue) {
+                        //按分方法: 非活性: 項目区分が「支給項目」 or 「控除項目」＆「按分設定」が「按分しない」の場合
+                        if (newValue == 0) {
+                            self.comboBoxDistributeWay().enable(false);
+                        }
+                        else {
+                            self.comboBoxDistributeWay().enable(true);
+                        }
+                    });
                     // Resolve start page dfd after load all data.
                     $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function (data) {
                         if (data !== null) {
@@ -242,6 +278,22 @@ var qmm019;
                         }
                         dfd.resolve();
                     }).fail(function (res) {
+                    });
+                    self.comboBoxCalcMethod().selectedCode.subscribe(function (newValue) {
+                        //通勤区分: 非表示: 「計算方法」が「手入力」以外 or 選択している項目の課税区分(TAX_ATR)が 3 or 4 以外 の場合
+                        var taxAtr = 0;
+                        var itemCode = self.listBox().selectedCode;
+                        var itemDto = _.find(self.listBox().listItemDto, function (item) {
+                            return item.itemCode === itemCode();
+                        });
+                        if (newValue != 0
+                            || itemDto.taxAtr === 3
+                            || itemDto.taxAtr === 4) {
+                            $('#calcMethod').hide();
+                        }
+                        else {
+                            $('#calcMethod').show();
+                        }
                     });
                     return dfd.promise();
                 };
@@ -328,6 +380,9 @@ var qmm019;
                 ScreenModel.prototype.checkPersonalInformationReference = function () {
                     var self = this;
                     return self.comboBoxCalcMethod().selectedCode() == 1;
+                };
+                ScreenModel.prototype.setItemDisplay = function () {
+                    var self = this;
                 };
                 return ScreenModel;
             }());
