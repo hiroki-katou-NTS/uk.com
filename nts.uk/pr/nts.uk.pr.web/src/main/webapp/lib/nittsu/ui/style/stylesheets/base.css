@@ -358,7 +358,7 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI é╞é╠îôé╦ìçéóé┼background-coloré╔é═!importanté¬òKùvé┴é█éóüH */
+  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
 }
 /* line 28, ../sass/components/_button.scss */
 button:hover {
@@ -1372,7 +1372,7 @@ button.nts-switch-button.selected:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: 'üÅ';
+  content: '￥';
   left: 0;
   top: 0;
   text-align: left;

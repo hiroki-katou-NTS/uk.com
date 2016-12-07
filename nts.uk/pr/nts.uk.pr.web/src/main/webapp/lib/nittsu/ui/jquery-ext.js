@@ -16,9 +16,19 @@ var nts;
                             case 'set':
                                 return setError($control, message);
                             case 'clear':
-                                return clearErrors($control);
+                                var x = [];
+                                for (var i = 0; i < $control.length; i++) {
+                                    x.push(clearErrors($($control[i])));
+                                }
+                                return x;
+                            //                    return clearErrors($control);
                             case 'hasError':
-                                return hasError($control);
+                                for (var i = 0; i < $control.length; i++) {
+                                    if (hasError($($control[i]))) {
+                                        return true;
+                                    }
+                                }
+                                return false;
                         }
                     };
                     function setError($control, message) {
@@ -28,7 +38,7 @@ var nts;
                             message: message,
                             $control: $control
                         });
-                        $control.addClass('error');
+                        $control.parent().addClass('error');
                         return $control;
                     }
                     function clearErrors($control) {
