@@ -90,6 +90,11 @@ module qmm019.a {
                         linePosition++;
                         let itemPosColumn = 1;
                         let sortedItemCodes = $("#" + line.rowId).sortable("toArray");
+                        // Vì item mà required thì ko được sortable nên cần kiểm tra để thêm item này vào còn save.
+                        if (line.hasRequiredItem) {
+                            let detailRequired = _.last(line.details);
+                            sortedItemCodes.push(detailRequired.itemCode());
+                        }
                         for (let item of sortedItemCodes) {
                             let detail : model.ItemDetail = _.find(line.details, function(itemDetail){
                                 return itemDetail.itemCode() === item.toString();
