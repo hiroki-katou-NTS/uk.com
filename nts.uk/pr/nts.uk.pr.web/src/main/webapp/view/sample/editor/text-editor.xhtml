@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+					nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+					nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode
+					nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
+					nts.arc.time.YearMonth
+   				</com:ValidatorScript>
+   				<!-- Because there isn't any EmployeeCode domain entity yet. I'll create it manual -->
+				<script>
+				__viewContext.primitiveValueConstraints.EmployeeCode = {
+						valueType: 'String',
+						charType: 'Numeric',
+						maxLength: 10,
+					};
+				</script>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="/lib/nittsu/ui/file.js" />
+				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>TextEditor</h1>
+						<h2>Overview</h2>
+						<div data-bind="with: texteditor">
+							<h3>TextEditor</h3>
+							<input id="testPushError" data-name="テスト" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<br/>
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
+						<br/>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+
+								</div>
+							</div>
+						</article>
+						<note>EmployeeCode is a special case of TextEditor. If TextEditor has contraint = "EmployeeCode" it'll automatic format inputted value</note>
+						<div data-bind="with: employeeeditor">
+						<h3>Employee Code</h3>
+							<input data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<br/>
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-employeecode-html">HTML Binding</a></li>
+									<li><a href="#tabs-employeecode-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-employeecode-html" class="cf">
+
+								</div>
+								<div id="tabs-employeecode-viewmodel" class="cf">
+
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

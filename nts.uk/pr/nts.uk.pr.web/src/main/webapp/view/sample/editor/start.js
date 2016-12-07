@@ -1,5 +1,94 @@
 var editorOption = nts.uk.ui.option;
 __viewContext.ready(function () {
+    var ScreenModel = (function () {
+        function ScreenModel() {
+            var self = this;
+            self.dynamiceditor = {
+                editortype: 'texteditor',
+                value: ko.observable(''),
+                constraint: ko.observable('ResidenceCode'),
+                constraints: ko.observableArray(['ResidenceCode', 'EmployeeCode']),
+                option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // TextEditor
+            self.texteditor = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // EmployeeCodeEditor
+            self.employeeeditor = {
+                value: ko.observable('19'),
+                constraint: 'EmployeeCode',
+                option: ko.mapping.fromJS(new editorOption.TextEditorOption({
+                    filldirection: "right",
+                    fillcharacter: "0"
+                })),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // MultilineEditor
+            self.multilineeditor = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new editorOption.MultilineEditorOption({ resizeable: true })),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // NumberEditor
+            self.numbereditor = {
+                value: ko.observable(12),
+                constraint: '',
+                option: ko.mapping.fromJS(new editorOption.NumberEditorOption({ grouplength: 3, decimallength: 2 })),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            },
+                // CurrencyEditor
+                self.currencyeditor = {
+                    value: ko.observable(1200),
+                    constraint: '',
+                    option: new editorOption.CurrencyEditorOption({ grouplength: 3, decimallength: 2, currencyformat: "JPY", currencyposition: 'right' }),
+                    enable: ko.observable(true),
+                    readonly: ko.observable(false)
+                };
+            // CurrencyEditor
+            self.currencyeditor2 = {
+                value: ko.observable(200000),
+                constraint: '',
+                option: new editorOption.CurrencyEditorOption({ grouplength: 4, decimallength: 2, currencyformat: "USD", currencyposition: 'left' }),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // TimeEditor
+            self.timeeditor = {
+                value: ko.observable(-1222),
+                constraint: 'LayoutCode',
+                option: ko.mapping.fromJS(new editorOption.TimeEditorOption({ inputFormat: 'time' })),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // TimeEditor
+            self.yearmontheditor = {
+                value: ko.observable(200001),
+                constraint: 'LayoutCode',
+                option: ko.mapping.fromJS(new editorOption.TimeEditorOption({ inputFormat: 'yearmonth' })),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // File
+            self.file = {
+                file: new nts.uk.ui.file.FileDownload("/file/company/print"),
+                print: function () {
+                    this.file.print();
+                }
+            };
+        }
+        return ScreenModel;
+    }());
     var vm = {
         // TextEditor
         texteditor: {
@@ -74,8 +163,8 @@ __viewContext.ready(function () {
             }
         }
     };
-    // developer's view model
-    var dirty = new nts.uk.ui.DirtyChecker(vm.numbereditor.value);
+    var viewmodel = new ScreenModel();
+    var dirty = new nts.uk.ui.DirtyChecker(viewmodel.numbereditor.value);
     nts.uk.ui.confirmSave(dirty);
-    this.bind(vm);
+    this.bind(viewmodel);
 });

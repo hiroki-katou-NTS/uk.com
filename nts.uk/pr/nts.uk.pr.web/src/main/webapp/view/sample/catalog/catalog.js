@@ -5,7 +5,7 @@ $(function(){
 	    $("#side-menu a").each(function () {
 	        var href = $(this).attr('href');
 	        if (window.location.pathname === href) {
-	            $(this).addClass('active');
+	            $(this).addClass('active flash');
 	        }
 	    });
 	    

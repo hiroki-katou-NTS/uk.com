@@ -82,11 +82,15 @@ module nts.uk.ui.koExtentions {
             } else {
                 if (constraint) {
                     if(constraint.valueType === 'String') {
-                        return validation.createValidator(constraintName);
+                        return TextEditorProcessor.prototype.getValidator(data);
                     } else if(data.option) {
                         var option = ko.unwrap(data.option);
-                       
-                        return validation.createValidator(constraintName, option);
+                        //If inputFormat presented, this is Date or Time Editor
+                        if(option.inputFormat) {
+                            return TimeEditorProcessor.prototype.getValidator(data);
+                        } else  {
+                            return NumberEditorProcessor.prototype.getValidator(data);                           
+                        } 
                     }
                 }
                 return validation.createValidator(constraintName);
@@ -98,8 +102,7 @@ module nts.uk.ui.koExtentions {
             var constraint = validation.getConstraint(constraintName);
             if(data.editortype) {
                 var editortype = ko.unwrap(data.editortype);
-                switch(editortype) {
-                   
+                switch(editortype) {              
                    case 'numbereditor':
                       return NumberEditorProcessor.prototype.getFormatter(data);
                    case 'timeeditor':
@@ -112,15 +115,14 @@ module nts.uk.ui.koExtentions {
             } else {
                 if (constraint) {
                     if(constraint.valueType === 'String') {
-                        return new text.StringFormatter(data);
+                        return TextEditorProcessor.prototype.getFormatter(data);
                     } else if(data.option) {
                         var option = ko.unwrap(data.option);
                         //If inputFormat presented, this is Date or Time Editor
                         if(option.inputFormat) {
-                            return new text.TimeFormatter({ option: option });
+                            return TimeEditorProcessor.prototype.getFormatter(data);
                         } else  {
-                            return new nts.uk.text.NumberFormatter({option: option})
-                           
+                            return NumberEditorProcessor.prototype.getFormatter(data);                           
                         } 
                     }
                 }
@@ -754,6 +756,7 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
         }
 
         /**
@@ -901,10 +904,10 @@ module nts.uk.ui.koExtentions {
             var enable: boolean = data.enable;
             var columns: Array<any> = data.columns;
             var rows = data.rows;
-
+            var required = data.required || false;
             // Container.
             var container = $(element);
-
+            container.data('required',required);    
             // Default value.
             var selectSize = 6;
 
@@ -951,7 +954,8 @@ module nts.uk.ui.koExtentions {
                     $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 }
 
-
+                
+                
             });
 
             // Fire event.
@@ -1005,6 +1009,7 @@ module nts.uk.ui.koExtentions {
                         break;
                 }
             }
+          
         }
 
         /**
@@ -1151,7 +1156,21 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-
+            container.on('selectionChanged', (function(e: Event) {
+                // Check empty value
+                var itemsSelected: any = container.data('value');
+                var required = container.data('required');
+                if(required) {
+                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                        
+                    } else {
+                        selectListBoxContainer.ntsError('clear');
+                     
+                    }
+                }
+            }));
+           
         }
     }
 

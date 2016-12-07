@@ -91,11 +91,17 @@ var nts;
                         else {
                             if (constraint) {
                                 if (constraint.valueType === 'String') {
-                                    return validation.createValidator(constraintName);
+                                    return TextEditorProcessor.prototype.getValidator(data);
                                 }
                                 else if (data.option) {
                                     var option = ko.unwrap(data.option);
-                                    return validation.createValidator(constraintName, option);
+                                    //If inputFormat presented, this is Date or Time Editor
+                                    if (option.inputFormat) {
+                                        return TimeEditorProcessor.prototype.getValidator(data);
+                                    }
+                                    else {
+                                        return NumberEditorProcessor.prototype.getValidator(data);
+                                    }
                                 }
                             }
                             return validation.createValidator(constraintName);
@@ -120,16 +126,16 @@ var nts;
                         else {
                             if (constraint) {
                                 if (constraint.valueType === 'String') {
-                                    return new uk.text.StringFormatter(data);
+                                    return TextEditorProcessor.prototype.getFormatter(data);
                                 }
                                 else if (data.option) {
                                     var option = ko.unwrap(data.option);
                                     //If inputFormat presented, this is Date or Time Editor
                                     if (option.inputFormat) {
-                                        return new uk.text.TimeFormatter({ option: option });
+                                        return TimeEditorProcessor.prototype.getFormatter(data);
                                     }
                                     else {
-                                        return new nts.uk.text.NumberFormatter({ option: option });
+                                        return NumberEditorProcessor.prototype.getFormatter(data);
                                     }
                                 }
                             }
@@ -886,8 +892,10 @@ var nts;
                         var enable = data.enable;
                         var columns = data.columns;
                         var rows = data.rows;
+                        var required = data.required || false;
                         // Container.
                         var container = $(element);
+                        container.data('required', required);
                         // Default value.
                         var selectSize = 6;
                         // Create select.
@@ -1106,6 +1114,19 @@ var nts;
                             $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                             container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
+                        container.on('selectionChanged', (function (e) {
+                            // Check empty value
+                            var itemsSelected = container.data('value');
+                            var required = container.data('required');
+                            if (required) {
+                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                                }
+                                else {
+                                    selectListBoxContainer.ntsError('clear');
+                                }
+                            }
+                        }));
                     };
                     return ListBoxBindingHandler;
                 }());

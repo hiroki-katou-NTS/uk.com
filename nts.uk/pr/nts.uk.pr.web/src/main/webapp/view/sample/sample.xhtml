@@ -9,6 +9,10 @@
 		
         <ui:composition template="../../master/base.xhtml">
             <ui:define name="htmlHead">
+            	<style>
+					note{position:relative;display:block;background:#ffc;box-shadow:1px 2px 3px 0px rgba(0,0,0,0.3);padding:20px;margin:20px auto;}
+					note:before{position:absolute;display:block;content:'';width:50px;height:15px;left:15px;top:-8px;background:rgba(255,255,255,0.35);box-shadow:0 0 2px 1px rgba(0,0,0,0.2), 0 0 1px 1px rgba(255,255,255,0.7) inset;transform: rotate(-8deg);}
+            	</style>
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	
 				<com:ValidatorScript>
@@ -36,6 +40,11 @@
             	</div>
             	
             	<div id="contents-area">
+					<note style="width: 500px;"><b>CHÚ Ý!</b><br/>
+					Mọi sample đã được chuyển qua trang:<br/>
+					<a href="http://localhost:8080/nts.uk.pr.web/view/sample/catalog.xhtml">http://localhost:8080/nts.uk.pr.web/view/sample/catalog.xhtml</a><br/>
+					Trang này sẽ bị xóa sau 3 ngày nữa.
+					</note>
             		<br />
             		<br />
             		<input data-bind="ntsDynamicEditor: { value: dynamic.value, constraint: dynamic.constraint }" />
