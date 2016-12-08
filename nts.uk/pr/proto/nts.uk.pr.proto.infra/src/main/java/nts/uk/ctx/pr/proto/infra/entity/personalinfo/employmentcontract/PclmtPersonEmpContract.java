@@ -46,7 +46,7 @@ public class PclmtPersonEmpContract {
 	@Column(name ="LABOR_ASSOCIATION_ATR")
 	public int laborAssociationAtr;
 	
-	@Column(name ="CONTRACT_PRIOD_ATR")
+	@Column(name ="CONTRACT_PERIOD_ATR")
 	public int contractPriodAtr;
 
 //	@Column(name ="QUIT_PROCEDURE")

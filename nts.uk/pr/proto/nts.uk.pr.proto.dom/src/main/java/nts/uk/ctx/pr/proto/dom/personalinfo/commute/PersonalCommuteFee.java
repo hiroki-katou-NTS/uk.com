@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.proto.dom.personalinfo.commute;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * Commute no tax limit number;
 	 */
 	@Getter
-	private BigDecimal commuteNoTaxLimitPrivateNo;
+	private String commuteNoTaxLimitPrivateNo;
 
 	/**
 	 * Commute no tax limit publish number;
@@ -47,7 +46,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * @param commute5 other information
 	 * @param personId person id
 	 */
-	public PersonalCommuteFee(BigDecimal commuteNoTaxLimitPrivateNo, String commuteNoTaxLimitPublishNo,
+	public PersonalCommuteFee(String commuteNoTaxLimitPrivateNo, String commuteNoTaxLimitPublishNo,
 			PersonalCommuteValue commute1, PersonalCommuteValue commute2, PersonalCommuteValue commute3,
 			PersonalCommuteValue commute4, PersonalCommuteValue commute5, PersonId personId) {
 		super();
@@ -67,7 +66,7 @@ public class PersonalCommuteFee extends AggregateRoot {
 	 * 
 	 * @return PersonalCommuteFee
 	 */
-	public static PersonalCommuteFee createFromJavaType(BigDecimal commuteNoTaxLimitPrivateNo,
+	public static PersonalCommuteFee createFromJavaType(String commuteNoTaxLimitPrivateNo,
 			String commuteNoTaxLimitPublishNo, PersonalCommuteValue commute1, PersonalCommuteValue commute2,
 			PersonalCommuteValue commute3, PersonalCommuteValue commute4, PersonalCommuteValue commute5,
 			String personId) {
