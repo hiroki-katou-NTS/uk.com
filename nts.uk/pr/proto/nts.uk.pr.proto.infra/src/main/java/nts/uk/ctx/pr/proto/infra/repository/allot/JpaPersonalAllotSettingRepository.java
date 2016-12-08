@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotPs;
 public class JpaPersonalAllotSettingRepository extends JpaRepository implements PersonalAllotSettingRepository {
 
 	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotPs c WHERE c.qstmtStmtAllotPsPK.companyCode = :ccd "
-			+ "AND c.qstmtStmtAllotPsPK.personId = :pid and c.qstmtStmtAllotPsPK.startDate <= :baseYM and c.endDate >= :baseYM";
+			+ "AND c.qstmtStmtAllotPsPK.personId = :pid and c.startDate <= :baseYM and c.endDate >= :baseYM";
 
 	@Override
 	public Optional<PersonalAllotSetting> find(String companyCode, String personId, int baseYM) {
@@ -32,7 +32,7 @@ public class JpaPersonalAllotSettingRepository extends JpaRepository implements 
 
 	private static PersonalAllotSetting toDomain(QstmtStmtAllotPs entity) {
 		val domain = PersonalAllotSetting.createFromJavaType(entity.qstmtStmtAllotPsPK.companyCode,
-				entity.qstmtStmtAllotPsPK.personId, entity.qstmtStmtAllotPsPK.startDate, entity.endDate,
+				entity.qstmtStmtAllotPsPK.personId, entity.startDate, entity.endDate,
 				entity.bonusDetailCode, entity.paymentDetailCode);
 
 		return domain;

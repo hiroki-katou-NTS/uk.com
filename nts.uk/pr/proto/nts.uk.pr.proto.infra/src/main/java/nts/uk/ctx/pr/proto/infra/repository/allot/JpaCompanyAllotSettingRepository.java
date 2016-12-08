@@ -30,7 +30,7 @@ public class JpaCompanyAllotSettingRepository extends JpaRepository implements C
 
 	private static CompanyAllotSetting toDomain(QstmtStmtAllotCp entity) {
 		val domain = CompanyAllotSetting.createFromJavaType(entity.qstmtStmtAllotCpPK.companyCode,
-				entity.qstmtStmtAllotCpPK.startDate, entity.endDate, entity.bonusDetailCode, entity.paymentDetailCode);
+				entity.startDate, entity.endDate, entity.bonusDetailCode, entity.paymentDetailCode);
 
 		entity.toDomain(domain);
 		return domain;

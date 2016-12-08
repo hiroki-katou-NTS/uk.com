@@ -15,8 +15,8 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "CCD")
 	public String companyCode;
 	
-	@Column(name = "STR_YM")
-	public int startDate;
+	@Column(name = "HIST_ID")
+	public int histId;
 	
 	public QstmtStmtAllotCpPK() {}
 }
