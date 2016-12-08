@@ -62,7 +62,15 @@ public class LayoutWebService extends WebService {
 	@Path("findlayoutdetail/{stmtCode}/{startYm}/{categoryAtr}/{itemCd}")
 	public LayoutMasterDetailDto getDetail(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm,
 			@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCd") String itemCd){
-		return this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).get();
+		try{
+			if(this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).isPresent()){
+				return this.detailFinder.getDetail(stmtCode, startYm, categoryAtr, itemCd).get();
+			}
+		return null;
+		}
+		catch(Exception ex){
+			throw ex;
+		}
 	}
 	@POST
 	@Path("findCategoies/full/{layoutCd}/{startYm}")

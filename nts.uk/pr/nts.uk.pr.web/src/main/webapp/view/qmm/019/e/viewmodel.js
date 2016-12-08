@@ -4,6 +4,7 @@ var qmm019;
     (function (e) {
         var viewmodel;
         (function (viewmodel) {
+            var option = nts.uk.ui.option;
             var ScreenModel = (function () {
                 /**
                  * Init screen model.
@@ -17,6 +18,7 @@ var qmm019;
                     self.selectLayoutEndYm = ko.observable(null);
                     self.selectLayout = ko.observable(null);
                     self.layoutStartYm = ko.observable(null);
+                    self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
@@ -66,6 +68,12 @@ var qmm019;
                 ScreenModel.prototype.dataUpdate = function () {
                     var self = this;
                     var layoutInfor = self.selectLayout();
+                    //check YM
+                    var inputYm = $("#INP_001").val();
+                    if (!nts.uk.time.parseYearMonth(inputYm).success) {
+                        alert(nts.uk.time.parseYearMonth(inputYm).msg);
+                        return false;
+                    }
                     layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/', '');
                     layoutInfor.startYm = +$("#INP_001").val().replace('/', '');
                     //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
