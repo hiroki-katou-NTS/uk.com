@@ -181,7 +181,7 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
-                        var parent = $input.parent().css({ 'width': '100%' });
+                        var parent = $input.parent().css({ 'width': '100%', "display": "inline-block" });
                         var width = option.width ? option.width : '100%';
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
                             $input.parent().addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
@@ -217,7 +217,7 @@ var nts;
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
                         var parent = $input.parent();
-                        parent.css({ 'width': '100%' });
+                        parent.css({ 'width': '100%', "display": "inline-block" });
                         var width = option.width ? option.width : '100%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
