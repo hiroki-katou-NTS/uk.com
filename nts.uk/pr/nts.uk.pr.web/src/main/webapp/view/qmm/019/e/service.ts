@@ -8,10 +8,10 @@ module qmm019.e.service {
     /**
      * Get list layout master new history
      */
-    export function getLayout(stmtCode: string, startYm: number): JQueryPromise<model.LayoutMasterDto> {
+    export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
         var dfd = $.Deferred<any>();
-        var objectLayout = {stmtCode: stmtCode, startYm: startYm};
-        var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, startYm);
+        var objectLayout = {stmtCode: stmtCode, historyId: historyId};
+        var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
         nts.uk.request.ajax(_path)
             .done(function(res: any){
                 dfd.resolve(res);
@@ -66,6 +66,7 @@ module qmm019.e.service {
                 endYm: number;
                 layoutAtr: number;
                 startYmOriginal: number;
+                histortyId: string;
             }
 
         }

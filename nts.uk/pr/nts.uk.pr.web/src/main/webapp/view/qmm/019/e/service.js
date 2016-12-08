@@ -12,10 +12,10 @@ var qmm019;
             /**
              * Get list layout master new history
              */
-            function getLayout(stmtCode, startYm) {
+            function getLayout(stmtCode, historyId) {
                 var dfd = $.Deferred();
-                var objectLayout = { stmtCode: stmtCode, startYm: startYm };
-                var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, startYm);
+                var objectLayout = { stmtCode: stmtCode, historyId: historyId };
+                var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
                 nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);

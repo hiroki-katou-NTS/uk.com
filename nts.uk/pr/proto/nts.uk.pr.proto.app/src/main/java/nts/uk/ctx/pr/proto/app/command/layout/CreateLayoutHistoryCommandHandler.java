@@ -49,9 +49,11 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		
 		String companyCode = AppContexts.user().companyCode();
 		
-		LayoutMaster layoutOrigin = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartPrevious())
+		LayoutMaster layoutOrigin = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartYm())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
-		
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
 		LayoutMaster layoutNew = command.toDomain(command.getStartYm(),
 				999912,
 				command.getLayoutAtr(),
@@ -69,20 +71,30 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		layoutRepo.add(layoutNew);
 		//「最新の履歴から引き継ぐ」を選択した場合
 		if (command.isCheckContinue()) {
-			copyFromPreviousHistory(command, companyCode, layoutNew);
+			copyFromPreviousHistory(command, 
+					companyCode,
+					categoriesOrigin,
+					linesOrigin,
+					detailsOrigin);
 		}else{
 			layoutCommandHandler.createNewData(layoutNew, companyCode);
 		}
 		//「初めから作成する。」を選択した場合
 		// and　「最新の履歴から引き継ぐ」を選択した場合 更新データ
-		updateData(command, companyCode, layoutOrigin, layoutNew);
+		updateData(command, 
+				companyCode, 
+				layoutOrigin, 
+				layoutNew,
+				categoriesOrigin,
+				linesOrigin,
+				detailsOrigin);
 	}
 
-	private void copyFromPreviousHistory(CreateLayoutHistoryCommand command, String companyCode, LayoutMaster layout) {
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
-		
+	private void copyFromPreviousHistory(CreateLayoutHistoryCommand command, 
+			String companyCode, 
+			List<LayoutMasterCategory> categoriesOrigin,
+			List<LayoutMasterLine> linesOrigin,
+			List<LayoutMasterDetail> detailsOrigin) {
 		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(
 				org -> {
 					return LayoutMasterCategory.createFromDomain(
@@ -92,7 +104,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCtAtr(), 
 							new YearMonth(999912), 
 							org.getCtgPos(),
-							layout.getHistoryId());
+							IdentifierUtil.randomUniqueId());
 				}).collect(Collectors.toList());
 		categoryRepo.add(categoriesNew);
 		
@@ -107,7 +119,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
 							org.getLinePosition(),
-							layout.getHistoryId());
+							IdentifierUtil.randomUniqueId());
 				}).collect(Collectors.toList());
 		lineRepo.add(linesNew);
 		
@@ -131,19 +143,25 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getSetOffItemCode(), 
 							org.getCommuteAtr(), 
 							org.getPersonalWageCode(),
-							layout.getHistoryId());
+							IdentifierUtil.randomUniqueId());
 				}).collect(Collectors.toList());
 		detailRepo.add(detailsNew);
 	}
 	
-	private void updateData(CreateLayoutHistoryCommand command, String companyCode, LayoutMaster layoutOrigin, LayoutMaster layoutNew){
+	private void updateData(CreateLayoutHistoryCommand command, 
+			String companyCode, 
+			LayoutMaster layoutOrigin, 
+			LayoutMaster layoutNew,
+			List<LayoutMasterCategory> categoriesOrigin,
+			List<LayoutMasterLine> linesOrigin,
+			List<LayoutMasterDetail> detailsOrigin){
 		YearMonth endYm = new YearMonth(command.getEndYm()).previousMonth();
 		//データベース更新[明細書マスタ.UPD-2] を実施する
 		layoutOrigin.setEndYm(endYm);
 		this.layoutRepo.update(layoutOrigin);
 		//データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
-		List<LayoutMasterCategory> lstCategory = this.categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
-		List<LayoutMasterCategory> categoriesNew = lstCategory.stream().map(
+		//List<LayoutMasterCategory> lstCategory = this.categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(
 				org -> {
 					return LayoutMasterCategory.createFromDomain(
 							org.getCompanyCode(), 
@@ -152,12 +170,12 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCtAtr(), 
 							endYm, 
 							org.getCtgPos(),
-							layoutNew.getHistoryId());
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		this.categoryRepo.update(categoriesNew);
 		//データベース更新[明細書マスタ行.UPD-2] を実施する
-		List<LayoutMasterLine> lstLine = this.lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
-		List<LayoutMasterLine> linesNew = lstLine.stream().map(
+		//List<LayoutMasterLine> lstLine = this.lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterLine> linesNew = linesOrigin.stream().map(
 				org ->{
 					return LayoutMasterLine.createFromDomain(
 							org.getCompanyCode(), 
@@ -168,13 +186,13 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
 							org.getLinePosition(),
-							layoutNew.getHistoryId());
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		this.lineRepo.update(linesNew);
 		//データベース更新[明細書マスタ明細.UPD-2] を実施する
 //		List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetailsBefore(companyCode, command.getStmtCode(), 999912);
-		List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
-		List<LayoutMasterDetail> detailsNew = lstDetail.stream().map(
+		//List<LayoutMasterDetail> lstDetail = this.detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartPrevious());
+		List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(
 				org -> {
 					return LayoutMasterDetail.createFromDomain(
 							org.getCompanyCode(), 
@@ -194,7 +212,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 							org.getSetOffItemCode(), 
 							org.getCommuteAtr(), 
 							org.getPersonalWageCode(),
-							layoutNew.getHistoryId());
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		this.detailRepo.update(detailsNew);
 	}

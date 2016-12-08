@@ -35,7 +35,7 @@ module qmm019.d.viewmodel {
         
         start(): JQueryPromise<any> {
             var self = this;
-            var dfd = $.Deferred<any>();    
+            var dfd = $.Deferred<any>();   
             //list data
             self.buildItemList();
             $('#LST_001').on('selectionChanging', function(event) {
