@@ -75,7 +75,7 @@ var qmm019;
                                 };
                             }
                             else {
-                                var itemDto = _.find(listItemDto, function (item) {
+                                var itemDto = _.find(self.listItemDto, function (item) {
                                     return item.itemCode === currentItemCode;
                                 });
                                 item = {

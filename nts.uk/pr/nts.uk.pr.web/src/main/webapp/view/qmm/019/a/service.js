@@ -152,7 +152,8 @@ var qmm019;
                         stmtCode: layout.stmtCode,
                         startYm: layout.startYm,
                         stmtName: layout.stmtName,
-                        endYm: layout.endYm
+                        endYm: layout.endYm,
+                        historyId: layout.historyId
                     },
                     categoryCommand: categoryCommand,
                     lineCommand: lineCommand,

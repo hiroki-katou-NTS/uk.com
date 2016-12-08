@@ -22,6 +22,8 @@ public class LayoutMasterLine extends AggregateRoot {
 
 	@Getter
 	private LayoutCode stmtCode;
+	@Getter
+	private String historyId;
 
 	@Getter
 	private YearMonth endYM;
@@ -42,7 +44,8 @@ public class LayoutMasterLine extends AggregateRoot {
 	private List<LayoutMasterDetail> layoutMasterDetails;
 
 	public LayoutMasterLine(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM,
-			AutoLineId autoLineId, CategoryAtr categoryAtr, LineDispAtr lineDispayAttribute, LinePosition linePosition) {
+			AutoLineId autoLineId, CategoryAtr categoryAtr, LineDispAtr lineDispayAttribute, LinePosition linePosition,
+			String historyId) {
 		super();
 		this.companyCode = companyCode;
 		this.startYM = startYM;
@@ -52,10 +55,11 @@ public class LayoutMasterLine extends AggregateRoot {
 		this.categoryAtr = categoryAtr;
 		this.lineDispayAttribute = lineDispayAttribute;
 		this.linePosition = linePosition;
+		this.historyId = historyId;
 	}
 
 	public static LayoutMasterLine createFromJavaType(String companyCode, int startYM, String stmtCode, int endYM,
-			String autoLineId, int lineDispayAttribute, int linePosition, int categoryAtr) {
+			String autoLineId, int lineDispayAttribute, int linePosition, int categoryAtr, String historyId) {
 
 		return new LayoutMasterLine(
 				new CompanyCode(companyCode), 
@@ -65,7 +69,8 @@ public class LayoutMasterLine extends AggregateRoot {
 				new AutoLineId(autoLineId),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
 				EnumAdaptor.valueOf(lineDispayAttribute, LineDispAtr.class), 
-				new LinePosition(linePosition)
+				new LinePosition(linePosition),
+				historyId
 				);
 
 	}
@@ -78,9 +83,12 @@ public class LayoutMasterLine extends AggregateRoot {
 			AutoLineId autoLineId,
 			CategoryAtr categoryAtr,
 			LineDispAtr lineDispayAttribute, 
-			LinePosition linePosition){
+			LinePosition linePosition,
+			String historyId){
 		
-		return new LayoutMasterLine(companyCode, startYM, stmtCode, endYM, autoLineId, categoryAtr, lineDispayAttribute, linePosition);
+		return new LayoutMasterLine(companyCode, startYM, stmtCode, endYM, autoLineId, 
+				categoryAtr, lineDispayAttribute, linePosition,
+				historyId);
 	}
 	
 }

@@ -28,6 +28,10 @@ public class QstmtStmtLayoutCtg implements Serializable{
 
 	@EmbeddedId
 	public QstmtStmtLayoutCtgPK qstmtStmtLayoutCtgPk;
+	
+	@Basic(optional = false)
+	@Column(name ="STR_YM")
+	public int strYm;
 
 	@Basic(optional = false)
 	@Column(name = "END_YM")
@@ -36,14 +40,4 @@ public class QstmtStmtLayoutCtg implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "CTG_POS")
 	public int ctgPos;
-	
-//	@ManyToOne
-//	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-//			@JoinColumn(name = "STMT_CD", referencedColumnName = "STMT_CD", insertable = false, updatable = false),
-//			@JoinColumn(name = "STR_YM", referencedColumnName = "STR_YM", insertable = false, updatable = false) })
-//	public QstmtStmtLayoutHead layoutHead;
-//
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "layoutCategory")
-//	public List<QstmtStmtLayoutLines> layoutLines;
-
 }

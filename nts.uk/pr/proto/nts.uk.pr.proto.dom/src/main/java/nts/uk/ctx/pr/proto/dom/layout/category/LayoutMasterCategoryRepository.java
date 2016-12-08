@@ -42,7 +42,7 @@ public interface LayoutMasterCategoryRepository {
 	 * @param startYm
 	 * @param categoryAtr
 	 */
-	void remove(String companyCode, String stmtCode, int startYm, int categoryAtr);
+	void remove(String companyCode, String stmtCode, String historyId, int categoryAtr);
 /**
  * 
  * @param companyCode
@@ -70,5 +70,5 @@ public interface LayoutMasterCategoryRepository {
 	 * @param categoryAtr
 	 * @return
 	 */
-	Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr);
+	Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, String historyId, int categoryAtr);
 }

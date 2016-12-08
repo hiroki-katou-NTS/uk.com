@@ -45,7 +45,7 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 		//データベース削除[明細書マスタ.DEL-1]を実施する
 		this.layoutRepository.remove(command.getCompanyCode(),
 				command.getStmtCode(),
-				command.getStartYm());
+				command.getHistoryId());
 		//1件成功した場合以外の場合
 		//bo sung them
 		
@@ -95,7 +95,8 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 								category.getStmtCode(),
 								category.getCtAtr(),
 								new YearMonth(command.getEndYm()),
-								category.getCtgPos());
+								category.getCtgPos(),
+								category.getHistoryId());
 					}).collect(Collectors.toList());
 			this.categoryRepository.update(lstCategoryUP);
 		}
@@ -115,7 +116,8 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 								line.getAutoLineId(), 
 								line.getCategoryAtr(), 
 								line.getLineDispayAttribute(), 
-								line.getLinePosition());
+								line.getLinePosition(),
+								line.getHistoryId());
 					}).collect(Collectors.toList());
 			this.lineRepository.update(lstLineUp);	
 		}
@@ -144,7 +146,8 @@ public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayo
 								org.getSumScopeAtr(), 
 								org.getSetOffItemCode(), 
 								org.getCommuteAtr(), 
-								org.getPersonalWageCode());
+								org.getPersonalWageCode(),
+								org.getHistoryId());
 					}).collect(Collectors.toList());
 			this.detailRepository.update(detailsUpdate);
 		}

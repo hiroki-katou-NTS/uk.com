@@ -41,7 +41,7 @@ public interface LayoutMasterDetailRepository {
 	 */
 	void remove(String companyCode
 			, String layoutCode
-			, int startYm
+			, String historyId
 			, int categoryAtr
 			, String itemCode);
 
