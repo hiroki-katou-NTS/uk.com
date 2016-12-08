@@ -22,8 +22,8 @@ public class CreateLayoutCommand {
 	 * Convert to domain object from command values
 	 * @return
 	 */
-	public LayoutMaster toDomain(){
+	public LayoutMaster toDomain(String newHistoryId){
 		return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(), 
-					this.startYm, this.stmtCode, this.endYm, this.layoutAtr, this.stmtName);
+					this.startYm, this.stmtCode, this.endYm, this.layoutAtr, this.stmtName, newHistoryId);
 	}
 }

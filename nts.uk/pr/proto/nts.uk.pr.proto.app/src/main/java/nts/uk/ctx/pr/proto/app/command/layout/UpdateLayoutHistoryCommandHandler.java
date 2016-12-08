@@ -46,16 +46,16 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		UpdateLayoutHistoryCommand command = handlerContext.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
-		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getStartYmOriginal(), command.getStmtCode())
+		LayoutMaster layoutOrigin = layoutRepo.getLayout(companyCode, command.getHistoryId(), command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout")));
 		
 		//Validate by EA: 12.履歴の編集-登録時チェック処理
 		Optional<LayoutMaster> layoutBefore = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartYmOriginal());
 		//validateHistorySpan(command, layoutOrigin, layoutBefore);
 
-		this.layoutRepo.remove(companyCode, command.getStmtCode(), command.getStartYmOriginal());
+		//this.layoutRepo.remove(companyCode, command.getStmtCode(), command.getStartYmOriginal());
 		layoutOrigin.setStartYM(new YearMonth(command.getStartYm()));
-		this.layoutRepo.add(layoutOrigin);
+		this.layoutRepo.update(layoutOrigin);
 		//layoutRepo.update(layoutOrigin);
 		//trong truong hop ngay bat dau lon hon ngay ket thuc 
 		updateCurrentObject(command, companyCode);
@@ -97,7 +97,8 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getStmtCode(), 
 							org.getCtAtr(), 
 							new YearMonth(command.getStartYm()).previousMonth(), 
-							org.getCtgPos());
+							org.getCtgPos(),
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		
 		List<LayoutMasterLine> linesUpdate = linesBefore.stream().map(
@@ -110,7 +111,8 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getAutoLineId(), 
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
-							org.getLinePosition());
+							org.getLinePosition(),
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		
 		List<LayoutMasterDetail> detailsUpdate = detailsBefore.stream().map(
@@ -132,7 +134,8 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getSumScopeAtr(), 
 							org.getSetOffItemCode(), 
 							org.getCommuteAtr(), 
-							org.getPersonalWageCode());
+							org.getPersonalWageCode(),
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		
 		categoryRepo.update(categoriesUpdate);
@@ -145,9 +148,9 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCode(), command.getStartYmOriginal());
 		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(), command.getStartYmOriginal());
 		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetails(companyCode, command.getStmtCode(), command.getStartYmOriginal());
-		this.categoryRepo.removeAllCategory(categoriesOrigin);
-		this.lineRepo.remove(linesOrigin);
-		this.detailRepo.remove(detailsOrigin);
+//		this.categoryRepo.removeAllCategory(categoriesOrigin);
+//		this.lineRepo.remove(linesOrigin);
+//		this.detailRepo.remove(detailsOrigin);
 		
 		List<LayoutMasterCategory> categoriesUpdate = categoriesOrigin.stream().map(
 				org -> {
@@ -157,7 +160,8 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getStmtCode(), 
 							org.getCtAtr(), 
 							org.getEndYm(), 
-							org.getCtgPos());
+							org.getCtgPos(),
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		
 		List<LayoutMasterLine> linesUpdate = linesOrigin.stream().map(
@@ -170,7 +174,8 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getAutoLineId(), 
 							org.getCategoryAtr(), 
 							org.getLineDispayAttribute(), 
-							org.getLinePosition());
+							org.getLinePosition(),
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		
 		List<LayoutMasterDetail> detailsUpdate = detailsOrigin.stream().map(
@@ -192,12 +197,13 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 							org.getSumScopeAtr(), 
 							org.getSetOffItemCode(), 
 							org.getCommuteAtr(), 
-							org.getPersonalWageCode());
+							org.getPersonalWageCode(),
+							org.getHistoryId());
 				}).collect(Collectors.toList());
 		
-		categoryRepo.add(categoriesUpdate);
-		lineRepo.add(linesUpdate);
-		detailRepo.add(detailsUpdate);
+		categoryRepo.update(categoriesUpdate);
+		lineRepo.update(linesUpdate);
+		detailRepo.update(detailsUpdate);
 	}
 	
 	

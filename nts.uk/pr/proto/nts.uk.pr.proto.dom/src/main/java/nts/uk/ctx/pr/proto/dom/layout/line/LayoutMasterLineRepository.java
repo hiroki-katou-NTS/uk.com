@@ -46,7 +46,7 @@ public interface LayoutMasterLineRepository {
 	 * @param categoryAtr
 	 * @param stmtCode
 	 */
-	void remove(String companyCode, int startYm, String autoLineID, int categoryAtr, String stmtCode);
+	void remove(String companyCode, String historyId, String autoLineID, int categoryAtr, String stmtCode);
 	
 	void remove(List<LayoutMasterLine> lines);
 	
@@ -59,7 +59,7 @@ public interface LayoutMasterLineRepository {
 	 * @param autoLineId
 	 * @return
 	 */
-	Optional<LayoutMasterLine> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr, String autoLineId);
+	Optional<LayoutMasterLine> find(String companyCode, String stmtCode, String historyId, int categoryAtr, String autoLineId);
 
 	Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId);
 

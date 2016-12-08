@@ -36,6 +36,8 @@ public class LayoutDto {
 	 * layout attribute
 	 */
 	int layoutAtr;
+	
+	String historyId;
 
 	public static LayoutDto fromDomain(LayoutMaster domain) {
 		return new LayoutDto(
@@ -44,7 +46,8 @@ public class LayoutDto {
 				domain.getStartYM().v(),
 				domain.getStmtName().v(),
 				domain.getEndYm().v(),
-				domain.getLayoutAtr().value);
+				domain.getLayoutAtr().value,
+				domain.getHistoryId());
 	}
 
 }

@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @AllArgsConstructor
@@ -27,7 +26,7 @@ public class PprmtPersonCommute {
 	public String commuNotaxLimitPubNo;
 	
 	@Column(name ="COMMU_NOTAX_LIMIT_PRI_NO")
-	public BigDecimal commuNotaxLimitPriNo;
+	public String commuNotaxLimitPriNo;
 	
 	@Column(name ="COMMU_MEANS_NAME")
 	public String commuMeansName;

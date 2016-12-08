@@ -11,9 +11,10 @@ public class UpdateLayoutHistoryCommand {
 	//Giá trị startYm trước khi nó được sửa
 	private int startYmOriginal;
 	private String stmtCode;
-
+	private String historyId;
 	public LayoutMaster toDomain(int endYm, int layoutAtr, String stmtName){
 		return LayoutMaster.createFromJavaType(
-				AppContexts.user().companyCode(), this.startYm, this.stmtCode, endYm, layoutAtr, stmtName);
+				AppContexts.user().companyCode(), this.startYm, this.stmtCode, 
+				endYm, layoutAtr, stmtName, historyId);
 	}
 }

@@ -12,6 +12,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.gul.util.Range;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.enums.CategoryAtr;
@@ -70,12 +71,12 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				throw new BusinessException(new RawErrorMessage("入力した明細書コードは既に存在しています。\r\n明細書コードを確認してください。"));
 			}
 			
-			LayoutMaster layout = command.toDomain();
+			LayoutMaster layout = command.toDomain(IdentifierUtil.randomUniqueId());
 			layout.validate();
 			this.layoutRepo.add(layout);
 			//作成方法で「既存のレイアウトをコピーして作成」を選択した場合
 			if (command.isCheckCopy()) {
-				copyNewData(command, companyCode);
+				copyNewData(command, companyCode, layout);
 			}
 			//作成方法で「新規に作成」を選択した場合
 			else{
@@ -96,14 +97,16 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				layout.getStmtCode(),
 				CategoryAtr.PAYMENT,
 				layout.getEndYm(), 
-				new CategoryPosition(1));
+				new CategoryPosition(1),
+				layout.getHistoryId());
 		this.categoryRepo.add(category);
 		category = new LayoutMasterCategory(new CompanyCode(companyCode),
 				layout.getStartYM(), 
 				layout.getStmtCode(),
 				CategoryAtr.DEDUCTION,
 				layout.getEndYm(), 
-				new CategoryPosition(2));
+				new CategoryPosition(2),
+				layout.getHistoryId());
 		this.categoryRepo.add(category);
 		//データベース登録[明細書マスタ行.INS-1] を実施する
 		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "0", 1);
@@ -226,7 +229,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				sumAtr,
 				new ItemCode("0000"),
 				CommuteAtr.TRANSPORTATION_EQUIPMENT,
-				new PersonalWageCode("00"));
+				new PersonalWageCode("00"),
+				layout.getHistoryId());
 		
 		this.detailRepo.add(detailData);
 	}
@@ -243,10 +247,11 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				new AutoLineId(autoLine),
 				cateAtr,
 				LineDispAtr.ENABLE,
-				new LinePosition(linePos));
+				new LinePosition(linePos),
+				layout.getHistoryId());
 		this.lineRepo.add(line);
 	}
-	private void copyNewData(CreateLayoutCommand command, String companyCode) {
+	private void copyNewData(CreateLayoutCommand command, String companyCode, LayoutMaster layout) {
 		//List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCodeCopied(), command.getStartYmCopied());
 		//[明細書マスタカテゴリ]の明細書コード = G_SEL_002で選択している項目の明細書コード AND　[明細書マスタカテゴリ]の終了年月 = 999912
 		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCodeCopied(), 999912);
@@ -260,7 +265,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 								new LayoutCode(command.getStmtCode()),
 								org.getCtAtr(), 
 								new YearMonth(command.getEndYm()), 
-								org.getCtgPos());
+								org.getCtgPos(),
+								layout.getHistoryId());
 					}).collect(Collectors.toList());
 			categoryRepo.add(categoriesNew);
 		}
@@ -280,7 +286,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 								org.getAutoLineId(), 
 								org.getCategoryAtr(), 
 								org.getLineDispayAttribute(), 
-								org.getLinePosition());
+								org.getLinePosition(),
+								layout.getHistoryId());
 					}).collect(Collectors.toList());
 			lineRepo.add(linesNew);
 		}
@@ -308,7 +315,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 								org.getSumScopeAtr(), 
 								org.getSetOffItemCode(), 
 								org.getCommuteAtr(), 
-								org.getPersonalWageCode());
+								org.getPersonalWageCode(),
+								layout.getHistoryId());
 					}).collect(Collectors.toList());
 			
 			detailRepo.add(detailsNew);

@@ -31,6 +31,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 	/**明細書コード*/
 	@Getter
 	private LayoutCode layoutCode;
+	@Getter
+	private String historyId;
 	/**開始年月*/
 	@Getter
 	private YearMonth startYm;
@@ -107,7 +109,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 			SumScopeAtr sumScopeAtr,
 			ItemCode setOffItemCode,
 			CommuteAtr commuteAtr,
-			PersonalWageCode personalWageCode) {
+			PersonalWageCode personalWageCode,
+			String historyId) {
 		super();
 		this.companyCode = companyCode;
 		this.layoutCode = layoutCode;
@@ -126,6 +129,7 @@ public class LayoutMasterDetail extends AggregateRoot{
 		this.setOffItemCode = setOffItemCode;
 		this.commuteAtr = commuteAtr;
 		this.personalWageCode = personalWageCode;
+		this.historyId = historyId;
 	}
 	
 	public static LayoutMasterDetail createFromJavaType(
@@ -152,7 +156,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int alamRangeHigh,
 			int isAlamUseLow,
 			int alamRangeLow,
-			int itemPosColumn){
+			int itemPosColumn,
+			String historyId){
 		
 		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
 		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
@@ -180,7 +185,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 				EnumAdaptor.valueOf(sumScopeAtr, SumScopeAtr.class),
 				new ItemCode(setOffItemCode),
 				EnumAdaptor.valueOf(commuteAtr, CommuteAtr.class),
-				new PersonalWageCode(personalWageCode)
+				new PersonalWageCode(personalWageCode),
+				historyId
 				);
 		
 	}
@@ -238,13 +244,14 @@ public class LayoutMasterDetail extends AggregateRoot{
 			int isAlamUseLow,
 			int alamRangeLow,
 			int itemPosColumn,
-			String itemAbName){
+			String itemAbName,
+			String historyId){
 				
 		LayoutMasterDetail result = createFromJavaType(companyCode, layoutCode, startYm, endYm, categoryAtr, itemCode, 
 				autoLineId, displayAtr, sumScopeAtr, calculationMethod, distributeWay, 
 				distributeSet, personalWageCode, setOffItemCode, commuteAtr, isErrorUseHigh, 
 				errorRangeHigh, isErrorUserLow, errorRangeLow, isAlamUseHigh, alamRangeHigh, 
-				isAlamUseLow, alamRangeLow, itemPosColumn);		
+				isAlamUseLow, alamRangeLow, itemPosColumn, historyId);		
 		
 		result.setItemAbName(itemAbName);
 		return result;
@@ -268,7 +275,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 			SumScopeAtr sumScopeAtr, 
 			ItemCode setOffItemCode,
 			CommuteAtr commuteAtr, 
-			PersonalWageCode personalWageCode) {
+			PersonalWageCode personalWageCode,
+			String historyId) {
 		
 		return new LayoutMasterDetail(
 				companyCode,
@@ -287,7 +295,8 @@ public class LayoutMasterDetail extends AggregateRoot{
 				sumScopeAtr, 
 				setOffItemCode,
 				commuteAtr, 
-				personalWageCode);
+				personalWageCode,
+				historyId);
 	}
 	
 	public void setItemAbName(String itemAbName) {

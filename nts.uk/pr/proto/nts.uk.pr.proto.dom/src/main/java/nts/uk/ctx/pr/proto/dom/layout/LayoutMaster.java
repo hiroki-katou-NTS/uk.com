@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategory;
 
@@ -33,6 +34,9 @@ public class LayoutMaster extends AggregateRoot {
 	@Setter
 	private YearMonth endYm;
 	
+	@Getter
+	private String historyId;
+	
 	/** レイアウト区分 */
 	@Getter
 	private LayoutAtr layoutAtr;
@@ -46,7 +50,7 @@ public class LayoutMaster extends AggregateRoot {
 	private List<LayoutMasterCategory> layoutMasterCategories;
 
 	public LayoutMaster(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYm, LayoutAtr layoutAtr,
-			LayoutName stmtName) {
+			LayoutName stmtName, String historyId) {
 		super();
 		this.companyCode = companyCode;
 		this.startYM = startYM;
@@ -54,6 +58,7 @@ public class LayoutMaster extends AggregateRoot {
 		this.endYm = endYm;
 		this.layoutAtr = layoutAtr;
 		this.stmtName = stmtName;
+		this.historyId = historyId;
 	}
 
 	/**
@@ -61,7 +66,7 @@ public class LayoutMaster extends AggregateRoot {
 	 * @return LayoutMaster
 	 */
 	public static LayoutMaster createFromJavaType(String companyCode, int startYM, String stmtCode, int endYm, int layoutAtr,
-			String stmtName){
+			String stmtName, String historyId){
 		if (stmtName.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
 		}
@@ -72,7 +77,8 @@ public class LayoutMaster extends AggregateRoot {
 				new LayoutCode(stmtCode), 
 				new YearMonth(endYm),
 				EnumAdaptor.valueOf(layoutAtr, LayoutAtr.class), 
-				new LayoutName(stmtName));
+				new LayoutName(stmtName),
+				historyId);
 	}
 	
 	public void adjustForNextHistory(LayoutMaster nextHistory) {
