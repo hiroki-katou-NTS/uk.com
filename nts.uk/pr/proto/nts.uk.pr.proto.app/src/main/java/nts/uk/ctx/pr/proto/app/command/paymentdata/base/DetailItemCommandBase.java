@@ -55,6 +55,12 @@ public class DetailItemCommandBase {
 	
 	Integer displayAtr;
 	
+	private Double commuteAllowTaxImpose;
+
+	private Double commuteAllowMonth;
+
+	private Double commuteAllowFraction;
+	
 	boolean created;
 
 	public DetailItem toDomain(Integer linePosition) {
@@ -68,7 +74,7 @@ public class DetailItemCommandBase {
 			throw new BusinessException("入力にエラーがあります。");	
 		}
 		
-		return DetailItem.createFromJavaType(
+		DetailItem item=  DetailItem.createFromJavaType(
 				this.itemCode, 
 				this.value, 
 				this.correctFlag, 
@@ -79,5 +85,8 @@ public class DetailItemCommandBase {
 				this.linePosition,
 				this.columnPosition
 				);
+		
+		item.addCommuteData(this.commuteAllowTaxImpose, this.commuteAllowMonth, this.commuteAllowFraction);
+		return item;
 	}
 }

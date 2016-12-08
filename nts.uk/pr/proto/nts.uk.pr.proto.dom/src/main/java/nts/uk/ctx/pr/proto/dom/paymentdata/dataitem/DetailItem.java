@@ -72,14 +72,13 @@ public class DetailItem extends DomainObject {
 
 	@Getter
 	private int limitAmount;
-	
 
 	@Getter
 	private double commuteAllowTaxImpose;
-	
+
 	@Getter
 	private double commuteAllowMonth;
-	
+
 	@Getter
 	private double commuteAllowFraction;
 
@@ -92,7 +91,7 @@ public class DetailItem extends DomainObject {
 	 * @param laborInsuranceAtr
 	 */
 	public DetailItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
-			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr, 
+			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr,
 			DetailItemPosition itemPosition) {
 		super();
 		this.itemCode = itemCode;
@@ -106,18 +105,14 @@ public class DetailItem extends DomainObject {
 	}
 
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
-			int laborInsuranceAtr, int categoryAtr, int deductionAtr, int linePosition,
-			int columnPosition) {
+			int laborInsuranceAtr, int categoryAtr, int deductionAtr, int linePosition, int columnPosition) {
 
 		return new DetailItem(new ItemCode(itemCode), value, EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
 				EnumAdaptor.valueOf(socialInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class), 
-				new DetailItemPosition(
-						new LinePosition(linePosition), 
-						new ColumnPosition(columnPosition))
-				);
+				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class),
+				new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition)));
 	}
 
 	/**
@@ -170,14 +165,28 @@ public class DetailItem extends DomainObject {
 	public void additionalInfo(int linePosition, int columnPosition) {
 		this.itemPosition = new DetailItemPosition(new LinePosition(linePosition), new ColumnPosition(columnPosition));
 	}
-	
+
 	/**
 	 * Add info: commute Allow Month
+	 * 
 	 * @param commuteAllowMonth
 	 * @return
 	 */
 	public void additionalInfo(double commuteAllowMonth) {
 		this.commuteAllowMonth = commuteAllowMonth;
+	}
+
+	/**
+	 * add comute data
+	 * 
+	 * @param commuteAllowTaxImpose
+	 * @param commuteAllowMonth
+	 * @param commuteAllowFraction
+	 */
+	public void addCommuteData(double commuteAllowTaxImpose, double commuteAllowMonth, double commuteAllowFraction) {
+		this.commuteAllowTaxImpose = commuteAllowTaxImpose;
+		this.commuteAllowMonth = commuteAllowMonth;
+		this.commuteAllowFraction = commuteAllowFraction;
 	}
 
 	/**
