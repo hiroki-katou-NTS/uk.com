@@ -37,7 +37,7 @@
 								<div id="tabs-api" class="cf">
 									<article>
 										<h2>Information</h2>
-										<b>Module:</b> nts.uk.ui.windows.sub<br/>
+										<b>Module:</b> nts.uk.ui.windows<br/>
 										<b>File:</b> /lib/nittsu/ui/ui.ts<br/>
 									</article>
 									<br/>
@@ -55,21 +55,28 @@
 											</thead>
 											<tbody>
 												<tr>
-													<td>modal(url, option?)</td>
+													<td>setShared(key, data)</td>
 													<td>
-														<b>Return:</b> ScreenWindow<br/>
-														<b class="color">url: string</b> Relative URL usually start with "/view"<br/>
-														<b class="color">option: object</b> Dialog option extend from <a href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
-														Open a modal sub-window, which you can't interact with parent window.<br/>
+														<b>Return:</b> void<br/>
+														<b class="color">key: string</b> Set the key for stored share value<br/>
+														<b class="color">data: any</b> Set data for stored share value<br/>
+														Store a share pair &lt;key,value&gt;<br/>
 													</td>
 												</tr>
 												<tr>
-													<td>modeless(url, option?)</td>
+													<td>getShared(key)</td>
 													<td>
-														<b>Return:</b> ScreenWindow<br/>
-														<b class="color">url: string</b> Relative URL usually start with "/view"<br/>
-														<b class="color">option: object</b> Dialog option extend from <a href="http://api.jqueryui.com/dialog">JqueryUI Dialog option</a><br/>
-														Open a modal sub-window, which you can interact with parent window.<br/>
+														<b>Return:</b> any<br/>
+														<b class="color">url: string</b> Set the key<br/>
+														Get stored share value with given key<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>close(windowId?)</td>
+													<td>
+														<b>Return:</b> void<br/>
+														<b class="color">windowId: string</b> Id of target window, it get current window by default<br/>
+														Close a window with specify ID or current window if windowId is blank<br/>
 													</td>
 												</tr>
 											</tbody>
@@ -77,12 +84,6 @@
 									</article>
 								</div>
 							</div>
-						</article>
-						<article>
-							<note style="width:730px;"><b>No close button!</b><br/>
-							Because everyone often ask about how to hide dialog close button so I'll write it here:<br/>
-							nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml", <b>{dialogClass: "no-close"}</b>);
-							</note>
 						</article>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
