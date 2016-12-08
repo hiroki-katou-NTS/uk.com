@@ -94,7 +94,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 			List<LineCommandBase> lines, PayBonusAtr payBonusAtr, SparePayAtr sparePayAtr) {
 		lines.stream().forEach(x -> {
 			List<DetailItemCommandBase> items = x.getDetails().stream()
-					.filter(t -> !StringUtil.isNullOrEmpty(t.getItemCode(), true) && !t.isCreated())
+					.filter(t -> !StringUtil.isNullOrEmpty(t.getItemCode(), true) && t.isCreated())
 					.collect(Collectors.toList());
 			for (DetailItemCommandBase item : items) {
 				boolean isExistDetails = this.paymentDataRepository.isExistDetail(companyCode, personId, processingNo,
@@ -132,7 +132,8 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 
 				detailItem.additionalInfo(mItem.getLimitMoney().v(), mItem.getFixedPaidAtr().value,
 						mItem.getAvgPaidAtr().value, mItem.getItemAtr().value);
-
+				detailItem.addCommuteData(item.getCommuteAllowTaxImpose(), item.getCommuteAllowMonth(), item.getCommuteAllowFraction());
+				
 				if (item.isCreated()) {
 					this.paymentDataRepository.updateDetail(payment, detailItem);
 				} else {
