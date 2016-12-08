@@ -26,7 +26,7 @@
 						<h1>MultiCheckBox</h1>
 						<h2>Overview</h2>
 						<div data-bind="foreach: boxes">
-							<div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}"></div>
+							<div data-bind="ntsCheckBox: { checked: $parent.selectedBoxes,  text: name }" class="cf"></div>
 						</div>
 					  <div data-bind="foreach: selectedBoxes">
 						  <p><span data-bind="text: id"></span></p>

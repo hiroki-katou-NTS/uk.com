@@ -58,13 +58,13 @@
                 };
 
                 this.build$dialog(options);
-
+                
                 this.$iframe.bind('load', () => {
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     this.$dialog.dialog('option', {
-                        width: this.globalContext.dialogSize.width,
-                        height: this.globalContext.dialogSize.height,
+                        width: options.width || this.globalContext.width,
+                        height: options.height || this.globalContext.dialogSize.height,
                         title: options.title || "dialog",
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
