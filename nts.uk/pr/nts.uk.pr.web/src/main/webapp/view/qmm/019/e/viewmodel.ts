@@ -1,5 +1,5 @@
 module qmm019.e.viewmodel {
-    
+    import option = nts.uk.ui.option;
     export class ScreenModel {
         selectLayout: KnockoutObservable<service.model.LayoutMasterDto>;
         selectedLayoutAtr: KnockoutObservable<number>;
@@ -8,6 +8,7 @@ module qmm019.e.viewmodel {
         selectLayoutStartYm: KnockoutObservable<string>;
         selectLayoutEndYm: KnockoutObservable<string>;
         layoutStartYm: KnockoutObservable<string>;
+        timeEditorOption: KnockoutObservable<any>;
         /**
          * Init screen model.
          */
@@ -20,6 +21,7 @@ module qmm019.e.viewmodel {
             self.selectLayoutEndYm = ko.observable(null);
             self.selectLayout = ko.observable(null);
             self.layoutStartYm = ko.observable(null);
+            self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
         }
         
          // start function
@@ -73,6 +75,12 @@ module qmm019.e.viewmodel {
         dataUpdate(): any{
             var self = this;
             var layoutInfor = self.selectLayout();
+            //check YM
+            var inputYm = $("#INP_001").val();
+            if(!nts.uk.time.parseYearMonth(inputYm).success){
+               alert(nts.uk.time.parseYearMonth(inputYm).msg);
+               return false;    
+            }
             layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/','');
             layoutInfor.startYm = +$("#INP_001").val().replace('/','');
             //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合

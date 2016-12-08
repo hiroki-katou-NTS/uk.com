@@ -129,6 +129,12 @@ var qmm019;
                         $('#INP_001').focus();
                         return false;
                     }
+                    //check YM
+                    var Ym = $('#INP_003').val();
+                    if (!nts.uk.time.parseYearMonth(Ym).success) {
+                        alert(nts.uk.time.parseYearMonth(Ym).msg);
+                        return false;
+                    }
                     //コードの重複チェックを行う
                     var isStorage = false;
                     var stmtCd = $('#INP_001').val().trim();
