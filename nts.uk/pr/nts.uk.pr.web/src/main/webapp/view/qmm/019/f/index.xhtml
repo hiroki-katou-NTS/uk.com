@@ -42,7 +42,7 @@
 						<div style="display: flex">
 							<div><label id="LBL_003">コード/名称</label></div>
 							<div><input id="INP_001" style="margin-left: 20px; margin-top: 5px" type="text" maxlength="20" /></div>
-							<div><button id="SCH_001" style="width: 68px; margin-left: 5px">検索</button></div>
+							<div><button id="SCH_001" style="width: 68px; margin-left: 5px" data-bind="click: searchItem">検索</button></div>
 						</div>
 					</div>
 					<br /> <br />
@@ -112,7 +112,7 @@
 
 						<!-- CategoryAtr = 0||1 and select 個人情報参照-->
 						<div>
-							<div class="form-label required"
+							<div class="form-label required" style="margin-bottom: 5px"
 								data-bind="visible: checkPersonalInformationReference()">
 								<label>コード/名称</label>
 								<button data-bind="click: openHDialog"
@@ -143,9 +143,9 @@
 						</div>
 						<!-- 按分設定 -->
 						<div class="form-label">
-							<div style="float: left; display: flex" data-bind="with: switchButton">
+							<div style="float: left; display: flex; margin-top: 5px" data-bind="with: switchButton">
 								<div style="width: 85px"><label id = "LBL_009">按分設定</label></div>
-								<div id="switchButtonTest"
+								<div id="SEL_003"
 									data-bind="ntsSwitchButton: {
 									options: distributeSet,
 									optionsValue: 'code',
@@ -192,7 +192,7 @@
 								<label id="LBL_011">　　　　を超える場合</label>
 							</div>	
 							<br />
-							<div>
+							<div style="width: 500px">
 								<div class="clsDivRangeSlow">
 									<div id="checkBoxAlRangeHigh"
 										data-bind="ntsCheckBox: { checked: checkUseHighAlam, text: 'アラーム'}"
@@ -205,7 +205,8 @@
 										enable: checkUseHighAlam,
 										option: (new nts.uk.ui.option.CurrencyEditorOption({grouplength: 4, decimallength: 2, currencyformat: 'USD', currencyposition: 'left'})),
 									}"
-									type="text" />　　　　　を超える場合</div>
+									type="text" /></div>
+								<label id = "LBL_012">　　　　　を超える場合</label>
 							</div>
 						</div>
 						<br /> <br />
@@ -231,7 +232,7 @@
 								<div class="clsDivRangeSlow">
 									<div id="checkBoxAlRangeHigh"
 									data-bind="ntsCheckBox: { checked: checkUseLowAlam, text: 'アラーム'}"
-									class="cf　clsCheckbox"></div>
+									class="cf clsCheckbox"></div>
 								</div>
 								<div class="clsInp">
 									<input style="float: left; margin-left: 9px;"  id="INP_005" data-bind="ntsNumberEditor: {
