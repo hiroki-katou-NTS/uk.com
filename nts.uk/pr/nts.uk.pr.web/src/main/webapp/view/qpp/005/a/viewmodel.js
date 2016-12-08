@@ -299,7 +299,7 @@ var nts;
                                     self.commuteAllowMonth = commuteAllowMonth;
                                     self.commuteAllowFraction = commuteAllowFraction;
                                     self.isCreated = isCreated;
-                                    self.value.subscribe(function () {
+                                    self.value.subscribe(function (val) {
                                         var nId = 'ct' + self.categoryAtr + '_' + (self.linePosition - 1) + '_' + (self.columnPosition - 1);
                                         qpp005.a.utils.setBackgroundColorForItem(nId, self.value());
                                     });

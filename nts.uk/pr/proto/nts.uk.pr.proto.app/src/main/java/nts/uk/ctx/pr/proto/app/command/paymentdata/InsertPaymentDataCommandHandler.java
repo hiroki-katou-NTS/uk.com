@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMaster;
+import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
@@ -31,6 +33,9 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 
 	@Inject
 	private PaymentDateMasterRepository payDateMasterRepository;
+
+	@Inject
+	private ItemMasterRepository itemMasterRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
@@ -61,6 +66,10 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	 */
 	private void registerDetail(Payment payment, List<DetailItem> details) {
 		for (DetailItem item : details) {
+			ItemMaster mItem = this.itemMasterRepository
+					.find(payment.getCompanyCode().v(), item.getCategoryAtr().value, item.getItemCode().v()).get();
+			item.additionalInfo(mItem.getLimitMoney().v(), mItem.getFixedPaidAtr().value, mItem.getAvgPaidAtr().value,
+					mItem.getItemAtr().value);
 			this.paymentDataRepository.insertDetail(payment, item);
 		}
 	}

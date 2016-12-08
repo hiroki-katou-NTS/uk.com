@@ -92,7 +92,7 @@ public class DetailItem extends DomainObject {
 	 * @param laborInsuranceAtr
 	 */
 	public DetailItem(ItemCode itemCode, Double value, CorrectFlag correctFlag, InsuranceAtr socialInsuranceAtr,
-			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr, ItemAtr itemAtr,
+			InsuranceAtr laborInsuranceAtr, CategoryAtr categoryAtr, DeductionAtr deductionAtr, 
 			DetailItemPosition itemPosition) {
 		super();
 		this.itemCode = itemCode;
@@ -102,12 +102,11 @@ public class DetailItem extends DomainObject {
 		this.laborInsuranceAtr = laborInsuranceAtr;
 		this.categoryAtr = categoryAtr;
 		this.deductionAtr = deductionAtr;
-		this.itemAtr = itemAtr;
 		this.itemPosition = itemPosition;
 	}
 
 	public static DetailItem createFromJavaType(String itemCode, Double value, int correctFlag, int socialInsuranceAtr,
-			int laborInsuranceAtr, int categoryAtr, int deductionAtr, Integer itemAtr, int linePosition,
+			int laborInsuranceAtr, int categoryAtr, int deductionAtr, int linePosition,
 			int columnPosition) {
 
 		return new DetailItem(new ItemCode(itemCode), value, EnumAdaptor.valueOf(correctFlag, CorrectFlag.class),
@@ -115,7 +114,6 @@ public class DetailItem extends DomainObject {
 				EnumAdaptor.valueOf(laborInsuranceAtr, InsuranceAtr.class),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
 				EnumAdaptor.valueOf(deductionAtr, DeductionAtr.class), 
-				EnumAdaptor.valueOf(itemAtr, ItemAtr.class),
 				new DetailItemPosition(
 						new LinePosition(linePosition), 
 						new ColumnPosition(columnPosition))
@@ -192,6 +190,6 @@ public class DetailItem extends DomainObject {
 	 */
 	public static DetailItem createDataDetailItem(ItemCode itemCode, Double value, CategoryAtr categoryAttribute) {
 		return new DetailItem(itemCode, value.doubleValue(), CorrectFlag.NO_MODIFY, InsuranceAtr.UN_SUBJECT,
-				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, ItemAtr.TIMES, null);
+				InsuranceAtr.UN_SUBJECT, categoryAttribute, DeductionAtr.ANY_DEDUCTION, null);
 	}
 }
