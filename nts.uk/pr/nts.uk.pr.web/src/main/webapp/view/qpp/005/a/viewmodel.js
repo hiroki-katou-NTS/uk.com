@@ -18,7 +18,6 @@ var nts;
                                     var self = this;
                                     self.isHandInput = ko.observable(true);
                                     self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
-                                    self.backupData = ko.observable(new PaymentDataResultViewModel());
                                     self.categories = ko.observable(new CategoriesList());
                                     self.option = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.employee = ko.observable();
@@ -51,14 +50,14 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     qpp005.a.service.getPaymentData(self.employee().personId, self.employee().code).done(function (res) {
-                                        ko.mapping.fromJS(res, {}, self.paymentDataResult());
+                                        ko.mapping.fromJS(res, PaymentDataResultViewModel, self.paymentDataResult());
                                         self.paymentDataResult().__ko_mapping__ = undefined;
-                                        self.backupData(self.paymentDataResult());
                                         var categoryPayment = self.paymentDataResult().categories()[0];
                                         var categoryDeduct = self.paymentDataResult().categories()[1];
                                         var categoryArticle = self.paymentDataResult().categories()[3];
                                         self.calcTotal(categoryPayment, categoryDeduct, categoryArticle, true);
                                         self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
+                                        subscribeValue(self.paymentDataResult().categories());
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         $('.tb-category').css('display', 'none');
@@ -168,7 +167,6 @@ var nts;
                                         var taxCommuteEditor = nts.uk.ui.windows.getShared('taxCommuteEditor');
                                         var oneMonthCommuteEditor = nts.uk.ui.windows.getShared('oneMonthCommuteEditor');
                                         var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
-                                        var bakData = self.backupData();
                                         var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
                                         qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor);
                                         value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
@@ -210,7 +208,24 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            ;
+                            function subscribeValue(data) {
+                                var self = this;
+                                _.forEach(data, function (cate) {
+                                    var lines = cate.lines();
+                                    _.forEach(lines, function (line) {
+                                        _.forEach(line.details(), function (item) {
+                                            item.value.subscribe(function (val) {
+                                                var nId = 'ct' + item.categoryAtr() + '_' + (item.linePosition() - 1) + '_' + (item.columnPosition() - 1);
+                                                var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value());
+                                                var fixItem = item.itemCode().substring(0, 1) === 'F';
+                                                if (isCorrectFlag && !fixItem)
+                                                    item.correctFlag(1);
+                                            });
+                                        });
+                                    });
+                                });
+                            }
+                            viewmodel.subscribeValue = subscribeValue;
                             var SwitchButton = (function () {
                                 function SwitchButton() {
                                     var self = this;
@@ -299,10 +314,6 @@ var nts;
                                     self.commuteAllowMonth = commuteAllowMonth;
                                     self.commuteAllowFraction = commuteAllowFraction;
                                     self.isCreated = isCreated;
-                                    self.value.subscribe(function () {
-                                        var nId = 'ct' + self.categoryAtr + '_' + (self.linePosition - 1) + '_' + (self.columnPosition - 1);
-                                        qpp005.a.utils.setBackgroundColorForItem(nId, self.value());
-                                    });
                                 }
                                 return DetailItemViewModel;
                             }());

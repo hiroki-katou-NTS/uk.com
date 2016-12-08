@@ -5,7 +5,6 @@ module nts.uk.pr.view.qpp005.a {
         export class ScreenModel {
             isHandInput: KnockoutObservable<boolean>;
             paymentDataResult: KnockoutObservable<PaymentDataResultViewModel>;
-            backupData: KnockoutObservable<PaymentDataResultViewModel>;
             categories: KnockoutObservable<CategoriesList>;
             option: KnockoutObservable<any>;
             employee: KnockoutObservable<Employee>;
@@ -18,7 +17,6 @@ module nts.uk.pr.view.qpp005.a {
                 var self = this;
                 self.isHandInput = ko.observable(true);
                 self.paymentDataResult = ko.observable(new PaymentDataResultViewModel());
-                self.backupData = ko.observable(new PaymentDataResultViewModel());
                 self.categories = ko.observable(new CategoriesList());
                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                 self.employee = ko.observable<Employee>();
@@ -54,16 +52,15 @@ module nts.uk.pr.view.qpp005.a {
 
                 qpp005.a.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
 
-                    ko.mapping.fromJS(res, {}, self.paymentDataResult());
+                    ko.mapping.fromJS(res, PaymentDataResultViewModel, self.paymentDataResult());
                     self.paymentDataResult().__ko_mapping__ = undefined;
-                    self.backupData(self.paymentDataResult());
 
                     var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
                     var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
                     var categoryArticle: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[3];
                     self.calcTotal(categoryPayment, categoryDeduct, categoryArticle, true);
                     self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
-
+                    subscribeValue(self.paymentDataResult().categories());
                     dfd.resolve();
                 }).fail(function(res) {
                     $('.tb-category').css('display', 'none');
@@ -191,8 +188,6 @@ module nts.uk.pr.view.qpp005.a {
                     var oneMonthCommuteEditor = nts.uk.ui.windows.getShared('oneMonthCommuteEditor');
                     var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
 
-                    var bakData = self.backupData();
-
                     var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
                     qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor);
 
@@ -234,7 +229,25 @@ module nts.uk.pr.view.qpp005.a {
                 });
 
             }
-        };
+        }
+
+        export function subscribeValue(data) {
+            var self = this;
+            _.forEach(data, (cate) => {
+
+                var lines = cate.lines();
+                _.forEach(lines, (line) => {
+                    _.forEach(line.details(), (item) => {
+                        item.value.subscribe(function(val) {
+                            var nId = 'ct' + item.categoryAtr() + '_' + (item.linePosition() - 1) + '_' + (item.columnPosition() - 1);
+                            var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value());
+                            var fixItem = item.itemCode().substring(0, 1) === 'F';
+                            if (isCorrectFlag && !fixItem) item.correctFlag(1);
+                        });
+                    });
+                });
+            });
+        }
 
         export class SwitchButton {
             roundingRules: KnockoutObservableArray<any>;
@@ -249,6 +262,7 @@ module nts.uk.pr.view.qpp005.a {
                 self.selectedRuleCode = ko.observable('hnext');
             }
         }
+
         export class Employee {
             personId: string;
             code: string;
@@ -279,7 +293,7 @@ module nts.uk.pr.view.qpp005.a {
                 self.categories = categories;
                 self.remarks = ko.observable(remarks);
                 self.remarkCount = ko.computed(function() {
-                    return nts.uk.text.format('入力文字数：{0}文字', self.remarks() == undefined ? 0: self.remarks().length);
+                    return nts.uk.text.format('入力文字数：{0}文字', self.remarks() == undefined ? 0 : self.remarks().length);
                 });
             }
         }
@@ -370,10 +384,6 @@ module nts.uk.pr.view.qpp005.a {
                 self.commuteAllowMonth = commuteAllowMonth;
                 self.commuteAllowFraction = commuteAllowFraction;
                 self.isCreated = isCreated;
-                self.value.subscribe(function() {
-                    var nId = 'ct' + self.categoryAtr + '_' + (self.linePosition - 1) + '_' + (self.columnPosition - 1);
-                    qpp005.a.utils.setBackgroundColorForItem(nId, self.value());
-                });
             }
         }
 

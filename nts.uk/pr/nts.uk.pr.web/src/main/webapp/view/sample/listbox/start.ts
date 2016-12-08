@@ -6,7 +6,8 @@ __viewContext.ready(function () {
         selectedCode: KnockoutObservable<string>;
         selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
-
+        isRequired: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
@@ -18,6 +19,7 @@ __viewContext.ready(function () {
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable(null)
             self.isEnable = ko.observable(true);
+            self.isRequired = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
             
             $('#list-box').on('selectionChanging', function(event) {

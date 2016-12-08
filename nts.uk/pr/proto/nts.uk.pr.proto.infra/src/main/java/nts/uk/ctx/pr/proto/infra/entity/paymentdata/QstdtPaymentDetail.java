@@ -76,8 +76,8 @@ public class QstdtPaymentDetail {
 	public BigDecimal commuteAllowFraction;
 	
 	@Basic(optional = false)
-	@Column(name = "LINE_POS")
-	public int linePosition;
+	@Column(name = "PRINT_LINE_POS")
+	public int printLinePosition;
 	
 	@Basic(optional = false)
 	@Column(name = "ITEM_POS_COLUMN")

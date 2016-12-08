@@ -84,13 +84,19 @@ module qmm019.d.viewmodel {
         
        createHistoryLayout(): any{
            var self = this;
+           var inputYm =$("#INP_001").val();
+           //check YM
+           if(!nts.uk.time.parseYearMonth(inputYm).success){
+               alert(nts.uk.time.parseYearMonth(inputYm).msg);
+               return false;    
+           }
            var selectYm = self.startYmHis();
-            var inputYm =$("#INP_001").val().replace('/','');
-            if(+inputYm < +selectYm
-              || + inputYm == +selectYm){
-               alert('履歴の期間が正しくありません。');
-                return false;
-            }
+           inputYm =$("#INP_001").val().replace('/','');
+           if(+inputYm < +selectYm
+             || + inputYm == +selectYm){
+              alert('履歴の期間が正しくありません。');
+               return false;
+           }
            else{
                 self.createData();
                if($("#copyCreate").is(":checked")){

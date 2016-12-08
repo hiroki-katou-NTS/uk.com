@@ -263,7 +263,7 @@ public class GetPaymentDataQueryProcessor {
 										d.getItemCode().v(),
 										mItem.getItemAbName().v(),
 										isTaxtAtr ? 0.0: null,
-										1,
+										0,
 										mLine.getLinePosition().v(), 
 										d.getItemPosColumn().v(),
 										mItem.getDeductAttribute().value, 

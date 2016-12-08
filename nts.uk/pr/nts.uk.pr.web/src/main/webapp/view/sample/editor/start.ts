@@ -22,7 +22,7 @@ __viewContext.ready(function () {
                 constraints: ko.observableArray(['ResidenceCode','EmployeeCode']),
                 option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
                 enable: ko.observable(true),
-                readonly: ko.observable(false) 
+                readonly: ko.observable(false)
             };
                       
             // TextEditor

@@ -72,8 +72,14 @@ var qmm019;
                 };
                 ScreenModel.prototype.createHistoryLayout = function () {
                     var self = this;
+                    var inputYm = $("#INP_001").val();
+                    //check YM
+                    if (!nts.uk.time.parseYearMonth(inputYm).success) {
+                        alert(nts.uk.time.parseYearMonth(inputYm).msg);
+                        return false;
+                    }
                     var selectYm = self.startYmHis();
-                    var inputYm = $("#INP_001").val().replace('/', '');
+                    inputYm = $("#INP_001").val().replace('/', '');
                     if (+inputYm < +selectYm
                         || +inputYm == +selectYm) {
                         alert('履歴の期間が正しくありません。');

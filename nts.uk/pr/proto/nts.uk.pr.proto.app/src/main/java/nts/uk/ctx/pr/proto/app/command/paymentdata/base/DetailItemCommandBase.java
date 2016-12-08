@@ -76,7 +76,6 @@ public class DetailItemCommandBase {
 				this.laborInsuranceAtr,
 				this.categoryAtr,
 				this.deductAtr,
-				this.itemAtr,
 				this.linePosition,
 				this.columnPosition
 				);

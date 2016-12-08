@@ -218,7 +218,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.socialInsurranceAttribute = detail.getSocialInsuranceAtr().value;
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
 		entity.columnPosition = detail.getItemPosition().getColumnPosition().v();
-		entity.linePosition = detail.getItemPosition().getLinePosition().v();
+		entity.printLinePosition = detail.getItemPosition().getLinePosition().v();
 		entity.limitAmount = detail.getLimitAmount(); // QCAM_ITEM.LIMIT_MNY
 		entity.fixPayATR = detail.getFixPayAtr(); // FIX_PAY_ATR
 		entity.averagePayATR = detail.getAveragePayAtr();//

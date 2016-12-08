@@ -30,9 +30,12 @@
 	width: 100%;
 }
 .clsCheckbox{
-	width: 70px;
+	width: 75px;
 }
 .clsDivRangeSlow{
 	float: left;
 	margin-left: 100px;
+}
+button.nts-switch-button{
+	min-width: 120px;
 }

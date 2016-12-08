@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
 	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "
-										+ "d.linePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"
+										+ "d.printLinePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"
 										+ "d.commuteAllowTaxImpose, d.commuteAllowMonth, d.commuteAllowFraction, d.correctFlag" +
 										" FROM QstdtPaymentDetail d " +
 										" WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" +
