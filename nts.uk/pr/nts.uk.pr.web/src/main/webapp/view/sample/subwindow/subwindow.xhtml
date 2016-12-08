@@ -27,8 +27,8 @@
 						<h2>Overview</h2>
 						<p>A SubWindow is a control which open another page with given URL. Basically it's a dialog with &lt;iframe&gt; inside.</p>
 						<br/>
-						<button onclick="OpenModalSubWindow()">Modal Window</button>
-						<button onclick="OpenModelessSubWindow()">Modeless Window</button>
+						<button data-bind="click: OpenModalSubWindow">Modal Window</button>
+						<button data-bind="click: OpenModelessSubWindow">Modeless Window</button>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -132,7 +132,7 @@
 							Because everyone often ask about how to hide dialog close button so I'll write it here:<br/>
 							nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml", <b>{dialogClass: "no-close"}</b>);
 							</note>
-							<h2>In next step we'll learn how to pass parameter bettween Window and SubWindow</h2>
+							<h2>In next step we'll learn how to pass parameter between Window and SubWindow</h2>
 						</article>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
