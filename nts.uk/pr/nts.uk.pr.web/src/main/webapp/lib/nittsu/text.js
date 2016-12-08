@@ -220,16 +220,19 @@ var nts;
             }
             text_1.replaceAll = replaceAll;
             function removeFromStart(str, charSet) {
+                if (str.length === charSet.length) {
+                    return (str === charSet) ? "" : str;
+                }
                 var i = findLastContinousIndex(str, charSet, 0);
-                return str.substr(i + 1, str.length - i - 1);
+                return str.substr(i, str.length - i);
             }
             text_1.removeFromStart = removeFromStart;
             function findLastContinousIndex(str, charSet, startIndex) {
-                if (startIndex === str.length - 1) {
+                if (startIndex >= str.length - 1) {
                     return startIndex;
                 }
                 if (str.substr(startIndex, charSet.length) !== charSet) {
-                    return startIndex - charSet.length;
+                    return startIndex;
                 }
                 else {
                     return findLastContinousIndex(str, charSet, startIndex + charSet.length);

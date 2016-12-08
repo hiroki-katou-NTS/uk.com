@@ -6,7 +6,7 @@ interface JQuery {
 module nts.uk.ui.jqueryExtentions {
     
     module ntsError {
-        var DATA_HAS_ERROR = 'haserror';
+        var DATA_HAS_ERROR = 'hasError';
         
         $.fn.ntsError = function (action: string, message: string): any {
             var $control = $(this);                   
@@ -48,7 +48,7 @@ module nts.uk.ui.jqueryExtentions {
             $control.data(DATA_HAS_ERROR, false);
             ui.errors.removeByElement($control);
             
-            $control.removeClass('error');
+            $control.parent().removeClass('error');
             
             return $control;
         }

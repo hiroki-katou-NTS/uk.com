@@ -7,8 +7,7 @@ module nts.uk.ui.koExtentions {
         init($input: JQuery, data: any) {
             var setValue: (newText: string) => {} = data.value;
 
-            $input.addClass('nts-editor');
-            $input.wrap("<div class='nts-input' />");
+            $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped'/>");
             $input.change(() => {
                 var validator = this.getValidator(data);
@@ -166,9 +165,9 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
-            $input.css({ 'text-align': 'right' });
-            var parent = $input.parent().parent().css({ 'width': '100%' });
-            var width = option.width ? option.width : '93.5%';
+            $input.css({ 'text-align': 'right', "box-sizing" :"border-box"});
+            var parent = $input.parent().css({ 'width': '100%' });
+            var width = option.width ? option.width : '100%';
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
                 $input.parent().addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
@@ -203,10 +202,10 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
-            $input.css({'text-align': 'right'});
-            var parent = $input.parent().parent();
+            $input.css({'text-align': 'right', "box-sizing" :"border-box"});
+            var parent = $input.parent();
             parent.css({'width':'100%'});
-            var width = option.width ? option.width : '93.5%';
+            var width = option.width ? option.width : '100%';
             $input.css({'paddingLeft': '12px', 'width': width });
         }
         

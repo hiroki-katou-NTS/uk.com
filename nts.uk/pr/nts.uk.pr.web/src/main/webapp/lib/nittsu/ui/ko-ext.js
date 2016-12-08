@@ -18,8 +18,7 @@ var nts;
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
                         var setValue = data.value;
-                        $input.addClass('nts-editor');
-                        $input.wrap("<div class='nts-input' />");
+                        $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped'/>");
                         $input.change(function () {
                             var validator = _this.getValidator(data);
@@ -181,9 +180,9 @@ var nts;
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        $input.css({ 'text-align': 'right' });
-                        var parent = $input.parent().parent().css({ 'width': '100%' });
-                        var width = option.width ? option.width : '93.5%';
+                        $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
+                        var parent = $input.parent().css({ 'width': '100%' });
+                        var width = option.width ? option.width : '100%';
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
                             $input.parent().addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
                             var paddingLeft = option.currencyposition === 'left' ? '11px' : '';
@@ -216,10 +215,10 @@ var nts;
                     TimeEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        $input.css({ 'text-align': 'right' });
-                        var parent = $input.parent().parent();
+                        $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
+                        var parent = $input.parent();
                         parent.css({ 'width': '100%' });
-                        var width = option.width ? option.width : '93.5%';
+                        var width = option.width ? option.width : '100%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
