@@ -8,7 +8,7 @@ var nts;
             (function (jqueryExtentions) {
                 var ntsError;
                 (function (ntsError) {
-                    var DATA_HAS_ERROR = 'haserror';
+                    var DATA_HAS_ERROR = 'hasError';
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
                         if (action === DATA_HAS_ERROR) {
@@ -44,7 +44,7 @@ var nts;
                     function clearErrors($control) {
                         $control.data(DATA_HAS_ERROR, false);
                         ui.errors.removeByElement($control);
-                        $control.removeClass('error');
+                        $control.parent().removeClass('error');
                         return $control;
                     }
                     function hasError($control) {

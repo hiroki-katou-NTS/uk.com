@@ -123,7 +123,7 @@
                     return result;
                 }
             }
-            result.success(text.removeFromStart(inputText, "0"));
+            result.success(inputText === "0" ? inputText : text.removeFromStart(inputText, "0"));
             return result;
         }
     }

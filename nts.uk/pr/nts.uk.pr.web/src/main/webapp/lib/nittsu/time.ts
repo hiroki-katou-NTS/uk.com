@@ -89,8 +89,8 @@
         if(!(time instanceof String)){
             time = time.toString();
         }
-        if(time.length < 2 || time.split(':').length > 2 || time.split('-').length > 2
-            || time.lastIndexOf('-') > 0){
+        if(time.length < 1 || time.split(':').length > 2 || time.split('-').length > 2
+            || time.lastIndexOf('-') > 0 || (time.length == 1 && !ntsNumber.isNumber(time.charAt(0)))){
             return ResultParseTime.failed();
         }
         
@@ -105,8 +105,9 @@
             minutes = times[1];
             hours = times[0];
         }else{
+            time = text.padLeft(time, "0", time.length > 4 ? time.length : 4);
             minutes = time.substr(-2,2);
-            hours = time.length === 2 ? 0 : time.substr(0, time.length - 2);
+            hours = time.substr(0, time.length - 2);
         }
         
         if(!ntsNumber.isNumber(minutes, false) || parseInt(minutes) > 59 || !ntsNumber.isNumber(hours, false)){

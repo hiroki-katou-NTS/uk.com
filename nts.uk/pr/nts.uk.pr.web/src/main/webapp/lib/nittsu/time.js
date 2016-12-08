@@ -80,8 +80,8 @@ var nts;
                 if (!(time instanceof String)) {
                     time = time.toString();
                 }
-                if (time.length < 2 || time.split(':').length > 2 || time.split('-').length > 2
-                    || time.lastIndexOf('-') > 0) {
+                if (time.length < 1 || time.split(':').length > 2 || time.split('-').length > 2
+                    || time.lastIndexOf('-') > 0 || (time.length == 1 && !uk.ntsNumber.isNumber(time.charAt(0)))) {
                     return ResultParseTime.failed();
                 }
                 var minusNumber = time.charAt(0) === '-';
@@ -96,8 +96,9 @@ var nts;
                     hours = times[0];
                 }
                 else {
+                    time = uk.text.padLeft(time, "0", time.length > 4 ? time.length : 4);
                     minutes = time.substr(-2, 2);
-                    hours = time.length === 2 ? 0 : time.substr(0, time.length - 2);
+                    hours = time.substr(0, time.length - 2);
                 }
                 if (!uk.ntsNumber.isNumber(minutes, false) || parseInt(minutes) > 59 || !uk.ntsNumber.isNumber(hours, false)) {
                     return ResultParseTime.failed();
