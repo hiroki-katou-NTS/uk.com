@@ -26,9 +26,9 @@ public class QstmtStmtLayoutLinesPK implements Serializable {
 	public String stmtCd;
 
 	@Basic(optional = false)
-	@Column(name ="STR_YM")
-	public int strYm;
-
+	@Column(name ="HIST_ID")
+	public String historyId;
+	
 	@Basic(optional = false)
 	@Column(name ="CTG_ATR")
 	public int ctgAtr;

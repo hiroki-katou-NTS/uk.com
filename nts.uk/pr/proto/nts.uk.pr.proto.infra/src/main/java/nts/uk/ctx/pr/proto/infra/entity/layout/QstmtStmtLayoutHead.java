@@ -28,7 +28,11 @@ public class QstmtStmtLayoutHead implements Serializable {
 	
 	@Column(name ="STMT_NAME")
 	public String stmtName;
-		
+
+	@Basic(optional = false)
+	@Column(name ="STR_YM")
+	public int strYm;
+
 	@Basic(optional = false)
 	@Column(name ="END_YM")
 	public int endYm;

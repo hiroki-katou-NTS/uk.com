@@ -64,7 +64,7 @@ public class LayoutDetail {
 	/**アラーム範囲下限	 */
 	private int alamRangeLow;
 	
-	public LayoutMasterDetail toDomain(String layoutCode, int startYm, int endYm){
+	public LayoutMasterDetail toDomain(String layoutCode, int startYm, int endYm, String historyId){
 		
 		return LayoutMasterDetail.createFromJavaType(
 				AppContexts.user().companyCode(), 
@@ -90,6 +90,7 @@ public class LayoutDetail {
 				this.alamRangeHigh, 
 				this.isAlamUseLow,
 				this.alamRangeLow,
-				this.itemPosColumn);
+				this.itemPosColumn,
+				historyId);
 	}
 }

@@ -20,6 +20,8 @@ public class DeleteLayoutHistoryCommand {
 	private String stmtName;
 	
 	private int endYm;
+	
+	private String historyId;
 	public LayoutMaster toDomain(int endYm, int layoutAtr, String stmtName){
 		return LayoutMaster.createFromJavaType(
 				AppContexts.user().companyCode(), 
@@ -27,6 +29,7 @@ public class DeleteLayoutHistoryCommand {
 				this.stmtCode, 
 				endYm, 
 				layoutAtr, 
-				stmtName);
+				stmtName,
+				this.historyId);
 	}
 }

@@ -16,7 +16,7 @@ public interface LayoutMasterRepository {
 	 * @param strYm
 	 * @return
 	 */
-	Optional<LayoutMaster> getLayout(String companyCode, int startYm, String stmtCode);
+	Optional<LayoutMaster> getLayout(String companyCode, String historyId, String stmtCode);
 	
 	Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int startYm);
 	/**
@@ -47,7 +47,7 @@ public interface LayoutMasterRepository {
 	 * @param stmtCode
 	 * @param startYm
 	 */
-	void remove(String companyCode, String stmtCode, int startYm);
+	void remove(String companyCode, String stmtCode, String historyId);
 
 	/**
 	 * 

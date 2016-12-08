@@ -45,7 +45,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 		int startYm = layoutCommand.getStartYm();
 		
 		//Validate by EAP: 02.明細レイアウトの作成-登録時チェック処理
-		LayoutMaster layoutOrg = layoutRepo.getLayout(companyCode, startYm, stmtCode)
+		LayoutMaster layoutOrg = layoutRepo.getLayout(companyCode, layoutCommand.getHistoryId(), stmtCode)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")));
 		
 		LayoutMaster layoutRegister = layoutCommand.toDomain(layoutOrg.getLayoutAtr().value);
@@ -66,7 +66,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 			String stmtCode, int startYm, Map<String, String> mapLineIdTemp) {
 		if (command.getListItemCodeDeleted().size() > 0) {
 			for(LayoutDetail detailDeleteCommand : command.getListItemCodeDeleted()){
-				detailRepo.remove(companyCode, stmtCode, startYm, detailDeleteCommand.getCategoryAtr(), detailDeleteCommand.getItemCode());
+				detailRepo.remove(companyCode, stmtCode, layoutCommand.getHistoryId(), detailDeleteCommand.getCategoryAtr(), detailDeleteCommand.getItemCode());
 			}
 		}
 
@@ -89,12 +89,13 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						detailCommand.getErrorRangeHigh(), detailCommand.getIsErrorUserLow(), 
 						detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
 						detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
-						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
+						detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn(),
+						layoutCommand.getHistoryId()));
 				continue;
 			}
 			if (!detailCommand.getUpdateItemCode().equals("")) {
 				// day la update
-				detailRepo.remove(companyCode, stmtCode, startYm, detailCommand.getCategoryAtr(), detailCommand.getItemCode());
+				detailRepo.remove(companyCode, stmtCode, layoutCommand.getHistoryId(), detailCommand.getCategoryAtr(), detailCommand.getItemCode());
 				detailCommand.setItemCode(detailCommand.getUpdateItemCode());
 			} 
 			
@@ -114,7 +115,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 					detailCommand.getErrorRangeHigh(), detailCommand.getIsErrorUserLow(), 
 					detailCommand.getErrorRangeLow(), detailCommand.getIsAlamUseHigh(), 
 					detailCommand.getAlamRangeHigh(), detailCommand.getIsAlamUseLow(), 
-					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn()));
+					detailCommand.getAlamRangeLow(), detailCommand.getItemPosColumn(),
+					layoutCommand.getHistoryId()));
 		}
 	}
 
@@ -125,7 +127,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 				List<LayoutMasterDetail> detailsDelete = detailRepo.getDetailsByLine(lineDeleteCommand.getAutoLineId());
 				detailRepo.remove(detailsDelete);
 				
-				lineRepo.remove(companyCode, startYm, lineDeleteCommand.getAutoLineId(), 
+				lineRepo.remove(companyCode, layoutCommand.getHistoryId(), lineDeleteCommand.getAutoLineId(), 
 						lineDeleteCommand.getCategoryAtr(), stmtCode);
 			}
 		}
@@ -141,7 +143,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						lineCommand.getAutoLineId(), 
 						lineCommand.getLineDisplayAtr(), 
 						lineCommand.getLinePosition(), 
-						lineCommand.getCategoryAtr()));
+						lineCommand.getCategoryAtr(),
+						layoutCommand.getHistoryId()));
 			} else {
 				mapLineIdTemp.put(lineCommand.getAutoLineId(), IdentifierUtil.randomUniqueId());
 				lineRepo.add(LayoutMasterLine.createFromJavaType(companyCode, 
@@ -150,7 +153,8 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						mapLineIdTemp.get(lineCommand.getAutoLineId()), 
 						lineCommand.getLineDisplayAtr(), 
 						lineCommand.getLinePosition(), 
-						lineCommand.getCategoryAtr()));
+						lineCommand.getCategoryAtr(),
+						layoutCommand.getHistoryId()));
 			}
 		}
 	}
@@ -167,7 +171,7 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						startYm, categoryAtr);
 				lineRepo.remove(linesDelete);
 				
-				categoryRepo.remove(companyCode, stmtCode, startYm, categoryAtr);
+				categoryRepo.remove(companyCode, stmtCode, layoutCommand.getHistoryId(), categoryAtr);
 			}
 		}
 		
@@ -179,13 +183,15 @@ public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutC
 						companyCode, startYm, stmtCode, 
 						categoryCommand.getCategoryAtr(), 
 						layoutCommand.getEndYm(), 
-						categoryCommand.getCategoryPosition()));
+						categoryCommand.getCategoryPosition(),
+						layoutCommand.getHistoryId()));
 			} else {
 				categoryRepo.add(LayoutMasterCategory.createFromJavaType(
 						companyCode, startYm, stmtCode, 
 						categoryCommand.getCategoryAtr(), 
 						layoutCommand.getEndYm(), 
-						categoryCommand.getCategoryPosition()));
+						categoryCommand.getCategoryPosition(),
+						layoutCommand.getHistoryId()));
 			}
 		}
 	}

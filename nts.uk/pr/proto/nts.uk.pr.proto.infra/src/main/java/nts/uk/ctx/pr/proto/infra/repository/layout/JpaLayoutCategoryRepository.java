@@ -22,7 +22,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
-			+ " AND c.qstmtStmtLayoutCtgPk.strYm = :startYm";
+			+ " AND c.strYm = :startYm";
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
@@ -30,8 +30,8 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
 		LayoutMasterCategory domain = LayoutMasterCategory.createFromJavaType(entity.qstmtStmtLayoutCtgPk.companyCd,
-				entity.qstmtStmtLayoutCtgPk.strYm, entity.qstmtStmtLayoutCtgPk.stmtCd,
-				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgPos);
+				entity.strYm, entity.qstmtStmtLayoutCtgPk.stmtCd,
+				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgPos, entity.qstmtStmtLayoutCtgPk.historyId);
 
 		return domain;
 	}
@@ -42,10 +42,11 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		entity.qstmtStmtLayoutCtgPk = new QstmtStmtLayoutCtgPK();
 		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
-		entity.qstmtStmtLayoutCtgPk.strYm = domain.getStartYM().v();
+		entity.strYm = domain.getStartYM().v();
 		entity.qstmtStmtLayoutCtgPk.ctgAtr = domain.getCtAtr().value;
 		entity.endYm = domain.getEndYm().v();
 		entity.ctgPos = domain.getCtgPos().v();
+		entity.qstmtStmtLayoutCtgPk.historyId = domain.getHistoryId();
 
 		return entity;
 	}
@@ -63,11 +64,11 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	}
 
 	@Override
-	public void remove(String companyCode, String stmtCode, int startYm, int categoryAtr) {
+	public void remove(String companyCode, String stmtCode, String historyId, int categoryAtr) {
 		val objectKey = new QstmtStmtLayoutCtgPK();
 		objectKey.companyCd = companyCode;
 		objectKey.stmtCd = stmtCode;
-		objectKey.strYm = startYm;
+		objectKey.historyId = historyId;
 		objectKey.ctgAtr = categoryAtr;
 		this.commandProxy().remove(QstmtStmtLayoutCtg.class, objectKey);
 	}
@@ -123,15 +124,15 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 			val objectKey = new QstmtStmtLayoutCtgPK();
 			objectKey.companyCd = category.getCompanyCode().v();
 			objectKey.stmtCd = category.getStmtCode().v();
-			objectKey.strYm = category.getStartYM().v();
+			objectKey.historyId = category.getHistoryId();
 			objectKey.ctgAtr = category.getCtAtr().value;
 			this.commandProxy().remove(QstmtStmtLayoutCtg.class, objectKey);
 		}
 	}
 
 	@Override
-	public Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr) {
-		QstmtStmtLayoutCtgPK primaryKey = new QstmtStmtLayoutCtgPK(companyCode, stmtCode, startYearMonth, categoryAtr);
+	public Optional<LayoutMasterCategory> find(String companyCode, String stmtCode, String historyId, int categoryAtr) {
+		QstmtStmtLayoutCtgPK primaryKey = new QstmtStmtLayoutCtgPK(companyCode, stmtCode, historyId, categoryAtr);
 		
 		return this.queryProxy().find(primaryKey, QstmtStmtLayoutCtg.class).map(x -> toDomain(x));
 	}
