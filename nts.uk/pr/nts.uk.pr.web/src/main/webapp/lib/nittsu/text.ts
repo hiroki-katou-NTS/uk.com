@@ -219,6 +219,22 @@
             return str.split(find).join(replace);    
         }
         
+        export function removeFromStart(str: string, charSet: string){
+            var i = findLastContinousIndex(str, charSet, 0);
+            return str.substr(i + 1, str.length - i - 1);
+        }
+        
+        function findLastContinousIndex(str: string, charSet: string, startIndex: number){
+            if(startIndex === str.length - 1){
+                return startIndex;
+            }
+            if(str.substr(startIndex, charSet.length) !== charSet){
+                return startIndex - charSet.length;
+            }else{
+                return findLastContinousIndex(str, charSet, startIndex + charSet.length);
+            }
+        }
+        
         /**
          * Type of characters
          */

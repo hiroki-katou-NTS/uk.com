@@ -10,18 +10,14 @@ module nts.uk.ui.jqueryExtentions {
         
         $.fn.ntsError = function (action: string, message: string): any {
             var $control = $(this);                   
-            if(action === 'haserror') {
-               var result = true;
-               $control.each(function(index) {
-                    var $item = $(this);
-                    result = result && hasError($item);
-               });
-               return result; 
+            if(action === DATA_HAS_ERROR) {
+               return _.some($control, c => hasError($( c)));
             } else {
                $control.each(function(index) {
                     var $item = $(this);
                     $item = processErrorOnItem($item, message, action);
                }); 
+               return $control;
             }
             
         }
@@ -43,7 +39,7 @@ module nts.uk.ui.jqueryExtentions {
                 $control: $control
             });
             
-            $control.addClass('error');
+            $control.parent().addClass('error');
             
             return $control;
         }

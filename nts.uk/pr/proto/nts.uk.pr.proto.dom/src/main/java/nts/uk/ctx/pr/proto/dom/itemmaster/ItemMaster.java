@@ -80,7 +80,13 @@ public class ItemMaster extends AggregateRoot{
 	private DisplayAtr zeroDisplayAtr;
 	
 	
-	public ItemMaster(CompanyCode companyCode, ItemCode itemCode, CategoryAtr categoryAtr, ItemName itemName, ItemName itemAbName, TaxAtr taxAtr, ItemAtr itemAtr) {
+	public ItemMaster(CompanyCode companyCode, 
+			ItemCode itemCode, 
+			CategoryAtr categoryAtr, 
+			ItemName itemName, 
+			ItemName itemAbName, 
+			TaxAtr taxAtr, 
+			ItemAtr itemAtr) {
 		super();
 		this.companyCode = companyCode;
 		this.itemCode = itemCode;

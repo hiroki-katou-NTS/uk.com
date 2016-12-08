@@ -113,7 +113,7 @@ var nts;
                                 return result;
                             }
                         }
-                        result.success(inputText);
+                        result.success(uk.text.removeFromStart(inputText, "0"));
                         return result;
                     };
                     return NumberValidator;

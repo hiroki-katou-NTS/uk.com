@@ -97,7 +97,7 @@ var nts;
                 }
                 else {
                     minutes = time.substr(-2, 2);
-                    hours = time.substr(0, time.length - 2);
+                    hours = time.length === 2 ? 0 : time.substr(0, time.length - 2);
                 }
                 if (!uk.ntsNumber.isNumber(minutes, false) || parseInt(minutes) > 59 || !uk.ntsNumber.isNumber(hours, false)) {
                     return ResultParseTime.failed();

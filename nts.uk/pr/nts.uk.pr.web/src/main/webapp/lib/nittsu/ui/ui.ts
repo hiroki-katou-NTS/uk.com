@@ -23,7 +23,7 @@
             globalContext: any = null;
             $dialog: JQuery = null;
             $iframe: JQuery = null;
-            onClosedHandler: () => {} = $.noop;
+            onClosedHandler: () => void = $.noop;
 
             constructor(id: string, isRoot: boolean, parent: ScreenWindow) {
                 this.id = id;
@@ -93,7 +93,7 @@
                 this.setGlobal((<any>this.$iframe[0]).contentWindow);
             }
 
-            onClosed(callback: () => {}) {
+            onClosed(callback: () => void) {
                 this.onClosedHandler = callback;
             }
 

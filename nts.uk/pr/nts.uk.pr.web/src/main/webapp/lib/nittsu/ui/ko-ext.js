@@ -19,6 +19,8 @@ var nts;
                         var _this = this;
                         var setValue = data.value;
                         $input.addClass('nts-editor');
+                        $input.wrap("<div class='nts-input' />");
+                        $input.wrap("<span class= 'nts-editor-wrapped'/>");
                         $input.change(function () {
                             var validator = _this.getValidator(data);
                             var formatter = _this.getFormatter(data);
@@ -180,22 +182,16 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right' });
-                        if (!$input.parent().hasClass('nts-input') && !$input.parent().hasClass('currencyLeft')
-                            && !$input.parent().hasClass('currencyRight')) {
-                            $input.wrap("<div class='nts-input' />");
-                            var parent = $input.parent();
-                            parent.css({ 'width': '100%' });
-                            var width = option.width ? option.width : '93.5%';
-                            if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                                $input.wrap("<span class = 'currency " +
-                                    (option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight') + "' />");
-                                var paddingLeft = option.currencyposition === 'left' ? '12px' : '';
-                                var paddingRight = option.currencyposition === 'right' ? '12px' : '';
-                                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width });
-                            }
-                            else {
-                                $input.css({ 'paddingLeft': '12px', 'width': width });
-                            }
+                        var parent = $input.parent().parent().css({ 'width': '100%' });
+                        var width = option.width ? option.width : '93.5%';
+                        if (option.currencyformat !== undefined && option.currencyformat !== null) {
+                            $input.parent().addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
+                            var paddingLeft = option.currencyposition === 'left' ? '11px' : '';
+                            var paddingRight = option.currencyposition === 'right' ? '11px' : '';
+                            $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width });
+                        }
+                        else {
+                            $input.css({ 'paddingLeft': '12px', 'width': width });
                         }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
@@ -221,8 +217,7 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right' });
-                        $input.wrap("<div class='nts-input' />");
-                        var parent = $input.parent();
+                        var parent = $input.parent().parent();
                         parent.css({ 'width': '100%' });
                         var width = option.width ? option.width : '93.5%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
@@ -773,9 +768,9 @@ var nts;
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
-                        var editable = data.editable;
-                        var enable = data.enable;
-                        var columns = data.columns;
+                        var editable = ko.unwrap(data.editable);
+                        var enable = ko.unwrap(data.enable);
+                        var columns = ko.unwrap(data.columns);
                         // Container.
                         var container = $(element);
                         var comboMode = editable ? 'editable' : 'dropdown';

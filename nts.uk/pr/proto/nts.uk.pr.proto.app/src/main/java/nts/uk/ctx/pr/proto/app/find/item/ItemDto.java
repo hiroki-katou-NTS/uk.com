@@ -22,7 +22,7 @@ public class ItemDto {
     int alamRangeHigh;
     boolean checkUseLowAlam;
     int alamRangeLow;
-	
+	int taxAtr;
 	
 	public static ItemDto fromDomain(ItemMaster domain){
 		return new ItemDto(
@@ -37,7 +37,8 @@ public class ItemDto {
 				(domain.getAlarm().get(0).getIsUseHigh().value == 1),
 				domain.getAlarm().get(0).getRange().max().intValue(),
 				(domain.getAlarm().get(0).getIsUseLow().value == 1),
-				domain.getAlarm().get(0).getRange().min().intValue()
+				domain.getAlarm().get(0).getRange().min().intValue(),
+				domain.getTaxAtr().value
 				);	
 	}
 }

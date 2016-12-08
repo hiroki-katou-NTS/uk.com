@@ -11,19 +11,15 @@ var nts;
                     var DATA_HAS_ERROR = 'haserror';
                     $.fn.ntsError = function (action, message) {
                         var $control = $(this);
-                        if (action === 'haserror') {
-                            var result = true;
-                            $control.each(function (index) {
-                                var $item = $(this);
-                                result = result && hasError($item);
-                            });
-                            return result;
+                        if (action === DATA_HAS_ERROR) {
+                            return _.some($control, function (c) { return hasError($(c)); });
                         }
                         else {
                             $control.each(function (index) {
                                 var $item = $(this);
                                 $item = processErrorOnItem($item, message, action);
                             });
+                            return $control;
                         }
                     };
                     //function for set and clear error
@@ -42,7 +38,7 @@ var nts;
                             message: message,
                             $control: $control
                         });
-                        $control.addClass('error');
+                        $control.parent().addClass('error');
                         return $control;
                     }
                     function clearErrors($control) {
