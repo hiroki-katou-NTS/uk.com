@@ -137,7 +137,8 @@ module qmm019.a {
                     stmtCode: layout.stmtCode,
                     startYm: layout.startYm,
                     stmtName: layout.stmtName,
-                    endYm: layout.endYm
+                    endYm: layout.endYm,
+                    historyId: layout.historyId
                 },
                 categoryCommand: categoryCommand,
                 lineCommand: lineCommand,
@@ -168,6 +169,7 @@ module qmm019.a {
                 stmtName: string;
                 endYm: number;
                 layoutAtr: number;
+                historyId: string;
                 constructor() {
                 }
             }

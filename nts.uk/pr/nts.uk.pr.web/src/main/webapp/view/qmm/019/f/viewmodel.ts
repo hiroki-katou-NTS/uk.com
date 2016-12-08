@@ -81,7 +81,7 @@ module qmm019.f.viewmodel {
                             sumScopeAtr: ko.observable(data.sumScopeAtr)
                         };
                     }else{     
-                        let itemDto: any = _.find(listItemDto, function (item) {
+                        let itemDto: any = _.find(self.listItemDto, function (item) {
                             return item.itemCode === currentItemCode;    
                         }) 
                             item = {
