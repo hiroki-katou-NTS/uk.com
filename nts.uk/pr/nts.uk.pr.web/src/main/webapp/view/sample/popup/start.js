@@ -10,7 +10,8 @@ __viewContext.ready(function () {
             my: 'left top',
             at: 'left bottom',
             of: $('#show-popup')
-        }
+        },
+        dismissible: false
     });
     $('#show-popup').click(function () {
         $('#popup-area').ntsPopup('show');

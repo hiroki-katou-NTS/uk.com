@@ -67,12 +67,16 @@ var nts;
                     };
                     function init(param) {
                         var popup = new NtsPopupPanel($(this), param.position);
+                        var dismissible = param.dismissible === false;
                         _.defer(function () {
-                            $(window).mousedown(function (e) {
-                                if ($(e.target).closest(popup.$panel).length === 0) {
-                                    popup.hide();
-                                }
-                            });
+                            if (!dismissible) {
+                                $(window).mousedown(function (e) {
+                                    //console.log(dismissible);
+                                    if ($(e.target).closest(popup.$panel).length === 0) {
+                                        popup.hide();
+                                    }
+                                });
+                            }
                         });
                         return popup.$panel;
                     }
