@@ -15,7 +15,7 @@ __viewContext.ready(function () {
     });
     
     $('#show-popup').click(function () {
-        $('#popup-area').closest('show');
+        $('#popup-area').ntsPopup('show');
     });
     
     $('.close-popup').click(function(){
