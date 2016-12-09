@@ -12,7 +12,11 @@
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	
 				<com:ValidatorScript>
-				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+					nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode
+					nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
+					nts.arc.time.YearMonth
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
@@ -20,27 +24,31 @@
             </ui:define>
             
             <ui:define name="content">
+				<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>MultiCheckBox</h1>
+						<h1>Error</h1>
 						<h2>Overview</h2>
-						<note style="width: 250px;"><b>Not completed yet!</b></note>
-						<div data-bind="foreach: boxes">
-							<div data-bind="ntsCheckBox: { checked: $parent.selectedBoxes,  text: name }" class="cf"></div>
+						<div data-bind="with: texteditor">
+							<h3>ResidenceCode (CharType: number, Maxlegth: 6)</h3>
+							<input id="testPushError" data-name="ResidentCode" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 						</div>
-					  <div data-bind="foreach: selectedBoxes">
-						  <p><span data-bind="text: id"></span></p>
-					  </div>
+						<div data-bind="with: numbereditor">
+							<h3>Number</h3>
+							<input data-name="Number" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-call">Javascript Call</a></li>
+									<li><a href="#tabs-api">API</a></li>
 								</ol>
-								<div id="tabs-html" class="cf">
+								<div id="tabs-call" class="cf">
+									
 								</div>
-								<div id="tabs-viewmodel" class="cf">
+								<div id="tabs-api" class="cf">
+
 								</div>
 							</div>
 						</article>
