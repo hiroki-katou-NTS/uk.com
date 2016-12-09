@@ -103,6 +103,10 @@ module nts.uk.ui.jqueryExtentions {
                 case 'hide':
                     popup.hide();
                     break;
+                case 'destroy': 
+                    popup.hide();
+                    popup.destroy();
+                    break;
             }
         }
         
@@ -137,6 +141,10 @@ module nts.uk.ui.jqueryExtentions {
                 this.$panel.css({
                     display: 'none'
                 });
+            }
+            
+            destroy() {
+               this.$panel = null; 
             }
         }
     }

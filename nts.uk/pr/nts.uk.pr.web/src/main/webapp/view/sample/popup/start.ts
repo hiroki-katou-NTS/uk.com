@@ -22,7 +22,10 @@ __viewContext.ready(function () {
     $('.close-popup').click(function(){
         $('#popup-area').ntsPopup('hide');
     });
-    
+    $('#destroy-popup').click(function() {
+       $('#popup-area').ntsPopup('destroy');
+       $('#show-popup').prop("disabled",true);
+    });
     this.bind(new ScreenModel());
     
 });

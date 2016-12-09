@@ -90,6 +90,10 @@ var nts;
                             case 'hide':
                                 popup.hide();
                                 break;
+                            case 'destroy':
+                                popup.hide();
+                                popup.destroy();
+                                break;
                         }
                     }
                     var NtsPopupPanel = (function () {
@@ -115,6 +119,9 @@ var nts;
                             this.$panel.css({
                                 display: 'none'
                             });
+                        };
+                        NtsPopupPanel.prototype.destroy = function () {
+                            this.$panel = null;
                         };
                         return NtsPopupPanel;
                     }());
