@@ -122,21 +122,24 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				"F001",
 				"0",
 				9,
-				SumScopeAtr.EXCLUDED);
+				SumScopeAtr.EXCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.PAYMENT,
 				"F002",
 				"1",
 				9,
-				SumScopeAtr.EXCLUDED);
+				SumScopeAtr.EXCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.PAYMENT,
 				"F003",
 				"2",
 				9,
-				SumScopeAtr.EXCLUDED);
+				SumScopeAtr.EXCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
 		
 		//控除9項目
 		createDetailDefault(layout,
@@ -145,63 +148,72 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				"F101",
 				"3",
 				1,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.MANUAL_ENTRY);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F102",
 				"3",
 				2,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.MANUAL_ENTRY);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F103",
 				"3",
 				3,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.MANUAL_ENTRY);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F104",
 				"3",
 				4,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.MANUAL_ENTRY);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F105",
 				"3",
 				5,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F106",
 				"3",
 				6,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F107",
 				"3",
 				7,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.MANUAL_ENTRY);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F108",
 				"3",
 				8,
-				SumScopeAtr.INCLUDED);
+				SumScopeAtr.INCLUDED,
+				CalculationMethod.MANUAL_ENTRY);
 		createDetailDefault(layout,
 				companyCode,
 				CategoryAtr.DEDUCTION,
 				"F114",
 				"4",
 				9,
-				SumScopeAtr.EXCLUDED);
+				SumScopeAtr.EXCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
 	}
 	private void createDetailDefault(LayoutMaster layout, 
 			String companyCode,
@@ -209,7 +221,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			String itemCode,
 			String autoLineId,
 			int itemPosColumn,
-			SumScopeAtr sumAtr){
+			SumScopeAtr sumAtr,
+			CalculationMethod calMethod){
 		RangeChecker alarm = new RangeChecker(UseOrNot.DO_NOT_USE, UseOrNot.DO_NOT_USE, Range.between(0,0));
 		RangeChecker error = new RangeChecker(UseOrNot.DO_NOT_USE, UseOrNot.DO_NOT_USE, Range.between(0,0));
 		Distribute distribute = new Distribute(DistributeWay.CALCULATED_PERCENTAGE, DistributeSet.NOT_PROPORTIONAL);
@@ -222,7 +235,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				new AutoLineId(autoLineId),
 				new ItemPosColumn(itemPosColumn),
 				alarm,
-				CalculationMethod.MANUAL_ENTRY,
+				calMethod,
 				distribute, 
 				DisplayAtr.DISPLAY,
 				error,

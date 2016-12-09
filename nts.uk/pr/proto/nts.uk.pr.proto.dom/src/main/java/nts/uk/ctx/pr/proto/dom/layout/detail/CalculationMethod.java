@@ -18,7 +18,9 @@ public enum CalculationMethod {
 	/** 4: 共通金額*/
 	COMMON_AMOUNT_MONEY(4),
 	/** 5:支給相殺*/
-	PAYMENT_CANCELED(5);
+	PAYMENT_CANCELED(5),
+	/**　9:システム計算	 */
+	SYSTEM_CALCULATION(9);
 	/**
      * value.
      */
