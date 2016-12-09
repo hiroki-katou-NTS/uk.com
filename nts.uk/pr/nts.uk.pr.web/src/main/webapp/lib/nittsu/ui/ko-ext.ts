@@ -177,14 +177,21 @@ module nts.uk.ui.koExtentions {
                 } 
                 parent.addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
-                parent.css({"display": "inline-block", "marginLeft": marginLeft + "px", "marginRight": marginRight + "px"});
+                parent.css({"display": "inline-block"});
+                if(marginLeft !== 0){
+                    parent.css({"marginLeft": marginLeft + "px"});    
+                }
+                if(marginRight !== 0){
+                    parent.css({"marginRight": marginRight + "px"});    
+                }
                 var parentTag = parent.parent().prop("tagName").toLowerCase();
                 if(parentTag === "td" || parentTag === "th"){
                     parent.css({'width': '100%'});    
                 }
                 var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
                 var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
-                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width, "marginLeft": "0px", "marginRight": "0px"});
+                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 
+                    'width': width, "marginLeft": "0px", "marginRight": "0px"});
             } else {
                 $input.css({ 'paddingLeft': '12px', 'width': width });
             }
