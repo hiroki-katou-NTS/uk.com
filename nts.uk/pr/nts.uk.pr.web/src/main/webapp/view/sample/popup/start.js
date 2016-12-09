@@ -16,11 +16,15 @@ __viewContext.ready(function () {
     $('#show-popup').click(function () {
         $('#popup-area').ntsPopup('show');
     });
+    $('#toggle-popup').click(function () {
+        $('#popup-area').ntsPopup('toggle');
+    });
     $('.close-popup').click(function () {
         $('#popup-area').ntsPopup('hide');
     });
     $('#destroy-popup').click(function () {
         $('#popup-area').ntsPopup('destroy');
+        $('#toggle-popup').prop("disabled", true);
         $('#show-popup').prop("disabled", true);
     });
     this.bind(new ScreenModel());

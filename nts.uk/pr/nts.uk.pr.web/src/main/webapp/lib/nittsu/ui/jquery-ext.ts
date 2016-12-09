@@ -107,6 +107,9 @@ module nts.uk.ui.jqueryExtentions {
                     popup.hide();
                     popup.destroy();
                     break;
+                case 'toggle':
+                    popup.toggle();
+                    break;
             }
         }
         
@@ -145,6 +148,15 @@ module nts.uk.ui.jqueryExtentions {
             
             destroy() {
                this.$panel = null; 
+            }
+            
+            toggle() {
+               var isDisplaying = this.$panel.css("display");
+               if(isDisplaying === 'none') {
+                  this.show(); 
+               } else {
+                  this.hide(); 
+               }
             }
         }
     }

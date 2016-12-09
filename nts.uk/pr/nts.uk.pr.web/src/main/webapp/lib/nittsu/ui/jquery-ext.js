@@ -94,6 +94,9 @@ var nts;
                                 popup.hide();
                                 popup.destroy();
                                 break;
+                            case 'toggle':
+                                popup.toggle();
+                                break;
                         }
                     }
                     var NtsPopupPanel = (function () {
@@ -122,6 +125,15 @@ var nts;
                         };
                         NtsPopupPanel.prototype.destroy = function () {
                             this.$panel = null;
+                        };
+                        NtsPopupPanel.prototype.toggle = function () {
+                            var isDisplaying = this.$panel.css("display");
+                            if (isDisplaying === 'none') {
+                                this.show();
+                            }
+                            else {
+                                this.hide();
+                            }
                         };
                         return NtsPopupPanel;
                     }());
