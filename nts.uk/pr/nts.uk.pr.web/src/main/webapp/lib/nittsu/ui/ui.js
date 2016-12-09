@@ -54,9 +54,10 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             _this.$dialog.dialog('option', {
-                                width: _this.globalContext.dialogSize.width,
-                                height: _this.globalContext.dialogSize.height,
+                                width: options.width || _this.globalContext.dialogSize.width,
+                                height: options.height || _this.globalContext.dialogSize.height,
                                 title: options.title || "dialog",
+                                resizable: true,
                                 beforeClose: function () {
                                     //return dialogWindow.__viewContext.dialog.beforeClose();
                                 }

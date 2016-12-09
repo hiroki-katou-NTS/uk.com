@@ -28,6 +28,10 @@ public class QstmtStmtLayoutLines implements Serializable {
 	public QstmtStmtLayoutLinesPK qstmtStmtLayoutLinesPk;
 
 	@Basic(optional = false)
+	@Column(name ="STR_YM")
+	public int strYm;
+
+	@Basic(optional = false)
 	@Column(name ="END_YM")
 	public int endYm;
 

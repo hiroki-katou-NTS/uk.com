@@ -54,9 +54,9 @@ public class LayoutWebService extends WebService {
 		return this.find.getAllLayout(AppContexts.user().companyCode());		
 	}
 	@POST
-	@Path("findlayout/{stmtCode}/{startYm}")
-	public LayoutDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("startYm") int startYm){
-		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, startYm).get();
+	@Path("findlayout/{stmtCode}/{historyId}")
+	public LayoutDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("historyId") String historyId){
+		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, historyId).get();
 	}
 	@POST
 	@Path("findlayoutdetail/{stmtCode}/{startYm}/{categoryAtr}/{itemCd}")

@@ -18,8 +18,8 @@ public class QstmtStmtAllotPsPK implements Serializable {
 	@Column(name = "PID")
 	public String personId;
 	
-	@Column(name = "STR_YM")
-	public int startDate;
+	@Column(name = "HIST_ID")
+	public int histId;
 	
 	public QstmtStmtAllotPsPK() {}
 }

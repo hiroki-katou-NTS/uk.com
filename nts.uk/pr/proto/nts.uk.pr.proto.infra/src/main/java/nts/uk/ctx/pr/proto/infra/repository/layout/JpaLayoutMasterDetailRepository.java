@@ -25,16 +25,16 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			+ " AND i.qcamtItemPK.ctgAtr = c.qstmtStmtLayoutDetailPk.ctgAtr)"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
+			+ " AND c.strYm = :strYm";
 	private final String SELECT_DETAIL = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm"
+			+ " AND c.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutDetailPk.itemCd = :itemCd";
 	private final String SELECT_ALL_DETAILS_BY_CATEGORY = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm"
+			+ " AND c.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutDetailPk.ctgAtr = :ctgAtr";
 	private final String SELECT_ALL_DETAILS_BY_LINE = SELECT_NO_WHERE
 			+ " WHERE c.autoLineId = :autoLineId";
@@ -48,7 +48,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	private final String FIND_ONLY_ALL = "SELECT c FROM QstmtStmtLayoutDetail c"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd"
-			+ " AND c.qstmtStmtLayoutDetailPk.strYm = :strYm";
+			+ " AND c.strYm = :strYm";
 	
 	@Override
 	public void add(LayoutMasterDetail domain) {
@@ -59,7 +59,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		val entityPk = new QstmtStmtLayoutDetailPK();
 		entityPk.companyCd = domain.getCompanyCode().v();
 		entityPk.stmtCd = domain.getLayoutCode().v();
-		entityPk.strYm = domain.getStartYm().v();
+		entityPk.historyId = domain.getHistoryId();
 		entityPk.ctgAtr = domain.getCategoryAtr().value;
 		entityPk.itemCd = domain.getItemCode().v();
 		return entityPk;
@@ -70,7 +70,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		entity.qstmtStmtLayoutDetailPk = new QstmtStmtLayoutDetailPK();
 		entity.qstmtStmtLayoutDetailPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutDetailPk.stmtCd = domain.getLayoutCode().v();
-		entity.qstmtStmtLayoutDetailPk.strYm = domain.getStartYm().v();
+		entity.qstmtStmtLayoutDetailPk.historyId = domain.getHistoryId();
+		entity.strYm = domain.getStartYm().v();
 		entity.qstmtStmtLayoutDetailPk.ctgAtr = domain.getCategoryAtr().value;
 		entity.qstmtStmtLayoutDetailPk.itemCd = domain.getItemCode().v();
 		entity.endYm = domain.getEndYm().v();
@@ -137,7 +138,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		val domain = LayoutMasterDetail.createFromJavaType(
 				entity.qstmtStmtLayoutDetailPk.companyCd,
 				entity.qstmtStmtLayoutDetailPk.stmtCd,
-				entity.qstmtStmtLayoutDetailPk.strYm,
+				entity.strYm,
 				entity.endYm,
 				entity.qstmtStmtLayoutDetailPk.ctgAtr,
 				entity.qstmtStmtLayoutDetailPk.itemCd,
@@ -158,7 +159,8 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 				entity.alRangeHigh,
 				entity.alRangeLowAtr,
 				entity.alRangeLow,
-				entity.itemPosColumn);
+				entity.itemPosColumn,
+				entity.qstmtStmtLayoutDetailPk.historyId);
 		
 		return domain;
 	}
@@ -181,13 +183,13 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	@Override
 	public void remove(String companyCode
 			, String layoutCode
-			, int startYm
+			, String historyId
 			, int categoryAtr
 			, String itemCode) {
 		val objectKey = new QstmtStmtLayoutDetailPK();
 		objectKey.companyCd = companyCode;
 		objectKey.stmtCd = layoutCode;
-		objectKey.strYm = startYm;
+		objectKey.historyId = historyId;
 		objectKey.ctgAtr = categoryAtr;
 		objectKey.itemCd = itemCode;		
 		this.commandProxy().remove(QstmtStmtLayoutDetail.class, objectKey);

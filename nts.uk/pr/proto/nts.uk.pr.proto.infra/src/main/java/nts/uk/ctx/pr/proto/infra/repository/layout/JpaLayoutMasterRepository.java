@@ -18,11 +18,10 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
 	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
-			+ " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
-	//private final String SELECT_DETAIL = SELECT_ALL + " AND c.qstmtStmtLayoutHeadPK.strYm = :strYm";
+			+ " ORDER BY c.strYm DESC";
 	private final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
-			+ " AND c.qstmtStmtLayoutHeadPK.strYm < :strYm" + " ORDER BY c.qstmtStmtLayoutHeadPK.strYm DESC";
+			+ " AND c.strYm < :strYm" + " ORDER BY c.strYm DESC";
 	private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode"
 			+ " AND c.endYm = 999912";
@@ -33,13 +32,13 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	private final String SEL_5 = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode"
-			+ " AND c.qstmtStmtLayoutHeadPK.strYm <= :baseYearMonth "
+			+ " AND c.strYm <= :baseYearMonth "
 			+ " AND c.endYm >= :baseYearMonth "; 
 
 	private final LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
 		val domain = LayoutMaster.createFromJavaType(entity.qstmtStmtLayoutHeadPK.companyCd,
-				entity.qstmtStmtLayoutHeadPK.strYm, entity.qstmtStmtLayoutHeadPK.stmtCd, entity.endYm, entity.layoutAtr,
-				entity.stmtName);
+				entity.strYm, entity.qstmtStmtLayoutHeadPK.stmtCd, entity.endYm, entity.layoutAtr,
+				entity.stmtName, entity.qstmtStmtLayoutHeadPK.historyId);
 
 		return domain;
 	}
@@ -48,7 +47,8 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 		QstmtStmtLayoutHead entity = new QstmtStmtLayoutHead();
 		entity.qstmtStmtLayoutHeadPK = new QstmtStmtLayoutHeadPK(domain.getCompanyCode().v(),
 				domain.getStmtCode().v(),
-				domain.getStartYM().v());
+				domain.getHistoryId());
+		entity.strYm = domain.getStartYM().v();
 		entity.endYm = domain.getEndYm().v();
 		entity.layoutAtr = domain.getLayoutAtr().value;
 		entity.stmtName = domain.getStmtName().v();
@@ -57,9 +57,9 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	@Override
-	public Optional<LayoutMaster> getLayout(String companyCode, int strYm, String stmtCode) {
+	public Optional<LayoutMaster> getLayout(String companyCode, String historyId, String stmtCode) {
 		try {
-			return this.queryProxy().find(new QstmtStmtLayoutHeadPK(companyCode, stmtCode, strYm), 
+			return this.queryProxy().find(new QstmtStmtLayoutHeadPK(companyCode, stmtCode, historyId), 
 					QstmtStmtLayoutHead.class)
 					.map(c -> toDomain(c));	
 		} catch (Exception e) {
@@ -112,11 +112,11 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	@Override
-	public void remove(String companyCode, String layoutCode, int startYm) {
+	public void remove(String companyCode, String layoutCode, String historyId) {
 		val objectKey = new QstmtStmtLayoutHeadPK();
 		objectKey.companyCd = companyCode;
 		objectKey.stmtCd = layoutCode;
-		objectKey.strYm = startYm;
+		objectKey.historyId = historyId;
 		this.commandProxy().remove(QstmtStmtLayoutHead.class, objectKey);
 	}
 

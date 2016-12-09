@@ -83,6 +83,9 @@ var nts;
                             case 'show':
                                 popup.show();
                                 break;
+                            case 'hide':
+                                popup.hide();
+                                break;
                         }
                     }
                     var NtsPopupPanel = (function () {

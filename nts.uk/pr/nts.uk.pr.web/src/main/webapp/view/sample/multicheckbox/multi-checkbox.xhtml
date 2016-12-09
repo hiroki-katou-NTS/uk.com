@@ -12,23 +12,9 @@
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	
 				<com:ValidatorScript>
-					nts.uk.ctx.pr.proto.dom.paymentdata.residence.ResidenceCode
-					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
-					nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageCode
-					nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
-					nts.arc.time.YearMonth
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
    				</com:ValidatorScript>
-   				<!-- Because there isn't any EmployeeCode domain entity yet. I'll create it manual -->
-				<script>
-				__viewContext.primitiveValueConstraints.EmployeeCode = {
-						valueType: 'String',
-						charType: 'Numeric',
-						maxLength: 10,
-					};
-				</script>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:scriptfile path="/lib/nittsu/ui/file.js" />
-				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
             </ui:define>
@@ -37,9 +23,14 @@
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>DynamicEditor</h1>
+						<h1>MultiCheckBox</h1>
 						<h2>Overview</h2>
-						<note style="width: 270px;"><b>NOT implement yet!<br/>If you need to change your Editor dynamic please tell Kiban team.</b></note>
+						<div data-bind="foreach: boxes">
+							<div data-bind="ntsCheckBox: { checked: $parent.selectedBoxes,  text: name }" class="cf"></div>
+						</div>
+					  <div data-bind="foreach: selectedBoxes">
+						  <p><span data-bind="text: id"></span></p>
+					  </div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -47,10 +38,8 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-
 								</div>
 							</div>
 						</article>

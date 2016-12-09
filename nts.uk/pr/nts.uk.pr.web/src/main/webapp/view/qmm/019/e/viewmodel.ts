@@ -9,6 +9,7 @@ module qmm019.e.viewmodel {
         selectLayoutEndYm: KnockoutObservable<string>;
         layoutStartYm: KnockoutObservable<string>;
         timeEditorOption: KnockoutObservable<any>;
+        historyId: KnockoutObservable<string>;
         /**
          * Init screen model.
          */
@@ -22,6 +23,7 @@ module qmm019.e.viewmodel {
             self.selectLayout = ko.observable(null);
             self.layoutStartYm = ko.observable(null);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
+            self.historyId = ko.observable(null);
         }
         
          // start function
@@ -30,8 +32,9 @@ module qmm019.e.viewmodel {
             var dfd = $.Deferred<any>();
             var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
             var startYm = nts.uk.ui.windows.getShared('startYm');
+            self.historyId(nts.uk.ui.windows.getShared('historyId'));
             self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-            service.getLayout(layoutCode, startYm).done(function(layout: service.model.LayoutMasterDto){
+            service.getLayout(layoutCode, self.historyId()).done(function(layout: service.model.LayoutMasterDto){
                  self.selectLayout(layout);
                  self.startDiaglog();                 
                  dfd.resolve();

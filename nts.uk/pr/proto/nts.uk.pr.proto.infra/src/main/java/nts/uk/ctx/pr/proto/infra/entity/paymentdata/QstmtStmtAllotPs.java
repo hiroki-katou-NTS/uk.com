@@ -4,22 +4,23 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name = "QSTMT_STMT_ALLOT_PS")
-public class QstmtStmtAllotPs {
+public class QstmtStmtAllotPs extends AggregateTableEntity{
 	
 	@EmbeddedId
 	public QstmtStmtAllotPsPK qstmtStmtAllotPsPK;
 	
 	@Column(name = "INV_SCD")
 	public String employeeCode;
+	
+	@Basic(optional = false)
+	@Column(name = "STR_YM")
+	public int startDate;
 	
 	@Basic(optional = false)
 	@Column(name = "END_YM")

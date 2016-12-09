@@ -19,6 +19,7 @@ var qmm019;
                     self.selectLayout = ko.observable(null);
                     self.layoutStartYm = ko.observable(null);
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
+                    self.historyId = ko.observable(null);
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
@@ -26,8 +27,9 @@ var qmm019;
                     var dfd = $.Deferred();
                     var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
                     var startYm = nts.uk.ui.windows.getShared('startYm');
+                    self.historyId(nts.uk.ui.windows.getShared('historyId'));
                     self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-                    e.service.getLayout(layoutCode, startYm).done(function (layout) {
+                    e.service.getLayout(layoutCode, self.historyId()).done(function (layout) {
                         self.selectLayout(layout);
                         self.startDiaglog();
                         dfd.resolve();

@@ -97,6 +97,9 @@ module nts.uk.ui.jqueryExtentions {
                 case 'show':
                     popup.show();
                     break;
+                case 'hide':
+                    popup.hide();
+                    break;
             }
         }
         

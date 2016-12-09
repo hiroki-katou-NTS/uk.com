@@ -21,12 +21,12 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
-			+ " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm";
+			+ " AND c.strYm = :strYm";
 
 	private final String SELECT_ALL_LINE_BY_CATEGORY = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
-			+ " AND c.qstmtStmtLayoutLinesPk.strYm = :strYm"
+			+ " AND c.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutLinesPk.ctgAtr = :ctgAtr";
 	
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
@@ -46,12 +46,13 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	private static LayoutMasterLine toDomain(QstmtStmtLayoutLines entity) {
 		val domain = LayoutMasterLine.createFromJavaType(entity.qstmtStmtLayoutLinesPk.companyCd,
-				entity.qstmtStmtLayoutLinesPk.strYm, entity.qstmtStmtLayoutLinesPk.stmtCd,
+				entity.strYm, entity.qstmtStmtLayoutLinesPk.stmtCd,
 				entity.endYm,
 				entity.qstmtStmtLayoutLinesPk.autoLineId,
 				entity.lineDispAtr,
 				entity.linePos,
-				entity.qstmtStmtLayoutLinesPk.ctgAtr 
+				entity.qstmtStmtLayoutLinesPk.ctgAtr,
+				entity.qstmtStmtLayoutLinesPk.historyId
 				);
 
 		return domain;
@@ -60,7 +61,7 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		val entityPk = new QstmtStmtLayoutLinesPK();
 		entityPk.companyCd = domain.getCompanyCode().v();
 		entityPk.stmtCd = domain.getStmtCode().v();
-		entityPk.strYm = domain.getStartYM().v();
+		entityPk.historyId = domain.getHistoryId();
 		entityPk.ctgAtr = domain.getCategoryAtr().value;
 		entityPk.autoLineId = domain.getAutoLineId().v();
 
@@ -72,12 +73,13 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		entity.qstmtStmtLayoutLinesPk = new QstmtStmtLayoutLinesPK();
 		entity.qstmtStmtLayoutLinesPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutLinesPk.stmtCd = domain.getStmtCode().v();
-		entity.qstmtStmtLayoutLinesPk.strYm = domain.getStartYM().v();
+		entity.strYm = domain.getStartYM().v();
 		entity.qstmtStmtLayoutLinesPk.ctgAtr = domain.getCategoryAtr().value;
 		entity.qstmtStmtLayoutLinesPk.autoLineId = domain.getAutoLineId().v();
 		entity.endYm = domain.getEndYM().v();
 		entity.linePos = domain.getLinePosition().v();
 		entity.lineDispAtr = domain.getLineDispayAttribute().value;
+		entity.qstmtStmtLayoutLinesPk.historyId = domain.getHistoryId();
 
 		return entity;
 	}
@@ -93,10 +95,10 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	}
 
 	@Override
-	public void remove(String companyCode, int startYm, String autoLineID, int categoryAtr, String stmtCode) {
+	public void remove(String companyCode, String historyId, String autoLineID, int categoryAtr, String stmtCode) {
 		val objectKey = new QstmtStmtLayoutLinesPK();
 		objectKey.companyCd = companyCode;
-		objectKey.strYm = startYm;
+		objectKey.historyId = historyId;
 		objectKey.autoLineId = autoLineID;
 		objectKey.ctgAtr = categoryAtr;
 		objectKey.stmtCd = stmtCode;
@@ -157,9 +159,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	}
 
 	@Override
-	public Optional<LayoutMasterLine> find(String companyCode, String stmtCode, int startYearMonth, int categoryAtr,
+	public Optional<LayoutMasterLine> find(String companyCode, String stmtCode, String historyId, int categoryAtr,
 			String autoLineId) {
-		QstmtStmtLayoutLinesPK primaryKey = new QstmtStmtLayoutLinesPK(companyCode, stmtCode, startYearMonth, categoryAtr, autoLineId);
+		QstmtStmtLayoutLinesPK primaryKey = new QstmtStmtLayoutLinesPK(companyCode, stmtCode, historyId, categoryAtr, autoLineId);
 		return this.queryProxy().find(primaryKey, QstmtStmtLayoutLines.class)
 				.map(x -> toDomain(x));
 	}

@@ -14,6 +14,9 @@ public class QstmtStmtAllotCp extends AggregateTableEntity {
 	
 	@EmbeddedId
 	public QstmtStmtAllotCpPK qstmtStmtAllotCpPK;
+
+	@Column(name = "STR_YM")
+	public int startDate;
 	
 	@Basic(optional = false)
 	@Column(name = "END_YM")

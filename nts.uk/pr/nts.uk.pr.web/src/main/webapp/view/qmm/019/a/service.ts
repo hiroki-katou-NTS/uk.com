@@ -137,7 +137,8 @@ module qmm019.a {
                     stmtCode: layout.stmtCode,
                     startYm: layout.startYm,
                     stmtName: layout.stmtName,
-                    endYm: layout.endYm
+                    endYm: layout.endYm,
+                    historyId: layout.historyId
                 },
                 categoryCommand: categoryCommand,
                 lineCommand: lineCommand,
@@ -168,6 +169,7 @@ module qmm019.a {
                 stmtName: string;
                 endYm: number;
                 layoutAtr: number;
+                historyId: string;
                 constructor() {
                 }
             }
@@ -419,7 +421,7 @@ module qmm019.a {
                         stmtCode: self.screenModel().layoutMaster().stmtCode
                     };    
                     nts.uk.ui.windows.setShared('param', param);
-                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml',{title: '項目の選択・設定'}).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml',{title: '項目の選択・設定', width: 1200, height: 650}).onClosed(() => {
                         var itemResult: qmm019.f.service.model.ItemDetailModel = nts.uk.ui.windows.getShared('itemResult');
                         
                         if (itemResult === undefined) return this;
