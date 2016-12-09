@@ -1,0 +1,54 @@
+﻿@CHARSET "UTF-8";
+.ntsRadioBox {
+    cursor:pointer;	
+	
+	input[type="radio"] {
+		display: none;
+		
+	    + span {
+	    	position: relative;
+		    display:inline-block;
+		    width:19px;
+		    height:19px;
+		    margin:-1px 8px 0 0;
+		    vertical-align:middle;
+		    background: transparent;
+		    border: 2px solid #92d050;
+		    border-radius: 50%;
+		    cursor:pointer;
+		    box-sizing: border-box;
+		}
+		
+		+ span:after {
+			content: '';
+		    width: 9px;
+		    height: 9px;
+		    position: absolute;
+		    top: 3px;
+		    left: 3px;
+		    background: #92d050;
+		    opacity: 0;
+		    border-radius: 50%;
+		}
+		
+		&:checked {			
+			+ span.box:after {
+				opacity: 1;
+			}
+		}
+		
+		&[disabled] + span {
+			cursor:none;
+		    cursor:not-allowed;
+			user-select: none;
+			opacity: 0.7;
+			+ span {opacity: 0.7;cursor:not-allowed;}
+		}
+	}
+    
+		
+	&.outline input[type="radio"]{
+		
+	}
+    
+}

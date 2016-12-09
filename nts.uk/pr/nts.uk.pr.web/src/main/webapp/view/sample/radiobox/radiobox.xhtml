@@ -23,15 +23,17 @@
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>MultiCheckBox</h1>
+						<h1>RadioBox</h1>
 						<h2>Overview</h2>
-						<note style="width: 250px;"><b>Not completed yet!</b></note>
-						<div data-bind="foreach: boxes">
-							<div data-bind="ntsCheckBox: { checked: $parent.selectedBoxes,  text: name }" class="cf"></div>
+						<div data-bind="foreach: items">
+							<label class="ntsRadioBox">
+								<input type="radio" name="textRadio" data-bind="checkedValue: $data, checked: $parent.selectedValue, enable: $parent.enable" />
+								<span class="box"></span><span data-bind="text: text"></span>
+							</label><br/>
 						</div>
-					  <div data-bind="foreach: selectedBoxes">
-						  <p><span data-bind="text: id"></span></p>
-					  </div>
+						<div data-bind="ntsCheckBox: { checked: enable }" class="cf">Enable</div>
+						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span></div>
+						<div data-bind="text: ko.toJSON($data)"></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
