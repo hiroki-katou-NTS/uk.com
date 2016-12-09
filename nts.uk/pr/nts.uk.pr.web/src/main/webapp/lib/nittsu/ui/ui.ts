@@ -63,8 +63,8 @@
                     this.globalContext.nts.uk.ui.windows.selfId = this.id;
 
                     this.$dialog.dialog('option', {
-                        width: options.width || this.globalContext.width,
-                        height: options.height || this.globalContext.dialogSize.height,
+                        width: this.globalContext.width,
+                        height: this.globalContext.dialogSize.height,
                         title: options.title || "dialog",
                         beforeClose: function() {
                             //return dialogWindow.__viewContext.dialog.beforeClose();
