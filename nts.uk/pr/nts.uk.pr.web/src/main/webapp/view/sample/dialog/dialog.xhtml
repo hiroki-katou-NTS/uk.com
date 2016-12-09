@@ -4,303 +4,181 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:com="http://xmlns.jcp.org/jsf/component"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
-  <body>
-      <ui:composition template="../../../master/base.xhtml">
-          <ui:define name="htmlHead">
-          	<script>var dialogSize = { width: 300, height: 200 };</script>
-          	
-			<com:ValidatorScript>
-				nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-				nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
-				nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
-			</com:ValidatorScript>
-			
-			<!-- Do not include this CSS -->
-			<link rel="stylesheet" type="text/css" href="dialog.css" />
-			
-			<script src="start.js"></script>
-          </ui:define>
-          
-          <ui:define name="content">
-          	
-          	<div id="functions-area">
-          	</div>
-          	
-          	<div id="contents-area">
-				<div class="cf">
-					<h2><a href="../../../test.html">&#9665;</a> Dialog</h2>
-					<hr/>
-					<!-- SubWindows -->
-					<div class="cf">
-						<h2>SubWindow</h2>
-						<h3>Javascript Call</h3>
-						<button id="testSubWindows" onclick="nts.uk.ui.windows.sub.modal('/view/sample/editor/editor.xhtml');">Click me!</button>
-						<pre>
-nts.uk.ui.windows.sub.modal("url"); // Modal SubWindow
-nts.uk.ui.windows.sub.modeless("url"); // Modeless SubWindow</pre>
-						<b>Note:</b> in dialog page must have following script:
-						<pre>var dialogSize = { width: 300, height: 200 };</pre>
-					</div>
-					<hr/> 
-					<!-- Normal Dialog -->
-					<div class="cf">
-						<h2>Dialog</h2>
-						<div data-bind="with: dialogconfirm">
-							<button data-bind="click: open" class="proceed">Confirm Dialog</button>
-							<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Dialog</h1>
+						<h2>Overview</h2>
+						<button data-bind="click: Alert">Alert</button>
+						<button data-bind="click: Confirm">Confirm</button>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-call">Javascript Call</a></li>
+									<li><a href="#tabs-api">API</a></li>
+								</ol>
+								<div id="tabs-call" class="cf">
+									<h2>Alert</h2>
+									<pre><![CDATA[nts.uk.ui.dialog.alert("Hello World!")]]></pre>
+									<h2>Confirm</h2>
+									<pre><![CDATA[nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?")]]></pre>
+								</div>
+								<div id="tabs-api" class="cf">
+									<article>
+										<h2>Information</h2>
+										<b>Module:</b> nts.uk.ui.dialog<br/>
+										<b>File:</b> /lib/nittsu/ui/ui.ts<br/>
+									</article>
+									<br/>
+									<article>
+										<h2>API</h2>
+										<table>
+											<colgroup>
+												<col width="200px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>Function</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>alert(text)</td>
+													<td>
+														<b>Return:</b> Alert object<br/>
+														<b class="color">text: string</b> Set text for message<br/>
+														Show an alert dialog with given text<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>confirm(text)</td>
+													<td>
+														<b>Return:</b> Confirm object<br/>
+														<b class="color">text: string</b> Set text for message<br/>
+														Show a confirm dialog with given text<br/>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</article>
+									<br/>
+									<div class="cf">
+										<article style="float:left; margin-right:20px;">
+											<h2>Alert object</h2>
+											<table>
+												<colgroup>
+													<col width="200px" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th><h4>API</h4></th>
+														<th><h4>Description</h4></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>then(callback)</td>
+														<td>
+															<b>Return:</b> void<br/>
+															<b class="color">callback: function</b> <br/>
+															Set the function after close alert<br/>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</article>
+										<article style="float:left;">
+											<h2>Confirm object</h2>
+											<table>
+												<colgroup>
+													<col width="200px" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th><h4>API</h4></th>
+														<th><h4>Description</h4></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>ifYes(handler)</td>
+														<td>
+															<b>Return:</b> handler<br/>
+															<b class="color">handler: function</b> <br/>
+															Set the function for click "Yes" button<br/>
+														</td>
+													</tr>
+													<tr>
+														<td>ifCancel(handler)</td>
+														<td>
+															<b>Return:</b> handler<br/>
+															<b class="color">handler: function</b> <br/>
+															Set the function for click "No" button<br/>
+														</td>
+													</tr>
+													<tr>
+														<td>ifNo(handler)</td>
+														<td>
+															<b>Return:</b> handler<br/>
+															<b class="color">handler: function</b> <br/>
+															Set the function for click "Cancel" button<br/>
+														</td>
+													</tr>
+													<tr>
+														<td>then(handler)</td>
+														<td>
+															<b>Return:</b> handler<br/>
+															<b class="color">handler: function</b> <br/>
+															Set the function after close confirm<br/>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</article>
+									</div>
+									<br/>
+									<article>
+										<h2>Demo</h2>
+<pre><![CDATA[nts.uk.ui.dialog.alert("Hello World!").then(function(){
+	alert("I'm world, hello you");
+})]]></pre>
+<pre><![CDATA[nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?").ifYes(function(){
+	alert("You just press Yes");
+}).ifNo(function(){
+	alert("You just press No");
+}).ifCancel(function(){
+	alert("You just press Cancel");
+}).then(function(){
+	alert("You just close confirm dialog");
+})]]></pre>
+									</article>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
 						</div>
-						<br/>
-						<div data-bind="with: dialogdel">
-							<button data-bind="click: open" class="danger">Del Dialog</button>
-							<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
-						</div>
-						<br/>
-						<div data-bind="with: dialogok">
-							<button data-bind="click: open" class="proceed">OK Dialog</button>
-							<div data-bind="ntsDialog: {title: title, message: message, option: option}"></div>
-						</div>
-						<br/>
-						<h3>Javascript Example</h3>
-						<button id="dialog-open">JQuery event</button>
-						<pre>
-$('#dialog-open').click(function(){
-	vm.dialogconfirm.open();
-})</pre>
-						<br/>
-						<h3>Function Wrap</h3>
-						<p>Paste following code to console:</p>
-						<pre>nts.uk.ui.dialog.confirm("test").ifYes(function () { alert('yes') }).ifNo(function () { alert('no'); })</pre>
-						<!-- ViewModel -->
-						<div class="cf">
-							<h3>Dialog ViewModel</h3>
-							<table>
-								<colgroup>
-									<col width="200px" />
-								</colgroup>
-								<thead>
-									<tr>
-										<th><h4>ViewModel</h4></th>
-										<th><h4>Description</h4></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>title</td>
-										<td>
-											<b>Type:</b> string<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>message</td>
-										<td>
-											<b>Type:</b> string<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>option</td>
-										<td>
-											<b>Type:</b> object<br/>
-											<b>Members:</b><br/>
-											<i>ConfirmDialogOption</i>: Option for confirm dialog<br/>
-											<i>DelDialogOption</i>: Option for delete dialog<br/>
-											<i>OKDialogOption</i>: Option for OK dialog
-										</td>
-									</tr>
-									<tr>
-										<td>open</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>hide</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>okButtonClicked</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-									<tr>
-										<td>cancelButtonClicked</td>
-										<td>
-											<b>Type:</b> function<br/>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<pre style="float:left">dialog: {
-	title: ko.observable("Dialog Title"),
-	message: ko.observable("Dialog message here"),
-	option: ko.mapping.fromJS(new ConfirmDialogOption()),
-	okButtonClicked: function(){},
-	cancelButtonClicked: function(){},
-	open: function(){},
-	hide: function(){}
-}</pre>
-						</div>
-						<!-- API -->
-						<h3>Dialog API</h3>
-						<table>
-							<colgroup>
-								<col width="200px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>ConfirmDialogOption</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>modal</td>
-									<td>
-										<b>Type:</b> boolean<br/>
-										<b>Default:</b> true<br/>
-										Display dialog in modal mode
-									</td>
-								</tr>
-							</tbody>
-							<thead>
-								<tr>
-									<th><h4>DelDialogOption</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>modal</td>
-									<td>
-										<b>Type:</b> boolean<br/>
-										<b>Default:</b> true<br/>
-										Display dialog in modal mode
-									</td>
-								</tr>
-							</tbody>
-							<thead>
-								<tr>
-									<th><h4>OKDialogOption</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>modal</td>
-									<td>
-										<b>Type:</b> boolean<br/>
-										<b>Default:</b> true<br/>
-										Display dialog in modal mode
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table>
-							<colgroup>
-								<col width="200px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>Methods</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>open()</td>
-									<td>
-										Show dialog
-									</td>
-								</tr>
-								<tr>
-									<td>hide()</td>
-									<td>
-										Hide dialog
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<table>
-							<colgroup>
-								<col width="200px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>Events</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>okButtonClicked()</td>
-									<td>
-										Triggered when OK button is clicked
-									</td>
-								</tr>
-								<tr>
-									<td>cancelButtonClicked()</td>
-									<td>
-										Triggered when cancel button is clicked
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<hr/>
-					<!-- Error Dialog -->
-					<div class="cf">
-						<h2>Error Dialog</h2>
-						<input type="text" id="testInput" value="Error message" />
-						<button onclick="$('#testInput').ntsError('set', $('#testInput').val())">Add</button>
-						<button onclick="$('#testInput').ntsError('clear')">Clear</button><br/>
-						<button data-bind="click: nts.uk.ui.errors.show">Open</button>
-						<button data-bind="click: nts.uk.ui.errors.hide">Hide</button><br/><br/>
-						<br/>
-						<!-- API -->
-						<h3>Error Dialog API</h3>
-						<table>
-							<colgroup>
-								<col width="400px" />
-							</colgroup>
-							<thead>
-								<tr>
-									<th><h4>Functions</h4></th>
-									<th><h4>Description</h4></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>nts.uk.ui.errors.show()</td>
-									<td>
-										Show error dialog
-									</td>
-								</tr>
-								<tr>
-									<td>nts.uk.ui.errors.hide()</td>
-									<td>
-										Hide error dialog
-									</td>
-								</tr>
-								<tr>
-									<td>$('#ControlID').ntsError("set","Error message")</td>
-									<td>
-										Add an error to control
-									</td>
-								</tr>
-								<tr>
-									<td>$('#ControlID').ntsError("clear")</td>
-									<td>
-										Remove errors from control
-									</td>
-								</tr>								
-							</tbody>
-						</table>
-					</div>
-				</div>
-          	</div>
-          </ui:define>
-  	</ui:composition>
- 	</body>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
 </html>

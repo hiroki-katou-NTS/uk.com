@@ -166,14 +166,32 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
             $input.css({ 'text-align': 'right', "box-sizing" :"border-box"});
-            var parent = $input.parent().css({ 'width': '100%', "display": "inline-block" });
+            var parent = $input.parent();
             var width = option.width ? option.width : '100%';
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                $input.parent().addClass("currency").addClass(
+                var marginLeft = 0;
+                var marginRight = 0;
+                if($input.css('margin-left') !== ""){
+                    marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
+                    marginRight = parseFloat($input.css('margin-left').split("px")[0]);
+                } 
+                parent.addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
-                var paddingLeft = option.currencyposition === 'left' ? '11px' : '';
-                var paddingRight = option.currencyposition === 'right' ? '11px' : '';
-                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 'width': width });
+                parent.css({"display": "inline-block"});
+                if(marginLeft !== 0){
+                    parent.css({"marginLeft": marginLeft + "px"});    
+                }
+                if(marginRight !== 0){
+                    parent.css({"marginRight": marginRight + "px"});    
+                }
+                var parentTag = parent.parent().prop("tagName").toLowerCase();
+                if(parentTag === "td" || parentTag === "th"){
+                    parent.css({'width': '100%'});    
+                }
+                var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
+                var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
+                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 
+                    'width': width, "marginLeft": "0px", "marginRight": "0px"});
             } else {
                 $input.css({ 'paddingLeft': '12px', 'width': width });
             }
@@ -204,7 +222,11 @@ module nts.uk.ui.koExtentions {
 
             $input.css({'text-align': 'right', "box-sizing" :"border-box"});
             var parent = $input.parent();
-            parent.css({'width':'100%', "display": "inline-block"});
+            parent.css({"display": "inline-block"});
+            var parentTag = parent.parent().prop("tagName").toLowerCase();
+            if(parentTag === "td" || parentTag === "th"){
+                parent.css({'width': '100%'});    
+            }
             var width = option.width ? option.width : '100%';
             $input.css({'paddingLeft': '12px', 'width': width });
         }
