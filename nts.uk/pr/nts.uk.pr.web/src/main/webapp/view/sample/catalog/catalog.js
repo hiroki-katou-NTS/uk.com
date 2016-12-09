@@ -1,5 +1,4 @@
 $(function(){
-	$(document).tooltip();
 	
 	$("#side-menu").load("/nts.uk.pr.web/view/sample/catalog/sidemenu.xhtml", function(){
 	    $("#side-menu a").each(function () {
