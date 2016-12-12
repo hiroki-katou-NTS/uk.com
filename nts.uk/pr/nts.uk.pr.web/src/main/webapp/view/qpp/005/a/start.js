@@ -99,9 +99,11 @@ var nts;
                                 var isCorrectFlag = false;
                                 if (include) {
                                     $("#" + nId).css('background', include.color);
+                                    $("#" + nId).find('input').css('background', include.color);
                                 }
                                 else {
                                     $("#" + nId).css('background', '#bdd7ee');
+                                    $("#" + nId).find('input').css('background', '#bdd7ee');
                                     isCorrectFlag = true;
                                 }
                                 var ctId = nId.split('_')[0];
