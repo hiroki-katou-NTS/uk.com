@@ -392,13 +392,15 @@ module nts.uk.ui.koExtentions {
     class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
         constructor() { }
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
-            element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
+            $(element).addClass("ntsCheckBox");
+            element.innerHTML = '<input type="checkbox" data-bind="checked: isChecked, checkedValue: item"/><label><span></span></label><label data-bind="text: content"></label>';
             /*var childBindingContext = bindingContext.createChildContext(
                     bindingContext.$rawData,
                     null, // Optionally, pass a string here as an alias for the data item in descendant contexts
                     function(context) {
                         ko.utils.extend(context, valueAccessor());
                     });*/
+            
             var childBindingContext = bindingContext.extend(valueAccessor);
             ko.applyBindingsToDescendants(childBindingContext, element);
             return { controlsDescendantBindings: true };

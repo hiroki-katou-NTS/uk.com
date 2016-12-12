@@ -409,7 +409,8 @@ var nts;
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
+                        $(element).addClass("ntsCheckBox");
+                        element.innerHTML = '<input type="checkbox" data-bind="checked: isChecked, checkedValue: item"/><label><span></span></label><label data-bind="text: content"></label>';
                         /*var childBindingContext = bindingContext.createChildContext(
                                 bindingContext.$rawData,
                                 null, // Optionally, pass a string here as an alias for the data item in descendant contexts
