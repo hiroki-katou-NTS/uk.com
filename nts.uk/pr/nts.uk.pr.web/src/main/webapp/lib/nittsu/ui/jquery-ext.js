@@ -107,6 +107,7 @@ var nts;
                                 .data(DATA_INSTANCE_NAME, this)
                                 .addClass('popup-panel')
                                 .appendTo(parent);
+                            this.$panel.css("z-index", 100);
                         }
                         NtsPopupPanel.prototype.show = function () {
                             this.$panel

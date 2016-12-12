@@ -126,6 +126,7 @@ module nts.uk.ui.jqueryExtentions {
                     .data(DATA_INSTANCE_NAME, this)
                     .addClass('popup-panel')
                     .appendTo(parent);
+                this.$panel.css("z-index", 100);
             }
             
             show() {
