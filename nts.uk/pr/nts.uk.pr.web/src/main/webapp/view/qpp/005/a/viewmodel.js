@@ -61,7 +61,7 @@ var nts;
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         $('.tb-category').css('display', 'none');
-                                        alert(res.message);
+                                        nts.uk.ui.dialog.alert(res.message);
                                         dfd.reject();
                                     });
                                     // Return.
@@ -72,7 +72,7 @@ var nts;
                                     var self = this;
                                     // TODO: Check error input
                                     if (!self.validator()) {
-                                        alert('入力にエラーがあります。');
+                                        nts.uk.ui.dialog.alert('入力にエラーがあります。');
                                         return false;
                                     }
                                     qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function (res) {
@@ -80,7 +80,7 @@ var nts;
                                             a.utils.gridSetup(self.switchButton().selectedRuleCode());
                                         });
                                     }).fail(function (res) {
-                                        alert(res.message);
+                                        nts.uk.ui.dialog.alert(res.message);
                                     });
                                 };
                                 ScreenModel.prototype.validator = function () {
@@ -297,13 +297,14 @@ var nts;
                             viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                             // item
                             var DetailItemViewModel = (function () {
-                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated) {
+                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, calculationMethod, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated, itemTimeType, itemNumberType, itemCurencyType) {
                                     var self = this;
                                     self.categoryAtr = categoryAtr;
                                     self.itemAtr = itemAtr;
                                     self.itemCode = itemCode;
                                     self.itemName = itemName;
                                     self.value = ko.observable(value);
+                                    self.calculationMethod = calculationMethod;
                                     self.columnPosition = columnPosition;
                                     self.linePosition = linePosition;
                                     self.deductAtr = deductAtr;
@@ -314,6 +315,9 @@ var nts;
                                     self.commuteAllowMonth = commuteAllowMonth;
                                     self.commuteAllowFraction = commuteAllowFraction;
                                     self.isCreated = isCreated;
+                                    self.itemTimeType = itemTimeType;
+                                    self.itemNumberType = itemNumberType;
+                                    self.itemCurencyType = itemCurencyType;
                                 }
                                 return DetailItemViewModel;
                             }());

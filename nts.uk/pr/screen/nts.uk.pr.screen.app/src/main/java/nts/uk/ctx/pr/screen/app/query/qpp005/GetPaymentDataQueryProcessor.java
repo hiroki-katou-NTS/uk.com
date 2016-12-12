@@ -226,25 +226,26 @@ public class GetPaymentDataQueryProcessor {
 			for (int i = 1; i <= 9; i++) {
 				int posCol = i;
 				DetailItemDto detailItem = mDetails.stream()
-						.filter(x -> x.getCategoryAtr().value == ctAtr
-								&& x.getAutoLineId().v().equals(mLine.getAutoLineId().v())
-								&& x.getItemPosColumn().v() == posCol)
+						.filter(x -> x.getCategoryAtr().value == ctAtr && 
+								x.getAutoLineId().v().equals(mLine.getAutoLineId().v()) && 
+								x.getItemPosColumn().v() == posCol)
 						.findFirst().map(d -> {
-
 							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
 									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
 							boolean isTaxtAtr = mItem.getTaxAtr().value == 3 || mItem.getTaxAtr().value == 4;
 							Optional<DetailItemDto> dValue = datas.stream().filter(
 									x -> x.getCategoryAtr() == ctAtr && x.getItemCode().equals(d.getItemCode().v()))
 									.findFirst();
+							DetailItemDto result;
 							if (dValue.isPresent()) {
 								DetailItemDto iValue = dValue.get();
-								return DetailItemDto.fromDomain(
+								result= DetailItemDto.fromData(
 										ctAtr, 
 										mItem.getItemAtr().value, 
 										d.getItemCode().v(),
 										mItem.getItemAbName().v(),
 										iValue.getValue(),
+										d.getCalculationMethod().value,
 										iValue.getCorrectFlag(),
 										mLine.getLinePosition().v(), 
 										d.getItemPosColumn().v(),
@@ -257,12 +258,13 @@ public class GetPaymentDataQueryProcessor {
 										iValue.getCommuteAllowFraction(),
 										iValue.getValue() != null);
 							} else {
-								return DetailItemDto.fromDomain(
+								result =  DetailItemDto.fromData(
 										ctAtr, 
 										mItem.getItemAtr().value, 
 										d.getItemCode().v(),
 										mItem.getItemAbName().v(),
 										isTaxtAtr ? 0.0: null,
+									    d.getCalculationMethod().value,
 										0,
 										mLine.getLinePosition().v(), 
 										d.getItemPosColumn().v(),
@@ -275,9 +277,10 @@ public class GetPaymentDataQueryProcessor {
 										0.0,
 										false);
 							}
-						}).orElse(DetailItemDto.fromDomain(ctAtr, null, "", "", null, 0, mLine.getLinePosition().v(), i,
-								null, null, null, null,null,null,null, false));
-
+							result.setItemType();
+							return result;
+						}).orElse(DetailItemDto.fromData(
+								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, false));
 				items.add(detailItem);
 			}
 

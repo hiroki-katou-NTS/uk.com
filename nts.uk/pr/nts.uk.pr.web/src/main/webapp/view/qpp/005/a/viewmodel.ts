@@ -64,7 +64,7 @@ module nts.uk.pr.view.qpp005.a {
                     dfd.resolve();
                 }).fail(function(res) {
                     $('.tb-category').css('display', 'none');
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert(res.message);
                     dfd.reject();
                 });
                 // Return.
@@ -76,7 +76,7 @@ module nts.uk.pr.view.qpp005.a {
                 var self = this;
                 // TODO: Check error input
                 if (!self.validator()) {
-                    alert('入力にエラーがあります。');
+                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
                     return false;
                 }
 
@@ -85,7 +85,7 @@ module nts.uk.pr.view.qpp005.a {
                         utils.gridSetup(self.switchButton().selectedRuleCode());
                     });
                 }).fail(function(res) {
-                    alert(res.message);
+                    nts.uk.ui.dialog.alert(res.message);
                 });
             }
 
@@ -352,6 +352,7 @@ module nts.uk.pr.view.qpp005.a {
             itemCode: string;
             itemName: string;
             value: KnockoutObservable<number>;
+            calculationMethod: number;
             correctFlag: number;
             columnPosition: number;
             linePosition: number;
@@ -363,17 +364,22 @@ module nts.uk.pr.view.qpp005.a {
             commuteAllowMonth: number;
             commuteAllowFraction: number;
             isCreated: boolean;
+            itemTimeType: number;
+            itemNumberType: number;
+            itemCurencyType: number;
 
-            constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, correctFlag: number,
+
+            constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, calculationMethod: number, correctFlag: number,
                 columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number,
                 limitAmount: number, commuteAllowTaxImpose: number, commuteAllowMonth: number, commuteAllowFraction: number,
-                isCreated: boolean) {
+                isCreated: boolean, itemTimeType: number, itemNumberType: number, itemCurencyType: number) {
                 var self = this;
                 self.categoryAtr = categoryAtr;
                 self.itemAtr = itemAtr;
                 self.itemCode = itemCode;
                 self.itemName = itemName;
                 self.value = ko.observable(value);
+                self.calculationMethod = calculationMethod;
                 self.columnPosition = columnPosition;
                 self.linePosition = linePosition;
                 self.deductAtr = deductAtr;
@@ -384,6 +390,9 @@ module nts.uk.pr.view.qpp005.a {
                 self.commuteAllowMonth = commuteAllowMonth;
                 self.commuteAllowFraction = commuteAllowFraction;
                 self.isCreated = isCreated;
+                self.itemTimeType = itemTimeType;
+                self.itemNumberType = itemNumberType;
+                self.itemCurencyType = itemCurencyType;
             }
         }
 
