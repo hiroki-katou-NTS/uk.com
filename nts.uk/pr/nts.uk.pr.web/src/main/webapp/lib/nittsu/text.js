@@ -215,27 +215,27 @@ var nts;
                 return result;
             }
             text_1.charPadding = charPadding;
-            function replaceAll(str, find, replace) {
-                return str.split(find).join(replace);
+            function replaceAll(originalString, find, replace) {
+                return originalString.split(find).join(replace);
             }
             text_1.replaceAll = replaceAll;
-            function removeFromStart(str, charSet) {
-                if (str.length === charSet.length) {
-                    return (str === charSet) ? "" : str;
+            function removeFromStart(originalString, charSet) {
+                if (originalString.length === charSet.length) {
+                    return (originalString === charSet) ? "" : originalString;
                 }
-                var i = findLastContinousIndex(str, charSet, 0);
-                return str.substr(i, str.length - i);
+                var i = findLastContinousIndex(originalString, charSet, 0);
+                return originalString.substr(i, originalString.length - i);
             }
             text_1.removeFromStart = removeFromStart;
-            function findLastContinousIndex(str, charSet, startIndex) {
-                if (startIndex >= str.length - 1) {
+            function findLastContinousIndex(originalString, charSet, startIndex) {
+                if (startIndex >= originalString.length - 1) {
                     return startIndex;
                 }
-                if (str.substr(startIndex, charSet.length) !== charSet) {
+                if (originalString.substr(startIndex, charSet.length) !== charSet) {
                     return startIndex;
                 }
                 else {
-                    return findLastContinousIndex(str, charSet, startIndex + charSet.length);
+                    return findLastContinousIndex(originalString, charSet, startIndex + charSet.length);
                 }
             }
             /**
@@ -292,16 +292,16 @@ var nts;
                     return padRight(code, fillcharacter, length);
             }
             text_1.formatEmployeeCode = formatEmployeeCode;
-            function splitString(str, decimallength, char) {
-                if (str === undefined || decimallength > str.length) {
-                    str = text.padRight(str ? str : "", char, str ? decimallength : decimallength + 1);
+            function splitOrPadRight(originalString, length, char) {
+                if (originalString === undefined || length > originalString.length) {
+                    originalString = text.padRight(originalString ? originalString : "", char ? char : " ", length);
                 }
                 else {
-                    str = str.substr(0, decimallength);
+                    originalString = originalString.substr(0, length);
                 }
-                return str;
+                return originalString;
             }
-            text_1.splitString = splitString;
+            text_1.splitOrPadRight = splitOrPadRight;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;

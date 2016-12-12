@@ -22,7 +22,7 @@
 						<h1>Text ulitily </h1>
 						<h2>In this module have functions for work with text, string. Below is main functions of it.</h2>
 						<h3>countHalf</h3>
-						<p>This function will receive a string as parameter and count size of that string according Nittsu rule.</p>
+						<p>This function will receive a string as parameter and count size of that string according to Nittsu rule.</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.text.countHalf("abc123");
 Result: 6
@@ -99,6 +99,83 @@ Result: false]]></pre>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.text.htmlEncode("<tag>");
 Result: "&lt;tag&gt;"]]></pre>
+						<h3>toLowerCaseFirst</h3>
+						<p>This function will receive a string as parameter and convert first character into lower case</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.toLowerCaseFirst("AAA AAA");
+Result: "aAA AAA"]]></pre>
+						<h3>toUpperCaseFirst</h3>
+						<p>This function will receive a string as parameter and convert first character into upper case</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.toUpperCaseFirst("aaa aaa");
+Result: "Aaa aaa"]]></pre>
+						<h3>isNullOrEmpty</h3>
+						<p>This function will receive a string as parameter and check that string is null or empty or undefined</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.isNullOrEmpty("aaa aaa");
+Result: false
+nts.uk.text.isNullOrEmpty("");
+Result: true
+nts.uk.text.isNullOrEmpty(null);
+Result: true
+nts.uk.text.isNullOrEmpty(undefined);
+Result: true]]></pre>
+						<h3>format</h3>
+						<p>This function will receive a string that need format and parameter of it and format that parameters into original string</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.format('入力文字数：{0}文字', 123);
+Result: '入力文字数：123文字']]></pre>
+						<h3>padLeft</h3>
+						<p>This function will receive a string that need pad, pad character and return string max length. Then return a string that with pad character in left of original.</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.padLeft('123', '0', 5);
+Result: '00123']]></pre>
+						<h3>padRight</h3>
+						<p>Same with padLeft but pad character will be add into right of original string.</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.padRight('123', '0', 5);
+Result: '12300']]></pre>
+						<h3>charPadding</h3>
+						<p>Same with padLeft but we can set pad into left or right. Set True is pad into left of original string.</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.charPadding('123', '0', false, 5);
+Result: '12300']]></pre>
+						<h3>replaceAll</h3>
+						<p>Replace all equals string in original string with new string</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.replaceAll('2321242123', '2', 'a');
+Result: 'a3a1a4a1a3']]></pre>
+						<h3>removeFromStart</h3>
+						<p>Remove equals string from original string at start, if meet other string and it will end.</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.removeFromStart('22223333', '2');
+Result: '3333'
+nts.uk.text.removeFromStart('2223333', '22');
+Result: '23333']]></pre>
+						<h3>getCharType</h3>
+						<p>Get character type of a primitive value</p>
+						<pre><![CDATA[__viewContext.primitiveValueConstraints = {
+						range: {
+							valueType: "String",
+							charType: "Numeric",
+							maxLength: 7
+						}
+					};
+//Try to paste this to console
+nts.uk.text.getCharType('range');
+Result: CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric)]]></pre>
+						<h3>formatEmployeeCode</h3>
+						<p>Format input string according to employee code</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.formatEmployeeCode('1111', 'left', '0', 10);
+Result: '0000001111']]></pre>
+						<h3>splitOrPadRight</h3>
+						<p>split original string according to input length, if input length  larger than original string length, pad right with character</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.text.splitOrPadRight('1234567', '4', '0');
+Result: '1234'
+nts.uk.text.splitOrPadRight('1234567', '9', '0');
+Result: '123456700']]></pre>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>
