@@ -102,10 +102,11 @@ var nts;
                     var NtsPopupPanel = (function () {
                         function NtsPopupPanel($panel, position) {
                             this.position = position;
+                            var parent = $panel.parent();
                             this.$panel = $panel
                                 .data(DATA_INSTANCE_NAME, this)
                                 .addClass('popup-panel')
-                                .appendTo('body');
+                                .appendTo(parent);
                         }
                         NtsPopupPanel.prototype.show = function () {
                             this.$panel

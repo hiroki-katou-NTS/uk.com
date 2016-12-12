@@ -121,11 +121,11 @@ module nts.uk.ui.jqueryExtentions {
             constructor($panel: JQuery, position: any) {
                 
                 this.position = position;
-                
+                var parent = $panel.parent();
                 this.$panel = $panel
                     .data(DATA_INSTANCE_NAME, this)
                     .addClass('popup-panel')
-                    .appendTo('body');
+                    .appendTo(parent);
             }
             
             show() {
