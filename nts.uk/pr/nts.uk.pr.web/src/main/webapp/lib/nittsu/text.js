@@ -203,16 +203,21 @@ var nts;
             */
             function charPadding(text, paddingChar, isPadLeft, length) {
                 var result;
-                if (length === 0) {
-                    return '';
+                if (countHalf(paddingChar) !== 1) {
+                    throw new Error('paddingChar "' + paddingChar + '" is not single character');
                 }
+                var lengthOfSource = countHalf(text);
+                var shortage = length - lengthOfSource;
+                if (shortage <= 0) {
+                    return text;
+                }
+                var pad = new Array(shortage + 1).join(paddingChar);
                 if (isPadLeft) {
-                    result = (new Array(length).join(paddingChar) + text).slice(-length);
+                    return pad + text;
                 }
                 else {
-                    result = (text + new Array(length).join(paddingChar)).slice(0, length);
+                    return text + pad;
                 }
-                return result;
             }
             text_1.charPadding = charPadding;
             function replaceAll(originalString, find, replace) {

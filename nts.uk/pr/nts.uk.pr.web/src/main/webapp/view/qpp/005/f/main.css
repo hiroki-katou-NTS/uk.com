@@ -77,13 +77,12 @@
 }
 
 #BTN_002{
-	margin-left: 20px''
+	margin-left: 20px;
 }
 
 .divINP_004{
 	width:80px;
 	display:table-cell; 
-	padding-left:10px;
 }
 
 #LBL_012{
@@ -103,7 +102,7 @@
 }
 
 #LBL_009{
-	 width:57px; 
+	 width:70px; 
 	 display:table-cell; 
 	 text-align: center;
 }

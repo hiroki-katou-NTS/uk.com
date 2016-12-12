@@ -67,12 +67,16 @@ var nts;
                     };
                     function init(param) {
                         var popup = new NtsPopupPanel($(this), param.position);
+                        var dismissible = param.dismissible === false;
                         _.defer(function () {
-                            $(window).mousedown(function (e) {
-                                if ($(e.target).closest(popup.$panel).length === 0) {
-                                    popup.hide();
-                                }
-                            });
+                            if (!dismissible) {
+                                $(window).mousedown(function (e) {
+                                    //console.log(dismissible);
+                                    if ($(e.target).closest(popup.$panel).length === 0) {
+                                        popup.hide();
+                                    }
+                                });
+                            }
                         });
                         return popup.$panel;
                     }
@@ -85,6 +89,13 @@ var nts;
                                 break;
                             case 'hide':
                                 popup.hide();
+                                break;
+                            case 'destroy':
+                                popup.hide();
+                                popup.destroy();
+                                break;
+                            case 'toggle':
+                                popup.toggle();
                                 break;
                         }
                     }
@@ -111,6 +122,18 @@ var nts;
                             this.$panel.css({
                                 display: 'none'
                             });
+                        };
+                        NtsPopupPanel.prototype.destroy = function () {
+                            this.$panel = null;
+                        };
+                        NtsPopupPanel.prototype.toggle = function () {
+                            var isDisplaying = this.$panel.css("display");
+                            if (isDisplaying === 'none') {
+                                this.show();
+                            }
+                            else {
+                                this.hide();
+                            }
                         };
                         return NtsPopupPanel;
                     }());
