@@ -229,6 +229,11 @@ div.popup-panel {
   border-color: #cc2222;
 }
 
+/* line 1, ../sass/components/_editor.scss */
+input[type="text"] {
+  font-family: "DroidSansMono", "Meiryo";
+}
+
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -803,6 +808,13 @@ button.nts-switch-button.selected:hover {
 /* line 33, ../sass/components/_listbox.scss */
 .disabled {
   color: graytext;
+}
+
+/* line 2, ../sass/components/_combobox.scss */
+#contents-area input.ui-igcombo-field {
+  font-family: "DroidSansMono", "Meiryo";
+  font-size: 14px;
+  color: #000;
 }
 
 /* line 1, ../sass/components/_dialog.scss */
@@ -1394,7 +1406,7 @@ button.nts-switch-button.selected:hover {
   padding: 10px;
 }
 
-/* line 19, ../sass/base.scss */
+/* line 21, ../sass/base.scss */
 body {
   font-size: 14px;
   font-family: "Meiryo UI";
