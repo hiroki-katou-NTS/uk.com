@@ -1,14 +1,31 @@
 __viewContext.ready(function () {
     class ScreenModel {
-        boxes: KnockoutObservableArray<BoxModel>;
-        selectedBoxes: KnockoutObservableArray<boolean>;
+        itemList: KnockoutObservableArray<any>;
+        selectedValues: KnockoutObservableArray<any>;
+        count: any = 4;
         
         constructor() {
             var self = this;
-            self.boxes = ko.observableArray([
-                new BoxModel(1, 'box 1'), new BoxModel(2, 'box 2'), new BoxModel(3, 'box 3')
+            self.itemList = ko.observableArray([
+                new BoxModel(1, 'box 1'),
+                new BoxModel(2, 'box 2'),
+                new BoxModel(3, 'box 3')
             ]);
-            self.selectedBoxes = ko.observableArray([]);
+            self.selectedValues = ko.observableArray([
+                {id: 1, name: 'box 1'},
+                new BoxModel(3, 'box 3')
+            ]);
+        }
+        
+        addBoxes() {
+            var self = this;
+            self.itemList.push(new BoxModel(self.count, 'box ' + self.count));
+            self.count++;
+        }
+        
+        removeBoxes() {
+            var self = this;
+            self.itemList.pop();
         }
     }
     

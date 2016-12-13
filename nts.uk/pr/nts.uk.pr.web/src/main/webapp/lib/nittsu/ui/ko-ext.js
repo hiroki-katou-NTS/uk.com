@@ -692,7 +692,9 @@ var nts;
                         var setChecked = data.checked;
                         var textId = data.text;
                         var checkBoxText;
+                        // Container
                         var container = $(element);
+                        container.addClass("ntsControl ntsCheckBox");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -700,8 +702,6 @@ var nts;
                             checkBoxText = container.text();
                             container.text('');
                         }
-                        // Container
-                        container.addClass("ntsControl ntsCheckBox");
                         var checkBoxLabel = $("<label></label>");
                         var checkBox = $('<input type="checkbox">').on("change", function () {
                             setChecked($(this).is(":checked"));
@@ -735,65 +735,44 @@ var nts;
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        $(element).addClass("ntsCheckBox");
-                        element.innerHTML = '<input type="checkbox" data-bind="checked: isChecked, checkedValue: item"/><label><span></span></label><label data-bind="text: content"></label>';
-                        /*var childBindingContext = bindingContext.createChildContext(
-                                bindingContext.$rawData,
-                                null, // Optionally, pass a string here as an alias for the data item in descendant contexts
-                                function(context) {
-                                    ko.utils.extend(context, valueAccessor());
-                                });*/
-                        var childBindingContext = bindingContext.extend(valueAccessor);
-                        ko.applyBindingsToDescendants(childBindingContext, element);
-                        return { controlsDescendantBindings: true };
+                        $(element).addClass("ntsControl");
                     };
                     NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var options = ko.unwrap(data.options);
+                        var optionValue = ko.unwrap(data.optionsValue);
+                        var optionText = ko.unwrap(data.optionsText);
+                        var selectedValue = data.value;
+                        var enable = data.enable;
+                        // Container
+                        var container = $(element);
+                        if (container.data("options") !== options) {
+                            // Render
+                            container.empty();
+                            _.forEach(options, function (option) {
+                                var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+                                var checkBox = $('<input type="checkbox">').data("value", option).on("change", function () {
+                                    var self = this;
+                                    if ($(self).is(":checked")) {
+                                        selectedValue.push($(self).data("value"));
+                                    }
+                                    else {
+                                        selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
+                                    }
+                                }).appendTo(checkBoxLabel);
+                                checkBox.prop("checked", function () {
+                                    return (_.find(selectedValue(), $(this).data("value")) !== undefined);
+                                });
+                                var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
+                                var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
+                                checkBoxLabel.appendTo(container);
+                            });
+                            // Save a clone
+                            container.data("options", $.extend({}, options));
+                        }
                     };
                     return NtsMultiCheckBoxBindingHandler;
-                }());
-                var NtsRadioboxBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function NtsRadioboxBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsRadioboxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
-                        var data = valueAccessor();
-                        // Get options.
-                        var checked = ko.unwrap(data.checked);
-                        var enable = ko.unwrap(data.enable);
-                        var checked = ko.unwrap(data.checked);
-                        var checkedValue = ko.unwrap(data.checkedValue);
-                        var text = data.text;
-                        // Container.
-                        var container = $("<label class='ntsControl ntsRadioBox'></label>");
-                        var box = $("<span class='box'></span>").appendTo(container);
-                        var label = $("<span class='label'></span>").text(text).appendTo(container);
-                        $(element).attr("type", "radio").wrap(container);
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsRadioboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
-                        var data = valueAccessor();
-                        // Get options.
-                        var checked = ko.unwrap(data.checked);
-                        var enable = ko.unwrap(data.enable);
-                        var text = data.text;
-                        // Disable.
-                        if (enable == false) {
-                            $(element).attr('disabled', 'disabled');
-                        }
-                        else {
-                            $(element).removeAttr('disabled');
-                        }
-                    };
-                    return NtsRadioboxBindingHandler;
                 }());
                 /**
                  * ComboBox binding handler
@@ -1604,7 +1583,6 @@ var nts;
                 ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
-                ko.bindingHandlers['ntsRadioBox'] = new NtsRadioboxBindingHandler();
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
