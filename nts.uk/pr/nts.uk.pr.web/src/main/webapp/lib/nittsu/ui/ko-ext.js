@@ -405,28 +405,6 @@ var nts;
                     return NtsMultilineEditorBindingHandler;
                 }(NtsEditorBindingHandler));
                 /**
-                 * Multi Checkbox
-                 */
-                var NtsMultiCheckBoxBindingHandler = (function () {
-                    function NtsMultiCheckBoxBindingHandler() {
-                    }
-                    NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
-                        /*var childBindingContext = bindingContext.createChildContext(
-                                bindingContext.$rawData,
-                                null, // Optionally, pass a string here as an alias for the data item in descendant contexts
-                                function(context) {
-                                    ko.utils.extend(context, valueAccessor());
-                                });*/
-                        var childBindingContext = bindingContext.extend(valueAccessor);
-                        ko.applyBindingsToDescendants(childBindingContext, element);
-                        return { controlsDescendantBindings: true };
-                    };
-                    NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    };
-                    return NtsMultiCheckBoxBindingHandler;
-                }());
-                /**
                  * Dialog binding handler
                  */
                 var NtsDialogBindingHandler = (function () {
@@ -535,7 +513,6 @@ var nts;
                         $dialog.dialog({
                             title: title,
                             modal: modal,
-                            autoOpen: show,
                             closeOnEscape: false,
                             width: dialogWidth,
                             buttons: dialogbuttons,
@@ -712,57 +689,92 @@ var nts;
                      * Init.
                      */
                     NtsCheckboxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        $(element).addClass("ntsCheckBox");
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
+                        // Get data
                         var data = valueAccessor();
-                        // Container.
-                        var container = $(element);
-                        // Get options.
-                        var checked = ko.unwrap(data.checked);
-                        var enable = ko.unwrap(data.enable);
+                        var setChecked = data.checked;
                         var textId = data.text;
                         var checkBoxText;
+                        // Container
+                        var container = $(element);
+                        container.addClass("ntsControl ntsCheckBox");
                         if (textId) {
-                            checkBoxText = (textId);
+                            checkBoxText = textId;
                         }
                         else {
                             checkBoxText = container.text();
                             container.text('');
                         }
-                        var checkBox;
-                        if ($('input[type="checkbox"]', container).length == 0) {
-                            // Init new.
-                            checkBox = $('<input type="checkbox">').appendTo(container);
-                            var checkBoxLabel = $("<label><span></span></label>").appendTo(container).append(checkBoxText);
-                            $(container).on('click', "label", function () {
-                                // Do nothing if disable.
-                                if (container.hasClass('disabled')) {
-                                    return;
-                                }
-                                // Change value.
-                                checkBox.prop("checked", !checkBox.prop("checked"));
-                                data.checked(checkBox.prop("checked"));
-                            });
-                        }
-                        else {
-                            checkBox = $('input[type="checkbox"]', container);
-                        }
-                        // Set state.
+                        var checkBoxLabel = $("<label></label>");
+                        var checkBox = $('<input type="checkbox">').on("change", function () {
+                            setChecked($(this).is(":checked"));
+                        }).appendTo(checkBoxLabel);
+                        var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
+                        var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
+                        checkBoxLabel.appendTo(container);
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var checked = (data.checked !== undefined) ? ko.unwrap(data.checked) : false;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        // Container
+                        var container = $(element);
+                        var checkBox = $(element).find("input[type='checkbox']");
+                        // Checked
                         checkBox.prop("checked", checked);
-                        // Disable.
-                        if (enable == false) {
-                            container.addClass('disabled');
-                        }
-                        else {
-                            container.removeClass('disabled');
-                        }
+                        // Disable
+                        (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
                     };
                     return NtsCheckboxBindingHandler;
+                }());
+                /**
+                 * Multi Checkbox
+                 */
+                var NtsMultiCheckBoxBindingHandler = (function () {
+                    function NtsMultiCheckBoxBindingHandler() {
+                    }
+                    NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        $(element).addClass("ntsControl");
+                    };
+                    NtsMultiCheckBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var options = ko.unwrap(data.options);
+                        var optionValue = ko.unwrap(data.optionsValue);
+                        var optionText = ko.unwrap(data.optionsText);
+                        var selectedValue = data.value;
+                        var enable = data.enable;
+                        // Container
+                        var container = $(element);
+                        if (container.data("options") !== options) {
+                            // Render
+                            container.empty();
+                            _.forEach(options, function (option) {
+                                var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
+                                var checkBox = $('<input type="checkbox">').data("value", option).on("change", function () {
+                                    var self = this;
+                                    if ($(self).is(":checked")) {
+                                        selectedValue.push($(self).data("value"));
+                                    }
+                                    else {
+                                        selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
+                                    }
+                                }).appendTo(checkBoxLabel);
+                                checkBox.prop("checked", function () {
+                                    return (_.find(selectedValue(), $(this).data("value")) !== undefined);
+                                });
+                                var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
+                                var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
+                                checkBoxLabel.appendTo(container);
+                            });
+                            // Save a clone
+                            container.data("options", $.extend({}, options));
+                        }
+                    };
+                    return NtsMultiCheckBoxBindingHandler;
                 }());
                 /**
                  * ComboBox binding handler
@@ -1290,6 +1302,15 @@ var nts;
                         var data = valueAccessor();
                         // Get step list.
                         var options = ko.unwrap(data.steps);
+                        var color = ko.unwrap(data.theme);
+                        var cssClass = "blue";
+                        if (color == cssClass) {
+                            cssClass = "nts-wizard-blue";
+                        }
+                        else {
+                            cssClass = "nts-wizard";
+                        }
+                        //console.log(cssClass);
                         // Container.
                         var container = $(element);
                         // Create steps.
@@ -1330,7 +1351,7 @@ var nts;
                             }
                         });
                         // Add default class.
-                        container.addClass('nts-wizard');
+                        container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
                         //container.children('.steps').children('ul').children('.first').addClass('begin');

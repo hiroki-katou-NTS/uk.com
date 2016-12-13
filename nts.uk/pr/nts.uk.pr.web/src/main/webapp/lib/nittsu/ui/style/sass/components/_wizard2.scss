@@ -1,4 +1,4 @@
-$wizard_background_color: #E2F79F;
+$wizard_background_color: #ABEBF5;
 $wizard_image_size: 60px;
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
@@ -12,7 +12,7 @@ $wizard_image_size: 60px;
 	width: -moz-calc($calc);
 }
 
-.nts-wizard, .tabcontrol2 {
+.nts-wizard-blue {
     display: block;
     width: 1000px;
     overflow: hidden;
@@ -47,7 +47,7 @@ $wizard_image_size: 60px;
 /*
     Wizard
 */
-.nts-wizard {
+.nts-wizard-blue {
 	
 	.header {
 		margin:5px 5px 5px 8px;
@@ -153,7 +153,7 @@ $wizard_image_size: 60px;
 			&.current a:hover,
 			&.current a:active {
 				color: #fff;
-			    background: #4fce3a;
+			    background: #08ACEE;
 			    box-shadow: 0 0 0 1px #fff inset;
 			}
 		}
@@ -212,7 +212,7 @@ $wizard_image_size: 60px;
 			height: 0px;
 			border-left: 10px solid transparent;
 			border-right: 10px solid transparent;
-			border-top: 10px solid #4D4D4D;
+			border-top: 10px solid #08ACEE;
 			position: absolute;
 			left: 27px;
 		}
@@ -367,5 +367,93 @@ $wizard_image_size: 60px;
 	}
 	
 	> .loading .spinner {
+	}
+}
+
+/*
+    Tabcontrol
+*/
+.tabcontrol2 {
+	> .steps {
+	    position: relative;
+	    display: block;
+	    width: 100%;
+	}
+	
+	> .steps > ul {
+	    position: relative;
+	    margin: 6px 0 0 0;
+	    top: 1px;
+	    z-index: 1;
+	}
+	
+	> .steps > ul > li {
+	    float: left;
+	    margin: 5px 2px 0 0;
+	    padding: 1px;
+	
+	    -webkit-border-top-left-radius: 5px;
+	    -webkit-border-top-right-radius: 5px;
+	    -moz-border-radius-topleft: 5px;
+	    -moz-border-radius-topright: 5px;
+	    border-top-left-radius: 5px;
+	    border-top-right-radius: 5px;
+	}
+	
+	> .steps > ul > li:hover {
+	    background: #edecec;
+	    border: 1px solid #bbb;
+	    padding: 0;
+	}
+	
+	> .steps > ul > li.current {
+	    background: #fff;
+	    border: 1px solid #bbb;
+	    border-bottom: 0 none;
+	    padding: 0 0 1px 0;
+	    margin-top: 0;
+	}
+	
+	> .steps > ul > li > a {
+	    color: #5f5f5f;
+	    display: inline-block;
+	    border: 0 none;
+	    margin: 0;
+	    padding: 10px 30px;
+	    text-decoration: none;
+	}
+	
+	> .steps > ul > li > a:hover {
+	    text-decoration: none;
+	}
+	
+	> .steps > ul > li.current > a {
+	    padding: 15px 30px 10px 30px;
+	}
+	
+	> .content {
+	    position: relative;
+	    display: inline-block;
+	    width: 100%;
+	    height: 35em;
+	    overflow: hidden;
+	    border-top: 1px solid #bbb;
+	    padding-top: 20px;
+	}
+	
+	> .content > .body {
+	    float: left;
+	    position: absolute;
+	    width: 95%;
+	    height: 95%;
+	    padding: 2.5%;
+	}
+	
+	> .content > .body ul {
+	    list-style: disc !important;
+	}
+	
+	> .content > .body ul > li {
+	    display: list-item;
 	}
 }

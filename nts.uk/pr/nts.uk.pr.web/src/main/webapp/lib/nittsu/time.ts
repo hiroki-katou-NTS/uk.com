@@ -223,7 +223,7 @@
         }
         timeOfDay = timeOfDay.replace(":","");
         var checkNum = timeOfDay.replaceAll("[0-9]","");
-        var stringLength = checkNum.length;
+        var stringLength = timeOfDay.length;
         if(stringLength < 3 || stringLength > 4) return ResultParseTimeOfTheDay.failed("invalid time of the day format");
         if(checkNum.length > 0) return ResultParseTimeOfTheDay.failed("time of the day accept digits and ':' only");
         var hour = parseInt(checkNum.substring(0,stringLength-2));
