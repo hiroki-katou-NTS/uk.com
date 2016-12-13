@@ -10,10 +10,6 @@
         <ui:composition template="../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
-            	
-				<com:ValidatorScript>
-				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-   				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
@@ -23,30 +19,15 @@
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>MultiCheckBox</h1>
-						<h2>Overview</h2>
-						
-						<div data-bind="foreach: boxes">
-			                <div data-bind="ntsMultiCheckBox: {isChecked: $parent.selectedBoxes, content: name, item: $data}">
-			                </div>
-			                <br/>
-			            </div>
-			            You've selected:
-						  <div data-bind="foreach: selectedBoxes">
-							  <p><span data-bind="text: id"></span></p>
-						  </div>
-						<article class="cf">
-							<div class="tabs">
-								<ol>
-									<li><a href="#tabs-html">HTML Binding</a></li>
-									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-								</ol>
-								<div id="tabs-html" class="cf">
-								</div>
-								<div id="tabs-viewmodel" class="cf">
-								</div>
-							</div>
-						</article>
+						<h1>Number ulitily </h1>
+						<h2>In this module have functions for work with number in javascript. Below is main functions of it.</h2>
+						<h3>isNumber</h3>
+						<p>This function will check a value is number? Default check integer, you can set check float. And pass option is NumberEditorOption</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.ntsNumber.isNumber("abc123");
+Result: 6
+nts.uk.ntsNumber.isNumber("abc123感じ");
+Result: 10]]></pre>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>

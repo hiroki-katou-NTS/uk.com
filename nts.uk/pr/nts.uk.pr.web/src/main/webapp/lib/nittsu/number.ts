@@ -35,31 +35,31 @@
         if (value === undefined || value === null || value.toString().trim().lenth <= 0) {
             return value;
         }
-        var groupseperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
-        var grouplength = formatOption.grouplength ? formatOption.grouplength : 0;
-        var decimalseperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
-        var decimallength = formatOption.decimallength ? formatOption.decimallength : 0;
+        var groupSeperator = formatOption.groupseperator ? formatOption.groupseperator : ',';
+        var groupLength = formatOption.grouplength ? formatOption.grouplength : 0;
+        var decimalSeperator = formatOption.decimalseperator ? formatOption.decimalseperator : ".";
+        var decimalLength = formatOption.decimallength ? formatOption.decimallength : 0;
         var formattedValue = "";
-        var stringValue = text.replaceAll(value.toString(), groupseperator, '');
+        var stringValue = text.replaceAll(value.toString(), groupSeperator, '');
         var isMinus = stringValue.charAt(0) === '-';
-        var values = isMinus ? stringValue.split('-')[1].split(decimalseperator) : stringValue.split(decimalseperator);
-        if (grouplength > 0) {
+        var values = isMinus ? stringValue.split('-')[1].split(decimalSeperator) : stringValue.split(decimalSeperator);
+        if (groupLength > 0) {
             var x = values[0].split('').reverse().join('');
             for (var i = 0; i < x.length;) {
-                formattedValue += x.substr(i, grouplength) + (x.length > i + grouplength ? groupseperator : "");
-                i += grouplength;
+                formattedValue += x.substr(i, groupLength) + (x.length > i + groupLength ? groupSeperator : "");
+                i += groupLength;
             }
             formattedValue = formattedValue.split('').reverse().join('');
         } else {
             formattedValue = values[0];
         }
-        if (values[1] === undefined || decimallength > values[1].length) {
-            values[1] = text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimallength : decimallength + 1);
+        if (values[1] === undefined || decimalLength > values[1].length) {
+            values[1] = text.padRight(values[1] ? values[1] : "", '0', values[1] ? decimalLength : decimalLength + 1);
         } else {
-            values[1] = values[1].substr(0, decimallength);
+            values[1] = values[1].substr(0, decimalLength);
         }
-        values[1] = text.splitString(values[1], decimallength, '0');
+        values[1] = text.splitOrPadRight(values[1], decimalLength, '0');
 
-        return (isMinus ? '-' : '') + formattedValue + (decimallength <= 0 ? '' : decimalseperator + values[1]);
+        return (isMinus ? '-' : '') + formattedValue + (decimalLength <= 0 ? '' : decimalSeperator + values[1]);
     }
 }

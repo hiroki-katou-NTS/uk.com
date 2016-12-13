@@ -222,26 +222,26 @@
             }
         }
         
-        export function replaceAll(str: string, find: string, replace: string){
-            return str.split(find).join(replace);    
+        export function replaceAll(originalString: string, find: string, replace: string){
+            return originalString.split(find).join(replace);    
         }
         
-        export function removeFromStart(str: string, charSet: string){
-            if(str.length === charSet.length){
-                return (str === charSet) ? "" : str;
+        export function removeFromStart(originalString: string, charSet: string){
+            if(originalString.length === charSet.length){
+                return (originalString === charSet) ? "" : originalString;
             }
-            var i = findLastContinousIndex(str, charSet, 0);
-            return str.substr(i, str.length - i);
+            var i = findLastContinousIndex(originalString, charSet, 0);
+            return originalString.substr(i, originalString.length - i);
         }
         
-        function findLastContinousIndex(str: string, charSet: string, startIndex: number){
-            if(startIndex >= str.length - 1){
+        function findLastContinousIndex(originalString: string, charSet: string, startIndex: number){
+            if(startIndex >= originalString.length - 1){
                 return startIndex;
             }
-            if(str.substr(startIndex, charSet.length) !== charSet){
+            if(originalString.substr(startIndex, charSet.length) !== charSet){
                 return startIndex;
             }else{
-                return findLastContinousIndex(str, charSet, startIndex + charSet.length);
+                return findLastContinousIndex(originalString, charSet, startIndex + charSet.length);
             }
         }
         
@@ -326,13 +326,13 @@
                 return padRight(code, fillcharacter, length);
         }
         
-        export function splitString(str: string, decimallength: number, char: string){
-            if (str === undefined || decimallength > str.length) {
-                str = text.padRight(str ? str : "", char, str ? decimallength : decimallength + 1);
+        export function splitOrPadRight(originalString: string, length: number, char?: string){
+            if (originalString === undefined || length > originalString.length) {
+                originalString = text.padRight(originalString ? originalString : "", char ? char : " ", length);
             } else {
-                str = str.substr(0, decimallength);
+                originalString = originalString.substr(0, length);
             }
-            return str;
+            return originalString;
         }
         
         export class StringFormatter implements format.IFormatter {

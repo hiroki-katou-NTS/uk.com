@@ -409,7 +409,8 @@ var nts;
                     function NtsMultiCheckBoxBindingHandler() {
                     }
                     NtsMultiCheckBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.innerHTML = "<input type='checkbox' data-bind='checked: isChecked, checkedValue: item' /><label data-bind='text: content'></label>";
+                        $(element).addClass("ntsCheckBox");
+                        element.innerHTML = '<input type="checkbox" data-bind="checked: isChecked, checkedValue: item"/><label><span></span></label><label data-bind="text: content"></label>';
                         /*var childBindingContext = bindingContext.createChildContext(
                                 bindingContext.$rawData,
                                 null, // Optionally, pass a string here as an alias for the data item in descendant contexts
@@ -533,7 +534,6 @@ var nts;
                         $dialog.dialog({
                             title: title,
                             modal: modal,
-                            autoOpen: show,
                             closeOnEscape: false,
                             width: dialogWidth,
                             buttons: dialogbuttons,
@@ -1288,6 +1288,15 @@ var nts;
                         var data = valueAccessor();
                         // Get step list.
                         var options = ko.unwrap(data.steps);
+                        var color = ko.unwrap(data.theme);
+                        var cssClass = "blue";
+                        if (color == cssClass) {
+                            cssClass = "nts-wizard-blue";
+                        }
+                        else {
+                            cssClass = "nts-wizard";
+                        }
+                        //console.log(cssClass);
                         // Container.
                         var container = $(element);
                         // Create steps.
@@ -1328,7 +1337,7 @@ var nts;
                             }
                         });
                         // Add default class.
-                        container.addClass('nts-wizard');
+                        container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
                         //container.children('.steps').children('ul').children('.first').addClass('begin');
