@@ -19,7 +19,7 @@
         var minutes = Math.floor(seconds / 60);
         var mm = text.padLeft(String(minutes % 60), '0', 2);
         
-        var hours = Math.floor(seconds / 60 / 60);
+        var hours = ntsNumber.trunc(seconds / 60 / 60);
         var h = String(hours);
         
         // TODO: use formatOption
@@ -105,6 +105,7 @@
             minutes = times[1];
             hours = times[0];
         }else{
+            time = ntsNumber.trunc(time);
             time = text.padLeft(time, "0", time.length > 4 ? time.length : 4);
             minutes = time.substr(-2,2);
             hours = time.substr(0, time.length - 2);

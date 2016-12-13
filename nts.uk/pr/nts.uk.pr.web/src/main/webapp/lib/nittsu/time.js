@@ -23,7 +23,7 @@ var nts;
                 var ss = uk.text.padLeft(String(seconds % 60), '0', 2);
                 var minutes = Math.floor(seconds / 60);
                 var mm = uk.text.padLeft(String(minutes % 60), '0', 2);
-                var hours = Math.floor(seconds / 60 / 60);
+                var hours = uk.ntsNumber.trunc(seconds / 60 / 60);
                 var h = String(hours);
                 // TODO: use formatOption
                 return "h:mm:ss"
@@ -96,6 +96,7 @@ var nts;
                     hours = times[0];
                 }
                 else {
+                    time = uk.ntsNumber.trunc(time);
                     time = uk.text.padLeft(time, "0", time.length > 4 ? time.length : 4);
                     minutes = time.substr(-2, 2);
                     hours = time.substr(0, time.length - 2);
