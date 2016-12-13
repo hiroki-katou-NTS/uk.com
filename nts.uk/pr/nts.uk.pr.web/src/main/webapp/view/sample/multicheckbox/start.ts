@@ -2,6 +2,7 @@ __viewContext.ready(function () {
     class ScreenModel {
         itemList: KnockoutObservableArray<any>;
         selectedValues: KnockoutObservableArray<any>;
+        selectedIds: KnockoutObservableArray<number>;
         count: any = 4;
         
         constructor() {
@@ -15,6 +16,7 @@ __viewContext.ready(function () {
                 {id: 1, name: 'box 1'},
                 new BoxModel(3, 'box 3')
             ]);
+            self.selectedIds = ko.observableArray([1,2]);
         }
         
         addBoxes() {

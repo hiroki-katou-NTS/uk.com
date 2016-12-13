@@ -28,16 +28,28 @@
 					<div id="content" class="cf">
 						<h1>MultiCheckBox</h1>
 						<h2>Overview</h2>
+						<h3>Selected Values as objects</h3>
 						<div data-bind="ntsMultiCheckBox: {options: itemList,
-											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedValues,
 											enable: true}"></div>
 						<br/>
 						<button data-bind="click: addBoxes">Add Box</button>
 						<button data-bind="click: removeBoxes">Remove Box</button>
-						<h3>Selected values:</h3>
+						<h4>Selected values:</h4>
 						<div data-bind="text: ko.toJSON(selectedValues)"></div>
+						<br/>
+						<h3>Selected Values as value</h3>
+						<div data-bind="ntsMultiCheckBox: {options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedIds,
+											enable: true}"></div>
+						<br/>
+						<button data-bind="click: addBoxes">Add Box</button>
+						<button data-bind="click: removeBoxes">Remove Box</button>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedIds)"></div>
 						<h3>Item list:</h3>
 						<div data-bind="text: ko.toJSON(itemList)"></div>
 						<article class="cf">

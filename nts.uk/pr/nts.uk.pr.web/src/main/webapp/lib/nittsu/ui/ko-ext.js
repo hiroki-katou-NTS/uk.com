@@ -749,22 +749,48 @@ var nts;
                         var enable = data.enable;
                         // Container
                         var container = $(element);
+                        // CheckedValue
+                        var getOptionValue = function (item) {
+                            if (optionValue === undefined) {
+                                return item;
+                            }
+                            else {
+                                return item[optionValue];
+                            }
+                        };
                         if (container.data("options") !== options) {
                             // Render
                             container.empty();
                             _.forEach(options, function (option) {
                                 var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
                                 var checkBox = $('<input type="checkbox">').data("value", option).on("change", function () {
+                                    var _this = this;
                                     var self = this;
                                     if ($(self).is(":checked")) {
-                                        selectedValue.push($(self).data("value"));
+                                        if (optionValue !== undefined && option[optionValue]) {
+                                            selectedValue.push($(self).data("value")[optionValue]);
+                                        }
+                                        else {
+                                            selectedValue.push($(self).data("value"));
+                                        }
                                     }
                                     else {
-                                        selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
+                                        if (optionValue !== undefined && option[optionValue]) {
+                                            selectedValue.remove(_.find(selectedValue(), function (value) { return value == $(_this).data("value")[optionValue]; }));
+                                        }
+                                        else {
+                                            selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
+                                        }
                                     }
                                 }).appendTo(checkBoxLabel);
                                 checkBox.prop("checked", function () {
-                                    return (_.find(selectedValue(), $(this).data("value")) !== undefined);
+                                    var _this = this;
+                                    if (optionValue !== undefined && option[optionValue]) {
+                                        return (_.find(selectedValue(), function (value) { return value == $(_this).data("value")[optionValue]; }) !== undefined);
+                                    }
+                                    else {
+                                        return (_.find(selectedValue(), $(this).data("value")) !== undefined);
+                                    }
                                 });
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                                 var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
