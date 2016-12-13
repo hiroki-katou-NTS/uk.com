@@ -387,32 +387,6 @@ module nts.uk.ui.koExtentions {
     }
 
     /**
-     * Multi Checkbox
-     */
-    class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
-        constructor() { }
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
-            $(element).addClass("ntsCheckBox");
-            element.innerHTML = '<input type="checkbox" data-bind="checked: isChecked, checkedValue: item"/><label><span></span></label><label data-bind="text: content"></label>';
-            /*var childBindingContext = bindingContext.createChildContext(
-                    bindingContext.$rawData,
-                    null, // Optionally, pass a string here as an alias for the data item in descendant contexts
-                    function(context) {
-                        ko.utils.extend(context, valueAccessor());
-                    });*/
-            
-            var childBindingContext = bindingContext.extend(valueAccessor);
-            ko.applyBindingsToDescendants(childBindingContext, element);
-            return { controlsDescendantBindings: true };
-        }
-
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
-        }
-
-    }
-
-    /**
      * Dialog binding handler
      */
     class NtsDialogBindingHandler implements KnockoutBindingHandler {
@@ -706,7 +680,106 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data
+            var data = valueAccessor();
+            var setChecked = data.checked;
+            var textId: string = data.text;
+            var checkBoxText: string;
+            
+            var container = $(element);
+            if (textId) {
+                checkBoxText = textId;
+            } else {
+                checkBoxText = container.text();
+                container.text('');
+            }
+            
+            // Container
+            container.addClass("ntsControl ntsCheckBox");
+            
+            var checkBoxLabel = $("<label></label>");
+            var checkBox = $('<input type="checkbox">').on("change", function(){
+                setChecked($(this).is(":checked"));
+            }).appendTo(checkBoxLabel);
+            var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
+            var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
+            checkBoxLabel.appendTo(container);
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data
+            var data = valueAccessor();
+            var checked: boolean = (data.checked !== undefined) ? ko.unwrap(data.checked) : false;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            
+            // Container
+            var container = $(element);
+            var checkBox = $(element).find("input[type='checkbox']");
+            
+            // Checked
+            checkBox.prop("checked",checked);
+            // Disable
+            (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
+        }
+    }
+    
+    /**
+     * Multi Checkbox
+     */
+    class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
+        constructor() { }
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
             $(element).addClass("ntsCheckBox");
+            element.innerHTML = '<input type="checkbox" data-bind="checked: isChecked, checkedValue: item"/><label><span></span></label><label data-bind="text: content"></label>';
+            /*var childBindingContext = bindingContext.createChildContext(
+                    bindingContext.$rawData,
+                    null, // Optionally, pass a string here as an alias for the data item in descendant contexts
+                    function(context) {
+                        ko.utils.extend(context, valueAccessor());
+                    });*/
+            
+            var childBindingContext = bindingContext.extend(valueAccessor);
+            ko.applyBindingsToDescendants(childBindingContext, element);
+            return { controlsDescendantBindings: true };
+        }
+
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
+        }
+
+    }
+    
+    class NtsRadioboxBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+
+        /**
+         * Init.
+         */
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data.
+            var data = valueAccessor();
+            
+            // Get options.
+            var checked: any = ko.unwrap(data.checked);
+            var enable: boolean = ko.unwrap(data.enable);
+            var checked: any = ko.unwrap(data.checked);
+            var checkedValue: any = ko.unwrap(data.checkedValue);
+            var text: string = data.text;
+            
+            // Container.
+            var container = $("<label class='ntsControl ntsRadioBox'></label>");
+            var box = $("<span class='box'></span>").appendTo(container);
+            var label = $("<span class='label'></span>").text(text).appendTo(container);
+            
+            $(element).attr("type","radio").wrap(container);
+            
         }
 
         /**
@@ -715,49 +788,17 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
-
-            // Container.
-            var container = $(element);
-
+            
             // Get options.
-            var checked: boolean = ko.unwrap(data.checked);
+            var checked: any = ko.unwrap(data.checked);
             var enable: boolean = ko.unwrap(data.enable);
-            var textId: string = data.text;
-            var checkBoxText: string;
-            if (textId) {
-                checkBoxText = /*nts.ui.name*/(textId);
-            } else {
-                checkBoxText = container.text();
-                container.text('');
-            }
-
-            var checkBox: JQuery;
-            if ($('input[type="checkbox"]', container).length == 0) {
-                // Init new.
-                checkBox = $('<input type="checkbox">').appendTo(container);
-                var checkBoxLabel = $("<label><span></span></label>").appendTo(container).append(checkBoxText);
-                $(container).on('click', "label", function() {
-                    // Do nothing if disable.
-                    if (container.hasClass('disabled')) {
-                        return;
-                    }
-
-                    // Change value.
-                    checkBox.prop("checked", !checkBox.prop("checked"));
-                    data.checked(checkBox.prop("checked"));
-                });
-            } else {
-                checkBox = $('input[type="checkbox"]', container);
-            }
-
-            // Set state.
-            checkBox.prop("checked", checked);
-
+            var text: string = data.text;
+            
             // Disable.
             if (enable == false) {
-                container.addClass('disabled');
+                $(element).attr('disabled','disabled');
             } else {
-                container.removeClass('disabled');
+                $(element).removeAttr('disabled');
             }
         }
     }
@@ -1661,6 +1702,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
+    ko.bindingHandlers['ntsRadioBox'] = new NtsRadioboxBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
     ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
     ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
