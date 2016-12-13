@@ -34,9 +34,9 @@ module nts.uk.ui.koExtentions {
             var placeholder: string = ko.unwrap(option.placeholder || '');
             var width: string = ko.unwrap(option.width || '');
             var textalign: string = ko.unwrap(option.textalign || '');
-            
-            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled','disabled');
-            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly','readonly');
+
+            (enable !== false) ? $input.removeAttr('disabled') : $input.attr('disabled', 'disabled');
+            (readonly === false) ? $input.removeAttr('readonly') : $input.attr('readonly', 'readonly');
             $input.attr('placeholder', placeholder);
             if (width.trim() != "")
                 $input.width(width);
@@ -67,31 +67,31 @@ module nts.uk.ui.koExtentions {
         getValidator(data: any): validation.IValidator {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            if(data.editortype) {
+            if (data.editortype) {
                 var editortype = ko.unwrap(data.editortype);
-                switch(editortype) {
-                   
-                   case 'numbereditor':
-                      return NumberEditorProcessor.prototype.getValidator(data);
-                   case 'timeeditor':
-                      return TimeEditorProcessor.prototype.getValidator(data);
-                   case 'multilineeditor':
-                      return MultilineEditorProcessor.prototype.getValidator(data);
-                   default: 
-                      return TextEditorProcessor.prototype.getValidator(data);   
+                switch (editortype) {
+
+                    case 'numbereditor':
+                        return NumberEditorProcessor.prototype.getValidator(data);
+                    case 'timeeditor':
+                        return TimeEditorProcessor.prototype.getValidator(data);
+                    case 'multilineeditor':
+                        return MultilineEditorProcessor.prototype.getValidator(data);
+                    default:
+                        return TextEditorProcessor.prototype.getValidator(data);
                 }
             } else {
                 if (constraint) {
-                    if(constraint.valueType === 'String') {
+                    if (constraint.valueType === 'String') {
                         return TextEditorProcessor.prototype.getValidator(data);
-                    } else if(data.option) {
+                    } else if (data.option) {
                         var option = ko.unwrap(data.option);
                         //If inputFormat presented, this is Date or Time Editor
-                        if(option.inputFormat) {
+                        if (option.inputFormat) {
                             return TimeEditorProcessor.prototype.getValidator(data);
-                        } else  {
-                            return NumberEditorProcessor.prototype.getValidator(data);                           
-                        } 
+                        } else {
+                            return NumberEditorProcessor.prototype.getValidator(data);
+                        }
                     }
                 }
                 return validation.createValidator(constraintName);
@@ -101,34 +101,34 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            if(data.editortype) {
+            if (data.editortype) {
                 var editortype = ko.unwrap(data.editortype);
-                switch(editortype) {              
-                   case 'numbereditor':
-                      return NumberEditorProcessor.prototype.getFormatter(data);
-                   case 'timeeditor':
-                      return TimeEditorProcessor.prototype.getFormatter(data);
-                   case 'multilineeditor':
-                      return MultilineEditorProcessor.prototype.getFormatter(data);
-                   default: 
-                      return TextEditorProcessor.prototype.getFormatter(data);   
+                switch (editortype) {
+                    case 'numbereditor':
+                        return NumberEditorProcessor.prototype.getFormatter(data);
+                    case 'timeeditor':
+                        return TimeEditorProcessor.prototype.getFormatter(data);
+                    case 'multilineeditor':
+                        return MultilineEditorProcessor.prototype.getFormatter(data);
+                    default:
+                        return TextEditorProcessor.prototype.getFormatter(data);
                 }
             } else {
                 if (constraint) {
-                    if(constraint.valueType === 'String') {
+                    if (constraint.valueType === 'String') {
                         return TextEditorProcessor.prototype.getFormatter(data);
-                    } else if(data.option) {
+                    } else if (data.option) {
                         var option = ko.unwrap(data.option);
                         //If inputFormat presented, this is Date or Time Editor
-                        if(option.inputFormat) {
+                        if (option.inputFormat) {
                             return TimeEditorProcessor.prototype.getFormatter(data);
-                        } else  {
-                            return NumberEditorProcessor.prototype.getFormatter(data);                           
-                        } 
+                        } else {
+                            return NumberEditorProcessor.prototype.getFormatter(data);
+                        }
                     }
                 }
                 return new format.NoFormatter();
-            }        
+            }
         }
     }
 
@@ -165,33 +165,36 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
-            $input.css({ 'text-align': 'right', "box-sizing" :"border-box"});
+            $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
             var parent = $input.parent();
             var width = option.width ? option.width : '100%';
+            parent.css({ "display": "inline-block" });
+            var parentTag = parent.parent().prop("tagName").toLowerCase();
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+                parent.css({ 'width': '100%' });
+            }
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
                 var marginLeft = 0;
                 var marginRight = 0;
-                if($input.css('margin-left') !== ""){
+                if ($input.css('margin-left') !== "") {
                     marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
                     marginRight = parseFloat($input.css('margin-left').split("px")[0]);
-                } 
+                }
                 parent.addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
-                parent.css({"display": "inline-block"});
-                if(marginLeft !== 0){
-                    parent.css({"marginLeft": marginLeft + "px"});    
+                
+                if (marginLeft !== 0) {
+                    parent.css({ "marginLeft": marginLeft + "px" });
                 }
-                if(marginRight !== 0){
-                    parent.css({"marginRight": marginRight + "px"});    
-                }
-                var parentTag = parent.parent().prop("tagName").toLowerCase();
-                if(parentTag === "td" || parentTag === "th"){
-                    parent.css({'width': '100%'});    
+                if (marginRight !== 0) {
+                    parent.css({ "marginRight": marginRight + "px" });
                 }
                 var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
                 var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
-                $input.css({ 'paddingLeft': paddingLeft, 'paddingRight': paddingRight, 
-                    'width': width, "marginLeft": "0px", "marginRight": "0px"});
+                $input.css({
+                    'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
+                    'width': width, "marginLeft": "0px", "marginRight": "0px"
+                });
             } else {
                 $input.css({ 'paddingLeft': '12px', 'width': width });
             }
@@ -220,17 +223,17 @@ module nts.uk.ui.koExtentions {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
-            $input.css({'text-align': 'right', "box-sizing" :"border-box"});
+            $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
             var parent = $input.parent();
-            parent.css({"display": "inline-block"});
+            parent.css({ "display": "inline-block" });
             var parentTag = parent.parent().prop("tagName").toLowerCase();
-            if(parentTag === "td" || parentTag === "th"){
-                parent.css({'width': '100%'});    
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+                parent.css({ 'width': '100%' });
             }
             var width = option.width ? option.width : '100%';
-            $input.css({'paddingLeft': '12px', 'width': width });
+            $input.css({ 'paddingLeft': '12px', 'width': width });
         }
-        
+
         getDefaultOption(): any {
             return new nts.uk.ui.option.TimeEditorOption();
         }
@@ -546,7 +549,7 @@ module nts.uk.ui.koExtentions {
             var show: boolean = ko.unwrap(option.show);
 
             var $dialog = $("#ntsErrorDialog");
-            
+
             // TODO: Change autoclose do not close when clear error then add again. Or use another method
             /*if (autoclose === true && errors.length == 0) {
                 option.show(false);
@@ -773,7 +776,7 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            
+
         }
 
         /**
@@ -924,7 +927,7 @@ module nts.uk.ui.koExtentions {
             var required = data.required || false;
             // Container.
             var container = $(element);
-            container.data('required',required);    
+            container.data('required', required);
             // Default value.
             var selectSize = 6;
 
@@ -971,8 +974,8 @@ module nts.uk.ui.koExtentions {
                     $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 }
 
-                
-                
+
+
             });
 
             // Fire event.
@@ -987,7 +990,7 @@ module nts.uk.ui.koExtentions {
 
                 // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                 document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-                
+
                 data.value(itemsSelected);
 
                 // Create event changed.
@@ -999,23 +1002,23 @@ module nts.uk.ui.koExtentions {
 
                 // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                 document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
-                
-                
+
+
             }));
-            
+
             container.on('validate', (function(e: Event) {
                 // Check empty value
-                
-                    var itemsSelected: any = container.data('value');
-                    var required = container.data('required');
-                    if(required) {
-                        if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                            selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                            console.log('ListBox selection must not be empty');
-                        } else {
-                            selectListBoxContainer.ntsError('clear');                       
-                        }
+
+                var itemsSelected: any = container.data('value');
+                var required = container.data('required');
+                if (required) {
+                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                        console.log('ListBox selection must not be empty');
+                    } else {
+                        selectListBoxContainer.ntsError('clear');
                     }
+                }
             }));
             // Create method.
             $.fn.deselectAll = function() {
@@ -1040,7 +1043,7 @@ module nts.uk.ui.koExtentions {
                         break;
                 }
             }
-          
+
         }
 
         /**
@@ -1231,8 +1234,8 @@ module nts.uk.ui.koExtentions {
 
             width = width ? width : '100%';
             var width = ko.unwrap(data.width);
-            var headers = ["コード","コード／名称"];
-            if(data.headers) {
+            var headers = ["コード", "コード／名称"];
+            if (data.headers) {
                 headers = ko.unwrap(data.headers);
             }
             var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
@@ -1545,7 +1548,7 @@ module nts.uk.ui.koExtentions {
             container.datepicker({
                 dateFormat: 'yy/mm/dd'
             });
-            container.on('change',(event: any) => {
+            container.on('change', (event: any) => {
                 data.value(new Date(container.val()));
             });
         }
