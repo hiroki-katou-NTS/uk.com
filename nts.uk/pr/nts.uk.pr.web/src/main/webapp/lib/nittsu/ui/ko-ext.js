@@ -534,7 +534,6 @@ var nts;
                         $dialog.dialog({
                             title: title,
                             modal: modal,
-                            autoOpen: show,
                             closeOnEscape: false,
                             width: dialogWidth,
                             buttons: dialogbuttons,
@@ -1289,6 +1288,15 @@ var nts;
                         var data = valueAccessor();
                         // Get step list.
                         var options = ko.unwrap(data.steps);
+                        var color = ko.unwrap(data.theme);
+                        var cssClass = "blue";
+                        if (color == cssClass) {
+                            cssClass = "nts-wizard-blue";
+                        }
+                        else {
+                            cssClass = "nts-wizard";
+                        }
+                        //console.log(cssClass);
                         // Container.
                         var container = $(element);
                         // Create steps.
@@ -1329,7 +1337,7 @@ var nts;
                             }
                         });
                         // Add default class.
-                        container.addClass('nts-wizard');
+                        container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
                         //container.children('.steps').children('ul').children('.first').addClass('begin');

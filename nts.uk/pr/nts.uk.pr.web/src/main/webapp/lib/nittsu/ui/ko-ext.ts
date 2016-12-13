@@ -516,7 +516,7 @@ module nts.uk.ui.koExtentions {
             $dialog.dialog({
                 title: title,
                 modal: modal,
-                autoOpen: show,
+                
                 closeOnEscape: false,
                 width: dialogWidth,
                 buttons: dialogbuttons,
@@ -600,6 +600,7 @@ module nts.uk.ui.koExtentions {
             }
             else {
                 $dialog.dialog("close");
+                
             }
         }
     }
@@ -1352,6 +1353,15 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             // Get step list.
             var options: Array<any> = ko.unwrap(data.steps);
+            var color: string = ko.unwrap(data.theme);
+            var cssClass: string = "blue";
+            if(color == cssClass) {
+                cssClass = "nts-wizard-blue";
+            } 
+            else {
+               cssClass = "nts-wizard"; 
+            }
+            //console.log(cssClass);
             // Container.
             var container = $(element);
 
@@ -1398,7 +1408,7 @@ module nts.uk.ui.koExtentions {
             });
 
             // Add default class.
-            container.addClass('nts-wizard');
+            container.addClass(cssClass);
             container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
             container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
             //container.children('.steps').children('ul').children('.first').addClass('begin');

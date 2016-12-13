@@ -358,7 +358,7 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
+  /* IgniteUI é╞é╠îôé╦ìçéóé┼background-coloré╔é═!importanté¬òKùvé┴é█éóüH */
 }
 /* line 28, ../sass/components/_button.scss */
 button:hover {
@@ -900,34 +900,34 @@ button.nts-switch-button.selected:hover {
 }
 
 /* line 15, ../sass/components/_wizard.scss */
-.wizard, .tabcontrol {
+.nts-wizard, .tabcontrol2 {
   display: block;
   width: 1000px;
   overflow: hidden;
   /* Accessibility */
 }
 /* line 20, ../sass/components/_wizard.scss */
-.wizard a, .tabcontrol a {
+.nts-wizard a, .tabcontrol2 a {
   outline: 0;
 }
 /* line 24, ../sass/components/_wizard.scss */
-.wizard ul, .tabcontrol ul {
+.nts-wizard ul, .tabcontrol2 ul {
   list-style: none !important;
   padding: 0;
   margin: 5px;
 }
 /* line 30, ../sass/components/_wizard.scss */
-.wizard ul > li, .tabcontrol ul > li {
+.nts-wizard ul > li, .tabcontrol2 ul > li {
   display: block;
   padding: 0;
 }
 /* line 36, ../sass/components/_wizard.scss */
-.wizard > .steps .current-info, .tabcontrol > .steps .current-info {
+.nts-wizard > .steps .current-info, .tabcontrol2 > .steps .current-info {
   position: absolute;
   left: -999em;
 }
 /* line 41, ../sass/components/_wizard.scss */
-.wizard > .content > .title, .tabcontrol > .content > .title {
+.nts-wizard > .content > .title, .tabcontrol2 > .content > .title {
   position: absolute;
   left: -999em;
 }
@@ -936,11 +936,11 @@ button.nts-switch-button.selected:hover {
     Wizard
 */
 /* line 52, ../sass/components/_wizard.scss */
-.wizard .header {
+.nts-wizard .header {
   margin: 5px 5px 5px 8px;
 }
 /* line 55, ../sass/components/_wizard.scss */
-.wizard .header .image {
+.nts-wizard .header .image {
   position: absolute;
   width: 60px;
   height: 60px;
@@ -950,7 +950,7 @@ button.nts-switch-button.selected:hover {
   z-index: 3;
 }
 /* line 65, ../sass/components/_wizard.scss */
-.wizard .header .content {
+.nts-wizard .header .content {
   display: block;
   margin: 8px 0 5px 0;
   text-decoration: none;
@@ -968,23 +968,23 @@ button.nts-switch-button.selected:hover {
   box-sizing: border-box;
 }
 /* line 81, ../sass/components/_wizard.scss */
-.wizard > .steps {
+.nts-wizard > .steps {
   position: relative;
   display: block;
   width: 100%;
 }
 /* line 86, ../sass/components/_wizard.scss */
-.wizard > .steps .number {
+.nts-wizard > .steps .number {
   font-size: 1.429em;
 }
 /* line 88, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li {
+.nts-wizard > .steps > ul > li {
   width: 25%;
 }
 /* line 90, ../sass/components/_wizard.scss */
-.wizard > .steps a,
-.wizard > .steps a:hover,
-.wizard > .steps a:active {
+.nts-wizard > .steps a,
+.nts-wizard > .steps a:hover,
+.nts-wizard > .steps a:active {
   display: block;
   margin: 5px 0 5px 0;
   text-decoration: none;
@@ -1000,28 +1000,28 @@ button.nts-switch-button.selected:hover {
   cursor: default;
 }
 /* line 105, ../sass/components/_wizard.scss */
-.wizard > .steps .disabled a,
-.wizard > .steps .disabled a:hover,
-.wizard > .steps .disabled a:active {
+.nts-wizard > .steps .disabled a,
+.nts-wizard > .steps .disabled a:hover,
+.nts-wizard > .steps .disabled a:active {
   color: #fff;
 }
 /* line 111, ../sass/components/_wizard.scss */
-.wizard > .steps .current a,
-.wizard > .steps .current a:hover,
-.wizard > .steps .current a:active {
+.nts-wizard > .steps .current a,
+.nts-wizard > .steps .current a:hover,
+.nts-wizard > .steps .current a:active {
   color: #000;
   background: #fff;
 }
 /* line 118, ../sass/components/_wizard.scss */
-.wizard > .steps .begin a div {
+.nts-wizard > .steps .begin a div {
   margin-left: 20px;
 }
 /* line 134, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .nts-steps {
+.nts-wizard > .steps > ul > .nts-steps {
   float: left;
 }
 /* line 138, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .end > a, .wizard > .steps > ul > .end > a:hover, .wizard > .steps > ul > .end > a:active {
+.nts-wizard > .steps > ul > .end > a, .nts-wizard > .steps > ul > .end > a:hover, .nts-wizard > .steps > ul > .end > a:active {
   display: table;
   background-color: #E2F79F;
   color: #000;
@@ -1034,19 +1034,19 @@ button.nts-switch-button.selected:hover {
   width: -moz-calc(100% - 25px);
 }
 /* line 150, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .end > a > div, .wizard > .steps > ul > .end > a:hover > div, .wizard > .steps > ul > .end > a:active > div {
+.nts-wizard > .steps > ul > .end > a > div, .nts-wizard > .steps > ul > .end > a:hover > div, .nts-wizard > .steps > ul > .end > a:active > div {
   display: table-cell;
   padding: 0;
   vertical-align: middle;
 }
 /* line 152, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .end.current a, .wizard > .steps > ul > .end.current a:hover, .wizard > .steps > ul > .end.current a:active {
+.nts-wizard > .steps > ul > .end.current a, .nts-wizard > .steps > ul > .end.current a:hover, .nts-wizard > .steps > ul > .end.current a:active {
   color: #fff;
   background: #4fce3a;
   box-shadow: 0 0 0 1px #fff inset;
 }
 /* line 161, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li > .nts-steps-middle {
+.nts-wizard > .steps > ul > li > .nts-steps-middle {
   height: 100%;
   float: left;
   width: -webkit-calc(35% - 33px);
@@ -1056,7 +1056,7 @@ button.nts-switch-button.selected:hover {
   position: absolute;
 }
 /* line 170, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li > .nts-steps-middle > .nts-vertical-line {
+.nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-vertical-line {
   background-color: #4D4D4D;
   width: 5px;
   border-right: 2px solid white;
@@ -1064,7 +1064,7 @@ button.nts-switch-button.selected:hover {
   border-left: 2px solid white;
 }
 /* line 177, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > .nts-point {
+.nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > .nts-point {
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -1076,7 +1076,7 @@ button.nts-switch-button.selected:hover {
   box-sizing: border-box;
 }
 /* line 188, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
+.nts-wizard > .steps > ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
   width: -webkit-calc(100% - 62px);
   width: -moz-calc(100% - 62px);
   width: calc(100% - 62px);
@@ -1086,24 +1086,24 @@ button.nts-switch-button.selected:hover {
   top: 7px;
 }
 /* line 197, ../sass/components/_wizard.scss */
-.wizard > .steps a > div {
+.nts-wizard > .steps a > div {
   padding: 1em 1em;
 }
 /* line 200, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li > .nts-steps-middle > div {
+.nts-wizard > .steps > ul > li > .nts-steps-middle > div {
   position: absolute;
 }
 /* line 203, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > div {
+.nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > div {
   position: absolute;
 }
 /* line 206, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge {
+.nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge {
   top: 35%;
   width: 100%;
 }
 /* line 210, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .end > .nts-steps {
+.nts-wizard > .steps > ul > .end > .nts-steps {
   width: 0px;
   height: 0px;
   border-left: 10px solid transparent;
@@ -1113,37 +1113,37 @@ button.nts-switch-button.selected:hover {
   left: 27px;
 }
 /* line 219, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .current > .nts-steps > .nts-bridge > .nts-point {
+.nts-wizard > .steps > ul > .current > .nts-steps > .nts-bridge > .nts-point {
   background: #4d4d4d;
   border: 3px solid #4d4d4d;
 }
 /* line 223, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .first {
+.nts-wizard > .steps > ul > .first {
   z-index: 1;
 }
 /* line 226, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > .begin.current > .nts-steps {
+.nts-wizard > .steps > ul > .begin.current > .nts-steps {
   border: 3px solid white;
 }
 /* line 231, ../sass/components/_wizard.scss */
-.wizard.vertical > .steps {
+.nts-wizard.vertical > .steps {
   float: left;
   width: 30%;
   background-color: #a0a0a0;
 }
 /* line 236, ../sass/components/_wizard.scss */
-.wizard.vertical > .steps > ul > li {
+.nts-wizard.vertical > .steps > ul > li {
   width: 100%;
   height: 100%;
   position: relative;
 }
 /* line 244, ../sass/components/_wizard.scss */
-.wizard > .steps > ul > li,
-.wizard > .actions > ul > li {
+.nts-wizard > .steps > ul > li,
+.nts-wizard > .actions > ul > li {
   float: left;
 }
 /* line 250, ../sass/components/_wizard.scss */
-.wizard > .content {
+.nts-wizard > .content {
   background: #eee;
   display: block;
   margin: 0.5em;
@@ -1156,14 +1156,14 @@ button.nts-switch-button.selected:hover {
   border-radius: 5px;
 }
 /* line 263, ../sass/components/_wizard.scss */
-.wizard.vertical > .content {
+.nts-wizard.vertical > .content {
   display: inline;
   float: left;
   margin: 0 2.5% 0.5em 2.5%;
   width: 65%;
 }
 /* line 270, ../sass/components/_wizard.scss */
-.wizard > .content > .body {
+.nts-wizard > .content > .body {
   float: left;
   position: absolute;
   width: 95%;
@@ -1171,76 +1171,76 @@ button.nts-switch-button.selected:hover {
   padding: 2.5%;
 }
 /* line 278, ../sass/components/_wizard.scss */
-.wizard > .content > .body ul {
+.nts-wizard > .content > .body ul {
   list-style: disc !important;
 }
 /* line 282, ../sass/components/_wizard.scss */
-.wizard > .content > .body ul > li {
+.nts-wizard > .content > .body ul > li {
   display: list-item;
 }
 /* line 286, ../sass/components/_wizard.scss */
-.wizard > .content > .body > iframe {
+.nts-wizard > .content > .body > iframe {
   border: 0 none;
   width: 100%;
   height: 100%;
 }
 /* line 292, ../sass/components/_wizard.scss */
-.wizard > .content > .body input {
+.nts-wizard > .content > .body input {
   display: block;
   border: 1px solid #ccc;
 }
 /* line 297, ../sass/components/_wizard.scss */
-.wizard > .content > .body input[type="checkbox"] {
+.nts-wizard > .content > .body input[type="checkbox"] {
   display: inline-block;
 }
 /* line 301, ../sass/components/_wizard.scss */
-.wizard > .content > .body input.error {
+.nts-wizard > .content > .body input.error {
   background: #fbe3e4;
   border: 1px solid #fbc2c4;
   color: #8a1f11;
 }
 /* line 307, ../sass/components/_wizard.scss */
-.wizard > .content > .body label {
+.nts-wizard > .content > .body label {
   display: inline-block;
   margin-bottom: 0.5em;
 }
 /* line 312, ../sass/components/_wizard.scss */
-.wizard > .content > .body label.error {
+.nts-wizard > .content > .body label.error {
   color: #8a1f11;
   display: inline-block;
   margin-left: 1.5em;
 }
 /* line 318, ../sass/components/_wizard.scss */
-.wizard > .actions {
+.nts-wizard > .actions {
   position: relative;
   display: block;
   text-align: right;
   width: 100%;
 }
 /* line 325, ../sass/components/_wizard.scss */
-.wizard.vertical > .actions {
+.nts-wizard.vertical > .actions {
   display: inline;
   float: right;
   margin: 0 2.5%;
   width: 95%;
 }
 /* line 332, ../sass/components/_wizard.scss */
-.wizard > .actions > ul {
+.nts-wizard > .actions > ul {
   display: inline-block;
   text-align: right;
 }
 /* line 337, ../sass/components/_wizard.scss */
-.wizard > .actions > ul > li {
+.nts-wizard > .actions > ul > li {
   margin: 0 0.5em;
 }
 /* line 341, ../sass/components/_wizard.scss */
-.wizard.vertical > .actions > ul > li {
+.nts-wizard.vertical > .actions > ul > li {
   margin: 0 0 0 1em;
 }
 /* line 345, ../sass/components/_wizard.scss */
-.wizard > .actions a,
-.wizard > .actions a:hover,
-.wizard > .actions a:active {
+.nts-wizard > .actions a,
+.nts-wizard > .actions a:hover,
+.nts-wizard > .actions a:active {
   background: #E2F79F;
   color: #fff;
   display: block;
@@ -1251,9 +1251,368 @@ button.nts-switch-button.selected:hover {
   border-radius: 5px;
 }
 /* line 359, ../sass/components/_wizard.scss */
-.wizard > .actions .disabled a,
-.wizard > .actions .disabled a:hover,
-.wizard > .actions .disabled a:active {
+.nts-wizard > .actions .disabled a,
+.nts-wizard > .actions .disabled a:hover,
+.nts-wizard > .actions .disabled a:active {
+  background: #eee;
+  color: #aaa;
+}
+
+/* line 15, ../sass/components/_wizard2.scss */
+.nts-wizard-blue {
+  display: block;
+  width: 1000px;
+  overflow: hidden;
+  /* Accessibility */
+}
+/* line 20, ../sass/components/_wizard2.scss */
+.nts-wizard-blue a {
+  outline: 0;
+}
+/* line 24, ../sass/components/_wizard2.scss */
+.nts-wizard-blue ul {
+  list-style: none !important;
+  padding: 0;
+  margin: 5px;
+}
+/* line 30, ../sass/components/_wizard2.scss */
+.nts-wizard-blue ul > li {
+  display: block;
+  padding: 0;
+}
+/* line 36, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps .current-info {
+  position: absolute;
+  left: -999em;
+}
+/* line 41, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .title {
+  position: absolute;
+  left: -999em;
+}
+
+/*
+    Wizard
+*/
+/* line 52, ../sass/components/_wizard2.scss */
+.nts-wizard-blue .header {
+  margin: 5px 5px 5px 8px;
+}
+/* line 55, ../sass/components/_wizard2.scss */
+.nts-wizard-blue .header .image {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-size: 60px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  z-index: 3;
+}
+/* line 65, ../sass/components/_wizard2.scss */
+.nts-wizard-blue .header .content {
+  display: block;
+  margin: 8px 0 5px 0;
+  text-decoration: none;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+  float: right;
+  width: calc(100% - 50px);
+  min-height: 50px;
+  word-wrap: break-word;
+  background: #ABEBF5;
+  cursor: default;
+  padding: 1em 1em 1em 3em;
+  box-sizing: border-box;
+}
+/* line 81, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+/* line 86, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps .number {
+  font-size: 1.429em;
+}
+/* line 88, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li {
+  width: 25%;
+}
+/* line 90, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps a,
+.nts-wizard-blue > .steps a:hover,
+.nts-wizard-blue > .steps a:active {
+  display: block;
+  margin: 5px 0 5px 0;
+  text-decoration: none;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  border-radius: 5px;
+  color: #fff;
+  float: right;
+  width: 75%;
+  min-height: 50px;
+  word-wrap: break-word;
+  cursor: default;
+}
+/* line 105, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps .disabled a,
+.nts-wizard-blue > .steps .disabled a:hover,
+.nts-wizard-blue > .steps .disabled a:active {
+  color: #fff;
+}
+/* line 111, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps .current a,
+.nts-wizard-blue > .steps .current a:hover,
+.nts-wizard-blue > .steps .current a:active {
+  color: #000;
+  background: #fff;
+}
+/* line 118, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps .begin a div {
+  margin-left: 20px;
+}
+/* line 134, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .nts-steps {
+  float: left;
+}
+/* line 138, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .end > a, .nts-wizard-blue > .steps > ul > .end > a:hover, .nts-wizard-blue > .steps > ul > .end > a:active {
+  display: table;
+  background-color: #ABEBF5;
+  color: #000;
+  width: 80%;
+  font-size: 1.8em;
+  margin-top: 10px;
+  text-align: center;
+  width: calc(100% - 25px);
+  width: -webkit-calc(100% - 25px);
+  width: -moz-calc(100% - 25px);
+}
+/* line 150, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .end > a > div, .nts-wizard-blue > .steps > ul > .end > a:hover > div, .nts-wizard-blue > .steps > ul > .end > a:active > div {
+  display: table-cell;
+  padding: 0;
+  vertical-align: middle;
+}
+/* line 152, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .end.current a, .nts-wizard-blue > .steps > ul > .end.current a:hover, .nts-wizard-blue > .steps > ul > .end.current a:active {
+  color: #fff;
+  background: #08ACEE;
+  box-shadow: 0 0 0 1px #fff inset;
+}
+/* line 161, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li > .nts-steps-middle {
+  height: 100%;
+  float: left;
+  width: -webkit-calc(35% - 33px);
+  width: -moz-calc(35% - 33px);
+  width: calc(35% - 33px);
+  padding-left: 33px;
+  position: absolute;
+}
+/* line 170, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li > .nts-steps-middle > .nts-vertical-line {
+  background-color: #4D4D4D;
+  width: 5px;
+  border-right: 2px solid white;
+  height: 100%;
+  border-left: 2px solid white;
+}
+/* line 177, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li > .nts-steps-middle > .nts-bridge > .nts-point {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  z-index: 2;
+  background: white;
+  border: 3px solid #4d4d4d;
+  box-shadow: 0 0 0 3px #fff;
+  left: -5px;
+  box-sizing: border-box;
+}
+/* line 188, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
+  width: -webkit-calc(100% - 62px);
+  width: -moz-calc(100% - 62px);
+  width: calc(100% - 62px);
+  height: 5px;
+  background-color: white;
+  z-index: 1;
+  top: 7px;
+}
+/* line 197, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps a > div {
+  padding: 1em 1em;
+}
+/* line 200, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li > .nts-steps-middle > div {
+  position: absolute;
+}
+/* line 203, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li > .nts-steps-middle > .nts-bridge > div {
+  position: absolute;
+}
+/* line 206, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li > .nts-steps-middle > .nts-bridge {
+  top: 35%;
+  width: 100%;
+}
+/* line 210, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .end > .nts-steps {
+  width: 0px;
+  height: 0px;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #08ACEE;
+  position: absolute;
+  left: 27px;
+}
+/* line 219, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .current > .nts-steps > .nts-bridge > .nts-point {
+  background: #4d4d4d;
+  border: 3px solid #4d4d4d;
+}
+/* line 223, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .first {
+  z-index: 1;
+}
+/* line 226, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > .begin.current > .nts-steps {
+  border: 3px solid white;
+}
+/* line 231, ../sass/components/_wizard2.scss */
+.nts-wizard-blue.vertical > .steps {
+  float: left;
+  width: 30%;
+  background-color: #a0a0a0;
+}
+/* line 236, ../sass/components/_wizard2.scss */
+.nts-wizard-blue.vertical > .steps > ul > li {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+/* line 244, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .steps > ul > li,
+.nts-wizard-blue > .actions > ul > li {
+  float: left;
+}
+/* line 250, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content {
+  background: #eee;
+  display: block;
+  margin: 0.5em;
+  min-height: 35em;
+  overflow: hidden;
+  position: relative;
+  width: auto;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 263, ../sass/components/_wizard2.scss */
+.nts-wizard-blue.vertical > .content {
+  display: inline;
+  float: left;
+  margin: 0 2.5% 0.5em 2.5%;
+  width: 65%;
+}
+/* line 270, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body {
+  float: left;
+  position: absolute;
+  width: 95%;
+  height: 95%;
+  padding: 2.5%;
+}
+/* line 278, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body ul {
+  list-style: disc !important;
+}
+/* line 282, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body ul > li {
+  display: list-item;
+}
+/* line 286, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body > iframe {
+  border: 0 none;
+  width: 100%;
+  height: 100%;
+}
+/* line 292, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body input {
+  display: block;
+  border: 1px solid #ccc;
+}
+/* line 297, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body input[type="checkbox"] {
+  display: inline-block;
+}
+/* line 301, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body input.error {
+  background: #fbe3e4;
+  border: 1px solid #fbc2c4;
+  color: #8a1f11;
+}
+/* line 307, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body label {
+  display: inline-block;
+  margin-bottom: 0.5em;
+}
+/* line 312, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .content > .body label.error {
+  color: #8a1f11;
+  display: inline-block;
+  margin-left: 1.5em;
+}
+/* line 318, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .actions {
+  position: relative;
+  display: block;
+  text-align: right;
+  width: 100%;
+}
+/* line 325, ../sass/components/_wizard2.scss */
+.nts-wizard-blue.vertical > .actions {
+  display: inline;
+  float: right;
+  margin: 0 2.5%;
+  width: 95%;
+}
+/* line 332, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .actions > ul {
+  display: inline-block;
+  text-align: right;
+}
+/* line 337, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .actions > ul > li {
+  margin: 0 0.5em;
+}
+/* line 341, ../sass/components/_wizard2.scss */
+.nts-wizard-blue.vertical > .actions > ul > li {
+  margin: 0 0 0 1em;
+}
+/* line 345, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .actions a,
+.nts-wizard-blue > .actions a:hover,
+.nts-wizard-blue > .actions a:active {
+  background: #ABEBF5;
+  color: #fff;
+  display: block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 359, ../sass/components/_wizard2.scss */
+.nts-wizard-blue > .actions .disabled a,
+.nts-wizard-blue > .actions .disabled a:hover,
+.nts-wizard-blue > .actions .disabled a:active {
   background: #eee;
   color: #aaa;
 }
@@ -1261,21 +1620,21 @@ button.nts-switch-button.selected:hover {
 /*
     Tabcontrol
 */
-/* line 377, ../sass/components/_wizard.scss */
-.tabcontrol > .steps {
+/* line 377, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps {
   position: relative;
   display: block;
   width: 100%;
 }
-/* line 383, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul {
+/* line 383, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul {
   position: relative;
   margin: 6px 0 0 0;
   top: 1px;
   z-index: 1;
 }
-/* line 390, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul > li {
+/* line 390, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul > li {
   float: left;
   margin: 5px 2px 0 0;
   padding: 1px;
@@ -1286,22 +1645,22 @@ button.nts-switch-button.selected:hover {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
-/* line 403, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul > li:hover {
+/* line 403, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul > li:hover {
   background: #edecec;
   border: 1px solid #bbb;
   padding: 0;
 }
-/* line 409, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul > li.current {
+/* line 409, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul > li.current {
   background: #fff;
   border: 1px solid #bbb;
   border-bottom: 0 none;
   padding: 0 0 1px 0;
   margin-top: 0;
 }
-/* line 417, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul > li > a {
+/* line 417, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul > li > a {
   color: #5f5f5f;
   display: inline-block;
   border: 0 none;
@@ -1309,16 +1668,16 @@ button.nts-switch-button.selected:hover {
   padding: 10px 30px;
   text-decoration: none;
 }
-/* line 426, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul > li > a:hover {
+/* line 426, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul > li > a:hover {
   text-decoration: none;
 }
-/* line 430, ../sass/components/_wizard.scss */
-.tabcontrol > .steps > ul > li.current > a {
+/* line 430, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .steps > ul > li.current > a {
   padding: 15px 30px 10px 30px;
 }
-/* line 434, ../sass/components/_wizard.scss */
-.tabcontrol > .content {
+/* line 434, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .content {
   position: relative;
   display: inline-block;
   width: 100%;
@@ -1327,20 +1686,20 @@ button.nts-switch-button.selected:hover {
   border-top: 1px solid #bbb;
   padding-top: 20px;
 }
-/* line 444, ../sass/components/_wizard.scss */
-.tabcontrol > .content > .body {
+/* line 444, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .content > .body {
   float: left;
   position: absolute;
   width: 95%;
   height: 95%;
   padding: 2.5%;
 }
-/* line 452, ../sass/components/_wizard.scss */
-.tabcontrol > .content > .body ul {
+/* line 452, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .content > .body ul {
   list-style: disc !important;
 }
-/* line 456, ../sass/components/_wizard.scss */
-.tabcontrol > .content > .body ul > li {
+/* line 456, ../sass/components/_wizard2.scss */
+.tabcontrol2 > .content > .body ul > li {
   display: list-item;
 }
 
@@ -1364,7 +1723,7 @@ button.nts-switch-button.selected:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: '￥';
+  content: 'üÅ';
   left: 0;
   top: 0;
   text-align: left;
@@ -1394,7 +1753,7 @@ button.nts-switch-button.selected:hover {
   padding: 10px;
 }
 
-/* line 19, ../sass/base.scss */
+/* line 20, ../sass/base.scss */
 body {
   font-size: 14px;
   font-family: "Meiryo UI";
