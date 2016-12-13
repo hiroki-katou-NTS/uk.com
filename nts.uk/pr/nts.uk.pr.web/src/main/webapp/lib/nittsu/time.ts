@@ -187,7 +187,7 @@
         hour: number;
         minute: number;
         msg: string;
-        constructor(success, hour?, minute?, msg?) {
+        constructor(success, msg?, hour?, minute?) {
             super(success);
             this.hour = hour;
             this.minute = minute;
@@ -222,14 +222,15 @@
             timeOfDay = timeOfDay.toString();
         }
         timeOfDay = timeOfDay.replace(":","");
-        var checkNum = timeOfDay.replaceAll("[0-9]","");
+        var checkNum = timeOfDay.replace(/[0-9]/g,"");
         var stringLength = timeOfDay.length;
-        if(stringLength < 3 || stringLength > 4) return ResultParseTimeOfTheDay.failed("invalid time of the day format");
         if(checkNum.length > 0) return ResultParseTimeOfTheDay.failed("time of the day accept digits and ':' only");
-        var hour = parseInt(checkNum.substring(0,stringLength-2));
-        var minute = parseInt(checkNum.substring(stringLength-2));
-        if(hour < 0 || hour > 23) return ResultParseTimeOfTheDay.failed("invalid hour");
-        if(minute < 0 || minute > 59) return ResultParseTimeOfTheDay.failed("invalid minute");
+        if(stringLength < 3 || stringLength > 4) return ResultParseTimeOfTheDay.failed("invalid time of the day format");
+        var hour = parseInt(timeOfDay.substring(0,stringLength-2));
+        var minute = parseInt(timeOfDay.substring(stringLength-2));
+        //console.log(checkNum.substring(0,stringLength-2));
+        if(hour < 0 || hour > 23) return ResultParseTimeOfTheDay.failed("invalid: hour must in range 0-23");
+        if(minute < 0 || minute > 59) return ResultParseTimeOfTheDay.failed("invalid: minute must in range 0-59");
         return ResultParseTimeOfTheDay.succeeded(hour,minute);
      }
      
@@ -238,7 +239,7 @@
         month: number;
         date: number;
         msg: string;
-        constructor(success, year?, month?, date?, msg?) {
+        constructor(success, msg?, year?, month?, date?) {
             super(success);
             this.year = year;
             this.month = month;
@@ -276,13 +277,43 @@
         if(!(yearMonthDate instanceof String)){
             yearMonthDate = yearMonthDate.toString();
         }
-        yearMonthDate = yearMonthDate.replaceAll("/","");
-        if(yearMonthDate.length != 8) return ResultParseYearMonthDate.failed("full date format must be yyyy/mm/dd or yyyymmdd");
-        var checkNum = yearMonthDate.replaceAll("[0-9]","");
-        if(checkNum.length === 0) return ResultParseYearMonthDate.failed("full date must contain digits and slashes only"); 
+        yearMonthDate = yearMonthDate.replace("/","");
+        yearMonthDate = yearMonthDate.replace("/","");
+        var checkNum = yearMonthDate.replace(/[0-9]/g,"");
+        if(checkNum.length !== 0) return ResultParseYearMonthDate.failed("full date must contain digits and slashes only"); 
+        if(yearMonthDate.length != 8) return ResultParseYearMonthDate.failed("full date format must be yyyy/mm/dd or yyyymmdd");   
         var year = parseInt(yearMonthDate.substring(0,4));
+        if(year < 1900 || year > 9999) {
+            return ResultParseYearMonthDate.failed("invalid: year must in range 1900-9999"); 
+        }
         var month = parseInt(yearMonthDate.substring(4,6));
+        if(month < 1 || month > 12) return ResultParseYearMonthDate.failed("invalid: month must in range 1-12");
         var date = parseInt(yearMonthDate.substring(6));
+        var maxDate = 30;
+        switch(month) {
+            case 2:           
+                if(year % 400 == 0) {
+                    maxDate = 29;
+                } else if(year % 4 == 0 && year % 25 != 0) {
+                    maxDate = 29;
+                } else {
+                   maxDate = 28; 
+                }
+            break;
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                maxDate = 31;
+                break;
+            default:
+                maxDate = 30;
+                break;
+        }
+        if(date < 1 || date > maxDate) return ResultParseYearMonthDate.failed("invalid: month = " + month + ", so your date must in range 1-" + maxDate);
         return ResultParseYearMonthDate.succeeded(year,month,date);
     } 
     /**
