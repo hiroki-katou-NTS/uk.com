@@ -194,7 +194,7 @@
             this.msg = msg || "time of the days must in format hh:mm with hour in range 0-23; minute in range 00-59";
         }
         static succeeded(hour,minute) {
-            return new ResultParseTimeOfTheDay(true,hour,minute);
+            return new ResultParseTimeOfTheDay(true,"",hour,minute);
         }
         static failed(msg?) {
             return new ResultParseTimeOfTheDay(false,msg);

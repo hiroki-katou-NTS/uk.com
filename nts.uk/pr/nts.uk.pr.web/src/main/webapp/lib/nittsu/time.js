@@ -177,7 +177,7 @@ var nts;
                     this.msg = msg || "time of the days must in format hh:mm with hour in range 0-23; minute in range 00-59";
                 }
                 ResultParseTimeOfTheDay.succeeded = function (hour, minute) {
-                    return new ResultParseTimeOfTheDay(true, hour, minute);
+                    return new ResultParseTimeOfTheDay(true, "", hour, minute);
                 };
                 ResultParseTimeOfTheDay.failed = function (msg) {
                     return new ResultParseTimeOfTheDay(false, msg);
