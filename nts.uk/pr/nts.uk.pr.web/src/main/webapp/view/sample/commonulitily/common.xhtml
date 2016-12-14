@@ -22,13 +22,16 @@
 					<div id="content" class="cf">
 						<h1>Common ulitily </h1>
 						<h2>These function are often used but it is uncategorized.</h2>
-						<h3>alwaysTrue</h3>
-						<p>Always return true.</p>
+						<div class="feature-box">
+						<div class="header"><h3>alwaysTrue</h3></div>
+							<div class="content"><p>Always return true.</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.alwaysTrue()
-Result: true]]></pre>
-						<h3>isNullOrUndefined</h3>
-						<p>Check value inputed is null or undefined.</p>
+Result: true]]></pre></div>
+						</div>
+						<div class="feature-box">
+						<div class="header"><h3>isNullOrUndefined</h3></div>
+						<div class="content"><p>Check value inputed is null or undefined.</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.isNullOrUndefined(null)
 Result: true
@@ -37,47 +40,44 @@ Result: true
 nts.uk.util.isNullOrUndefined()
 Result: true
 nts.uk.util.isNullOrUndefined("test")
-Result: false]]></pre>
-						<h3>randomId</h3>
-						<p>Get a randomId with format 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'</p>
+Result: false]]></pre></div></div><div class="feature-box">
+						<div class="header">
+						<h3>randomId</h3></div>
+						<div class="content"><p>Get a randomId with format 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.randomId();
-Result: "dba9167f-3d21-4613-9d48-f9a11f9cc37a"]]></pre>
-						<h3>isInFrame</h3>
+Result: "dba9167f-3d21-4613-9d48-f9a11f9cc37a"]]></pre></div></div><div class="feature-box">
+						<div class="header">
+						<h3>isInFrame</h3></div><div class="content">
 						<p>check is in dialog</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.isInFrame();
-Result: true]]></pre>
-						<h3>orDefault</h3>
+Result: true]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>orDefault</h3></div><div class="content">
 						<p>If target value is null or undefined, return default inputed</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.orDefault(null, "default");
 Result: "default"
 nts.uk.util.orDefault("tested", "default");
-Result: "tested"]]></pre>
-						<h3>isIn</h3>
+Result: "tested"]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>isIn</h3></div><div class="content">
 						<p>check if a value is existed in a array</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.isIn(1, [1,2,3]);
 Result: true
 nts.uk.util.isIn(4, [1,2,3]);
-Result: false]]></pre>
-						<h3>optional</h3>
+Result: false]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>optional</h3></div><div class="content">
 						<p>This is a module that have functions similar with Optional of Java</p>
 						<pre><![CDATA[//Try to paste this to console
 var d = nts.uk.util.optional.empty();
 d.isPresent();
-Result: false]]></pre>
-						<h3>isInFrame</h3>
+Result: false]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>isInFrame</h3></div><div class="content">
 						<p>check is in dialog</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.isInFrame();
-Result: true]]></pre>
-						<h3>isInFrame</h3>
-						<p>check is in dialog</p>
-						<pre><![CDATA[//Try to paste this to console
-nts.uk.util.isInFrame();
-Result: true]]></pre>
+Result: true]]></pre></div></div>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>
