@@ -45,6 +45,25 @@ var nts;
                             this.$dialog.dialog('option', { title: newTitle });
                         }
                     };
+                    ScreenWindow.prototype.setHeight = function (height) {
+                        this.$dialog.dialog('option', {
+                            height: height || this.globalContext.dialogSize.height
+                        });
+                        this.$dialog.resize();
+                    };
+                    ScreenWindow.prototype.setWidth = function (width) {
+                        this.$dialog.dialog('option', {
+                            width: width || this.globalContext.dialogSize.width
+                        });
+                        this.$dialog.resize();
+                    };
+                    ScreenWindow.prototype.setSize = function (options) {
+                        this.$dialog.dialog('option', {
+                            width: options.width || this.globalContext.dialogSize.width,
+                            height: options.height || this.globalContext.dialogSize.height
+                        });
+                        this.$dialog.resize();
+                    };
                     ScreenWindow.prototype.setupAsDialog = function (path, options) {
                         var _this = this;
                         options.close = function () {
