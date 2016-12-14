@@ -702,7 +702,8 @@ module nts.uk.ui.koExtentions {
             
             var checkBoxLabel = $("<label></label>");
             var checkBox = $('<input type="checkbox">').on("change", function(){
-                setChecked($(this).is(":checked"));
+                if(typeof setChecked === "function")
+                    setChecked($(this).is(":checked"));
             }).appendTo(checkBoxLabel);
             var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
             var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);

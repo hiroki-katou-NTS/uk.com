@@ -9,6 +9,7 @@ $(function(){
 	    });
 	    
 	    $("#content").css("min-height", $("#side-menu").outerHeight());
+	    $("#side-menu").css("min-height", $("#content").outerHeight());
 	    
 	    // Auto bind prev/next button
 	    $(".previous").each(function(){
