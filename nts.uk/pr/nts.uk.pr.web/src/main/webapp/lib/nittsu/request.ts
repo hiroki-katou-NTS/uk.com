@@ -157,7 +157,7 @@
         return dfd.promise();
     }
     
-    export function jump(path: string, data: any) {
+    export function jump(path: string, data?: any) {
         
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
        
