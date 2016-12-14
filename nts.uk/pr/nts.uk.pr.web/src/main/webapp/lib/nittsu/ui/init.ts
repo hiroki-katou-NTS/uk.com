@@ -34,7 +34,10 @@ module nts.uk.ui {
             
             _viewModel = {
                 content: contentViewModel,
-                kiban: kiban
+                kiban: kiban,
+                errors: {
+                    isEmpty: ko.computed(() => !kiban.errorDialogViewModel.occurs())
+                }
             };
             
             kiban.title(__viewContext.title || 'THIS IS TITLE');

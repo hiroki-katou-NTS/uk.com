@@ -45,6 +45,31 @@ var nts;
                             this.$dialog.dialog('option', { title: newTitle });
                         }
                     };
+                    ScreenWindow.prototype.setHeight = function (height) {
+                        if (!isNaN(height)) {
+                            this.$dialog.dialog('option', {
+                                height: height
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setWidth = function (width) {
+                        if (!isNaN(width)) {
+                            this.$dialog.dialog('option', {
+                                width: width
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
+                    ScreenWindow.prototype.setSize = function (height, width) {
+                        if (!isNaN(width) && !isNaN(height)) {
+                            this.$dialog.dialog('option', {
+                                width: width,
+                                height: height
+                            });
+                            this.$dialog.resize();
+                        }
+                    };
                     ScreenWindow.prototype.setupAsDialog = function (path, options) {
                         var _this = this;
                         options.close = function () {

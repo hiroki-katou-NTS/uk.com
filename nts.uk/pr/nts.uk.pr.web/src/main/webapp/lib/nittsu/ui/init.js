@@ -27,7 +27,10 @@ var nts;
                     var kiban = new KibanViewModel();
                     ui._viewModel = {
                         content: contentViewModel,
-                        kiban: kiban
+                        kiban: kiban,
+                        errors: {
+                            isEmpty: ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); })
+                        }
                     };
                     kiban.title(__viewContext.title || 'THIS IS TITLE');
                     ui.viewModelBuilt.fire(ui._viewModel);
