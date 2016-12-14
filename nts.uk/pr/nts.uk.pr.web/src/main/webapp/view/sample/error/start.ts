@@ -7,7 +7,7 @@ __viewContext.ready(function () {
             var self = this;
             // TextEditor
             self.texteditor = {
-                value: ko.observable('123a'),
+                value: ko.observable('123'),
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()),
                 enable: ko.observable(true),

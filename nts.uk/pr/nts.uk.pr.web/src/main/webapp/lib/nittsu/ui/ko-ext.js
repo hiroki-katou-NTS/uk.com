@@ -747,7 +747,7 @@ var nts;
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = data.value;
-                        var enable = data.enable;
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container
                         var container = $(element);
                         // CheckedValue
@@ -768,7 +768,7 @@ var nts;
                                     var _this = this;
                                     var self = this;
                                     if ($(self).is(":checked")) {
-                                        if (optionValue !== undefined && option[optionValue]) {
+                                        if (optionValue !== undefined) {
                                             selectedValue.push($(self).data("value")[optionValue]);
                                         }
                                         else {
@@ -776,23 +776,22 @@ var nts;
                                         }
                                     }
                                     else {
-                                        if (optionValue !== undefined && option[optionValue]) {
+                                        if (optionValue !== undefined)
                                             selectedValue.remove(_.find(selectedValue(), function (value) { return value == $(_this).data("value")[optionValue]; }));
-                                        }
-                                        else {
+                                        else
                                             selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
-                                        }
                                     }
                                 }).appendTo(checkBoxLabel);
+                                // Checked
                                 checkBox.prop("checked", function () {
                                     var _this = this;
-                                    if (optionValue !== undefined && option[optionValue]) {
+                                    if (optionValue !== undefined)
                                         return (_.find(selectedValue(), function (value) { return value == $(_this).data("value")[optionValue]; }) !== undefined);
-                                    }
-                                    else {
+                                    else
                                         return (_.find(selectedValue(), $(this).data("value")) !== undefined);
-                                    }
                                 });
+                                // Disable
+                                (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                                 var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
