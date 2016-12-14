@@ -743,14 +743,23 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             var data = valueAccessor();
-            var options = ko.unwrap(data.options);
-            var optionValue = ko.unwrap(data.optionsValue);
-            var optionText = ko.unwrap(data.optionsText);
-            var selectedValue = data.value;
+            var options: any = ko.unwrap(data.options);
+            var optionValue: string = ko.unwrap(data.optionsValue);
+            var optionText: string = ko.unwrap(data.optionsText);
+            var selectedValue: any = data.value;
             var enable: boolean = data.enable;
             
             // Container
             var container = $(element);
+            
+            // CheckedValue
+            var getOptionValue = (item) => {
+                if (optionValue === undefined) {
+                    return item;
+                } else {
+                    return item[optionValue];
+                }
+            };
             
             if(container.data("options") !== options) {
                 // Render
@@ -760,14 +769,29 @@ module nts.uk.ui.koExtentions {
                     var checkBox = $('<input type="checkbox">').data("value", option).on("change", function(){
                         var self = this;
                         if($(self).is(":checked")) {
-                            selectedValue.push($(self).data("value"));
+                            if(optionValue !== undefined && option[optionValue]) {
+                                selectedValue.push($(self).data("value")[optionValue]);
+                            }
+                            else {
+                                selectedValue.push($(self).data("value"));
+                            }
                         }
                         else {
-                            selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
+                            if(optionValue !== undefined && option[optionValue]) {
+                                selectedValue.remove(_.find(selectedValue(), (value) => {return value == $(this).data("value")[optionValue]}));
+                            }
+                            else {
+                                selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
+                            }
                         }
                     }).appendTo(checkBoxLabel);
                     checkBox.prop("checked", function(){
-                        return (_.find(selectedValue(), $(this).data("value")) !== undefined);
+                        if(optionValue !== undefined && option[optionValue]) {
+                            return (_.find(selectedValue(), (value) => {return value == $(this).data("value")[optionValue]}) !== undefined);
+                        }
+                        else {
+                            return (_.find(selectedValue(), $(this).data("value")) !== undefined);
+                        }
                     }); 
                     var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
