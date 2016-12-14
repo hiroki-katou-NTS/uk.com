@@ -3,6 +3,7 @@ __viewContext.ready(function () {
         itemList: KnockoutObservableArray<any>;
         selectedValues: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservableArray<number>;
+        enable: KnockoutObservable<boolean>;
         count: any = 4;
         
         constructor() {
@@ -17,6 +18,7 @@ __viewContext.ready(function () {
                 new BoxModel(3, 'box 3')
             ]);
             self.selectedIds = ko.observableArray([1,2]);
+            self.enable = ko.observable(true);
         }
         
         addBoxes() {
