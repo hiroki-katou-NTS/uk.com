@@ -13,6 +13,7 @@
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
             </ui:define>
             
             <ui:define name="content">
@@ -21,13 +22,36 @@
 					<div id="content" class="cf">
 						<h1>Number ulitily </h1>
 						<h2>In this module have functions for work with number in javascript. Below is main functions of it.</h2>
-						<h3>isNumber</h3>
-						<p>This function will check a value is number? Default check integer, you can set check float. And pass option is NumberEditorOption</p>
+						<div class="feature-box"><div class="header"><h3>isNumber</h3></div><div class="content">
+						<p>This function will check a value is number? Default check integer, you can set check float. And pass option is NumberEditorOption. To use Option, please import /lib/nittsu/ui/textbox-options.js</p>
 						<pre><![CDATA[//Try to paste this to console
-nts.uk.ntsNumber.isNumber("abc123");
-Result: 6
-nts.uk.ntsNumber.isNumber("abc123感じ");
-Result: 10]]></pre>
+nts.uk.ntsNumber.isNumber("abc123", true);
+Result: false
+nts.uk.ntsNumber.isNumber("123.222", true);
+Result: true
+nts.uk.ntsNumber.isNumber("123", true);
+Result: true
+nts.uk.ntsNumber.isNumber("123.222", false);
+Result: false
+nts.uk.ntsNumber.isNumber("123", false);
+Result: true
+nts.uk.ntsNumber.isNumber("123,123.22", true, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}))
+Result: true]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>trunc</h3></div><div class="content">
+						<p>get integer part of decimal number</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.ntsNumber.trunc(123.1243);
+Result: 123]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>getDecimal</h3></div><div class="content">
+						<p>get decimal with number scale</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.ntsNumber.getDecimal(123.1243, 2);
+Result: 123.12]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>formatNumber</h3></div><div class="content">
+						<p>format a number with NumberEditorOption</p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.ntsNumber.formatNumber("123123.22222", new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 2}));
+Result: 123,123.22]]></pre></div></div>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>

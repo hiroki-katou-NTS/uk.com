@@ -91,6 +91,9 @@ var qmm019;
                             self.createlayout().checkCopy = false;
                         }
                         else {
+                            if (self.layouts().length === 0) {
+                                return false;
+                            }
                             //印字行数　＞　最大印字行数　の場合
                             //メッセージ( ER030 )を表示する
                             self.createlayout().checkCopy = true;

@@ -10,47 +10,47 @@
         <ui:composition template="../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<style>
+					.ntsRadioBox{width:100px;}
+				</style>
             </ui:define>
             
             <ui:define name="content">
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>ListBox </h1>
+						<h1>RadioBoxGroup</h1>
 						<h2>Overview</h2>
-						<div>
-							<input data-bind="value: itemName"></input>
-							<button data-bind="click: addOptions">Add Item</button>
-						</div>
-						<br />
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
-											optionsValue: 'code',
+						<button data-bind="click: addBoxes">Add Box</button>
+						<button data-bind="click: removeBoxes">Remove Box</button>
+						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
+						<br/><br/>
+						<h3>Selected Values as objects</h3>
+						<div data-bind="ntsRadioBoxGroup: {options: itemList,
 											optionsText: 'name',
-											multiple: true,
-											value: selectedCodes,
-											enable: isEnable(),
-											rows: 3,
-											required: isRequired,
-											columns: [
-												{ prop: 'code', length: 4 },
-												{ prop: 'name', length: 10 },
-												{ prop: 'description', length: 10 }
-											]}"
-							class="cf"></div>
-						<button data-bind="click: remove">Remove Item</button>
-						<button data-bind="click: selectAll">Select All</button>
-						<button data-bind="click: deselectAll">Deselect All</button>
-						<br />
-						<!-- Multiple is false -->
-						<span data-bind="text: selectedCode()"></span>
-						<!-- Multiple is true -->
-						<span data-bind="text: selectedCodes()"></span> <br />
-						<span data-bind="text: 'Selected: ' + selectedCodes().length"></span> <br />
-						<label class="status"> <input type="checkbox" data-bind="checked: isEnable" />Enable</label>
+											value: selectedValue,
+											enable: enable}"></div>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedValue)"></div>
+						<br/>
+						<h3>Selected Values as value</h3>
+						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedId)"></div>
+						<br/>
+						<h3>Item list:</h3>
+						<div data-bind="text: ko.toJSON(itemList)"></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -58,10 +58,8 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-
 								</div>
 							</div>
 						</article>

@@ -428,7 +428,10 @@ module qmm019.f.viewmodel {
             var itemSelected = self.listBox().itemDtoSelected();
             var sumScopeAtr = null;
             var commuteAtr = null;
-            var calculationMethod = null;
+            var calculationMethod = 0;
+            if(itemSelected().itemCode() === 'F309'){
+                calculationMethod = 9;    
+            }
             var distributeSet = null;
             var distributeWay = null;
             var personalWageCode = '';

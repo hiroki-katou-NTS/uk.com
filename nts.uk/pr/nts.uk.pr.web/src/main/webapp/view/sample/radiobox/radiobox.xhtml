@@ -26,14 +26,35 @@
 						<h1>RadioBox</h1>
 						<h2>Overview</h2>
 						<div data-bind="foreach: items">
-							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: $data, checked: $parent.selectedValue, enable: $parent.enable" />
-								<span class="box"></span><span data-bind="text: text"></span>
-							</label><br/>
+							<div class="ntsControl ntsRadioBox">
+								<label>
+									<input type="radio" name="textRadio" data-bind="checkedValue: value, checked: $parent.selectedValue, enable: $parent.enable" />
+									<span class="box"></span><span class="label" data-bind="text: text"></span>
+								</label>
+							</div>
+						</div>
+						<div class="cf" style="background:#00B050; padding:10px 5px; margin: 10px 0;">
+							<div class="ntsControl ntsRadioBox outline">
+								<label>
+									<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValue, enable: enable" />
+									<span class="box"></span><span class="label" data-bind="text: 'four'"></span>
+								</label>
+							</div>
+							<div class="ntsControl ntsRadioBox outline">
+								<label>
+									<input type="radio" name="textRadio" data-bind="checkedValue: 5, checked: selectedValue, enable: enable" />
+									<span class="box"></span><span class="label" data-bind="text: 'five'"></span>
+								</label>
+							</div>
+							<div class="ntsControl ntsRadioBox outline">
+								<label>
+									<input type="radio" name="textRadio" data-bind="checkedValue: 6, checked: selectedValue, enable: enable" />
+									<span class="box"></span><span class="label" data-bind="text: 'six'"></span>
+								</label>
+							</div>
 						</div>
 						<div data-bind="ntsCheckBox: { checked: enable }" class="cf">Enable</div>
 						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span></div>
-						<div data-bind="text: ko.toJSON($data)"></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

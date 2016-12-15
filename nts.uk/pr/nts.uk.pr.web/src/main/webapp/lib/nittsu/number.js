@@ -11,8 +11,9 @@ var nts;
                 return !isNaN(value) && parseInt(value) == value && !isNaN(parseInt(value, 10));
             }
             function isDecimal(value, option) {
-                if (option !== undefined && option.groupseperator() !== undefined) {
-                    value = isDecimal(value) ? value : uk.text.replaceAll(value.toString(), option.groupseperator(), '');
+                if (option !== undefined) {
+                    var seperator = typeof option.groupseperator === 'function' ? option.groupseperator() : option.groupseperator;
+                    value = isDecimal(value) || seperator === undefined ? value : uk.text.replaceAll(value.toString(), seperator, '');
                 }
                 return !isNaN(value) && parseFloat(value) == value && !isNaN(parseFloat(value));
             }
