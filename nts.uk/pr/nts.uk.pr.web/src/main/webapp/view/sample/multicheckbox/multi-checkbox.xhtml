@@ -18,7 +18,7 @@
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
 				<style>
-					.ntsCheckBox{width:150px;}
+					.ntsCheckBox{width:100px;}
 				</style>
             </ui:define>
             
@@ -28,14 +28,15 @@
 					<div id="content" class="cf">
 						<h1>MultiCheckBox</h1>
 						<h2>Overview</h2>
+						<button data-bind="click: addBoxes">Add Box</button>
+						<button data-bind="click: removeBoxes">Remove Box</button>
+						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
+						<br/><br/>
 						<h3>Selected Values as objects</h3>
 						<div data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsText: 'name',
 											value: selectedValues,
-											enable: true}"></div>
-						<br/>
-						<button data-bind="click: addBoxes">Add Box</button>
-						<button data-bind="click: removeBoxes">Remove Box</button>
+											enable: enable}"></div>
 						<h4>Selected values:</h4>
 						<div data-bind="text: ko.toJSON(selectedValues)"></div>
 						<br/>
@@ -44,12 +45,10 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
-											enable: true}"></div>
-						<br/>
-						<button data-bind="click: addBoxes">Add Box</button>
-						<button data-bind="click: removeBoxes">Remove Box</button>
+											enable: enable}"></div>
 						<h4>Selected values:</h4>
 						<div data-bind="text: ko.toJSON(selectedIds)"></div>
+						<br/>
 						<h3>Item list:</h3>
 						<div data-bind="text: ko.toJSON(itemList)"></div>
 						<article class="cf">

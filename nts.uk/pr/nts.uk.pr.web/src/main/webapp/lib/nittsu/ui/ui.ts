@@ -50,7 +50,31 @@
                     this.$dialog.dialog('option', { title: newTitle });
                 }
             }
-
+            setHeight(height: any) {
+               if(!isNaN(height)) {
+                   this.$dialog.dialog('option', {
+                       height: height              
+                   });
+                   this.$dialog.resize();
+               }
+            }
+            setWidth(width: any) {
+               if(!isNaN(width)) { 
+                   this.$dialog.dialog('option', {
+                       width: width                                
+                   });
+                   this.$dialog.resize();
+               }
+            }
+            setSize(height, width) {
+               if(!isNaN(width) && !isNaN(height)) { 
+                   this.$dialog.dialog('option', {
+                       width: width,
+                       height: height                                
+                   });
+                   this.$dialog.resize();
+               }
+            }
             setupAsDialog(path: string, options: any) {
 
                 options.close = () => {

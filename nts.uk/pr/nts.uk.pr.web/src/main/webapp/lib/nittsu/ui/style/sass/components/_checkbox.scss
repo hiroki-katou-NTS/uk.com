@@ -1,6 +1,7 @@
 ﻿@CHARSET "UTF-8";
 .ntsCheckBox {
 	display: inline-block;
+	label{display: inline-block;}
 	
 	input[type="checkbox"] {
 		display:none;

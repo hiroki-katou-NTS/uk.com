@@ -702,7 +702,8 @@ module nts.uk.ui.koExtentions {
             
             var checkBoxLabel = $("<label></label>");
             var checkBox = $('<input type="checkbox">').on("change", function(){
-                setChecked($(this).is(":checked"));
+                if(typeof setChecked === "function")
+                    setChecked($(this).is(":checked"));
             }).appendTo(checkBoxLabel);
             var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
             var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
@@ -747,7 +748,7 @@ module nts.uk.ui.koExtentions {
             var optionValue: string = ko.unwrap(data.optionsValue);
             var optionText: string = ko.unwrap(data.optionsText);
             var selectedValue: any = data.value;
-            var enable: boolean = data.enable;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
             // Container
             var container = $(element);
@@ -769,7 +770,7 @@ module nts.uk.ui.koExtentions {
                     var checkBox = $('<input type="checkbox">').data("value", option).on("change", function(){
                         var self = this;
                         if($(self).is(":checked")) {
-                            if(optionValue !== undefined && option[optionValue]) {
+                            if(optionValue !== undefined) {
                                 selectedValue.push($(self).data("value")[optionValue]);
                             }
                             else {
@@ -777,22 +778,21 @@ module nts.uk.ui.koExtentions {
                             }
                         }
                         else {
-                            if(optionValue !== undefined && option[optionValue]) {
+                            if(optionValue !== undefined)
                                 selectedValue.remove(_.find(selectedValue(), (value) => {return value == $(this).data("value")[optionValue]}));
-                            }
-                            else {
+                            else
                                 selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
-                            }
                         }
                     }).appendTo(checkBoxLabel);
+                    // Checked
                     checkBox.prop("checked", function(){
-                        if(optionValue !== undefined && option[optionValue]) {
+                        if(optionValue !== undefined)
                             return (_.find(selectedValue(), (value) => {return value == $(this).data("value")[optionValue]}) !== undefined);
-                        }
-                        else {
+                        else
                             return (_.find(selectedValue(), $(this).data("value")) !== undefined);
-                        }
                     }); 
+                    // Disable
+                    (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
                     var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                     checkBoxLabel.appendTo(container);

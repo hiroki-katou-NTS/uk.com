@@ -145,7 +145,8 @@ var nts;
                     yearMonth = yearMonth.toString();
                 }
                 var stringLengh = yearMonth.length;
-                if ((stringLengh < 6 || stringLengh > 7) || yearMonth.split('/').length > 2) {
+                var values = yearMonth.split('/');
+                if ((stringLengh < 6 || stringLengh > 7) || values.length > 2 || yearMonth.replace(/[0-9/]/g, "").length > 0) {
                     return ResultParseYearMonth.failed("invalid format. must be yyyymm or yyyy/mm!");
                 }
                 var indexOf = yearMonth.lastIndexOf('/');
@@ -154,8 +155,8 @@ var nts;
                     return ResultParseYearMonth.failed('invalid format. must be yyyy/mm');
                 }
                 else if (indexOf === 4) {
-                    year = yearMonth.split('/')[0];
-                    month = yearMonth.split('/')[1];
+                    year = values[0];
+                    month = values[1];
                 }
                 else if (indexOf <= -1) {
                     year = yearMonth.substr(0, stringLengh - 2);

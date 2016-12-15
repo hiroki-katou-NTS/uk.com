@@ -15,7 +15,7 @@ var nts;
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
                         this.allResolved = $.Callbacks();
                         this.errors.subscribe(function () {
-                            if (_this.errors.length === 0) {
+                            if (_this.errors().length === 0) {
                                 _this.allResolved.fire();
                             }
                         });

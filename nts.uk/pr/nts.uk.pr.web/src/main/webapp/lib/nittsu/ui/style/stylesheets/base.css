@@ -649,11 +649,15 @@ button.nts-switch-button.selected:hover {
 .ntsCheckBox {
   display: inline-block;
 }
-/* line 5, ../sass/components/_checkbox.scss */
+/* line 4, ../sass/components/_checkbox.scss */
+.ntsCheckBox label {
+  display: inline-block;
+}
+/* line 6, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] {
   display: none;
 }
-/* line 8, ../sass/components/_checkbox.scss */
+/* line 9, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] + span,
 .ntsCheckBox input[type="checkbox"] + span + span {
   cursor: pointer;
@@ -662,7 +666,7 @@ button.nts-switch-button.selected:hover {
   line-height: 19px;
   vertical-align: middle;
 }
-/* line 17, ../sass/components/_checkbox.scss */
+/* line 18, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] + span {
   position: relative;
   width: 19px;
@@ -674,7 +678,7 @@ button.nts-switch-button.selected:hover {
   border-radius: 4px;
   box-sizing: border-box;
 }
-/* line 28, ../sass/components/_checkbox.scss */
+/* line 29, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] + span:after {
   content: '';
   width: 11px;
@@ -689,34 +693,34 @@ button.nts-switch-button.selected:hover {
   border-radius: 1px;
   transform: rotate(-59deg);
 }
-/* line 45, ../sass/components/_checkbox.scss */
+/* line 46, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"]:checked + span {
   background: #2fcc71;
 }
-/* line 47, ../sass/components/_checkbox.scss */
+/* line 48, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"]:checked + span:after {
   opacity: 1;
 }
-/* line 51, ../sass/components/_checkbox.scss */
+/* line 52, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"][disabled] + span, .ntsCheckBox input[type="checkbox"][disabled] + span + span {
   cursor: none;
   cursor: not-allowed;
   opacity: 0.7;
 }
-/* line 59, ../sass/components/_checkbox.scss */
+/* line 60, ../sass/components/_checkbox.scss */
 .ntsCheckBox span.label {
   padding-left: 10px;
 }
-/* line 61, ../sass/components/_checkbox.scss */
+/* line 62, ../sass/components/_checkbox.scss */
 .ntsCheckBox.outline {
   color: #fff;
 }
-/* line 65, ../sass/components/_checkbox.scss */
+/* line 66, ../sass/components/_checkbox.scss */
 .ntsCheckBox.outline input[type="checkbox"] + span {
   background: #2fcc71;
   border: 2px solid #fff;
 }
-/* line 69, ../sass/components/_checkbox.scss */
+/* line 70, ../sass/components/_checkbox.scss */
 .ntsCheckBox.outline input[type="checkbox"] + span:after {
   width: 10px;
 }
