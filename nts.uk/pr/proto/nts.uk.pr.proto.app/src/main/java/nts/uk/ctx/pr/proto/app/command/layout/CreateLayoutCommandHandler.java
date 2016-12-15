@@ -108,12 +108,21 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				new CategoryPosition(2),
 				layout.getHistoryId());
 		this.categoryRepo.add(category);
+		category = new LayoutMasterCategory(new CompanyCode(companyCode),
+				layout.getStartYM(), 
+				layout.getStmtCode(),
+				CategoryAtr.ARTICLES,
+				layout.getEndYm(), 
+				new CategoryPosition(3),
+				layout.getHistoryId());
+		this.categoryRepo.add(category);
 		//データベース登録[明細書マスタ行.INS-1] を実施する
 		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "0", 1);
 		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "1", 2);
 		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "2", 3);
 		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "3", 1);
 		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "4", 2);
+		createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, "5", 1);
 		//データベース登録[明細書マスタ明細.INS-1] を実施する
 		//支給3項目
 		createDetailDefault(layout,
@@ -211,6 +220,14 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				CategoryAtr.DEDUCTION,
 				"F114",
 				"4",
+				9,
+				SumScopeAtr.EXCLUDED,
+				CalculationMethod.SYSTEM_CALCULATION);
+		createDetailDefault(layout,
+				companyCode,
+				CategoryAtr.ARTICLES,
+				"F309",
+				"5",
 				9,
 				SumScopeAtr.EXCLUDED,
 				CalculationMethod.SYSTEM_CALCULATION);
