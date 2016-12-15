@@ -1189,6 +1189,42 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 /**
+                 * GridList binding handler
+                 */
+                var NtsGridListBindingHandler = (function () {
+                    function NtsGridListBindingHandler() {
+                    }
+                    NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var $grid = $(element);
+                        var data = valueAccessor();
+                        var observableColumns = data.columns;
+                        var iggridColumns = _.map(observableColumns(), function (c) {
+                            return {
+                                headerText: c.headerText,
+                                key: c.prop,
+                                width: c.width,
+                                dataType: 'string'
+                            };
+                        });
+                        $grid.igGrid({
+                            width: data.width,
+                            height: data.height,
+                            primaryKey: data.optionsValue,
+                            columns: iggridColumns,
+                            features: [
+                                { name: 'Selection', multipleSelection: data.multiple },
+                            ]
+                        });
+                        $grid.ntsGridList('setupSelecting');
+                    };
+                    NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var $grid = $(element);
+                        var data = valueAccessor();
+                        $grid.igGrid('option', 'dataSource', data.options());
+                    };
+                    return NtsGridListBindingHandler;
+                }());
+                /**
                  * TreeGrid binding handler
                  */
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -1613,6 +1649,7 @@ var nts;
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
+                ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
             })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));

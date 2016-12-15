@@ -1234,6 +1234,49 @@ module nts.uk.ui.koExtentions {
             //container.trigger('validate');                   
         }
     }
+    
+    
+    /**
+     * GridList binding handler
+     */
+    class NtsGridListBindingHandler implements KnockoutBindingHandler {
+        
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
+            var $grid = $(element);
+            var data = valueAccessor();
+            
+            var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
+            var iggridColumns = _.map(observableColumns(), c => {
+                return {
+                    headerText: c.headerText,
+                    key: c.prop,
+                    width: c.width,
+                    dataType: 'string'
+                };
+            });
+            
+            $grid.igGrid({
+                width: data.width,
+                height: data.height,
+                primaryKey: data.optionsValue,
+                columns: iggridColumns,
+                features: [
+                    { name: 'Selection', multipleSelection: data.multiple },
+                ]
+            });
+
+            $grid.ntsGridList('setupSelecting');
+        }
+        
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        
+            var $grid = $(element);
+            var data = valueAccessor();
+            
+            $grid.igGrid('option', 'dataSource', data.options());
+        }
+    }
 
 
     /**
@@ -1704,5 +1747,6 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
     ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
+    ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
     ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
 }

@@ -1,6 +1,7 @@
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
+    ntsGridList(action: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -159,6 +160,89 @@ module nts.uk.ui.jqueryExtentions {
                   this.hide(); 
                }
             }
+        }
+    }
+    
+    module ntsGridList {
+        
+        $.fn.ntsGridList = function (action: string, param?: any) {
+            
+            var $grid = $(this);
+            
+            switch (action) {
+                case 'setupSelecting':
+                    return setupSelecting($grid);
+            }
+        };
+        
+        // this code was provided by Infragistics support
+        function setupSelecting($grid: JQuery) {
+            var dragSelectRange = [];
+            
+            $grid.on('mousedown', function(e) {
+                // グリッド内がマウスダウンされていない場合は処理なしで終了
+                if ($(e.target).closest('.ui-iggrid-table').length === 0) {
+                    return;
+                }
+        
+                // http://jp.igniteui.com/help/api/2016.2/ui.iggrid#methods:getElementInfo
+                var trInfo = $grid.igGrid('getElementInfo', $(e.target).closest('tr'));
+        
+                // ドラッグ開始位置を設定する
+                dragSelectRange.push(trInfo.rowIndex);
+            });
+            
+            $grid.on('mousemove', function(e) {
+                // ドラッグ開始位置が設定されていない場合は処理なしで終了
+                if (dragSelectRange.length === 0) {
+                    return;
+                }
+        
+                var $tr = $(e.target).closest('tr'),
+                    // http://jp.igniteui.com/help/api/2016.2/ui.iggrid#methods:getElementInfo
+                    trInfo = $grid.igGrid('getElementInfo', $tr);
+        
+        
+                // 無駄な処理をさせないためにドラッグ終了位置が同じかどうかをチェックする
+                if (trInfo.rowIndex === dragSelectRange[dragSelectRange.length - 1]) {
+                    return;
+                }
+        
+                // 新たにドラッグ選択を開始する場合、Ctrlキー押下されていない場合は以前の選択行を全てクリアする
+                if (dragSelectRange.length === 1 && !e.ctrlKey) {
+                    $grid.igGridSelection('clearSelection');
+                }
+        
+                // 以前のドラッグ範囲の選択を一旦解除する
+                for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
+                    // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
+                    $grid.igGridSelection('deselectRow', dragSelectRange[i]);
+                }
+        
+                var newDragSelectRange = [];
+        
+                if (dragSelectRange[0] <= trInfo.rowIndex) {
+                    for (var j = dragSelectRange[0]; j <= trInfo.rowIndex; j++) {
+                        // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
+                        $grid.igGridSelection('selectRow', j);
+                        newDragSelectRange.push(j);
+                    }
+                } else if (dragSelectRange[0] > trInfo.rowIndex) {
+                    for (var j = dragSelectRange[0]; j >= trInfo.rowIndex; j--) {
+                        $grid.igGridSelection('selectRow', j);
+                        newDragSelectRange.push(j);
+                    }
+                }
+        
+                dragSelectRange = newDragSelectRange;
+            });
+            
+            $grid.on('mouseup', function(e) {
+                // ドラッグを終了する
+                dragSelectRange = [];
+            });
+            
+            return $grid;
         }
     }
 }
