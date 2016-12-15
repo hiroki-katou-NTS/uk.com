@@ -15,7 +15,7 @@ module nts.uk.ui.errors {
             this.allResolved = $.Callbacks();
             
             this.errors.subscribe(() => {
-                if (this.errors.length === 0) {
+                if (this.errors().length === 0) {
                     this.allResolved.fire();
                 }
             });
