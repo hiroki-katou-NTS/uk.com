@@ -30,7 +30,7 @@
 						<h2>Overview</h2>
 						<button data-bind="click: addBoxes">Add Box</button>
 						<button data-bind="click: removeBoxes">Remove Box</button>
-						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
+						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
 						<br/><br/>
 						<h3>Selected Values as objects</h3>
 						<div data-bind="ntsRadioBoxGroup: {options: itemList,
@@ -58,8 +58,92 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<div data-bind="ntsRadioBoxGroup: {
+	options: itemList,
+	optionsValue: 'id',
+	optionsText: 'name',
+	value: selectedId,
+	enable: enable}"></div>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>options</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List data to generate RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>optionsValue<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as RadioBox value. If null object will be set as value
+												</td>
+											</tr>
+											<tr>
+												<td>optionsText</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as RadioBox text
+												</td>
+											</tr>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> any<br/>
+													Value of selected RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for RadioBoxGroup control
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    itemList: KnockoutObservableArray<any>;
+    selectedId: KnockoutObservable<number>;
+    enable: KnockoutObservable<boolean>;
+    
+    constructor() {
+        var self = this;
+        self.itemList = ko.observableArray([
+            new BoxModel(1, 'box 1'),
+            new BoxModel(2, 'box 2'),
+            new BoxModel(3, 'box 3')
+        ]);
+        self.selectedId = ko.observable(1);
+        self.enable = ko.observable(true);
+    }
+}
+
+class BoxModel {
+    id: number;
+    name: string;
+    constructor(id, name){
+        var self = this;
+        self.id = id;
+        self.name = name;
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>

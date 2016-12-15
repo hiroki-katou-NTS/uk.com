@@ -25,33 +25,35 @@
 					<div id="content" class="cf">
 						<h1>RadioBox</h1>
 						<h2>Overview</h2>
+						<p>Because RadioBox can be place anywhere so you must implement it by your own</p>
+						<br/>
 						<div data-bind="foreach: items">
-							<div class="ntsControl ntsRadioBox">
-								<label>
+							<span class="ntsControl">
+								<label class="ntsRadioBox">
 									<input type="radio" name="textRadio" data-bind="checkedValue: value, checked: $parent.selectedValue, enable: $parent.enable" />
 									<span class="box"></span><span class="label" data-bind="text: text"></span>
 								</label>
-							</div>
+							</span>
 						</div>
 						<div class="cf" style="background:#00B050; padding:10px 5px; margin: 10px 0;">
-							<div class="ntsControl ntsRadioBox outline">
-								<label>
+							<span class="ntsControl outline">
+								<label class="ntsRadioBox">
 									<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValue, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: 'four'"></span>
+									<span class="box"></span><span class="label" data-bind="text: 'Four'"></span>
 								</label>
-							</div>
-							<div class="ntsControl ntsRadioBox outline">
-								<label>
+							</span>
+							<span class="ntsControl outline">
+								<label class="ntsRadioBox">
 									<input type="radio" name="textRadio" data-bind="checkedValue: 5, checked: selectedValue, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: 'five'"></span>
+									<span class="box"></span><span class="label" data-bind="text: 'Five'"></span>
 								</label>
-							</div>
-							<div class="ntsControl ntsRadioBox outline">
-								<label>
+							</span>
+							<span class="ntsControl outline">
+								<label class="ntsRadioBox">
 									<input type="radio" name="textRadio" data-bind="checkedValue: 6, checked: selectedValue, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: 'six'"></span>
+									<span class="box"></span><span class="label" data-bind="text: 'Six'"></span>
 								</label>
-							</div>
+							</span>
 						</div>
 						<div data-bind="ntsCheckBox: { checked: enable }" class="cf">Enable</div>
 						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span></div>
@@ -62,8 +64,73 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<!-- Manual Binding -->
+<span class="ntsControl">
+	<label class="ntsRadioBox">
+		<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValue, enable: enable" />
+		<span class="box"></span><span class="label" data-bind="text: 'Four'"></span>
+	</label>
+</span>
+
+<!-- Foreach Binding -->
+<div data-bind="foreach: items">
+	<span class="ntsControl">
+		<label class="ntsRadioBox">
+			<input type="radio" name="textRadio" data-bind="checkedValue: value, checked: $parent.selectedValue, enable: $parent.enable" />
+			<span class="box"></span><span class="label" data-bind="text: text"></span>
+		</label>
+	</span>
+</div>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>checked</td>
+												<td>
+													<b>Type:</b> any;<br/>
+													Get or set value of checked RadioBox
+												</td>
+											</tr>
+											<tr>
+												<td>checkedValue<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> any<br/>
+													Set value for RadioBox
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<br/>
+									<p>More information read <a target="_blank" href="http://knockoutjs.com/documentation/checked-binding.html">Knockout checked binding</a></p>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    enable: KnockoutObservable<boolean>;
+    selectedValue: KnockoutObservable<any>;
+    items: KnockoutObservableArray<any>;
+    
+    constructor() {
+        var self = this;
+        self.enable = ko.observable(true);
+        self.items = ko.observableArray([
+            {value: 1, text: 'One'},
+            {value: 2, text: 'Two'},
+            {value: 3, text: 'Three'}
+        ]);
+        self.selectedValue = ko.observable(2);
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>

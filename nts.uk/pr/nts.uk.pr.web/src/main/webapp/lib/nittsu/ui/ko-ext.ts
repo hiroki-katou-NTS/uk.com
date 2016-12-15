@@ -526,11 +526,6 @@ module nts.uk.ui.koExtentions {
 
             var $dialog = $("#ntsErrorDialog");
 
-            // TODO: Change autoclose do not close when clear error then add again. Or use another method
-            /*if (autoclose === true && errors.length == 0) {
-                option.show(false);
-                show = false;
-            }*/
             if (show == true) {
                 $dialog.dialog("open");
                 // Create Error Table
@@ -691,7 +686,7 @@ module nts.uk.ui.koExtentions {
             
             // Container
             var container = $(element);
-            container.addClass("ntsControl ntsCheckBox");
+            container.addClass("ntsControl");
             
             if (textId) {
                 checkBoxText = textId;
@@ -700,7 +695,7 @@ module nts.uk.ui.koExtentions {
                 container.text('');
             }
             
-            var checkBoxLabel = $("<label></label>");
+            var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
             var checkBox = $('<input type="checkbox">').on("change", function(){
                 if(typeof setChecked === "function")
                     setChecked($(this).is(":checked"));
@@ -716,7 +711,7 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             var data = valueAccessor();
-            var checked: boolean = (data.checked !== undefined) ? ko.unwrap(data.checked) : false;
+            var checked: boolean = ko.unwrap(data.checked);
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             
             // Container
@@ -1740,8 +1735,6 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-    ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-    ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
     ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
@@ -1751,6 +1744,8 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
     ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
     ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
+    ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+    ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
     ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
     ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();

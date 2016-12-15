@@ -14,7 +14,7 @@ __viewContext.ready(function () {
                 new BoxModel(3, 'box 3')
             ]);
             self.selectedValues = ko.observableArray([
-                {id: 1, name: 'box 1'},
+                new BoxModel(1, 'box 1'),
                 new BoxModel(3, 'box 3')
             ]);
             self.selectedIds = ko.observableArray([1,2]);

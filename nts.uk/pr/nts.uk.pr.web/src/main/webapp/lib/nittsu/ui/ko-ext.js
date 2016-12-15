@@ -542,11 +542,6 @@ var nts;
                         var autoclose = ko.unwrap(option.autoclose);
                         var show = ko.unwrap(option.show);
                         var $dialog = $("#ntsErrorDialog");
-                        // TODO: Change autoclose do not close when clear error then add again. Or use another method
-                        /*if (autoclose === true && errors.length == 0) {
-                            option.show(false);
-                            show = false;
-                        }*/
                         if (show == true) {
                             $dialog.dialog("open");
                             // Create Error Table
@@ -696,7 +691,7 @@ var nts;
                         var checkBoxText;
                         // Container
                         var container = $(element);
-                        container.addClass("ntsControl ntsCheckBox");
+                        container.addClass("ntsControl");
                         if (textId) {
                             checkBoxText = textId;
                         }
@@ -704,7 +699,7 @@ var nts;
                             checkBoxText = container.text();
                             container.text('');
                         }
-                        var checkBoxLabel = $("<label></label>");
+                        var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
                         var checkBox = $('<input type="checkbox">').on("change", function () {
                             if (typeof setChecked === "function")
                                 setChecked($(this).is(":checked"));
@@ -719,7 +714,7 @@ var nts;
                     NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data
                         var data = valueAccessor();
-                        var checked = (data.checked !== undefined) ? ko.unwrap(data.checked) : false;
+                        var checked = ko.unwrap(data.checked);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container
                         var container = $(element);
@@ -1638,8 +1633,6 @@ var nts;
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-                ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
-                ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
                 ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
@@ -1649,6 +1642,8 @@ var nts;
                 ko.bindingHandlers['ntsErrorDialog'] = new NtsErrorDialogBindingHandler();
                 ko.bindingHandlers['ntsSwitchButton'] = new NtsSwitchButtonBindingHandler();
                 ko.bindingHandlers['ntsCheckBox'] = new NtsCheckboxBindingHandler();
+                ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+                ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();

@@ -36,7 +36,7 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-									<h2>Code</h2>
+									<h2>HTML</h2>
 									<pre><![CDATA[<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
 <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div>
 <div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div>
@@ -88,12 +88,19 @@
 									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-									<h2>Code</h2>
-									<pre><![CDATA[labelViewModel: {
-	constraint: 'LayoutCode',
-	inline: ko.observable(true),
-	required: ko.observable(true),
-	enable: ko.observable(true)
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    constraint: string = 'LayoutCode';
+    inline: KnockoutObservable<boolean>;
+    required: KnockoutObservable<boolean>;
+    enable: KnockoutObservable<boolean>;
+    
+    constructor() {
+        var self = this;
+        self.inline = ko.observable(true);
+        self.required = ko.observable(true)
+        self.enable = ko.observable(true);
+    }
 }]]></pre>
 								</div>
 							</div>

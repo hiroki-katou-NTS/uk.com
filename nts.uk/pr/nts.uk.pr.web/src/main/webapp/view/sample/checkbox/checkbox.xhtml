@@ -37,8 +37,59 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>
+<!-- or -->
+<div data-bind="ntsCheckBox: { checked: enable }">This is test enable</div>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>checked</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													Set checked value for CheckBox
+												</td>
+											</tr>
+											<tr>
+												<td>text<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Text for CheckBox or you can put text inside CheckBox control
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for CheckBox control
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    checked: KnockoutObservable<boolean>;
+    enable: KnockoutObservable<boolean>;
+    
+    constructor() {
+        var self = this;
+        self.checked = ko.observable(true);
+        self.enable = ko.observable(true);
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>

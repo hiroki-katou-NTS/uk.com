@@ -653,11 +653,15 @@ button.nts-switch-button.selected:hover {
 .ntsCheckBox label {
   display: inline-block;
 }
-/* line 6, ../sass/components/_checkbox.scss */
+/* line 5, ../sass/components/_checkbox.scss */
+.ntsCheckBox span.label {
+  padding-left: 10px;
+}
+/* line 7, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] {
   display: none;
 }
-/* line 9, ../sass/components/_checkbox.scss */
+/* line 10, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] + span,
 .ntsCheckBox input[type="checkbox"] + span + span {
   cursor: pointer;
@@ -666,7 +670,7 @@ button.nts-switch-button.selected:hover {
   line-height: 19px;
   vertical-align: middle;
 }
-/* line 18, ../sass/components/_checkbox.scss */
+/* line 19, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] + span {
   position: relative;
   width: 19px;
@@ -677,7 +681,7 @@ button.nts-switch-button.selected:hover {
   border-radius: 4px;
   box-sizing: border-box;
 }
-/* line 28, ../sass/components/_checkbox.scss */
+/* line 29, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"] + span:after {
   content: '';
   width: 11px;
@@ -692,35 +696,32 @@ button.nts-switch-button.selected:hover {
   border-radius: 1px;
   transform: rotate(-59deg);
 }
-/* line 45, ../sass/components/_checkbox.scss */
+/* line 46, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"]:checked + span {
   background: #2fcc71;
 }
-/* line 47, ../sass/components/_checkbox.scss */
+/* line 48, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"]:checked + span:after {
   opacity: 1;
 }
-/* line 51, ../sass/components/_checkbox.scss */
+/* line 52, ../sass/components/_checkbox.scss */
 .ntsCheckBox input[type="checkbox"][disabled] + span, .ntsCheckBox input[type="checkbox"][disabled] + span + span {
   cursor: none;
   cursor: not-allowed;
   opacity: 0.7;
 }
-/* line 59, ../sass/components/_checkbox.scss */
-.ntsCheckBox span.label {
-  padding-left: 10px;
-}
-/* line 61, ../sass/components/_checkbox.scss */
-.ntsCheckBox.outline {
+
+/* line 60, ../sass/components/_checkbox.scss */
+.outline .ntsCheckBox {
   color: #fff;
 }
-/* line 65, ../sass/components/_checkbox.scss */
-.ntsCheckBox.outline input[type="checkbox"] + span {
+/* line 64, ../sass/components/_checkbox.scss */
+.outline .ntsCheckBox input[type="checkbox"] + span {
   background: #2fcc71;
   border: 2px solid #fff;
 }
-/* line 69, ../sass/components/_checkbox.scss */
-.ntsCheckBox.outline input[type="checkbox"] + span:after {
+/* line 68, ../sass/components/_checkbox.scss */
+.outline .ntsCheckBox input[type="checkbox"] + span:after {
   width: 10px;
 }
 
@@ -733,11 +734,15 @@ button.nts-switch-button.selected:hover {
 .ntsRadioBox label {
   display: inline-block;
 }
-/* line 6, ../sass/components/_radiobox.scss */
+/* line 5, ../sass/components/_radiobox.scss */
+.ntsRadioBox span.label {
+  padding-left: 10px;
+}
+/* line 7, ../sass/components/_radiobox.scss */
 .ntsRadioBox input[type="radio"] {
   display: none;
 }
-/* line 9, ../sass/components/_radiobox.scss */
+/* line 10, ../sass/components/_radiobox.scss */
 .ntsRadioBox input[type="radio"] + span,
 .ntsRadioBox input[type="radio"] + span + span {
   cursor: pointer;
@@ -746,7 +751,7 @@ button.nts-switch-button.selected:hover {
   line-height: 19px;
   vertical-align: middle;
 }
-/* line 18, ../sass/components/_radiobox.scss */
+/* line 19, ../sass/components/_radiobox.scss */
 .ntsRadioBox input[type="radio"] + span {
   position: relative;
   display: inline-block;
@@ -759,7 +764,7 @@ button.nts-switch-button.selected:hover {
   cursor: pointer;
   box-sizing: border-box;
 }
-/* line 30, ../sass/components/_radiobox.scss */
+/* line 31, ../sass/components/_radiobox.scss */
 .ntsRadioBox input[type="radio"] + span:after {
   content: '';
   width: 9px;
@@ -771,32 +776,29 @@ button.nts-switch-button.selected:hover {
   opacity: 0;
   border-radius: 50%;
 }
-/* line 44, ../sass/components/_radiobox.scss */
+/* line 45, ../sass/components/_radiobox.scss */
 .ntsRadioBox input[type="radio"]:checked + span.box:after {
   opacity: 1;
 }
-/* line 49, ../sass/components/_radiobox.scss */
+/* line 50, ../sass/components/_radiobox.scss */
 .ntsRadioBox input[type="radio"][disabled] + span, .ntsRadioBox input[type="radio"][disabled] + span + span {
   cursor: none;
   cursor: not-allowed;
   user-select: none;
   opacity: 0.7;
 }
-/* line 58, ../sass/components/_radiobox.scss */
-.ntsRadioBox span.label {
-  padding-left: 10px;
-}
+
 /* line 60, ../sass/components/_radiobox.scss */
-.ntsRadioBox.outline {
+.outline .ntsRadioBox {
   color: #fff;
 }
 /* line 64, ../sass/components/_radiobox.scss */
-.ntsRadioBox.outline input[type="radio"] + span {
+.outline .ntsRadioBox input[type="radio"] + span {
   background: #92d050;
   border-color: #fff;
 }
 /* line 67, ../sass/components/_radiobox.scss */
-.ntsRadioBox.outline input[type="radio"] + span:after {
+.outline .ntsRadioBox input[type="radio"] + span:after {
   background: #fff;
 }
 
