@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+				<style>
+					.ntsRadioBox{width:100px;}
+				</style>
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>RadioBoxGroup</h1>
+						<h2>Overview</h2>
+						<button data-bind="click: addBoxes">Add Box</button>
+						<button data-bind="click: removeBoxes">Remove Box</button>
+						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
+						<br/><br/>
+						<h3>Selected Values as objects</h3>
+						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+											optionsText: 'name',
+											value: selectedValue,
+											enable: enable}"></div>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedValue)"></div>
+						<br/>
+						<h3>Selected Values as value</h3>
+						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedId)"></div>
+						<br/>
+						<h3>Item list:</h3>
+						<div data-bind="text: ko.toJSON(itemList)"></div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

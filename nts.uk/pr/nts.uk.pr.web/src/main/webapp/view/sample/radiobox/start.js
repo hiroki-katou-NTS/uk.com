@@ -8,7 +8,7 @@ __viewContext.ready(function () {
                 { value: 2, text: 'Two' },
                 { value: 3, text: 'Three' }
             ]);
-            self.selectedValue = ko.observable({ value: 1, text: 'One' });
+            self.selectedValue = ko.observable(2);
         }
         return ScreenModel;
     }());

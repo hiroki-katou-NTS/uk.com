@@ -725,7 +725,7 @@ module nts.uk.ui.koExtentions {
             
             // Checked
             checkBox.prop("checked", checked);
-            // Disable
+            // Enable
             (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
         }
     }
@@ -753,56 +753,104 @@ module nts.uk.ui.koExtentions {
             // Container
             var container = $(element);
             
-            // CheckedValue
             var getOptionValue = (item) => {
-                if (optionValue === undefined) {
-                    return item;
-                } else {
-                    return item[optionValue];
-                }
+                return (optionValue === undefined) ? item : item[optionValue];
             };
             
-            if(container.data("options") !== options) {
+            if(!_.isEqual(container.data("options"), options)) {
                 // Render
                 container.empty();
                 _.forEach(options, (option) => {
                     var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-                    var checkBox = $('<input type="checkbox">').data("value", option).on("change", function(){
+                    var checkBox = $('<input type="checkbox">').data("value", getOptionValue(option)).on("change", function(){
                         var self = this;
-                        if($(self).is(":checked")) {
-                            if(optionValue !== undefined) {
-                                selectedValue.push($(self).data("value")[optionValue]);
-                            }
-                            else {
-                                selectedValue.push($(self).data("value"));
-                            }
-                        }
-                        else {
-                            if(optionValue !== undefined)
-                                selectedValue.remove(_.find(selectedValue(), (value) => {return value == $(this).data("value")[optionValue]}));
-                            else
-                                selectedValue.remove(_.find(selectedValue(), $(this).data("value")));
-                        }
-                    }).appendTo(checkBoxLabel);
-                    // Checked
-                    checkBox.prop("checked", function(){
-                        if(optionValue !== undefined)
-                            return (_.find(selectedValue(), (value) => {return value == $(this).data("value")[optionValue]}) !== undefined);
+                        if($(self).is(":checked"))
+                            selectedValue.push($(self).data("value"));
                         else
-                            return (_.find(selectedValue(), $(this).data("value")) !== undefined);
-                    }); 
-                    // Disable
-                    (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
+                            selectedValue.remove(_.find(selectedValue(), (value) => {
+                                return _.isEqual(value, $(this).data("value"))
+                            }));
+                    }).appendTo(checkBoxLabel);
+                    // Checked Init
+                    checkBox.prop("checked", function(){
+                        return (_.find(selectedValue(), (value) => {
+                            return _.isEqual(value, $(this).data("value"))
+                        }) !== undefined);
+                    });
                     var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                     checkBoxLabel.appendTo(container);
                 });
                 // Save a clone
-                container.data("options", $.extend({},options));
+                container.data("options", options.slice());
             }
+            
+            // Enable
+            (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
         }
     }
     
+    /**
+     * RadioBox Group
+     */
+    class NtsRadioBoxGroupBindingHandler implements KnockoutBindingHandler {
+        
+        constructor() { }
+        
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
+            $(element).addClass("ntsControl");
+        }
+        
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            // Get data
+            var data = valueAccessor();
+            var options: any = ko.unwrap(data.options);
+            var optionValue: string = ko.unwrap(data.optionsValue);
+            var optionText: string = ko.unwrap(data.optionsText);
+            var selectedValue: any = data.value;
+            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+            
+            // Container
+            var container = $(element);
+            
+            var getOptionValue = (item) => {
+                return (optionValue === undefined) ? item : item[optionValue];
+            };
+            
+            
+            if(!_.isEqual(container.data("options"), options)) {
+                var radioName = util.randomId();
+                // Render
+                container.empty();
+                _.forEach(options, (option) => {
+                    var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
+                    var radioBox = $('<input type="radio">').attr("name",radioName).data("value", getOptionValue(option)).on("change", function(){
+                        var self = this;
+                        if($(self).is(":checked"))
+                            selectedValue($(self).data("value"));
+                    }).appendTo(radioBoxLabel);
+                    var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
+                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
+                    radioBoxLabel.appendTo(container);
+                });
+                
+                // Checked
+                var listRadio = container.find("input[name=" + radioName + "]");
+                var checkedRadio = _.find(listRadio, (item) => {
+                    return _.isEqual($(item).data("value"), selectedValue());
+                });
+                if (checkedRadio !== undefined)
+                    $(checkedRadio).prop("checked", true);
+                
+                // Save a clone
+                container.data("options", options.slice());
+            }
+            
+            // Enable
+            (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
+        }
+    }
+        
     /**
      * ComboBox binding handler
      */
@@ -819,7 +867,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
         }
-
+        
         /**
          * Update
          */
@@ -1693,6 +1741,7 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
     ko.bindingHandlers['ntsMultiCheckBox'] = new NtsMultiCheckBoxBindingHandler();
+    ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
     ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
