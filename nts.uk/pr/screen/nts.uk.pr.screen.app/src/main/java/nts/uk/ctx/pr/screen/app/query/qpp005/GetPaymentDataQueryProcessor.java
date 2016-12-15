@@ -256,6 +256,7 @@ public class GetPaymentDataQueryProcessor {
 										iValue.getCommuteAllowTaxImpose(),
 										iValue.getCommuteAllowMonth(),
 										iValue.getCommuteAllowFraction(),
+										d.getSumScopeAtr().value,
 										iValue.getValue() != null);
 							} else {
 								result =  DetailItemDto.fromData(
@@ -275,12 +276,13 @@ public class GetPaymentDataQueryProcessor {
 										0.0,
 										0.0,
 										0.0,
+										d.getSumScopeAtr().value,
 										false);
 							}
 							result.setItemType();
 							return result;
 						}).orElse(DetailItemDto.fromData(
-								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, false));
+								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, null, false));
 				items.add(detailItem);
 			}
 

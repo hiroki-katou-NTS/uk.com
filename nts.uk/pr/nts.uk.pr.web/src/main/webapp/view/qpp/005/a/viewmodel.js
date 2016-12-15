@@ -202,7 +202,9 @@ var nts;
                                         }
                                     };
                                     inputtingsDetailsPayment.forEach(function (detail) {
-                                        detail.value.subscribe(function () { return updateTotalPayment(); });
+                                        if (detail.sumScopeAtr() === 1) {
+                                            detail.value.subscribe(function () { return updateTotalPayment(); });
+                                        }
                                     });
                                 };
                                 return ScreenModel;
@@ -217,8 +219,8 @@ var nts;
                                             item.value.subscribe(function (val) {
                                                 var nId = 'ct' + item.categoryAtr() + '_' + (item.linePosition() - 1) + '_' + (item.columnPosition() - 1);
                                                 var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value());
-                                                var fixItem = item.itemCode().substring(0, 1) === 'F';
-                                                if (isCorrectFlag && !fixItem)
+                                                var isInputItem = item.itemType() === 0 || item.itemType() === 1;
+                                                if (isCorrectFlag && isInputItem)
                                                     item.correctFlag(1);
                                             });
                                         });
@@ -297,7 +299,7 @@ var nts;
                             viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
                             // item
                             var DetailItemViewModel = (function () {
-                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, calculationMethod, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated, itemTimeType, itemNumberType, itemCurencyType) {
+                                function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, calculationMethod, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated, itemType) {
                                     var self = this;
                                     self.categoryAtr = categoryAtr;
                                     self.itemAtr = itemAtr;
@@ -315,9 +317,7 @@ var nts;
                                     self.commuteAllowMonth = commuteAllowMonth;
                                     self.commuteAllowFraction = commuteAllowFraction;
                                     self.isCreated = isCreated;
-                                    self.itemTimeType = itemTimeType;
-                                    self.itemNumberType = itemNumberType;
-                                    self.itemCurencyType = itemCurencyType;
+                                    self.itemType = itemType;
                                 }
                                 return DetailItemViewModel;
                             }());

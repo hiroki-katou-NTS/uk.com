@@ -84,7 +84,7 @@
 											<td><label data-bind="text: itemName"></label> 
 											<com:ko-if bind="itemAtr() === 0"> 
 												<com:ko-if bind="itemType() === 0"> 
-													<input data-bind="ntsTimeEditor: {value: value, option: new nts.uk.ui.option.TimeEditorOption({ inputFormat: ko.observable('time') })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+													<input data-bind="ntsTimeEditor: {value: value, option: new nts.uk.ui.option.TimeEditorOption({ inputFormat: ko.observable('time') })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background' : itemColor()}" />
 											  	</com:ko-if> 
 											  	<com:ko-if bind="itemType() === -1"> 
 													<input class="disabled item-grey" data-bind="ntsTimeEditor: {value: value, option: new nts.uk.ui.option.TimeEditorOption({ inputFormat: ko.observable('time') })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
@@ -92,13 +92,13 @@
 										  	</com:ko-if> 
 										  	<com:ko-if bind="itemAtr() === 1">
 										  		<com:ko-if bind="itemType() === 0">
-													<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+													<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background': itemColor()}" />
 											    </com:ko-if>
 												<com:ko-if bind="itemType() === 1">
 													<a class="txt-btlink"
-														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}">
+														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background', itemColor()}">
 														<input class="disabled txt-btlink"
-														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}" />
+														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}, style: {'background', itemColor()}" />
 													</a>
 											    </com:ko-if>
 												<com:ko-if bind="itemType() === -1">
@@ -107,13 +107,13 @@
 											</com:ko-if> 
 										    <com:ko-if bind="itemAtr() === 2 || itemAtr() === 3">
 										    	<com:ko-if bind="itemType() === 0">
-													<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 0, currencyformat: 'JPY', currencyposition: 'left' })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}" />
+													<input data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 0, currencyformat: 'JPY', currencyposition: 'left' })}, attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background': itemColor()}" />
 												</com:ko-if>
 												<com:ko-if bind="itemType() === 1">
 													<a class="txt-btlink" href="javascript:void(0);"
-														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}">
+														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background', itemColor()}">
 														<input class="disabled txt-btlink"
-														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 0, currencyformat: 'JPY', currencyposition: 'left' })}" />
+														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 0, currencyformat: 'JPY', currencyposition: 'left' })}, style: {'background' : itemColor()}" />
 													</a>
 												</com:ko-if>
 												<com:ko-if bind="itemType() === -1">
