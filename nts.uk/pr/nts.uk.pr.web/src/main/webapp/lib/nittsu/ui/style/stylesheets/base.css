@@ -852,11 +852,14 @@ button.nts-switch-button.selected:hover {
   color: graytext;
 }
 
-/* line 3, ../sass/components/_gridlist.scss */
-.nts-gridlist.ui-iggrid td, .nts-gridlist.ui-iggrid th {
-  padding: 0 2px;
+/* line 4, ../sass/components/_gridlist.scss */
+.nts-gridlist.ui-iggrid tr td, .nts-gridlist.ui-iggrid tr th, .nts-gridlist.ui-iggrid tr.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-state-focus th, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th {
   font-size: 14px;
   font-family: "DroidSansMono", "Meiryo";
+}
+/* line 10, ../sass/components/_gridlist.scss */
+.nts-gridlist.ui-iggrid tr td, .nts-gridlist.ui-iggrid tr td.ui-state-active, .nts-gridlist.ui-iggrid tr td.ui-state-focus, .nts-gridlist.ui-iggrid tr td.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr th, .nts-gridlist.ui-iggrid tr th.ui-state-active, .nts-gridlist.ui-iggrid tr th.ui-state-focus, .nts-gridlist.ui-iggrid tr th.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-state-focus td.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-state-focus td.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus td.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus th, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-active.ui-state-focus {
+  padding: 0 2px;
 }
 
 /* line 2, ../sass/components/_combobox.scss */
