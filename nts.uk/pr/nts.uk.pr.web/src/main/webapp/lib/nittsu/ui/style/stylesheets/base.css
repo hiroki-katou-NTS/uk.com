@@ -852,6 +852,13 @@ button.nts-switch-button.selected:hover {
   color: graytext;
 }
 
+/* line 3, ../sass/components/_gridlist.scss */
+.nts-gridlist.ui-iggrid td, .nts-gridlist.ui-iggrid th {
+  padding: 0 2px;
+  font-size: 14px;
+  font-family: "DroidSansMono", "Meiryo";
+}
+
 /* line 2, ../sass/components/_combobox.scss */
 #contents-area input.ui-igcombo-field {
   font-family: "DroidSansMono", "Meiryo";
@@ -1807,7 +1814,7 @@ button.nts-switch-button.selected:hover {
   padding: 10px;
 }
 
-/* line 22, ../sass/base.scss */
+/* line 23, ../sass/base.scss */
 body {
   font-size: 14px;
   font-family: "Meiryo UI";
