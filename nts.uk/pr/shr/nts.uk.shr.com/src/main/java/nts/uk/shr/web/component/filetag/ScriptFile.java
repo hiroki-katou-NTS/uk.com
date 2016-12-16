@@ -23,8 +23,6 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/lodash/lodash-4.16.6.min.js",
             "/lib/generic/knockoutjs/knockout-3.4.0.js",
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
-            "/lib/generic/igniteui/js/infragistics.core.js",
-            "/lib/generic/igniteui/js/infragistics.lob.js",
             "/lib/nittsu/iefix.js",
             "/lib/nittsu/util.js",
             "/lib/nittsu/text.js",
@@ -42,10 +40,18 @@ public class ScriptFile extends UIComponentBase {
             "/lib/nittsu/number.js",
     }));
     
+    private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
+            "/lib/generic/igniteui/js/infragistics.core.js",
+            "/lib/generic/igniteui/js/infragistics.lob.js",
+            "/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js",
+            "/lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js",
+    }));
+    
     @SuppressWarnings("serial")
     private static Map<String, Set<String>> FILE_SETS = new HashMap<String, Set<String>>() {
         {
             this.put("BASIC", FILES_BASIC);
+            this.put("IGNITE", FILES_IGNITE);
         }
     };
 
