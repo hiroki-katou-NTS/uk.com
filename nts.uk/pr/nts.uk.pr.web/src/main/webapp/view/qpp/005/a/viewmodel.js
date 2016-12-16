@@ -91,7 +91,7 @@ var nts;
                                         var lines = cate.lines();
                                         _.forEach(lines, function (line) {
                                             var include = ko.utils.arrayFirst(line.details(), function (item) {
-                                                return item.itemCode() != "" && (item.value() === '' || item.value() === null);
+                                                return item.itemCode() != "" && item.correctFlag() === 0 && (item.value() === '' || item.value() === null);
                                             });
                                             if (include) {
                                                 result = false;
