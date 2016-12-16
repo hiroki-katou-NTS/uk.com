@@ -103,7 +103,7 @@
             build$dialog(options: any) {
                 this.$dialog = $('<div/>')
                     .css({
-                        padding: 'initial',
+                        padding: '0px',
                         overflow: 'hidden'
                     })
                     .appendTo($('body'))
