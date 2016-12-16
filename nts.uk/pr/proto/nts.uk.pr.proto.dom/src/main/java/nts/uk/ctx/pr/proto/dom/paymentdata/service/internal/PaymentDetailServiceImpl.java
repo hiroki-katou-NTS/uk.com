@@ -74,10 +74,15 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				});
 		
 		// LAYOUT_DETAIL with CTR_ATR = 2
-		val detailsOfCategoryPersonalTime = layoutMasterDetailList.stream()
+		List<DetailItem> detailsOfCategoryPersonalTime = new ArrayList<>(); 
+		layoutMasterDetailList.stream()
 				.filter(l -> l.isCategoryPersonalTime())
-				.map(l -> createDetailOfCategoryPersonalTime(param, l))
-				.collect(Collectors.toList());
+				.forEach(l -> {
+					DetailItem item = createDetailOfCategoryPersonalTime(param, l);
+					if (item != null) {
+						detailsOfCategoryPersonalTime.add(item);
+					}
+				});
 		
 		// LAYOUT_DETAIL with CTR_ATR = 3
 		val detailsOfCategoryArticles = layoutMasterDetailList.stream()
@@ -139,9 +144,9 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			return this.createDataDetailItem(itemMaster, personalWage.get().getWageValue().doubleValue(), layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
 		} else if (layout.isCalMethodManualOrFormulaOrWageOrCommonOrPaymentCanceled()) {
 			return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
-		} else {
-			throw new RuntimeException("システムエラー: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v());
 		}
+		
+		return null;
 	}
 	
 	/** Create data detail with Layout.Category = 2 **/

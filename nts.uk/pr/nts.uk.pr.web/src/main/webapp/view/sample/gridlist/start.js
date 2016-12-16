@@ -8,11 +8,11 @@ __viewContext.ready(function () {
             this.items = ko.observableArray([
                 new ItemModel('001', '基本給', "description 1"),
                 new ItemModel('150', '役職手当', "description 2"),
-                new ItemModel('ABC', '基本給', "description 3")
+                new ItemModel('ABC', '基12本ghj給', "description 3")
             ]);
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
+                { headerText: '名称', prop: 'name', width: 150 },
                 { headerText: '説明', prop: 'description', width: 200 }
             ]);
             this.currentCode = ko.observable();

@@ -1230,6 +1230,7 @@ var nts;
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var HEADER_HEIGHT = 27;
                         var $grid = $(element);
                         if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
                             throw new Error('the element NtsGridList must have id attribute.');
@@ -1245,15 +1246,21 @@ var nts;
                                 dataType: 'string'
                             };
                         });
+                        var features = [];
+                        features.push({ name: 'Selection', multipleSelection: data.multiple });
+                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
                         $grid.igGrid({
                             width: data.width,
-                            height: data.height,
+                            height: data.height - HEADER_HEIGHT,
                             primaryKey: data.optionsValue,
                             columns: iggridColumns,
-                            features: [
-                                { name: 'Selection', multipleSelection: data.multiple },
-                            ]
+                            virtualization: true,
+                            virtualizationMode: 'continuous',
+                            features: features
                         });
+                        $grid.closest('.ui-iggrid')
+                            .addClass('nts-gridlist')
+                            .height(data.height);
                         $grid.ntsGridList('setupSelecting');
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
