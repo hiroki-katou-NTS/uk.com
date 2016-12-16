@@ -31,7 +31,9 @@
 							options: roundingRules,
 							optionsValue: 'code',
 							optionsText: 'name',
-							value: selectedRuleCode }"></div>
+							value: selectedRuleCode,
+							enable: enable }"></div>
+						<div data-bind="ntsCheckBox: {checked: enable, text: 'Enable SwitchButton'}"></div>
 						<div>Selected code: <span data-bind="text: selectedRuleCode"></span></div>
 						<article class="cf">
 							<div class="tabs">
@@ -41,11 +43,12 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div id="switchButtonTest" class="cf" data-bind="ntsSwitchButton: {
+<pre><![CDATA[<div class="cf" data-bind="ntsSwitchButton: {
 	options: roundingRules,
 	optionsValue: 'code',
 	optionsText: 'name',
-	value: selectedRuleCode }"></div>]]></pre>
+	value: selectedRuleCode,
+	enable: enable }"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>

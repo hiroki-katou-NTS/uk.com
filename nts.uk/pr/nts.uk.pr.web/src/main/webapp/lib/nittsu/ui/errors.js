@@ -11,6 +11,7 @@ var nts;
                         var _this = this;
                         this.title = "エラー一覧";
                         this.errors = ko.observableArray([]);
+                        this.errors.extend({ rateLimit: 1 });
                         this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
                         this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
                         this.allResolved = $.Callbacks();

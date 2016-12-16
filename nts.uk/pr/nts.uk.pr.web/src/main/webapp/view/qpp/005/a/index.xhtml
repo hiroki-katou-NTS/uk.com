@@ -96,9 +96,9 @@
 											    </com:ko-if>
 												<com:ko-if bind="itemType() === 1">
 													<a class="txt-btlink"
-														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background', itemColor()}">
+														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background' : itemColor()}">
 														<input class="disabled txt-btlink"
-														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}, style: {'background', itemColor()}" />
+														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.NumberEditorOption({ grouplength: 3, decimallength: 1 })}, style: {'background' : itemColor()}" />
 													</a>
 											    </com:ko-if>
 												<com:ko-if bind="itemType() === -1">
@@ -111,7 +111,7 @@
 												</com:ko-if>
 												<com:ko-if bind="itemType() === 1">
 													<a class="txt-btlink" href="javascript:void(0);"
-														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background', itemColor()}">
+														data-bind="click: $root.content.openSetupTaxItem.bind($root.content, value), attr: {'id': 'ct' + categoryAtr()+ '_' +$parentContext.$index()+ '_'+  $index()}, style: {'background' : itemColor()}">
 														<input class="disabled txt-btlink"
 														data-bind="ntsNumberEditor: {value: value, option: new nts.uk.ui.option.CurrencyEditorOption({ grouplength: 3, decimallength: 0, currencyformat: 'JPY', currencyposition: 'left' })}, style: {'background' : itemColor()}" />
 													</a>

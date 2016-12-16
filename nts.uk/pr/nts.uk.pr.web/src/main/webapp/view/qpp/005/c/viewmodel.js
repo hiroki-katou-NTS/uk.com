@@ -39,6 +39,10 @@ ScreenModel.prototype.chooseEmployee = function() {
 	nts.uk.ui.windows.close();
 }
 
+ScreenModel.prototype.close = function() {
+	nts.uk.ui.windows.close();
+}
+
 function EmployeeList() {
 	var self = this;
 

@@ -619,6 +619,7 @@ var nts;
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container.
                         var container = $(element);
                         // Remove deleted button.
@@ -671,6 +672,8 @@ var nts;
                                 container.append(btn);
                             }
                         });
+                        // Enable
+                        (enable === true) ? $('button', container).prop("disabled", false) : $('button', container).prop("disabled", true);
                     };
                     return NtsSwitchButtonBindingHandler;
                 }());
