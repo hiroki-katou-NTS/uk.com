@@ -123,3 +123,11 @@ div.popup-panel {
         border-color: #cc2222;
     }
 }
+
+/*****************************
+  Vertical-align
+*****************************/
+.flex {
+	display:flex;
+	&.v-align{align-items: center;}
+}
