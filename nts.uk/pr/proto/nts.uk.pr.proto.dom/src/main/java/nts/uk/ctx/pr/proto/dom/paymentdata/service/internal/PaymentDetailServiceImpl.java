@@ -116,9 +116,9 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			// calculate pay value by tax
 			return getPayValueByTax(param, layout, layout.getItemCode().v(),
 					itemMaster, commute);
-		} else {
-			throw new RuntimeException("invalid layout: personId=" + param.getPersonId().v());
 		}
+		
+		return null;
 	}
 
 	/** Create data detail with Layout.Category = 1 **/
