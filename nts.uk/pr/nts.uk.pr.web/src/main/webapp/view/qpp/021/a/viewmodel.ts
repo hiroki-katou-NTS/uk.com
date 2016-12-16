@@ -1,15 +1,34 @@
-module qpp021.a.viewmodel {
+module nts.uk.pr.view.qpp021.a.viewmodel {
     export class ItemModel {
         id: any;
+        code: any;
         name: any;
-        department: any;
-        constructor(id, name) {
+        constructor(id, code, name) {
             var self = this;
             this.id = id;
+            this.code = code;
             this.name = name;
         }
     }
-    
+
+    export class RadioBox {
+        enable: KnockoutObservable<boolean>;
+        selectedValue: KnockoutObservable<any>;
+        items: KnockoutObservableArray<any>;
+
+        constructor() {
+            var self = this;
+            self.enable = ko.observable(true);
+            self.items = ko.observableArray([
+                { value: 1, text: '単票出力' },
+                { value: 2, text: '連続帳票印刷' },
+                { value: 3, text: '圧着式印刷（Z折り）' },
+                { value: 4, text: '圧着式印刷（はがき）' }
+            ]);
+            self.selectedValue = ko.observable({ value: 1, text: 'One' });
+        }
+    }
+
     export class Listbox {
         itemList: KnockoutObservableArray<any>;
         itemName: KnockoutObservable<any>;
@@ -21,26 +40,16 @@ module qpp021.a.viewmodel {
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000001', '日通　社員１'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000002', '日通　社員2'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000003', '日通　社員3'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000004', '日通　社員4'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000005', '日通　社員5'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000006', '日通　社員6'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000007', '日通　社員7'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000008', '日通　社員8'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000009', '日通　社員9'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000010', '日通　社員10'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000011', '日通　社員１1'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000012', '日通　社員12'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000013', '日通　社員13'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000014', '日通　社員14'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000015', '日通　社員15'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000016', '日通　社員16'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000017', '日通　社員17'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000018', '日通　社員18'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000019', '日通　社員19'),
-                new  qpp021.a.viewmodel.ItemModel('A00000000000000000000000000000000020', '日通　社員20')
+                new ItemModel('A00000000000000000000000000000000001', '00000000001', '日通　社員１'),
+                new ItemModel('A00000000000000000000000000000000002', '00000000002', '日通　社員2'),
+                new ItemModel('A00000000000000000000000000000000003', '00000000003', '日通　社員3'),
+                new ItemModel('A00000000000000000000000000000000004', '00000000004', '日通　社員4'),
+                new ItemModel('A00000000000000000000000000000000005', '00000000005', '日通　社員5'),
+                new ItemModel('A00000000000000000000000000000000006', '00000000006', '日通　社員6'),
+                new ItemModel('A00000000000000000000000000000000007', '00000000007', '日通　社員7'),
+                new ItemModel('A00000000000000000000000000000000008', '00000000008', '日通　社員8'),
+                new ItemModel('A00000000000000000000000000000000009', '00000000009', '日通　社員9'),
+                new ItemModel('A00000000000000000000000000000000010', '00000000010', '日通　社員１0'),
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
@@ -49,14 +58,158 @@ module qpp021.a.viewmodel {
             self.selectedCodes = ko.observableArray([]);
         }
     }
-    
-     export class ScreenModel {
-         listBox: Listbox;
-         isEnable: KnockoutObservable<any> = ko.observable(true);
-         
-         constructor() {
+
+    export class ScreenModel {
+        radioBox: RadioBox;
+        listBox: Listbox;
+        isEnable: KnockoutObservable<any> = ko.observable(true);
+
+        constructor() {
             var self = this;
             self.listBox = new Listbox();
+            self.radioBox = new RadioBox();
         }
-     }
+
+        print() {
+            var self = this;
+            nts.uk.pr.view.qpp021.a.service.print(self.listBox.selectedCode(), '0000000004');
+        }
+    }
+
+    /**
+          * Model namespace.
+       */
+    export class PaymentDataResultViewModel {
+        paymentHeader: PaymentDataHeaderViewModel;
+        categories: Array<LayoutMasterCategoryViewModel>;
+        remarks: KnockoutObservable<string>;
+        remarkCount: KnockoutComputed<string>;
+
+        constructor(paymentHeader: PaymentDataHeaderViewModel, categories: Array<LayoutMasterCategoryViewModel>, remarks: string) {
+            var self = this;
+
+            self.paymentHeader = paymentHeader;
+            self.categories = categories;
+            self.remarks = ko.observable(remarks);
+            self.remarkCount = ko.computed(function() {
+                return nts.uk.text.format('入力文字数：{0}文字', self.remarks() == undefined ? 0 : self.remarks().length);
+            });
+        }
+    }
+
+    // header
+    export class PaymentDataHeaderViewModel {
+        personId: string;
+        companyName: String;
+        departmentCode: String;
+        departmentName: String;
+        personName: string;
+        processingYM: number;
+        dependentNumber: number;
+        specificationCode: string;
+        specificationName: string;
+        makeMethodFlag: number;
+        employeeCode: string;
+        comment: KnockoutObservable<string>;
+        printPositionCategories: Array<PrintPositionCategoryViewModel>;
+        isCreated: boolean;
+
+        constructor(personId: string, companyName: string, departmentCode: string, departmentName: string, personName: string, processingYM: number, dependentNumber: number, specificationCode: string, specificationName: string, makeMethodFlag: number, employeeCode: string, comment: string,
+            printPositionCategories: Array<PrintPositionCategoryViewModel>, isCreated: boolean) {
+            var self = this;
+
+            self.personId = personId;
+            self.personName = personName;
+            self.companyName = companyName;
+            self.departmentCode = departmentCode;
+            self.departmentName = departmentName;
+            self.processingYM = processingYM;
+            self.dependentNumber = dependentNumber;
+            self.specificationCode = specificationCode;
+            self.makeMethodFlag = makeMethodFlag;
+            self.employeeCode = employeeCode;
+            self.comment = ko.observable(comment);
+            self.printPositionCategories = printPositionCategories;
+            self.isCreated = isCreated;
+        }
+    }
+
+    export class PrintPositionCategoryViewModel {
+        categoryAtr: number;
+        lines: number;
+    }
+    // categories
+    export class LayoutMasterCategoryViewModel {
+        categoryAttribute: number;
+        categoryPosition: number;
+        lineCounts: number;
+        lines: KnockoutObservableArray<LayoutMasterLine>;
+    }
+
+    export interface LayoutMasterLine {
+        details: KnockoutObservableArray<DetailItemViewModel>;
+    }
+
+    // item
+    export class DetailItemViewModel {
+        categoryAtr: number;
+        itemAtr: number;
+        itemCode: string;
+        itemName: string;
+        value: KnockoutObservable<number>;
+        calculationMethod: number;
+        correctFlag: number;
+        columnPosition: number;
+        linePosition: number;
+        deductAtr: number;
+        displayAtr: number;
+        taxAtr: number;
+        limitAmount: number;
+        commuteAllowTaxImpose: number;
+        commuteAllowMonth: number;
+        commuteAllowFraction: number;
+        isCreated: boolean;
+        itemType: number;
+
+        constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, calculationMethod: number, correctFlag: number,
+            columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number,
+            limitAmount: number, commuteAllowTaxImpose: number, commuteAllowMonth: number, commuteAllowFraction: number,
+            isCreated: boolean, itemType: number) {
+            var self = this;
+            self.categoryAtr = categoryAtr;
+            self.itemAtr = itemAtr;
+            self.itemCode = itemCode;
+            self.itemName = itemName;
+            self.value = ko.observable(value);
+            self.calculationMethod = calculationMethod;
+            self.columnPosition = columnPosition;
+            self.linePosition = linePosition;
+            self.deductAtr = deductAtr;
+            self.displayAtr = displayAtr;
+            self.taxAtr = taxAtr;
+            self.limitAmount = limitAmount;
+            self.commuteAllowTaxImpose = commuteAllowTaxImpose;
+            self.commuteAllowMonth = commuteAllowMonth;
+            self.commuteAllowFraction = commuteAllowFraction;
+            self.isCreated = isCreated;
+            self.itemType = itemType;
+        }
+    }
+
+    export class CategoriesList {
+        items: KnockoutObservableArray<any>;
+        selectedCode: KnockoutObservable<any>;
+        selectionChangedEvent = $.Callbacks();
+        unselecting: KnockoutObservable<boolean>;
+
+        constructor() {
+            var self = this;
+
+            self.items = ko.observableArray([]);
+            self.selectedCode = ko.observable();
+            self.selectedCode.subscribe(function(selectedCode) {
+                self.selectionChangedEvent.fire(selectedCode);
+            });
+        }
+    }
 }

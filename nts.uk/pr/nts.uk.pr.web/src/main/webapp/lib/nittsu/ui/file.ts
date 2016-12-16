@@ -35,7 +35,7 @@
             var self = this;
             var options = {
                 dataType: 'text',
-                contentType: 'text/plain'
+                contentType: 'application/json'
             };
             request.ajax(self.servicePath, self.data, options).done(function(res) {
                 self.taskId = res;
