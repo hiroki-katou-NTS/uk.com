@@ -24,6 +24,12 @@ var qmm019;
                     self.startYmHis = ko.observable(null);
                     console.log(option);
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
+                    //---radio
+                    self.itemsRadio = ko.observableArray([
+                        { value: 1, text: ko.observable('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ') },
+                        { value: 2, text: ko.observable('初めから作成する') }
+                    ]);
+                    self.isRadioCheck = ko.observable(1);
                 }
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -64,7 +70,7 @@ var qmm019;
                             self.selectStmtCode(stmtCode);
                             self.selectStmtName(layout.stmtName);
                             self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                            self.valueSel001('最新の履歴（' + nts.uk.time.formatYearMonth(layout.startYm) + '）から引き継ぐ');
+                            self.itemsRadio()[0].text('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ');
                             self.startYmHis(layout.startYm);
                             return false;
                         }
@@ -72,14 +78,14 @@ var qmm019;
                 };
                 ScreenModel.prototype.createHistoryLayout = function () {
                     var self = this;
-                    var inputYm = $("#INP_001").val();
+                    var inputYm = $('#INP_001').val();
                     //check YM
                     if (!nts.uk.time.parseYearMonth(inputYm).success) {
                         alert(nts.uk.time.parseYearMonth(inputYm).msg);
                         return false;
                     }
                     var selectYm = self.startYmHis();
-                    inputYm = $("#INP_001").val().replace('/', '');
+                    inputYm = inputYm.replace('/', '');
                     if (+inputYm < +selectYm
                         || +inputYm == +selectYm) {
                         alert('履歴の期間が正しくありません。');
@@ -87,7 +93,7 @@ var qmm019;
                     }
                     else {
                         self.createData();
-                        if ($("#copyCreate").is(":checked")) {
+                        if (self.isRadioCheck() === 1) {
                             self.createlayout().checkContinue = true;
                         }
                         else {

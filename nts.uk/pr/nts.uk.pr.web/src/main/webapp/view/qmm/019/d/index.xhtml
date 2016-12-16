@@ -7,25 +7,16 @@
     <body>
         <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
-            	<link rel="stylesheet" type="text/css" href="main.css" />
-				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
-				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
-            	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
-				<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
-				<script src="start.js" />
-				<script src="viewmodel.js" />
-				<script src="service.js" />
-			    <script>var dialogSize = { width: 960, height: 660 };</script>
+            	<com:stylefile path="main.css" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
+            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
+				<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			    <script>var dialogSize = { width: 960, height: 620 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>		
-			    <script>
-					__viewContext.primitiveValueConstraints = {
-						startYm: {
-							valueType: "String",
-							charType: "Numeric",
-							maxLength: 7
-						}
-					};
-				</script>		
             </ui:define>
             
             <ui:define name="content">
@@ -49,9 +40,17 @@
 							<div class ="form-label inline required">
 								<label id = "LBL_008">レイアウトの引継ぎ</label>
 							</div>
-							<div id="SEL_001">
-								<input type="radio" checked="checked" name="layoutCreate" id="copyCreate" /><label id="lblRadio" data-bind="text: valueSel001">最新の履歴（N）から引き継ぐ</label> <br />
-				  				<input type="radio" name="layoutCreate" id="newCreate" /> 初めから作成する<br />
+							<div id="SEL_001" data-bind="foreach: itemsRadio">
+								<!-- <input type="radio" checked="checked" name="layoutCreate" id="copyCreate" /><label id="lblRadio" data-bind="text: valueSel001">最新の履歴（N）から引き継ぐ</label> <br />
+				  				<input type="radio" name="layoutCreate" id="newCreate" /> 初めから作成する<br /> -->
+				  				<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" name="textRadio" data-bind="checkedValue: value, 
+																			checked: $parent.isRadioCheck,
+																			enable: true" />
+										<span class="box"></span><span class="label" data-bind="text: text"></span>
+									</label>
+								</span>
 							</div>
 						</div><br/>
 						<div class="label009"><label id = "LBL_009">レイアウトパターンの選択</label></div>
@@ -77,7 +76,7 @@
 						<br/>
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001" data-bind="click: createHistoryLayout">決定</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind="click: createHistoryLayout, enable: $root.errors.isEmpty">決定</button>
 							<button class="large" id="BTN_002" data-bind="click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>
