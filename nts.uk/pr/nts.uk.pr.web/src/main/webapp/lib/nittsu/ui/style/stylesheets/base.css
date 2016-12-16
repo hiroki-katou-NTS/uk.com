@@ -229,6 +229,18 @@ div.popup-panel {
   border-color: #cc2222;
 }
 
+/*****************************
+  Vertical-align
+*****************************/
+/* line 130, ../sass/components/_commons.scss */
+.flex {
+  display: flex;
+}
+/* line 132, ../sass/components/_commons.scss */
+.flex.v-align {
+  align-items: center;
+}
+
 /* line 1, ../sass/components/_editor.scss */
 input[type="text"] {
   font-family: "DroidSansMono", "Meiryo";

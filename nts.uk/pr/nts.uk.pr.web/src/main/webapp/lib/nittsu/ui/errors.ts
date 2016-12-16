@@ -10,6 +10,7 @@ module nts.uk.ui.errors {
         constructor() {
             this.title = "エラー一覧"
             this.errors = ko.observableArray([]);
+            this.errors.extend({ rateLimit: 1 });
             this.option = ko.mapping.fromJS(new option.ErrorDialogOption());
             this.occurs = ko.computed(() => this.errors().length !== 0);
             this.allResolved = $.Callbacks();

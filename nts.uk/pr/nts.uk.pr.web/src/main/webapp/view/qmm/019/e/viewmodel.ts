@@ -10,6 +10,9 @@ module qmm019.e.viewmodel {
         layoutStartYm: KnockoutObservable<string>;
         timeEditorOption: KnockoutObservable<any>;
         historyId: KnockoutObservable<string>;
+        //---radio        
+        isRadioCheck: KnockoutObservable<number>;
+        itemsRadio: KnockoutObservableArray<any>;
         /**
          * Init screen model.
          */
@@ -24,6 +27,12 @@ module qmm019.e.viewmodel {
             self.layoutStartYm = ko.observable(null);
             self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
             self.historyId = ko.observable(null);
+            //---radio
+            self.itemsRadio = ko.observableArray([
+                {value: 1, text: '履歴を削除する'},
+                {value: 2, text: '履歴を修正する'}
+            ]);
+            self.isRadioCheck = ko.observable(1);
         }
         
          // start function
@@ -58,7 +67,7 @@ module qmm019.e.viewmodel {
         layoutProcess(): any{
             var self = this;
             //履歴の編集-削除処理
-            if($("#layoutDetele").is(":checked")){
+            if(self.isRadioCheck() === 1){
                 self.dataDelete();
             }else{
                 self.dataUpdate();    

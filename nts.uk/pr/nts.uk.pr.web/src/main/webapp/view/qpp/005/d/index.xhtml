@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 400, height: 400 };</script>
+			<script>var dialogSize = { width: 400, height: 450 };</script>
 
 			<link rel="stylesheet" type="text/css" href="main.css" />
 			<script src="start.js"></script>
@@ -83,7 +83,9 @@
 					</td>
 					
 					<td class="textNote divMaxContent">
-						<label> 範囲外 … 指定した範囲を外れる </label>
+						<span> 範囲外 … 指定した範囲を外れる </span>
+						<br />
+						<span> 単位誤り … 指定した単位（10円単位、100円単位）<br />などから外れる </span>
 					</td>
 				</tr>
 				
@@ -97,12 +99,11 @@
 						<label> 入力不可  </label>
 					</td>
 				</tr>
-				<tr>
-					<td colspan="2" style="text-align: center">
-						<button data-bind="click: close">閉じる</button>
-					</td>
-				</tr>
 			</table>
+			<div class="seperator"></div>
+			<div class="footer">
+				<button data-bind="click: close">閉じる</button>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
