@@ -81,7 +81,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 		entity.dispAtr = domain.getDisplayAtr().value;
 		entity.sumScopeAtr = domain.getSumScopeAtr().value;
 		entity.calcMethod = domain.getCalculationMethod().value;
-		entity.pWageCd = domain.getPersonalWageCode().v();
+		entity.pWageCd = domain.getPersonalWageCode().v() == "" ? "00" : domain.getPersonalWageCode().v();
 		//今回、対応対象外	↓
 		entity.formulaCd = "000";
 		entity.wageTableCd = "000";
