@@ -1244,7 +1244,13 @@ module nts.uk.ui.koExtentions {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             
             var $grid = $(element);
+            
+            if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
+                throw new Error('the element NtsGridList must have id attribute.');
+            }
+            
             var data = valueAccessor();
+            var optionsValue: string = data.optionsValue;
             
             var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
@@ -1267,6 +1273,20 @@ module nts.uk.ui.koExtentions {
             });
 
             $grid.ntsGridList('setupSelecting');
+            
+            $grid.bind('selectionchanged', () => {
+                if (data.multiple) {
+                    let selecteds: Array<any> = $grid.ntsGridList('getSelected');
+                    let selectedIdSet = {};
+                    selecteds.forEach(s => { selectedIdSet[s.id] = true; });
+                    var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
+                    data.value(_.map(selectedOptions, o => o[optionsValue]));
+                } else {
+                    let selected = $grid.ntsGridList('getSelected');
+                    let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
+                    data.value(selectedOption[optionsValue]);
+                }
+            });
         }
         
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1275,6 +1295,8 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             
             $grid.igGrid('option', 'dataSource', data.options());
+            
+            $grid.ntsGridList('setSelected', data.value());
         }
     }
 

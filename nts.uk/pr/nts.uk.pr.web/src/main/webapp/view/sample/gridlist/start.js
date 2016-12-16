@@ -16,6 +16,7 @@ __viewContext.ready(function () {
                 { headerText: '説明', prop: 'description', width: 200 }
             ]);
             this.currentCode = ko.observable();
+            this.currentCodeList = ko.observableArray([]);
             //            self.itemName = ko.observable('');
             //            self.currentCode = ko.observable(3);
             //            self.selectedCode = ko.observable(null)
@@ -32,6 +33,16 @@ __viewContext.ready(function () {
             //                console.log('Selected value:' + (<any>event.originalEvent).detail)
             //            })
         }
+        ScreenModel.prototype.selectSomeItems = function () {
+            this.currentCode('150');
+            this.currentCodeList.removeAll();
+            this.currentCodeList.push('001');
+            this.currentCodeList.push('ABC');
+        };
+        ScreenModel.prototype.deselectAll = function () {
+            this.currentCode(null);
+            this.currentCodeList.removeAll();
+        };
         return ScreenModel;
     }());
     var ItemModel = (function () {

@@ -1196,7 +1196,11 @@ var nts;
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
+                        if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
+                            throw new Error('the element NtsGridList must have id attribute.');
+                        }
                         var data = valueAccessor();
+                        var optionsValue = data.optionsValue;
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             return {
@@ -1216,11 +1220,26 @@ var nts;
                             ]
                         });
                         $grid.ntsGridList('setupSelecting');
+                        $grid.bind('selectionchanged', function () {
+                            if (data.multiple) {
+                                var selecteds = $grid.ntsGridList('getSelected');
+                                var selectedIdSet_1 = {};
+                                selecteds.forEach(function (s) { selectedIdSet_1[s.id] = true; });
+                                var selectedOptions = _.filter(data.options(), function (o) { return selectedIdSet_1[o[optionsValue]]; });
+                                data.value(_.map(selectedOptions, function (o) { return o[optionsValue]; }));
+                            }
+                            else {
+                                var selected_1 = $grid.ntsGridList('getSelected');
+                                var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
+                                data.value(selectedOption[optionsValue]);
+                            }
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
                         var data = valueAccessor();
                         $grid.igGrid('option', 'dataSource', data.options());
+                        $grid.ntsGridList('setSelected', data.value());
                     };
                     return NtsGridListBindingHandler;
                 }());

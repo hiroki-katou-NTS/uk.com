@@ -22,9 +22,13 @@
 						<h1>GridList </h1>
 						<h2>Overview</h2>
 						<br />
-						<table id="list-box" data-bind="ntsGridList: {
+						<button data-bind="click: selectSomeItems">Select some items</button>
+						<button data-bind="click: deselectAll">Deselect all</button>
+						<hr />
+						Single selecting mode
+						<table id="single-list" data-bind="ntsGridList: {
 								width: 550,
-								height: 350,
+								height: 150,
 								options: items,
 								optionsValue: 'code',
 								columns: columns,
@@ -34,6 +38,24 @@
 							class="cf"></table>
 						<br />
 						currentCode: <span data-bind="text: currentCode"></span>
+						
+						<hr />
+						
+						Multiple selectng mode
+						<table id="multi-list" data-bind="ntsGridList: {
+								width: 550,
+								height: 150,
+								options: items,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: true,
+								value: currentCodeList
+							}"
+							class="cf"></table>
+						<br />
+						currentCodeList: <span data-bind="text: currentCodeList"></span>
+						
+						
 						<article class="cf">
 							<div class="tabs">
 								<ol>

@@ -4,7 +4,8 @@ __viewContext.ready(function () {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
 //        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<any>
+        currentCode: KnockoutObservable<any>;
+        currentCodeList: KnockoutObservableArray<any>;
 //        selectedCode: KnockoutObservable<string>;
 //        selectedCodes: KnockoutObservableArray<string>;
 //        isEnable: KnockoutObservable<boolean>;
@@ -25,6 +26,8 @@ __viewContext.ready(function () {
             ]);
             
             this.currentCode = ko.observable();
+            this.currentCodeList = ko.observableArray([]);
+            
             
 //            self.itemName = ko.observable('');
 //            self.currentCode = ko.observable(3);
@@ -42,6 +45,18 @@ __viewContext.ready(function () {
 //            $('#list-box').on('selectionChanged', function(event: any) {
 //                console.log('Selected value:' + (<any>event.originalEvent).detail)
 //            })
+        }
+        
+        selectSomeItems() {
+            this.currentCode('150');
+            this.currentCodeList.removeAll();
+            this.currentCodeList.push('001');
+            this.currentCodeList.push('ABC');
+        }
+        
+        deselectAll() {
+            this.currentCode(null);
+            this.currentCodeList.removeAll();
         }
 
 //        addOptions() {

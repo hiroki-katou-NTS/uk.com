@@ -165,18 +165,62 @@ module nts.uk.ui.jqueryExtentions {
     
     module ntsGridList {
         
-        $.fn.ntsGridList = function (action: string, param?: any) {
+        $.fn.ntsGridList = function (action: string, param?: any): any {
             
             var $grid = $(this);
             
             switch (action) {
                 case 'setupSelecting':
                     return setupSelecting($grid);
+                case 'getSelected':
+                    return getSelected($grid);
+                case 'setSelected':
+                    return setSelected($grid, param);
+                case 'deselectAll':
+                    return deselectAll($grid);
             }
         };
         
-        // this code was provided by Infragistics support
+        function getSelected($grid: JQuery): any {
+            if ($grid.igGridSelection('option', 'multipleSelection')) {
+                var selectedRows: Array<any> = $grid.igGridSelection('selectedRows');
+                return _.map(selectedRows, convertSelected);
+            } else {
+                var selectedRow: any = $grid.igGridSelection('selectedRow');
+                return convertSelected(selectedRow);
+            }
+        }
+        
+        function convertSelected(igGridSelectedRow: any) {
+            return {
+                id: igGridSelectedRow.id,
+                index: igGridSelectedRow.index
+            };
+        }
+        
+        function setSelected($grid: JQuery, selectedId: any) {
+            deselectAll($grid);
+            
+            if ($grid.igGridSelection('option', 'multipleSelection')) {
+                (<Array<string>> selectedId).forEach(id => $grid.igGridSelection('selectRowById', id));
+            } else {
+                $grid.igGridSelection('selectRowById', selectedId);
+            }
+        }
+        
+        function deselectAll($grid: JQuery) {
+            $grid.igGridSelection('clearSelection');
+        }
+        
         function setupSelecting($grid: JQuery) {
+            setupDragging($grid);
+            setupSelectingEvents($grid);
+            
+            return $grid;
+        }
+        
+        // this code was provided by Infragistics support
+        function setupDragging($grid: JQuery) {
             var dragSelectRange = [];
             
             $grid.on('mousedown', function(e) {
@@ -241,8 +285,18 @@ module nts.uk.ui.jqueryExtentions {
                 // ドラッグを終了する
                 dragSelectRange = [];
             });
+        }
+        
+        function setupSelectingEvents($grid: JQuery) {
+            $grid.bind('iggridselectioncellselectionchanging', () => {
+            });
+            $grid.bind('iggridselectionrowselectionchanged', () => {
+                $grid.triggerHandler('selectionchanged');
+            });
             
-            return $grid;
+            $grid.on('mouseup', () => {
+                $grid.triggerHandler('selectionchanged');
+            });
         }
     }
 }

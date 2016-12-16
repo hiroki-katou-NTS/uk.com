@@ -147,10 +147,49 @@ var nts;
                         switch (action) {
                             case 'setupSelecting':
                                 return setupSelecting($grid);
+                            case 'getSelected':
+                                return getSelected($grid);
+                            case 'setSelected':
+                                return setSelected($grid, param);
+                            case 'deselectAll':
+                                return deselectAll($grid);
                         }
                     };
-                    // this code was provided by Infragistics support
+                    function getSelected($grid) {
+                        if ($grid.igGridSelection('option', 'multipleSelection')) {
+                            var selectedRows = $grid.igGridSelection('selectedRows');
+                            return _.map(selectedRows, convertSelected);
+                        }
+                        else {
+                            var selectedRow = $grid.igGridSelection('selectedRow');
+                            return convertSelected(selectedRow);
+                        }
+                    }
+                    function convertSelected(igGridSelectedRow) {
+                        return {
+                            id: igGridSelectedRow.id,
+                            index: igGridSelectedRow.index
+                        };
+                    }
+                    function setSelected($grid, selectedId) {
+                        deselectAll($grid);
+                        if ($grid.igGridSelection('option', 'multipleSelection')) {
+                            selectedId.forEach(function (id) { return $grid.igGridSelection('selectRowById', id); });
+                        }
+                        else {
+                            $grid.igGridSelection('selectRowById', selectedId);
+                        }
+                    }
+                    function deselectAll($grid) {
+                        $grid.igGridSelection('clearSelection');
+                    }
                     function setupSelecting($grid) {
+                        setupDragging($grid);
+                        setupSelectingEvents($grid);
+                        return $grid;
+                    }
+                    // this code was provided by Infragistics support
+                    function setupDragging($grid) {
                         var dragSelectRange = [];
                         $grid.on('mousedown', function (e) {
                             // グリッド内がマウスダウンされていない場合は処理なしで終了
@@ -203,7 +242,16 @@ var nts;
                             // ドラッグを終了する
                             dragSelectRange = [];
                         });
-                        return $grid;
+                    }
+                    function setupSelectingEvents($grid) {
+                        $grid.bind('iggridselectioncellselectionchanging', function () {
+                        });
+                        $grid.bind('iggridselectionrowselectionchanged', function () {
+                            $grid.triggerHandler('selectionchanged');
+                        });
+                        $grid.on('mouseup', function () {
+                            $grid.triggerHandler('selectionchanged');
+                        });
                     }
                 })(ntsGridList || (ntsGridList = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
