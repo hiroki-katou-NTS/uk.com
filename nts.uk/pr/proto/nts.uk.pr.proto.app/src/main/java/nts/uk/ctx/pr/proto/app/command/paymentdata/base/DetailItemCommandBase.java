@@ -70,13 +70,13 @@ public class DetailItemCommandBase {
 			this.linePosition = linePosition;
 		}
 		
-		if ("".equals(this.value)) {
-			throw new BusinessException("入力にエラーがあります。");	
-		}
+//		if ("".equals(this.value)) {
+//			throw new BusinessException("入力にエラーがあります。");	
+//		}
 		
 		DetailItem item=  DetailItem.createFromJavaType(
 				this.itemCode, 
-				this.value, 
+				this.value == null ? 0: this.value, 
 				this.correctFlag, 
 				this.socialInsuranceAtr, 
 				this.laborInsuranceAtr,

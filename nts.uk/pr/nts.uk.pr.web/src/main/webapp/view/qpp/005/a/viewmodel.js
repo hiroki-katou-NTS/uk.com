@@ -71,10 +71,10 @@ var nts;
                                 ScreenModel.prototype.register = function () {
                                     var self = this;
                                     // TODO: Check error input
-                                    if (!self.validator()) {
-                                        nts.uk.ui.dialog.alert('入力にエラーがあります。');
-                                        return false;
-                                    }
+                                    //                if (!self.validator()) {
+                                    //                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
+                                    //                    return false;
+                                    //                }
                                     qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function (res) {
                                         self.startPage().done(function () {
                                             a.utils.gridSetup(self.switchButton().selectedRuleCode());
