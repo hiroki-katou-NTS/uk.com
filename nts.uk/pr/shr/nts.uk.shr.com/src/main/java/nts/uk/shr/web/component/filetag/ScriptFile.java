@@ -23,6 +23,8 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/lodash/lodash-4.16.6.min.js",
             "/lib/generic/knockoutjs/knockout-3.4.0.js",
             "/lib/generic/knockoutjs/knockout.mapping-2.4.1.js",
+            "/lib/generic/igniteui/js/infragistics.core.js",
+            "/lib/generic/igniteui/js/infragistics.lob.js",
             "/lib/nittsu/iefix.js",
             "/lib/nittsu/util.js",
             "/lib/nittsu/text.js",
