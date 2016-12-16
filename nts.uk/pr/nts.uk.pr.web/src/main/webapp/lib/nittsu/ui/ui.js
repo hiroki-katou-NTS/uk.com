@@ -93,7 +93,7 @@ var nts;
                     ScreenWindow.prototype.build$dialog = function (options) {
                         this.$dialog = $('<div/>')
                             .css({
-                            padding: 'initial',
+                            padding: '0px',
                             overflow: 'hidden'
                         })
                             .appendTo($('body'))

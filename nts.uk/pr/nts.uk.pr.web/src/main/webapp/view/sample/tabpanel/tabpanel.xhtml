@@ -43,9 +43,9 @@
 							</div>
 						</div><br/>
 						<div data-bind="foreach: tabs">
-							<span data-bind="text: title + ' :'"></span>
-							<label><input type="checkbox" data-bind="checked: enable"/>Enable</label>
-							<label><input type="checkbox" data-bind="checked: visible"/>Visible</label>
+							<span data-bind="text: title + ':'"></span>
+							<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
+							<span data-bind="ntsCheckBox: { checked: visible }">Visible</span>
 							<br/>
 						</div>
 						<article class="cf">

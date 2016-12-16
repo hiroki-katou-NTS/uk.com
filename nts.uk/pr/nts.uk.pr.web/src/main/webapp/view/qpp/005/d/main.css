@@ -61,3 +61,18 @@
 .tdMaxContent{
 	vertical-align: top;
 }
+
+
+.seperator{
+	position:absolute;
+	top: 340px;
+	border-top:1px solid gray; 
+	width:100%; 
+}
+
+
+.footer{
+	position:absolute;
+	top: 350px;
+	left: 180px;
+}

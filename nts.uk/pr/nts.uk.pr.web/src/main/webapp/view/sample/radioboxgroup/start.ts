@@ -1,38 +1,45 @@
 __viewContext.ready(function () {
-    var ScreenModel = (function () {
-        function ScreenModel() {
-            this.count = 4;
+    class ScreenModel {
+        itemList: KnockoutObservableArray<any>;
+        selectedValue: KnockoutObservable<any>;
+        selectedId: KnockoutObservable<number>;
+        enable: KnockoutObservable<boolean>;
+        count: any = 4;
+        
+        constructor() {
             var self = this;
             self.itemList = ko.observableArray([
                 new BoxModel(1, 'box 1'),
                 new BoxModel(2, 'box 2'),
                 new BoxModel(3, 'box 3')
             ]);
-            self.selectedValues = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(3, 'box 3')
-            ]);
-            self.selectedIds = ko.observableArray([1, 2]);
+            self.selectedValue = ko.observable(new BoxModel(3, 'box 3'));
+            self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
         }
-        ScreenModel.prototype.addBoxes = function () {
+        
+        addBoxes() {
             var self = this;
             self.itemList.push(new BoxModel(self.count, 'box ' + self.count));
             self.count++;
-        };
-        ScreenModel.prototype.removeBoxes = function () {
+        }
+        
+        removeBoxes() {
             var self = this;
             self.itemList.pop();
-        };
-        return ScreenModel;
-    }());
-    var BoxModel = (function () {
-        function BoxModel(id, name) {
+        }
+    }
+    
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name){
             var self = this;
             self.id = id;
             self.name = name;
         }
-        return BoxModel;
-    }());
+    }
+    
     this.bind(new ScreenModel());
+    
 });

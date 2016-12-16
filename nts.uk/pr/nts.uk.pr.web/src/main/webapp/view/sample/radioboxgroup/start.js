@@ -8,11 +8,8 @@ __viewContext.ready(function () {
                 new BoxModel(2, 'box 2'),
                 new BoxModel(3, 'box 3')
             ]);
-            self.selectedValues = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(3, 'box 3')
-            ]);
-            self.selectedIds = ko.observableArray([1, 2]);
+            self.selectedValue = ko.observable(new BoxModel(3, 'box 3'));
+            self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
         }
         ScreenModel.prototype.addBoxes = function () {

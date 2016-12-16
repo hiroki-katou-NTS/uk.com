@@ -22,10 +22,21 @@ var qmm019;
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
                     console.log(option);
-                    self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
+                    self.timeEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                    self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.createlayout = ko.observable(null);
                     self.createNewSelect = ko.observable(null);
                     self.startYmCopy = ko.observable(null);
+                    //---radio
+                    self.itemsRadio = ko.observableArray([
+                        { value: 1, text: '新規に作成' },
+                        { value: 2, text: '既存のレイアウトをコピーして作成' }
+                    ]);
+                    self.isRadioCheck = ko.observable(1);
+                    //---input code
+                    self.layoutCode = ko.observable("");
+                    //---input name
+                    self.layoutName = ko.observable("");
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
@@ -87,7 +98,7 @@ var qmm019;
                     var self = this;
                     if (self.checkData()) {
                         self.createData();
-                        if ($("#newCreate").is(":checked")) {
+                        if (self.isRadioCheck() === 1) {
                             self.createlayout().checkCopy = false;
                         }
                         else {
@@ -111,17 +122,17 @@ var qmm019;
                     //登録時チェック処理
                     var mess = "が入力されていません。";
                     //必須項目の未入力チェックを行う
-                    if ($('#INP_001').val() == '') {
+                    if (self.layoutCode().trim() == '') {
                         alert("コード" + mess);
                         $('#INP_001').focus();
                         return false;
                     }
-                    if ($('#INP_002').val() == '') {
+                    if (self.layoutName().trim() == '') {
                         alert('名称' + mess);
                         $('#INP_002').focus();
                         return false;
                     }
-                    if ($('INP_003').val() == '') {
+                    if (self.selectStartYm().trim() == '') {
                         alert('開始年月' + mess);
                         $('#INP_003').focus();
                         return false;
@@ -133,20 +144,20 @@ var qmm019;
                         return false;
                     }
                     //check YM
-                    var Ym = $('#INP_003').val();
+                    var Ym = self.selectStartYm();
                     if (!nts.uk.time.parseYearMonth(Ym).success) {
                         alert(nts.uk.time.parseYearMonth(Ym).msg);
                         return false;
                     }
                     //コードの重複チェックを行う
                     var isStorage = false;
-                    var stmtCd = $('#INP_001').val().trim();
+                    var stmtCd = self.layoutCode().trim();
                     if (stmtCd.length < 2)
                         stmtCd = '0' + stmtCd;
                     _.forEach(self.layouts(), function (layout) {
                         if (stmtCd == layout.stmtCode) {
                             alert('入力した' + stmtCd + 'は既に存在しています。\r\n' + stmtCd + 'を確認してください。');
-                            $('#INP_001').val(stmtCd);
+                            self.layoutCode(stmtCd);
                             $('#INP_001').focus();
                             isStorage = true;
                             return false;
@@ -159,7 +170,7 @@ var qmm019;
                 };
                 ScreenModel.prototype.createData = function () {
                     var self = this;
-                    var stmtCd = $('#INP_001').val().trim();
+                    var stmtCd = self.layoutCode().trim();
                     if (stmtCd.length < 2)
                         stmtCd = '0' + stmtCd;
                     self.createlayout({
@@ -167,9 +178,9 @@ var qmm019;
                         stmtCodeCopied: self.createNewSelect(),
                         startYmCopied: +self.startYmCopy,
                         stmtCode: stmtCd,
-                        startYm: +$('#INP_003').val().replace('/', ''),
+                        startYm: +self.selectStartYm().replace('/', ''),
                         layoutAtr: 3,
-                        stmtName: $('#INP_002').val() + "",
+                        stmtName: self.layoutName() + "",
                         endYm: 999912
                     });
                 };

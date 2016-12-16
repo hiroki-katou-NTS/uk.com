@@ -17,24 +17,40 @@
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<style>
+					.ntsRadioBox{width:100px;}
+				</style>
             </ui:define>
             
             <ui:define name="content">
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>Switch</h1>
+						<h1>RadioBoxGroup</h1>
 						<h2>Overview</h2>
-						<p>A group of buttons. Behave like a RadioBoxGroup, always select one button</p>
+						<button data-bind="click: addBoxes">Add Box</button>
+						<button data-bind="click: removeBoxes">Remove Box</button>
+						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
+						<br/><br/>
+						<h3>Selected Values as objects</h3>
+						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+											optionsText: 'name',
+											value: selectedValue,
+											enable: enable}"></div>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedValue)"></div>
 						<br/>
-						<div class="cf" data-bind="ntsSwitchButton: {
-							options: roundingRules,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: selectedRuleCode,
-							enable: enable }"></div>
-						<div data-bind="ntsCheckBox: {checked: enable, text: 'Enable SwitchButton'}"></div>
-						<div>Selected code: <span data-bind="text: selectedRuleCode"></span></div>
+						<h3>Selected Values as value</h3>
+						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+						<h4>Selected values:</h4>
+						<div data-bind="text: ko.toJSON(selectedId)"></div>
+						<br/>
+						<h3>Item list:</h3>
+						<div data-bind="text: ko.toJSON(itemList)"></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -43,12 +59,12 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div class="cf" data-bind="ntsSwitchButton: {
-	options: roundingRules,
-	optionsValue: 'code',
+<pre><![CDATA[<div data-bind="ntsRadioBoxGroup: {
+	options: itemList,
+	optionsValue: 'id',
 	optionsText: 'name',
-	value: selectedRuleCode,
-	enable: enable }"></div>]]></pre>
+	value: selectedId,
+	enable: enable}"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -65,36 +81,36 @@
 												<td>options</td>
 												<td>
 													<b>Type:</b> array&lt;any&gt;<br/>
-													List data to generate Switch
+													List data to generate RadioBox
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue</td>
+												<td>optionsValue<br/><i>(optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
-													Field in data will be set as Switch value. If null object will be set as value
+													Field in data will be set as RadioBox value. If null object will be set as value
 												</td>
 											</tr>
 											<tr>
 												<td>optionsText</td>
 												<td>
 													<b>Type:</b> string<br/>
-													Field in data will be set as Switch text
+													Field in data will be set as RadioBox text
 												</td>
 											</tr>
 											<tr>
 												<td>value</td>
 												<td>
 													<b>Type:</b> any<br/>
-													Value of selected Switch
+													Value of selected RadioBox
 												</td>
 											</tr>
 											<tr>
-												<td>enable</td>
+												<td>enable<br/><i>(optional)</i></td>
 												<td>
 													<b>Type:</b> boolean<br/>
 													<b>Default:</b> true<br/>
-													Set enable/disable for Switch control
+													Set enable/disable for RadioBoxGroup control
 												</td>
 											</tr>
 										</tbody>
@@ -103,17 +119,29 @@
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
-    roundingRules: KnockoutObservableArray<any>;
-    selectedRuleCode: any;
-
+    itemList: KnockoutObservableArray<any>;
+    selectedId: KnockoutObservable<number>;
+    enable: KnockoutObservable<boolean>;
+    
     constructor() {
         var self = this;
-        self.roundingRules = ko.observableArray([
-            { code: '1', name: '四捨五入' },
-            { code: '2', name: '切り上げ' },
-            { code: '3', name: '切り捨て' }
+        self.itemList = ko.observableArray([
+            new BoxModel(1, 'box 1'),
+            new BoxModel(2, 'box 2'),
+            new BoxModel(3, 'box 3')
         ]);
-        self.selectedRuleCode = ko.observable(1);
+        self.selectedId = ko.observable(1);
+        self.enable = ko.observable(true);
+    }
+}
+
+class BoxModel {
+    id: number;
+    name: string;
+    constructor(id, name){
+        var self = this;
+        self.id = id;
+        self.name = name;
     }
 }]]></pre>
 								</div>

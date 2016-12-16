@@ -97,7 +97,7 @@ module nts.uk.pr.view.qpp005.a {
                     var lines = cate.lines();
                     _.forEach(lines, (line) => {
                         var include = ko.utils.arrayFirst(line.details(), function(item) {
-                            return item.itemCode() != "" && (item.value() === '' || item.value() === null);
+                            return item.itemCode() != "" && item.correctFlag() === 0 && (item.value() === '' || item.value() === null);
                         });
 
                         if (include) {
@@ -225,7 +225,9 @@ module nts.uk.pr.view.qpp005.a {
                     }
                 };
                 inputtingsDetailsPayment.forEach(detail => {
-                    detail.value.subscribe(() => updateTotalPayment());
+                    if(detail.sumScopeAtr() === 1) {
+                        detail.value.subscribe(() => updateTotalPayment());
+                    }
                 });
 
             }
@@ -241,8 +243,8 @@ module nts.uk.pr.view.qpp005.a {
                         item.value.subscribe(function(val) {
                             var nId = 'ct' + item.categoryAtr() + '_' + (item.linePosition() - 1) + '_' + (item.columnPosition() - 1);
                             var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value());
-                            var fixItem = item.itemCode().substring(0, 1) === 'F';
-                            if (isCorrectFlag && !fixItem) item.correctFlag(1);
+                            var isInputItem = item.itemType() === 0 || item.itemType() === 1;
+                            if (isCorrectFlag && isInputItem) item.correctFlag(1);
                         });
                     });
                 });
@@ -364,15 +366,12 @@ module nts.uk.pr.view.qpp005.a {
             commuteAllowMonth: number;
             commuteAllowFraction: number;
             isCreated: boolean;
-            itemTimeType: number;
-            itemNumberType: number;
-            itemCurencyType: number;
-
+            itemType: number;
 
             constructor(categoryAtr: number, itemAtr: number, itemCode: string, itemName: string, value: number, calculationMethod: number, correctFlag: number,
                 columnPosition: number, linePosition: number, deductAtr: number, displayAtr: number, taxAtr: number,
                 limitAmount: number, commuteAllowTaxImpose: number, commuteAllowMonth: number, commuteAllowFraction: number,
-                isCreated: boolean, itemTimeType: number, itemNumberType: number, itemCurencyType: number) {
+                isCreated: boolean, itemType: number) {
                 var self = this;
                 self.categoryAtr = categoryAtr;
                 self.itemAtr = itemAtr;
@@ -390,9 +389,7 @@ module nts.uk.pr.view.qpp005.a {
                 self.commuteAllowMonth = commuteAllowMonth;
                 self.commuteAllowFraction = commuteAllowFraction;
                 self.isCreated = isCreated;
-                self.itemTimeType = itemTimeType;
-                self.itemNumberType = itemNumberType;
-                self.itemCurencyType = itemCurencyType;
+                self.itemType = itemType;
             }
         }
 

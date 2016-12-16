@@ -7,23 +7,14 @@
     <body>
         <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
-            	<link rel="stylesheet" type="text/css" href="main.css" />
-				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
-				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
-            	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
-				<script src="start.js" />
-				<script src="viewmodel.js" />
-				<script src="service.js" />
-			    <script>var dialogSize = { width: 570, height: 400 };</script>
-			    <script>
-					__viewContext.primitiveValueConstraints = {
-						startYm: {
-							valueType: "String",
-							charType: "Numeric",
-							maxLength: 7
-						}
-					};
-				</script>	
+            	<com:stylefile path="main.css" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
+            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			    <script>var dialogSize = { width: 570, height: 350 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
             </ui:define>
             
@@ -48,9 +39,15 @@
 						</div>
 						<br/><br/>
 						<div class = "selectStyle">
-							<div id="SEL_001">
-								<input type="radio" name="layoutSelect" id="layoutDetele" checked="checked" /> 履歴を削除する<br /><br />
-				  				<input type="radio" name="layoutSelect" id="layoutUpdate"  /> 履歴を修正する<br />
+							<div id="SEL_001" data-bind="foreach: itemsRadio">
+				  				<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" name="textRadio" data-bind="checkedValue: value, 
+																			checked: $parent.isRadioCheck,
+																			enable: true" />
+										<span class="box"></span><span class="label" data-bind="text: text"></span>
+									</label>
+								</span>
 							</div>							
 							<div>
 								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/><br />
@@ -63,10 +60,10 @@
 								</div>
 							</div>
 						</div>
-						<br /><br />
+						<br />
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001" data-bind = "click: layoutProcess">決定</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind = "click: layoutProcess, enable: $root.errors.isEmpty">決定</button>
 							<button class="large" id="BTN_002" data-bind = "click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>

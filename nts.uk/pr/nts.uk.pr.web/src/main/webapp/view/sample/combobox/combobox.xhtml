@@ -33,8 +33,7 @@
 							<button data-bind="click: addOptions">Add Item</button>
 						</div>
 						<br />
-						<div id="combo-box"
-							data-bind="ntsComboBox: {options: itemList,
+						<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
 											optionsValue: 'code',
 											value: selectedCode,
 											optionsText: 'name',
@@ -43,14 +42,13 @@
 											columns: [
 												{ prop: 'code', length: 4 },
 												{ prop: 'name', length: 10 },
-											]}"
-							class="cf"></div>
+											]}"></div>
 						<button data-bind="click: removeByCode">Remove Item</button>
 						<br />
 				
 						<div class="status">
-							<label><input type="checkbox" data-bind="checked: isEnable" />Enable</label>
-							<label><input type="checkbox" data-bind="checked: isEditable" />Editable</label>
+							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
+							<span data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>
 						</div>
 						<div>
 							Your selected code: <span data-bind="text:selectedCode"></span>
@@ -62,8 +60,164 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
+	options: itemList,
+	optionsValue: 'code',
+	value: selectedCode,
+	optionsText: 'name',
+	editable: isEditable,
+	enable: isEnable,
+	columns: [
+		{ prop: 'code', length: 4 },
+		{ prop: 'name', length: 10 },
+	]}"></div>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>options</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List data to generate ComboBox
+												</td>
+											</tr>
+											<tr>
+												<td>optionsValue</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as ComboBox value
+												</td>
+											</tr>
+											<tr>
+												<td>optionsText</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as ComboBox text
+												</td>
+											</tr>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> any<br/>
+													Current selected value
+												</td>
+											</tr>
+											<tr>
+												<td>editable</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													True is ComboBox. Can enter value for this control.<br/>
+													False is DropDownList. Can select item only.
+												</td>
+											</tr>											
+											<tr>
+												<td>enable</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for MultiCheckBox control
+												</td>
+											</tr>
+											<tr>
+												<td>visible</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set visible for ComboBox control
+												</td>
+											</tr>
+											<tr>
+												<td>columns<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> array&lt;column&gt;<br/>
+													Array of column object will be displayed in drop down part.<br/>
+													<i>prop:</i> field name of data<br/>
+													<i>length:</i> length of character for this field 
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    itemList: KnockoutObservableArray<ItemModel>;
+    itemName: KnockoutObservable<string>;
+    currentCode: KnockoutObservable<number>
+    selectedCode: KnockoutObservable<string>;
+    isEnable: KnockoutObservable<boolean>;
+    isEditable: KnockoutObservable<boolean>;
+    /**
+     * Constructor.
+     */
+    constructor() {
+        var self = this;
+        self.itemList = ko.observableArray([
+            new ItemModel('基本給1', '基本給'),
+            new ItemModel('基本給2', '役職手当'),
+            new ItemModel('0003', '基本給')
+        ]);
+        self.itemName = ko.observable('');
+        self.currentCode = ko.observable(3);
+        self.selectedCode = ko.observable('0002')
+        self.isEnable = ko.observable(true);
+        self.isEditable = ko.observable(true);
+    }
+
+    /**
+     * Add options.
+     */
+    addOptions() {
+        var self = this;
+        var newCode = self.currentCode() + 1;
+        var itemCode = newCode.toString();
+        var codeLength = itemCode.length;
+        while (codeLength < 4) {
+            itemCode = '0' + itemCode;
+            codeLength++;
+        }
+        self.itemList.push(new ItemModel(itemCode, self.itemName()));
+        self.currentCode(newCode);
+    }
+    
+    /**
+     * Clear options.
+     */
+    clearOptions() {
+        this.itemList([]);
+    }
+    
+    /**
+     * Remove item by code;
+     */
+    removeByCode() {
+        var self = this;
+        var selected: ItemModel = self.itemList().filter(item => item.code == self.selectedCode())[0];
+        self.itemList.remove(selected);
+    }
+};
+
+class ItemModel {
+    code: string;
+    name: string;
+    label: string;
+    
+    constructor(code: string, name: string) {
+        this.code = code;
+        this.name = name;
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>
