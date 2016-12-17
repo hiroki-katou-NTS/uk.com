@@ -202,7 +202,8 @@ var qmm019;
                         new ItemModel(1, '個人情報'),
                         new ItemModel(2, '計算式'),
                         new ItemModel(3, '賃金テーブル'),
-                        new ItemModel(4, '共通金額')
+                        new ItemModel(4, '共通金額'),
+                        new ItemModel(9, 'システム計算')
                     ]);
                     var itemListCalcMethod1 = ko.observableArray([
                         new ItemModel(0, '手入力'),
@@ -210,7 +211,8 @@ var qmm019;
                         new ItemModel(2, '計算式'),
                         new ItemModel(3, '賃金テーブル'),
                         new ItemModel(4, '共通金額'),
-                        new ItemModel(5, '支給相殺 ')
+                        new ItemModel(5, '支給相殺 '),
+                        new ItemModel(9, 'システム計算')
                     ]);
                     var itemListDistributeWay = ko.observableArray([
                         new ItemModel(0, '割合で計算'),
