@@ -4,7 +4,7 @@ __viewContext.ready(function () {
         selectedValue: KnockoutObservable<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        count: any = 4;
+        count: any = 10;
         
         constructor() {
             var self = this;
