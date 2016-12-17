@@ -1,7 +1,7 @@
 __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
-            this.count = 4;
+            this.count = 10;
             var self = this;
             self.itemList = ko.observableArray([]);
             for (var i = 1; i < 10; i++) {
