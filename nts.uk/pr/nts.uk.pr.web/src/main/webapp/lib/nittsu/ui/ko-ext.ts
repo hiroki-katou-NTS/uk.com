@@ -1442,6 +1442,8 @@ module nts.uk.ui.koExtentions {
                         checkBoxMode: "biState"
                     }]
             });
+            
+            $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
         }
 
         /**

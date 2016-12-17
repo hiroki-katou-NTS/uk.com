@@ -1363,6 +1363,7 @@ var nts;
                                     checkBoxMode: "biState"
                                 }]
                         });
+                        $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
                     };
                     /**
                      * Update
