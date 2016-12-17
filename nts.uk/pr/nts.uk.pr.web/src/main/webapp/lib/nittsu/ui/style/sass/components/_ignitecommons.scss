@@ -1,6 +1,11 @@
 @mixin iggridstyle {
 	tr {
 		&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
+			th.ui-widget-header {
+				color: $font_color;
+				background-color: #CFF1A5;
+			}
+		
 			td, th {
 			    font: {
 			        size: $normal_font_size;

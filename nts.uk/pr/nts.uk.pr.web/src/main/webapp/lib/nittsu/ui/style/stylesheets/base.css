@@ -853,21 +853,31 @@ button.nts-switch-button.selected:hover {
 }
 
 /* line 4, ../sass/components/_ignitecommons.scss */
+.nts-gridlist.ui-iggrid tr th.ui-widget-header, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-widget-header, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-widget-header {
+  color: #000;
+  background-color: #CFF1A5;
+}
+/* line 9, ../sass/components/_ignitecommons.scss */
 .nts-gridlist.ui-iggrid tr td, .nts-gridlist.ui-iggrid tr th, .nts-gridlist.ui-iggrid tr.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-state-focus th, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th {
   font-size: 14px;
   font-family: "DroidSansMono", "Meiryo";
 }
-/* line 10, ../sass/components/_ignitecommons.scss */
+/* line 15, ../sass/components/_ignitecommons.scss */
 .nts-gridlist.ui-iggrid tr td, .nts-gridlist.ui-iggrid tr td.ui-state-active, .nts-gridlist.ui-iggrid tr td.ui-state-focus, .nts-gridlist.ui-iggrid tr td.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr th, .nts-gridlist.ui-iggrid tr th.ui-state-active, .nts-gridlist.ui-iggrid tr th.ui-state-focus, .nts-gridlist.ui-iggrid tr th.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-state-focus td.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-state-focus td.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus td.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus th, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-state-focus th.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-active.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-active, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-focus, .nts-gridlist.ui-iggrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-active.ui-state-focus {
   padding: 0 2px;
 }
 
 /* line 4, ../sass/components/_ignitecommons.scss */
+.nts-treegridview.ui-igtreegrid tr th.ui-widget-header, .nts-treegridview.ui-igtreegrid tr.ui-state-focus th.ui-widget-header, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus th.ui-widget-header {
+  color: #000;
+  background-color: #CFF1A5;
+}
+/* line 9, ../sass/components/_ignitecommons.scss */
 .nts-treegridview.ui-igtreegrid tr td, .nts-treegridview.ui-igtreegrid tr th, .nts-treegridview.ui-igtreegrid tr.ui-state-focus td, .nts-treegridview.ui-igtreegrid tr.ui-state-focus th, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus td, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus th {
   font-size: 14px;
   font-family: "DroidSansMono", "Meiryo";
 }
-/* line 10, ../sass/components/_ignitecommons.scss */
+/* line 15, ../sass/components/_ignitecommons.scss */
 .nts-treegridview.ui-igtreegrid tr td, .nts-treegridview.ui-igtreegrid tr td.ui-state-active, .nts-treegridview.ui-igtreegrid tr td.ui-state-focus, .nts-treegridview.ui-igtreegrid tr td.ui-state-active.ui-state-focus, .nts-treegridview.ui-igtreegrid tr th, .nts-treegridview.ui-igtreegrid tr th.ui-state-active, .nts-treegridview.ui-igtreegrid tr th.ui-state-focus, .nts-treegridview.ui-igtreegrid tr th.ui-state-active.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-state-focus td, .nts-treegridview.ui-igtreegrid tr.ui-state-focus td.ui-state-active, .nts-treegridview.ui-igtreegrid tr.ui-state-focus td.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-state-focus td.ui-state-active.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-state-focus th, .nts-treegridview.ui-igtreegrid tr.ui-state-focus th.ui-state-active, .nts-treegridview.ui-igtreegrid tr.ui-state-focus th.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-state-focus th.ui-state-active.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus td, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-active, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus td.ui-state-active.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus th, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-active, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-focus, .nts-treegridview.ui-igtreegrid tr.ui-ig-altrecord.ui-state-focus th.ui-state-active.ui-state-focus {
   padding: 0 2px;
 }
