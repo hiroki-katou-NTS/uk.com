@@ -3,6 +3,12 @@
 #contents-area {
     width: 1300px;
 }
+#A_BTN_003 {
+	margin-left: 165px;
+}
+#A_BTN_004 {
+    margin-right: 520px;
+}
 
 .nts-left-content{
 	float: left;
