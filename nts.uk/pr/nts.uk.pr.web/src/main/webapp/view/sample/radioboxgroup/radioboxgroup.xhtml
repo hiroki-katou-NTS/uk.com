@@ -19,6 +19,7 @@
 				<com:scriptfile path="../catalog/catalog.js" />
 				<style>
 					.ntsRadioBox{width:100px;}
+					#first-list .ntsRadioBox{width: 33%;}
 				</style>
             </ui:define>
             
@@ -33,7 +34,7 @@
 						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
 						<br/><br/>
 						<h3>Selected Values as objects</h3>
-						<div data-bind="ntsRadioBoxGroup: {options: itemList,
+						<div id="first-list" data-bind="ntsRadioBoxGroup: {options: itemList,
 											optionsText: 'name',
 											value: selectedValue,
 											enable: enable}"></div>
@@ -56,6 +57,7 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-css">CSS</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -144,6 +146,55 @@ class BoxModel {
         self.name = name;
     }
 }]]></pre>
+								</div>
+								<div id="tabs-css" class="cf">
+									<h3>Outline</h3>
+<pre><![CDATA[<div class="outline" data-bind="ntsRadioBoxGroup: {
+	options: itemList,
+	optionsValue: 'id',
+	optionsText: 'name',
+	value: selectedId,
+	enable: enable}"></div>]]></pre>
+									<div class="cf" style="background:#0D1C33; padding:10px 5px; margin: 10px 0;">
+										<div class="outline" data-bind="ntsRadioBoxGroup: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+									</div>
+									<div class="cf" style="background:#17373C; padding:10px 5px; margin: 10px 0;">
+										<div class="outline" data-bind="ntsRadioBoxGroup: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+									</div>
+									<div class="cf" style="background:#2B6832; padding:10px 5px; margin: 10px 0;">
+										<div class="outline" data-bind="ntsRadioBoxGroup: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+									</div>
+									<div class="cf" style="background:#4F9300; padding:10px 5px; margin: 10px 0;">
+										<div class="outline" data-bind="ntsRadioBoxGroup: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+									</div>
+									<div class="cf" style="background:#A1D700; padding:10px 5px; margin: 10px 0;">
+										<div class="outline" data-bind="ntsRadioBoxGroup: {
+											options: itemList,
+											optionsValue: 'id',
+											optionsText: 'name',
+											value: selectedId,
+											enable: enable}"></div>
+									</div>
 								</div>
 							</div>
 						</article>

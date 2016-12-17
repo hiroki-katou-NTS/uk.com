@@ -26,8 +26,8 @@
 							<button data-bind="click: addOptions">Add Item</button>
 						</div>
 						<br />
-						<div id="list-box"
-							data-bind="ntsListBox: {options: itemList,
+						<div id="list-box" data-bind="ntsListBox: {
+											options: itemList,
 											optionsValue: 'code',
 											optionsText: 'name',
 											multiple: true,
@@ -39,8 +39,7 @@
 												{ prop: 'code', length: 4 },
 												{ prop: 'name', length: 10 },
 												{ prop: 'description', length: 10 }
-											]}"
-							class="cf"></div>
+											]}"></div>
 						<button data-bind="click: remove">Remove Item</button>
 						<button data-bind="click: selectAll">Select All</button>
 						<button data-bind="click: deselectAll">Deselect All</button>
@@ -56,9 +55,107 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-events">Events</a></li>
+									<li><a href="#tabs-methods">Methods</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-
+									<h2>HTML</h2>
+<pre><![CDATA[<div id="list-box" data-bind="ntsListBox: {
+	options: itemList,
+	optionsValue: 'code',
+	optionsText: 'name',
+	multiple: true,
+	value: selectedCodes,
+	enable: isEnable(),
+	rows: 3,
+	required: isRequired,
+	columns: [
+		{ prop: 'code', length: 4 },
+		{ prop: 'name', length: 10 },
+		{ prop: 'description', length: 10 }
+	]}"></div>]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>options</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List data to generate ListBox
+												</td>
+											</tr>
+											<tr>
+												<td>optionsValue<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as ListBox value. If null object will be set as value
+												</td>
+											</tr>
+											<tr>
+												<td>optionsText</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as ListBox text
+												</td>
+											</tr>
+											<tr>
+												<td>multiple</td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for ListBox control
+												</td>
+											</tr>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List selected value
+												</td>
+											</tr>
+											<tr>
+												<td>enable<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> true<br/>
+													Set enable/disable for ListBox control
+												</td>
+											</tr>
+											<tr>
+												<td>rows</td>
+												<td>
+													<b>Type:</b> number<br/>
+													Set number of rows will be show
+												</td>
+											</tr>
+											<tr>
+												<td>columns<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> array&lt;column&gt;<br/>
+													Array of column object will be displayed in drop down part.<br/>
+													<i>prop:</i> field name of data<br/>
+													<i>length:</i> length of character for this field 
+												</td>
+											</tr>
+											<tr>
+												<td>required<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													Set required for ListBox
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
@@ -113,6 +210,60 @@ class ItemModel {
         this.description = description;
     }
 }]]></pre>
+								</div>
+								<div id="tabs-events" class="cf">
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Events</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>selectionChanging(event)</td>
+												<td>
+													Fire when user changing selected value(s), can be cancel. Use event.detail to get selected value(s).
+												</td>
+											</tr>
+											<tr>
+												<td>selectionChanged(event)</td>
+												<td>
+													Fire when user changed selected value(s), cannot be cancel. Use event.detail to get selected value(s).
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-methods" class="cf">
+									<table>
+										<colgroup>
+											<col width="350px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Methods</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>$("#list-box").ntsListBox('selectAll');</td>
+												<td>
+													Select all values
+												</td>
+											</tr>
+											<tr>
+												<td>$("#list-box").ntsListBox('deselectAll');</td>
+												<td>
+													Deselect all values
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</article>
