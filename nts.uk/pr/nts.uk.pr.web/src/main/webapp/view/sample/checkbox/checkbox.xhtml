@@ -35,12 +35,13 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-css">CSS</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>
-<!-- or -->
-<div data-bind="ntsCheckBox: { checked: enable }">This is test enable</div>]]></pre>
+<pre><![CDATA[<div data-bind="ntsCheckBox: { checked: enable }">This is test enable</div>
+<!-- Full binding -->
+<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -90,6 +91,25 @@
         self.enable = ko.observable(true);
     }
 }]]></pre>
+								</div>
+								<div id="tabs-css" class="cf">
+									<h3>Outline</h3>
+									<pre><![CDATA[<div class="outline" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Outline CheckBox on colored backgournd' }"></div>]]></pre>
+									<div class="cf" style="background:#FF6138; padding:10px 5px; margin: 10px 0;">
+										<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Outline CheckBox on colored backgournd' }" class="cf outline"></div>
+									</div>
+									<div class="cf" style="background:#CC4452; padding:10px 5px; margin: 10px 0;">
+										<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Outline CheckBox on colored backgournd' }" class="cf outline"></div>
+									</div>
+									<div class="cf" style="background:#723147; padding:10px 5px; margin: 10px 0;">
+										<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Outline CheckBox on colored backgournd' }" class="cf outline"></div>
+									</div>
+									<div class="cf" style="background:#79BD8F; padding:10px 5px; margin: 10px 0;">
+										<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Outline CheckBox on colored backgournd' }" class="cf outline"></div>
+									</div>
+									<div class="cf" style="background:#00A388; padding:10px 5px; margin: 10px 0;">
+										<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Outline CheckBox on colored backgournd' }" class="cf outline"></div>
+									</div>
 								</div>
 							</div>
 						</article>
