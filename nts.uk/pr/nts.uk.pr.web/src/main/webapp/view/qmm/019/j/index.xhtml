@@ -28,9 +28,18 @@
 			<form>
 				<div>
 					<fieldset>
-					 	<label><input checked="checked" class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字する行</label><br /> 
+					<div class= "radiobox" style="width:33%"
+							data-bind="ntsRadioBoxGroup: {
+								
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedId,
+								enable: enable}"></div>
+						
+					 	<!-- <label><input checked="checked" class="radio-1" type="radio" value="1" name="selection" data-bind="checked: selectedBox"/>明細書に印字する行</label><br /> 
 						<label><input class="radio-1" type="radio" value="2" name="selection" data-bind="checked: selectedBox"/>明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）</label><br /> 
-						<label><input class="radio-1" type="radio" value="3" name="selection" data-bind="checked: selectedBox"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）</label><br />
+						<label><input class="radio-1" type="radio" value="3" name="selection" data-bind="checked: selectedBox"/>レイアウトから行を削除（登録処理を行うまでは元に戻せます）</label><br /> -->
 					</fieldset>
 				</div>
 			</form>
