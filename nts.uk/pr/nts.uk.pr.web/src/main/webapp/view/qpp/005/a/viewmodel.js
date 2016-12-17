@@ -55,7 +55,7 @@ var nts;
                                         var categoryPayment = self.paymentDataResult().categories()[0];
                                         var categoryDeduct = self.paymentDataResult().categories()[1];
                                         var catePos = -1;
-                                        if (self.paymentDataResult().categories().length >= 3) {
+                                        if (self.paymentDataResult().categories().length > 3) {
                                             catePos = 3;
                                         }
                                         else {
