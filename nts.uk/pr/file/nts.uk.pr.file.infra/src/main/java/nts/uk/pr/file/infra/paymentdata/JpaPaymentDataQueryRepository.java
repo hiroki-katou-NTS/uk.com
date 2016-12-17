@@ -82,9 +82,9 @@ public class JpaPaymentDataQueryRepository extends JpaRepository implements Paym
 		BigDecimal commuteAllowFraction = (BigDecimal) x[11];
 		int correctFlag = (int) x[12];
 		int displayAtr  = 0;
-		return DetailItemDto.toData(categoryAtr, itemAtr, itemCode, "", value.doubleValue(), correctFlag, linePosition, colPosition,
+		return DetailItemDto.toData(categoryAtr, itemAtr, itemCode, value.doubleValue(), correctFlag, linePosition, colPosition,
 										deductAtr, displayAtr, taxATR, limitAmount, commuteAllowTaxImpose.doubleValue(),
-										commuteAllowMonth.doubleValue(), commuteAllowFraction.doubleValue(), true);
+										commuteAllowMonth.doubleValue(), commuteAllowFraction.doubleValue());
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Data
 public class DetailItemDto {
+
 	/**
 	 * category atr
 	 */
@@ -69,11 +70,15 @@ public class DetailItemDto {
 
 	@Getter
 	public int itemType;
-
+	
+	public String itemColor;
+	
+	public Integer sumScopeAtr;
+	
 	public DetailItemDto(int categoryAtr, Integer itemAtr, String itemCode, String itemName, Double value,
 			int calculationMethod, int correctFlag, int linePosition, int columnPosition, Integer deductAtr,
 			Integer displayAtr, Integer taxAtr, Integer limitAmount, Double commuteAllowTaxImpose,
-			Double commuteAllowMonth, Double commuteAllowFraction, boolean isCreated) {
+			Double commuteAllowMonth, Double commuteAllowFraction, Integer sumScopeAtr, boolean isCreated) {
 		super();
 		this.categoryAtr = categoryAtr;
 		this.itemAtr = itemAtr;
@@ -91,9 +96,59 @@ public class DetailItemDto {
 		this.commuteAllowTaxImpose = commuteAllowTaxImpose;
 		this.commuteAllowMonth = commuteAllowMonth;
 		this.commuteAllowFraction = commuteAllowFraction;
+		this.sumScopeAtr = sumScopeAtr;
 		this.isCreated = isCreated;
+		if(this.correctFlag == 1) {
+			this.itemColor = "#bdd7ee";
+		}
+		
+		
 	}
+	
+	public DetailItemDto(int categoryAtr, Integer itemAtr, String itemCode,Double value,
+			int correctFlag, int linePosition, int columnPosition, Integer deductAtr,
+			Integer displayAtr, Integer taxAtr, Integer limitAmount, Double commuteAllowTaxImpose,
+			Double commuteAllowMonth, Double commuteAllowFraction) {
+		super();
+		this.categoryAtr = categoryAtr;
+		this.itemAtr = itemAtr;
+		this.itemCode = itemCode;
+		this.value = value;
+		this.correctFlag = correctFlag;
+		this.linePosition = linePosition;
+		this.columnPosition = columnPosition;
+		this.deductAtr = deductAtr;
+		this.displayAtr = displayAtr;
+		this.taxAtr = taxAtr;
+		this.limitAmount = limitAmount;
+		this.commuteAllowTaxImpose = commuteAllowTaxImpose;
+		this.commuteAllowMonth = commuteAllowMonth;
+		this.commuteAllowFraction = commuteAllowFraction;
+	}
+	
 
+	/**
+	 * App から
+	 * 
+	 * @param categoryAtr
+	 * @param itemAtr
+	 * @param itemCode
+	 * @param itemName
+	 * @param value
+	 * @param calculationMethod
+	 * @param correctFlag
+	 * @param linePosition
+	 * @param colPosition
+	 * @param deductAtr
+	 * @param displayAtr
+	 * @param taxAtr
+	 * @param limitAmount
+	 * @param commuteAllowTaxImpose
+	 * @param commuteAllowMonth
+	 * @param commuteAllowFraction
+	 * @param isCreated
+	 * @return
+	 */
 	public static DetailItemDto fromData(
 			int categoryAtr, 
 			Integer itemAtr, 
@@ -111,6 +166,7 @@ public class DetailItemDto {
 			Double commuteAllowTaxImpose,
 			Double commuteAllowMonth, 
 			Double commuteAllowFraction, 
+			Integer sumScopeAtr,
 			boolean isCreated) {
 		return new DetailItemDto(
 				categoryAtr, 
@@ -129,15 +185,36 @@ public class DetailItemDto {
 				commuteAllowTaxImpose,
 				commuteAllowMonth, 
 				commuteAllowFraction, 
+				sumScopeAtr,
 				isCreated);
 
 	}
 
+	/**
+	 * DBから
+	 * 
+	 * @param categoryAtr
+	 * @param itemAtr
+	 * @param itemCode
+	 * @param itemName
+	 * @param value
+	 * @param correctFlag
+	 * @param linePosition
+	 * @param colPosition
+	 * @param deductAtr
+	 * @param displayAtr
+	 * @param taxAtr
+	 * @param limitAmount
+	 * @param commuteAllowTaxImpose
+	 * @param commuteAllowMonth
+	 * @param commuteAllowFraction
+	 * @param isCreated
+	 * @return
+	 */
 	public static DetailItemDto toData(
 			int categoryAtr, 
 			Integer itemAtr, 
 			String itemCode, 
-			String itemName,
 			Double value, 
 			int correctFlag, 
 			int linePosition, 
@@ -148,15 +225,12 @@ public class DetailItemDto {
 			Integer limitAmount, 
 			Double commuteAllowTaxImpose,
 			Double commuteAllowMonth, 
-			Double commuteAllowFraction, 
-			boolean isCreated) {
+			Double commuteAllowFraction) {
 		return new DetailItemDto(
 				categoryAtr, 
 				itemAtr, 
 				itemCode, 
-				itemName, 
 				value, 
-				-1,
 				correctFlag,
 				linePosition, 
 				colPosition, 
@@ -166,8 +240,7 @@ public class DetailItemDto {
 				limitAmount, 
 				commuteAllowTaxImpose,
 				commuteAllowMonth, 
-				commuteAllowFraction, 
-				isCreated);
+				commuteAllowFraction);
 	}
 	
 	/**
@@ -176,16 +249,16 @@ public class DetailItemDto {
 	public void setItemType() {
 		switch (this.itemAtr) {
 		case 0:
-			// 手入力
-			if (this.calculationMethod == 0) {
+			// システム計算
+			if (this.calculationMethod != 9) {
 				this.itemType = 0;
 			} else {
 				this.itemType = -1;
 			}
 			break;
 		case 1:
-			// 手入力
-			if (this.calculationMethod == 0) {
+			// システム計算
+			if (this.calculationMethod != 9) {
 				// 通勤費リンク
 				if (this.taxAtr == 3 || this.taxAtr == 4) {
 					this.itemType = 1;
@@ -198,8 +271,8 @@ public class DetailItemDto {
 			break;
 		case 2:
 		case 3:
-			// 手入力
-			if (this.calculationMethod == 0) {
+			// システム計算
+			if (this.calculationMethod != 9) {
 				// 通勤費リンク
 				if (this.taxAtr == 3 || this.taxAtr == 4) {
 					this.itemType = 1;
@@ -214,4 +287,5 @@ public class DetailItemDto {
 			break;
 		}
 	}
+
 }
