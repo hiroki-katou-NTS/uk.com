@@ -321,7 +321,10 @@ public class GetPaymentDataQueryProcessor {
 	 */
 	private PrintPositionCategoryDto getPrintPosition(List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines,
 			int position) {
-		int printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().map(x-> x.getCtAtr().value).orElse(null);
+		Integer printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().map(x-> x.getCtAtr().value).orElse(null);
+		if (printPosCtg == null) {
+			return null;
+		}
 		Long countLine = lines.stream().filter(x -> x.getCategoryAtr().value == printPosCtg
 				&& x.getLineDispayAttribute().value == LineDispAtr.ENABLE.value).count();
 

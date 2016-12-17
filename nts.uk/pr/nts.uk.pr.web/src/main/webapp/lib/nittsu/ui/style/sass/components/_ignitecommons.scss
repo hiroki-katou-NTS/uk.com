@@ -1,0 +1,16 @@
+@mixin iggridstyle {
+	tr {
+		&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
+			td, th {
+			    font: {
+			        size: $normal_font_size;
+			        family: $font_family_monospace;
+			    }
+			    
+			    &, &.ui-state-active, &.ui-state-focus, &.ui-state-active.ui-state-focus {
+			    	padding: 0 2px;
+			    }
+			}
+		}
+	}
+}
