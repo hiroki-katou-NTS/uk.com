@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.screen.app.query.qpp005;
+package nts.uk.pr.file.infra.paymentdata;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +26,16 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.DetailItemDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.LayoutMasterCategoryDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.LineDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataHeaderDto;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.PaymentDataResult;
-import nts.uk.ctx.pr.screen.app.query.qpp005.result.PrintPositionCategoryDto;
+import nts.uk.pr.file.infra.paymentdata.PaymentDataQuery;
+import nts.uk.pr.file.infra.paymentdata.PaymentDataQueryRepository;
+import nts.uk.pr.file.infra.paymentdata.result.DetailItemDto;
+import nts.uk.pr.file.infra.paymentdata.result.LayoutMasterCategoryDto;
+import nts.uk.pr.file.infra.paymentdata.result.LineDto;
+import nts.uk.pr.file.infra.paymentdata.result.PaymentDataHeaderDto;
+import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
+import nts.uk.pr.file.infra.paymentdata.result.PrintPositionCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
-/**
- * GetPaymentDataQueryProcessor
- * 
- * @author vunv
- *
- */
 @RequestScoped
 public class GetPaymentDataQueryProcessor {
 
@@ -155,7 +151,7 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM,
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), payment.getCompanyName(), payment.getDepartmentCode(), payment.getDepartmentName(), payment.getPersonName().v() , processingYM,
 					payment.getDependentNumber().v(), payment.getSpecificationCode().v(), layout.getStmtName().v(),
 					query.getEmployeeCode(), payment.getComment().v(), true,
 					printPosCates));
@@ -163,7 +159,7 @@ public class GetPaymentDataQueryProcessor {
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), processingYM, 0,
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), "" , "", "", "", processingYM, 0,
 					layout.getStmtCode().v(), layout.getStmtName().v(), query.getEmployeeCode(), "", false,
 					printPosCates));
 
@@ -256,7 +252,6 @@ public class GetPaymentDataQueryProcessor {
 										iValue.getCommuteAllowTaxImpose(),
 										iValue.getCommuteAllowMonth(),
 										iValue.getCommuteAllowFraction(),
-										d.getSumScopeAtr().value,
 										iValue.getValue() != null);
 							} else {
 								result =  DetailItemDto.fromData(
@@ -276,13 +271,12 @@ public class GetPaymentDataQueryProcessor {
 										0.0,
 										0.0,
 										0.0,
-										d.getSumScopeAtr().value,
 										false);
 							}
 							result.setItemType();
 							return result;
 						}).orElse(DetailItemDto.fromData(
-								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, null, false));
+								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, false));
 				items.add(detailItem);
 			}
 
@@ -321,10 +315,7 @@ public class GetPaymentDataQueryProcessor {
 	 */
 	private PrintPositionCategoryDto getPrintPosition(List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines,
 			int position) {
-		Integer printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().map(x-> x.getCtAtr().value).orElse(null);
-		if (printPosCtg == null) {
-			return null;
-		}
+		int printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().get().getCtAtr().value;
 		Long countLine = lines.stream().filter(x -> x.getCategoryAtr().value == printPosCtg
 				&& x.getLineDispayAttribute().value == LineDispAtr.ENABLE.value).count();
 

@@ -120,6 +120,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				entity.pensionInsuranceGrade, entity.pensionAverageEarn, entity.employmentInsuranceAtr,
 				entity.dependentNumber, entity.workInsuranceCalculateAtr, entity.insuredAtr, entity.bonusTaxRate,
 				entity.calcFlag, entity.makeMethodFlag, entity.comment);
+		domain.additionInfo(entity.departmentCode, entity.departmentName, entity.companyName);
 		// entity.toDomain(domain);
 		return domain;
 	}

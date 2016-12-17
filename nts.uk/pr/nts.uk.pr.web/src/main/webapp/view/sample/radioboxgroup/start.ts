@@ -8,11 +8,10 @@ __viewContext.ready(function () {
         
         constructor() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(2, 'box 2'),
-                new BoxModel(3, 'box 3')
-            ]);
+            self.itemList = ko.observableArray([]);
+            for (let i = 1; i < 10; i++) {
+                self.itemList.push(new BoxModel(i, 'box ' + i));
+            }
             self.selectedValue = ko.observable(new BoxModel(3, 'box 3'));
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);

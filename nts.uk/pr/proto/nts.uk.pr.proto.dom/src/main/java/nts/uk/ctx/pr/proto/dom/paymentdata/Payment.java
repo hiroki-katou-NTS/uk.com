@@ -134,6 +134,21 @@ public class Payment extends AggregateRoot {
 	@Getter
 	private List<PrintPositionCategory> printCategories = new ArrayList<>();
 
+	@Getter
+	private String departmentCode;
+	
+	@Getter
+	private String departmentName;
+	
+	@Getter
+	private String companyName;
+	
+	public void additionInfo(String departmentCode, String departmentName, String companyName) {
+		this.departmentCode = departmentCode;
+		this.departmentName = departmentName;
+		this.companyName = companyName;
+	}
+	
 	public Payment(
 				CompanyCode companyCode, 
 				PersonId personId, 

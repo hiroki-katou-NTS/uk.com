@@ -25,36 +25,34 @@
 					<div id="content" class="cf">
 						<h1>RadioBox</h1>
 						<h2>Overview</h2>
-						<p>Because RadioBox can be place anywhere so you must implement it by your own</p>
+						<note>
+							<b>Before using RadioBox!</b><br/>
+							If you want to create a list of RadioBoxes then using <a href="/nts.uk.pr.web/view/sample/radioboxgroup/radioboxgroup.xhtml">RadioBoxGroup</a> instead.<br/>
+							Use RadioBox only to customize your layout like below demo
+						</note>
+						<span class="ntsControl">
+							<label class="ntsRadioBox">
+								<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedValue, enable: enable" />
+								<span class="box"></span><span class="label" data-bind="text: 'Panel 1 select'"></span>
+							</label>
+						</span>
+						<div style="margin: 5px 25px 10px; padding: 10px; border:1px solid #ddd; border-radius: 5px;">
+							<input data-bind="ntsTextEditor: {value: ko.observable(), enable: (selectedValue() == 1)}" />
+							<button data-bind="enable: (selectedValue() == 1)">Click me!</button>
+							<span data-bind="ntsCheckBox: {checked: true, enable: (selectedValue() == 1)}">Select me!</span>
+						</div>
+						<span class="ntsControl">
+							<label class="ntsRadioBox">
+								<input type="radio" name="textRadio" data-bind="checkedValue: 2, checked: selectedValue, enable: enable" />
+								<span class="box"></span><span class="label" data-bind="text: 'Panel 2 select'"></span>
+							</label>
+						</span>
+						<div style="margin: 5px 25px 10px; padding: 10px; border:1px solid #ddd; border-radius: 5px;">
+							<input data-bind="ntsTextEditor: {value: ko.observable(), enable: (selectedValue() == 2)}" />
+							<button data-bind="enable: (selectedValue() == 2)">Click me!</button>
+							<span data-bind="ntsCheckBox: {checked: true, enable: (selectedValue() == 2)}">Select me!</span>
+						</div>
 						<br/>
-						<div data-bind="foreach: items">
-							<span class="ntsControl">
-								<label class="ntsRadioBox">
-									<input type="radio" name="textRadio" data-bind="checkedValue: value, checked: $parent.selectedValue, enable: $parent.enable" />
-									<span class="box"></span><span class="label" data-bind="text: text"></span>
-								</label>
-							</span>
-						</div>
-						<div class="cf" style="background:#00B050; padding:10px 5px; margin: 10px 0;">
-							<span class="ntsControl outline">
-								<label class="ntsRadioBox">
-									<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValue, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: 'Four'"></span>
-								</label>
-							</span>
-							<span class="ntsControl outline">
-								<label class="ntsRadioBox">
-									<input type="radio" name="textRadio" data-bind="checkedValue: 5, checked: selectedValue, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: 'Five'"></span>
-								</label>
-							</span>
-							<span class="ntsControl outline">
-								<label class="ntsRadioBox">
-									<input type="radio" name="textRadio" data-bind="checkedValue: 6, checked: selectedValue, enable: enable" />
-									<span class="box"></span><span class="label" data-bind="text: 'Six'"></span>
-								</label>
-							</span>
-						</div>
 						<div data-bind="ntsCheckBox: { checked: enable }" class="cf">Enable</div>
 						<div>Selected Value: <span data-bind="text: ko.toJSON(selectedValue())"></span></div>
 						<article class="cf">
@@ -62,6 +60,7 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-css">CSS</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -131,6 +130,50 @@
         self.selectedValue = ko.observable(2);
     }
 }]]></pre>
+								</div>
+								<div id="tabs-css" class="cf">
+									<h3>Outline</h3>
+									<pre><![CDATA[<div class="outline" data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'Text here' }"></div>]]></pre>
+									<div class="cf" style="background:#C22121; padding:10px 5px; margin: 10px 0;">
+										<span class="ntsControl outline">
+											<label class="ntsRadioBox">
+												<input type="radio" name="textRadio" data-bind="checkedValue: 3, checked: selectedValue, enable: enable" />
+												<span class="box"></span><span class="label" data-bind="text: 'Three'"></span>
+											</label>
+										</span>
+									</div>
+									<div class="cf" style="background:#7F1637; padding:10px 5px; margin: 10px 0;">
+										<span class="ntsControl outline">
+											<label class="ntsRadioBox">
+												<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValue, enable: enable" />
+												<span class="box"></span><span class="label" data-bind="text: 'Four'"></span>
+											</label>
+										</span>
+									</div>
+									<div class="cf" style="background:#047878; padding:10px 5px; margin: 10px 0;">
+										<span class="ntsControl outline">
+											<label class="ntsRadioBox">
+												<input type="radio" name="textRadio" data-bind="checkedValue: 5, checked: selectedValue, enable: enable" />
+												<span class="box"></span><span class="label" data-bind="text: 'Five'"></span>
+											</label>
+										</span>
+									</div>
+									<div class="cf" style="background:#FFB733; padding:10px 5px; margin: 10px 0;">
+										<span class="ntsControl outline">
+											<label class="ntsRadioBox">
+												<input type="radio" name="textRadio" data-bind="checkedValue: 6, checked: selectedValue, enable: enable" />
+												<span class="box"></span><span class="label" data-bind="text: 'Six'"></span>
+											</label>
+										</span>
+									</div>
+									<div class="cf" style="background:#F57336; padding:10px 5px; margin: 10px 0;">
+										<span class="ntsControl outline">
+											<label class="ntsRadioBox">
+												<input type="radio" name="textRadio" data-bind="checkedValue: 7, checked: selectedValue, enable: enable" />
+												<span class="box"></span><span class="label" data-bind="text: 'Seven'"></span>
+											</label>
+										</span>
+									</div>
 								</div>
 							</div>
 						</article>
