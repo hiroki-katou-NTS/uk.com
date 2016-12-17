@@ -54,7 +54,14 @@ var nts;
                                         self.paymentDataResult().__ko_mapping__ = undefined;
                                         var categoryPayment = self.paymentDataResult().categories()[0];
                                         var categoryDeduct = self.paymentDataResult().categories()[1];
-                                        var categoryArticle = self.paymentDataResult().categories()[3];
+                                        var catePos = -1;
+                                        if (self.paymentDataResult().categories().length >= 3) {
+                                            catePos = 3;
+                                        }
+                                        else {
+                                            catePos = 2;
+                                        }
+                                        var categoryArticle = self.paymentDataResult().categories()[catePos];
                                         self.calcTotal(categoryPayment, categoryDeduct, categoryArticle, true);
                                         self.calcTotal(categoryDeduct, categoryPayment, categoryArticle, false);
                                         subscribeValue(self.paymentDataResult().categories());
@@ -193,12 +200,14 @@ var nts;
                                         totalPayment.value(total);
                                         var detailsTranfer = _.flatMap(tranfer.lines(), function (l) { return l.details(); });
                                         var totalValueTranfer = _.last(detailsTranfer).value();
-                                        var detailsDestinate = _.flatMap(destinate.lines(), function (l) { return l.details(); });
-                                        if (isPayment) {
-                                            _.last(detailsDestinate).value(total - totalValueTranfer);
-                                        }
-                                        else {
-                                            _.last(detailsDestinate).value(totalValueTranfer - total);
+                                        if (destinate !== undefined) {
+                                            var detailsDestinate = _.flatMap(destinate.lines(), function (l) { return l.details(); });
+                                            if (isPayment) {
+                                                _.last(detailsDestinate).value(total - totalValueTranfer);
+                                            }
+                                            else {
+                                                _.last(detailsDestinate).value(totalValueTranfer - total);
+                                            }
                                         }
                                     };
                                     inputtingsDetailsPayment.forEach(function (detail) {
