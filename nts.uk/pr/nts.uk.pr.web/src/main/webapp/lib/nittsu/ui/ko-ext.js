@@ -748,11 +748,12 @@ var nts;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         // Container
                         var container = $(element);
+                        // Get option or option[optionValue]
                         var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
+                        // Render
                         if (!_.isEqual(container.data("options"), options)) {
-                            // Render
                             container.empty();
                             _.forEach(options, function (option) {
                                 var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
@@ -766,13 +767,6 @@ var nts;
                                             return _.isEqual(value, $(_this).data("value"));
                                         }));
                                 }).appendTo(checkBoxLabel);
-                                // Checked Init
-                                checkBox.prop("checked", function () {
-                                    var _this = this;
-                                    return (_.find(selectedValue(), function (value) {
-                                        return _.isEqual(value, $(_this).data("value"));
-                                    }) !== undefined);
-                                });
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                                 var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
@@ -780,6 +774,13 @@ var nts;
                             // Save a clone
                             container.data("options", options.slice());
                         }
+                        // Checked
+                        container.find("input[type='checkbox']").prop("checked", function () {
+                            var _this = this;
+                            return (_.find(selectedValue(), function (value) {
+                                return _.isEqual(value, $(_this).data("value"));
+                            }) !== undefined);
+                        });
                         // Enable
                         (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
                     };
@@ -807,9 +808,9 @@ var nts;
                         var getOptionValue = function (item) {
                             return (optionValue === undefined) ? item : item[optionValue];
                         };
+                        // Render
                         if (!_.isEqual(container.data("options"), options)) {
                             var radioName = uk.util.randomId();
-                            // Render
                             container.empty();
                             _.forEach(options, function (option) {
                                 var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
@@ -822,16 +823,15 @@ var nts;
                                 var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                                 radioBoxLabel.appendTo(container);
                             });
-                            // Checked
-                            var listRadio = container.find("input[name=" + radioName + "]");
-                            var checkedRadio = _.find(listRadio, function (item) {
-                                return _.isEqual($(item).data("value"), selectedValue());
-                            });
-                            if (checkedRadio !== undefined)
-                                $(checkedRadio).prop("checked", true);
                             // Save a clone
                             container.data("options", options.slice());
                         }
+                        // Checked
+                        var checkedRadio = _.find(container.find("input[type='radio']"), function (item) {
+                            return _.isEqual($(item).data("value"), selectedValue());
+                        });
+                        if (checkedRadio !== undefined)
+                            $(checkedRadio).prop("checked", true);
                         // Enable
                         (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
                     };
@@ -1222,6 +1222,69 @@ var nts;
                         //container.trigger('validate');                   
                     };
                     return ListBoxBindingHandler;
+                }());
+                /**
+                 * GridList binding handler
+                 */
+                var NtsGridListBindingHandler = (function () {
+                    function NtsGridListBindingHandler() {
+                    }
+                    NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var HEADER_HEIGHT = 27;
+                        var $grid = $(element);
+                        if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
+                            throw new Error('the element NtsGridList must have id attribute.');
+                        }
+                        var data = valueAccessor();
+                        var optionsValue = data.optionsValue;
+                        var observableColumns = data.columns;
+                        var iggridColumns = _.map(observableColumns(), function (c) {
+                            return {
+                                headerText: c.headerText,
+                                key: c.prop,
+                                width: c.width,
+                                dataType: 'string'
+                            };
+                        });
+                        var features = [];
+                        features.push({ name: 'Selection', multipleSelection: data.multiple });
+                        features.push({ name: 'Sorting', type: 'local' });
+                        features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
+                        $grid.igGrid({
+                            width: data.width,
+                            height: data.height - HEADER_HEIGHT,
+                            primaryKey: data.optionsValue,
+                            columns: iggridColumns,
+                            virtualization: true,
+                            virtualizationMode: 'continuous',
+                            features: features
+                        });
+                        $grid.closest('.ui-iggrid')
+                            .addClass('nts-gridlist')
+                            .height(data.height);
+                        $grid.ntsGridList('setupSelecting');
+                        $grid.bind('selectionchanged', function () {
+                            if (data.multiple) {
+                                var selecteds = $grid.ntsGridList('getSelected');
+                                var selectedIdSet_1 = {};
+                                selecteds.forEach(function (s) { selectedIdSet_1[s.id] = true; });
+                                var selectedOptions = _.filter(data.options(), function (o) { return selectedIdSet_1[o[optionsValue]]; });
+                                data.value(_.map(selectedOptions, function (o) { return o[optionsValue]; }));
+                            }
+                            else {
+                                var selected_1 = $grid.ntsGridList('getSelected');
+                                var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
+                                data.value(selectedOption[optionsValue]);
+                            }
+                        });
+                    };
+                    NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var $grid = $(element);
+                        var data = valueAccessor();
+                        $grid.igGrid('option', 'dataSource', data.options());
+                        $grid.ntsGridList('setSelected', data.value());
+                    };
+                    return NtsGridListBindingHandler;
                 }());
                 /**
                  * TreeGrid binding handler
@@ -1649,6 +1712,7 @@ var nts;
                 ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
                 ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
+                ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
             })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));

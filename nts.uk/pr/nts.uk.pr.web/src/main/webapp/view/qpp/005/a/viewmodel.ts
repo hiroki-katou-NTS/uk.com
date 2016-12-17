@@ -75,10 +75,10 @@ module nts.uk.pr.view.qpp005.a {
             register() {
                 var self = this;
                 // TODO: Check error input
-                if (!self.validator()) {
-                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
-                    return false;
-                }
+//                if (!self.validator()) {
+//                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
+//                    return false;
+//                }
 
                 qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function(res) {
                     self.startPage().done(function() {
@@ -97,7 +97,7 @@ module nts.uk.pr.view.qpp005.a {
                     var lines = cate.lines();
                     _.forEach(lines, (line) => {
                         var include = ko.utils.arrayFirst(line.details(), function(item) {
-                            return item.itemCode() != "" && (item.value() === '' || item.value() === null);
+                            return item.itemCode() != "" && item.correctFlag() === 0 && (item.value() === '' || item.value() === null);
                         });
 
                         if (include) {

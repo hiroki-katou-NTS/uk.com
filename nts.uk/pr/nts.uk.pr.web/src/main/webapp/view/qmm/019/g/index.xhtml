@@ -7,25 +7,20 @@
     <body>
         <ui:composition template="../../../../master/dialog.xhtml">
             <ui:define name="htmlHead">
-            	<link rel="stylesheet" type="text/css" href="main.css" />
-				<script src="../../../../lib/generic/igniteui/js/infragistics.core.js"></script>
-				<script src="../../../../lib/generic/igniteui/js/infragistics.lob.js"></script>
-            	<script src="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"></script>
-				<script src="../../../../lib/nittsu/ui/textbox-options.js"></script>
-				<script src="start.js" />
-				<script src="viewmodel.js" />
-				<script src="service.js" />
-			    <script>var dialogSize = { width: 960, height: 710 };</script>
+            	<com:stylefile path="main.css" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js"/>
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js"/>
+            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"/>
+				<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js"/>
+				<com:ValidatorScript>
+					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.ctx.pr.proto.dom.layout.LayoutName
+   				</com:ValidatorScript>
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			    <script>var dialogSize = { width: 960, height: 650 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
-				<script>
-					__viewContext.primitiveValueConstraints = {
-						startYm: {
-							valueType: "String",
-							charType: "Numeric",
-							maxLength: 7
-						}
-					};
-				</script>
             </ui:define>
             
             <ui:define name="content">
@@ -34,9 +29,15 @@
 					<div class="cf">
 						<div class="form-label"><label id="LBL_001">作成方法の選択</label></div><br />
 						<div class = "layoutSelect">
-							<div id="SEL_001">
-								<input type="radio" checked="checked" name="layoutCreate" id="newCreate" /> 新規に作成<br />
-				  				<input type="radio" name="layoutCreate" id="copyCreate" /> 既存のレイアウトをコピーして作成<br />
+							<div id="SEL_001" data-bind="foreach: itemsRadio">
+				  				<span class="ntsControl">
+									<label class="ntsRadioBox">
+										<input type="radio" name="textRadio" data-bind="checkedValue: value, 
+																			checked: $parent.isRadioCheck,
+																			enable: true" />
+										<span class="box"></span><span class="label" data-bind="text: text"></span>
+									</label>
+								</span>
 							</div>
 							<div id="SEL_002"
 							data-bind="ntsComboBox: {options: comboboxList,
@@ -57,13 +58,19 @@
 						<div>
 							<div class ="form-label inline required">
 								<label id = "LBL_004" >コード/名称</label>
-								<input  id = "INP_001" style="ime-mode: inactive" maxlength="2"></input>
-								<input  id = "INP_002" maxlength="20"></input>
+								<input id="INP_001" data-name="コード" data-bind="ntsTextEditor: {value: layoutCode, 
+																					constraint: 'LayoutCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+								<input id="INP_002" data-name="名称" data-bind="ntsTextEditor: {value: layoutName, 
+																					constraint: 'LayoutName', 
+																					option: textEditorOption, 
+																					enable: true}" />
 							</div><br/>
 							<br/>
 							<div class ="timeLayout">
 								<div class ="form-label inline required"><label id = "LBL_005">開始年月</label></div>
-								<div><input id = "INP_003" style="ime-mode: inactive" maxlength="7" data-bind="ntsTimeEditor: {value: selectStartYm, constraint: 'startYm', option: timeEditorOption}"></input></div>
+								<div><input id = "INP_003" style="ime-mode: inactive" data-bind="ntsTimeEditor: {value: selectStartYm, option: timeEditorOption}"></input></div>
 								<!-- 入力した開始年月を和暦で表記 -->
 								<div><label id = "LBL_006"></label></div>
 							</div><br/>
@@ -92,7 +99,7 @@
 						<br/>
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001" data-bind="click: createNewLayout">作成</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind="click: createNewLayout, enable: $root.errors.isEmpty">作成</button>
 							<button class="large" id="BTN_002" data-bind="click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>

@@ -23,6 +23,20 @@
 	margin-right: 30px;
 }
 
+#lbl-002 {
+	margin-bottom: 20px;
+	display: inline-block;
+}
+
+.ntsRadioBox {
+	width: 100%;
+}
+
+#sel-001 {
+	float:left;
+	margin: 8px 0px 0px 35px;
+}
+
 #right-content {
 	margin-left: 20px;
 	padding: 10px;

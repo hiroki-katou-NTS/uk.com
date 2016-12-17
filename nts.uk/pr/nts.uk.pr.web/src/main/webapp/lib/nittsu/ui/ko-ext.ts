@@ -751,12 +751,13 @@ module nts.uk.ui.koExtentions {
             // Container
             var container = $(element);
             
+            // Get option or option[optionValue]
             var getOptionValue = (item) => {
                 return (optionValue === undefined) ? item : item[optionValue];
             };
             
+            // Render
             if(!_.isEqual(container.data("options"), options)) {
-                // Render
                 container.empty();
                 _.forEach(options, (option) => {
                     var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
@@ -769,12 +770,6 @@ module nts.uk.ui.koExtentions {
                                 return _.isEqual(value, $(this).data("value"))
                             }));
                     }).appendTo(checkBoxLabel);
-                    // Checked Init
-                    checkBox.prop("checked", function(){
-                        return (_.find(selectedValue(), (value) => {
-                            return _.isEqual(value, $(this).data("value"))
-                        }) !== undefined);
-                    });
                     var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                     checkBoxLabel.appendTo(container);
@@ -783,6 +778,12 @@ module nts.uk.ui.koExtentions {
                 container.data("options", options.slice());
             }
             
+            // Checked
+            container.find("input[type='checkbox']").prop("checked", function(){
+                return (_.find(selectedValue(), (value) => {
+                    return _.isEqual(value, $(this).data("value"))
+                }) !== undefined);
+            });
             // Enable
             (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
         }
@@ -815,10 +816,9 @@ module nts.uk.ui.koExtentions {
                 return (optionValue === undefined) ? item : item[optionValue];
             };
             
-            
+            // Render
             if(!_.isEqual(container.data("options"), options)) {
                 var radioName = util.randomId();
-                // Render
                 container.empty();
                 _.forEach(options, (option) => {
                     var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
@@ -831,18 +831,17 @@ module nts.uk.ui.koExtentions {
                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                     radioBoxLabel.appendTo(container);
                 });
-                
-                // Checked
-                var listRadio = container.find("input[name=" + radioName + "]");
-                var checkedRadio = _.find(listRadio, (item) => {
-                    return _.isEqual($(item).data("value"), selectedValue());
-                });
-                if (checkedRadio !== undefined)
-                    $(checkedRadio).prop("checked", true);
-                
+                                
                 // Save a clone
                 container.data("options", options.slice());
             }
+            
+            // Checked
+            var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
+                return _.isEqual($(item).data("value"), selectedValue());
+            });
+            if (checkedRadio !== undefined)
+                $(checkedRadio).prop("checked", true);
             
             // Enable
             (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
@@ -1278,6 +1277,81 @@ module nts.uk.ui.koExtentions {
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
             //container.trigger('validate');                   
+        }
+    }
+    
+    
+    /**
+     * GridList binding handler
+     */
+    class NtsGridListBindingHandler implements KnockoutBindingHandler {
+        
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var HEADER_HEIGHT = 27;
+            
+            var $grid = $(element);
+            
+            if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
+                throw new Error('the element NtsGridList must have id attribute.');
+            }
+            
+            var data = valueAccessor();
+            var optionsValue: string = data.optionsValue;
+            
+            var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
+            var iggridColumns = _.map(observableColumns(), c => {
+                return {
+                    headerText: c.headerText,
+                    key: c.prop,
+                    width: c.width,
+                    dataType: 'string'
+                };
+            });
+            
+            var features = [];
+            features.push({ name: 'Selection', multipleSelection: data.multiple });
+            features.push({ name: 'Sorting', type: 'local' });
+            features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
+            
+            $grid.igGrid({
+                width: data.width,
+                height: data.height - HEADER_HEIGHT,
+                primaryKey: data.optionsValue,
+                columns: iggridColumns,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                features: features
+            });
+            
+            $grid.closest('.ui-iggrid')
+                .addClass('nts-gridlist')
+                .height(data.height);
+
+            $grid.ntsGridList('setupSelecting');
+            
+            $grid.bind('selectionchanged', () => {
+                if (data.multiple) {
+                    let selecteds: Array<any> = $grid.ntsGridList('getSelected');
+                    let selectedIdSet = {};
+                    selecteds.forEach(s => { selectedIdSet[s.id] = true; });
+                    var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
+                    data.value(_.map(selectedOptions, o => o[optionsValue]));
+                } else {
+                    let selected = $grid.ntsGridList('getSelected');
+                    let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
+                    data.value(selectedOption[optionsValue]);
+                }
+            });
+        }
+        
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        
+            var $grid = $(element);
+            var data = valueAccessor();
+            
+            $grid.igGrid('option', 'dataSource', data.options());
+            
+            $grid.ntsGridList('setSelected', data.value());
         }
     }
 
@@ -1751,5 +1825,6 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
     ko.bindingHandlers['ntsComboBox'] = new ComboBoxBindingHandler();
     ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
+    ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
     ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
 }

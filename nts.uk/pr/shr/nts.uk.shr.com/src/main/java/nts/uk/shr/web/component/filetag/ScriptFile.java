@@ -40,10 +40,18 @@ public class ScriptFile extends UIComponentBase {
             "/lib/nittsu/number.js",
     }));
     
+    private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
+            "/lib/generic/igniteui/js/infragistics.core.js",
+            "/lib/generic/igniteui/js/infragistics.lob.js",
+            "/lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js",
+            "/lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js",
+    }));
+    
     @SuppressWarnings("serial")
     private static Map<String, Set<String>> FILE_SETS = new HashMap<String, Set<String>>() {
         {
             this.put("BASIC", FILES_BASIC);
+            this.put("IGNITE", FILES_IGNITE);
         }
     };
 

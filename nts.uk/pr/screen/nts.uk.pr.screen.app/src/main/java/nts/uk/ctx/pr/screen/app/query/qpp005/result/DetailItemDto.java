@@ -249,16 +249,16 @@ public class DetailItemDto {
 	public void setItemType() {
 		switch (this.itemAtr) {
 		case 0:
-			// 手入力
-			if (this.calculationMethod == 0) {
+			// システム計算
+			if (this.calculationMethod != 9) {
 				this.itemType = 0;
 			} else {
 				this.itemType = -1;
 			}
 			break;
 		case 1:
-			// 手入力
-			if (this.calculationMethod == 0) {
+			// システム計算
+			if (this.calculationMethod != 9) {
 				// 通勤費リンク
 				if (this.taxAtr == 3 || this.taxAtr == 4) {
 					this.itemType = 1;
@@ -271,8 +271,8 @@ public class DetailItemDto {
 			break;
 		case 2:
 		case 3:
-			// 手入力
-			if (this.calculationMethod == 0) {
+			// システム計算
+			if (this.calculationMethod != 9) {
 				// 通勤費リンク
 				if (this.taxAtr == 3 || this.taxAtr == 4) {
 					this.itemType = 1;
