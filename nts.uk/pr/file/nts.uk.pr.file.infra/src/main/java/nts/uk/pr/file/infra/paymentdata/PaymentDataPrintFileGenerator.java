@@ -36,21 +36,23 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				throw new RuntimeException("Report template not found");
 			}
 			designer.setWorkbook(workbook);
+			// bind header
 			designer.setDataSource("PaymentDataHeader", result.getPaymentHeader());
-			List<LayoutMasterCategoryDto> category1 = result.getCategories().stream()
-					.filter(x -> x.getCategoryAttribute() == 0).collect(Collectors.toList());
-			List<LayoutMasterCategoryDto> category2 = result.getCategories().stream()
-					.filter(x -> x.getCategoryAttribute() == 1).collect(Collectors.toList());
-			List<LayoutMasterCategoryDto> category3 = result.getCategories().stream()
-					.filter(x -> x.getCategoryAttribute() == 2).collect(Collectors.toList());
-			List<LayoutMasterCategoryDto> category4 = result.getCategories().stream()
-					.filter(x -> x.getCategoryAttribute() == 3).collect(Collectors.toList());
-			//bind data to datasource
-			createValue(designer, category1.get(0), 1);
-			createValue(designer, category2.get(0), 2);
-			createValue(designer, category3.get(0), 3);
-			createValue(designer, category4.get(0), 4);
-			//bind processing Yearmonth
+
+			// bind categories data to datasource
+			List<LayoutMasterCategoryDto> categories = result.getCategories();
+			for (int i = 0; i < categories.size(); i++) {
+				if(categories.get(i).getCategoryAttribute() == 0) {
+					createValue(designer, categories.get(i), 1);
+				} else if(categories.get(i).getCategoryAttribute() == 1){
+					createValue(designer, categories.get(i), 2);
+				}else if(categories.get(i).getCategoryAttribute() == 2){
+					createValue(designer, categories.get(i), 3);
+				}else if(categories.get(i).getCategoryAttribute() == 3){
+					createValue(designer, categories.get(i), 4);
+				}
+			}
+			// bind processing Yearmonth
 			String year = result.getPaymentHeader().getProcessingYM().toString().substring(0, 4);
 			String month = result.getPaymentHeader().getProcessingYM().toString().substring(4);
 			String processingYm = year + "年" + month + "月";
@@ -64,9 +66,9 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 		}
 	}
 
+	//calculate lines and items position
 	private void createValue(WorkbookDesigner designer, LayoutMasterCategoryDto category, int cateIndex) {
 		List<LineDto> lines = category.getLines();
-
 		for (LineDto line : lines) {
 			int i = 0;
 			for (DetailItemDto detailItem : line.getDetails()) {
@@ -78,7 +80,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						designer.setDataSource(dataSourceValue, detailItem.getValue().toString() + "¥");
 					} else if (detailItem.getCategoryAtr() == 2) {
 						int t = detailItem.getValue().intValue();
-						int hours = t/60;
+						int hours = t / 60;
 						int minutes = t % 60;
 						String timeFormat = String.format("%d:%02d", hours, minutes);
 						designer.setDataSource(dataSourceValue, timeFormat);
