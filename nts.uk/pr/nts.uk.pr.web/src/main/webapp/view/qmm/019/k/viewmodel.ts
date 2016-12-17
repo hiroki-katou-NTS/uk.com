@@ -15,10 +15,13 @@ module qmmm019.k.viewmodel{
         self.enable = ko.observable(true);
     }          
         
-        
+        chooseItem() {
+            var self = this;
+            nts.uk.ui.windows.setShared('selectedCode', self.selectedId());
+            nts.uk.ui.windows.close();
+        }
         
         closeDialog() {
-            nts.uk.ui.windows.setShared('selectedCode', undefined);
             nts.uk.ui.windows.close();
         }
     }
