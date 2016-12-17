@@ -11,7 +11,7 @@ var qmmm019;
                         new BoxModel(1, '明細書に印字する行'),
                         new BoxModel(2, '明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）')
                     ]);
-                    self.selectedId = ko.observable(1);
+                    self.selectedId = ko.observable("1");
                     self.enable = ko.observable(true);
                 }
                 ScreenModel.prototype.chooseItem = function () {

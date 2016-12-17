@@ -1,7 +1,7 @@
 module qmmm019.i.viewmodel{
     export class ScreenModel {
         itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
+        selectedId: KnockoutObservable<string>;
         enable: KnockoutObservable<boolean>;
     
         constructor() {
@@ -10,7 +10,7 @@ module qmmm019.i.viewmodel{
                 new BoxModel(1, '明細書に印字する行'),
                 new BoxModel(2, '明細書に印字しない行（この行は印刷はされませんが、値の参照・修正が可能です）')
             ]);
-            self.selectedId = ko.observable(1);
+            self.selectedId = ko.observable("1");
             self.enable = ko.observable(true);
         }
         
