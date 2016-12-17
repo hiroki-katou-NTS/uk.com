@@ -58,7 +58,7 @@ module nts.uk.pr.view.qpp005.a {
                     var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
                     var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
                     var catePos = -1;
-                    if((<any>self).paymentDataResult().categories().length >= 3) {
+                    if((<any>self).paymentDataResult().categories().length > 3) {
                         catePos = 3;
                     }else {
                         catePos = 2;    

@@ -14,8 +14,12 @@ var qmmm019;
                     self.selectedId = ko.observable(1);
                     self.enable = ko.observable(true);
                 }
+                ScreenModel.prototype.chooseItem = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('selectedCode', self.selectedId());
+                    nts.uk.ui.windows.close();
+                };
                 ScreenModel.prototype.closeDialog = function () {
-                    nts.uk.ui.windows.setShared('selectedCode', undefined);
                     nts.uk.ui.windows.close();
                 };
                 return ScreenModel;

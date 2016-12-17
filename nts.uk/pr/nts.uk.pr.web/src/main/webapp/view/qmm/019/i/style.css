@@ -1,19 +1,16 @@
-
 .form-label.inline {
   border-color: #FAC002;
 }
 
 .x-large {
-	
 	margin-left: 152px;
 	margin-top: 15px;
-	
 }
 
 .large {
-	
 	margin-left: 10px;
 }
+
 hr { 
     display: block;
     margin-top: 10px;
@@ -24,6 +21,10 @@ hr {
     border-width: 1px;
 }
 
-.radiobox{
+.radiobox {
 	margin-left: 25px;
+}
+
+.ntsRadioBox{
+	width: 100%;
 }
