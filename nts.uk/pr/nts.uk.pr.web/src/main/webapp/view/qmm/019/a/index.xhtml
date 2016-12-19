@@ -111,7 +111,7 @@
 										<div class="row" data-bind="attr: {
 																	id: rowId, 
 																	class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
-											<div><a class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick"></a></div>
+											<div><input type="button" class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick" /></div>
 											<div data-bind="foreach: details">
 									            <span data-bind="click: itemClick, 
 									            			attr: {
