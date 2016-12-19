@@ -22,7 +22,9 @@ var qmm019;
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
                     console.log(option);
-                    self.timeEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                    self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({
+                        inputFormat: "yearmonth"
+                    }));
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.createlayout = ko.observable(null);
                     self.createNewSelect = ko.observable(null);
