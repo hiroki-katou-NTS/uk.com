@@ -1,19 +1,16 @@
-
 .form-label.inline {
   border-color: #FAC002;
 }
 
 .x-large {
-	
 	margin-left: 152px;
 	margin-top: 15px;
-	
 }
 
 .large {
-	
 	margin-left: 10px;
 }
+
 hr { 
     display: block;
     margin-top: 10px;
@@ -24,41 +21,10 @@ hr {
     border-width: 1px;
 }
 
-.radio-1 {
-
-	margin-left: 52px;
-	margin-top: 5px;
-	
-	  width: 20px;
-  height: 20px;
-  border-radius: 11px;
-  border: 2px solid #7FFF00;
-  background-color: #7FFF00;
-  
-  
+.radiobox {
+	margin-left: 25px;
 }
 
-.radio-2 {
-	
-	margin-left: 52px;
-	margin-top: 5px;
-	  width: 20px;
-  height: 20px;
-  border-radius: 11px;
-  border: 2px solid #004c97;
-  background-color: #7FFF00;
-	
-}
-
-.radio-3 {
-	
-	margin-left: 52px;
-	margin-top: 5px;
-	  width: 20px;
-  height: 20px;
-  border-radius: 11px;
-  border: 2px solid #004c97;
-  background-color: #7FFF00;
-	
-	
+.ntsRadioBox{
+	width: 100%;
 }

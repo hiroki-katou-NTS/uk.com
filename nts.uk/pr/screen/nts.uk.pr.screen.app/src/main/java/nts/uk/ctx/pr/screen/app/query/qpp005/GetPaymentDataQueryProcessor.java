@@ -305,7 +305,10 @@ public class GetPaymentDataQueryProcessor {
 		List<PrintPositionCategoryDto> result = new ArrayList<>();
 
 		for (int i = 1; i <= 4; i++) {
-			result.add(this.getPrintPosition(mCates, lines, i));
+			PrintPositionCategoryDto printCates = this.getPrintPosition(mCates, lines, i);
+			if (printCates!= null) {
+				result.add(printCates);	
+			}
 		}
 
 		return result;

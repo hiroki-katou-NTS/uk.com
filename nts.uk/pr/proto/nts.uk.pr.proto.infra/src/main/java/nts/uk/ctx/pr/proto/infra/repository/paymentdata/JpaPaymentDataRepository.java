@@ -167,14 +167,24 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		entity.printPositionCategoryATR2 = item1.getCategoryAtr().value;
 		entity.printPositionCategoryLines2 = item1.getLines().v();
 
-		PrintPositionCategory item2 = domain.getPrintCategories().get(2);
-		entity.printPositionCategoryATR3 = item2.getCategoryAtr().value;
-		entity.printPositionCategoryLines3 = item2.getLines().v();
-
-		PrintPositionCategory item3 = domain.getPrintCategories().get(3);
-		entity.printPositionCategoryATR4 = item3.getCategoryAtr().value;
-		entity.printPositionCategoryLines4 = item3.getLines().v();
-
+		if (domain.getPrintCategories().size() >= 3) {
+			PrintPositionCategory item2 = domain.getPrintCategories().get(2);
+			entity.printPositionCategoryATR3 = item2.getCategoryAtr().value;
+			entity.printPositionCategoryLines3 = item2.getLines().v();
+		}else {
+			entity.printPositionCategoryATR5 = 2;
+			entity.printPositionCategoryLines5 = -1;
+		}
+		
+		if (domain.getPrintCategories().size() >= 4) {
+			PrintPositionCategory item3 = domain.getPrintCategories().get(3);
+			entity.printPositionCategoryATR4 = item3.getCategoryAtr().value;
+			entity.printPositionCategoryLines4 = item3.getLines().v();
+		}else {
+			entity.printPositionCategoryATR5 = 3;
+			entity.printPositionCategoryLines5 = -1;
+		}
+		
 		if (domain.getPrintCategories().size() >= 5) {
 			PrintPositionCategory item4 = domain.getPrintCategories().get(4);
 			entity.printPositionCategoryATR5 = item4.getCategoryAtr().value;

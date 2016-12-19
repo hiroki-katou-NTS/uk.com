@@ -40,7 +40,9 @@ module qmm019.g.viewmodel {
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
             console.log(option);
-            self.timeEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+            self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({
+                inputFormat: "yearmonth"
+            }));
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             self.createlayout = ko.observable(null);
             self.createNewSelect = ko.observable(null);
@@ -155,7 +157,7 @@ module qmm019.g.viewmodel {
                 $('#INP_002').focus();
                 return false;    
             }
-            if(self.selectStartYm().trim() == ''){
+            if(self.selectStartYm() == ''){
                 alert('開始年月' + mess);
                 $('#INP_003').focus();
                 return false;    
@@ -205,7 +207,7 @@ module qmm019.g.viewmodel {
                 stmtCodeCopied: self.createNewSelect(),
                 startYmCopied: +self.startYmCopy,
                 stmtCode: stmtCd,
-                startYm: + self.selectStartYm().replace('/',''),
+                startYm: + self.selectStartYm(),
                 layoutAtr: 3,
                 stmtName: self.layoutName() + "",
                 endYm: 999912

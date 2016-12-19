@@ -252,6 +252,7 @@ public class GetPaymentDataQueryProcessor {
 										iValue.getCommuteAllowTaxImpose(),
 										iValue.getCommuteAllowMonth(),
 										iValue.getCommuteAllowFraction(),
+										d.getSumScopeAtr().value,
 										iValue.getValue() != null);
 							} else {
 								result =  DetailItemDto.fromData(
@@ -271,12 +272,13 @@ public class GetPaymentDataQueryProcessor {
 										0.0,
 										0.0,
 										0.0,
+										d.getSumScopeAtr().value,
 										false);
 							}
 							result.setItemType();
 							return result;
 						}).orElse(DetailItemDto.fromData(
-								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, false));
+								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, null, false));
 				items.add(detailItem);
 			}
 
@@ -299,7 +301,10 @@ public class GetPaymentDataQueryProcessor {
 		List<PrintPositionCategoryDto> result = new ArrayList<>();
 
 		for (int i = 1; i <= 4; i++) {
-			result.add(this.getPrintPosition(mCates, lines, i));
+			PrintPositionCategoryDto printCates = this.getPrintPosition(mCates, lines, i);
+			if (printCates!= null) {
+				result.add(printCates);	
+			}
 		}
 
 		return result;
@@ -315,7 +320,10 @@ public class GetPaymentDataQueryProcessor {
 	 */
 	private PrintPositionCategoryDto getPrintPosition(List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines,
 			int position) {
-		int printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().get().getCtAtr().value;
+		Integer printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().map(x-> x.getCtAtr().value).orElse(null);
+		if (printPosCtg == null) {
+			return null;
+		}
 		Long countLine = lines.stream().filter(x -> x.getCategoryAtr().value == printPosCtg
 				&& x.getLineDispayAttribute().value == LineDispAtr.ENABLE.value).count();
 

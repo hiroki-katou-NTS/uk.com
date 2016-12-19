@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
+import com.aspose.cells.PageOrientationType;
+import com.aspose.cells.PageSetup;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
@@ -27,7 +29,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 	protected void generate(FileGeneratorContext context) {
 		try {
 			PaymentDataResult result = context.getParameterAt(0);
-			OutputStream output = context.createOutputFileStream("paymentdata.xlsx");
+			OutputStream output = context.createOutputFileStream("paymentdata.pdf");
 			WorkbookDesigner designer = new WorkbookDesigner();
 			Workbook workbook = null;
 			try {
@@ -57,8 +59,10 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 			String month = result.getPaymentHeader().getProcessingYM().toString().substring(4);
 			String processingYm = year + "年" + month + "月";
 			designer.setDataSource("ProcessingYm", processingYm);
+			designer.getWorkbook().getWorksheets().get(0).getPageSetup().setFitToPagesWide(1);
+			designer.getWorkbook().getWorksheets().get(0).getPageSetup().setOrientation(PageOrientationType.LANDSCAPE);
 			designer.process(true);
-			designer.getWorkbook().save(output, SaveFormat.XLSX);
+			designer.getWorkbook().save(output, SaveFormat.PDF);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
