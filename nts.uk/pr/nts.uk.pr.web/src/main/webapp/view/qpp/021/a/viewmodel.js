@@ -70,7 +70,11 @@ var nts;
                                 }
                                 ScreenModel.prototype.print = function () {
                                     var self = this;
-                                    nts.uk.pr.view.qpp021.a.service.print(self.listBox.selectedCode(), '0000000004');
+                                    var paymentQuery = [];
+                                    for (var i = 0; i < self.listBox.selectedCodes().length; i++) {
+                                        paymentQuery.push({ personId: self.listBox.selectedCodes()[i], employeeCode: '0000000001' });
+                                    }
+                                    nts.uk.pr.view.qpp021.a.service.print(paymentQuery);
                                 };
                                 return ScreenModel;
                             }());

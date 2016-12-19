@@ -36,12 +36,12 @@
 							data-bind="ntsListBox: {options: itemList,
 											   optionsValue: 'id',
 											   optionsText: 'name',
-											   multiple: false,
-											   value: selectedCode,
+											   multiple: true,
+											   value: selectedCodes,
 											   enable: true,
 											   rows: 21,
 											   columns: [
-													{ prop: 'code', length: 20 },
+													{ prop: 'id', length: 20 },
 													{ prop: 'name', length: 6 }
 											   ]}"
 							class="cf"></div>
