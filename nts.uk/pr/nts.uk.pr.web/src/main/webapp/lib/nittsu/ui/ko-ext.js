@@ -1424,22 +1424,15 @@ var nts;
                      * Init.
                      */
                     WizardBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
+                        // Get data
                         var data = valueAccessor();
-                        // Get step list.
+                        // Get step list
                         var options = ko.unwrap(data.steps);
-                        var color = ko.unwrap(data.theme);
-                        var cssClass = "blue";
-                        if (color == cssClass) {
-                            cssClass = "nts-wizard-blue";
-                        }
-                        else {
-                            cssClass = "nts-wizard";
-                        }
-                        //console.log(cssClass);
-                        // Container.
+                        var theme = ko.unwrap(data.theme);
+                        var cssClass = "nts-wizard " + "theme-" + theme;
+                        // Container
                         var container = $(element);
-                        // Create steps.
+                        // Create steps
                         for (var i = 0; i < options.length; i++) {
                             var contentClass = ko.unwrap(options[i].content);
                             var htmlStep = container.children('.steps').children(contentClass).html();
@@ -1448,12 +1441,12 @@ var nts;
                             container.append('<div>' + htmlContent + '</div>');
                         }
                         var icon = container.find('.header .image').data('icon');
-                        // Remove html.
+                        // Remove html
                         var header = container.children('.header');
                         container.children('.header').remove();
                         container.children('.steps').remove();
                         container.children('.contents').remove();
-                        // Create wizard.
+                        // Create wizard
                         container.steps({
                             headerTag: "h1",
                             bodyTag: "div",
@@ -1476,7 +1469,7 @@ var nts;
                                 return true;
                             }
                         });
-                        // Add default class.
+                        // Add default class
                         container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
                         container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
@@ -1484,15 +1477,15 @@ var nts;
                         container.children('.steps').children('ul').children('.last').addClass('end');
                         container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
                         container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>');
-                        // Remove old class.
+                        // Remove old class
                         container.children('.steps').children('ul').children('li').removeClass('step-current');
                         container.children('.steps').children('ul').children('li').removeClass('step-prev');
                         container.children('.steps').children('ul').children('li').removeClass('step-next');
-                        // Add new class.
+                        // Add new class
                         container.children('.steps').children('ul').children('.current').addClass('step-current');
                         container.children('.steps').children('ul').children('.done').addClass('step-prev');
                         container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
-                        // Remove content.
+                        // Remove content
                         container.find('.actions').hide();
                         // Add Header
                         container.children('.steps').prepend(header);

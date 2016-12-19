@@ -2,6 +2,7 @@ interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
+    ntsWizard(action: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {

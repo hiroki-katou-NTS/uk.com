@@ -95,7 +95,10 @@ __viewContext.ready(function () {
                 value: ko.observable(-1222),
                 constraint: 'LayoutCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
-                    inputFormat: 'time'
+                    inputFormat: 'time',
+                    placeholder: "Enter a valid HH:mm",
+                    width: "",
+                    textalign: "left"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
