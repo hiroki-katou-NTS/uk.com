@@ -199,8 +199,8 @@ div.popup-panel {
 }
 
 /* line 100, ../sass/components/_commons.scss */
-.error {
-  border: 1px solid #ff6666;
+div.error {
+  border: 1px solid #ff6666 !important;
 }
 
 /*****************************
@@ -375,7 +375,7 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
+  /* IgniteUI é╞é╠îôé╦ìçéóé┼background-coloré╔é═!importanté¬òKùvé┴é█éóüH */
 }
 /* line 28, ../sass/components/_button.scss */
 button:hover {
@@ -1835,7 +1835,7 @@ button.nts-switch-button.selected:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: '￥';
+  content: 'üÅ';
   left: 0;
   top: 0;
   text-align: left;

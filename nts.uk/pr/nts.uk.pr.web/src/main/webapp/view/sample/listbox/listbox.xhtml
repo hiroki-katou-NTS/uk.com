@@ -16,6 +16,7 @@
             </ui:define>
             
             <ui:define name="content">
+            	<div id="functions-area"></div>
             	<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
@@ -34,7 +35,7 @@
 											value: selectedCodes,
 											enable: isEnable(),
 											rows: 3,
-											required: isRequired,
+											required: true,
 											columns: [
 												{ prop: 'code', length: 4 },
 												{ prop: 'name', length: 10 },
@@ -68,7 +69,6 @@
 	value: selectedCodes,
 	enable: isEnable(),
 	rows: 3,
-	required: isRequired,
 	columns: [
 		{ prop: 'code', length: 4 },
 		{ prop: 'name', length: 10 },
@@ -166,7 +166,6 @@
     selectedCode: KnockoutObservable<string>;
     selectedCodes: KnockoutObservableArray<string>;
     isEnable: KnockoutObservable<boolean>;
-    isRequired: KnockoutObservable<boolean>;
     
     constructor() {
         var self = this;
@@ -179,7 +178,6 @@
         self.currentCode = ko.observable(3);
         self.selectedCode = ko.observable(null)
         self.isEnable = ko.observable(true);
-        self.isRequired = ko.observable(true);
         self.selectedCodes = ko.observableArray([]);
         
         $('#list-box').on('selectionChanging', function(event) {

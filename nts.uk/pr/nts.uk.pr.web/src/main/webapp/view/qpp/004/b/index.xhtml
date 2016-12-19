@@ -72,6 +72,7 @@
 											   multiple: true,
 											   value: selectedCodes,
 											   enable: true,
+											   required: true,
 											   rows: 10,
 											   columns: [
 													{ prop: 'code', length: 12 },
@@ -81,7 +82,7 @@
 								</div>
 								<br />
 								<button data-bind="click: previous">← 処理方法へ戻る</button>
-								<button data-bind="click: next" class="proceed x-large">次
+								<button data-bind="click: next, enable: $root.errors.isEmpty()" class="proceed x-large">次
 									へ →</button>
 							</div>
 							<div class="step-3">
