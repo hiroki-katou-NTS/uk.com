@@ -2,4 +2,7 @@
 
 .nts-gridlist.ui-iggrid {
 	@include iggridstyle();
+	@include iggridrowselector();
+		
+	cursor: default;
 }

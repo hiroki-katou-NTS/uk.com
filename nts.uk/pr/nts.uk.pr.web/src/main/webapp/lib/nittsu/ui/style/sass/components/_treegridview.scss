@@ -2,4 +2,7 @@
 
 .nts-treegridview.ui-igtreegrid {
 	@include iggridstyle();
+	@include iggridrowselector();
+	
+	cursor: default;
 }

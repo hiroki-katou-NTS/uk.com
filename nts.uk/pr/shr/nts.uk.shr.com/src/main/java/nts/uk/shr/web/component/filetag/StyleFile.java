@@ -17,7 +17,6 @@ public class StyleFile extends UIComponentBase {
     
     private static Set<String> FILES_BASIC = new LinkedHashSet<String>(Arrays.asList(new String[] {
             "/lib/generic/jqueryui/jquery-ui.css",
-            "/lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css",
             "/lib/generic/igniteui/css/structure/infragistics.css",
             "/lib/nittsu/ui/style/stylesheets/base.css",
     }));
