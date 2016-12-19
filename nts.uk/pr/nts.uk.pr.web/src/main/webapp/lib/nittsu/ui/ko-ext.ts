@@ -1095,7 +1095,8 @@ module nts.uk.ui.koExtentions {
             // Create method.
             $.fn.deselectAll = function() {
                 $(this).data('value', '');
-                
+                $(this).find('.nts-list-box > li').removeClass("ui-selected");
+                $(this).find('.nts-list-box > li > div').removeClass("ui-selected");
                 $(this).trigger("selectionChange");
             }
             $.fn.selectAll = function() {
