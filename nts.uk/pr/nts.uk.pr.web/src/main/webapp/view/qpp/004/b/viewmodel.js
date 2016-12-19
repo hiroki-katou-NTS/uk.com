@@ -64,7 +64,11 @@ var qpp004;
                     $('#wizard').end();
                 };
                 Wizard.prototype.next = function () {
+                    var currStep = $('#wizard').steps('getCurrentIndex');
                     $('#wizard').steps('next');
+                    if (currStep == 0) {
+                        $('#list-box').trigger('validate');
+                    }
                 };
                 Wizard.prototype.previous = function () {
                     $('#wizard').steps('previous');

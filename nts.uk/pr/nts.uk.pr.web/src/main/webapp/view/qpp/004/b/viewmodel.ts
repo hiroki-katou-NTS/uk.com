@@ -75,13 +75,17 @@ module qpp004.b.viewmodel {
         }
 
         next(): any {
+            var currStep = $('#wizard').steps('getCurrentIndex');                    
             $('#wizard').steps('next');
+            if(currStep == 0) {
+               $('#list-box').trigger('validate'); 
+            }
         }
 
         previous(): any {
             (<any>$('#wizard')).steps('previous');
         }
-
+        
         step1(): any {
             $('#wizard').setStep(0);
         }
