@@ -47,7 +47,7 @@ module nts.uk.ui.option {
         constructor(option?: ITimeEditorOption) {
             super();
             // Default value
-            this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "date";
+            this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "yearmonthdate";
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
