@@ -1,3 +1,4 @@
+* {box-sizing: border-box;}
 html, body {background-color:#dedede;height:100%;}
 a{color:#00B050;text-decoration: none;}
 b{font-weight:bold;}
@@ -7,14 +8,16 @@ h2{color:#00B050;font-size: 20px; margin:7px 0;}
 h3{font-size:16px;margin:5px 0;font-weight:bold;}
 h4{font-size:14px;margin:3px 0;font-weight:bold;}
 hr{margin: 25px 0;}
-/*table{border-collapse: collapse;}
+table{border-collapse: collapse;}
 table th, table td{padding: 5px 5px;border:1px solid #ccc;}
-table th{background:#eee;}
+/*table th{background:#eee;}
 table a{color:#00B050;}*/
 pre{background:#eee;padding:10px;margin:10px 0;border-radius:5px;box-shadow: 0 0 1px 1px rgba(0,0,0,0.15) inset;}
 note{position:relative;display:block;background:#ffc;box-shadow:1px 2px 3px 0px rgba(0,0,0,0.3);padding:20px;margin:20px 5px;}
 note:before{position:absolute;display:block;content:'';width:50px;height:15px;left:15px;top:-8px;background:rgba(255,255,255,0.35);box-shadow:0 0 2px 1px rgba(0,0,0,0.2), 0 0 1px 1px rgba(255,255,255,0.7) inset;transform: rotate(-8deg);}
 .color{color:#00B050;}
+.pull-left{float:left;}
+.pull-right{float:right;}
 
 #functions-area {background:#fff;}
 #contents-area {background:#f5f5f5;width:85%;height:100%;margin:25px auto; padding:0px; border:1px solid #B1B1B1; box-shadow: 0 0 2px 0px rgba(0,0,0,0.2);}
@@ -53,6 +56,6 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 
 @keyframes flash {
     0% { background-color: none;}
-    50% { background-color: #ffc;}
+    50% { background-color: #ffb;}
     100% { background-color: none;}
-} 
+}

@@ -42,14 +42,14 @@
 						<h2>Overview</h2>
 						<div data-bind="with: timeeditor">
 							<h3>Time (HH:mm)</h3>
-							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<div data-bind="with: yearmontheditor">
 							<h3>YearMonth (yyyy/MM)</h3>
-							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input data-name="テスト" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
@@ -60,10 +60,162 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-
+									<h2>HTML</h2>
+<pre><![CDATA[<div data-bind="with: timeeditor">
+	<input data-bind="ntsTimeEditor: {
+		value: value,
+		constraint: constraint,
+		option: option,
+		required: required,
+		enable: enable,
+		readonly: readonly}" />
+</div>]]></pre>
+									<div class="pull-left">
+										<h2>API</h2>
+										<table>
+											<colgroup>
+												<col width="200px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>ViewModel</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>value</td>
+													<td>
+														<b>Type:</b> string<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>constraint<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> string<br/>
+														Validate constraint for editor
+													</td>
+												</tr>
+												<tr>
+													<td>required<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set required for editor
+													</td>
+												</tr>
+												<tr>
+													<td>enable<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> true<br/>
+														Set enable/disable for editor
+													</td>
+												</tr>
+												<tr>
+													<td>readonly<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set readonly for editor
+													</td>
+												</tr>
+												<tr>
+													<td>option<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> object<br/>
+														<b>Default:</b> TimeEditorOption()<br/>
+														<b>Members:</b><br/>
+														<a href="#timeeditoroption"><i class="color">TimeEditorOption</i></a>: Option for text editor
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div id="timeeditoroption" class="feature-box pull-right" style="width:50%;">
+										<div class="header"><h3 >TimeEditorOption</h3></div>
+										<div class="content">
+											<table style="width:100%;">
+												<colgroup>
+													<col width="200px" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th><h4>Properties</h4></th>
+														<th><h4>Description</h4></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>grouplength<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> number<br/>
+															<b>Default:</b> 0<br/>
+															Length to group number
+														</td>
+													</tr>
+													<tr>
+														<td>decimallength<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> number<br/>
+															<b>Default:</b> 0<br/>
+															Length for decimal
+														</td>
+													</tr>
+													<tr>
+														<td>placeholder<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Hint text for the control
+														</td>
+													</tr>
+													<tr>
+														<td>width<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Set width for the control
+														</td>
+													</tr>
+													<tr>
+														<td>textalign<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> "right"<br/>
+															<b>Members:</b><br/>
+															<i>left</i>: Align text to left<br/>
+															<i>right</i>: Align text to right<br/>
+															<i>center</i>: Align text to center
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+	timeeditor: any;
+	
+	constructor() {
+		var self = this;				  
+		self.timeeditor = {
+			value: ko.observable(12),
+			constraint: '',
+			option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+				grouplength: 3,
+				decimallength: 2,
+				placeholder: "Placeholder for number editor",
+				width: "",
+				textalign: "left"
+			})),
+			enable: ko.observable(true),
+			readonly: ko.observable(false)
+		};
+	}
+}]]></pre>
 								</div>
 							</div>
 						</article>
