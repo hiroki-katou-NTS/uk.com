@@ -56,13 +56,6 @@ var nts;
                         this.placeholder = (option && option.placeholder) ? option.placeholder : "";
                         this.width = (option && option.width) ? option.width : "";
                         this.textalign = (option && option.textalign) ? option.textalign : "left";
-                        // Regex: /^-?\d+(\,\d{3})*([.]\d+)?$/
-                        this.regex = "/^-?\\d+";
-                        if (this.grouplength > 0)
-                            this.regex += "(\\" + this.groupseperator + "\\d{" + this.grouplength + "})*";
-                        if (this.decimallength > 0)
-                            this.regex += "([" + this.decimalseperator + "]\\d+)?";
-                        this.regex += "$/";
                     }
                     return NumberEditorOption;
                 }(EditorOptionBase));
