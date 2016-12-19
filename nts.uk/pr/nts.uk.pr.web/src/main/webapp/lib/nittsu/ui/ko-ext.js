@@ -1046,25 +1046,9 @@ var nts;
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
                         }));
-                        container.on('validate', (function (e) {
-                            // Check empty value
-                            var itemsSelected = container.data('value');
-                            var required = container.data('required');
-                            if (required) {
-                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                                    console.log('ListBox selection must not be empty');
-                                }
-                                else {
-                                    selectListBoxContainer.ntsError('clear');
-                                }
-                            }
-                        }));
                         // Create method.
                         $.fn.deselectAll = function () {
                             $(this).data('value', '');
-                            $(this).find('.nts-list-box > li').removeClass("ui-selected");
-                            $(this).find('.nts-list-box > li > div').removeClass("ui-selected");
                             $(this).trigger("selectionChange");
                         };
                         $.fn.selectAll = function () {
@@ -1083,6 +1067,21 @@ var nts;
                                     break;
                             }
                         };
+                        if (required) {
+                            container.on('validate', (function (e) {
+                                // Check empty value
+                                var itemsSelected = container.data('value');
+                                var required = container.data('required');
+                                if (required) {
+                                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                                    }
+                                    else {
+                                        selectListBoxContainer.ntsError('clear');
+                                    }
+                                }
+                            }));
+                        }
                     };
                     /**
                      * Update
@@ -1219,7 +1218,9 @@ var nts;
                             $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                             container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
-                        //container.trigger('validate');                   
+                        if (container.parent().is(':visible')) {
+                            container.trigger('validate');
+                        }
                     };
                     return ListBoxBindingHandler;
                 }());
