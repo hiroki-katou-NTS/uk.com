@@ -106,7 +106,10 @@ var nts;
                         this.setGlobal(this.$iframe[0].contentWindow);
                     };
                     ScreenWindow.prototype.onClosed = function (callback) {
-                        this.onClosedHandler = callback;
+                        this.onClosedHandler = function () {
+                            callback();
+                            windows.container.localShared = {};
+                        };
                     };
                     ScreenWindow.prototype.close = function () {
                         if (this.isRoot) {
@@ -143,6 +146,7 @@ var nts;
                         this.windows[windows.selfId] = ScreenWindow.createMainWindow();
                         this.windows[windows.selfId].setGlobal(window);
                         this.shared = {};
+                        this.localShared = {};
                     }
                     /**
                      * All dialog object is in MainWindow.
@@ -156,10 +160,15 @@ var nts;
                         return subWindow;
                     };
                     ScreenWindowContainer.prototype.getShared = function (key) {
-                        return this.shared[key];
+                        return this.shared[key] !== undefined ? this.shared[key] : this.localShared[key];
                     };
-                    ScreenWindowContainer.prototype.setShared = function (key, data) {
-                        this.shared[key] = data;
+                    ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
+                        if (persist || isRoot) {
+                            this.shared[key] = data;
+                        }
+                        else {
+                            this.localShared[key] = data;
+                        }
                     };
                     ScreenWindowContainer.prototype.close = function (id) {
                         var target = this.windows[id];
@@ -181,8 +190,8 @@ var nts;
                     return windows.container.getShared(key);
                 }
                 windows.getShared = getShared;
-                function setShared(key, data) {
-                    windows.container.setShared(key, data);
+                function setShared(key, data, persist) {
+                    windows.container.setShared(key, data, windows.getSelf().isRoot, persist);
                 }
                 windows.setShared = setShared;
                 function getSelf() {

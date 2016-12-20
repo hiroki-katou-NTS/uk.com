@@ -11,11 +11,11 @@
 @import "components/_radiobox.scss";
 @import "components/_listbox.scss";
 @import "components/_gridlist.scss";
+@import "components/_tabpanel.scss";
 @import "components/_treegridview.scss";
 @import "components/_combobox.scss";
 @import "components/_dialog.scss";
 @import "components/_wizard.scss";
-@import "components/_wizard2.scss";
 @import "components/_currency.scss";
 @import "frame/_header.scss";
 @import "frame/_functions.scss";
@@ -31,4 +31,4 @@ body * {
         size: 1rem;
         family: $font_family;
     }
-}
+} 

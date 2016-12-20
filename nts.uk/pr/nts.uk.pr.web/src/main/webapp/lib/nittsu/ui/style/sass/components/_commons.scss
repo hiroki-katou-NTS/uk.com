@@ -97,8 +97,8 @@ div.popup-panel {
 		border-color: #ff6666;
 	}
 }
-.error {
-	border: 1px solid #ff6666;
+div.error {
+	border: 1px solid #ff6666 !important;
 }
 
 /*****************************
@@ -125,9 +125,25 @@ div.popup-panel {
 }
 
 /*****************************
-  Vertical-align
+  Layout
 *****************************/
 .flex {
 	display:flex;
-	&.v-align{align-items: center;}
+	&.valign-center{ align-items: center; }
 }
+
+.table {
+	display: table;
+	.cell {
+		display: table-cell;
+		&.valign-center { vertical-align: center; }
+		&.valign-bottom { vertical-align: bottom; }
+		&.valign-top { vertical-align: top; }
+		&.halign-left { text-align: left; }
+		&.halign-right { text-align: right; }
+		&.halign-center { text-align: center; }
+	}
+}
+
+.label { display: inline-block; }
+

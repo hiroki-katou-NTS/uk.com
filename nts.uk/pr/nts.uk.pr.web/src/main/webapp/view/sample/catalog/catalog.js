@@ -40,7 +40,7 @@ $(function(){
 	
 	$('pre').each(function(){
 		$(this).html($(this).html().replace("<!--[CDATA[","").replace("]]-->",""));
-	})
+	});
 	
 	$(".tabs").tabs();
 });

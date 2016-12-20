@@ -3,12 +3,10 @@ package nts.uk.pr.file.infra.paymentdata;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
 import com.aspose.cells.PageOrientationType;
-import com.aspose.cells.PageSetup;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
@@ -28,9 +26,11 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 	@Override
 	protected void generate(FileGeneratorContext context) {
 		try {
-			PaymentDataResult result = context.getParameterAt(0);
-			OutputStream output = context.createOutputFileStream("paymentdata.pdf");
+			//get list PaymentDataResult
+			List<PaymentDataResult> results = context.getParameterAt(0);
+			// create workbook
 			WorkbookDesigner designer = new WorkbookDesigner();
+			OutputStream output = context.createOutputFileStream("paymentdata.pdf");
 			Workbook workbook = null;
 			try {
 				workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
@@ -38,30 +38,9 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				throw new RuntimeException("Report template not found");
 			}
 			designer.setWorkbook(workbook);
-			// bind header
-			designer.setDataSource("PaymentDataHeader", result.getPaymentHeader());
-
-			// bind categories data to datasource
-			List<LayoutMasterCategoryDto> categories = result.getCategories();
-			for (int i = 0; i < categories.size(); i++) {
-				if(categories.get(i).getCategoryAttribute() == 0) {
-					createValue(designer, categories.get(i), 1);
-				} else if(categories.get(i).getCategoryAttribute() == 1){
-					createValue(designer, categories.get(i), 2);
-				}else if(categories.get(i).getCategoryAttribute() == 2){
-					createValue(designer, categories.get(i), 3);
-				}else if(categories.get(i).getCategoryAttribute() == 3){
-					createValue(designer, categories.get(i), 4);
-				}
-			}
-			// bind processing Yearmonth
-			String year = result.getPaymentHeader().getProcessingYM().toString().substring(0, 4);
-			String month = result.getPaymentHeader().getProcessingYM().toString().substring(4);
-			String processingYm = year + "年" + month + "月";
-			designer.setDataSource("ProcessingYm", processingYm);
-			designer.getWorkbook().getWorksheets().get(0).getPageSetup().setFitToPagesWide(1);
-			designer.getWorkbook().getWorksheets().get(0).getPageSetup().setOrientation(PageOrientationType.LANDSCAPE);
-			designer.process(true);
+			//bind data
+			bindingData(designer, results);
+			// save to file
 			designer.getWorkbook().save(output, SaveFormat.PDF);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -70,7 +49,43 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 		}
 	}
 
-	//calculate lines and items position
+	private void bindingData(WorkbookDesigner designer, List<PaymentDataResult> results) throws Exception {
+		for (int i = 0; i < results.size(); i++) {
+			// bind header
+			designer.setDataSource("PaymentDataHeader", results.get(i).getPaymentHeader());
+
+			// bind categories data to datasource
+			List<LayoutMasterCategoryDto> categories = results.get(i).getCategories();
+			for (int j = 0; j < categories.size(); j++) {
+				if (categories.get(j).getCategoryAttribute() == 0) {
+					createValue(designer, categories.get(j), 1);
+				} else if (categories.get(j).getCategoryAttribute() == 1) {
+					createValue(designer, categories.get(j), 2);
+				} else if (categories.get(j).getCategoryAttribute() == 2) {
+					createValue(designer, categories.get(j), 3);
+				} else if (categories.get(j).getCategoryAttribute() == 3) {
+					createValue(designer, categories.get(j), 4);
+				}
+			}
+			// bind processing Yearmonth
+			String year = results.get(i).getPaymentHeader().getProcessingYM().toString().substring(0, 4);
+			String month = results.get(i).getPaymentHeader().getProcessingYM().toString().substring(4);
+			String processingYm = year + "年" + month + "月";
+			designer.setDataSource("ProcessingYm", processingYm);
+			// fit wide
+			designer.getWorkbook().getWorksheets().get(i).getPageSetup().setFitToPagesWide(1);
+			// set landscape
+			designer.getWorkbook().getWorksheets().get(i).getPageSetup().setOrientation(PageOrientationType.LANDSCAPE);
+			// add another page
+			if (i < results.size() - 1) {
+				designer.getWorkbook().getWorksheets().addCopy(i);
+			}
+			// approve process
+			designer.process(i, true);
+		}
+	}
+
+	// calculate lines and items position
 	private void createValue(WorkbookDesigner designer, LayoutMasterCategoryDto category, int cateIndex) {
 		List<LineDto> lines = category.getLines();
 		for (LineDto line : lines) {

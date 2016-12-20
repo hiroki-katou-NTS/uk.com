@@ -72,7 +72,6 @@ module nts.uk.ui.option {
         grouplength: number;
         decimalseperator: string;
         decimallength: number;
-        protected regex: string;
         
         constructor(option?: INumberEditorOption) {
             super();
@@ -84,13 +83,6 @@ module nts.uk.ui.option {
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";
-            // Regex: /^-?\d+(\,\d{3})*([.]\d+)?$/
-            this.regex = "/^-?\\d+";
-            if (this.grouplength > 0)
-                this.regex += "(\\" + this.groupseperator + "\\d{" + this.grouplength + "})*";
-            if (this.decimallength > 0)
-                this.regex += "([" + this.decimalseperator + "]\\d+)?";
-            this.regex += "$/";
         }
     }
 
@@ -107,7 +99,6 @@ module nts.uk.ui.option {
             this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
             this.currencyformat = (option && option.currencyformat) ? option.currencyformat : "JPY";
             this.currencyposition = (option && option.currencyposition) ? option.currencyposition : getCurrencyPosition(this.currencyformat);
-            
             this.placeholder = (option && option.placeholder) ? option.placeholder : "";
             this.width = (option && option.width) ? option.width : "";
             this.textalign = (option && option.textalign) ? option.textalign : "left";

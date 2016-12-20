@@ -50,21 +50,26 @@
 									<span class="icon separate-1 green-div">処理する給与明細書の年月</span>
 									<span data-bind="text: $parent.currentProcessingYearMonth"></span>
 								</div>
-								<br /> <br /> <span>処理方法を選んでください</span><br />
+								<br /> <span class="separate-bottom">処理方法を選んでください</span><br />
+								<span class="separate-bottom">
+									<button class="x-large fix-button">就業の月別実績を連動する。</button>
+								</span>
 								<br />
-								<button class="x-large fix-button">就業の月別実績を連動する。</button>
-								<br /> <br />
-								<button class="large fix-button" data-bind="click: next">初期値データの作成</button>
-								<br /> <br />
-								<button class="large fix-button">外部（CSV）データの実績を取り込む。</button>
-								<br /> <br />
+								<span class="separate-bottom">
+									<button class="large fix-button" data-bind="click: next">初期値データの作成</button>
+								</span>
+								<br />
+								<span class="separate-bottom">
+									<button class="large fix-button">外部（CSV）データの実績を取り込む。</button>
+								</span>
+								<br />
 							</div>
 							<div class="step-2">
 								<div class="round-border">
 									<span class="icon separate-1 green-div">処理する給与明細書の年月</span>
 									<a data-bind="text: $parent.currentProcessingYearMonth"></a>
 								</div>
-								<br /> <br />
+								<br />
 								<div data-bind="with: $parent.listbox">
 									<div id="list-box"
 										data-bind="ntsListBox: {options: itemList,
@@ -73,6 +78,7 @@
 											   multiple: true,
 											   value: selectedCodes,
 											   enable: true,
+											   required: true,
 											   rows: 10,
 											   columns: [
 													{ prop: 'code', length: 12 },
@@ -80,9 +86,9 @@
 											   ]}"
 										class="cf"></div>
 								</div>
-								<br /> <br />
+								<br />
 								<button data-bind="click: previous">← 処理方法へ戻る</button>
-								<button data-bind="click: next" class="proceed x-large">次
+								<button data-bind="click: next, enable: $root.errors.isEmpty()" class="proceed x-large">次
 									へ →</button>
 							</div>
 							<div class="step-3">
@@ -90,11 +96,13 @@
 									<span class="icon separate-1 green-div">処理する給与明細書の年月</span>
 									<a data-bind="text: $parent.currentProcessingYearMonth"></a>
 								</div>
-								<br /> <span>以下の設定で処理を行います。</span> <br /> <br />
-								<div style="font-size: 11px;" class="form-label">処理方法</div>
-								<a style="margin-left:58px; font-size: 11px;">初期値データの作成</a> <br /> <br />
-								<div style="font-size: 11px;" class="form-label">対象人数</div>
-								<a style="margin-left:58px; font-size:23px;" data-bind="text: $parent.listbox.selectedCodes().length"></a><a style="margin-left:9px; font-size: 11px;">人</a><br />
+								<br /> <span class="separate-bottom">以下の設定で処理を行います。</span> 
+								<br /> 
+								<div style="font-size: 11px;" class="form-label separate-bottom">処理方法</div>
+								<a style="margin-left:58px; font-size: 11px;">初期値データの作成</a> 
+								<br /> 
+								<div style="font-size: 11px;" class="form-label separate-bottom">対象人数</div>
+								<a style="margin-left:58px; font-size:23px;" data-bind="text: $parent.listbox.selectedCodes().length"></a><a style="margin-left:9px; font-size: 11px;">人</a>
 								<br />
 								<div data-bind="with: $root.content" style="float: left; margin-top: 10px;">
 									<button data-bind="click: wizard.previous">← 対象社員へ戻る</button>

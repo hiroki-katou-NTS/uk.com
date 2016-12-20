@@ -1,5 +1,3 @@
-import editorOption = nts.uk.ui.option;
-
 __viewContext.ready(function () {
     class ScreenModel {
         texteditor: any;
@@ -20,7 +18,7 @@ __viewContext.ready(function () {
                 value: ko.observable(''),
                 constraint: ko.observable('ResidenceCode'),
                 constraints: ko.observableArray(['ResidenceCode','EmployeeCode']),
-                option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -29,7 +27,13 @@ __viewContext.ready(function () {
             self.texteditor = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new editorOption.TextEditorOption()),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "Placeholder for text editor",
+                    width: "",
+                    textalign: "left"
+                })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -37,10 +41,11 @@ __viewContext.ready(function () {
             self.employeeeditor = {
                 value: ko.observable('19'),
                 constraint: 'EmployeeCode',
-                option: ko.mapping.fromJS(new editorOption.TextEditorOption({
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     filldirection: "right",
                     fillcharacter: "0"
                 })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -48,7 +53,13 @@ __viewContext.ready(function () {
             self.multilineeditor = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new editorOption.MultilineEditorOption({resizeable: true})),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                    resizeable: true,
+                    placeholder: "Placeholder for text editor",
+                    width: "",
+                    textalign: "left"
+                })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -56,7 +67,10 @@ __viewContext.ready(function () {
             self.numbereditor = {
                 value: ko.observable(12),
                 constraint: '',
-                option: ko.mapping.fromJS(new editorOption.NumberEditorOption({grouplength: 3, decimallength: 2})),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3,
+                    decimallength: 2})),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -64,7 +78,13 @@ __viewContext.ready(function () {
             self.currencyeditor = {
                 value: ko.observable(1200),
                 constraint: '',
-                option: new editorOption.CurrencyEditorOption({grouplength: 3, decimallength: 2, currencyformat: "JPY", currencyposition: 'right'}),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                    grouplength: 3,
+                    decimallength: 2,
+                    currencyformat: "JPY",
+                    currencyposition: 'right'
+                })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -72,7 +92,13 @@ __viewContext.ready(function () {
             self.currencyeditor2 = {
                 value: ko.observable(200000),
                 constraint: '',
-                option: new editorOption.CurrencyEditorOption({grouplength: 4, decimallength: 2, currencyformat: "USD", currencyposition: 'left'}),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                    grouplength: 4,
+                    decimallength: 2,
+                    currencyformat: "USD",
+                    currencyposition: 'left'
+                })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -80,7 +106,13 @@ __viewContext.ready(function () {
             self.timeeditor = {
                 value: ko.observable(-1222),
                 constraint: 'LayoutCode',
-                option: ko.mapping.fromJS(new editorOption.TimeEditorOption({inputFormat: 'time'})),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'time',
+                    placeholder: "Enter a valid HH:mm",
+                    width: "",
+                    textalign: "left"
+                })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -88,7 +120,10 @@ __viewContext.ready(function () {
             self.yearmontheditor = {
                 value: ko.observable(200001),
                 constraint: 'LayoutCode',
-                option: ko.mapping.fromJS(new editorOption.TimeEditorOption({inputFormat: 'yearmonth'})),
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                    inputFormat: 'yearmonth'
+                })),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };

@@ -109,14 +109,14 @@ var nts;
             time_1.parseTime = parseTime;
             var ResultParseYearMonth = (function (_super) {
                 __extends(ResultParseYearMonth, _super);
-                function ResultParseYearMonth(success, year, month, msg) {
+                function ResultParseYearMonth(success, msg, year, month) {
                     _super.call(this, success);
                     this.year = year;
                     this.month = month;
                     this.msg = msg || "must yyyymm or yyyy/mm format: year in [1900-9999] and month in [1-12] ";
                 }
                 ResultParseYearMonth.succeeded = function (year, month) {
-                    return new ResultParseYearMonth(true, year, month);
+                    return new ResultParseYearMonth(true, "", year, month);
                 };
                 ResultParseYearMonth.failed = function (msg) {
                     return new ResultParseYearMonth(false, msg);
@@ -145,28 +145,20 @@ var nts;
                     yearMonth = yearMonth.toString();
                 }
                 var stringLengh = yearMonth.length;
-                var values = yearMonth.split('/');
-                if ((stringLengh < 6 || stringLengh > 7) || values.length > 2 || yearMonth.replace(/[0-9/]/g, "").length > 0) {
-                    return ResultParseYearMonth.failed("invalid format. must be yyyymm or yyyy/mm!");
-                }
-                var indexOf = yearMonth.lastIndexOf('/');
-                var year, month;
-                if (indexOf > -1 && indexOf !== 4) {
-                    return ResultParseYearMonth.failed('invalid format. must be yyyy/mm');
-                }
-                else if (indexOf === 4) {
-                    year = values[0];
-                    month = values[1];
-                }
-                else if (indexOf <= -1) {
-                    year = yearMonth.substr(0, stringLengh - 2);
-                    month = yearMonth.substr(-2, 2);
-                }
-                if (!uk.ntsNumber.isNumber(month, false) || parseInt(month) > 12 || !uk.ntsNumber.isNumber(year, false)
-                    || parseInt(year) < 1900) {
-                    return ResultParseYearMonth.failed();
-                }
-                return ResultParseYearMonth.succeeded(parseInt(year), parseInt(month));
+                yearMonth = yearMonth.replace("/", "");
+                yearMonth = yearMonth.replace("/", "");
+                var checkNum = yearMonth.replace(/[0-9]/g, "");
+                if (checkNum.length > 0)
+                    return ResultParseYearMonth.failed("yearmonth must contain digits and slashes only!");
+                if (yearMonth.length != 6 && yearMonth.length != 5)
+                    return ResultParseYearMonth.failed("wrong yearmonth format: must be yyyy/mm or yyyymm");
+                var year = parseInt(yearMonth.substring(0, 4));
+                var month = parseInt(yearMonth.substring(4));
+                if (year < 1900 || year > 9999)
+                    return ResultParseYearMonth.failed("wrong year: year must in range 1900-9999");
+                if (month < 1 || month > 12)
+                    return ResultParseYearMonth.failed("wrong month: month must in range 1-12");
+                return ResultParseYearMonth.succeeded(year, month);
             }
             time_1.parseYearMonth = parseYearMonth;
             var ResultParseTimeOfTheDay = (function (_super) {

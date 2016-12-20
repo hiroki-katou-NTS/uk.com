@@ -1,5 +1,6 @@
 package nts.uk.pr.file.ws.paymentdata;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,12 +21,16 @@ public class PaymentDataPrintWebservice {
 	private PaymentDataPrintFileGenerator paymentDataPrint;
 	@Inject
 	private GetPaymentDataQueryProcessor getPaymentDataQueryProcessor;
-	
+
 	@POST
 	@Path("print")
 	public String print(List<PaymentDataQuery> query) {
-		PaymentDataResult result = this.getPaymentDataQueryProcessor.find(query.get(0));
-		return this.paymentDataPrint.start(result).getTask();
+		List<PaymentDataResult> results = new ArrayList<>();
+		for (int i = 0; i < query.size(); i++) {
+			PaymentDataResult result = this.getPaymentDataQueryProcessor.find(query.get(i));
+			results.add(result);
+		}
+		return this.paymentDataPrint.start(results).getTask();
 	}
-	
+
 }

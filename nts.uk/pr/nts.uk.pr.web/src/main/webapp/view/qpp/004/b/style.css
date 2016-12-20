@@ -6,6 +6,11 @@
 	margin-bottom: 5px;
 }
 
+.separate-bottom {
+	margin-bottom: 15px;
+	display: inline-block;
+}
+
 #functions-area a.backqpp004a {
 	text-decoration: none;
 	color: #000000;

@@ -1091,21 +1091,7 @@ module nts.uk.ui.koExtentions {
 
 
             }));
-
-            container.on('validate', (function(e: Event) {
-                // Check empty value
-
-                var itemsSelected: any = container.data('value');
-                var required = container.data('required');
-                if (required) {
-                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                        console.log('ListBox selection must not be empty');
-                    } else {
-                        selectListBoxContainer.ntsError('clear');
-                    }
-                }
-            }));
+            
             // Create method.
             $.fn.deselectAll = function() {
                 $(this).data('value', '');
@@ -1129,7 +1115,21 @@ module nts.uk.ui.koExtentions {
                         break;
                 }
             }
-
+            if(required) {
+                container.on('validate', (function(e: Event) {
+                    // Check empty value
+    
+                    var itemsSelected: any = container.data('value');
+                    var required = container.data('required');
+                    if (required) {
+                        if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                            selectListBoxContainer.ntsError('set', 'at least 1 item selection required');                        
+                        } else {
+                            selectListBoxContainer.ntsError('clear');
+                        }
+                    }
+                }));
+            }
         }
 
         /**
@@ -1154,7 +1154,7 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var selectListBoxContainer = container.find('.nts-list-box');
             var maxWidthCharacter = 15;
-
+            
             var getOptionValue = item => {
                 if (optionValue === undefined) {
                     return item;
@@ -1276,7 +1276,9 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-            //container.trigger('validate');                   
+            if(container.parent().is(':visible')) {
+                container.trigger('validate');
+            }     
         }
     }
     
@@ -1512,23 +1514,16 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data.
+            // Get data
             var data = valueAccessor();
-            // Get step list.
+            // Get step list
             var options: Array<any> = ko.unwrap(data.steps);
-            var color: string = ko.unwrap(data.theme);
-            var cssClass: string = "blue";
-            if(color == cssClass) {
-                cssClass = "nts-wizard-blue";
-            } 
-            else {
-               cssClass = "nts-wizard"; 
-            }
-            //console.log(cssClass);
-            // Container.
+            var theme: string = ko.unwrap(data.theme);
+            var cssClass: string = "nts-wizard " + "theme-" + theme;
+            // Container
             var container = $(element);
-
-            // Create steps.
+            
+            // Create steps
             for (var i = 0; i < options.length; i++) {
                 var contentClass: string = ko.unwrap(options[i].content);
                 var htmlStep = container.children('.steps').children(contentClass).html();
@@ -1537,14 +1532,14 @@ module nts.uk.ui.koExtentions {
                 container.append('<div>' + htmlContent + '</div>');
             }
             var icon = container.find('.header .image').data('icon');
-
-            // Remove html.
+            
+            // Remove html
             var header = container.children('.header');
             container.children('.header').remove();
             container.children('.steps').remove();
             container.children('.contents').remove();
 
-            // Create wizard.
+            // Create wizard
             container.steps({
                 headerTag: "h1",
                 bodyTag: "div",
@@ -1569,8 +1564,8 @@ module nts.uk.ui.koExtentions {
                     return true;
                 }
             });
-
-            // Add default class.
+            
+            // Add default class
             container.addClass(cssClass);
             container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
             container.children('.steps').children('ul').children('li').children('a').addClass('nts-step-contents');
@@ -1578,28 +1573,28 @@ module nts.uk.ui.koExtentions {
             container.children('.steps').children('ul').children('.last').addClass('end');
             container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
             container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>')
-
-            // Remove old class.
+            
+            // Remove old class
             container.children('.steps').children('ul').children('li').removeClass('step-current');
             container.children('.steps').children('ul').children('li').removeClass('step-prev');
             container.children('.steps').children('ul').children('li').removeClass('step-next');
-
-            // Add new class.
+            
+            // Add new class
             container.children('.steps').children('ul').children('.current').addClass('step-current');
             container.children('.steps').children('ul').children('.done').addClass('step-prev');
             container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
-
-            // Remove content.
+            
+            // Remove content
             container.find('.actions').hide();
-
+            
             // Add Header
             container.children('.steps').prepend(header);
             container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-
+            
             $.fn.begin = function() {
                 $(this).setStep(0);
             }
-
+            
             $.fn.end = function() {
                 $(this).setStep(options.length - 1);
             }
@@ -1747,8 +1742,9 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
-            // Get tab list.
             var tabs: Array<any> = ko.unwrap(data.dataSource);
+            var direction: string = ko.unwrap(data.direction || "horizontal");
+            
             // Container.
             var container = $(element);
 
@@ -1772,7 +1768,7 @@ module nts.uk.ui.koExtentions {
                     container.children('ul').children('.ui-state-disabled').addClass('disabled');
                     container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
                 }
-            });
+            }).addClass(direction);
         }
 
         /**

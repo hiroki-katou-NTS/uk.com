@@ -20,12 +20,12 @@
     export module text {
         
         var regexp = {
-            allHalfNumeric: /^\d+$/,
-            allHalfAlphabet: /^[a-zA-Z]+$/,
-            allHalfAlphanumeric: /^[a-zA-Z0-9]+$/,
-            allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]+$/,
-            allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]+$/,
-            allHiragana: /^[ぁ-ん　ー ]+$/,
+            allHalfNumeric: /^\d*$/,
+            allHalfAlphabet: /^[a-zA-Z]*$/,
+            allHalfAlphanumeric: /^[a-zA-Z0-9]*$/,
+            allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
+            allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
+            allHiragana: /^[ぁ-ん　ー ]*$/,
         };
         
         /**
@@ -53,7 +53,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfNumeric(text: string) {
-            return text !== '' && regexp.allHalfNumeric.test(text);
+            return regexp.allHalfNumeric.test(text);
         }
     
         /**
@@ -61,7 +61,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfAlphabet(text: string) {
-            return text !== '' && regexp.allHalfAlphabet.test(text);
+            return regexp.allHalfAlphabet.test(text);
         }
     
         /**
@@ -69,7 +69,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfAlphanumeric(text: string) {
-            return text !== '' && regexp.allHalfAlphanumeric.test(text);
+            return regexp.allHalfAlphanumeric.test(text);
         }
     
         /**
@@ -77,7 +77,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalfKatakana(text: string) {
-            return text !== '' && regexp.allHalfKatakanaReg.test(text);
+            return regexp.allHalfKatakanaReg.test(text);
         }
     
         /**
@@ -85,7 +85,7 @@
          * @param text 解析対象の文字列
          */
         export function allFullKatakana(text: string) {
-            return text !== '' && regexp.allFullKatakanaReg.test(text);
+            return regexp.allFullKatakanaReg.test(text);
         }
     
         /**
@@ -93,7 +93,7 @@
          * @param text 解析対象の文字列
          */
         export function allHalf(text: string) {
-            return text !== '' && text.length === countHalf(text);
+            return text.length === countHalf(text);
         }
     
         /**
@@ -101,7 +101,7 @@
          * @param text 解析対象の文字列
          */
         export function allHiragana(text: string) {
-            return text !== '' && regexp.allHiragana.test(text);
+            return regexp.allHiragana.test(text);
         }
     
         /**
@@ -109,7 +109,7 @@
          * @param text 解析対象の文字列
          */
         export function allKatakana(text: string) {
-            return text !== '' && regexp.allFullKatakanaReg.test(text);
+            return regexp.allFullKatakanaReg.test(text);
         }
     
         /**

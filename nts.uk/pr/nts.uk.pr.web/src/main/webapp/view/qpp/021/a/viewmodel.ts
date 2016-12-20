@@ -69,10 +69,13 @@ module nts.uk.pr.view.qpp021.a.viewmodel {
             self.listBox = new Listbox();
             self.radioBox = new RadioBox();
         }
-
         print() {
             var self = this;
-            nts.uk.pr.view.qpp021.a.service.print(self.listBox.selectedCode(), '0000000004');
+            var paymentQuery = [];
+            for (var i = 0; i < self.listBox.selectedCodes().length; i++) {
+                paymentQuery.push({personId: self.listBox.selectedCodes()[i], employeeCode:'0000000001'});
+            }
+            nts.uk.pr.view.qpp021.a.service.print(paymentQuery);
         }
     }
 

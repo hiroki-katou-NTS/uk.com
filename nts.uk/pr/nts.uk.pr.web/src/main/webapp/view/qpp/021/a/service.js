@@ -15,18 +15,10 @@ var nts;
                             var servicePath = {
                                 printService: "/file/paymentdata/print",
                             };
-                            function print(personId, employeeCode) {
+                            function print(query) {
                                 var dfd = $.Deferred();
-                                var query = [{
-                                        personId: personId,
-                                        employeeCode: employeeCode
-                                    }];
                                 new nts.uk.ui.file.FileDownload("/file/paymentdata/print", query).print();
-                                //            nts.uk.request.ajax(servicePath.printService, query).done(function(res: qpp021.a.viewmodel.PaymentDataResultViewModel) {
                                 dfd.resolve();
-                                //            }).fail(function(res) {
-                                //               dfd.reject(res);
-                                //            });
                                 return dfd.promise();
                             }
                             service.print = print;

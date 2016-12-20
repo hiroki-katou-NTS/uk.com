@@ -43,7 +43,7 @@
 						<h2>Overview</h2>
 						<div data-bind="with: texteditor">
 							<h3>TextEditor</h3>
-							<input id="testPushError" data-name="テスト" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<br/>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
@@ -56,17 +56,163 @@
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-
+									<h2>HTML</h2>
+<pre><![CDATA[<div data-bind="with: texteditor">
+	<input data-bind="ntsTextEditor: {
+		value: value,
+		constraint: constraint,
+		option: option,
+		required: required,
+		enable: enable,
+		readonly: readonly}" />
+</div>]]></pre>
+									<div class="pull-left">
+										<h2>API</h2>
+										<table>
+											<colgroup>
+												<col width="200px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>ViewModel</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>value</td>
+													<td>
+														<b>Type:</b> string<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>constraint<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> string<br/>
+														Validate constraint for editor
+													</td>
+												</tr>
+												<tr>
+													<td>required<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set required for editor
+													</td>
+												</tr>
+												<tr>
+													<td>enable<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> true<br/>
+														Set enable/disable for editor
+													</td>
+												</tr>
+												<tr>
+													<td>readonly<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set readonly for editor
+													</td>
+												</tr>
+												<tr>
+													<td>option<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> object<br/>
+														<b>Default:</b> TextEditorOption()<br/>
+														<b>Members:</b><br/>
+														<a href="#texteditoroption"><i class="color">TextEditorOption</i></a>: Option for text editor
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div id="texteditoroption" class="feature-box pull-right" style="width:50%;">
+										<div class="header"><h3 >TextEditorOption</h3></div>
+										<div class="content">
+											<table style="width:100%;">
+												<colgroup>
+													<col width="200px" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th><h4>Properties</h4></th>
+														<th><h4>Description</h4></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>textmode<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> "text"<br/>
+															<b>Members:</b><br/>
+															<i>text</i>: Single line text editor type text<br/>
+															<i>password</i>: Single line text editor type password
+														</td>
+													</tr>
+													<tr>
+														<td>placeholder<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Hint text for the control
+														</td>
+													</tr>
+													<tr>
+														<td>width<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Set width for the control
+														</td>
+													</tr>
+													<tr>
+														<td>textalign<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> "left"<br/>
+															<b>Members:</b><br/>
+															<i>left</i>: Align text to left<br/>
+															<i>right</i>: Align text to right<br/>
+															<i>center</i>: Align text to center
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    texteditor: any;
+    
+    constructor() {
+        var self = this;                  
+        self.texteditor = {
+            value: ko.observable(''),
+            constraint: 'ResidenceCode',
+            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            	textmode: "text",
+            	placeholder: "Placeholder for text editor",
+            	width: "100px",
+            	textalign: "left"
+            })),
+            required: ko.observable(true),
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
+        };
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>
-						<note><b>EmployeeCode</b> is a special case of TextEditor. If TextEditor has contraint = "EmployeeCode" it'll automatic format inputted value</note>
+						<note style="width:390px;"><b>EmployeeCode</b> is a special case of TextEditor.<br/>If TextEditor has <b>contraint = "EmployeeCode"</b> it'll automatic format inputted value</note>
 						<div data-bind="with: employeeeditor">
 						<h3>Employee Code</h3>
-							<input data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<br/>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
@@ -78,10 +224,176 @@
 									<li><a href="#tabs-employeecode-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-employeecode-html" class="cf">
-
+<h2>HTML</h2>
+<pre><![CDATA[<div data-bind="with: employeeeditor">
+	<input data-bind="ntsTextEditor: {
+	value: value,
+	constraint: 'EmployeeCode',
+	option: option,
+	required: required,
+	enable: enable,
+	readonly: readonly}" />
+</div>]]></pre>
+									<div class="pull-left">
+										<h2>API</h2>
+										<table>
+											<colgroup>
+												<col width="200px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>ViewModel</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>value</td>
+													<td>
+														<b>Type:</b> string<br/>
+													</td>
+												</tr>
+												<tr>
+													<td>constraint<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> string<br/>
+														Validate constraint for editor
+													</td>
+												</tr>
+												<tr>
+													<td>required<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set required for editor
+													</td>
+												</tr>
+												<tr>
+													<td>enable<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> true<br/>
+														Set enable/disable for editor
+													</td>
+												</tr>
+												<tr>
+													<td>readonly<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set readonly for editor
+													</td>
+												</tr>
+												<tr>
+													<td>option<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> object<br/>
+														<b>Default:</b> TextEditorOption()<br/>
+														<b>Members:</b><br/>
+														<a href="#texteditoroption-employeecode"><i class="color">TextEditorOption</i></a>: Option for text editor
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<div id="texteditoroption-employeecode" class="feature-box pull-right" style="width:50%;">
+										<div class="header"><h3 >TextEditorOption</h3></div>
+										<div class="content">
+											<table width="100%">
+												<colgroup>
+													<col width="200px" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th><h4>Properties</h4></th>
+														<th><h4>Description</h4></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>filldirection<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b>right<br/>
+															<b>Members:</b><br/>
+															<i>left</i>: Blank fill to left side<br/>
+															<i>right</i>: Blank fill to right side
+														</td>
+													</tr>
+													<tr>
+														<td>fillcharacter<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> "0"<br/>
+															Fill blank space with charater(s)
+														</td>
+													</tr>
+													<tr>
+														<td>textmode<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> "text"<br/>
+															<b>Members:</b><br/>
+															<i>text</i>: Single line text editor type text<br/>
+															<i>password</i>: Single line text editor type password
+														</td>
+													</tr>
+													<tr>
+														<td>placeholder<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Hint text for the control
+														</td>
+													</tr>
+													<tr>
+														<td>width<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															Set width for the control
+														</td>
+													</tr>
+													<tr>
+														<td>textalign<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> "left"<br/>
+															<b>Members:</b><br/>
+															<i>left</i>: Align text to left<br/>
+															<i>right</i>: Align text to right<br/>
+															<i>center</i>: Align text to center
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
 								</div>
 								<div id="tabs-employeecode-viewmodel" class="cf">
-
+									<h2>TypeScript</h2>
+<pre><![CDATA[class ScreenModel {
+    employeeeditor: any;
+    
+    constructor() {
+        var self = this;                  
+        self.employeeeditor = {
+            value: ko.observable(''),
+            constraint: 'ResidenceCode',
+            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+            	filldirection: "right",
+            	fillcharacter: "0",
+            	textmode: "text",
+            	placeholder: "Placeholder for text editor",
+            	width: "100px",
+            	textalign: "left"
+            })),
+            required: ko.observable(true),
+            enable: ko.observable(true),
+            readonly: ko.observable(false)
+        };
+    }
+}]]></pre>
 								</div>
 							</div>
 						</article>
