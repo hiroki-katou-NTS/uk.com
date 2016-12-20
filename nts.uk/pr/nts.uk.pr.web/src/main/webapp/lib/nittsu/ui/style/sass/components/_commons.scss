@@ -136,12 +136,12 @@ div.error {
 	display: table;
 	.cell {
 		display: table-cell;
-		&.valign-center { vertical-align: center; }
-		&.valign-bottom { vertical-align: bottom; }
-		&.valign-top { vertical-align: top; }
-		&.halign-left { text-align: left; }
-		&.halign-right { text-align: right; }
-		&.halign-center { text-align: center; }
+		&.valign-center > * { vertical-align: middle; }
+		&.valign-bottom > * { vertical-align: bottom; }
+		&.valign-top > * { vertical-align: top; }
+		&.halign-left > * { text-align: left; }
+		&.halign-right > * { text-align: right; }
+		&.halign-center > * { text-align: center; }
 	}
 }
 

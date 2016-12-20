@@ -18,7 +18,10 @@
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
 				<style>
-					.ntsCheckBox{width:100px;}
+					.col-1 .ntsCheckBox{width:100%;}
+					.col-2 .ntsCheckBox{width:50%;}
+					.col-3 .ntsCheckBox{width:33%;}
+					.col-100px .ntsCheckBox{width:100px;}
 				</style>
             </ui:define>
             
@@ -28,12 +31,16 @@
 					<div id="content" class="cf">
 						<h1>MultiCheckBox</h1>
 						<h2>Overview</h2>
-						<button data-bind="click: addBoxes">Add Box</button>
-						<button data-bind="click: removeBoxes">Remove Box</button>
-						<span data-bind="ntsCheckBox: { checked: enable }">Enable</span>
+						<div class="table">
+							<div class="cell valign-center">
+								<button data-bind="click: addBoxes">Add Box</button>
+								<button data-bind="click: removeBoxes">Remove Box</button>
+								<span class="label" data-bind="ntsCheckBox: { checked: enable }">Enable</span>
+							</div>
+						</div>
 						<br/><br/>
 						<h3>Selected Values as objects</h3>
-						<div data-bind="ntsMultiCheckBox: {options: itemList,
+						<div class="col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsText: 'name',
 											value: selectedValues,
 											enable: enable}"></div>
@@ -41,7 +48,7 @@
 						<div data-bind="text: ko.toJSON(selectedValues)"></div>
 						<br/>
 						<h3>Selected Values as value</h3>
-						<div data-bind="ntsMultiCheckBox: {options: itemList,
+						<div class="col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
@@ -147,48 +154,101 @@ class BoxModel {
 }]]></pre>
 								</div>
 								<div id="tabs-css" class="cf">
-									<h3>Outline</h3>
+									<article class="cf">
+										<h3>Outline</h3>
+										<p>Style CheckBox for better appearance on colored background</p>
 <pre><![CDATA[<div class="outline" data-bind="ntsMultiCheckBox: {
 	options: itemList,
 	optionsValue: 'id',
 	optionsText: 'name',
 	value: selectedIds,
 	enable: enable}"></div>]]></pre>
-									<div class="cf" style="background:#450003; padding:10px 5px; margin: 10px 0;">
-										<div class="outline" data-bind="ntsMultiCheckBox: {options: itemList,
+										<div class="cf" style="background:#450003; padding:10px 5px; margin: 10px 0;">
+											<div class="outline col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedIds,
+												enable: enable}"></div>
+										</div>
+										<div class="cf" style="background:#5C0002; padding:10px 5px; margin: 10px 0;">
+											<div class="outline col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedIds,
+												enable: enable}"></div>
+										</div>
+										<div class="cf" style="background:#94090D; padding:10px 5px; margin: 10px 0;">
+											<div class="outline col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedIds,
+												enable: enable}"></div>
+										</div>
+										<div class="cf" style="background:#D40D12; padding:10px 5px; margin: 10px 0;">
+											<div class="outline col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedIds,
+												enable: enable}"></div>
+										</div>
+										<div class="cf" style="background:#FF1D23; padding:10px 5px; margin: 10px 0;">
+											<div class="outline col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedIds,
+												enable: enable}"></div>
+										</div>
+									</article>
+									<article class="cf">
+										<h3>Layout</h3>
+										<p>How to display CheckBox in rows, columns or whatever you want</p>
+<pre><![CDATA[<style>
+	.col-1 .ntsCheckBox{width:100%;}
+	.col-2 .ntsCheckBox{width:50%;}
+	.col-3 .ntsCheckBox{width:33%;}
+	.col-100px .ntsCheckBox{width:100px;}
+</style>
+
+<div class="col-1" data-bind="ntsMultiCheckBox...
+<div class="col-2" data-bind="ntsMultiCheckBox...
+<div class="col-3" data-bind="ntsMultiCheckBox...
+<div class="col-100px" data-bind="ntsMultiCheckBox...
+<div data-bind="ntsMultiCheckBox...]]></pre>
+										<h4>1 column</h4>
+										<div class="col-1" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
 											enable: enable}"></div>
-									</div>
-									<div class="cf" style="background:#5C0002; padding:10px 5px; margin: 10px 0;">
-										<div class="outline" data-bind="ntsMultiCheckBox: {options: itemList,
+										<hr/>
+										<h4>2 columns</h4>
+										<div class="col-2" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
 											enable: enable}"></div>
-									</div>
-									<div class="cf" style="background:#94090D; padding:10px 5px; margin: 10px 0;">
-										<div class="outline" data-bind="ntsMultiCheckBox: {options: itemList,
+										<hr/>
+										<h4>3 columns</h4>
+										<div class="col-3" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
 											enable: enable}"></div>
-									</div>
-									<div class="cf" style="background:#D40D12; padding:10px 5px; margin: 10px 0;">
-										<div class="outline" data-bind="ntsMultiCheckBox: {options: itemList,
+										<hr/>
+										<h4>Fixed width</h4>
+										<div class="col-100px" data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
 											enable: enable}"></div>
-									</div>
-									<div class="cf" style="background:#FF1D23; padding:10px 5px; margin: 10px 0;">
-										<div class="outline" data-bind="ntsMultiCheckBox: {options: itemList,
+										<hr/>
+										<h4>Auto width</h4>
+										<div data-bind="ntsMultiCheckBox: {options: itemList,
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIds,
 											enable: enable}"></div>
-									</div>
+									</article>
 								</div>
 							</div>
 						</article>

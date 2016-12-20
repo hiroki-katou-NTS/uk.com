@@ -1,13 +1,12 @@
 __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
-            this.count = 4;
+            this.count = 10;
             var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(2, 'box 2'),
-                new BoxModel(3, 'box 3')
-            ]);
+            self.itemList = ko.observableArray([]);
+            for (var i = 1; i < 10; i++) {
+                self.itemList.push(new BoxModel(i, 'box ' + i));
+            }
             self.selectedValues = ko.observableArray([
                 new BoxModel(1, 'box 1'),
                 new BoxModel(3, 'box 3')
