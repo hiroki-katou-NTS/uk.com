@@ -119,7 +119,10 @@
             }
 
             onClosed(callback: () => void) {
-                this.onClosedHandler = callback;
+                this.onClosedHandler = function(){
+                    callback();
+                    container.localShared = {};
+                };
             }
 
             close() {
@@ -153,12 +156,14 @@
         export class ScreenWindowContainer {
             windows: { [key: string]: ScreenWindow };
             shared: { [key: string]: any };
+            localShared: { [key: string]: any };
 
             constructor() {
                 this.windows = {};
                 this.windows[selfId] = ScreenWindow.createMainWindow();
                 this.windows[selfId].setGlobal(window);
                 this.shared = {};
+                this.localShared = {};
             }
 
             /**
@@ -178,11 +183,15 @@
             }
 
             getShared(key: string): any {
-                return this.shared[key];
+                return this.shared[key] !== undefined ? this.shared[key] : this.localShared[key];
             }
 
-            setShared(key: string, data: any) {
-                this.shared[key] = data;
+            setShared(key: string, data: any, isRoot: boolean, persist?: boolean) {
+                if(persist || isRoot){
+                    this.shared[key] = data;    
+                }else {
+                    this.localShared[key] = data;         
+                }
             }
 
             close(id: string) {
@@ -207,8 +216,8 @@
             return container.getShared(key);
         }
 
-        export function setShared(key: string, data: any) {
-            container.setShared(key, data);
+        export function setShared(key: string, data: any, persist?: boolean) {
+            container.setShared(key, data, windows.getSelf().isRoot, persist);
         }
 
         export function getSelf() {
