@@ -11,7 +11,11 @@
 			border-radius: 5px 5px 0 0;
 			box-sizing: border-box;
 			
-			a { outline: none; }
+			a { 
+				float: none;
+				display: block;
+				outline: none;
+			}
 			&.ui-tabs-active {
 				background-color: $activated_color;
 				border-color: $activated_color;
