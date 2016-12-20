@@ -22,9 +22,13 @@
 @import "frame/_contents.scss";
 
 
-body {
+html {
+	font-size: $normal_font_size;
+}
+
+body * {
     font: {
-        size: $normal_font_size;
+        size: 1rem;
         family: $font_family;
     }
 }

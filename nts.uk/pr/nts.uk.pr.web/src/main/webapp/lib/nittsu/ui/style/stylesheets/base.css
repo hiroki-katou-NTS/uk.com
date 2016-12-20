@@ -1866,7 +1866,12 @@ button.nts-switch-button.selected:hover {
 }
 
 /* line 25, ../sass/base.scss */
-body {
+html {
   font-size: 14px;
+}
+
+/* line 29, ../sass/base.scss */
+body * {
+  font-size: 1rem;
   font-family: "Meiryo UI";
 }
