@@ -125,9 +125,25 @@ div.error {
 }
 
 /*****************************
-  Vertical-align
+  Layout
 *****************************/
 .flex {
 	display:flex;
-	&.v-align{align-items: center;}
+	&.valign-center{ align-items: center; }
 }
+
+.table {
+	display: table;
+	.cell {
+		display: table-cell;
+		&.valign-center { vertical-align: center; }
+		&.valign-bottom { vertical-align: bottom; }
+		&.valign-top { vertical-align: top; }
+		&.halign-left { text-align: left; }
+		&.halign-right { text-align: right; }
+		&.halign-center { text-align: center; }
+	}
+}
+
+.label { display: inline-block; }
+

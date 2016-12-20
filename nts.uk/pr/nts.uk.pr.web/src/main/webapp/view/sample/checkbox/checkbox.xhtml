@@ -25,11 +25,11 @@
 					<div id="content" class="cf">
 						<h1>CheckBox</h1>
 						<h2>Overview</h2>
-						<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>
-						<div data-bind="ntsCheckBox: { checked: enable }">This is test enable</div>
-						<div class="cf" style="background:#00B050; padding:10px 5px; margin: 10px 0;">
+						<div data-bind="ntsCheckBox: { checked: checked, enable: enable}">A simple yet elegant checkbox</div>
+						<div class="cf" style="background:#00B050; padding:10px 5px; margin: 10px -5px;">
 							<div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }" class="cf outline"></div>
 						</div>
+						<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -39,7 +39,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="ntsCheckBox: { checked: enable }">This is test enable</div>
+<pre><![CDATA[<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 <!-- Full binding -->
 <div data-bind="ntsCheckBox: { checked: checked, enable: enable, text: 'A simple yet elegant checkbox' }"></div>]]></pre>
 									<h2>API</h2>

@@ -56,8 +56,8 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
-									<li><a href="#tabs-events">Events</a></li>
 									<li><a href="#tabs-methods">Methods</a></li>
+									<li><a href="#tabs-events">Events</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -209,33 +209,6 @@ class ItemModel {
     }
 }]]></pre>
 								</div>
-								<div id="tabs-events" class="cf">
-									<table>
-										<colgroup>
-											<col width="200px" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th><h4>Events</h4></th>
-												<th><h4>Description</h4></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>selectionChanging(event)</td>
-												<td>
-													Fire when user changing selected value(s), can be cancel. Use event.detail to get selected value(s).
-												</td>
-											</tr>
-											<tr>
-												<td>selectionChanged(event)</td>
-												<td>
-													Fire when user changed selected value(s), cannot be cancel. Use event.detail to get selected value(s).
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
 								<div id="tabs-methods" class="cf">
 									<table>
 										<colgroup>
@@ -258,6 +231,33 @@ class ItemModel {
 												<td>$("#list-box").ntsListBox('deselectAll');</td>
 												<td>
 													Deselect all values
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-events" class="cf">
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Events</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>selectionChanging(event)</td>
+												<td>
+													Fire when user changing selected value(s), can be cancel. Use event.detail to get selected value(s).
+												</td>
+											</tr>
+											<tr>
+												<td>selectionChanged(event)</td>
+												<td>
+													Fire when user changed selected value(s), cannot be cancel. Use event.detail to get selected value(s).
 												</td>
 											</tr>
 										</tbody>

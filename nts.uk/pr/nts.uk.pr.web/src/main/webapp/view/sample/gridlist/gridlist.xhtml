@@ -62,6 +62,7 @@
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+									<li><a href="#tabs-method">Methods</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -194,6 +195,40 @@ class ItemModel {
 		this.description = description;
 	}
 }]]></pre>
+								</div>
+								<div id="tabs-method" class="cf">
+									<table>
+										<colgroup>
+											<col width="400px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Methods</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>$("#multi-list").ntsGridList('getSelected');</td>
+												<td>
+													Get selected values
+												</td>
+											</tr>
+											<tr>
+												<td>$("#multi-list").ntsGridList('setSelected', ids);</td>
+												<td>
+													<b>ids: array&lt;number&gt;</b> List selected id for select<br/>
+													Set selected values by ids
+												</td>
+											</tr>											
+											<tr>
+												<td>$("#multi-list").ntsGridList('deselectAll');</td>
+												<td>
+													Deselect all values
+												</td>
+											</tr>
+										</tbody>
+									</table>
 								</div>
 							</div>
 						</article>

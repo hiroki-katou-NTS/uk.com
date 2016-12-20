@@ -1742,8 +1742,9 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
-            // Get tab list.
             var tabs: Array<any> = ko.unwrap(data.dataSource);
+            var direction: string = ko.unwrap(data.direction || "horizontal");
+            
             // Container.
             var container = $(element);
 
@@ -1767,7 +1768,7 @@ module nts.uk.ui.koExtentions {
                     container.children('ul').children('.ui-state-disabled').addClass('disabled');
                     container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
                 }
-            });
+            }).addClass(direction);
         }
 
         /**
