@@ -1630,8 +1630,8 @@ var nts;
                     TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
-                        // Get tab list.
                         var tabs = ko.unwrap(data.dataSource);
+                        var direction = ko.unwrap(data.direction || "horizontal");
                         // Container.
                         var container = $(element);
                         // Create title.
@@ -1653,7 +1653,7 @@ var nts;
                                 container.children('ul').children('.ui-state-disabled').addClass('disabled');
                                 container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
                             }
-                        });
+                        }).addClass(direction);
                     };
                     /**
                      * Update

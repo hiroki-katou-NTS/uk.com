@@ -230,15 +230,53 @@ div.error {
 }
 
 /*****************************
-  Vertical-align
+  Layout
 *****************************/
 /* line 130, ../sass/components/_commons.scss */
 .flex {
   display: flex;
 }
 /* line 132, ../sass/components/_commons.scss */
-.flex.v-align {
+.flex.valign-center {
   align-items: center;
+}
+
+/* line 135, ../sass/components/_commons.scss */
+.table {
+  display: table;
+}
+/* line 137, ../sass/components/_commons.scss */
+.table .cell {
+  display: table-cell;
+}
+/* line 139, ../sass/components/_commons.scss */
+.table .cell.valign-center {
+  vertical-align: center;
+}
+/* line 140, ../sass/components/_commons.scss */
+.table .cell.valign-bottom {
+  vertical-align: bottom;
+}
+/* line 141, ../sass/components/_commons.scss */
+.table .cell.valign-top {
+  vertical-align: top;
+}
+/* line 142, ../sass/components/_commons.scss */
+.table .cell.halign-left {
+  text-align: left;
+}
+/* line 143, ../sass/components/_commons.scss */
+.table .cell.halign-right {
+  text-align: right;
+}
+/* line 144, ../sass/components/_commons.scss */
+.table .cell.halign-center {
+  text-align: center;
+}
+
+/* line 148, ../sass/components/_commons.scss */
+.label {
+  display: inline-block;
 }
 
 /* line 1, ../sass/components/_editor.scss */
@@ -723,16 +761,16 @@ button.nts-switch-button.selected:hover {
   opacity: 0.7;
 }
 
-/* line 60, ../sass/components/_checkbox.scss */
+/* line 62, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox {
   color: #fff;
 }
-/* line 64, ../sass/components/_checkbox.scss */
+/* line 66, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox input[type="checkbox"] + span {
   background: #2fcc71;
   border: 2px solid #fff;
 }
-/* line 68, ../sass/components/_checkbox.scss */
+/* line 70, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox input[type="checkbox"] + span:after {
   width: 10px;
 }
@@ -879,6 +917,85 @@ button.nts-switch-button.selected:hover {
 /* line 37, ../sass/components/_ignitecommons.scss */
 .nts-gridlist.ui-iggrid table tr .ui-state-active .ui-icon, .nts-gridlist.ui-iggrid table tr.ui-state-focus .ui-state-active .ui-icon, .nts-gridlist.ui-iggrid table tr.ui-ig-altrecord.ui-state-focus .ui-state-active .ui-icon {
   background-image: url(../images/ui-icons_444444_256x240.png);
+}
+
+/* line 1, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs {
+  border: none;
+}
+/* line 4, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs .ui-tabs-nav {
+  background: transparent;
+  border: none;
+  padding: .2em .4em 0;
+}
+/* line 9, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs .ui-tabs-nav li {
+  border-color: #B1B1B1;
+  border-radius: 5px 5px 0 0;
+  box-sizing: border-box;
+}
+/* line 14, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs .ui-tabs-nav li a {
+  float: none;
+  display: block;
+  outline: none;
+}
+/* line 19, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+  background-color: #00B050;
+  border-color: #00B050;
+  margin-top: -2px;
+  margin-bottom: -4px;
+  padding-top: 2px;
+  padding-bottom: 4px;
+  border-radius: 5px;
+}
+/* line 31, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs .ui-tabs-panel {
+  border: 2px solid #B1B1B1;
+  border-radius: 7px;
+}
+/* line 36, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical {
+  display: flex;
+}
+/* line 39, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-nav {
+  float: left;
+  padding: .4em 0;
+  border-radius: 0;
+}
+/* line 44, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-nav li {
+  clear: left;
+  width: 100%;
+  border-width: 0;
+  margin: 0;
+  border-radius: 0;
+}
+/* line 51, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-nav li.ui-tabs-active {
+  padding: 0;
+  margin: 0;
+}
+/* line 55, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-nav li:first-child {
+  border-top-width: 1px;
+}
+/* line 56, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-nav li:last-child {
+  border-bottom-width: 1px;
+}
+/* line 57, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-nav li a {
+  display: block;
+}
+/* line 60, ../sass/components/_tabpanel.scss */
+.ui-widget.ui-tabs.vertical .ui-tabs-panel {
+  width: 100%;
+  overflow: hidden;
+  padding: 1em;
 }
 
 /* line 3, ../sass/components/_treegridview.scss */
@@ -1438,7 +1555,7 @@ button.nts-switch-button.selected:hover {
   padding: 10px;
 }
 
-/* line 24, ../sass/base.scss */
+/* line 25, ../sass/base.scss */
 body {
   font-size: 14px;
   font-family: "Meiryo UI";
