@@ -871,12 +871,17 @@ button.nts-switch-button.selected:hover {
   padding: 0 2px;
   border: 1px solid #cccccc;
 }
-/* line 31, ../sass/components/_ignitecommons.scss */
+/* line 26, ../sass/components/_ignitecommons.scss */
+.nts-gridlist.ui-iggrid .ui-state-highlight, .nts-gridlist.ui-iggrid .ui-widget-content .ui-state-highlight, .nts-gridlist.ui-iggrid .ui-widget-header .ui-state-highlight {
+  color: inherit;
+  background-color: inherit;
+}
+/* line 36, ../sass/components/_ignitecommons.scss */
 .nts-gridlist.ui-iggrid table tr td.ui-state-hover, .nts-gridlist.ui-iggrid table tr th.ui-state-hover, .nts-gridlist.ui-iggrid table tr.ui-state-focus td.ui-state-hover, .nts-gridlist.ui-iggrid table tr.ui-state-focus th.ui-state-hover, .nts-gridlist.ui-iggrid table tr.ui-ig-altrecord.ui-state-focus td.ui-state-hover, .nts-gridlist.ui-iggrid table tr.ui-ig-altrecord.ui-state-focus th.ui-state-hover {
   background-color: #C5F1F7;
   color: #000;
 }
-/* line 37, ../sass/components/_ignitecommons.scss */
+/* line 42, ../sass/components/_ignitecommons.scss */
 .nts-gridlist.ui-iggrid table tr .ui-state-active .ui-icon, .nts-gridlist.ui-iggrid table tr.ui-state-focus .ui-state-active .ui-icon, .nts-gridlist.ui-iggrid table tr.ui-ig-altrecord.ui-state-focus .ui-state-active .ui-icon {
   background-image: url(../images/ui-icons_444444_256x240.png);
 }
@@ -900,12 +905,17 @@ button.nts-switch-button.selected:hover {
   padding: 0 2px;
   border: 1px solid #cccccc;
 }
-/* line 31, ../sass/components/_ignitecommons.scss */
+/* line 26, ../sass/components/_ignitecommons.scss */
+.nts-treegridview.ui-igtreegrid .ui-state-highlight, .nts-treegridview.ui-igtreegrid .ui-widget-content .ui-state-highlight, .nts-treegridview.ui-igtreegrid .ui-widget-header .ui-state-highlight {
+  color: inherit;
+  background-color: inherit;
+}
+/* line 36, ../sass/components/_ignitecommons.scss */
 .nts-treegridview.ui-igtreegrid table tr td.ui-state-hover, .nts-treegridview.ui-igtreegrid table tr th.ui-state-hover, .nts-treegridview.ui-igtreegrid table tr.ui-state-focus td.ui-state-hover, .nts-treegridview.ui-igtreegrid table tr.ui-state-focus th.ui-state-hover, .nts-treegridview.ui-igtreegrid table tr.ui-ig-altrecord.ui-state-focus td.ui-state-hover, .nts-treegridview.ui-igtreegrid table tr.ui-ig-altrecord.ui-state-focus th.ui-state-hover {
   background-color: #C5F1F7;
   color: #000;
 }
-/* line 37, ../sass/components/_ignitecommons.scss */
+/* line 42, ../sass/components/_ignitecommons.scss */
 .nts-treegridview.ui-igtreegrid table tr .ui-state-active .ui-icon, .nts-treegridview.ui-igtreegrid table tr.ui-state-focus .ui-state-active .ui-icon, .nts-treegridview.ui-igtreegrid table tr.ui-ig-altrecord.ui-state-focus .ui-state-active .ui-icon {
   background-image: url(../images/ui-icons_444444_256x240.png);
 }
