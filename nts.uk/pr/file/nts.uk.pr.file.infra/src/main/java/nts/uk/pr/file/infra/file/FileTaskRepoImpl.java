@@ -30,7 +30,7 @@ public class FileTaskRepoImpl implements FileTaskRepository{
 	@Override
 	public InputStream downloadFile(String fileId) {
 		String fs = File.separator;
-        String fileStoragePath = "D:" + fs;
+        String fileStoragePath = "C:" + fs;
         FileMetaData fileMeta = fileStore.findByFileId(fileId).orElseThrow(
 				() -> new RuntimeException("File not found"));
 		File file = new File(fileStoragePath + fileMeta.getName());
