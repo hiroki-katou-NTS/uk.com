@@ -134,7 +134,7 @@ var qmm019;
                         $('#INP_002').focus();
                         return false;
                     }
-                    if (self.selectStartYm() == '') {
+                    if ($('#INP_003').val().trim() == '') {
                         alert('開始年月' + mess);
                         $('#INP_003').focus();
                         return false;
@@ -180,7 +180,7 @@ var qmm019;
                         stmtCodeCopied: self.createNewSelect(),
                         startYmCopied: +self.startYmCopy,
                         stmtCode: stmtCd,
-                        startYm: +self.selectStartYm(),
+                        startYm: +$('#INP_003').val().replace('/', ''),
                         layoutAtr: 3,
                         stmtName: self.layoutName() + "",
                         endYm: 999912
