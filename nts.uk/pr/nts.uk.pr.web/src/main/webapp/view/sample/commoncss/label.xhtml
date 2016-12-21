@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:stylefile path="vertical-align.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+				
+            </ui:define>
+            
+            <ui:define name="content">
+				<div id="functions-area"></div>
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Label</h1>
+						<article>
+							<h2>"label" class</h2>
+							<p>Sometime you want to customize your text like "margin" or "padding" but they don't listen to you. That because &lt;span&gt; tag will display as "inline" element. Label class will help you with this problem:</p>
+<pre><![CDATA[<!-- I'll margin-bottom -->
+<span class="label" style="margin-bottom: 15px;">Demo</span>
+
+<!-- I won't margin-bottom -->
+<span style="margin-bottom: 15px;">Demo</span>]]></pre>
+							<div class="feature-box">
+								<div class="content">
+									<span class="label" style="margin-bottom: 15px; font-weight: bold;">Demo</span><br/>
+									<div class="table">
+										<div class="cell valign-center">
+											<span class="label" style="margin-right: 50px;">現在使用行数 / 最大行数</span>
+											<span style="font-size: 1.5rem;">9行</span>
+											<span>（+非表示0行） / </span>
+											<span class="label" style="font-size: 2rem; margin-right: 15px;">10行</span>
+											<span class="label" style="padding-top:5px;">&#9834;</span>
+											<span class="label" style="padding-bototm:5px;">&#9836;</span>
+											<span class="label" style="padding-top:10px;">&#9834;</span>
+											<span class="label" style="padding-bototm:10px;">&#9833;</span>
+											<span class="label" style="padding-top:12px;">&#9834;</span>
+											<span class="label" style="padding-bottom:10px;">&#9835;</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</article>
+						<article>
+							<h2>"warning" class</h2>
+							<p>Style a label become a warning label</p>
+							<pre><![CDATA[<span class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</span>]]></pre>
+							<div class="feature-box">
+								<div class="content">
+									<span class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</span>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

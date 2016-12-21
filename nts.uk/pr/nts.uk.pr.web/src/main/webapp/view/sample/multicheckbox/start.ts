@@ -4,15 +4,14 @@ __viewContext.ready(function () {
         selectedValues: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservableArray<number>;
         enable: KnockoutObservable<boolean>;
-        count: any = 4;
+        count: any = 10;
         
         constructor() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(2, 'box 2'),
-                new BoxModel(3, 'box 3')
-            ]);
+            self.itemList = ko.observableArray([]);
+            for (let i = 1; i < 10; i++) {
+                self.itemList.push(new BoxModel(i, 'box ' + i));
+            }
             self.selectedValues = ko.observableArray([
                 new BoxModel(1, 'box 1'),
                 new BoxModel(3, 'box 3')

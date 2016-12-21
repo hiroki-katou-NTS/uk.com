@@ -2,45 +2,46 @@
 .ntsRadioBox {
 	display: inline-block;
 	label{display: inline-block;}
-	span.label{padding-left: 10px;}
+	
+	span.box, span.label {
+		user-select: none;
+		line-height: 19px;
+		vertical-align: middle;
+		cursor: pointer;
+		box-sizing: border-box;
+	}
+	
+	span.box {
+		position: relative;
+	    display: inline-block;
+	    width: 19px;
+	    height: 19px;
+	    margin: 0;
+	    background: transparent;
+	    border: 2px solid #92d050;
+	    border-radius: 50%;
+	    
+	    &:after {
+			content: '';
+		    width: 9px;
+		    height: 9px;
+		    position: absolute;
+		    top: 3px;
+		    left: 3px;
+		    background: #92d050;
+		    opacity: 0;
+		    border-radius: 50%;
+		}
+	}
+	
+	span.label {
+		display: inline-block;
+		padding-left: 10px;
+	}
 	
 	input[type="radio"] {
 		display: none;
 		
-		+ span,
-		+ span + span {
-			cursor: pointer;
-			display: inline-block;
-			user-select: none;
-			line-height: 19px;
-			vertical-align: middle;
-		}
-		
-	    + span {
-	    	position: relative;
-		    display:inline-block;
-		    width:19px;
-		    height:19px;
-		    margin:0;
-		    background: transparent;
-		    border: 2px solid #92d050;
-		    border-radius: 50%;
-		    cursor:pointer;
-		    box-sizing: border-box;
-		    
-		    &:after {
-				content: '';
-			    width: 9px;
-			    height: 9px;
-			    position: absolute;
-			    top: 3px;
-			    left: 3px;
-			    background: #92d050;
-			    opacity: 0;
-			    border-radius: 50%;
-			}
-		}
-				
 		&:checked {			
 			+ span.box:after {
 				opacity: 1;
