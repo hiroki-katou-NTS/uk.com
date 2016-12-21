@@ -47,7 +47,7 @@
 									<div class="cf">
 										<h3>Table:</h3>
 										<div class="table fixed-height outer">
-											<div class="cell">
+											<div class="cell valign-center">
 												Hello! This is a demo for vertical-align
 												<button>Button</button> or
 												<span data-bind="ntsCheckBox: { checked: true }">手入力項目のみ移動</span> or
@@ -155,11 +155,22 @@
 							<li><b>Flexbox:</b> the most powerful but require you some learning</li>
 						</ul>
 						<h2>Usage</h2>
+						<h3>Table</h3>
+						User table for safely with almost browser
+<pre><![CDATA[<div class="table">
+	<div class="cell valign-center">
+		Elements inside will vertical-align center
+	</div>
+	<div class="cell valign-top">
+		Elements inside will vertical-align top
+	</div>
+	<div class="cell valign-bottom">
+		Elements inside will vertical-align top
+	</div>
+</div>]]></pre>
+						<h3>Flexbox</h3>
 						We will use flexbox for maximum flexible (<a target="_blank" href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">learn more</a>). Just add classes <b class="color">"flex valign-center"</b> to your container
 <pre><![CDATA[<div class="flex valign-center">
-	<div>
-		Elements inside wrap behave as inline-block. It have space between
-	</div>
 	Elements outside wrap behave as flex-item. It won't have space between 
 </div>]]></pre>
 						<div class="footer cf">

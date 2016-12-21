@@ -7,8 +7,7 @@
 
 .line-height {line-height: 45px;}
 
-.table {display:table; width: 100%;}
-.table .cell {display:table-cell; vertical-align: middle;}
+.table {width: 100%;}
 
 .pseudo {}
 .pseudo:before {

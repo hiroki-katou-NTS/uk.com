@@ -13,7 +13,6 @@
 	}
 	
 	span.box {
-		float:left;
     	position: relative;
 	    width:19px;
 	    height:19px;
@@ -40,8 +39,7 @@
 	}
 	
 	span.label{
-		display: block;
-		overflow: hidden;
+		display: inline-block;
 		padding-left: 10px;
 	}
 	
