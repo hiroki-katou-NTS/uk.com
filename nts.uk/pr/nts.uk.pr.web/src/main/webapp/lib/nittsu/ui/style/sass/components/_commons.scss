@@ -1,4 +1,10 @@
 /*****************************
+  Common
+*****************************/
+a.link { color: $hyperlink_color; text-decoration: underline; }
+hr {  }
+
+/*****************************
   NtsFormLabel
 *****************************/
 div.form-label {
@@ -108,20 +114,20 @@ div.error {
 	position: absolute;
 	display: inline-block;
 
-    @include border-radius(5px);
+	@include border-radius(5px);
 	padding: 1px 17px 3px 17px;
-    font-weight: bold;
-    border: solid 1px #eaa;
-    
+	font-weight: bold;
+	border: solid 1px #eaa;
+	
 	background-color: #ffdddd;
 	color: #dd3a3a;
-    cursor: pointer;
+	cursor: pointer;
 
-    &:hover {
-    	background-color: #ffcccc;
-    	color: #cc2222;
-        border-color: #cc2222;
-    }
+	&:hover {
+		background-color: #ffcccc;
+		color: #cc2222;
+		border-color: #cc2222;
+	}
 }
 
 /*****************************
@@ -136,14 +142,68 @@ div.error {
 	display: table;
 	.cell {
 		display: table-cell;
-		&.valign-center > * { vertical-align: middle; }
-		&.valign-bottom > * { vertical-align: bottom; }
-		&.valign-top > * { vertical-align: top; }
-		&.halign-left > * { text-align: left; }
-		&.halign-right > * { text-align: right; }
-		&.halign-center > * { text-align: center; }
+		&.valign-center {
+			vertical-align: middle;
+			> * { vertical-align: middle; }
+		}
+		&.valign-bottom { vertical-align: bottom; }
+		&.valign-top { vertical-align: top; }
+		&.halign-left { text-align: left; }
+		&.halign-right { text-align: right; }
+		&.halign-center { text-align: center; }
 	}
 }
 
-.label { display: inline-block; }
+.control-group {
+	margin-bottom: 10px;
+}
 
+/*****************************
+  Label
+*****************************/
+.label {
+	display: inline-block;
+	box-sizing: border-box;
+	
+	&.warning {
+		padding: 15px 10px;
+		font-size: 1.2rem;
+		background-color: #f7efd4;
+		color: #c12017;
+		width: 100%;
+	}
+}
+
+/*****************************
+  Caret
+*****************************/
+.caret-bottom,
+.caret-top,
+.caret-left,
+.caret-right {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	vertical-align: middle;
+}
+
+.caret-bottom {
+	border-top: 4px dashed;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}
+.caret-top {
+	border-bottom: 4px dashed;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}
+.caret-left {
+	border-right: 4px dashed;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+}
+.caret-right {
+	border-left: 4px dashed;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+}
