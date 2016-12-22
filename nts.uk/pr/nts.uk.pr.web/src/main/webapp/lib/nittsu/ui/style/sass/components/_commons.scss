@@ -7,10 +7,10 @@
 .absolute {position: absolute;}
 .pull-left {float: left;}
 .pull-right {float: right;}
-.hyper-link { color: $hyperlink_color; text-decoration: underline; }
-.valign-center > * { vertical-align: middle; }
-.valign-top > * { vertical-align: middle; }
-.valign-bottom > * { vertical-align: middle; }
+.hyperlink { color: $hyperlink_color; text-decoration: underline; cursor: pointer; }
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
 .halign-left { text-align: left; }
 .halign-right { text-align: right; }
 .halign-center { text-align: center; }
@@ -31,7 +31,7 @@
 /*****************************
   ntsControl
 *****************************/
-.control-group { margin-bottom: 10px; }
+.control-group { margin-bottom: 15px; }
 .ntsControl { display: inline-block; }
 
 /*****************************

@@ -144,24 +144,25 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /* line 10, ../sass/components/_commons.scss */
-.hyper-link {
+.hyperlink {
   color: #0066CC;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 /* line 11, ../sass/components/_commons.scss */
-.valign-center > * {
+.control-group.valign-center > * {
   vertical-align: middle;
 }
 
 /* line 12, ../sass/components/_commons.scss */
-.valign-top > * {
-  vertical-align: middle;
+.control-group.valign-top > * {
+  vertical-align: top;
 }
 
 /* line 13, ../sass/components/_commons.scss */
-.valign-bottom > * {
-  vertical-align: middle;
+.control-group.valign-bottom > * {
+  vertical-align: bottom;
 }
 
 /* line 14, ../sass/components/_commons.scss */
@@ -214,7 +215,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 *****************************/
 /* line 34, ../sass/components/_commons.scss */
 .control-group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 /* line 35, ../sass/components/_commons.scss */
