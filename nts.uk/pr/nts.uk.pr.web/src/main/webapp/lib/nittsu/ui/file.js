@@ -27,10 +27,13 @@ var nts;
                         };
                         uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
                             file.isFinishTask(res);
+                        }).fail(function (error) {
+                            file.reject(error);
                         });
                     };
                     FileDownload.prototype.print = function () {
                         var self = this;
+                        self.deferred = $.Deferred();
                         var options = {
                             dataType: 'text',
                             contentType: 'application/json'
@@ -38,11 +41,17 @@ var nts;
                         uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
                             self.taskId = res;
                             self.interval = setInterval(self.isTaskFinished, 1000, self);
+                        }).fail(function (error) {
+                            self.deferred.reject(error);
                         });
+                        return self.deferred.promise();
                     };
                     FileDownload.prototype.download = function () {
                         var self = this;
-                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/downloadreport/" + self.taskId);
+                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
+                        if (self.deferred) {
+                            self.deferred.resolve();
+                        }
                     };
                     return FileDownload;
                 }());

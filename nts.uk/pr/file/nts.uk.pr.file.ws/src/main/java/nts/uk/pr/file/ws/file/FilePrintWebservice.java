@@ -26,7 +26,7 @@ public class FilePrintWebservice {
 	}
 
 	@GET
-	@Path("downloadreport/{taskid}")
+	@Path("dl/{taskid}")
 	public Response downloadReport(@PathParam("taskid") String taskId) throws UnsupportedEncodingException {
 		FileMetaData fileMeta = this.fileTask.getFileMetaData(taskId);
 		String encodedFileName = URLEncoder.encode(fileMeta.getName(), "UTF-8").replaceAll("\\+", "%20");
