@@ -116,7 +116,7 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 			String stmtCd, 
 			int startYm) {
 			@SuppressWarnings("unchecked")
-			List<Object[]> objects =  this.queryProxy().getEntityManager().createQuery(SELECT_ALL_DETAILS)
+			List<Object[]> objects =  this.getEntityManager().createQuery(SELECT_ALL_DETAILS)
 					.setParameter("companyCd", companyCd)
 					.setParameter("stmtCd", stmtCd)
 					.setParameter("strYm", startYm)
