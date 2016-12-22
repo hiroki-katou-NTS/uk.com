@@ -102,7 +102,7 @@ public class GetPaymentDataQueryProcessor {
 		// get 明細書マスタ
 		List<LayoutMaster> mLayouts = this.layoutMasterRepository.findAll(companyCode, stmtCode, processingYM);
 		if (mLayouts.isEmpty()) {
-			throw new BusinessException("対象データがありません。");
+			return null;
 		}
 
 		LayoutMaster mLayout = mLayouts.get(0);

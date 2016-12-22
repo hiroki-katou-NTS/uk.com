@@ -17,8 +17,11 @@ var nts;
                             };
                             function print(query) {
                                 var dfd = $.Deferred();
-                                new nts.uk.ui.file.FileDownload("/file/paymentdata/print", query).print();
-                                dfd.resolve();
+                                new nts.uk.ui.file.FileDownload("/file/paymentdata/print", query).print().done(function () {
+                                    dfd.resolve();
+                                }).fail(function (res) {
+                                    dfd.reject(res);
+                                });
                                 return dfd.promise();
                             }
                             service.print = print;

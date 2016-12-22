@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.pr.file.infra.paymentdata.GetPaymentDataQueryProcessor;
 import nts.uk.pr.file.infra.paymentdata.PaymentDataPrintFileGenerator;
 import nts.uk.pr.file.infra.paymentdata.PaymentDataQuery;
@@ -15,7 +16,7 @@ import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 
 @Path("/file/paymentdata")
 @Produces("application/json")
-public class PaymentDataPrintWebservice {
+public class PaymentDataPrintWebservice extends WebService {
 
 	@Inject
 	private PaymentDataPrintFileGenerator paymentDataPrint;
@@ -28,7 +29,9 @@ public class PaymentDataPrintWebservice {
 		List<PaymentDataResult> results = new ArrayList<>();
 		for (int i = 0; i < query.size(); i++) {
 			PaymentDataResult result = this.getPaymentDataQueryProcessor.find(query.get(i));
-			results.add(result);
+			if (result != null) {
+				results.add(result);
+			}
 		}
 		return this.paymentDataPrint.start(results).getTask();
 	}
