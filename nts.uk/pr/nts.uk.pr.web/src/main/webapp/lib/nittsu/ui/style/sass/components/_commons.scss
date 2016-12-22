@@ -14,6 +14,10 @@
 .halign-left { text-align: left; }
 .halign-right { text-align: right; }
 .halign-center { text-align: center; }
+.bg-green {background-color: $green_background_color;}
+.bg-yellow {background-color: $yellow_background_color;}
+.color-proceed {color:$activated_color;}
+.color-danger {color:$red_warning_color;}
 .flex {
 	display:flex;
 	&.valign-center{ align-items: center; }
@@ -31,7 +35,7 @@
 /*****************************
   ntsControl
 *****************************/
-.control-group { margin-bottom: 15px; }
+.control-group { margin-bottom: 10px; }
 .ntsControl { display: inline-block; }
 
 /*****************************
@@ -42,8 +46,8 @@ div.form-label {
 	$_label_height_inline: 18px;
 	
 	$_label_ribbon_width: 5px;
-	$_label_ribbon_color_normal: #97D155;
-	$_label_ribbon_color_required: #FAC002;
+	$_label_ribbon_color_normal: $green_formlabel_color;
+	$_label_ribbon_color_required: $yellow_formlabel_color;
 	
 	$_label_font_size: $bfs * 1.4;
 	$_constraint_font_size: $bfs * 1.2;
@@ -107,7 +111,7 @@ div.form-label {
 div.link-button {
 	display: inline-block;
 	padding: 3px 12px;
-	background-color: #E0F59E;
+	background-color: $green_background_color;
 	color: #0D86D1;
 	text-decoration: underline;
 	cursor: pointer;
@@ -171,8 +175,8 @@ div.error {
 	&.warning {
 		padding: 15px 10px;
 		font-size: 1.2rem;
-		background-color: #f7efd4;
-		color: #c12017;
+		background-color: $yellow_background_color;
+		color: $red_warning_color;
 	}
 }
 div.label {
@@ -231,5 +235,5 @@ div.label {
 
 .caret-inline {
 	border-width: 10px;
-	color: #97d155; 
+	color: $green_formlabel_color; 
 }
