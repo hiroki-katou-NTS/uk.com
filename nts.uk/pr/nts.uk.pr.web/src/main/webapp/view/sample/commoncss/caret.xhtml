@@ -11,7 +11,7 @@
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:stylefile path="vertical-align.css" />
+				<com:stylefile path="caret.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
 				
@@ -26,7 +26,8 @@
 						<article>
 							<h2>caret class <span class="caret caret-bottom"></span></h2>
 							<p>
-								Create a convenience and beautiful caret <span class="caret-top"></span> It'll take color of
+								Create a convenience and beautiful caret <span class="caret-top"></span><br/>
+								It'll take color of
 								<span style="color:#af0890;">current <span class="caret-bottom"></span></span>
 								<span style="color:#D90000;">parent <span class="caret-left"></span></span>
 								<span style="color:#FF2D00;">element <span class="caret-right"></span></span>
@@ -39,11 +40,52 @@
 <span class="caret-right"></span>]]></pre>
 						</article>
 						<article>
-							<h2>Direction</h2>
+							<h2>Styling</h2>
 							<div class="feature-box">
+								<div class="header"><h3>Inline</h3></div>
 								<div class="content">
-									<button>Button</button><span class="caret-right"></span>
-									<input data-bind="ntsTextEditor: {value: ko.observable('')}" />
+									<pre><![CDATA[<span class="caret-right caret-inline"></span>]]></pre>
+									<div class="valign-center">
+										<button>Button</button><span class="caret-right caret-inline"></span>
+										<input data-bind="ntsTextEditor: {value: ko.observable('')}" /><span class="caret-right caret-inline"></span>
+										<button class="small">Button</button><span class="caret-right caret-inline"></span>
+									</div>
+								</div>
+							</div>
+							<div class="feature-box">
+								<div class="header"><h3>Group with other control</h3></div>
+								<div class="content" style="padding-bottom: 50px;">
+<pre><![CDATA[<!-- Container must be {display:inline-block & position:relative} -->
+<span class="label relative">
+	<button>Button</button>
+	<!-- Caret must has class "absolute" -->
+	<span class="caret-bottom absolute"></span>
+</span>
+]]></pre>
+									<span id="demo-caret-bottom" class="draggable">
+										<span class="label relative">
+											<button>Drag me!</button>
+											<span class="caret-bottom absolute"></span>
+										</span>
+									</span>
+									<span id="demo-caret-top" class="draggable">
+										<span class="label relative">
+											<button>Drag me!</button>
+											<span class="caret-top absolute"></span>
+										</span>
+									</span>
+									<span id="demo-caret-right" class="draggable">
+										<span class="label relative">
+											<button>Drag me!</button>
+											<span  class="caret-right absolute"></span>
+										</span>
+									</span>
+									<span id="demo-caret-left" class="draggable">
+										<span class="label relative">
+											<button>Drag me!</button>
+											<span class="caret-left absolute"></span>
+										</span>
+									</span>
 								</div>
 							</div>
 						</article>

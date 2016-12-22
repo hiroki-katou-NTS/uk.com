@@ -1,8 +1,38 @@
 /*****************************
-  Common
+  Helper Class
 *****************************/
-a.link { color: $hyperlink_color; text-decoration: underline; }
-hr {  }
+.hidden {display: none;}
+.invisible {visibility: hidden;}
+.relative {position: relative;}
+.absolute {position: absolute;}
+.pull-left {float: left;}
+.pull-right {float: right;}
+.hyperlink { color: $hyperlink_color; text-decoration: underline; cursor: pointer; }
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+.halign-left { text-align: left; }
+.halign-right { text-align: right; }
+.halign-center { text-align: center; }
+.flex {
+	display:flex;
+	&.valign-center{ align-items: center; }
+}
+.table {
+	display: table;
+	.cell {
+		display: table-cell;
+		&.valign-center { vertical-align: middle; }
+		&.valign-bottom { vertical-align: bottom; }
+		&.valign-top { vertical-align: top; }
+	}
+}
+
+/*****************************
+  ntsControl
+*****************************/
+.control-group { margin-bottom: 15px; }
+.ntsControl { display: inline-block; }
 
 /*****************************
   NtsFormLabel
@@ -130,33 +160,6 @@ div.error {
 	}
 }
 
-/*****************************
-  Layout
-*****************************/
-.flex {
-	display:flex;
-	&.valign-center{ align-items: center; }
-}
-
-.table {
-	display: table;
-	.cell {
-		display: table-cell;
-		&.valign-center {
-			vertical-align: middle;
-			> * { vertical-align: middle; }
-		}
-		&.valign-bottom { vertical-align: bottom; }
-		&.valign-top { vertical-align: top; }
-		&.halign-left { text-align: left; }
-		&.halign-right { text-align: right; }
-		&.halign-center { text-align: center; }
-	}
-}
-
-.control-group {
-	margin-bottom: 10px;
-}
 
 /*****************************
   Label
@@ -170,8 +173,10 @@ div.error {
 		font-size: 1.2rem;
 		background-color: #f7efd4;
 		color: #c12017;
-		width: 100%;
 	}
+}
+div.label {
+	width: 100%;
 }
 
 /*****************************
@@ -191,19 +196,40 @@ div.error {
 	border-top: 4px dashed;
 	border-right: 4px solid transparent;
 	border-left: 4px solid transparent;
+	&.absolute {
+		top: 100%;
+		left: 50%;
+	}
 }
 .caret-top {
 	border-bottom: 4px dashed;
 	border-right: 4px solid transparent;
 	border-left: 4px solid transparent;
+	&.absolute {
+		bottom: 100%;
+		left: 50%;
+	}
 }
 .caret-left {
 	border-right: 4px dashed;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
+	&.absolute {
+		right: 100%;
+		top: 50%;
+	}
 }
 .caret-right {
 	border-left: 4px dashed;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
+	&.absolute {
+		left: 100%;
+		top: 50%;
+	}
+}
+
+.caret-inline {
+	border-width: 10px;
+	color: #97d155; 
 }

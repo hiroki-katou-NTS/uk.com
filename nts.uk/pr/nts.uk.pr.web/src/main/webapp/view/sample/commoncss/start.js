@@ -11,5 +11,6 @@ __viewContext.ready(function () {
         };
         return ScreenModel;
     }());
+    $(".draggable").draggable({});
     this.bind(new ScreenModel());
 });
