@@ -20,6 +20,7 @@
 .color-danger {color:$red_warning_color;}
 .flex {
 	display:flex;
+	.item{ flex:1; }
 	&.valign-center{ align-items: center; }
 }
 .table {
