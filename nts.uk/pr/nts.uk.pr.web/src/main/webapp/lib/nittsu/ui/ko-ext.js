@@ -1522,7 +1522,7 @@ var nts;
                         var isInline = ko.unwrap(data.inline) === true;
                         var isEnable = ko.unwrap(data.enable) !== false;
                         var $formLabel = $(element).addClass('form-label');
-                        $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
+                        $('<label/>').html($formLabel.html()).appendTo($formLabel.empty());
                         if (!isEnable) {
                             $formLabel.addClass('disabled');
                         }
