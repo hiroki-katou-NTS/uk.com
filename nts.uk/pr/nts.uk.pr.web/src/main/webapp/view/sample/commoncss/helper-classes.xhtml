@@ -23,7 +23,7 @@
 					<div id="content" class="cf">
 						<h1>Helper Classes</h1>
 						<article>
-							<h2>Quick float</h2>
+							<h2>Quick Float</h2>
 							<p>Float element to left or right with class</p>
 <pre><![CDATA[<div class="pull-left"></div>
 <div class="pull-right"></div>]]></pre>
@@ -45,7 +45,39 @@
 .absolute {position: absolute;}]]></pre>
 						</article>
 						<article>
-							<h2>Quick create HyperLink style</h2>
+							<h2>Background classes</h2>
+							<p>Easily set the background of an element</p>
+							<div class="bg-green control-group" style="padding:10px">
+								しばらくの間、操作がなかったためサーバとの接続を切断しました
+							</div>
+							<div class="bg-yellow control-group" style="padding:10px">
+								しばらくの間、操作がなかったためサーバとの接続を切断しました。
+							</div>
+<pre><![CDATA[<div class="bg-green"></div>
+<div class="bg-yellow"></div>]]></pre>
+<pre><![CDATA[.bg-green {background-color: #E0F59E;}
+.bg-yellow {background-color: #F7EFD4;}]]></pre>
+						</article>
+						<article>
+							<h2>Text-color classes</h2>
+							<p>Easily set the color of an element</p>
+							<div class="color-proceed">しばらくの間、操作がなかったためサーバとの接続を切断しました。</div>
+							<div class="color-danger">しばらくの間、操作がなかったためサーバとの接続を切断しました。</div>
+							<br/>
+							<p>Combine with background class</p>
+							<div class="bg-green color-proceed control-group" style="padding:10px">
+								しばらくの間、操作がなかったためサーバとの接続を切断しました
+							</div>
+							<div class="bg-yellow color-danger control-group" style="padding:10px">
+								しばらくの間、操作がなかったためサーバとの接続を切断しました。
+							</div>
+<pre><![CDATA[<div class="color-proceed"></div>
+<div class="color-danger"></div>]]></pre>
+<pre><![CDATA[.color-proceed {color: #00B050;}
+.color-danger {color: #C12017;}]]></pre>
+						</article>
+						<article>
+							<h2>HyperLink style</h2>
 							<p>A demo hyperlink</p>
 							<span class="hyperlink">しばらくの間、操作がなかったためサーバとの接続を切断しました。</span>
 							<pre><![CDATA[<div class="hyperlink"></div>]]></pre>
@@ -68,7 +100,7 @@
 .halign-center { text-align: center; }]]></pre>
 						</article>
 						<article>
-							<h2>Quick group controls</h2>
+							<h2>Group controls</h2>
 							<p>You can overwrite CSS for margin as desire</p>
 							<div class="control-group">
 								<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
@@ -90,7 +122,7 @@
 							<pre><![CDATA[.control-group { margin-bottom: 10px; }]]></pre>
 						</article>
 						<article>
-							<h2>Quick vertical align</h2>
+							<h2>Quick vertical align Group controls</h2>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
 								<span>Text must inside &lt;span&gt;</span>
