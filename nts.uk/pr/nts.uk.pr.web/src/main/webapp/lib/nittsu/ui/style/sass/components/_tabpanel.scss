@@ -18,7 +18,7 @@
 			}
 			&.ui-tabs-active {
 				background-color: $activated_color;
-				border-color: $activated_color;
+				border-color: $frame_border_color;
 				margin-top: -2px;
 				margin-bottom: -4px;
 				padding-top: 2px;

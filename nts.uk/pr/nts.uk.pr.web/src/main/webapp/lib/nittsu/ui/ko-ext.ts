@@ -1625,7 +1625,7 @@ module nts.uk.ui.koExtentions {
             var isEnable = ko.unwrap(data.enable) !== false;
             var $formLabel = $(element).addClass('form-label');
 
-            $('<label/>').text($formLabel.text()).appendTo($formLabel.empty());
+            $('<label/>').html($formLabel.html()).appendTo($formLabel.empty());
             if (!isEnable) {
                 $formLabel.addClass('disabled');
             } else {

@@ -11,7 +11,6 @@
             <ui:define name="htmlHead">
             	<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:stylefile path="vertical-align.css" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
 				
@@ -25,21 +24,22 @@
 						<h1>Label</h1>
 						<article>
 							<h2>"label" class</h2>
-							<p>Sometime you want to customize your text like "margin" or "padding" but they don't listen to you. That because &lt;span&gt; tag will display as "inline" element. Label class will help you with this problem:</p>
+							<p>Sometime you want to customize your text like "margin" or "padding" but they don't listen to you. That because &lt;span&gt; tag will display as "inline" element. <b>Label</b> class will help you with this problem:</p>
 <pre><![CDATA[<!-- I'll margin-bottom -->
+<div class="label" style="margin-bottom: 15px;">Demo</div>
 <span class="label" style="margin-bottom: 15px;">Demo</span>
 
 <!-- I won't margin-bottom -->
 <span style="margin-bottom: 15px;">Demo</span>]]></pre>
 							<div class="feature-box">
 								<div class="content">
-									<span class="label" style="margin-bottom: 15px; font-weight: bold;">Demo</span><br/>
+									<div class="label" style="margin-bottom: 15px; font-weight: bold;">Demo label</div>
 									<div class="table">
 										<div class="cell valign-center">
-											<span class="label" style="margin-right: 50px;">現在使用行数 / 最大行数</span>
+											<span class="label" style="padding:20px;color: #00b050;background: #dcf4e7;" title="">現在使用行数 / 最大行数</span>
 											<span style="font-size: 1.5rem;">9行</span>
 											<span>（+非表示0行） / </span>
-											<span class="label" style="font-size: 2rem; margin-right: 15px;">10行</span>
+											<span class="label" style="font-size: 1.5rem; margin-right: 15px;">10行</span>
 											<span class="label" style="padding-top:5px;">&#9834;</span>
 											<span class="label" style="padding-bototm:5px;">&#9836;</span>
 											<span class="label" style="padding-top:10px;">&#9834;</span>
@@ -54,9 +54,14 @@
 						<article>
 							<h2>"warning" class</h2>
 							<p>Style a label become a warning label</p>
-							<pre><![CDATA[<span class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</span>]]></pre>
+<pre><![CDATA[<div class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</div>
+<span class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</span>]]></pre>
 							<div class="feature-box">
 								<div class="content">
+									<h3>&lt;div&gt;</h3>
+									<div class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</div>
+									<hr/>
+									<h3>&lt;span&gt;</h3>
 									<span class="label warning">行いたい操作を選んでください。対象となる処理区分を選択</span>
 								</div>
 							</div>
