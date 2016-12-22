@@ -61,7 +61,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 	public void add(Payment payment) {
 		QstdtPaymentHeader paymentHeader = toPaymentHeaderEntity(payment);
 
-		this.commandProxy().getEntityManager().persist(paymentHeader);
+		this.commandProxy().update(paymentHeader);
 
 		for (DetailItem item : payment.getDetailPaymentItems()) {
 			this.insertDetail(payment, item);
