@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class LayoutMasterCategoryFinder {
 	@Inject
 	private LayoutMasterCategoryRepository cateRepo;

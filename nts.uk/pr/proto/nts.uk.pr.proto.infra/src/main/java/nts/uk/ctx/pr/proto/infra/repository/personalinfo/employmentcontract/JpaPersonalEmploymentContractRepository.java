@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommute;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContractPK;
 
-@RequestScoped
+@Stateless
 public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		implements PersonalEmploymentContractRepository {
 	private final String SELECT_BY_CCD_PID_STRD_ENDD = "SELECT c FROM PclmtPersonEmpContract c"

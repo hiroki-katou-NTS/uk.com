@@ -13,7 +13,7 @@ import nts.uk.ctx.core.dom.company.CompanyRepository;
 /**
  * RemoveCompanyCommandHandler
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class RemoveCompanyCommandHandler extends CommandHandler<RemoveCompanyCommand> {
 

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class LayoutMasterDetailFinder {
 	@Inject
 	private LayoutMasterDetailRepository repository;

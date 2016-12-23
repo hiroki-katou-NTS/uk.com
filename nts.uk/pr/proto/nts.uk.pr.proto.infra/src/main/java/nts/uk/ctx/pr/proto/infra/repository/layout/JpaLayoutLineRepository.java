@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutLines;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutLinesPK;
 
-@RequestScoped
+@Stateless
 
 public class JpaLayoutLineRepository extends JpaRepository implements LayoutMasterLineRepository {
 

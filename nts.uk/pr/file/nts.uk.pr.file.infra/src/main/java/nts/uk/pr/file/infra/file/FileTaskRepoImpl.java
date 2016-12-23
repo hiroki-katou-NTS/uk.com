@@ -13,7 +13,7 @@ import nts.arc.file.StoredFileInfoRepository;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
 
-@RequestScoped
+@Stateless
 public class FileTaskRepoImpl implements FileTaskRepository{
 
 	@Inject

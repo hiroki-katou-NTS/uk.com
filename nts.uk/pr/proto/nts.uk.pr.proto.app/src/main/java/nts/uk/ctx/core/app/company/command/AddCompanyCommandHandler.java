@@ -12,7 +12,7 @@ import nts.uk.ctx.core.dom.company.CompanyRepository;
 /**
  * AddCompanyCommandHandler
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class AddCompanyCommandHandler extends CommandHandler<AddCompanyCommand> {
 

@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMaste
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
-@RequestScoped
+@Stateless
 public class PaymentDateProcessingMasterFinder {
 	/**
 	 * PaymentDateProcessingMasterRepository

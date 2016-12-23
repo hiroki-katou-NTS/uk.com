@@ -8,7 +8,7 @@ import nts.arc.layer.infra.data.EntityManagerLoader;
 /**
  * DefaultEntityManagerLoader
  */
-@RequestScoped
+@Stateless
 public class DefaultEntityManagerLoader implements EntityManagerLoader {
 
     @PersistenceContext(unitName = "UK")

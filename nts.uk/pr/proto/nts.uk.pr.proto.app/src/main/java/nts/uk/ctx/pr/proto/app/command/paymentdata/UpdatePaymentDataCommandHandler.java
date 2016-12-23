@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author vunv
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymentDataCommand> {
 

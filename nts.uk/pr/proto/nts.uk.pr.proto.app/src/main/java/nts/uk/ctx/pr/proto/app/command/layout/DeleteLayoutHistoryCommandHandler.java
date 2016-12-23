@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class DeleteLayoutHistoryCommandHandler extends CommandHandler<DeleteLayoutHistoryCommand> {
 

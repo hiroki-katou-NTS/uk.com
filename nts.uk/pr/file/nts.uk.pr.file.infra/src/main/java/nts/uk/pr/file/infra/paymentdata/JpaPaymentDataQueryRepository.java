@@ -9,7 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.pr.file.infra.paymentdata.result.DetailItemDto;
 
-@RequestScoped
+@Stateless
 public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
 	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "

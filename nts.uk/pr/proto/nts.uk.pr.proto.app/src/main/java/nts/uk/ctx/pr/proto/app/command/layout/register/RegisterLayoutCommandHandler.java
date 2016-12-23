@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class RegisterLayoutCommandHandler extends CommandHandler<RegisterLayoutCommand>{
 

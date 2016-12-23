@@ -18,7 +18,7 @@ import nts.uk.pr.file.infra.paymentdata.result.LayoutMasterCategoryDto;
 import nts.uk.pr.file.infra.paymentdata.result.LineDto;
 import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 
-@RequestScoped
+@Stateless
 public class PaymentDataPrintFileGenerator extends FileGenerator {
 
 	private final String fileName = "report/paymentdata.xlsx";

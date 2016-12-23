@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFee;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class CommuteFinder {
 	
 	@Inject

@@ -8,7 +8,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.CommuNotaxLimitRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 
-@RequestScoped
+@Stateless
 public class CommuteNotaxLimitFinder {
 
 	@Inject

@@ -15,7 +15,7 @@ import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 /**
  * JpaCompanyRepository
  */
-@RequestScoped
+@Stateless
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
 	@Override
