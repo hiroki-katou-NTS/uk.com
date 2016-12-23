@@ -102,7 +102,8 @@ public class GetPaymentDataQueryProcessor {
 		// get 明細書マスタ
 		List<LayoutMaster> mLayouts = this.layoutMasterRepository.findAll(companyCode, stmtCode, processingYM);
 		if (mLayouts.isEmpty()) {
-			return null;
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), "", "", "", "", processingYM, null, "", "", query.getEmployeeCode(), "", false, null));
+			return result;
 		}
 
 		LayoutMaster mLayout = mLayouts.get(0);
