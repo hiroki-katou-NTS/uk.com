@@ -81,7 +81,7 @@ import nts.uk.shr.com.primitive.PersonId;
  * @author chinhbv
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymentDataCommand> {
 

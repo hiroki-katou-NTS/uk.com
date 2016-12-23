@@ -14,7 +14,7 @@ import com.aspose.cells.WorkbookDesigner;
 import nts.arc.layer.infra.file.FileGenerator;
 import nts.arc.layer.infra.file.FileGeneratorContext;
 
-@RequestScoped
+@Stateless
 public class CompanyPrintFileGenerator extends FileGenerator{
 
 	private final String fileName = "report/company.xlsx";

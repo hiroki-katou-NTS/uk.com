@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageNameRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class PersonalWageNameFinder {
 	@Inject
 	private PersonalWageNameRepository repository;

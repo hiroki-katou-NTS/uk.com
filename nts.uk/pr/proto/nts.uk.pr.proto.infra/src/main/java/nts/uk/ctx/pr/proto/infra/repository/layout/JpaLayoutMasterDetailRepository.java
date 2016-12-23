@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.proto.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetailPK;
 
-@RequestScoped
+@Stateless
 public class JpaLayoutMasterDetailRepository extends JpaRepository implements LayoutMasterDetailRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutDetail c";
 	private final String SELECT_NO_WHERE_JOIN = "SELECT i.itemAbName, c FROM QstmtStmtLayoutDetail c";

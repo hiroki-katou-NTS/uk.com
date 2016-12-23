@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author lamvt
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayoutHistoryCommand>{
 

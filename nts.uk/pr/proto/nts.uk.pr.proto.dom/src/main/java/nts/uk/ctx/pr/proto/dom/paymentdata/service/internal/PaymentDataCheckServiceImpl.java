@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDataCheckService;
 
-@RequestScoped
+@Stateless
 public class PaymentDataCheckServiceImpl implements PaymentDataCheckService {
 	@Inject
 	private PaymentDataRepository paymentDataRepo;

@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWageRepository;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.PprmtPersonWage;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.PprmtPersonWagePK;
 
-@RequestScoped
+@Stateless
 public class JpaPersonalWageRepository extends JpaRepository implements PersonalWageRepository {
 
 	private final String SELECT_LIST_BY_YEAR_MONTH = "SELECT c FROM PprmtPersonWage c WHERE c.pprmtPersonWagePK.ccd = :CCD and c.pprmtPersonWagePK.pId IN :PID and c.pprmtPersonWagePK.strYm <= :BASEYM and c.endYm >= :BASEYM";

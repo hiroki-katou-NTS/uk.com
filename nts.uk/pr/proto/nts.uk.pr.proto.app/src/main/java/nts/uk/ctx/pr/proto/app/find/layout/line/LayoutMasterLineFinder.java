@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 
-@RequestScoped
+@Stateless
 public class LayoutMasterLineFinder {
 	@Inject
 	private LayoutMasterLineRepository repository;

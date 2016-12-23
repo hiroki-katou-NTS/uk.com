@@ -30,7 +30,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFeeRepository
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWage;
 
-@RequestScoped
+@Stateless
 public class PaymentDetailServiceImpl implements PaymentDetailService {
 
 	@Inject

@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * item finder
  *
  */
-@RequestScoped
+@Stateless
 public class ItemFinder {
 	@Inject
 	private ItemMasterRepository repostirory;

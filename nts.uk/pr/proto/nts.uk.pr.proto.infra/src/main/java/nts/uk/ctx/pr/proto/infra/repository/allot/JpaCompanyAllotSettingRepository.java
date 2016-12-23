@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotCp;
 
-@RequestScoped
+@Stateless
 public class JpaCompanyAllotSettingRepository extends JpaRepository implements CompanyAllotSettingRepository {
 
 	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotCp c WHERE c.qstmtStmtAllotCpPK.companyCode = :ccd ";

@@ -36,7 +36,7 @@ import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 import nts.uk.pr.file.infra.paymentdata.result.PrintPositionCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class GetPaymentDataQueryProcessor {
 
 	private static final int PAY_BONUS_ATR = 0;

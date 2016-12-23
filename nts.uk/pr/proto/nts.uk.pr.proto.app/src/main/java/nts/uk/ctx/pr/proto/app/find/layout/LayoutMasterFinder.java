@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 
-@RequestScoped
+@Stateless
 public class LayoutMasterFinder {
 	@Inject
 	private LayoutMasterRepository repository;

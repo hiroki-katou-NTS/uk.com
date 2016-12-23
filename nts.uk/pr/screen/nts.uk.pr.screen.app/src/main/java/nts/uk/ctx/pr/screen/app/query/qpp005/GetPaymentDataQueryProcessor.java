@@ -40,7 +40,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author vunv
  *
  */
-@RequestScoped
+@Stateless
 public class GetPaymentDataQueryProcessor {
 
 	private static final int PAY_BONUS_ATR = 0;

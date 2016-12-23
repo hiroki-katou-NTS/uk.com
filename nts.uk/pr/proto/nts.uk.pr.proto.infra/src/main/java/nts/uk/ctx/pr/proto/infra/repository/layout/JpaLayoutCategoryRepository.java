@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.proto.dom.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtg;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutCtgPK;
 
-@RequestScoped
+@Stateless
 
 public class JpaLayoutCategoryRepository extends JpaRepository implements LayoutMasterCategoryRepository {
 

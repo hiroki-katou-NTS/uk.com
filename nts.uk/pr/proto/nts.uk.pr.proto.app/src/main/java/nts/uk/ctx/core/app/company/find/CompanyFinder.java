@@ -12,7 +12,7 @@ import nts.uk.ctx.core.dom.company.CompanyRepository;
 /**
  * CompanyFinder
  */
-@RequestScoped
+@Stateless
 public class CompanyFinder {
 
 	/** CompanyRepository */

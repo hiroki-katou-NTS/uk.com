@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMaste
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessing;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
 
-@RequestScoped
+@Stateless
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		implements PaymentDateProcessingMasterRepository {
 
