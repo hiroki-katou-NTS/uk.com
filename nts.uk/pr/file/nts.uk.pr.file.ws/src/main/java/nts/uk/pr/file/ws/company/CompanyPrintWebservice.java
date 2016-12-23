@@ -7,11 +7,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.ws.WebService;
 import nts.uk.pr.file.infra.company.CompanyPrintFileGenerator;
 
 @Path("/file/company")
 @Produces("application/json")
-public class CompanyPrintWebservice {
+public class CompanyPrintWebservice extends WebService{
 
 	@Inject
 	private CompanyPrintFileGenerator companyPrint;

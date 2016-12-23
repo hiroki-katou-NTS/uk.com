@@ -11,10 +11,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import nts.arc.file.FileMetaData;
+import nts.arc.layer.ws.WebService;
 import nts.uk.pr.file.infra.file.FileTaskRepository;
 
 @Path("/file/file")
-public class FilePrintWebservice {
+public class FilePrintWebservice extends WebService{
 
 	@Inject
 	private FileTaskRepository fileTask;
