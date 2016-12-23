@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 
@@ -106,13 +107,13 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				int lineCountCate4 = 0;
 				for (int j = 0; j < categories.size(); j++) {
 					if (categories.get(j).getCategoryAttribute() == 0) {
-						lineCountCate1 = categories.get(j).getLineCounts();
+						lineCountCate1 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					} else if (categories.get(j).getCategoryAttribute() == 1) {
-						lineCountCate2 = categories.get(j).getLineCounts();
+						lineCountCate2 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					} else if (categories.get(j).getCategoryAttribute() == 2) {
-						lineCountCate3 = categories.get(j).getLineCounts();
+						lineCountCate3 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					} else if (categories.get(j).getCategoryAttribute() == 3) {
-						lineCountCate4 = categories.get(j).getLineCounts();
+						lineCountCate4 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					}
 				}
 				// check dirty
@@ -253,7 +254,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 
 	// calculate lines and items position
 	private void createValue(WorkbookDesigner designer, LayoutMasterCategoryDto category, int cateIndex) {
-		List<LineDto> lines = category.getLines();
+		List<LineDto> lines = category.getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList());
 		for (LineDto line : lines) {
 			int i = 0;
 			for (DetailItemDto detailItem : line.getDetails()) {

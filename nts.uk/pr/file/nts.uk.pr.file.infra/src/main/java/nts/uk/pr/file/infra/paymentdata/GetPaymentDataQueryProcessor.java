@@ -283,7 +283,7 @@ public class GetPaymentDataQueryProcessor {
 				items.add(detailItem);
 			}
 
-			lineDto = new LineDto(mLine.getLinePosition().v(), items);
+			lineDto = new LineDto(mLine.getLinePosition().v(), items, mLine.getLineDispayAttribute().value);
 			rLines.add(lineDto);
 		}
 
