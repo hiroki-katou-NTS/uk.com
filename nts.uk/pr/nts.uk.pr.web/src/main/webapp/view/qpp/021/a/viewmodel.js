@@ -41,22 +41,26 @@ var nts;
                                 function Listbox() {
                                     var self = this;
                                     self.itemList = ko.observableArray([
-                                        new ItemModel('A00000000000000000000000000000000001', '00000000001', '日通　社員１'),
-                                        new ItemModel('A00000000000000000000000000000000002', '00000000002', '日通　社員2'),
-                                        new ItemModel('A00000000000000000000000000000000003', '00000000003', '日通　社員3'),
-                                        new ItemModel('A00000000000000000000000000000000004', '00000000004', '日通　社員4'),
-                                        new ItemModel('A00000000000000000000000000000000005', '00000000005', '日通　社員5'),
-                                        new ItemModel('A00000000000000000000000000000000006', '00000000006', '日通　社員6'),
-                                        new ItemModel('A00000000000000000000000000000000007', '00000000007', '日通　社員7'),
-                                        new ItemModel('A00000000000000000000000000000000008', '00000000008', '日通　社員8'),
-                                        new ItemModel('A00000000000000000000000000000000009', '00000000009', '日通　社員9'),
-                                        new ItemModel('A00000000000000000000000000000000010', '00000000010', '日通　社員１0'),
+                                        new ItemModel('A00000000000000000000000000000000001', 'A00000000001', '日通　社員１'),
+                                        new ItemModel('A00000000000000000000000000000000002', 'A00000000002', '日通　社員2'),
+                                        new ItemModel('A00000000000000000000000000000000003', 'A00000000003', '日通　社員3'),
+                                        new ItemModel('A00000000000000000000000000000000004', 'A00000000004', '日通　社員4'),
+                                        new ItemModel('A00000000000000000000000000000000005', 'A00000000005', '日通　社員5'),
+                                        new ItemModel('A00000000000000000000000000000000006', 'A00000000006', '日通　社員6'),
+                                        new ItemModel('A00000000000000000000000000000000007', 'A00000000007', '日通　社員7'),
+                                        new ItemModel('A00000000000000000000000000000000008', 'A00000000008', '日通　社員8'),
+                                        new ItemModel('A00000000000000000000000000000000009', 'A00000000009', '日通　社員9'),
+                                        new ItemModel('A00000000000000000000000000000000010', 'A000000000010', '日通　社員１0'),
                                     ]);
                                     self.itemName = ko.observable('');
                                     self.currentCode = ko.observable(3);
                                     self.selectedCode = ko.observable(null);
                                     self.isEnable = ko.observable(true);
                                     self.selectedCodes = ko.observableArray([]);
+                                    self.isEmpty = ko.observable(self.selectedCodes().length > 0);
+                                    self.selectedCodes.subscribe(function () {
+                                        self.isEmpty(self.selectedCodes().length > 0);
+                                    });
                                 }
                                 return Listbox;
                             }());
@@ -74,7 +78,9 @@ var nts;
                                     for (var i = 0; i < self.listBox.selectedCodes().length; i++) {
                                         paymentQuery.push({ personId: self.listBox.selectedCodes()[i], employeeCode: '0000000001' });
                                     }
-                                    nts.uk.pr.view.qpp021.a.service.print(paymentQuery);
+                                    nts.uk.pr.view.qpp021.a.service.print(paymentQuery).fail(function (res) {
+                                        nts.uk.ui.dialog.alert(res.message);
+                                    });
                                 };
                                 return ScreenModel;
                             }());

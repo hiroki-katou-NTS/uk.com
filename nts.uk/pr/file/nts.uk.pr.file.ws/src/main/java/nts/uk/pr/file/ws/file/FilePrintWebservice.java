@@ -11,10 +11,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import nts.arc.file.FileMetaData;
+import nts.arc.layer.ws.WebService;
 import nts.uk.pr.file.infra.file.FileTaskRepository;
 
 @Path("/file/file")
-public class FilePrintWebservice {
+public class FilePrintWebservice extends WebService{
 
 	@Inject
 	private FileTaskRepository fileTask;
@@ -26,7 +27,7 @@ public class FilePrintWebservice {
 	}
 
 	@GET
-	@Path("downloadreport/{taskid}")
+	@Path("dl/{taskid}")
 	public Response downloadReport(@PathParam("taskid") String taskId) throws UnsupportedEncodingException {
 		FileMetaData fileMeta = this.fileTask.getFileMetaData(taskId);
 		String encodedFileName = URLEncoder.encode(fileMeta.getName(), "UTF-8").replaceAll("\\+", "%20");

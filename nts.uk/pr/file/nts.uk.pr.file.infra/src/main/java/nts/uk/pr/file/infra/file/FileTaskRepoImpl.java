@@ -32,7 +32,7 @@ public class FileTaskRepoImpl implements FileTaskRepository{
         FileMetaData fileMeta = fileStore.findByFileId(fileId).orElseThrow(
 				() -> new RuntimeException("File not found"));
         String fileStoragePath = fileMeta.getFilePath();
-		File file = new File(fileStoragePath + fileMeta.getName());
+		File file = new File(fileStoragePath);// + fileMeta.getName());
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
