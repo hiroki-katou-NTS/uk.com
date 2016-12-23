@@ -212,6 +212,10 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						startRowItemCate4 += 2;
 					}
 				}
+				Range companyCode = cells.createRange(startRowItemCate4 + 1, 1, 1, 7);
+				companyCode.merge();
+				companyCode.setStyle(styleFooter);
+				companyCode.setValue("&=PaymentDataHeader.companyCode(bean)");
 				Range companyName = cells.createRange(startRowItemCate4 + 1, 11, 1, 7);
 				companyName.merge();
 				companyName.setStyle(styleFooter);
@@ -222,7 +226,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				sheet.getCells().get(0, 2).setStyle(null);
 				// bind data
 				bindingData(designer, results.get(i));
-				// fit wide
+				// fit
 				designer.getWorkbook().getWorksheets().get(i).getPageSetup().setFitToPagesWide(1);
 				// set landscape
 				designer.getWorkbook().getWorksheets().get(i).getPageSetup()
@@ -273,10 +277,10 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				String dataSourceValue = String.format("ItemValueCat%sLine%s_%s", cateIndex, line.getLinePosition(), i);
 				designer.setDataSource(dataSourceName, detailItem.getItemName());
 				if (detailItem.getValue() != null) {
-					if (detailItem.getCategoryAtr() == 0 || detailItem.getCategoryAtr() == 3) {
+					if (detailItem.getCategoryAtr() == 0 || detailItem.getCategoryAtr() == 3 || detailItem.getCategoryAtr() == 1) {
 						designer.setDataSource(dataSourceValue, detailItem.getValue().toString() + "¥");
 					} else if (detailItem.getCategoryAtr() == 2) {
-						if (detailItem.getItemCode().equals("F203")) {
+						if (detailItem.getItemCode().equals("F203")||detailItem.getItemCode().equals("0100")) {
 							int t = detailItem.getValue().intValue();
 							int hours = t / 60;
 							int minutes = t % 60;

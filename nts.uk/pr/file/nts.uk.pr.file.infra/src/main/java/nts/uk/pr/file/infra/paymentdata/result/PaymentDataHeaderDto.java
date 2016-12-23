@@ -8,6 +8,8 @@ import lombok.Value;
 public class PaymentDataHeaderDto {
 	String personId;
 	
+	String companyCode;
+	
 	String companyName;
 	
 	String departmentCode;
@@ -40,12 +42,13 @@ public class PaymentDataHeaderDto {
 
 	boolean isCreated;
 
-	public PaymentDataHeaderDto(String personId, String companyName, String departmentCode, String departmentName, String personName, Integer processingYM, Integer dependentNumber,
+	public PaymentDataHeaderDto(String personId, String companyCode, String companyName, String departmentCode, String departmentName, String personName, Integer processingYM, Integer dependentNumber,
 			String specificationCode, String specificationName, String employeeCode, String comment, boolean isCreated,
 			List<PrintPositionCategoryDto> printPositionCategories) {
 		super();
-
+		
 		this.personId = personId;
+		this.companyCode = companyCode;
 		this.companyName = companyName;
 		this.departmentCode = departmentCode;
 		this.departmentName = departmentName;
