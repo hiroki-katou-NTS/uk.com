@@ -107,20 +107,26 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				int lineCountCate4 = 0;
 				for (int j = 0; j < categories.size(); j++) {
 					if (categories.get(j).getCategoryAttribute() == 0) {
-						lineCountCate1 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
+						lineCountCate1 = categories.get(j).getLines().stream()
+								.filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					} else if (categories.get(j).getCategoryAttribute() == 1) {
-						lineCountCate2 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
+						lineCountCate2 = categories.get(j).getLines().stream()
+								.filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					} else if (categories.get(j).getCategoryAttribute() == 2) {
-						lineCountCate3 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
+						lineCountCate3 = categories.get(j).getLines().stream()
+								.filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					} else if (categories.get(j).getCategoryAttribute() == 3) {
-						lineCountCate4 = categories.get(j).getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
+						lineCountCate4 = categories.get(j).getLines().stream()
+								.filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList()).size();
 					}
 				}
 				// check dirty
 				Range delete = cells.createRange(9, 0, 50, 50);
 				delete.setStyle(null);
 				delete.setValue(null);
-				//start drawing
+				delete.merge();
+				delete.unMerge();
+				// start drawing
 				Range lblCate1 = cells.createRange(9, 1, lineCountCate1 * 2, 1);
 				lblCate1.merge();
 				lblCate1.setStyle(styleValue);
@@ -162,45 +168,50 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 					startColItem = 2;
 					startRowItemCate2 += 2;
 				}
-				int startRowItemCate3 = startRowItemCate2 + 1;
-				Range lblCate3 = cells.createRange(startRowItemCate3, 1, lineCountCate3 * 2, 1);
-				lblCate3.merge();
-				lblCate3.setStyle(styleValue);
-				lblCate3.setValue("勤怠");
-				for (int j = 1; j <= lineCountCate3; j++) {
-					for (int k = 0; k < 9; k++) {
-						Range headerItem1 = cells.createRange(startRowItemCate3, startColItem, 1, 3);
-						headerItem1.merge();
-						headerItem1.setStyle(styleHeader);
-						headerItem1.setValue(String.format("&=$ItemNameCat3Line%s_%s", j, k));
-						Range valueItem1 = cells.createRange(startRowItemCate3 + 1, startColItem, 1, 3);
-						valueItem1.merge();
-						valueItem1.setStyle(styleValue);
-						valueItem1.setValue(String.format("&=$ItemValueCat3Line%s_%s", j, k));
-						startColItem += 3;
+				int startRowItemCate3 = startRowItemCate2;
+				if (lineCountCate3 != 0) {
+					startRowItemCate3 = startRowItemCate2 + 1;
+					Range lblCate3 = cells.createRange(startRowItemCate3, 1, lineCountCate3 * 2, 1);
+					lblCate3.merge();
+					lblCate3.setStyle(styleValue);
+					lblCate3.setValue("勤怠");
+					for (int j = 1; j <= lineCountCate3; j++) {
+						for (int k = 0; k < 9; k++) {
+							Range headerItem1 = cells.createRange(startRowItemCate3, startColItem, 1, 3);
+							headerItem1.merge();
+							headerItem1.setStyle(styleHeader);
+							headerItem1.setValue(String.format("&=$ItemNameCat3Line%s_%s", j, k));
+							Range valueItem1 = cells.createRange(startRowItemCate3 + 1, startColItem, 1, 3);
+							valueItem1.merge();
+							valueItem1.setStyle(styleValue);
+							valueItem1.setValue(String.format("&=$ItemValueCat3Line%s_%s", j, k));
+							startColItem += 3;
+						}
+						startColItem = 2;
+						startRowItemCate3 += 2;
 					}
-					startColItem = 2;
-					startRowItemCate3 += 2;
 				}
 				int startRowItemCate4 = startRowItemCate3;
-				Range lblCate4 = cells.createRange(startRowItemCate4, 1, lineCountCate4 * 2, 1);
-				lblCate4.merge();
-				lblCate4.setStyle(styleValue);
-				lblCate4.setValue("記事");
-				for (int j = 1; j <= lineCountCate4; j++) {
-					for (int k = 0; k < 9; k++) {
-						Range headerItem1 = cells.createRange(startRowItemCate4, startColItem, 1, 3);
-						headerItem1.merge();
-						headerItem1.setStyle(styleHeader);
-						headerItem1.setValue(String.format("&=$ItemNameCat4Line%s_%s", j, k));
-						Range valueItem1 = cells.createRange(startRowItemCate4 + 1, startColItem, 1, 3);
-						valueItem1.merge();
-						valueItem1.setStyle(styleValue);
-						valueItem1.setValue(String.format("&=$ItemValueCat4Line%s_%s", j, k));
-						startColItem += 3;
+				if (lineCountCate4 != 0) {
+					Range lblCate4 = cells.createRange(startRowItemCate4, 1, lineCountCate4 * 2, 1);
+					lblCate4.merge();
+					lblCate4.setStyle(styleValue);
+					lblCate4.setValue("記事");
+					for (int j = 1; j <= lineCountCate4; j++) {
+						for (int k = 0; k < 9; k++) {
+							Range headerItem1 = cells.createRange(startRowItemCate4, startColItem, 1, 3);
+							headerItem1.merge();
+							headerItem1.setStyle(styleHeader);
+							headerItem1.setValue(String.format("&=$ItemNameCat4Line%s_%s", j, k));
+							Range valueItem1 = cells.createRange(startRowItemCate4 + 1, startColItem, 1, 3);
+							valueItem1.merge();
+							valueItem1.setStyle(styleValue);
+							valueItem1.setValue(String.format("&=$ItemValueCat4Line%s_%s", j, k));
+							startColItem += 3;
+						}
+						startColItem = 2;
+						startRowItemCate4 += 2;
 					}
-					startColItem = 2;
-					startRowItemCate4 += 2;
 				}
 				Range companyName = cells.createRange(startRowItemCate4 + 1, 11, 1, 7);
 				companyName.merge();
@@ -254,7 +265,8 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 
 	// calculate lines and items position
 	private void createValue(WorkbookDesigner designer, LayoutMasterCategoryDto category, int cateIndex) {
-		List<LineDto> lines = category.getLines().stream().filter(line -> line.getLineDispayAttribute() == 1).collect(Collectors.toList());
+		List<LineDto> lines = category.getLines().stream().filter(line -> line.getLineDispayAttribute() == 1)
+				.collect(Collectors.toList());
 		for (LineDto line : lines) {
 			int i = 0;
 			for (DetailItemDto detailItem : line.getDetails()) {

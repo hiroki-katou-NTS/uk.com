@@ -34,7 +34,7 @@
 							<p>In this file we will setup to create viewmodel and binding it.</p>
 							<pre><![CDATA[module qpp004.a {
 	__viewContext.ready(function() {
-		var screenModel = new qpp004.a.ScreenModel();
+		var screenModel = new viewmodel.ScreenModel();
 		screenModel.startPage().done(function() {
 			__viewContext.bind(screenModel);
 		});
@@ -49,32 +49,32 @@
 						<article>
 							<h2>viewmodel.ts</h2>
 							<p>We will create our viewmodel here.</p>
-							<pre><![CDATA[module qpp004.a {
-    export class ScreenModel {
-        employeeList: KnockoutObservableArray<any>;
-        selectedEmployee: KnockoutObservable<any>;
-        
-        constructor() {
-            var self = this;
-            self.employeeList = ko.observableArray([]);
-            self.selectedEmployee = ko.observable(null);
-        }
-        
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            
-            var dfd = $.Deferred();
-            service.getAllEmployee().done(function(data) {
-                self.employeeList(data);
-                dfd.resolve();
-            }).fail(function(res) {
-                
-            });
-            return dfd.promise();
-        }
-    }
+<pre><![CDATA[module qpp004.a.viewmodel {
+	export class ScreenModel {
+		paymentDateProcessingList: KnockoutObservableArray<any>;
+		selectedPaymentDate: KnockoutObservable<any>;
+		
+		constructor() {
+			var self = this;
+			self.paymentDateProcessingList = ko.observableArray([]);
+			self.selectedPaymentDate = ko.observable(null);
+		}
+		
+		startPage(): JQueryPromise<any> {
+			var self = this;
+			
+			var dfd = $.Deferred();
+			service.getPaymentDateProcessingList().done(function(data) {
+				self.paymentDateProcessingList(data);
+				dfd.resolve();
+			}).fail(function(res) {
+				
+			});
+			return dfd.promise();
+		}
+	}
 }]]></pre>
-							<p>We'll put everything in a module with our screen name "qpp004.a" to prevent duplicate class. Our viewmodel usually named "ScreenModel" but you can change it if necessary. Our viewmodel has 2 properties: <i>employeeList</i> and <i>selectedEmployee</i> which are:</p>
+							<p>We'll put everything in a module with our screen name "qpp004.a" to prevent duplicate class. Our viewmodel usually named "ScreenModel" but you can change it if necessary. Our viewmodel has 2 properties: <i>paymentDateProcessingList</i> and <i>selectedPaymentDate</i> which are:</p>
 							<ul>
 								<li><b>KnockoutObservableArray&lt;any&gt;:</b> Define ko.observableArray type</li>
 								<li><b>KnockoutObservable&lt;any&gt;:</b> Define ko.observable type</li>
@@ -84,24 +84,22 @@
 						<article>
 							<h2>service.ts</h2>
 							<p>In this file we'll write code to get data from server. Create any variable or command and pass it to server if necessary.</p>
-							<pre><![CDATA[module qpp004.a {
-    export module service {
-        var paths: any = {
-            getAllEmployee: "pr/proto/employee/findallemployee",
-        }
-
-        export function getAllEmployee(): JQueryPromise<Array<any>> {
-            var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.getAllEmployee)
-                .done(function(res: Array<any>) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
-        }
-    }
+<pre><![CDATA[module qpp004.a.service {
+	var paths: any = {
+		getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+	}
+	
+	export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
+		var dfd = $.Deferred<Array<any>>();
+		nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+			.done(function(res: Array<any>) {
+				dfd.resolve(res);
+			})
+			.fail(function(res) {
+				dfd.reject(res);
+			})
+		return dfd.promise();
+	}
 }]]></pre>
 							<p>Simple right. We'll use <b>nts.uk.request.ajax</b> to get data AJAX from server (<a href="/nts.uk.pr.web/view/sample/requestulitily/request.xhtml">more info about nts.uk.request</a>) </p>
 						</article>
