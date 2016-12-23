@@ -32,7 +32,7 @@ var nts;
                                         { value: 3, text: '圧着式印刷（Z折り）' },
                                         { value: 4, text: '圧着式印刷（はがき）' }
                                     ]);
-                                    self.selectedValue = ko.observable({ value: 1, text: 'One' });
+                                    self.selectedValue = ko.observable(1);
                                 }
                                 return RadioBox;
                             }());

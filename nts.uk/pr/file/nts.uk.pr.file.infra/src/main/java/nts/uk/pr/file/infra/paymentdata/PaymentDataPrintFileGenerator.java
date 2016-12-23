@@ -28,7 +28,7 @@ import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 @Stateless
 public class PaymentDataPrintFileGenerator extends FileGenerator {
 
-	private final String fileName = "report/paymentdata.xlsx";
+	private final String fileName = "report/qpp021.xlsx";
 
 	@Override
 	protected void generate(FileGeneratorContext context) {
@@ -38,7 +38,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 			// create workbook
 			WorkbookDesigner designer = new WorkbookDesigner();
 			String fs = File.separator;
-			OutputStream output = context.createOutputFileStream("D:" + fs + "paymentdata.pdf");
+			OutputStream output = context.createOutputFileStream("D:" + fs + "給与支給明細書.pdf");
 			Workbook workbook = null;
 			try {
 				workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
@@ -148,7 +148,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 					startColItem = 2;
 					startRowItemCate1 += 2;
 				}
-				int startRowItemCate2 = startRowItemCate1 + 1;
+				int startRowItemCate2 = startRowItemCate1;
 				Range lblCate2 = cells.createRange(startRowItemCate2, 1, lineCountCate2 * 2, 1);
 				lblCate2.merge();
 				lblCate2.setStyle(styleValue);
@@ -170,7 +170,6 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				}
 				int startRowItemCate3 = startRowItemCate2;
 				if (lineCountCate3 != 0) {
-					startRowItemCate3 = startRowItemCate2 + 1;
 					Range lblCate3 = cells.createRange(startRowItemCate3, 1, lineCountCate3 * 2, 1);
 					lblCate3.merge();
 					lblCate3.setStyle(styleValue);

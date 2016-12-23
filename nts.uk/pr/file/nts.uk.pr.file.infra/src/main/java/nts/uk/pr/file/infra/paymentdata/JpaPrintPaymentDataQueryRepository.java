@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.pr.file.infra.paymentdata.result.DetailItemDto;
 
 @Stateless
-public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
+public class JpaPrintPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
 	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "
 										+ "d.printLinePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"
