@@ -115,6 +115,11 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						lineCountCate4 = categories.get(j).getLineCounts();
 					}
 				}
+				// check dirty
+				Range delete = cells.createRange(9, 0, 50, 50);
+				delete.setStyle(null);
+				delete.setValue(null);
+				//start drawing
 				Range lblCate1 = cells.createRange(9, 1, lineCountCate1 * 2, 1);
 				lblCate1.merge();
 				lblCate1.setStyle(styleValue);
