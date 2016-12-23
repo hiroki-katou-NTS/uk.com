@@ -1241,6 +1241,7 @@ var nts;
                         var data = valueAccessor();
                         var optionsValue = data.optionsValue;
                         var observableColumns = data.columns;
+                        var gridWidth = 0;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             return {
                                 headerText: c.headerText,
@@ -1250,14 +1251,16 @@ var nts;
                             };
                         });
                         var features = [];
+                        features.push({ name: 'MultiColumnHeaders' });
+                        features.push({ name: 'Hiding' });
+                        //features.push({ name: 'MultiColumnHeaders'});
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
                         features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
                         $grid.igGrid({
-                            width: data.width,
                             height: data.height - HEADER_HEIGHT,
                             primaryKey: data.optionsValue,
-                            columns: iggridColumns,
+                            columns: observableColumns(),
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             features: features

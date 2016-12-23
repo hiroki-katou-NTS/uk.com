@@ -1311,15 +1311,17 @@ module nts.uk.ui.koExtentions {
             });
             
             var features = [];
+            features.push({name: 'MultiColumnHeaders'});
+            features.push({ name: 'Hiding' });
+            //features.push({ name: 'MultiColumnHeaders'});
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
             
-            $grid.igGrid({
-                width: data.width,
+            $grid.igGrid({               
                 height: data.height - HEADER_HEIGHT,
                 primaryKey: data.optionsValue,
-                columns: iggridColumns,
+                columns: observableColumns(),
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features
