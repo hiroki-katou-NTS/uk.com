@@ -12,7 +12,7 @@ __viewContext.ready(function () {
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable('0002');
+            self.selectedCode = ko.observable('0003');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
         }
