@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import com.aspose.cells.Cells;
 import com.aspose.cells.PageOrientationType;

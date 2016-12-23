@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;

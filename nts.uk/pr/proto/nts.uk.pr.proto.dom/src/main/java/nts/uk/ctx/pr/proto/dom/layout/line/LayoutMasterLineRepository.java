@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.dom.layout.line;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 @Stateless
 public interface LayoutMasterLineRepository {

@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 
 @Stateless

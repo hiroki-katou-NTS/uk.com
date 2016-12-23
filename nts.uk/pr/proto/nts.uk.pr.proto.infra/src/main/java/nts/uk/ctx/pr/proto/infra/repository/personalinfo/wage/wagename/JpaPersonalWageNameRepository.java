@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.repository.personalinfo.wage.wagename;
 
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;

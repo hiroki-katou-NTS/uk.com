@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;

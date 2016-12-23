@@ -1,6 +1,6 @@
 package nts.uk.shr.com.data;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import nts.arc.layer.infra.data.EntityManagerLoader;

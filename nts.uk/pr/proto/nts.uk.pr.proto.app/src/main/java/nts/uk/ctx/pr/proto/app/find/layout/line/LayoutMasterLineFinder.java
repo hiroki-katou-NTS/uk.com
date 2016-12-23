@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.app.find.layout.line;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;

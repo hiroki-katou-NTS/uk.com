@@ -1,6 +1,6 @@
 package nts.uk.ctx.core.app.company.command;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
