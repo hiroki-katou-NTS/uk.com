@@ -32,14 +32,14 @@
 							<div style="float:left">
 								<p>Input your search term below</p>
 								<div style="width: 700px">
-								<input data-bind="ntsSearchBox: {value: searchTerm, items: items2, filteredItems: items3, fields: ['name', 'code']}" />
+								<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
 								</div>
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
-										options: items3,
+										options: filteredData,
 										value: singleSelectedCode,
 										
 										optionsValue: 'code',

@@ -365,8 +365,8 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             new TextEditorProcessor().init($(element), valueAccessor());
-            var $input = $(element);
-            $input.addClass("ntsSearchBox");
+            var $input = $(element);         
+            $input.addClass("ntsSearchBox");           
             $input.keyup(function() {$input.change();});
         }
 
@@ -1161,6 +1161,21 @@ module nts.uk.ui.koExtentions {
                 $(this).find('.nts-list-box > li').addClass("ui-selected");
                 $(this).find('.nts-list-box').data("ui-selectable")._mouseStop(null);
             }
+            $.fn.validate = function() {
+                var $container = $(this);
+                var required = $container.data('required');
+                var $currentListBox = $container.find('.nts-list-box');
+                if (required) {
+                    var itemsSelected: any = $container.data('value');
+                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                        $currentListBox.ntsError('set', 'at least 1 item selection required');
+                        return false;                       
+                    } else {
+                        $currentListBox.ntsError('clear');
+                        return true;
+                    }
+                }
+            }
             $.fn.ntsListBox = function(method: string) {
                 switch (method) {
                     case 'deselectAll':
@@ -1169,25 +1184,22 @@ module nts.uk.ui.koExtentions {
                     case 'selectAll':
                         this.selectAll();
                         break;
+                    case 'validate':
+                        return this.validate();
                     default:
                         break;
                 }
-            }
-            if (required) {
-                container.on('validate', (function(e: Event) {
-                    // Check empty value
+            }           
+            container.on('validate', (function(e: Event) {
+                // Check empty value
 
-                    var itemsSelected: any = container.data('value');
-                    var required = container.data('required');
-                    if (required) {
-                        if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                            selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                        } else {
-                            selectListBoxContainer.ntsError('clear');
-                        }
-                    }
-                }));
-            }
+                var itemsSelected: any = container.data('value');                             
+                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                    selectListBoxContainer.ntsError('set', 'at least 1 item selection required');                        
+                } else {
+                    selectListBoxContainer.ntsError('clear');
+                }               
+            }));                 
         }
 
         /**
@@ -1334,9 +1346,10 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-            if (container.parent().is(':visible')) {
+            if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                 container.trigger('validate');
-            }
+                console.log('triggered validate event');                   
+            } 
         }
     }
 

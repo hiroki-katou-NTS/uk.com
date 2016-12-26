@@ -75,10 +75,15 @@ module qpp004.b.viewmodel {
         }
 
         next(): any {
-            var currStep = $('#wizard').steps('getCurrentIndex');                    
-            $('#wizard').steps('next');
-            if(currStep == 0) {
-               $('#list-box').trigger('validate'); 
+            var currStep = $('#wizard').steps('getCurrentIndex');                         
+            if(currStep == 1) {               
+                var valid = $('#list-box').ntsListBox('validate');
+                console.log(valid);
+                if(valid) {
+                    $('#wizard').steps('next');
+                }
+            } else {
+                $('#wizard').steps('next');
             }
         }
 

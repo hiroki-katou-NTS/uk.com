@@ -6,6 +6,7 @@ __viewContext.ready(function () {
         singleSelectedCode: any;
         headers: any;
         searchTerm: KnockoutObservable<string>;
+        
         constructor() {
             var self = this;
             self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
@@ -25,7 +26,6 @@ __viewContext.ready(function () {
             self.filteredData(self.dataSource());
             self.singleSelectedCode('0002');           
         }
-        
         changeDataSource(): void {
             var self = this;
             var i = 0;
@@ -37,26 +37,6 @@ __viewContext.ready(function () {
             };
             self.dataSource(newArrays);
             self.filteredData(newArrays);
-        }
-        nextSearch(): void {
-           var self = this;
-           var filteredData = self.filteredData();
-           console.log(filteredData[0]);
-           var singleSelectedCode = self.singleSelectedCode();
-           var index = -1;
-           if(singleSelectedCode) {
-               for(var i = 0; i < filteredData.length; i++) {
-                  var item = filteredData[i];
-                  if(item.code ===  singleSelectedCode) {
-                      index = i;
-                      break;
-                  }
-               }
-               if(index>=0)
-                    self.singleSelectedCode(filteredData[(i+1)%filteredData.length].code);
-           } else {
-              if(filteredData && filteredData.length > 0) self.singleSelectedCode(filteredData[0].code); 
-           }
         }
     }
     

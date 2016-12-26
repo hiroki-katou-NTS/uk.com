@@ -10,6 +10,11 @@ __viewContext.ready(function () {
                 new ItemModel('150', '役職手当', "description 2", "other2"),
                 new ItemModel('ABC', '基12本ghj給', "description 3", "other3")
             ]);
+            this.columns3 = ko.observableArray([
+                { headerText: 'コード', prop: 'code', width: 100 },
+                { headerText: '名称', prop: 'name', width: 200 },
+                { headerText: '説明', prop: 'description', width: 200 }
+            ]);
             this.columns = ko.observableArray([
                 { headerText: 'group1', key: 'group1', group: [
                         { headerText: 'コード', key: 'code', width: 100 },
@@ -26,6 +31,7 @@ __viewContext.ready(function () {
                 { headerText: '<button onclick="toggleColumns()">-</button>', group: [{ headerText: '説明1', key: 'other1', width: 150 },
                         { headerText: '説明2', key: 'other2', width: 150 }] }
             ]);
+            this.itemsSwap = ko.observableArray(this.items());
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);

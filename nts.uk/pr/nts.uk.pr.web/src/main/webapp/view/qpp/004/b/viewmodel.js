@@ -65,9 +65,15 @@ var qpp004;
                 };
                 Wizard.prototype.next = function () {
                     var currStep = $('#wizard').steps('getCurrentIndex');
-                    $('#wizard').steps('next');
-                    if (currStep == 0) {
-                        $('#list-box').trigger('validate');
+                    if (currStep == 1) {
+                        var valid = $('#list-box').ntsListBox('validate');
+                        console.log(valid);
+                        if (valid) {
+                            $('#wizard').steps('next');
+                        }
+                    }
+                    else {
+                        $('#wizard').steps('next');
                     }
                 };
                 Wizard.prototype.previous = function () {
