@@ -455,6 +455,24 @@ div.label {
   color: #97D155;
 }
 
+/* line 2, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header {
+  border-color: #999;
+  background: #FFF;
+  color: #404040;
+  font-size: 1.2rem;
+  outline: none;
+  padding: 0.3rem;
+}
+/* line 13, ../sass/components/_accordion.scss */
+.ui-accordion .ui-state-active .ui-accordion-header-icon {
+  background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png");
+}
+/* line 15, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-content {
+  border-color: #999;
+}
+
 /* line 1, ../sass/components/_editor.scss */
 input[type="text"] {
   font-family: "DroidSansMono", "Meiryo";
@@ -1895,12 +1913,12 @@ input.ntsSearchBox:focus {
   line-height: 50px;
 }
 
-/* line 27, ../sass/base.scss */
+/* line 28, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 31, ../sass/base.scss */
+/* line 32, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
