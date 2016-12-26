@@ -32,25 +32,23 @@
 							<div style="float:left">
 								<p>Input your search term below</p>
 								<div style="width: 500px">
-								<input data-bind="ntsSearchBox: {value: searchTerm, items: items2, filteredItems: items3, fields: ['name', 'code']}" />
+								<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
 								</div>
 								<div style="width: 200px">
-								<button data-bind="click: nextSelection"></button>
+								<button data-bind="click: nextSearch">Next Search</button>
 								</div>
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
-										options: items3,
-										value: singleSelectedCode,
-										
+										options: dataSource,
+										value: singleSelectedCode,										
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
 										multiple: false,
-										enable: true,
-										
+										enable: true,										
 										showCheckBox: false}"
 									class="cf">
 								</table>

@@ -26,7 +26,6 @@ __viewContext.ready(function () {
             self.filteredData(self.dataSource());
             self.singleSelectedCode('0002');           
         }
-        
         changeDataSource(): void {
             var self = this;
             var i = 0;
