@@ -1919,7 +1919,8 @@ var nts;
                                         });
                                         return (x.length <= 0);
                                     });
-                                    data.options(newSource);
+                                    $(grid1Id).igGrid("option", "dataSource", newSource);
+                                    $(grid1Id).igGrid("option", "dataBind");
                                 }
                             }
                         });
@@ -1957,7 +1958,8 @@ var nts;
                                         });
                                         return (x.length <= 0);
                                     });
-                                    data.value(newSource);
+                                    $(grid1Id).igGrid("option", "dataSource", newSource);
+                                    $(grid1Id).igGrid("option", "dataBind");
                                 }
                             }
                         });

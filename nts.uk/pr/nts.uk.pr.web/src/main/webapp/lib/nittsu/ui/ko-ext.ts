@@ -2043,7 +2043,9 @@ module nts.uk.ui.koExtentions {
                             });
                             return (x.length <= 0)
                         });
-                        data.options(newSource);
+                        $(grid1Id).igGrid("option", "dataSource", newSource);
+                        $(grid1Id).igGrid("option", "dataBind");
+//                        data.options(newSource);
                     }
                 }
             });
@@ -2080,7 +2082,9 @@ module nts.uk.ui.koExtentions {
                             });
                             return (x.length <= 0)
                         });
-                        data.value(newSource);
+                        $(grid1Id).igGrid("option", "dataSource", newSource);
+                        $(grid1Id).igGrid("option", "dataBind");
+//                        data.value(newSource);
                     }
                 }
             });
