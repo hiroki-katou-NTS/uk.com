@@ -336,7 +336,7 @@ div.popup-panel {
 }
 
 /* line 141, ../sass/components/_commons.scss */
-div.error {
+.error {
   border: 1px solid #ff6666 !important;
 }
 
@@ -462,14 +462,36 @@ div.label {
   color: #404040;
   font-size: 1.2rem;
   outline: none;
-  padding: 0.3rem;
+  padding: 0.4rem 2rem 0.4rem 0.4rem;
+  margin-top: 10px;
 }
-/* line 13, ../sass/components/_accordion.scss */
-.ui-accordion .ui-state-active .ui-accordion-header-icon {
+/* line 12, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header.ui-state-active .ui-icon {
   background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png");
 }
-/* line 15, ../sass/components/_accordion.scss */
+/* line 19, ../sass/components/_accordion.scss */
+.ui-accordion .status {
+  display: inline-block;
+  float: right;
+  background: #E0F59E;
+  padding: 0 0.6rem;
+  margin-top: -0.4rem;
+  border-radius: 3px;
+  line-height: 32px;
+  min-width: 60px;
+  text-align: center;
+}
+/* line 31, ../sass/components/_accordion.scss */
+.ui-accordion .close-button {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  margin-top: -8px;
+  float: right;
+}
+/* line 39, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-content {
+  border-top-width: 1px;
   border-color: #999;
 }
 

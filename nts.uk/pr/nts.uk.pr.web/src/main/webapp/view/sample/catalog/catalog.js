@@ -32,6 +32,19 @@ $(function(){
 	    		$(this).data("href", href)
 			}
 	    });
+	    
+	    // Search
+	    $('#search-menu').keyup(function(){
+	    	var searchbox = $(this);
+	    	var searchtext = searchbox.val().toLowerCase();
+    		$("#side-menu li").show();
+	    	if (searchbox.val().length > 0)
+		    	$("#side-menu li").each(function(){
+		    		if($(this).text().toLowerCase().indexOf(searchtext) === -1) {
+		    			$(this).hide();
+		    		}
+		    	})
+	    })
 	});
 	
 	$('button.next, button.previous').click(function(){
@@ -43,4 +56,5 @@ $(function(){
 	});
 	
 	$(".tabs").tabs();
+	
 });
