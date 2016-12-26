@@ -1120,6 +1120,22 @@ var nts;
                             $(this).find('.nts-list-box > li').addClass("ui-selected");
                             $(this).find('.nts-list-box').data("ui-selectable")._mouseStop(null);
                         };
+                        $.fn.validate = function () {
+                            var $container = $(this);
+                            var required = $container.data('required');
+                            var $currentListBox = $container.find('.nts-list-box');
+                            if (required) {
+                                var itemsSelected = $container.data('value');
+                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                    $currentListBox.ntsError('set', 'at least 1 item selection required');
+                                    return false;
+                                }
+                                else {
+                                    $currentListBox.ntsError('clear');
+                                    return true;
+                                }
+                            }
+                        };
                         $.fn.ntsListBox = function (method) {
                             switch (method) {
                                 case 'deselectAll':
@@ -1128,25 +1144,22 @@ var nts;
                                 case 'selectAll':
                                     this.selectAll();
                                     break;
+                                case 'validate':
+                                    return this.validate();
                                 default:
                                     break;
                             }
                         };
-                        if (required) {
-                            container.on('validate', (function (e) {
-                                // Check empty value
-                                var itemsSelected = container.data('value');
-                                var required = container.data('required');
-                                if (required) {
-                                    if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                        selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
-                                    }
-                                    else {
-                                        selectListBoxContainer.ntsError('clear');
-                                    }
-                                }
-                            }));
-                        }
+                        container.on('validate', (function (e) {
+                            // Check empty value
+                            var itemsSelected = container.data('value');
+                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                            }
+                            else {
+                                selectListBoxContainer.ntsError('clear');
+                            }
+                        }));
                     };
                     /**
                      * Update
@@ -1283,8 +1296,9 @@ var nts;
                             $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                             container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                         }
-                        if (container.parent().is(':visible')) {
+                        if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                             container.trigger('validate');
+                            console.log('triggered validate event');
                         }
                     };
                     return ListBoxBindingHandler;

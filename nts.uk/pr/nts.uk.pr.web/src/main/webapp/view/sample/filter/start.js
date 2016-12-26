@@ -32,12 +32,6 @@ __viewContext.ready(function () {
             self.dataSource(newArrays);
             self.filteredData(newArrays);
         };
-        ScreenModel.prototype.nextSelection = function () {
-            var self = this;
-            var filteredData = self.filteredData();
-            if (!singleSelectedCode)
-                ;
-        };
         return ScreenModel;
     }());
     var Node = (function () {
