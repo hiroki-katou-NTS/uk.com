@@ -1768,7 +1768,7 @@ button.nts-switch-button.selected:hover {
 /* line 1, ../sass/components/_searchbox.scss */
 input.ntsSearchBox {
   box-sizing: border-box;
-  border: 2px solid #ccc !important;
+  border: 2px solid #ccc;
   border-radius: 6px;
   font-size: 14px;
   background-color: white;
@@ -1784,6 +1784,8 @@ input.ntsSearchBox {
 /* line 16, ../sass/components/_searchbox.scss */
 input.ntsSearchBox:focus {
   width: 100%;
+  border: 2px solid #00BFFF;
+  outline: none;
 }
 
 /* line 1, ../sass/frame/_header.scss */
