@@ -55,8 +55,16 @@
 							class="cf"></table>
 						<br />
 						currentCodeList: <span data-bind="text: currentCodeList"></span>
-						
-						
+						<div id="swap-list" data-bind="ntsSwapList: {
+								showSearchBox: true,
+								width: 1000,
+								height: 110,
+								options: itemsSwap,
+								optionsValue: 'code',
+								columns: columns,
+								value: currentCodeListSwap
+							}"
+							class=""></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

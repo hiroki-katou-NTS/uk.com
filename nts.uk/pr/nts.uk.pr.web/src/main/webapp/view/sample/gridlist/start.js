@@ -10,6 +10,11 @@ __viewContext.ready(function () {
                 new ItemModel('150', '役職手当', "description 2"),
                 new ItemModel('ABC', '基12本ghj給', "description 3")
             ]);
+            this.itemsSwap = ko.observableArray([
+                new ItemModel('001', '基本給', "description 1"),
+                new ItemModel('150', '役職手当', "description 2"),
+                new ItemModel('ABC', '基12本ghj給', "description 3")
+            ]);
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
                 { headerText: '名称', prop: 'name', width: 150 },
@@ -17,6 +22,7 @@ __viewContext.ready(function () {
             ]);
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
+            this.currentCodeListSwap = ko.observableArray([]);
             //            self.itemName = ko.observable('');
             //            self.currentCode = ko.observable(3);
             //            self.selectedCode = ko.observable(null)

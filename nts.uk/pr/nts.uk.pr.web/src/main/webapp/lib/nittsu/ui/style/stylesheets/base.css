@@ -1100,6 +1100,16 @@ button.nts-switch-button.selected:hover {
   background-image: url(../images/ui-icons_444444_256x240.png);
 }
 
+/* line 9, ../sass/components/_gridlist.scss */
+.ui-igcheckbox-normal {
+  position: relative !important;
+}
+
+/* line 12, ../sass/components/_gridlist.scss */
+.ui-igcheckbox-normal-on {
+  position: absolute !important;
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;

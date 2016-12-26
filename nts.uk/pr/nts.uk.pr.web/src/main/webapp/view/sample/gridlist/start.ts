@@ -2,10 +2,12 @@ __viewContext.ready(function () {
     
     class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
+        itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
 //        itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        currentCodeListSwap: KnockoutObservableArray<any>;
 //        selectedCode: KnockoutObservable<string>;
 //        selectedCodes: KnockoutObservableArray<string>;
 //        isEnable: KnockoutObservable<boolean>;
@@ -14,6 +16,11 @@ __viewContext.ready(function () {
         constructor() {
             
             this.items = ko.observableArray([
+                new ItemModel('001', '基本給', "description 1"),
+                new ItemModel('150', '役職手当', "description 2"),
+                new ItemModel('ABC', '基12本ghj給', "description 3")
+            ]);
+            this.itemsSwap = ko.observableArray([
                 new ItemModel('001', '基本給', "description 1"),
                 new ItemModel('150', '役職手当', "description 2"),
                 new ItemModel('ABC', '基12本ghj給', "description 3")
@@ -27,6 +34,7 @@ __viewContext.ready(function () {
             
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
+            this.currentCodeListSwap = ko.observableArray([]);
             
             
 //            self.itemName = ko.observable('');

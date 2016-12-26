@@ -182,7 +182,7 @@ module nts.uk.ui.koExtentions {
                 }
                 parent.addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
-                
+
                 if (marginLeft !== 0) {
                     parent.css({ "marginLeft": marginLeft + "px" });
                 }
@@ -493,7 +493,7 @@ module nts.uk.ui.koExtentions {
             $dialog.dialog({
                 title: title,
                 modal: modal,
-                
+
                 closeOnEscape: false,
                 width: dialogWidth,
                 buttons: dialogbuttons,
@@ -572,7 +572,7 @@ module nts.uk.ui.koExtentions {
             }
             else {
                 $dialog.dialog("close");
-                
+
             }
         }
     }
@@ -666,7 +666,7 @@ module nts.uk.ui.koExtentions {
                 }
             });
             // Enable
-            (enable === true) ?  $('button', container).prop("disabled",false) : $('button', container).prop("disabled",true);
+            (enable === true) ? $('button', container).prop("disabled", false) : $('button', container).prop("disabled", true);
         }
     }
 
@@ -686,21 +686,21 @@ module nts.uk.ui.koExtentions {
             var setChecked = data.checked;
             var textId: string = data.text;
             var checkBoxText: string;
-            
+
             // Container
             var container = $(element);
             container.addClass("ntsControl");
-            
+
             if (textId) {
                 checkBoxText = textId;
             } else {
                 checkBoxText = container.text();
                 container.text('');
             }
-            
+
             var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-            var checkBox = $('<input type="checkbox">').on("change", function(){
-                if(typeof setChecked === "function")
+            var checkBox = $('<input type="checkbox">').on("change", function() {
+                if (typeof setChecked === "function")
                     setChecked($(this).is(":checked"));
             }).appendTo(checkBoxLabel);
             var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
@@ -716,29 +716,29 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var checked: boolean = ko.unwrap(data.checked);
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            
+
             // Container
             var container = $(element);
             var checkBox = $(element).find("input[type='checkbox']");
-            
+
             // Checked
             checkBox.prop("checked", checked);
             // Enable
             (enable === true) ? checkBox.removeAttr("disabled") : checkBox.attr("disabled", "disabled");
         }
     }
-    
+
     /**
      * Multi Checkbox
      */
     class NtsMultiCheckBoxBindingHandler implements KnockoutBindingHandler {
-        
+
         constructor() { }
-        
+
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
             $(element).addClass("ntsControl");
         }
-        
+
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             var data = valueAccessor();
@@ -747,23 +747,23 @@ module nts.uk.ui.koExtentions {
             var optionText: string = ko.unwrap(data.optionsText);
             var selectedValue: any = data.value;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            
+
             // Container
             var container = $(element);
-            
+
             // Get option or option[optionValue]
             var getOptionValue = (item) => {
                 return (optionValue === undefined) ? item : item[optionValue];
             };
-            
+
             // Render
-            if(!_.isEqual(container.data("options"), options)) {
+            if (!_.isEqual(container.data("options"), options)) {
                 container.empty();
                 _.forEach(options, (option) => {
                     var checkBoxLabel = $("<label class='ntsCheckBox'></label>");
-                    var checkBox = $('<input type="checkbox">').data("value", getOptionValue(option)).on("change", function(){
+                    var checkBox = $('<input type="checkbox">').data("value", getOptionValue(option)).on("change", function() {
                         var self = this;
-                        if($(self).is(":checked"))
+                        if ($(self).is(":checked"))
                             selectedValue.push($(self).data("value"));
                         else
                             selectedValue.remove(_.find(selectedValue(), (value) => {
@@ -777,9 +777,9 @@ module nts.uk.ui.koExtentions {
                 // Save a clone
                 container.data("options", options.slice());
             }
-            
+
             // Checked
-            container.find("input[type='checkbox']").prop("checked", function(){
+            container.find("input[type='checkbox']").prop("checked", function() {
                 return (_.find(selectedValue(), (value) => {
                     return _.isEqual(value, $(this).data("value"))
                 }) !== undefined);
@@ -788,18 +788,18 @@ module nts.uk.ui.koExtentions {
             (enable === true) ? container.find("input[type='checkbox']").removeAttr("disabled") : container.find("input[type='checkbox']").attr("disabled", "disabled");
         }
     }
-    
+
     /**
      * RadioBox Group
      */
     class NtsRadioBoxGroupBindingHandler implements KnockoutBindingHandler {
-        
+
         constructor() { }
-        
+
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
             $(element).addClass("ntsControl");
         }
-        
+
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data
             var data = valueAccessor();
@@ -808,46 +808,46 @@ module nts.uk.ui.koExtentions {
             var optionText: string = ko.unwrap(data.optionsText);
             var selectedValue: any = data.value;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-            
+
             // Container
             var container = $(element);
-            
+
             var getOptionValue = (item) => {
                 return (optionValue === undefined) ? item : item[optionValue];
             };
-            
+
             // Render
-            if(!_.isEqual(container.data("options"), options)) {
+            if (!_.isEqual(container.data("options"), options)) {
                 var radioName = util.randomId();
                 container.empty();
                 _.forEach(options, (option) => {
                     var radioBoxLabel = $("<label class='ntsRadioBox'></label>");
-                    var radioBox = $('<input type="radio">').attr("name",radioName).data("value", getOptionValue(option)).on("change", function(){
+                    var radioBox = $('<input type="radio">').attr("name", radioName).data("value", getOptionValue(option)).on("change", function() {
                         var self = this;
-                        if($(self).is(":checked"))
+                        if ($(self).is(":checked"))
                             selectedValue($(self).data("value"));
                     }).appendTo(radioBoxLabel);
                     var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
                     var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                     radioBoxLabel.appendTo(container);
                 });
-                                
+
                 // Save a clone
                 container.data("options", options.slice());
             }
-            
+
             // Checked
             var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
                 return _.isEqual($(item).data("value"), selectedValue());
             });
             if (checkedRadio !== undefined)
                 $(checkedRadio).prop("checked", true);
-            
+
             // Enable
             (enable === true) ? container.find("input[type='radio']").removeAttr("disabled") : container.find("input[type='radio']").attr("disabled", "disabled");
         }
     }
-        
+
     /**
      * ComboBox binding handler
      */
@@ -864,7 +864,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
         }
-        
+
         /**
          * Update
          */
@@ -1091,7 +1091,7 @@ module nts.uk.ui.koExtentions {
 
 
             }));
-            
+
             // Create method.
             $.fn.deselectAll = function() {
                 $(this).data('value', '');
@@ -1115,15 +1115,15 @@ module nts.uk.ui.koExtentions {
                         break;
                 }
             }
-            if(required) {
+            if (required) {
                 container.on('validate', (function(e: Event) {
                     // Check empty value
-    
+
                     var itemsSelected: any = container.data('value');
                     var required = container.data('required');
                     if (required) {
                         if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                            selectListBoxContainer.ntsError('set', 'at least 1 item selection required');                        
+                            selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
                         } else {
                             selectListBoxContainer.ntsError('clear');
                         }
@@ -1154,7 +1154,7 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var selectListBoxContainer = container.find('.nts-list-box');
             var maxWidthCharacter = 15;
-            
+
             var getOptionValue = item => {
                 if (optionValue === undefined) {
                     return item;
@@ -1276,30 +1276,30 @@ module nts.uk.ui.koExtentions {
                 $('.nts-list-box').css({ 'height': rows * (18 + padding) });
                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
             }
-            if(container.parent().is(':visible')) {
+            if (container.parent().is(':visible')) {
                 container.trigger('validate');
-            }     
+            }
         }
     }
-    
-    
+
+
     /**
      * GridList binding handler
      */
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
-        
+
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var HEADER_HEIGHT = 27;
-            
+
             var $grid = $(element);
-            
+
             if (nts.uk.util.isNullOrUndefined($grid.attr('id'))) {
                 throw new Error('the element NtsGridList must have id attribute.');
             }
-            
+
             var data = valueAccessor();
             var optionsValue: string = data.optionsValue;
-            
+
             var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
                 return {
@@ -1309,12 +1309,12 @@ module nts.uk.ui.koExtentions {
                     dataType: 'string'
                 };
             });
-            
+
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
-            
+
             $grid.igGrid({
                 width: data.width,
                 height: data.height - HEADER_HEIGHT,
@@ -1324,13 +1324,13 @@ module nts.uk.ui.koExtentions {
                 virtualizationMode: 'continuous',
                 features: features
             });
-            
+
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
                 .height(data.height);
 
             $grid.ntsGridList('setupSelecting');
-            
+
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
                     let selecteds: Array<any> = $grid.ntsGridList('getSelected');
@@ -1345,14 +1345,14 @@ module nts.uk.ui.koExtentions {
                 }
             });
         }
-        
+
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        
+
             var $grid = $(element);
             var data = valueAccessor();
-            
+
             $grid.igGrid('option', 'dataSource', data.options());
-            
+
             $grid.ntsGridList('setSelected', data.value());
         }
     }
@@ -1443,7 +1443,7 @@ module nts.uk.ui.koExtentions {
                         checkBoxMode: "biState"
                     }]
             });
-            
+
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
         }
 
@@ -1522,7 +1522,7 @@ module nts.uk.ui.koExtentions {
             var cssClass: string = "nts-wizard " + "theme-" + theme;
             // Container
             var container = $(element);
-            
+
             // Create steps
             for (var i = 0; i < options.length; i++) {
                 var contentClass: string = ko.unwrap(options[i].content);
@@ -1532,7 +1532,7 @@ module nts.uk.ui.koExtentions {
                 container.append('<div>' + htmlContent + '</div>');
             }
             var icon = container.find('.header .image').data('icon');
-            
+
             // Remove html
             var header = container.children('.header');
             container.children('.header').remove();
@@ -1564,7 +1564,7 @@ module nts.uk.ui.koExtentions {
                     return true;
                 }
             });
-            
+
             // Add default class
             container.addClass(cssClass);
             container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
@@ -1573,28 +1573,28 @@ module nts.uk.ui.koExtentions {
             container.children('.steps').children('ul').children('.last').addClass('end');
             container.children('.steps').children('ul').children('li').not('.begin').not('.end').children('.nts-steps').addClass('nts-steps-middle');
             container.find('.nts-steps-middle').append('<div class="nts-vertical-line"></div><div class="nts-bridge"><div class="nts-point"></div><div class="nts-horizontal-line"></div></div>')
-            
+
             // Remove old class
             container.children('.steps').children('ul').children('li').removeClass('step-current');
             container.children('.steps').children('ul').children('li').removeClass('step-prev');
             container.children('.steps').children('ul').children('li').removeClass('step-next');
-            
+
             // Add new class
             container.children('.steps').children('ul').children('.current').addClass('step-current');
             container.children('.steps').children('ul').children('.done').addClass('step-prev');
             container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
-            
+
             // Remove content
             container.find('.actions').hide();
-            
+
             // Add Header
             container.children('.steps').prepend(header);
             container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-            
+
             $.fn.begin = function() {
                 $(this).setStep(0);
             }
-            
+
             $.fn.end = function() {
                 $(this).setStep(options.length - 1);
             }
@@ -1744,7 +1744,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var tabs: Array<any> = ko.unwrap(data.dataSource);
             var direction: string = ko.unwrap(data.direction || "horizontal");
-            
+
             // Container.
             var container = $(element);
 
@@ -1805,6 +1805,233 @@ module nts.uk.ui.koExtentions {
             });
         }
     }
+
+    class NtsSwapListBindingHandler implements KnockoutBindingHandler {
+        /**
+         * Constructor.
+         */
+        constructor() {
+        }
+
+        /**
+         * Init.
+         */
+        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var HEADER_HEIGHT = 27;
+            var CHECKBOX_WIDTH = 70;
+            var MOVE_AREA_WIDTH = 100;
+
+            var $swap = $(element);
+            var elementId = $swap.attr('id');
+            if (nts.uk.util.isNullOrUndefined(elementId)) {
+                throw new Error('the element NtsSwapList must have id attribute.');
+            }
+
+            var data = valueAccessor();
+            var originalSource = ko.unwrap(data.options);
+            var selectedValues = ko.unwrap(data.value);
+            var primaryKey: string = data.optionsValue;
+            var totalwidth = ko.unwrap(data.width);
+            var height = ko.unwrap(data.height);
+            var showSearchBox = ko.unwrap(data.showSearchBox);
+            var columns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
+            var gridWidth = _.sumBy(columns(), c => {
+                return c.width;
+            });
+            var iggridColumns = _.map(columns(), c => {
+                return {
+                    headerText: c.headerText,
+                    key: c.prop,
+                    width: c.width,
+                    dataType: 'string'
+                };
+            });
+            
+            var features = [];
+            features.push({ name: 'Selection', multipleSelection: true });
+            features.push({ name: 'Sorting', type: 'local' });
+            features.push({ name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true });
+
+            $swap.wrap("<div class= 'ntsComponent ntsSwapList'/>");
+            $swap.parent().css({width: totalwidth + 'px', height: height + 'px', overflowY: 'auto', overflowX : 'auto', display: 'table'});
+            $swap.css({display: 'table', tableLayout: 'fixed'});
+            if (showSearchBox) {
+                var searchAreaId = elementId + "-search-area";
+                $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
+                $swap.find(".ntsSearchArea").css({display: "table-row"}).append("<input id = "+ searchAreaId + "-input" +" class = 'ntsSearchInput'/>")
+                    .append("<button class='ntsSearchButton'/>");
+                $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
+                $swap.find(".ntsSearchButton").css({"marginLeft" : '10px'}).text("Search").click(function(){
+                    var value = $swap.find(".ntsSearchInput").val();
+                    var source = $(grid1Id).igGrid("option", "dataSource");
+                    var searchedValues = _.filter(originalSource, function(val){
+                        return _.valuesIn(val).filter(function(x){
+                            return x.toString().indexOf(value) >= 0;    
+                        }).length > 0;
+                    });
+                    $(grid1Id).igGrid("option", "dataSource", searchedValues);
+                    $(grid1Id).igGrid("option", "dataBind");
+                });
+            }
+
+            $swap.append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea1" + "/>");
+            $swap.append("<div class = 'ntsMoveDataArea ntsSwapComponent' id = " + elementId + "-move-data" + "/>");
+            $swap.append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea2" + "/>");
+
+            $swap.find("#" + elementId + "-gridArea1").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid1" + "/>");
+            $swap.find("#" + elementId + "-gridArea2").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid2" + "/>");
+            var $grid1 = $swap.find("#" + elementId + "-grid1");
+            var $grid2 = $swap.find("#" + elementId + "-grid2");
+
+            $grid1.igGrid({
+                width: gridWidth + CHECKBOX_WIDTH,
+                height: height - HEADER_HEIGHT,
+                primaryKey: primaryKey,
+                columns: iggridColumns,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                features: features
+            });
+
+            $grid1.closest('.ui-iggrid')
+                .addClass('nts-gridlist')
+                .height(height);
+
+            $grid1.ntsGridList('setupSelecting');
+
+            $grid2.igGrid({
+                width: gridWidth + CHECKBOX_WIDTH,
+                height: height - HEADER_HEIGHT,
+                primaryKey: primaryKey,
+                columns: iggridColumns,
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                features: features
+            });
+
+            $grid2.closest('.ui-iggrid')
+                .addClass('nts-gridlist')
+                .height(height);
+
+            $grid2.ntsGridList('setupSelecting');
+
+//            $grid2.bind('selectionchanged', () => {
+//                let selecteds: Array<any> = $grid2.ntsGridList('getSelected');
+//                let selectedIdSet = {};
+//                selecteds.forEach(s => { selectedIdSet[s.id] = true; });
+//                var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[primaryKey]]);
+//                data.value(_.map(selectedOptions, o => o[primaryKey]));
+//            });
+            
+            var grid1Id = "#" + $grid1.attr('id');
+            var grid2Id = "#" + $grid2.attr('id');
+
+            $swap.find(".ntsSwapComponent").css({ display: 'table-cell'});
+            var $moveArea = $swap.find("#" + elementId + "-move-data");
+            $moveArea.css({height: '100%', width: MOVE_AREA_WIDTH + 'px', display: 'table-cell', verticalAlign: 'middle'});
+            $moveArea.append("<button class = 'move-button move-forward'/>");
+            $moveArea.append("<button class = 'move-button move-back'/>");
+            var $moveForward = $moveArea.find(".move-forward");
+            $moveForward.text("forward");
+            var $moveBack = $moveArea.find(".move-back");
+            $moveBack.text("back");
+            $swap.find(".move-forward").css({marginBottom: '5px'});
+            $moveForward.click(function() {
+                var employeeList = [];
+                var selectedEmployees = $(grid1Id).igGrid("selectedRows");
+                if (selectedEmployees.length > 0) {
+                    $(grid1Id).igGridSelection("clearSelection");
+                    var source = $(grid1Id).igGrid("option", "dataSource");
+                    for (var i = 0; i < selectedEmployees.length; i++) {
+                        var current = source[selectedEmployees[i].index];
+                        if (current[primaryKey] === selectedEmployees[i].id) {
+                            employeeList.push(current);
+                        } else {
+                            var sameCodes = _.filter(source, function(subject) {
+                                return subject[primaryKey] === selectedEmployees[i].id;
+                            });
+                            if (sameCodes.length > 0) {
+                                employeeList.push(sameCodes[0]);
+                            }
+                        }
+                    }
+                    var currentSelected = data.value()//$(grid2Id).igGrid("option", "dataSource");
+                    var notExisted = _.filter(employeeList, function(list){
+                        return _.filter(currentSelected, function(data){
+                            return data[primaryKey] === list[primaryKey];
+                        }).length <= 0;
+                    });
+                    if(notExisted.length > 0){
+                        data.value(currentSelected.concat(notExisted));   
+                        var newSource = _.filter(source, function(list){
+                            var x = _.filter(notExisted, function(data){
+                                return data[primaryKey] === list[primaryKey];
+                            });
+                            return (x.length <= 0)
+                        });
+                        data.options(newSource);
+                    }
+                }
+            });
+            $moveBack.click(function() {
+                var employeeList = [];
+                var selectedEmployees = $(grid2Id).igGrid("selectedRows");
+                if (selectedEmployees.length > 0) {
+                    $(grid2Id).igGridSelection("clearSelection");
+                    var source = $(grid2Id).igGrid("option", "dataSource");
+                    for (var i = 0; i < selectedEmployees.length; i++) {
+                        var current = source[selectedEmployees[i].index];
+                        if (current[primaryKey] === selectedEmployees[i].id) {
+                            employeeList.push(current);
+                        } else {
+                            var sameCodes = _.filter(source, function(subject) {
+                                return subject[primaryKey] === selectedEmployees[i].id;
+                            });
+                            if (sameCodes.length > 0) {
+                                employeeList.push(sameCodes[0]);
+                            }
+                        }
+                    }
+                    var currentSource = data.options()//$(grid2Id).igGrid("option", "dataSource");
+                    var notExisted = _.filter(employeeList, function(list){
+                        return _.filter(currentSource, function(data){
+                            return data[primaryKey] === list[primaryKey];
+                        }).length <= 0;
+                    });
+                    if(notExisted.length > 0){
+                        data.options(currentSource.concat(notExisted));   
+                        var newSource = _.filter(source, function(list){
+                            var x = _.filter(notExisted, function(data){
+                                return data[primaryKey] === list[primaryKey];
+                            });
+                            return (x.length <= 0)
+                        });
+                        data.value(newSource);
+                    }
+                }
+            });
+        }
+
+        /**
+         * Update
+         */
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any,
+            bindingContext: KnockoutBindingContext): void {
+            var $swap = $(element);
+            var data = valueAccessor();
+            var elementId = $swap.attr('id');
+            if (nts.uk.util.isNullOrUndefined(elementId)) {
+                throw new Error('the element NtsSwapList must have id attribute.');
+            }
+            var $grid1 = $swap.find("#" + elementId + "-grid1");
+            var $grid2 = $swap.find("#" + elementId + "-grid2");
+
+            $grid1.igGrid('option', 'dataSource', data.options());
+            $grid2.igGrid('option', 'dataSource', data.value());
+            //            $grid2.ntsGridList('setSelected', data.value());
+        }
+    }
+
     ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
     ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
@@ -1825,4 +2052,5 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
     ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
     ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
+    ko.bindingHandlers['ntsSwapList'] = new NtsSwapListBindingHandler();
 }
