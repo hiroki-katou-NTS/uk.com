@@ -2,10 +2,10 @@
 	padding-right: 20px;
 }
 #LBL_005{
-	padding-right: 95px;
+	padding-right: 97px;
 }
 #INP_003, #INP_001{
-	width: 55px !important;
+	width: 65px !important;
 	padding-left: 0px !important;
 }
 #LBL_004{
@@ -54,4 +54,7 @@
 }
 #SEL_001{
 	width: 250px;
+}
+.clsDiv{
+	margin-bottom: 5px;
 }

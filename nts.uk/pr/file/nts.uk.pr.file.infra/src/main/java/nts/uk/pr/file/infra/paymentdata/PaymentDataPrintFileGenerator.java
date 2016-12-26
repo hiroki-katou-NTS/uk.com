@@ -28,7 +28,7 @@ import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 @Stateless
 public class PaymentDataPrintFileGenerator extends FileGenerator {
 
-	private final String fileName = "report/paymentdata.xlsx";
+	private final String fileName = "report/qpp021.xlsx";
 
 	@Override
 	protected void generate(FileGeneratorContext context) {
@@ -37,8 +37,8 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 			List<PaymentDataResult> results = context.getParameterAt(0);
 			// create workbook
 			WorkbookDesigner designer = new WorkbookDesigner();
-			String fs = File.separator;
-			OutputStream output = context.createOutputFileStream("D:" + fs + "paymentdata.pdf");
+			String saveFile = File.createTempFile("ukrp", "給与支給明細書.pdf").getPath();
+			OutputStream output = context.createOutputFileStream(saveFile);
 			Workbook workbook = null;
 			try {
 				workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));
@@ -65,6 +65,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 		Style styleValue = designer.getWorkbook().getWorksheets().get(0).getCells().getCellStyle(0, 0);
 		Style styleHeader = designer.getWorkbook().getWorksheets().get(0).getCells().getCellStyle(0, 1);
 		Style styleFooter = designer.getWorkbook().getWorksheets().get(0).getCells().getCellStyle(0, 3);
+		Style styleLable = designer.getWorkbook().getWorksheets().get(0).getCells().getCellStyle(0, 5);
 		for (int i = 0; i < results.size(); i++) {
 			Worksheet sheet = designer.getWorkbook().getWorksheets().get(i);
 			Cells cells = sheet.getCells();
@@ -83,7 +84,8 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				// remove sample style
 				sheet.getCells().get(0, 0).setStyle(null);
 				sheet.getCells().get(0, 1).setStyle(null);
-				sheet.getCells().get(0, 2).setStyle(null);
+				sheet.getCells().get(0, 3).setStyle(null);
+				sheet.getCells().get(0, 5).setStyle(null);
 				// check dirty
 				Range delete = cells.createRange(9, 0, 50, 50);
 				delete.setStyle(null);
@@ -129,7 +131,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				// start drawing
 				Range lblCate1 = cells.createRange(9, 1, lineCountCate1 * 2, 1);
 				lblCate1.merge();
-				lblCate1.setStyle(styleValue);
+				lblCate1.setStyle(styleLable);
 				lblCate1.setValue("支給");
 				int startRowItemCate1 = 9;
 				int startColItem = 2;
@@ -148,10 +150,10 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 					startColItem = 2;
 					startRowItemCate1 += 2;
 				}
-				int startRowItemCate2 = startRowItemCate1 + 1;
+				int startRowItemCate2 = startRowItemCate1;
 				Range lblCate2 = cells.createRange(startRowItemCate2, 1, lineCountCate2 * 2, 1);
 				lblCate2.merge();
-				lblCate2.setStyle(styleValue);
+				lblCate2.setStyle(styleLable);
 				lblCate2.setValue("控除");
 				for (int j = 1; j <= lineCountCate2; j++) {
 					for (int k = 0; k < 9; k++) {
@@ -170,10 +172,9 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				}
 				int startRowItemCate3 = startRowItemCate2;
 				if (lineCountCate3 != 0) {
-					startRowItemCate3 = startRowItemCate2 + 1;
 					Range lblCate3 = cells.createRange(startRowItemCate3, 1, lineCountCate3 * 2, 1);
 					lblCate3.merge();
-					lblCate3.setStyle(styleValue);
+					lblCate3.setStyle(styleLable);
 					lblCate3.setValue("勤怠");
 					for (int j = 1; j <= lineCountCate3; j++) {
 						for (int k = 0; k < 9; k++) {
@@ -195,7 +196,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				if (lineCountCate4 != 0) {
 					Range lblCate4 = cells.createRange(startRowItemCate4, 1, lineCountCate4 * 2, 1);
 					lblCate4.merge();
-					lblCate4.setStyle(styleValue);
+					lblCate4.setStyle(styleLable);
 					lblCate4.setValue("記事");
 					for (int j = 1; j <= lineCountCate4; j++) {
 						for (int k = 0; k < 9; k++) {
@@ -213,6 +214,10 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						startRowItemCate4 += 2;
 					}
 				}
+				Range companyCode = cells.createRange(startRowItemCate4 + 1, 0, 1, 7);
+				companyCode.merge();
+				companyCode.setStyle(styleFooter);
+				companyCode.setValue("&=PaymentDataHeader.companyCode(bean)");
 				Range companyName = cells.createRange(startRowItemCate4 + 1, 11, 1, 7);
 				companyName.merge();
 				companyName.setStyle(styleFooter);
@@ -220,10 +225,11 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				// remove sample style
 				sheet.getCells().get(0, 0).setStyle(null);
 				sheet.getCells().get(0, 1).setStyle(null);
-				sheet.getCells().get(0, 2).setStyle(null);
+				sheet.getCells().get(0, 3).setStyle(null);
+				sheet.getCells().get(0, 5).setStyle(null);
 				// bind data
 				bindingData(designer, results.get(i));
-				// fit wide
+				// fit
 				designer.getWorkbook().getWorksheets().get(i).getPageSetup().setFitToPagesWide(1);
 				// set landscape
 				designer.getWorkbook().getWorksheets().get(i).getPageSetup()
@@ -242,7 +248,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 	private void bindingData(WorkbookDesigner designer, PaymentDataResult result) {
 		// bind header
 		designer.setDataSource("PaymentDataHeader", result.getPaymentHeader());
-
+		designer.setDataSource("Department", result.getPaymentHeader().getDepartmentCode() + " " + result.getPaymentHeader().getDepartmentName());
 		// bind categories data to datasource
 		List<LayoutMasterCategoryDto> categories = result.getCategories();
 		for (int j = 0; j < categories.size(); j++) {
@@ -274,10 +280,8 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				String dataSourceValue = String.format("ItemValueCat%sLine%s_%s", cateIndex, line.getLinePosition(), i);
 				designer.setDataSource(dataSourceName, detailItem.getItemName());
 				if (detailItem.getValue() != null) {
-					if (detailItem.getCategoryAtr() == 0 || detailItem.getCategoryAtr() == 3) {
-						designer.setDataSource(dataSourceValue, detailItem.getValue().toString() + "¥");
-					} else if (detailItem.getCategoryAtr() == 2) {
-						if (detailItem.getItemCode().equals("F203")) {
+					if (detailItem.getCategoryAtr() == 2) {
+						if (detailItem.getItemCode().equals("F203")||detailItem.getItemCode().equals("0100")) {
 							int t = detailItem.getValue().intValue();
 							int hours = t / 60;
 							int minutes = t % 60;
@@ -286,7 +290,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						} else
 							designer.setDataSource(dataSourceValue, detailItem.getValue());
 					} else {
-						designer.setDataSource(dataSourceValue, detailItem.getValue());
+						designer.setDataSource(dataSourceValue, String.format("%,.0f", detailItem.getValue()));
 					}
 				} else {
 					designer.setDataSource(dataSourceValue, "");

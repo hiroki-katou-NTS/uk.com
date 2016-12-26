@@ -50,11 +50,11 @@
 								</span>
 							</div>							
 							<div>
-								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/><br />
-								<div style="display: flex">
+								<label class = "caution" id="LBL_007">※全ての履歴を削除すると、明細書のデータも削除します。</label><br/>
+								<div style="display: flex; margin-top: 10px">
 									<div style="margin-right: 10px"><label id="LBL_008">開始年月</label></div>
 									<div><input  id = "INP_001" maxlength="7" style="ime-mode: inactive" 
-									 data-bind="ntsTimeEditor: {value: selectLayoutStartYm, constraint: 'startYm', option: timeEditorOption}"></input></div>
+									 data-bind="ntsTimeEditor: {value: selectLayoutStartYm, option: timeEditorOption, enable: enableYm}"></input></div>
 									<div><label id="">　　～　　</label></div>
 									<div><label id = "LBL_009" data-bind="text: selectLayoutEndYm"></label></div>
 								</div>

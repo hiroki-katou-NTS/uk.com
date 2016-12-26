@@ -6,3 +6,12 @@
 		
 	cursor: default;
 }
+.ui-igcheckbox-normal{
+  position: relative !important;
+}
+.ui-igcheckbox-normal-on{
+  position: absolute !important;
+}
+.ui-iggrid-hiding-indicator, .ui-iggrid-hiding-hiddencolumnindicator {
+	display: none;
+}

@@ -18,7 +18,7 @@
 	    height: 19px;
 	    margin: 0;
 	    background: transparent;
-	    border: 2px solid #92d050;
+	    border: 2px solid $green_formlabel_color;
 	    border-radius: 50%;
 	    
 	    &:after {
@@ -28,7 +28,7 @@
 		    position: absolute;
 		    top: 3px;
 		    left: 3px;
-		    background: #92d050;
+		    background: $green_formlabel_color;
 		    opacity: 0;
 		    border-radius: 50%;
 		}
@@ -53,7 +53,15 @@
 			cursor:none;
 		    cursor:not-allowed;
 			user-select: none;
-			opacity: 0.7;
+			opacity: 0.8;
+		}
+		
+		&[disabled] {
+			+ span {
+				background: transparent;
+				border-color: #AAA;
+				&:after { background-color: #AAA; }
+			}
 		}
 	}    
 }
@@ -63,9 +71,17 @@
 		
 		input[type="radio"] {
 			+ span {
-				background:#92d050;
+				background:$green_formlabel_color;
 				border-color:#fff;
 				&:after {background:#fff;}
+			}
+			
+			&[disabled] {
+				+ span {
+					background: transparent;
+					border-color: #DDD;
+					&:after { background-color: #DDD; }
+				}
 			}
 		}
 	}

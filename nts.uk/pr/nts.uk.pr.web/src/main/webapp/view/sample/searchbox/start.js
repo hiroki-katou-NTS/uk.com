@@ -2,66 +2,13 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.items1 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
                 new Node('0003', 'Bangkok Thailand', []),
                 new Node('0004', 'Tokyo Japan', []),
                 new Node('0005', 'Jakarta Indonesia', []),
                 new Node('0002', 'Seoul Korea', [])]);
             self.searchTerm = ko.observable('');
-            self.filteredItems1 = ko.computed(function () {
-                //if items is empty return empty array
-                if (!self.items1()) {
-                    return [];
-                }
-                var filter = self.searchTerm().toLowerCase();
-                //if filter is empty return all the items
-                if (!filter) {
-                    return self.items1();
-                }
-                //filter data
-                var filtered = ko.utils.arrayFilter(self.items1(), function (item) {
-                    var fields = ["name"]; //we can filter several properties
-                    var i = fields.length;
-                    while (i--) {
-                        var prop = fields[i];
-                        var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
-                        if (strProp.indexOf(filter) !== -1) {
-                            return true;
-                        }
-                        ;
-                    }
-                    return false;
-                });
-                return filtered;
-            });
-            self.items2 = ko.observableArray(self.items1());
-            self.filteredItems2 = ko.computed(function () {
-                //if items is empty return empty array
-                if (!self.items2()) {
-                    return [];
-                }
-                var filter = self.searchTerm().toLowerCase();
-                //if filter is empty return all the items
-                if (!filter) {
-                    return self.items2();
-                }
-                //filter data
-                var filtered = ko.utils.arrayFilter(self.items2(), function (item) {
-                    var fields = ["name"]; //we can filter several properties
-                    var i = fields.length;
-                    while (i--) {
-                        var prop = fields[i];
-                        var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
-                        if (strProp.indexOf(filter) !== -1) {
-                            return true;
-                        }
-                        ;
-                    }
-                    return false;
-                });
-                return filtered;
-            });
-            self.selectedCode = ko.observableArray([]);
+            self.filteredData = ko.observableArray(self.dataSource());
             self.singleSelectedCode = ko.observable(null);
             self.index = 0;
             self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
@@ -69,9 +16,8 @@ __viewContext.ready(function () {
         ScreenModel.prototype.resetSelection = function () {
             var self = this;
             self.searchTerm('');
-            self.items2(self.items1());
+            self.filteredData(self.dataSource());
             self.singleSelectedCode('0002');
-            self.selectedCode(['0001', '0005']);
         };
         ScreenModel.prototype.changeDataSource = function () {
             var self = this;
@@ -83,8 +29,30 @@ __viewContext.ready(function () {
                 newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
             }
             ;
-            self.items1(newArrays);
-            self.items2(newArrays);
+            self.dataSource(newArrays);
+            self.filteredData(newArrays);
+        };
+        ScreenModel.prototype.nextSearch = function () {
+            var self = this;
+            var filteredData = self.filteredData();
+            console.log(filteredData[0]);
+            var singleSelectedCode = self.singleSelectedCode();
+            var index = -1;
+            if (singleSelectedCode) {
+                for (var i = 0; i < filteredData.length; i++) {
+                    var item = filteredData[i];
+                    if (item.code === singleSelectedCode) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (filteredData && filteredData.length > 0)
+                    self.singleSelectedCode(filteredData[(index + 1) % filteredData.length].code);
+            }
+            else {
+                if (filteredData && filteredData.length > 0)
+                    self.singleSelectedCode(filteredData[0].code);
+            }
         };
         return ScreenModel;
     }());

@@ -1,0 +1,20 @@
+input.ntsSearchBox {
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    background-image: url('searchicon.png');
+    background-position: 2px 0px; 
+    background-repeat: no-repeat;
+    padding: 6px 20px 6px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+/* When the input field gets focus, change its width to 100% */
+input.ntsSearchBox:focus {
+    width: 100%;
+    border: 2px solid #00BFFF;
+    outline: none;
+}

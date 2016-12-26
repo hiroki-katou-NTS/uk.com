@@ -24,28 +24,31 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>TreeGrid</h1>
+						<h1>SearchBox Sample</h1>
 						<h2>Overview</h2>
 						<button data-bind="click: resetSelection">Reset</button>
 						<button data-bind="click: changeDataSource">Next Datasource</button>
 						<div class="cf">
 							<div style="float:left">
 								<p>Input your search term below</p>
-								<input data-bind="ntsTextEditor: {value: searchTerm}" />
+								<div style="width: 500px">
+								<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
+								</div>
+								<div style="width: 200px">
+								<button data-bind="click: nextSearch">Next Search</button>
+								</div>
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
-										options: filteredItems2(),
-										value: singleSelectedCode,
-										
+										options: dataSource,
+										value: singleSelectedCode,										
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
 										multiple: false,
-										enable: true,
-										
+										enable: true,										
 										showCheckBox: false}"
 									class="cf">
 								</table>
@@ -56,32 +59,7 @@
 								<span data-bind="text: singleSelectedCode"></span>
 							</div>
 						</div>
-						<div class="cf">
-							<div style="float: left;">
-								<h3>Multi Selection</h3>
-								<table id="treegrid"
-									data-bind="ntsTreeGridView:{
-										height: 250,
-										options: filteredItems1(),
-										selectedValues: selectedCode,
-										optionsValue: 'code',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
-										multiple: true,
-										enable: true,
-										
-										showCheckBox: true}"
-									class="cf">
-								</table>
-							</div>
-							<div style="float:left">
-								<br/><br/>
-								<h4>Your multiple selected code:</h4>
-								<com:ko-foreach bind="selectedCode">
-									<div data-bind="text: $data"></div>
-								</com:ko-foreach>
-							</div>
-						</div>
+						
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -90,36 +68,7 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<!-- Single -->
-<table id="treegrid2"
-	data-bind="ntsTreeGridView:{
-		width: 700,
-		height: 250,
-		options: items2,
-		value: singleSelectedCode,
-		headers: headers,
-		optionsValue: 'code',
-		optionsChild: 'childs',
-		optionsText: 'nodeText',
-		multiple: false,
-		enable: true,
-		extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
-		showCheckBox: false}" class="cf"></table>
-
-<!--  Multi -->
-<table id="treegrid"
-	data-bind="ntsTreeGridView:{
-		width: 500,
-		height: 250,
-		options: items1,
-		selectedValues: selectedCode,
-		optionsValue: 'code',
-		optionsChild: 'childs',
-		optionsText: 'nodeText',
-		multiple: true,
-		enable: true,
-		extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
-		showCheckBox: true}" class="cf"></table>
+<pre><![CDATA[
 ]]></pre>
 									<h2>API</h2>
 									<table>
