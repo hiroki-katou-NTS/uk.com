@@ -47,7 +47,7 @@ __viewContext.ready(function () {
                     }
                 }
                 if (filteredData && filteredData.length > 0)
-                    self.singleSelectedCode(filteredData[(i + 1) % filteredData.length].code);
+                    self.singleSelectedCode(filteredData[(index + 1) % filteredData.length].code);
             }
             else {
                 if (filteredData && filteredData.length > 0)
