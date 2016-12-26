@@ -26,7 +26,7 @@
 			<div id="functions-area">
 				<button id="btn-001" data-bind="click: print, enable: listBox.isEmpty()" class="separate-1 proceed">選択した社員を印刷</button>
 				<button id="btn-002" class="separate-1">印刷の設定</button>
-				<a id="lbl-001" class="separate-1">各種金種表</a>
+				<a id="lbl-001" class="separate-1">給与明細書</a>
 			</div>
 
 			<div id="contents-area"  class="cf">
@@ -40,8 +40,8 @@
 											   enable: true,
 											   rows: 21,
 											   columns: [
-													{ prop: 'code', length: 20 },
-													{ prop: 'name', length: 6 }
+													{ prop: 'code', length: 12 },
+													{ prop: 'name', length: 12 }
 											   ]}"
 							class="cf"></div>
 					</div>
