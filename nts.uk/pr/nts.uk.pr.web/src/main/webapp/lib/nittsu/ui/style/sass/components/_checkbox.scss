@@ -18,7 +18,7 @@
 	    height:19px;
 	    margin:0px;
 	    background: transparent;
-	    border: 2px solid #2fcc71;
+	    border: 2px solid $green_checkbox_color;
 	    border-radius: 4px;
 	    box-sizing: border-box;
 	    
@@ -48,7 +48,7 @@
 		
 		&:checked  {
 			+ span {
-				background: #2fcc71;
+				background: $green_checkbox_color;
 				&:after{opacity: 1;}
 			}
 		}
@@ -58,7 +58,15 @@
 			cursor:none;
 		    cursor:not-allowed;
 		    user-select: none;
-			opacity: 0.7;
+			opacity: 0.8;
+		}
+		
+		&[disabled] {
+			+ span {
+				background: transparent;
+				border-color: #AAA;
+				&:after { border-color: #AAA; }
+			}
 		}
 	}
 }
@@ -68,12 +76,17 @@
 	
 	input[type="checkbox"] {
 		+ span {
-			background: #2fcc71;
+			background: $green_checkbox_color;
 		    border: 2px solid #fff;
-			
-		    &:after{
-			    width: 10px;
-		    }
+		    &:after{ width: 10px; }
+		}
+		
+		&[disabled] {
+			+ span {
+				background: transparent;
+				border-color: #DDD;
+				&:after { border-color: #DDD; }
+			}
 		}
 	}
 }
