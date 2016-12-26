@@ -342,6 +342,68 @@ var nts;
                     return NtsTextEditorBindingHandler;
                 }(NtsEditorBindingHandler));
                 /**
+                 * SearchBox Binding Handler
+                 */
+                var filteredArray = function (array, searchTerm, fields) {
+                    //if items is empty return empty array
+                    if (!array) {
+                        return [];
+                    }
+                    if (!(searchTerm instanceof String)) {
+                        searchTerm = "" + searchTerm;
+                    }
+                    console.log('searchTerm = ' + searchTerm);
+                    var filter = searchTerm.toLowerCase();
+                    //if filter is empty return all the items
+                    if (!filter) {
+                        return array;
+                    }
+                    //filter data
+                    var filtered = ko.utils.arrayFilter(array, function (item) {
+                        var i = fields.length;
+                        while (i--) {
+                            var prop = fields[i];
+                            var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
+                            if (strProp.indexOf(filter) !== -1) {
+                                return true;
+                            }
+                            ;
+                        }
+                        return false;
+                    });
+                    return filtered;
+                };
+                var NtsSearchBoxBindingHandler = (function (_super) {
+                    __extends(NtsSearchBoxBindingHandler, _super);
+                    function NtsSearchBoxBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        new TextEditorProcessor().init($(element), valueAccessor());
+                        var $input = $(element);
+                        $input.keyup(function () { $input.change(); });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : new nts.uk.ui.option.TextEditorOption();
+                        var textmode = editorOption.textmode;
+                        var searchTerm = ko.unwrap(data.value);
+                        $(element).attr('type', textmode);
+                        $(element).val(searchTerm);
+                        var arr = ko.unwrap(data.items);
+                        var filteredArr = ko.unwrap(data.filteredItems);
+                        var fields = ko.unwrap(data.fields);
+                        data.filteredItems(filteredArray(arr, searchTerm, fields));
+                    };
+                    return NtsSearchBoxBindingHandler;
+                }(NtsEditorBindingHandler));
+                /**
                  * NumberEditor
                  */
                 var NtsNumberEditorBindingHandler = (function () {
@@ -1241,7 +1303,6 @@ var nts;
                         var data = valueAccessor();
                         var optionsValue = data.optionsValue;
                         var observableColumns = data.columns;
-                        var gridWidth = 0;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             return {
                                 headerText: c.headerText,
@@ -1714,6 +1775,7 @@ var nts;
                 ko.bindingHandlers['ntsListBox'] = new ListBoxBindingHandler();
                 ko.bindingHandlers['ntsGridList'] = new NtsGridListBindingHandler();
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
+                ko.bindingHandlers['ntsSearchBox'] = new NtsSearchBoxBindingHandler();
             })(koExtentions = ui_1.koExtentions || (ui_1.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
