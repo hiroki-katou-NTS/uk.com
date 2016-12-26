@@ -290,7 +290,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						} else
 							designer.setDataSource(dataSourceValue, detailItem.getValue());
 					} else {
-						designer.setDataSource(dataSourceValue, detailItem.getValue());
+						designer.setDataSource(dataSourceValue, String.format("%,.0f", detailItem.getValue()));
 					}
 				} else {
 					designer.setDataSource(dataSourceValue, "");
