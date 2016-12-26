@@ -384,6 +384,7 @@ var nts;
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         new TextEditorProcessor().init($(element), valueAccessor());
                         var $input = $(element);
+                        $input.addClass("ntsSearchBox");
                         $input.keyup(function () { $input.change(); });
                     };
                     /**

@@ -366,6 +366,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             new TextEditorProcessor().init($(element), valueAccessor());
             var $input = $(element);
+            $input.addClass("ntsSearchBox");
             $input.keyup(function() {$input.change();});
         }
 

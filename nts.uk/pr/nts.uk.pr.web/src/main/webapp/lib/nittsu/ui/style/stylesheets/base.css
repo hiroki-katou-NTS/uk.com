@@ -1765,6 +1765,27 @@ button.nts-switch-button.selected:hover {
   text-align: right;
 }
 
+/* line 1, ../sass/components/_searchbox.scss */
+input.ntsSearchBox {
+  box-sizing: border-box;
+  border: 2px solid #ccc !important;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: white;
+  background-image: url("searchicon.png");
+  background-position: 2px 0px;
+  background-repeat: no-repeat;
+  padding: 6px 20px 6px 40px;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+}
+
+/* When the input field gets focus, change its width to 100% */
+/* line 16, ../sass/components/_searchbox.scss */
+input.ntsSearchBox:focus {
+  width: 100%;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -1872,12 +1893,12 @@ button.nts-switch-button.selected:hover {
   line-height: 50px;
 }
 
-/* line 26, ../sass/base.scss */
+/* line 27, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 30, ../sass/base.scss */
+/* line 31, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

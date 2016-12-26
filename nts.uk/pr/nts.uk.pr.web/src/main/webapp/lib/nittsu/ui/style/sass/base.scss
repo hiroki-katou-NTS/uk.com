@@ -17,6 +17,7 @@
 @import "components/_dialog.scss";
 @import "components/_wizard.scss";
 @import "components/_currency.scss";
+@import "components/_searchbox.scss";
 @import "frame/_header.scss";
 @import "frame/_functions.scss";
 @import "frame/_contents.scss";
@@ -32,4 +33,4 @@ body * {
         size: 1rem;
         family: $font_family;
     }
-}
+} 
