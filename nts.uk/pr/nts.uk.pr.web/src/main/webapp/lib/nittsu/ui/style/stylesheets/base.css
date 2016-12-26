@@ -1136,6 +1136,11 @@ button.nts-switch-button.selected:hover {
   background-image: url(../images/ui-icons_444444_256x240.png);
 }
 
+/* line 9, ../sass/components/_gridlist.scss */
+.ui-iggrid-hiding-indicator, .ui-iggrid-hiding-hiddencolumnindicator {
+  display: none;
+}
+
 /* line 1, ../sass/components/_tabpanel.scss */
 .ui-widget.ui-tabs {
   border: none;
