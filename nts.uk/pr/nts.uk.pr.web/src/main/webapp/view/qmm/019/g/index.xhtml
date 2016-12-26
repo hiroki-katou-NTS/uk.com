@@ -27,7 +27,7 @@
             <div id="functions-area"></div>
             	<div id="contents-area">
 					<div class="cf">
-						<div class="form-label"><label id="LBL_001">作成方法の選択</label></div><br />
+						<div data-bind="ntsFormLabel: {required: true}"><label id="LBL_001">作成方法の選択</label></div><br />
 						<div class = "layoutSelect">
 							<div id="SEL_001" data-bind="foreach: itemsRadio">
 				  				<span class="ntsControl">
@@ -53,11 +53,13 @@
 							<!-- 明細書マスタ一覧で選択した項目のレイアウトパターンを表記 (レイアウト区分)-->
 							<div class = "selectDrop"><label id = "LBL_002" data-bind="text: layoutAtrStr"></label></div>
 						</div>
-						<div><label id = "LBL_003">※選択した明細レイアウトの最新の履歴からコピーします。</label></div>
-						<br/>
+						<div class="clsDiv"><label id = "LBL_003">※選択した明細レイアウトの最新の履歴からコピーします。</label></div>
 						<div>
-							<div class ="form-label inline required">
-								<label id = "LBL_004" >コード/名称</label>
+							<div class ="inline clsDiv">
+								<div id="LBL_004" data-bind="ntsFormLabel: {required: true}">
+									<label>コード/名称<br /></label>
+								</div>
+								<!-- <label id = "LBL_004" >コード/名称</label> -->
 								<input id="INP_001" data-name="コード" data-bind="ntsTextEditor: {value: layoutCode, 
 																					constraint: 'LayoutCode', 
 																					option: textEditorOption, 
@@ -66,15 +68,14 @@
 																					constraint: 'LayoutName', 
 																					option: textEditorOption, 
 																					enable: true}" />
-							</div><br/>
-							<br/>
-							<div class ="timeLayout">
-								<div class ="form-label inline required"><label id = "LBL_005">開始年月</label></div>
+							</div>
+							<div class ="timeLayout clsDiv">
+								<div data-bind="ntsFormLabel: {required: true}"><label id = "LBL_005">開始年月</label></div>
 								<div><input id = "INP_003" style="ime-mode: inactive" data-bind="ntsTimeEditor: {value: selectStartYm, option: timeEditorOption}"></input></div>
 								<!-- 入力した開始年月を和暦で表記 -->
 								<div><label id = "LBL_006"></label></div>
-							</div><br/>
-							<div class ="form-label inline required">
+							</div>
+							<div class="clsDiv" data-bind="ntsFormLabel: {required: true}">
 								<label id = "LBL_007">レイアウトパターンの選択</label>
 								<label id = "LBL_008">※コピーして作成する場合、コピー元のレイアウトより表示項目が少ない項目は選択できません。</label>
 							</div>

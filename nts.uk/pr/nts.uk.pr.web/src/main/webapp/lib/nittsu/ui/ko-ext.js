@@ -1241,7 +1241,6 @@ var nts;
                         var data = valueAccessor();
                         var optionsValue = data.optionsValue;
                         var observableColumns = data.columns;
-                        var gridWidth = 0;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             return {
                                 headerText: c.headerText,
