@@ -1,0 +1,18 @@
+.ui-accordion {
+	.ui-accordion-header {
+		border-color: #999;
+		background: #FFF;
+		color: $button_font_color;
+		font-size: 1.2rem;
+		outline: none;
+		padding: 0.3rem;
+		
+		
+	}
+	
+	.ui-state-active .ui-accordion-header-icon { background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png"); }
+	
+	.ui-accordion-content {
+		border-color: #999;
+	}
+}

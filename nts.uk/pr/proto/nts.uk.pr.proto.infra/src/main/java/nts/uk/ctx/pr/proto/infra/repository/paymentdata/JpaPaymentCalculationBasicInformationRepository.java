@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentCalculationBasicInformationRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.CcastBasicCalc;
 
-@RequestScoped
+@Stateless
 public class JpaPaymentCalculationBasicInformationRepository extends JpaRepository implements PaymentCalculationBasicInformationRepository {
 
 	@Override

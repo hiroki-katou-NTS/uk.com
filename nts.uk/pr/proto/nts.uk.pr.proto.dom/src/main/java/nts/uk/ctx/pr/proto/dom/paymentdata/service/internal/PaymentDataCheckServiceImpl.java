@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.dom.paymentdata.service.internal;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.paymentdata.PayBonusAtr;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.service.PaymentDataCheckService;
 
-@RequestScoped
+@Stateless
 public class PaymentDataCheckServiceImpl implements PaymentDataCheckService {
 	@Inject
 	private PaymentDataRepository paymentDataRepo;

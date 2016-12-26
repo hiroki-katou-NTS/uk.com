@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.infra.repository.layout;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItem;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QcamtItemPK;
 
-@RequestScoped
+@Stateless
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";

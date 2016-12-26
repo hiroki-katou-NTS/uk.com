@@ -11,7 +11,7 @@ var qmm019;
                  */
                 function ScreenModel() {
                     var self = this;
-                    self.isEnable = ko.observable(true);
+                    self.isEnable = ko.observable(false);
                     self.selectedCodes = ko.observable("3");
                     self.layouts = ko.observableArray([]);
                     self.itemList = ko.observableArray([]);
@@ -55,6 +55,15 @@ var qmm019;
                     g.service.getLayoutWithMaxStartYm().done(function (layout) {
                         self.layouts(layout);
                         self.buildCombobox();
+                    });
+                    //radio button change
+                    self.isRadioCheck.subscribe(function (newValue) {
+                        if (newValue === 1) {
+                            self.isEnable(false);
+                        }
+                        else {
+                            self.isEnable(true);
+                        }
                     });
                     //change combobox
                     self.selectLayoutCode.subscribe(function (newValue) {

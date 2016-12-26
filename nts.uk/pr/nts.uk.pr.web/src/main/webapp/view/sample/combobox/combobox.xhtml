@@ -31,19 +31,19 @@
 							<button data-bind="click: addOptions">Add Item</button>
 						</div>
 						<br />
-						<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
-											optionsValue: 'code',
-											value: selectedCode,
-											optionsText: 'name',
-											editable: isEditable,
-											enable: isEnable,
-											columns: [
-												{ prop: 'code', length: 4 },
-												{ prop: 'name', length: 10 },
-											]}"></div>
-						<button data-bind="click: removeByCode">Remove Item</button>
-						<br />
-				
+						<div class="control-group valign-center">
+							<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
+												optionsValue: 'code',
+												value: selectedCode,
+												optionsText: 'name',
+												editable: isEditable,
+												enable: isEnable,
+												columns: [
+													{ prop: 'code', length: 4 },
+													{ prop: 'name', length: 10 },
+												]}"></div>
+							<button data-bind="click: removeByCode">Remove Item</button>
+						</div>
 						<div class="status">
 							<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
 							<span data-bind="ntsCheckBox: { checked: isEditable }">Editable</span>

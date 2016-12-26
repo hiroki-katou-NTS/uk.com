@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.core.dom.company.CompanyRepository;
@@ -12,7 +12,7 @@ import nts.uk.ctx.core.dom.company.CompanyRepository;
 /**
  * CompanyFinder
  */
-@RequestScoped
+@Stateless
 public class CompanyFinder {
 
 	/** CompanyRepository */

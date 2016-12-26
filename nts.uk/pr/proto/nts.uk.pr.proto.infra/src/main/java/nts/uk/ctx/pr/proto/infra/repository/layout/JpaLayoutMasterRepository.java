@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHead;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutHeadPK;
 
-@RequestScoped
+@Stateless
 public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
@@ -14,7 +14,7 @@ import com.aspose.cells.WorkbookDesigner;
 import nts.arc.layer.infra.file.FileGenerator;
 import nts.arc.layer.infra.file.FileGeneratorContext;
 
-@RequestScoped
+@Stateless
 public class CompanyPrintFileGenerator extends FileGenerator{
 
 	private final String fileName = "report/company.xlsx";

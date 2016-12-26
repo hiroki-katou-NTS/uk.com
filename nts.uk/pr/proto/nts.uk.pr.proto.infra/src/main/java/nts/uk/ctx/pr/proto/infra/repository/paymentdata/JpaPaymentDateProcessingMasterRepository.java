@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.enums.DisplayAtr;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateProcessingMaste
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessing;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
 
-@RequestScoped
+@Stateless
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		implements PaymentDateProcessingMasterRepository {
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.proto.dom.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutLines;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutLinesPK;
 
-@RequestScoped
+@Stateless
 
 public class JpaLayoutLineRepository extends JpaRepository implements LayoutMasterLineRepository {
 

@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.CommuNotaxLimit;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.CommuNotaxLimitRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QtxmtCommuNotaxLimit;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QtxmtCommuNotaxLimitPK;
 
-@RequestScoped
+@Stateless
 public class JpaCommuNotaxLimitRepository extends JpaRepository implements CommuNotaxLimitRepository {
 
 	private final String SELECT_ITEM = " SELECT c FROM QtxmtCommuNotaxLimit c "

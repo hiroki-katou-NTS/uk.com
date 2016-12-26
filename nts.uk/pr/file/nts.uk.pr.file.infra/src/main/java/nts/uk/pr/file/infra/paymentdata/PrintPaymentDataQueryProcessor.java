@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -36,8 +36,8 @@ import nts.uk.pr.file.infra.paymentdata.result.PaymentDataResult;
 import nts.uk.pr.file.infra.paymentdata.result.PrintPositionCategoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
-public class GetPaymentDataQueryProcessor {
+@Stateless
+public class PrintPaymentDataQueryProcessor {
 
 	private static final int PAY_BONUS_ATR = 0;
 
@@ -95,14 +95,14 @@ public class GetPaymentDataQueryProcessor {
 		// get stmtCode
 		String stmtCode = this.personalPSRepository.find(companyCode, query.getPersonId(), processingYM)
 				.map(o -> o.getPaymentDetailCode().v()).orElseGet(() -> {
-					return this.companyAllotSettingRepository.find(companyCode).get()
-							.getPaymentDetailCode().v();
+					return this.companyAllotSettingRepository.find(companyCode).get().getPaymentDetailCode().v();
 				});
 
 		// get 明細書マスタ
 		List<LayoutMaster> mLayouts = this.layoutMasterRepository.findAll(companyCode, stmtCode, processingYM);
 		if (mLayouts.isEmpty()) {
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), "", "", "", "", processingYM, null, "", "", query.getEmployeeCode(), "", false, null));
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), "", "", "", "", "", processingYM,
+					null, "", "", query.getEmployeeCode(), "", false, null));
 			return result;
 		}
 
@@ -152,17 +152,17 @@ public class GetPaymentDataQueryProcessor {
 
 		if (optPHeader.isPresent()) {
 			Payment payment = optPHeader.get();
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), payment.getCompanyName(), payment.getDepartmentCode(), payment.getDepartmentName(), payment.getPersonName().v() , processingYM,
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), companyCode, payment.getCompanyName(),
+					payment.getDepartmentCode(), payment.getDepartmentName(), payment.getPersonName().v(), processingYM,
 					payment.getDependentNumber().v(), payment.getSpecificationCode().v(), layout.getStmtName().v(),
-					query.getEmployeeCode(), payment.getComment().v(), true,
-					printPosCates));
+					query.getEmployeeCode(), payment.getComment().v(), true, printPosCates));
 
 			return this.queryRepository.findAll(companyCode, query.getPersonId(), PAY_BONUS_ATR, processingYM);
 
 		} else {
-			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), "" , "", "", "", processingYM, 0,
-					layout.getStmtCode().v(), layout.getStmtName().v(), query.getEmployeeCode(), "", false,
-					printPosCates));
+			result.setPaymentHeader(new PaymentDataHeaderDto(query.getPersonId(), companyCode, "", "", "", "",
+					processingYM, 0, layout.getStmtCode().v(), layout.getStmtName().v(), query.getEmployeeCode(), "",
+					false, printPosCates));
 
 			return new ArrayList<>();
 		}
@@ -223,9 +223,9 @@ public class GetPaymentDataQueryProcessor {
 			for (int i = 1; i <= 9; i++) {
 				int posCol = i;
 				DetailItemDto detailItem = mDetails.stream()
-						.filter(x -> x.getCategoryAtr().value == ctAtr && 
-								x.getAutoLineId().v().equals(mLine.getAutoLineId().v()) && 
-								x.getItemPosColumn().v() == posCol)
+						.filter(x -> x.getCategoryAtr().value == ctAtr
+								&& x.getAutoLineId().v().equals(mLine.getAutoLineId().v())
+								&& x.getItemPosColumn().v() == posCol)
 						.findFirst().map(d -> {
 							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
 									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
@@ -236,54 +236,30 @@ public class GetPaymentDataQueryProcessor {
 							DetailItemDto result;
 							if (dValue.isPresent()) {
 								DetailItemDto iValue = dValue.get();
-								result= DetailItemDto.fromData(
-										ctAtr, 
-										mItem.getItemAtr().value, 
-										d.getItemCode().v(),
-										mItem.getItemAbName().v(),
-										iValue.getValue(),
-										d.getCalculationMethod().value,
-										iValue.getCorrectFlag(),
-										mLine.getLinePosition().v(), 
-										d.getItemPosColumn().v(),
-										mItem.getDeductAttribute().value, 
-										d.getDisplayAtr().value, 
-										mItem.getTaxAtr().value,
-										iValue.getLimitAmount(),
-										iValue.getCommuteAllowTaxImpose(),
-										iValue.getCommuteAllowMonth(),
-										iValue.getCommuteAllowFraction(),
-										d.getSumScopeAtr().value,
+								result = DetailItemDto.fromData(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
+										mItem.getItemAbName().v(), iValue.getValue(), d.getCalculationMethod().value,
+										iValue.getCorrectFlag(), mLine.getLinePosition().v(), d.getItemPosColumn().v(),
+										mItem.getDeductAttribute().value, d.getDisplayAtr().value,
+										mItem.getTaxAtr().value, iValue.getLimitAmount(),
+										iValue.getCommuteAllowTaxImpose(), iValue.getCommuteAllowMonth(),
+										iValue.getCommuteAllowFraction(), d.getSumScopeAtr().value,
 										iValue.getValue() != null);
 							} else {
-								result =  DetailItemDto.fromData(
-										ctAtr, 
-										mItem.getItemAtr().value, 
-										d.getItemCode().v(),
-										mItem.getItemAbName().v(),
-										isTaxtAtr ? 0.0: null,
-									    d.getCalculationMethod().value,
-										0,
-										mLine.getLinePosition().v(), 
-										d.getItemPosColumn().v(),
-										mItem.getDeductAttribute().value, 
-										d.getDisplayAtr().value, 
-										mItem.getTaxAtr().value,
-										null,
-										0.0,
-										0.0,
-										0.0,
-										d.getSumScopeAtr().value,
-										false);
+								result = DetailItemDto.fromData(ctAtr, mItem.getItemAtr().value, d.getItemCode().v(),
+										mItem.getItemAbName().v(), isTaxtAtr ? 0.0 : null,
+										d.getCalculationMethod().value, 0, mLine.getLinePosition().v(),
+										d.getItemPosColumn().v(), mItem.getDeductAttribute().value,
+										d.getDisplayAtr().value, mItem.getTaxAtr().value, null, 0.0, 0.0, 0.0,
+										d.getSumScopeAtr().value, false);
 							}
 							result.setItemType();
 							return result;
-						}).orElse(DetailItemDto.fromData(
-								ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(), i, null, null, null, null, null, null, null, null, false));
+						}).orElse(DetailItemDto.fromData(ctAtr, null, "", "", null, -1, 0, mLine.getLinePosition().v(),
+								i, null, null, null, null, null, null, null, null, false));
 				items.add(detailItem);
 			}
 
-			lineDto = new LineDto(mLine.getLinePosition().v(), items);
+			lineDto = new LineDto(mLine.getLinePosition().v(), items, mLine.getLineDispayAttribute().value);
 			rLines.add(lineDto);
 		}
 
@@ -303,8 +279,8 @@ public class GetPaymentDataQueryProcessor {
 
 		for (int i = 1; i <= 4; i++) {
 			PrintPositionCategoryDto printCates = this.getPrintPosition(mCates, lines, i);
-			if (printCates!= null) {
-				result.add(printCates);	
+			if (printCates != null) {
+				result.add(printCates);
 			}
 		}
 
@@ -321,7 +297,8 @@ public class GetPaymentDataQueryProcessor {
 	 */
 	private PrintPositionCategoryDto getPrintPosition(List<LayoutMasterCategory> mCates, List<LayoutMasterLine> lines,
 			int position) {
-		Integer printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst().map(x-> x.getCtAtr().value).orElse(null);
+		Integer printPosCtg = mCates.stream().filter(x -> x.getCtgPos().v() == position).findFirst()
+				.map(x -> x.getCtAtr().value).orElse(null);
 		if (printPosCtg == null) {
 			return null;
 		}

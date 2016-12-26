@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.proto.infra.repository.personalinfo.wage.wagename;
 
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageNameMaster
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.wagename.PersonalWageNameRepository;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.wage.QpwmtPersonalWageName;
 
-@RequestScoped
+@Stateless
 public class JpaPersonalWageNameRepository extends JpaRepository implements PersonalWageNameRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QpwmtPersonalWageName c";
 	private final String SELECT_ALL_PERSONAL = SELECT_NO_WHERE

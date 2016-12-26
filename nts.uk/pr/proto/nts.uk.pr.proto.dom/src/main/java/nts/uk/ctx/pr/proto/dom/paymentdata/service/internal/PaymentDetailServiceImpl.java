@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -30,7 +30,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFeeRepository
 import nts.uk.ctx.pr.proto.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.proto.dom.personalinfo.wage.PersonalWage;
 
-@RequestScoped
+@Stateless
 public class PaymentDetailServiceImpl implements PaymentDetailService {
 
 	@Inject

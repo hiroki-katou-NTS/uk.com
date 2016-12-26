@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.proto.infra.repository.paymentdata;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.proto.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.proto.dom.paymentdata.repository.PaymentDateMasterRepositor
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPayday;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QpdmtPaydayPK;
 
-@RequestScoped
+@Stateless
 public class JpaPaymentDateMasterRepository extends JpaRepository implements PaymentDateMasterRepository {
 
 	@Override

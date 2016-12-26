@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteValue;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommute;
 import nts.uk.ctx.pr.proto.infra.entity.personalinfo.commute.PprmtPersonCommutePK;
 
-@RequestScoped
+@Stateless
 public class JpaPersonalCommuteFeeRepository extends JpaRepository implements PersonalCommuteFeeRepository {
 
 	private final String SELECT_BY_CCD_PID_STRYM_ENDYM = "SELECT c FROM PprmtPersonCommute c WHERE c.pprmtPersonCommutePK.ccd = :ccd and c.pprmtPersonCommutePK.pId IN :pIds and c.pprmtPersonCommutePK.strYm <= :baseYm and c.endYm >= :baseYm";

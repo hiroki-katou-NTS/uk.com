@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author lamvt
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayoutHistoryCommand> {
 

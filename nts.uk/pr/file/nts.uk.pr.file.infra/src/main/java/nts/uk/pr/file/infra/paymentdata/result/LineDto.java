@@ -12,8 +12,10 @@ public class LineDto {
 	int linePosition;
 
 	List<DetailItemDto> details;
+	
+	int lineDispayAttribute;
 
-	public static LineDto fromDomain(int linePosition, List<DetailItemDto> details) {
-		return new LineDto(linePosition, details);
+	public static LineDto fromDomain(int linePosition, List<DetailItemDto> details, int lineDispayAttribute) {
+		return new LineDto(linePosition, details, lineDispayAttribute);
 	}
 }

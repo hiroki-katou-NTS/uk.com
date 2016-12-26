@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.dom.layout.LayoutMasterRepository;
 
-@RequestScoped
+@Stateless
 public class LayoutMasterFinder {
 	@Inject
 	private LayoutMasterRepository repository;

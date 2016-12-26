@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.pr.proto.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * item finder
  *
  */
-@RequestScoped
+@Stateless
 public class ItemFinder {
 	@Inject
 	private ItemMasterRepository repostirory;

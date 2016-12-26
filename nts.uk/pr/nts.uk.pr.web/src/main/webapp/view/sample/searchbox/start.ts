@@ -3,6 +3,7 @@ __viewContext.ready(function () {
         index: number;
         items1: any;
         items2: any;
+        items3: any;
         selectedCode: any;
         singleSelectedCode: any;
         headers: any;
@@ -17,57 +18,10 @@ __viewContext.ready(function () {
                 new Node('0005', 'Jakarta Indonesia', []), 
                 new Node('0002', 'Seoul Korea', [])]);
             self.searchTerm = ko.observable('');
-            self.filteredItems1 = ko.computed(function () {
-                //if items is empty return empty array
-                if (!self.items1()) {
-                    return [];
-                }
-                var filter = self.searchTerm().toLowerCase();
-                //if filter is empty return all the items
-                if (!filter) {
-                    return self.items1();
-                }
-                //filter data
-                var filtered = ko.utils.arrayFilter(self.items1(), function (item) {
-                var fields = ["name"]; //we can filter several properties
-                var i = fields.length;
-                while (i--) {
-                    var prop = fields[i];
-                    var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
-                    if (strProp.indexOf(filter) !== -1){
-                        return true;
-                    };
-                }
-                return false;
-                });
-                return filtered;
-            });
+            
             self.items2 = ko.observableArray(self.items1());
-            self.filteredItems2 = ko.computed(function () {
-                //if items is empty return empty array
-                if (!self.items2()) {
-                    return [];
-                }
-                var filter = self.searchTerm().toLowerCase();
-                //if filter is empty return all the items
-                if (!filter) {
-                    return self.items2();
-                }
-                //filter data
-                var filtered = ko.utils.arrayFilter(self.items2(), function (item) {
-                var fields = ["name"]; //we can filter several properties
-                var i = fields.length;
-                while (i--) {
-                    var prop = fields[i];
-                    var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
-                    if (strProp.indexOf(filter) !== -1){
-                        return true;
-                    };
-                }
-                return false;
-                });
-                return filtered;
-            });
+            self.items3 = ko.observableArray(self.items2());
+            
             self.selectedCode = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.index = 0;

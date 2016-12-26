@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.app.command.paymentdata;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author vunv
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymentDataCommand> {
 

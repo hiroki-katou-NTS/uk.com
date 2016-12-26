@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.app.find.personalinfo.commute;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.proto.app.find.paymentdata.CommuteNotaxLimitDto;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFee;
 import nts.uk.ctx.pr.proto.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class CommuteFinder {
 	
 	@Inject

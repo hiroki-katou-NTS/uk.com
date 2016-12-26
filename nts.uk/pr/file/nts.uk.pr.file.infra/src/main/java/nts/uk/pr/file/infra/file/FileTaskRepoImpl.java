@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.file.FileMetaData;
@@ -13,7 +13,7 @@ import nts.arc.file.StoredFileInfoRepository;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
 
-@RequestScoped
+@Stateless
 public class FileTaskRepoImpl implements FileTaskRepository{
 
 	@Inject

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -81,7 +81,7 @@ import nts.uk.shr.com.primitive.PersonId;
  * @author chinhbv
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymentDataCommand> {
 

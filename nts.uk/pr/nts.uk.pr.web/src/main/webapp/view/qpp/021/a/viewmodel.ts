@@ -25,7 +25,7 @@ module nts.uk.pr.view.qpp021.a.viewmodel {
                 { value: 3, text: '圧着式印刷（Z折り）' },
                 { value: 4, text: '圧着式印刷（はがき）' }
             ]);
-            self.selectedValue = ko.observable({ value: 1, text: 'One' });
+            self.selectedValue = ko.observable(1);
         }
     }
 
@@ -78,7 +78,7 @@ module nts.uk.pr.view.qpp021.a.viewmodel {
             var self = this;
             var paymentQuery = [];
             for (var i = 0; i < self.listBox.selectedCodes().length; i++) {
-                paymentQuery.push({ personId: self.listBox.selectedCodes()[i], employeeCode: '0000000001' });
+                paymentQuery.push({ personId: self.listBox.selectedCodes()[i].id, employeeCode:  self.listBox.selectedCodes()[i].code});
             }
             nts.uk.pr.view.qpp021.a.service.print(paymentQuery).fail(function(res){
                 nts.uk.ui.dialog.alert(res.message);    

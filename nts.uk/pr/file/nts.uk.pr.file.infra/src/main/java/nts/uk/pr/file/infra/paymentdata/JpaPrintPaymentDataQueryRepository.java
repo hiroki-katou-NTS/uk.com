@@ -4,13 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.pr.file.infra.paymentdata.result.DetailItemDto;
 
-@RequestScoped
-public class JpaPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
+@Stateless
+public class JpaPrintPaymentDataQueryRepository extends JpaRepository implements PaymentDataQueryRepository {
 	
 	private String SELECT_ALL =  " SELECT d.qstdtPaymentDetailPK.categoryATR, d.itemAtr, d.qstdtPaymentDetailPK.itemCode, d.value, "
 										+ "d.printLinePosition, d.columnPosition, d.deductAttribute, d.taxATR, d.limitAmount,"

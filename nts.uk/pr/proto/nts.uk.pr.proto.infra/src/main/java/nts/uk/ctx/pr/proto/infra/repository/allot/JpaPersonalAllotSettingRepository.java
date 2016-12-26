@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.proto.infra.repository.allot;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.proto.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.proto.infra.entity.paymentdata.QstmtStmtAllotPs;
 
-@RequestScoped
+@Stateless
 public class JpaPersonalAllotSettingRepository extends JpaRepository implements PersonalAllotSettingRepository {
 
 	private final String SEL_1 = "SELECT c FROM QstmtStmtAllotPs c WHERE c.qstmtStmtAllotPsPK.companyCode = :ccd "

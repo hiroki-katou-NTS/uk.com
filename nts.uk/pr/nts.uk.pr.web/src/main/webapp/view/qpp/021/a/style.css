@@ -11,7 +11,7 @@
 
 #left-content {
 	margin-left: 65px;
-	padding: 10px 60px 10px 30px;
+	padding: 10px;
 	float: left;
 	border: 1px solid #a79c9c;
 	border-radius: 4px;
@@ -44,5 +44,5 @@
 	border: 1px solid #a79c9c;
 	border-radius: 4px;
 	min-height: 600px;
-	min-width: 350px;
+	width: 38%;
 }
