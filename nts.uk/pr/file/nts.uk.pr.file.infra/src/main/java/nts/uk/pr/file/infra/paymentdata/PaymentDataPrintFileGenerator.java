@@ -84,7 +84,8 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 				// remove sample style
 				sheet.getCells().get(0, 0).setStyle(null);
 				sheet.getCells().get(0, 1).setStyle(null);
-				sheet.getCells().get(0, 2).setStyle(null);
+				sheet.getCells().get(0, 3).setStyle(null);
+				sheet.getCells().get(0, 5).setStyle(null);
 				// check dirty
 				Range delete = cells.createRange(9, 0, 50, 50);
 				delete.setStyle(null);
@@ -289,7 +290,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 						} else
 							designer.setDataSource(dataSourceValue, detailItem.getValue());
 					} else {
-						designer.setDataSource(dataSourceValue, detailItem.getValue());
+						designer.setDataSource(dataSourceValue, String.format("%,.0f", detailItem.getValue()));
 					}
 				} else {
 					designer.setDataSource(dataSourceValue, "");
