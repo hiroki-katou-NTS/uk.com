@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component;
+package nts.uk.shr.infra.web.component;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component.enums;
+package nts.uk.shr.infra.web.component.enums;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.faces.context.ResponseWriter;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.shr.web.component.internal.TagContentsUtil;
+import nts.uk.shr.infra.web.component.internal.TagContentsUtil;
 
 @FacesComponent(tagName = "EnumScript", createTag = true)
 public class EnumScript extends UIComponentBase {

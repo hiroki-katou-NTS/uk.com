@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component.validation;
+package nts.uk.shr.infra.web.component.validation;
 
 import java.util.HashMap;
 import java.util.HashSet;

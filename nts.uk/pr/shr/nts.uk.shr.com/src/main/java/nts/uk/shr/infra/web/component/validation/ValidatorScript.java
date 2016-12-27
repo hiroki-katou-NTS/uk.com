@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component.validation;
+package nts.uk.shr.infra.web.component.validation;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import javax.faces.context.ResponseWriter;
 
 import lombok.val;
 import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
-import nts.uk.shr.web.component.internal.TagContentsUtil;
+import nts.uk.shr.infra.web.component.internal.TagContentsUtil;
 
 /**
  * ValidatorScript
