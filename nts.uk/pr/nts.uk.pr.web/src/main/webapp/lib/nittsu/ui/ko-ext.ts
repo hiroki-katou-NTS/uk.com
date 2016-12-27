@@ -1382,29 +1382,26 @@ module nts.uk.ui.koExtentions {
             });
 
             var features = [];
-            features.push({name: 'MultiColumnHeaders'});
-            features.push({ name: 'Hiding' });
-            //features.push({ name: 'MultiColumnHeaders'});
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
-
+            
             $grid.igGrid({
                 width: data.width,
-                height: data.height - HEADER_HEIGHT,
+                height: (data.height - HEADER_HEIGHT) + "px",
                 primaryKey: data.optionsValue,
-                columns: observableColumns(),
+                columns: iggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features
             });
-
+            
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
                 .height(data.height);
-
+            
             $grid.ntsGridList('setupSelecting');
-
+            
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
                     let selecteds: Array<any> = $grid.ntsGridList('getSelected');
@@ -1424,9 +1421,8 @@ module nts.uk.ui.koExtentions {
 
             var $grid = $(element);
             var data = valueAccessor();
-
+            
             $grid.igGrid('option', 'dataSource', data.options());
-
             $grid.ntsGridList('setSelected', data.value());
         }
     }
@@ -1964,7 +1960,7 @@ module nts.uk.ui.koExtentions {
 
             $grid1.igGrid({
                 width: gridWidth + CHECKBOX_WIDTH,
-                height: height - HEADER_HEIGHT,
+                height: (height - HEADER_HEIGHT) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
                 virtualization: true,
@@ -1980,7 +1976,7 @@ module nts.uk.ui.koExtentions {
 
             $grid2.igGrid({
                 width: gridWidth + CHECKBOX_WIDTH,
-                height: height - HEADER_HEIGHT,
+                height: (height - HEADER_HEIGHT) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
                 virtualization: true,
@@ -2080,14 +2076,14 @@ module nts.uk.ui.koExtentions {
                         }).length <= 0;
                     });
                     if(notExisted.length > 0){
-                        data.options(currentSource.concat(notExisted));   
                         var newSource = _.filter(source, function(list){
                             var x = _.filter(notExisted, function(data){
                                 return data[primaryKey] === list[primaryKey];
                             });
                             return (x.length <= 0)
                         });
-                        $(grid1Id).igGrid("option", "dataSource", newSource);
+                        data.value(newSource);   
+                        $(grid1Id).igGrid("option", "dataSource", currentSource.concat(notExisted));
                         $(grid1Id).igGrid("option", "dataBind");
 //                        data.value(newSource);
                     }
