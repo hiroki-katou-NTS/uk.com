@@ -7,7 +7,7 @@ var sample;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.date = ko.observable(new Date('2016/01/02'));
+                    self.date = ko.observable(new Date('2016/12/01'));
                 }
                 return ScreenModel;
             }());

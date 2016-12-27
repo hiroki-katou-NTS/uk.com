@@ -1685,7 +1685,7 @@ var nts;
                         var date = ko.unwrap(data.value());
                         container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
-                            dateFormat: 'yy/mm/dd'
+                            format: 'yyyy/mm/dd'
                         });
                         container.on('change', function (event) {
                             data.value(new Date(container.val()));
