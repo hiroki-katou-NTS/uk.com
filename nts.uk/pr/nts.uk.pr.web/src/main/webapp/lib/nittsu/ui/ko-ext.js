@@ -18,6 +18,12 @@ var nts;
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
                         var setValue = data.value;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        var atomWidth = 9;
+                        if (constraint && constraint.maxLength) {
+                            $input.width(constraint.maxLength * atomWidth);
+                        }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped'/>");
                         $input.change(function () {

@@ -6,7 +6,12 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             var setValue: (newText: string) => {} = data.value;
-
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            var atomWidth = 9;
+            if(constraint && constraint.maxLength) {
+                $input.width(constraint.maxLength * atomWidth);
+            }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped'/>");
             $input.change(() => {
