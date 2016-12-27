@@ -358,7 +358,6 @@ var nts;
                     if (!(searchTerm instanceof String)) {
                         searchTerm = "" + searchTerm;
                     }
-                    console.log('searchTerm = ' + searchTerm);
                     var filter = searchTerm.toLowerCase();
                     //if filter is empty return all the items
                     if (!filter) {
@@ -1304,7 +1303,6 @@ var nts;
                         }
                         if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                             container.trigger('validate');
-                            console.log('triggered validate event');
                         }
                     };
                     return ListBoxBindingHandler;
@@ -1600,7 +1598,7 @@ var nts;
                      */
                     NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var primitiveValueName = ko.unwrap(data.constraint);
+                        var primitiveValue = ko.unwrap(data.constraint);
                         var isRequired = ko.unwrap(data.required) === true;
                         var isInline = ko.unwrap(data.inline) === true;
                         var isEnable = ko.unwrap(data.enable) !== false;
@@ -1615,9 +1613,9 @@ var nts;
                         if (isRequired) {
                             $formLabel.addClass('required');
                         }
-                        if (primitiveValueName !== undefined) {
+                        if (primitiveValue !== undefined) {
                             $formLabel.addClass(isInline ? 'inline' : 'broken');
-                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValueName);
+                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
                             $('<i/>').text(constraintText).appendTo($formLabel);
                         }
                     };
@@ -1626,15 +1624,23 @@ var nts;
                      */
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
-                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValueName) {
-                        var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-                        var constraintText;
-                        switch (constraint.valueType) {
-                            case 'String':
-                                return uk.text.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
-                            default:
-                                return 'ERROR';
-                        }
+                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValues) {
+                        if (!Array.isArray(primitiveValues))
+                            primitiveValues = [primitiveValues];
+                        var constraintText = "";
+                        _.forEach(primitiveValues, function (primitiveValue) {
+                            var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                            switch (constraint.valueType) {
+                                case 'String':
+                                    constraintText += (constraintText.length > 0) ? "/" : "";
+                                    constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                                    break;
+                                default:
+                                    constraintText += 'ERROR';
+                                    break;
+                            }
+                        });
+                        return constraintText;
                     };
                     return NtsFormLabelBindingHandler;
                 }());

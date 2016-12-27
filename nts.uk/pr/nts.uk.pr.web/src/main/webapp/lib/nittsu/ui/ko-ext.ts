@@ -343,7 +343,6 @@ module nts.uk.ui.koExtentions {
         if(!(searchTerm instanceof String)) {
            searchTerm = "" + searchTerm; 
         }
-        console.log('searchTerm = ' + searchTerm);
         var filter = searchTerm.toLowerCase();
         //if filter is empty return all the items
         if (!filter) {
@@ -1353,7 +1352,6 @@ module nts.uk.ui.koExtentions {
             }
             if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                 container.trigger('validate');
-                console.log('triggered validate event');                   
             } 
         }
     }
@@ -1694,7 +1692,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
             var data = valueAccessor();
-            var primitiveValueName = ko.unwrap(data.constraint);
+            var primitiveValue = ko.unwrap(data.constraint);
             var isRequired = ko.unwrap(data.required) === true;
             var isInline = ko.unwrap(data.inline) === true;
             var isEnable = ko.unwrap(data.enable) !== false;
@@ -1710,10 +1708,10 @@ module nts.uk.ui.koExtentions {
                 $formLabel.addClass('required');
             }
 
-            if (primitiveValueName !== undefined) {
+            if (primitiveValue !== undefined) {
                 $formLabel.addClass(isInline ? 'inline' : 'broken');
 
-                var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValueName);
+                var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
                 $('<i/>').text(constraintText).appendTo($formLabel);
             }
         }
@@ -1724,16 +1722,23 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
 
-        static buildConstraintText(primitiveValueName: string) {
-            var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-
-            var constraintText: string;
-            switch (constraint.valueType) {
-                case 'String':
-                    return uk.text.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
-                default:
-                    return 'ERROR';
-            }
+        static buildConstraintText(primitiveValues: any) {
+            if (!Array.isArray(primitiveValues))
+                primitiveValues = [primitiveValues];
+            let constraintText: string = "";
+            _.forEach(primitiveValues, function(primitiveValue){
+                let constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                switch (constraint.valueType) {
+                    case 'String':
+                        constraintText += (constraintText.length > 0) ? "/" : ""; 
+                        constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                        break;
+                    default:
+                        constraintText += 'ERROR';
+                        break;
+                }
+            });
+            return constraintText;
         }
     }
 
