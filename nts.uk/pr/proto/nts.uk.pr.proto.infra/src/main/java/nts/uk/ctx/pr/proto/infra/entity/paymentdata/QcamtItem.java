@@ -10,7 +10,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 import nts.uk.ctx.pr.proto.infra.entity.layout.QstmtStmtLayoutDetail;
 
 @Entity

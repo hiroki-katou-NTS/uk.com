@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 import nts.arc.layer.infra.data.entity.type.LocalDateTimeToDBConverter;
 import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 

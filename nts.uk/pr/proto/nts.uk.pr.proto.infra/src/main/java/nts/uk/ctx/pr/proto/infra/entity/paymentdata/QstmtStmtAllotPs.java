@@ -6,7 +6,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name = "QSTMT_STMT_ALLOT_PS")

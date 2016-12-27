@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @Entity
