@@ -17,8 +17,8 @@
 	}
 	
 	&.currencyLeft:after {
-		content: '';
-		left: 0;
+		content: 'Â¥';
+		left: 0; 
 		top: 0;
 		text-align: left;
 	}

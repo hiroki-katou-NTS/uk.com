@@ -1984,7 +1984,7 @@ button.nts-switch-button[disabled]:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: 'üÅ';
+  content: '¥';
   left: 0;
   top: 0;
   text-align: left;
