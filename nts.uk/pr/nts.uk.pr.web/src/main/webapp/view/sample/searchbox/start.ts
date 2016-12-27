@@ -52,8 +52,8 @@ __viewContext.ready(function () {
                       break;
                   }
                }
-               if(index>=0)
-                    self.singleSelectedCode(filteredData[(i+1)%filteredData.length].code);
+               if(filteredData && filteredData.length > 0)
+                    self.singleSelectedCode(filteredData[(index+1)%filteredData.length].code);
            } else {
               if(filteredData && filteredData.length > 0) self.singleSelectedCode(filteredData[0].code); 
            }

@@ -16,7 +16,7 @@
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="start.js" />
+				<com:scriptfile path="filter-start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
 			</ui:define>
 			
@@ -40,8 +40,7 @@
 										width: 700,
 										height: 250,
 										options: filteredData,
-										value: singleSelectedCode,
-										
+										value: singleSelectedCode,										
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
@@ -68,35 +67,7 @@
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Single -->
-<table id="treegrid2"
-	data-bind="ntsTreeGridView:{
-		width: 700,
-		height: 250,
-		options: items2,
-		value: singleSelectedCode,
-		headers: headers,
-		optionsValue: 'code',
-		optionsChild: 'childs',
-		optionsText: 'nodeText',
-		multiple: false,
-		enable: true,
-		extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
-		showCheckBox: false}" class="cf"></table>
 
-<!--  Multi -->
-<table id="treegrid"
-	data-bind="ntsTreeGridView:{
-		width: 500,
-		height: 250,
-		options: items1,
-		selectedValues: selectedCode,
-		optionsValue: 'code',
-		optionsChild: 'childs',
-		optionsText: 'nodeText',
-		multiple: true,
-		enable: true,
-		extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
-		showCheckBox: true}" class="cf"></table>
 ]]></pre>
 									<h2>API</h2>
 									<table>
@@ -175,14 +146,13 @@
 								<div id="tabs-viewmodel" class="cf">
 <pre><![CDATA[class ScreenModel {
 	index: number;
-	items1: any;
-	selectedCode: any;
+	dataSource: any
 	singleSelectedCode: any;
 	headers: any;
 
 	constructor() {
 		var self = this;
-		self.items1 = ko.observableArray([new Node('0001', 'サービス部', [
+		self.dataSource = ko.observableArray([new Node('0001', 'サービス部', [
 			new Node('0001-1', 'サービス部1', []),
 			new Node('0001-2', 'サービス部2', []),
 			new Node('0001-3', 'サービス部3', [])
