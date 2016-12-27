@@ -49,6 +49,7 @@ div.form-label {
 	$_label_ribbon_width: 5px;
 	$_label_ribbon_color_normal: $green_formlabel_color;
 	$_label_ribbon_color_required: $yellow_formlabel_color;
+	$_label_ribbon_color_disabled: #AAA;
 	
 	$_label_font_size: $bfs * 1.4;
 	$_constraint_font_size: $bfs * 1.2;
@@ -77,6 +78,10 @@ div.form-label {
 	
 	&.required {
 		border-color: $_label_ribbon_color_required;
+	}
+	
+	&.disabled {
+		border-color: $_label_ribbon_color_disabled;
 	}
 	
 	> label {

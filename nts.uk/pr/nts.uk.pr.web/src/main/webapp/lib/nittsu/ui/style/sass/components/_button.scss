@@ -117,6 +117,7 @@ button {
     top: $_base_top;
     height: $_base_height;
     padding: $_base_padding_v $_base_padding_h;
+    margin-bottom: $_base_border_bottom_width;
    	box-shadow: 0 $_base_border_bottom_width $button-boxshadow-base-color;
 
     &:active {
@@ -136,6 +137,7 @@ button {
     	
     	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
     	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
+    	margin-bottom: $_border_bottom_width;
     	height: $_height;
     	box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
@@ -158,6 +160,7 @@ button {
     	
     	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
     	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
+    	margin-bottom: $_border_bottom_width;
     	height: $_height;
  	    box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
@@ -180,6 +183,7 @@ button {
     	
     	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
     	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
+    	margin-bottom: $_border_bottom_width;
     	height: $_height;
   	 	box-shadow: 0 $_border_bottom_width #999;
     	

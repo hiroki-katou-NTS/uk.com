@@ -28,19 +28,19 @@ button.nts-switch-button {
    	
    	font-size: $sbfs * ($_base_font_size_ratio + $_font_size_gap);
    	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
-   	border-bottom-width: $_border_bottom_width;
+   	margin-bottom: $_border_bottom_width;
+  	box-shadow: 0 0 $button-boxshadow-base-color;
    	height: $_height;
    	
    	&:active {
-   		height: $_height - $_base_thickness;
-       	border-bottom-width: $_base_border_bottom;
+   		top: 0;
+   		box-shadow: 0 0 $button-boxshadow-base-color;
    	}
    	
    	&.selected {
-   		height: $_height - $_base_thickness;
-       	border-bottom-width: $_base_border_bottom;
+   		box-shadow: 0 0 $button-boxshadow-base-color;
        	
-       	top: $_base_thickness;
+       	top: 0;
        	
         color: #fff;
         background-color: $activated_color;
@@ -50,17 +50,11 @@ button.nts-switch-button {
             background-color: $activated_color;
         }
    	}
-/*
-    &.selected {
-        top: $button_thickness;
-        height: $button_height - $button_thickness;
-        border-bottom-width: 1px;
-        color: #fff;
-        background-color: $activated_color;
-
-        &:hover {
-            color: #fff;
-            background-color: $activated_color;
-        }
-    }*/
+   	
+   	&[disabled] {
+   		background-color: darken($button-normal-base-color, 15%);
+   		&:hover {
+   			background-color: darken($button-normal-base-color, 15%);
+   		}
+   	}
 }

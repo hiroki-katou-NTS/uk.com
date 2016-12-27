@@ -259,26 +259,30 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 10px 10px 0 8px;
 }
-/* line 67, ../sass/components/_commons.scss */
+/* line 68, ../sass/components/_commons.scss */
 div.form-label.broken {
   padding-top: 0;
   padding-bottom: 10px;
 }
-/* line 72, ../sass/components/_commons.scss */
+/* line 73, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 18px;
   padding-top: 3px;
   padding-bottom: 2px;
 }
-/* line 78, ../sass/components/_commons.scss */
+/* line 79, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 82, ../sass/components/_commons.scss */
+/* line 83, ../sass/components/_commons.scss */
+div.form-label.disabled {
+  border-color: #AAA;
+}
+/* line 87, ../sass/components/_commons.scss */
 div.form-label > label {
   font-size: 14px;
 }
-/* line 86, ../sass/components/_commons.scss */
+/* line 91, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -286,15 +290,15 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 93, ../sass/components/_commons.scss */
+/* line 98, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 97, ../sass/components/_commons.scss */
+/* line 102, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 102, ../sass/components/_commons.scss */
+/* line 107, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
@@ -303,7 +307,7 @@ div.form-label.inline > i {
 /*****************************
   NtsLinkButton
 *****************************/
-/* line 112, ../sass/components/_commons.scss */
+/* line 117, ../sass/components/_commons.scss */
 div.link-button {
   display: inline-block;
   padding: 3px 12px;
@@ -316,7 +320,7 @@ div.link-button {
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 125, ../sass/components/_commons.scss */
+/* line 130, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -330,12 +334,12 @@ div.popup-panel {
 /*****************************
   NtsEditor
 *****************************/
-/* line 137, ../sass/components/_commons.scss */
+/* line 142, ../sass/components/_commons.scss */
 .nts-editor.error {
   border-color: #ff6666;
 }
 
-/* line 141, ../sass/components/_commons.scss */
+/* line 146, ../sass/components/_commons.scss */
 .error {
   border: 1px solid #ff6666 !important;
 }
@@ -343,7 +347,7 @@ div.popup-panel {
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 148, ../sass/components/_commons.scss */
+/* line 153, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: inline-block;
@@ -359,7 +363,7 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 161, ../sass/components/_commons.scss */
+/* line 166, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
@@ -369,12 +373,12 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 172, ../sass/components/_commons.scss */
+/* line 177, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 176, ../sass/components/_commons.scss */
+/* line 181, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
@@ -382,7 +386,7 @@ div.popup-panel {
   color: #C12017;
 }
 
-/* line 183, ../sass/components/_commons.scss */
+/* line 188, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -631,51 +635,55 @@ button {
   top: 0;
   height: 30px;
   padding: 3px 7px;
+  margin-bottom: 3px;
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
 }
-/* line 122, ../sass/components/_button.scss */
+/* line 123, ../sass/components/_button.scss */
 button:active {
   top: 3px;
   box-shadow: 0 0 #999;
 }
-/* line 127, ../sass/components/_button.scss */
+/* line 128, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
   padding: 1px 4px;
+  margin-bottom: 3px;
   height: 25px;
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 142, ../sass/components/_button.scss */
+/* line 144, ../sass/components/_button.scss */
 button.small:active {
   top: 3px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 149, ../sass/components/_button.scss */
+/* line 151, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
   padding: 4px 10px;
+  margin-bottom: 4px;
   height: 34px;
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 164, ../sass/components/_button.scss */
+/* line 167, ../sass/components/_button.scss */
 button.large:active {
   top: 4px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 171, ../sass/components/_button.scss */
+/* line 174, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
   padding: 6px 20px;
+  margin-bottom: 5px;
   height: 45px;
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 186, ../sass/components/_button.scss */
+/* line 190, ../sass/components/_button.scss */
 button.x-large:active {
   top: 5px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
@@ -872,7 +880,7 @@ button .caret-bottom,
 button .caret-top,
 button .caret-left,
 button .caret-right {
-  color: #7f7f7f;
+  color: #888888;
 }
 
 /* line 151, ../sass/components/_caret.scss */
@@ -1015,32 +1023,19 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 button.nts-switch-button {
   font-size: 16.8px;
   padding: 1px 4px;
-  border-bottom-width: 3px;
+  margin-bottom: 3px;
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
   height: 36.6px;
-  /*
-      &.selected {
-          top: $button_thickness;
-          height: $button_height - $button_thickness;
-          border-bottom-width: 1px;
-          color: #fff;
-          background-color: $activated_color;
-  
-          &:hover {
-              color: #fff;
-              background-color: $activated_color;
-          }
-      }*/
 }
-/* line 34, ../sass/components/_switchbutton.scss */
+/* line 35, ../sass/components/_switchbutton.scss */
 button.nts-switch-button:active {
-  height: 34.6px;
-  border-bottom-width: 1px;
+  top: 0;
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 39, ../sass/components/_switchbutton.scss */
+/* line 40, ../sass/components/_switchbutton.scss */
 button.nts-switch-button.selected {
-  height: 34.6px;
-  border-bottom-width: 1px;
-  top: 2px;
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
+  top: 0;
   color: #fff;
   background-color: #00B050;
 }
@@ -1048,6 +1043,14 @@ button.nts-switch-button.selected {
 button.nts-switch-button.selected:hover {
   color: #fff;
   background-color: #00B050;
+}
+/* line 54, ../sass/components/_switchbutton.scss */
+button.nts-switch-button[disabled] {
+  background-color: #d9d9d9;
+}
+/* line 56, ../sass/components/_switchbutton.scss */
+button.nts-switch-button[disabled]:hover {
+  background-color: #d9d9d9;
 }
 
 @CHARSET "UTF-8";
@@ -1149,6 +1152,38 @@ button.nts-switch-button.selected:hover {
 /* line 88, ../sass/components/_checkbox.scss */
 .outline .ntsCheckBox input[type="checkbox"][disabled] + span:after {
   border-color: #DDD;
+}
+
+/* line 94, ../sass/components/_checkbox.scss */
+.minimalist .ntsCheckBox {
+  color: #444;
+}
+/* line 98, ../sass/components/_checkbox.scss */
+.minimalist .ntsCheckBox span.box,
+.minimalist .ntsCheckBox span.label {
+  padding-left: 5px;
+}
+/* line 103, ../sass/components/_checkbox.scss */
+.minimalist .ntsCheckBox span.box {
+  width: 1em;
+  height: 1em;
+  border: 1px solid #444;
+  border-radius: 0;
+}
+/* line 109, ../sass/components/_checkbox.scss */
+.minimalist .ntsCheckBox span.box:after {
+  width: 9px;
+  height: 4px;
+  top: 2px;
+  left: 1px;
+  border: 1px solid #444;
+  border-top: none;
+  border-right: none;
+  border-radius: 0;
+}
+/* line 123, ../sass/components/_checkbox.scss */
+.minimalist .ntsCheckBox input[type="checkbox"]:checked + span {
+  background: transparent;
 }
 
 @CHARSET "UTF-8";

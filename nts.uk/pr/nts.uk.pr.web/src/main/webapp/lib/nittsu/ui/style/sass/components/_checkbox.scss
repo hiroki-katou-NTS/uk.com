@@ -90,3 +90,40 @@
 		}
 	}
 }
+
+.minimalist .ntsCheckBox {
+	$checkbox_minimalist_color: #444;
+	
+	color: $checkbox_minimalist_color;
+	span.box,
+	span.label {
+		padding-left: 5px;
+	}
+	
+	span.box {
+	    width: 1em;
+	    height: 1em;
+	    border: 1px solid $checkbox_minimalist_color;
+	    border-radius: 0;
+	    
+	    &:after {
+		    width: 9px;
+		    height: 4px;
+		    top: 2px;
+		    left: 1px;
+		    border: 1px solid $checkbox_minimalist_color;
+		    border-top: none;
+		    border-right: none;
+		    border-radius: 0;
+	    }
+	}
+	
+	input[type="checkbox"] {
+		&:checked  {
+			+ span {
+				background: transparent;
+			}
+		}
+	}
+	
+}
