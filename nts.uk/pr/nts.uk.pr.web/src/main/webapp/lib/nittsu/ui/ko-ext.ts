@@ -2046,7 +2046,6 @@ module nts.uk.ui.koExtentions {
                         });
                         $(grid1Id).igGrid("option", "dataSource", newSource);
                         $(grid1Id).igGrid("option", "dataBind");
-//                        data.options(newSource);
                     }
                 }
             });
@@ -2085,7 +2084,6 @@ module nts.uk.ui.koExtentions {
                         data.value(newSource);   
                         $(grid1Id).igGrid("option", "dataSource", currentSource.concat(notExisted));
                         $(grid1Id).igGrid("option", "dataBind");
-//                        data.value(newSource);
                     }
                 }
             });
@@ -2107,7 +2105,6 @@ module nts.uk.ui.koExtentions {
 
             $grid1.igGrid('option', 'dataSource', data.options());
             $grid2.igGrid('option', 'dataSource', data.value());
-            //            $grid2.ntsGridList('setSelected', data.value());
         }
     }
 

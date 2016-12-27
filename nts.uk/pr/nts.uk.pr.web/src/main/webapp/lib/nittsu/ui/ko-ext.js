@@ -1980,7 +1980,6 @@ var nts;
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         $grid1.igGrid('option', 'dataSource', data.options());
                         $grid2.igGrid('option', 'dataSource', data.value());
-                        //            $grid2.ntsGridList('setSelected', data.value());
                     };
                     return NtsSwapListBindingHandler;
                 }());

@@ -11,8 +11,6 @@
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:stylefile path="../catalog/catalog.css" />
-				<link rel="stylesheet" type="text/css" href="../../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
-				
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />				
@@ -38,11 +36,9 @@
 								value: currentCode
 							}"
 							class="cf"></table>
-						<br /><br /><br /><br />
+						<br/>
 						currentCode: <span data-bind="text: currentCode"></span>
-						<button onclick="toggleColumns()">Toggle columns</button>
 						<hr />
-						
 						Multiple selectng mode
 						<table id="multi-list" data-bind="ntsGridList: {
 								height: 110,
