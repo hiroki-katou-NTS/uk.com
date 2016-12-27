@@ -44,11 +44,17 @@
 							<div class="feature-box">
 								<div class="header"><h3>Inline</h3></div>
 								<div class="content">
-									<pre><![CDATA[<span class="caret-right caret-inline"></span>]]></pre>
+<pre><![CDATA[<span class="caret-right caret-inline"></span>
+<span class="caret-left caret-inline"></span>
+<span class="caret-top caret-inline"></span>
+<span class="caret-bottom caret-inline"></span>]]></pre>
 									<div class="control-group valign-center">
 										<button>Button</button><span class="caret-right caret-inline"></span>
 										<input data-bind="ntsTextEditor: {value: ko.observable('')}" /><span class="caret-right caret-inline"></span>
 										<button class="small">Button</button><span class="caret-right caret-inline"></span>
+										<span class="caret-left caret-inline"></span>
+										<span class="caret-top caret-inline"></span>
+										<span class="caret-bottom caret-inline"></span>
 									</div>
 								</div>
 							</div>
@@ -59,7 +65,7 @@
 <span class="caret-left outline"></span>
 <span class="caret-top outline"></span>
 <span class="caret-bottom outline"></span>]]></pre>
-									<div class="relative" style="height: 150px; padding: 10px 15px; background: #97d155;">
+									<div class="control-group valign-center" style="height: 150px; padding: 10px 15px; background: #97d155;">
 										<span class="caret-right outline"></span>
 										<span class="caret-left outline"></span>
 										<span class="caret-top outline"></span>
@@ -78,67 +84,26 @@
 							<div class="feature-box">
 								<div class="header"><h3>Button</h3></div>
 								<div class="content">
-<pre><![CDATA[<button class="relative">Button<span class="caret-bottom absolute"></span></button>
-<button class="relative">Button<span class="caret-top absolute"></span></button>
-<button class="relative">Button<span class="caret-right absolute"></span></button>
-<button class="relative">Button<span class="caret-left absolute"></span></button>
-]]></pre>
+<pre><![CDATA[<button class="caret-bottom">Button</button>
+<button class="caret-top">Button</button>
+<button class="caret-right">Button</button>
+<button class="caret-left">Button</button>]]></pre>
 									<div class="control-group valign-center">
-										<button class="relative">Button<span class="caret-bottom absolute"></span></button>
-										<button class="relative">Button<span class="caret-top absolute"></span></button>
-										<button class="relative">Button<span class="caret-right absolute"></span></button>
+										<button class="caret-bottom">Button</button>
+										<button class="caret-top">Button</button>
+										<button class="caret-right">Button</button>
 										<span class="label" style="width: 30px;"></span>
-										<button class="relative">Button<span class="caret-left absolute"></span></button>
+										<button class="caret-left">Button</button>
 									</div>
 								</div>
 							</div>
 							<div class="feature-box">
 								<div class="header"><h3>Background Caret</h3></div>
 								<div class="content">
-<pre><![CDATA[<div class="bg-green relative">
-	<span class="caret-right caret-background"></span>
-</div>
-]]></pre>
-									<div class="bg-green relative" style="float:left; width:250px; height: 300px; margin:20px 50px;">
-										<span class="caret-right caret-background"></span>
-									</div>
-									<div class="bg-green relative" style="float:left; width:250px; height: 300px; margin:20px 50px;">
-										<span class="caret-left caret-background"></span>
-									</div>
-								</div>
-							</div>
-							<div class="feature-box">
-								<div class="header"><h3>Group with other control</h3></div>
-								<div class="content" style="padding-bottom: 50px;">
-<pre><![CDATA[<span class="label relative">
-	<button>Button</button>
-	<span class="caret-bottom absolute"></span>
-</span>
-]]></pre>
-									<span id="demo-caret-bottom" class="draggable">
-										<span class="label relative">
-											<span class="label warning">I'm a warning</span>
-											<span class="caret-bottom absolute"></span>
-										</span>
-									</span>
-									<span id="demo-caret-top" class="draggable">
-										<span class="label relative">
-											<div data-bind="ntsFormLabel: {}">レイアウトコード</div>
-											<span class="caret-top absolute"></span>
-										</span>
-									</span>
-									<span id="demo-caret-right" class="draggable">
-										<span class="label relative">
-											<input data-bind="ntsTextEditor: {value: ko.observable()}" />
-											<span class="caret-right absolute"></span>
-										</span>
-									</span>
-									<span id="demo-caret-left" class="draggable">
-										<span class="label relative">
-											<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>
-											<span class="caret-left absolute"></span>
-										</span>
-									</span>
+<pre><![CDATA[<div class="caret-right caret-background"></div>
+<div class="caret-left caret-background"></div>]]></pre>
+									<div class="bg-green caret-right caret-background" style="float:left; width:250px; height: 300px; margin:20px 50px;"></div>
+									<div class="bg-green caret-left caret-background" style="float:left; width:250px; height: 300px; margin:20px 50px;"></div>
 								</div>
 							</div>
 						</article>

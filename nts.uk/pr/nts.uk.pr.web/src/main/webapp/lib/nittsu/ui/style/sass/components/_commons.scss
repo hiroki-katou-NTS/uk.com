@@ -1,10 +1,10 @@
 /*****************************
   Helper Class
 *****************************/
-.hidden {display: none;}
-.invisible {visibility: hidden;}
-.relative {position: relative;}
-.absolute {position: absolute;}
+.hidden {display: none !important;}
+.invisible {visibility: hidden !important;}
+.relative {position: relative !important;}
+.absolute {position: absolute !important;}
 .pull-left {float: left;}
 .pull-right {float: right;}
 .hyperlink { color: $hyperlink_color; text-decoration: underline; cursor: pointer; }
