@@ -88,8 +88,8 @@ subprojects {
         // servlet
         compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	    
-	    compile group: 'nts.gul', name: 'nts.gul', version: '0.8'
-	    compile group: 'nts.arc', name: 'nts.arc', version: '0.11'
+	    compile group: 'nts.gul', name: 'nts.gul', version: '0.9.1'
+	    compile group: 'nts.arc', name: 'nts.arc', version: '0.11.1'
 	}
 }
 
