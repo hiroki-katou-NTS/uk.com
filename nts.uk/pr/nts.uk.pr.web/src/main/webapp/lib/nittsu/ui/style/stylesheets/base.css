@@ -400,59 +400,195 @@ div.label {
   height: 0;
   vertical-align: middle;
 }
-
-/* line 200, ../sass/components/_commons.scss */
-.caret-bottom {
-  border-top: 4px dashed;
-  border-right: 4px solid transparent;
-  border-left: 4px solid transparent;
+/* line 198, ../sass/components/_commons.scss */
+.caret-bottom.outline,
+.caret-top.outline,
+.caret-left.outline,
+.caret-right.outline {
+  border: none;
+  position: relative;
+  font-size: 16px;
+  width: 1em;
+  height: 1em;
 }
 /* line 204, ../sass/components/_commons.scss */
+.caret-bottom.outline:before,
+.caret-top.outline:before,
+.caret-left.outline:before,
+.caret-right.outline:before {
+  content: '';
+  position: absolute;
+  color: #fff;
+  z-index: 1;
+}
+/* line 210, ../sass/components/_commons.scss */
+.caret-bottom.outline:after,
+.caret-top.outline:after,
+.caret-left.outline:after,
+.caret-right.outline:after {
+  content: '';
+  position: absolute;
+  color: #E0F59E;
+  z-index: 2;
+}
+
+/* line 219, ../sass/components/_commons.scss */
+.caret-bottom {
+  border-top: 1rem solid;
+  border-right: 1rem solid transparent;
+  border-left: 1rem solid transparent;
+}
+/* line 223, ../sass/components/_commons.scss */
 .caret-bottom.absolute {
   top: 100%;
   left: 50%;
+  margin-left: -1em;
+}
+/* line 224, ../sass/components/_commons.scss */
+.caret-bottom.outline {
+  width: 2em;
+  height: 1em;
+}
+/* line 227, ../sass/components/_commons.scss */
+.caret-bottom.outline:before {
+  border-top: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 232, ../sass/components/_commons.scss */
+.caret-bottom.outline:after {
+  margin-left: 0.3em;
+  margin-top: 0.13em;
+  border-top: 0.7em solid;
+  border-right: 0.7em solid transparent;
+  border-left: 0.7em solid transparent;
 }
 
-/* line 209, ../sass/components/_commons.scss */
+/* line 241, ../sass/components/_commons.scss */
 .caret-top {
-  border-bottom: 4px dashed;
-  border-right: 4px solid transparent;
-  border-left: 4px solid transparent;
+  border-bottom: 1rem solid;
+  border-right: 1rem solid transparent;
+  border-left: 1rem solid transparent;
 }
-/* line 213, ../sass/components/_commons.scss */
+/* line 245, ../sass/components/_commons.scss */
 .caret-top.absolute {
   bottom: 100%;
   left: 50%;
+  margin-left: -1em;
+}
+/* line 246, ../sass/components/_commons.scss */
+.caret-top.outline {
+  width: 2em;
+  height: 1em;
+}
+/* line 249, ../sass/components/_commons.scss */
+.caret-top.outline:before {
+  border-bottom: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 254, ../sass/components/_commons.scss */
+.caret-top.outline:after {
+  margin-left: 0.3em;
+  margin-top: 0.17em;
+  border-bottom: 0.7em solid;
+  border-right: 0.7em solid transparent;
+  border-left: 0.7em solid transparent;
 }
 
-/* line 218, ../sass/components/_commons.scss */
+/* line 263, ../sass/components/_commons.scss */
 .caret-left {
-  border-right: 4px dashed;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+  border-right: 1rem solid;
+  border-top: 1rem solid transparent;
+  border-bottom: 1rem solid transparent;
 }
-/* line 222, ../sass/components/_commons.scss */
+/* line 267, ../sass/components/_commons.scss */
 .caret-left.absolute {
   right: 100%;
   top: 50%;
+  margin-top: -1em;
+}
+/* line 268, ../sass/components/_commons.scss */
+.caret-left.outline {
+  width: 1em;
+  height: 2em;
+}
+/* line 271, ../sass/components/_commons.scss */
+.caret-left.outline:before {
+  border-right: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 276, ../sass/components/_commons.scss */
+.caret-left.outline:after {
+  margin-left: 0.15em;
+  margin-top: 0.3em;
+  border-right: 0.7em solid;
+  border-top: 0.7em solid transparent;
+  border-bottom: 0.7em solid transparent;
 }
 
-/* line 227, ../sass/components/_commons.scss */
+/* line 285, ../sass/components/_commons.scss */
 .caret-right {
-  border-left: 4px dashed;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+  border-left: 1rem solid;
+  border-top: 1rem solid transparent;
+  border-bottom: 1rem solid transparent;
 }
-/* line 231, ../sass/components/_commons.scss */
+/* line 289, ../sass/components/_commons.scss */
 .caret-right.absolute {
   left: 100%;
   top: 50%;
+  margin-top: -1em;
+}
+/* line 290, ../sass/components/_commons.scss */
+.caret-right.outline {
+  width: 1em;
+  height: 2em;
+}
+/* line 293, ../sass/components/_commons.scss */
+.caret-right.outline:before {
+  border-left: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 298, ../sass/components/_commons.scss */
+.caret-right.outline:after {
+  margin-left: 0.15em;
+  margin-top: 0.3em;
+  border-left: 0.7em solid;
+  border-top: 0.7em solid transparent;
+  border-bottom: 0.7em solid transparent;
 }
 
-/* line 237, ../sass/components/_commons.scss */
+/* line 308, ../sass/components/_commons.scss */
 .caret-inline {
   border-width: 10px;
   color: #97D155;
+}
+
+/* line 313, ../sass/components/_commons.scss */
+.caret-background {
+  position: absolute;
+  border-width: 30px 18px;
+  color: #E0F59E;
+}
+/* line 317, ../sass/components/_commons.scss */
+.caret-background.caret-right {
+  top: 30px;
+  left: 100%;
+}
+/* line 318, ../sass/components/_commons.scss */
+.caret-background.caret-left {
+  top: 30px;
+  right: 100%;
+}
+/* line 319, ../sass/components/_commons.scss */
+.caret-background.caret-top {
+  bottom: 100%;
+}
+/* line 320, ../sass/components/_commons.scss */
+.caret-background.caret-bottom {
+  top: 100%;
 }
 
 /* line 2, ../sass/components/_accordion.scss */
@@ -611,11 +747,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
   *zoom: 1;
 }
 
-/* line 14, ../sass/components/_button.scss */
+/* line 15, ../sass/components/_button.scss */
 button {
   display: inline-block;
   background: #fff;
   border: 1px solid #999999;
+  outline: none;
   text-align: center;
   letter-spacing: 0.1em;
   white-space: nowrap;
@@ -629,78 +766,68 @@ button {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -ms-border-radius: 3px;
-  /* IgniteUI との兼ね合いでbackground-colorには!importantが必要っぽい？ */
 }
-/* line 28, ../sass/components/_button.scss */
+/* line 29, ../sass/components/_button.scss */
 button:hover {
   background-color: #f2f2f2;
 }
-/* line 32, ../sass/components/_button.scss */
+/* line 33, ../sass/components/_button.scss */
 button[disabled] {
   background-color: #d9d9d9;
   cursor: default;
   color: #888888;
 }
-/* line 38, ../sass/components/_button.scss */
-button:active {
-  bottom: -4px;
-  border-bottom-width: 1px;
-}
-/* line 42, ../sass/components/_button.scss */
-button:active[disabled] {
-  bottom: 0;
-}
-/* line 47, ../sass/components/_button.scss */
+/* line 46, ../sass/components/_button.scss */
 button.proceed {
   background-color: #A4EEB0;
 }
-/* line 50, ../sass/components/_button.scss */
+/* line 49, ../sass/components/_button.scss */
 button.proceed:hover {
   background-color: #79e68b;
 }
-/* line 54, ../sass/components/_button.scss */
+/* line 53, ../sass/components/_button.scss */
 button.proceed[disabled] {
   background-color: #b0d3b5;
 }
-/* line 58, ../sass/components/_button.scss */
+/* line 57, ../sass/components/_button.scss */
 button.danger {
   background-color: #FED3C6;
 }
-/* line 61, ../sass/components/_button.scss */
+/* line 60, ../sass/components/_button.scss */
 button.danger:hover {
   background-color: #fec0ad;
 }
-/* line 65, ../sass/components/_button.scss */
+/* line 64, ../sass/components/_button.scss */
 button.danger[disabled] {
   background-color: #ead2cb;
 }
-/* line 70, ../sass/components/_button.scss */
+/* line 69, ../sass/components/_button.scss */
 button.with-icon {
   background-repeat: no-repeat;
   background-position: 3px;
   background-size: 16px;
   padding-left: 21px;
 }
-/* line 77, ../sass/components/_button.scss */
+/* line 76, ../sass/components/_button.scss */
 button.with-icon.small {
   background-position: 2px 1px;
   background-size: 14px;
   padding-left: 17px;
 }
-/* line 83, ../sass/components/_button.scss */
+/* line 82, ../sass/components/_button.scss */
 button.with-icon.large {
   background-position: 4px;
   background-size: 20px;
   padding-left: 28px;
 }
-/* line 89, ../sass/components/_button.scss */
+/* line 88, ../sass/components/_button.scss */
 button.with-icon.x-large {
   background-position: 7px 5px;
   background-size: 30px;
   padding-left: 38px;
 }
 
-/* line 97, ../sass/components/_button.scss */
+/* line 96, ../sass/components/_button.scss */
 button {
   color: #404040;
   font-size: 13px;
@@ -708,56 +835,54 @@ button {
   top: 0;
   height: 30px;
   padding: 3px 7px;
-  border-bottom-width: 3px;
+  box-shadow: 0 3px rgba(0, 0, 0, 0.4);
 }
-/* line 123, ../sass/components/_button.scss */
+/* line 122, ../sass/components/_button.scss */
 button:active {
-  top: 2px;
-  height: 28px;
-  border-bottom-width: 1px;
-  margin-bottom: 2px;
+  top: 3px;
+  box-shadow: 0 0 #999;
 }
-/* line 130, ../sass/components/_button.scss */
+/* line 127, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
   padding: 1px 4px;
-  border-bottom-width: 3px;
   height: 25px;
+  box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 145, ../sass/components/_button.scss */
+/* line 142, ../sass/components/_button.scss */
 button.small:active {
-  height: 23px;
-  border-bottom-width: 1px;
+  top: 3px;
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 152, ../sass/components/_button.scss */
+/* line 149, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
   padding: 4px 10px;
-  border-bottom-width: 4px;
   height: 34px;
+  box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 167, ../sass/components/_button.scss */
+/* line 164, ../sass/components/_button.scss */
 button.large:active {
-  height: 32px;
-  border-bottom-width: 1px;
+  top: 4px;
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 174, ../sass/components/_button.scss */
+/* line 171, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
   padding: 6px 20px;
-  border-bottom-width: 5px;
   height: 45px;
+  box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 189, ../sass/components/_button.scss */
+/* line 186, ../sass/components/_button.scss */
 button.x-large:active {
-  height: 43px;
-  border-bottom-width: 1px;
+  top: 5px;
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
