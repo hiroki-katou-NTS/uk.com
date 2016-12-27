@@ -1823,8 +1823,13 @@ var nts;
                             $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
                             $swap.find(".ntsSearchButton").css({ "marginLeft": '10px' }).text("Search").click(function () {
                                 var value = $swap.find(".ntsSearchInput").val();
-                                var source = $(grid1Id).igGrid("option", "dataSource");
-                                var searchedValues = _.filter(originalSource, function (val) {
+                                var source = $(grid2Id).igGrid("option", "dataSource");
+                                var notExisted = _.filter(originalSource, function (list) {
+                                    return _.filter(source, function (data) {
+                                        return data[primaryKey] === list[primaryKey];
+                                    }).length <= 0;
+                                });
+                                var searchedValues = _.filter(notExisted, function (val) {
                                     return _.valuesIn(val).filter(function (x) {
                                         return x.toString().indexOf(value) >= 0;
                                     }).length > 0;
@@ -1944,7 +1949,7 @@ var nts;
                                         }
                                     }
                                 }
-                                var currentSource = data.options(); //$(grid2Id).igGrid("option", "dataSource");
+                                var currentSource = $(grid1Id).igGrid("option", "dataSource");
                                 var notExisted = _.filter(employeeList, function (list) {
                                     return _.filter(currentSource, function (data) {
                                         return data[primaryKey] === list[primaryKey];

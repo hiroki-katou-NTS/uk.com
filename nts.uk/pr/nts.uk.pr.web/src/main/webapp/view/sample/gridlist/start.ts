@@ -2,14 +2,11 @@ __viewContext.ready(function () {
     
     class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
-        itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         columns2: KnockoutObservableArray<any>;
-        columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
 //        itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        currentCodeListSwap: KnockoutObservableArray<any>;
 //        selectedCode: KnockoutObservable<string>;
 //        selectedCodes: KnockoutObservableArray<string>;
 //        isEnable: KnockoutObservable<boolean>;
@@ -21,11 +18,6 @@ __viewContext.ready(function () {
                 new ItemModel('001', '基本給', "description 1", "other1"),
                 new ItemModel('150', '役職手当', "description 2", "other2"),
                 new ItemModel('ABC', '基12本ghj給', "description 3", "other3")
-            ]);
-            this.columns3 = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '説明', prop: 'description', width: 200 }
             ]);
             
             this.columns = ko.observableArray([
@@ -46,10 +38,8 @@ __viewContext.ready(function () {
                 { headerText: '説明2', key: 'other2', width: 150 }]}
             ]);
             
-            this.itemsSwap = ko.observableArray(this.items());
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
-            this.currentCodeListSwap = ko.observableArray([]);
             
             
 //            self.itemName = ko.observable('');
