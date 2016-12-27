@@ -1,9 +1,5 @@
 __viewContext.ready(function () {
     var ScreenModel = (function () {
-        //        selectedCode: KnockoutObservable<string>;
-        //        selectedCodes: KnockoutObservableArray<string>;
-        //        isEnable: KnockoutObservable<boolean>;
-        //        isRequired: KnockoutObservable<boolean>;
         function ScreenModel() {
             this.items = ko.observableArray([
                 new ItemModel('001', '基本給', "description 1", "other1"),
@@ -35,21 +31,6 @@ __viewContext.ready(function () {
             ]);
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
-            //            self.itemName = ko.observable('');
-            //            self.currentCode = ko.observable(3);
-            //            self.selectedCode = ko.observable(null)
-            //            self.isEnable = ko.observable(true);
-            //            self.isRequired = ko.observable(true);
-            //            self.selectedCodes = ko.observableArray([]);
-            //            $('#list-box').on('selectionChanging', function(event) {
-            //                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            //                //Cancel event.
-            //                //event.preventDefault();
-            //                //return false;
-            //            })
-            //            $('#list-box').on('selectionChanged', function(event: any) {
-            //                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            //            })
         }
         ScreenModel.prototype.selectSomeItems = function () {
             this.currentCode('150');
@@ -75,13 +56,3 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
-var toggle = true;
-function toggleColumns() {
-    if (toggle) {
-        $('#single-list').igGridHiding("hideMultiColumns", ["other1", "other2"]);
-    }
-    else {
-        $('#single-list').igGridHiding("showMultiColumns", ["other1", "other2"]);
-    }
-    toggle = !toggle;
-}

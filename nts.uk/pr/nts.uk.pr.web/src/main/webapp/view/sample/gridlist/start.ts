@@ -4,13 +4,8 @@ __viewContext.ready(function () {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         columns2: KnockoutObservableArray<any>;
-//        itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-//        selectedCode: KnockoutObservable<string>;
-//        selectedCodes: KnockoutObservableArray<string>;
-//        isEnable: KnockoutObservable<boolean>;
-//        isRequired: KnockoutObservable<boolean>;
         
         constructor() {
             
@@ -46,24 +41,6 @@ __viewContext.ready(function () {
             
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
-            
-            
-//            self.itemName = ko.observable('');
-//            self.currentCode = ko.observable(3);
-//            self.selectedCode = ko.observable(null)
-//            self.isEnable = ko.observable(true);
-//            self.isRequired = ko.observable(true);
-//            self.selectedCodes = ko.observableArray([]);
-            
-//            $('#list-box').on('selectionChanging', function(event) {
-//                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-//                //Cancel event.
-//                //event.preventDefault();
-//                //return false;
-//            })
-//            $('#list-box').on('selectionChanged', function(event: any) {
-//                console.log('Selected value:' + (<any>event.originalEvent).detail)
-//            })
         }
         
         selectSomeItems() {
@@ -77,49 +54,6 @@ __viewContext.ready(function () {
             this.currentCode(null);
             this.currentCodeList.removeAll();
         }
-
-//        addOptions() {
-//            var self = this;
-//            var newCode = self.currentCode() + 1;
-//            var itemCode = newCode.toString();
-//            var codeLength = itemCode.length;
-//            while (codeLength < 4) {
-//                itemCode = '0' + itemCode;
-//                codeLength++;
-//            }
-//            self.itemList.push(new ItemModel(itemCode, self.itemName(), "New Item"));
-//            self.currentCode(newCode);
-//        }
-        
-//        deselectAll() {
-//            $('#list-box').ntsListBox('deselectAll');
-//        }
-//        
-//        selectAll() {
-//            $('#list-box').ntsListBox('selectAll');
-//        }
-        
-        /**
-         * Clear options.
-         */
-//        clearOptions() {
-//            this.itemList([]);
-//        }
-        
-        /**
-         * Remove item by code;
-         */
-//        remove() {
-//            var self = this;
-//            
-//            // Remove by code.
-//            var selected: ItemModel = self.itemList().filter(item => item.code == self.selectedCode())[0];
-//            self.itemList.remove(selected);
-//            
-//            // Remove by codes
-//            var selecteds: ItemModel[] = self.itemList().filter(item => self.selectedCodes().indexOf(item.code) != -1);
-//            self.itemList.removeAll(selecteds);
-//        }
     }
     
     class ItemModel {
@@ -136,17 +70,6 @@ __viewContext.ready(function () {
             this.other2 = other2 || other1;         
         }
     }
-
     
     this.bind(new ScreenModel());
-    
 });
-var toggle = true;
-function toggleColumns() {
-    if(toggle) {
-        $('#single-list').igGridHiding("hideMultiColumns", ["other1","other2"]);
-    } else {
-        $('#single-list').igGridHiding("showMultiColumns", ["other1","other2"]);
-    }
-    toggle = !toggle;
-}
