@@ -24,18 +24,21 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SearchBox Sample</h1>
+						<h1>SearchBox Sample version = jumpsearch</h1>
+						<a href="../filter/searchbox-filter.xhtml">View Filter version, click here</a>
 						<h2>Overview</h2>
 						<button data-bind="click: resetSelection">Reset</button>
 						<button data-bind="click: changeDataSource">Next Datasource</button>
 						<div class="cf">
 							<div style="float:left">
 								<p>Input your search term below</p>
-								<div style="width: 500px">
-								<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
-								</div>
-								<div style="width: 200px">
-								<button data-bind="click: nextSearch">Next Search</button>
+								<div style="width: 700px; position: relative">
+									<div style="width: 500px; display: inline">
+									<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
+									</div>
+									<div style="width: 200px; display: inline">
+									<button id="nextSearch" data-bind="click: nextSearch">Next Search</button>
+									</div>
 								</div>
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
@@ -68,7 +71,28 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[
+<pre><![CDATA[<p>Input your search term below</p>
+<div style="width: 500px">
+<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
+</div>
+<div style="width: 200px">
+<button style="float: left" data-bind="click: nextSearch">Next Search</button>
+</div>
+<h3>Single Selection</h3>
+<table id="treegrid2"
+	data-bind="ntsTreeGridView:{
+		width: 700,
+		height: 250,
+		options: dataSource,
+		value: singleSelectedCode,										
+		optionsValue: 'code',
+		optionsChild: 'childs',
+		optionsText: 'nodeText',
+		multiple: false,
+		enable: true,										
+		showCheckBox: false}"
+	class="cf">
+</table>
 ]]></pre>
 									<h2>API</h2>
 									<table>
@@ -83,104 +107,93 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td>width<br/><i>(optional)</i></td>
-												<td>
-													<b>Type:</b> null | string | number<br/>
-													<b>Default:</b> "100%"<br/>
-													<b>Members:</b><br/>
-													<i>null:</i> Will stretch to fit the sum of the columns widths.<br/>
-													<i>number:</i> The widget width can be set in pixels as a number. Example values: 800, 700.<br/>
-													<i>string:</i> The widget width can be set in pixels (px) or percentage (%). Example values: "800px", "800" (defaults to pixels), "100%".
-												</td>
-											</tr>
-											<tr>
-												<td>height</td>
-												<td>
-													<b>Type:</b> null | string | number<br/>
-													<b>Members:</b><br/>
-													<i>null:</i> Will stretch vertically to fit data.<br/>
-													<i>string:</i> The widget height can be set in pixels (px) and percentage (%).<br/>
-													<i>number:</i> The height can be set as a number in pixels.
-												</td>
-											</tr>
-											<tr>
-												<td>options</td>
-												<td>
-													<b>Type:</b> array&lt;any&gt;<br/>
-													List data to generate GridList
-												</td>
-											</tr>
-											<tr>
-												<td>optionsValue</td>
-												<td>
-													<b>Type:</b> string<br/>
-													Field in data will be set as primaryKey
-												</td>
-											</tr>
-											<tr>
-												<td>columns</td>
-												<td>
-													<b>Type:</b> array&lt;column&gt;<br/>
-													An array of column objects:<br/>
-													<i>headerText:</i> Text for header<br/>
-													<i>prop:</i> Property in data array for column<br/>
-													<i>width:</i> Width for column
-												</td>
-											</tr>
-											<tr>
-												<td>multiple</td>
-												<td>
-													<b>Type:</b> boolean<br/>
-													Enables/disables multiple selection
-												</td>
-											</tr>
-											<tr>
 												<td>value</td>
 												<td>
-													<b>Type:</b> array&lt;any&gt;<br/>
-													List selected value
+													<b>Type:</b> string <br/>
+													<b>Default:</b> ""<br/>
+													<i>string:</i> The search term, used to looking up entry by lowercase matched
 												</td>
 											</tr>
+											<tr>
+												<td>dataSource</td>
+												<td>
+													<b>Type:</b> array of items, use for data source in grid<br/>													
+													<i>item:</i> object class that store our data<br/>
+												</td>
+											</tr>
+											<tr>
+												<td>filteredData</td>
+												<td>
+													<b>Type:</b> array of items<br/>
+													Save search result in an array for jump list.
+													Each time <a style="color: green" href="#nextSearch">next search button</a> clicked, the selectedItem will be the next or 0 from current
+													index that match the selectedItem
+												</td>
+											</tr>											
 										</tbody>
 									</table>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 <pre><![CDATA[class ScreenModel {
-	index: number;
-	items1: any;
-	selectedCode: any;
-	singleSelectedCode: any;
-	headers: any;
-
-	constructor() {
-		var self = this;
-		self.items1 = ko.observableArray([new Node('0001', 'サービス部', [
-			new Node('0001-1', 'サービス部1', []),
-			new Node('0001-2', 'サービス部2', []),
-			new Node('0001-3', 'サービス部3', [])
-		]), new Node('0002', '開発部', [])]);
-		self.selectedCode = ko.observableArray([]);
-		self.singleSelectedCode = ko.observable(null);
-		self.index = 0;
-		self.headers = ko.observableArray(["Item Value Header","Item Text Header", "Auto generated Field"]);
-	}
-}
-
-class Node {
-	code: string;
-	name: string;
-	nodeText: string;
-	custom: string;
-	childs: any;
-	constructor(code: string, name: string, childs: Array<Node>) {
-		var self = this;
-		self.code = code;
-		self.name = name;
-		self.nodeText = self.code + ' ' + self.name;
-		self.childs = childs;
-		self.custom = 'Random' + new Date().getTime();
-	}
-}]]></pre>
+        index: number;
+        dataSource: any;
+        filteredData: any;
+        singleSelectedCode: any;
+        headers: any;
+        searchTerm: KnockoutObservable<string>;
+        constructor() {
+            var self = this;
+            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+                new Node('0003', 'Bangkok Thailand', []),
+                new Node('0004', 'Tokyo Japan', []),
+                new Node('0005', 'Jakarta Indonesia', []), 
+                new Node('0002', 'Seoul Korea', [])]);
+            self.searchTerm = ko.observable('');         
+            self.filteredData = ko.observableArray(self.dataSource());
+            self.singleSelectedCode = ko.observable(null);
+            self.index = 0;
+            self.headers = ko.observableArray(["Item Value Header","Item Text Header", "Auto generated Field"]);
+        }       
+        resetSelection(): void {
+            var self = this;
+            self.searchTerm('');
+            self.filteredData(self.dataSource());
+            self.singleSelectedCode('0002');           
+        }
+        
+        changeDataSource(): void {
+            var self = this;
+            var i = 0;
+            var newArrays = new Array();
+            while (i < 50) {
+                self.index ++;
+                i++;
+                newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
+            };
+            self.dataSource(newArrays);
+            self.filteredData(newArrays);
+        }
+        nextSearch(): void {
+           var self = this;
+           var filteredData = self.filteredData();
+           console.log(filteredData[0]);
+           var singleSelectedCode = self.singleSelectedCode();
+           var index = -1;
+           if(singleSelectedCode) {
+               for(var i = 0; i < filteredData.length; i++) {
+                  var item = filteredData[i];
+                  if(item.code ===  singleSelectedCode) {
+                      index = i;
+                      break;
+                  }
+               }
+               if(filteredData && filteredData.length > 0)
+                    self.singleSelectedCode(filteredData[(index+1)%filteredData.length].code);
+           } else {
+              if(filteredData && filteredData.length > 0) self.singleSelectedCode(filteredData[0].code); 
+           }
+        }
+    }]]></pre>
 								</div>
 							</div>
 						</article>

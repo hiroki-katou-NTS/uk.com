@@ -11,6 +11,8 @@
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:stylefile path="../catalog/catalog.css" />
+				<link rel="stylesheet" type="text/css" href="../../../lib/generic/igniteui/css/themes/infragistics/infragistics.theme.css" />
+				
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />				
@@ -53,16 +55,6 @@
 							class="cf"></table>
 						<br />
 						currentCodeList: <span data-bind="text: currentCodeList"></span>
-						<div id="swap-list" data-bind="ntsSwapList: {
-								showSearchBox: true,
-								width: 1000,
-								height: 110,
-								options: itemsSwap,
-								optionsValue: 'code',
-								columns: columns3,
-								value: currentCodeListSwap
-							}"
-							class=""></div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

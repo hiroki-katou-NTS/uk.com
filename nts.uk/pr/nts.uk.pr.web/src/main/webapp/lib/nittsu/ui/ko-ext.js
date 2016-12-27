@@ -1327,17 +1327,14 @@ var nts;
                             };
                         });
                         var features = [];
-                        features.push({ name: 'MultiColumnHeaders' });
-                        features.push({ name: 'Hiding' });
-                        //features.push({ name: 'MultiColumnHeaders'});
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
                         features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
                         $grid.igGrid({
                             width: data.width,
-                            height: data.height - HEADER_HEIGHT,
+                            height: (data.height - HEADER_HEIGHT) + "px",
                             primaryKey: data.optionsValue,
-                            columns: observableColumns(),
+                            columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             features: features
@@ -1823,8 +1820,13 @@ var nts;
                             $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
                             $swap.find(".ntsSearchButton").css({ "marginLeft": '10px' }).text("Search").click(function () {
                                 var value = $swap.find(".ntsSearchInput").val();
-                                var source = $(grid1Id).igGrid("option", "dataSource");
-                                var searchedValues = _.filter(originalSource, function (val) {
+                                var source = $(grid2Id).igGrid("option", "dataSource");
+                                var notExisted = _.filter(originalSource, function (list) {
+                                    return _.filter(source, function (data) {
+                                        return data[primaryKey] === list[primaryKey];
+                                    }).length <= 0;
+                                });
+                                var searchedValues = _.filter(notExisted, function (val) {
                                     return _.valuesIn(val).filter(function (x) {
                                         return x.toString().indexOf(value) >= 0;
                                     }).length > 0;
@@ -1842,7 +1844,7 @@ var nts;
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         $grid1.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
-                            height: height - HEADER_HEIGHT,
+                            height: (height - HEADER_HEIGHT) + "px",
                             primaryKey: primaryKey,
                             columns: iggridColumns,
                             virtualization: true,
@@ -1855,7 +1857,7 @@ var nts;
                         $grid1.ntsGridList('setupSelecting');
                         $grid2.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
-                            height: height - HEADER_HEIGHT,
+                            height: (height - HEADER_HEIGHT) + "px",
                             primaryKey: primaryKey,
                             columns: iggridColumns,
                             virtualization: true,
@@ -1944,21 +1946,21 @@ var nts;
                                         }
                                     }
                                 }
-                                var currentSource = data.options(); //$(grid2Id).igGrid("option", "dataSource");
+                                var currentSource = $(grid1Id).igGrid("option", "dataSource");
                                 var notExisted = _.filter(employeeList, function (list) {
                                     return _.filter(currentSource, function (data) {
                                         return data[primaryKey] === list[primaryKey];
                                     }).length <= 0;
                                 });
                                 if (notExisted.length > 0) {
-                                    data.options(currentSource.concat(notExisted));
                                     var newSource = _.filter(source, function (list) {
                                         var x = _.filter(notExisted, function (data) {
                                             return data[primaryKey] === list[primaryKey];
                                         });
                                         return (x.length <= 0);
                                     });
-                                    $(grid1Id).igGrid("option", "dataSource", newSource);
+                                    data.value(newSource);
+                                    $(grid1Id).igGrid("option", "dataSource", currentSource.concat(notExisted));
                                     $(grid1Id).igGrid("option", "dataBind");
                                 }
                             }
