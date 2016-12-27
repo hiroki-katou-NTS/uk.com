@@ -8,6 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -54,5 +55,13 @@ public abstract class TableEntity {
     	this.insCcd = "001";
     	this.insScd = "TEST_SCD";
     	this.insPg = "TEST_PG";
+    }
+    
+    @PreUpdate
+    private void setUpdatingMetaInfo() {
+    	this.updDate = LocalDateTime.now();
+    	this.updCcd = "001";
+    	this.updScd = "TEST_SCD";
+    	this.updPg = "TEST_PG";
     }
 }

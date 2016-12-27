@@ -14,12 +14,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
 @Entity
 @Table(name="QSTMT_STMT_LAYOUT_HEAD")
 @AllArgsConstructor
 @NoArgsConstructor
-public class QstmtStmtLayoutHead implements Serializable {
+public class QstmtStmtLayoutHead extends TableEntity implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
 
