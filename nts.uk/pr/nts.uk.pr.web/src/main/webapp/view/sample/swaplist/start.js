@@ -11,6 +11,11 @@ __viewContext.ready(function () {
                 { headerText: '名称', prop: 'name', width: 200 },
                 { headerText: '説明', prop: 'description', width: 200 }
             ]);
+            this.textArea = ko.observable("");
+            this.divValue = ko.observable("");
+            $("#input-text").keypress(function (event) {
+                alert(event.key);
+            });
             this.currentCodeListSwap = ko.observableArray([]);
         }
         return ScreenModel;

@@ -4,6 +4,8 @@ __viewContext.ready(function () {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
+        textArea: KnockoutObservable<any>;
+        divValue: KnockoutObservable<any>;
         
         constructor() {
             
@@ -18,6 +20,11 @@ __viewContext.ready(function () {
                 { headerText: '名称', prop: 'name', width: 200 },
                 { headerText: '説明', prop: 'description', width: 200 }
             ]);
+            this.textArea = ko.observable("");
+            this.divValue = ko.observable("");
+            $("#input-text").keypress((event) => {
+                    alert(event.key);
+            });
             this.currentCodeListSwap = ko.observableArray([]);
         }
         
