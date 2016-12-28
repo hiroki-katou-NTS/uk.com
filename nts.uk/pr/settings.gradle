@@ -1,8 +1,8 @@
 include 'nts.uk.pr.web'
-include 'proto:nts.uk.pr.proto.app'
-include 'proto:nts.uk.pr.proto.dom'
-include 'proto:nts.uk.pr.proto.infra'
-include 'proto:nts.uk.pr.proto.ws'
+include 'core:nts.uk.pr.core.app'
+include 'core:nts.uk.pr.core.dom'
+include 'core:nts.uk.pr.core.infra'
+include 'core:nts.uk.pr.core.ws'
 
 include 'shr:nts.uk.shr.com'
 include 'screen:nts.uk.pr.screen.ws'

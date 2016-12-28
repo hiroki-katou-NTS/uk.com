@@ -99,30 +99,30 @@ project (':shr:nts.uk.shr.com') {
 	}
 }
 
-project (':proto:nts.uk.pr.proto.ws') {
+project (':core:nts.uk.pr.core.ws') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':proto:nts.uk.pr.proto.app')
+		compile project(':core:nts.uk.pr.core.app')
 	}
 }
 
-project (':proto:nts.uk.pr.proto.dom') {
+project (':core:nts.uk.pr.core.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 	}
 }
 
-project (':proto:nts.uk.pr.proto.app') {
+project (':core:nts.uk.pr.core.app') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':proto:nts.uk.pr.proto.dom')
+		compile project(':core:nts.uk.pr.core.dom')
 	}
 }
 
-project (':proto:nts.uk.pr.proto.infra') {
+project (':core:nts.uk.pr.core.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':proto:nts.uk.pr.proto.dom')
+		compile project(':core:nts.uk.pr.core.dom')
 	}
 }
 project (':screen') {
@@ -159,10 +159,10 @@ project ('nts.uk.pr.web') {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 
-		runtime project (':proto:nts.uk.pr.proto.ws')
-		runtime project (':proto:nts.uk.pr.proto.app')
-		runtime project (':proto:nts.uk.pr.proto.dom')
-		runtime project (':proto:nts.uk.pr.proto.infra')
+		runtime project (':core:nts.uk.pr.core.ws')
+		runtime project (':core:nts.uk.pr.core.app')
+		runtime project (':core:nts.uk.pr.core.dom')
+		runtime project (':core:nts.uk.pr.core.infra')
 		runtime project (':screen:nts.uk.pr.screen.ws')
 		runtime project (':screen:nts.uk.pr.screen.app')
 		runtime project (':screen:nts.uk.pr.screen.infra')
@@ -177,7 +177,7 @@ project (':screen:nts.uk.pr.screen.ws') {
 }
 project (':screen:nts.uk.pr.screen.app') {
  	dependencies {
- 	 	compile project (':proto:nts.uk.pr.proto.dom')
+ 	 	compile project (':core:nts.uk.pr.core.dom')
  	 }
 }
 project (':screen:nts.uk.pr.screen.infra') {
@@ -192,7 +192,7 @@ project (':file:nts.uk.pr.file.ws') {
 }
 project (':file:nts.uk.pr.file.infra') {
 	dependencies {
- 	 	compile project (':proto:nts.uk.pr.proto.dom')
+ 	 	compile project (':core:nts.uk.pr.core.dom')
 	    compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }
