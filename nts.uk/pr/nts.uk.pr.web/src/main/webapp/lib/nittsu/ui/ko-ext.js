@@ -1343,9 +1343,6 @@ var nts;
                             virtualizationMode: 'continuous',
                             features: features
                         });
-                        $grid.closest('.ui-iggrid')
-                            .addClass('nts-gridlist')
-                            .height(data.height);
                         $grid.ntsGridList('setupSelecting');
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
@@ -1367,6 +1364,9 @@ var nts;
                         var data = valueAccessor();
                         $grid.igGrid('option', 'dataSource', data.options());
                         $grid.ntsGridList('setSelected', data.value());
+                        $grid.closest('.ui-iggrid')
+                            .addClass('nts-gridlist')
+                            .height(data.height);
                     };
                     return NtsGridListBindingHandler;
                 }());

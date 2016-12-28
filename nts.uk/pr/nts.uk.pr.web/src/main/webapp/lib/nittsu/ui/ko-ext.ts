@@ -1399,10 +1399,6 @@ module nts.uk.ui.koExtentions {
                 features: features
             });
             
-            $grid.closest('.ui-iggrid')
-                .addClass('nts-gridlist')
-                .height(data.height);
-            
             $grid.ntsGridList('setupSelecting');
             
             $grid.bind('selectionchanged', () => {
@@ -1427,6 +1423,10 @@ module nts.uk.ui.koExtentions {
             
             $grid.igGrid('option', 'dataSource', data.options());
             $grid.ntsGridList('setSelected', data.value());
+            
+            $grid.closest('.ui-iggrid')
+                .addClass('nts-gridlist')
+                .height(data.height);
         }
     }
 
