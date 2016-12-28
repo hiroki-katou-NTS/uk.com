@@ -44,48 +44,66 @@
 							<div class="feature-box">
 								<div class="header"><h3>Inline</h3></div>
 								<div class="content">
-									<pre><![CDATA[<span class="caret-right caret-inline"></span>]]></pre>
-									<div class="valign-center">
+<pre><![CDATA[<span class="caret-right caret-inline"></span>
+<span class="caret-left caret-inline"></span>
+<span class="caret-top caret-inline"></span>
+<span class="caret-bottom caret-inline"></span>]]></pre>
+									<div class="control-group valign-center">
 										<button>Button</button><span class="caret-right caret-inline"></span>
 										<input data-bind="ntsTextEditor: {value: ko.observable('')}" /><span class="caret-right caret-inline"></span>
 										<button class="small">Button</button><span class="caret-right caret-inline"></span>
+										<span class="caret-left caret-inline"></span>
+										<span class="caret-top caret-inline"></span>
+										<span class="caret-bottom caret-inline"></span>
 									</div>
 								</div>
 							</div>
 							<div class="feature-box">
-								<div class="header"><h3>Group with other control</h3></div>
-								<div class="content" style="padding-bottom: 50px;">
-<pre><![CDATA[<!-- Container must be {display:inline-block & position:relative} -->
-<span class="label relative">
-	<button>Button</button>
-	<!-- Caret must has class "absolute" -->
-	<span class="caret-bottom absolute"></span>
-</span>
-]]></pre>
-									<span id="demo-caret-bottom" class="draggable">
-										<span class="label relative">
-											<button>Drag me!</button>
-											<span class="caret-bottom absolute"></span>
-										</span>
-									</span>
-									<span id="demo-caret-top" class="draggable">
-										<span class="label relative">
-											<button>Drag me!</button>
-											<span class="caret-top absolute"></span>
-										</span>
-									</span>
-									<span id="demo-caret-right" class="draggable">
-										<span class="label relative">
-											<button>Drag me!</button>
-											<span  class="caret-right absolute"></span>
-										</span>
-									</span>
-									<span id="demo-caret-left" class="draggable">
-										<span class="label relative">
-											<button>Drag me!</button>
-											<span class="caret-left absolute"></span>
-										</span>
-									</span>
+								<div class="header"><h3>Outline</h3></div>
+								<div class="content">
+<pre><![CDATA[<span class="caret-right outline"></span>
+<span class="caret-left outline"></span>
+<span class="caret-top outline"></span>
+<span class="caret-bottom outline"></span>]]></pre>
+									<div class="control-group valign-center" style="height: 150px; padding: 10px 15px; background: #97d155;">
+										<span class="caret-right outline"></span>
+										<span class="caret-left outline"></span>
+										<span class="caret-top outline"></span>
+										<span class="caret-bottom outline"></span>
+										<span class="caret-right outline" style="font-size: 3rem"></span>
+										<span class="caret-left outline" style="font-size: 3rem"></span>
+										<span class="caret-top outline" style="font-size: 3rem"></span>
+										<span class="caret-bottom outline" style="font-size: 3rem"></span>
+										<span class="caret-right outline" style="font-size: 5rem"></span>
+										<span class="caret-left outline" style="font-size: 5rem"></span>
+										<span class="caret-top outline" style="font-size: 5rem"></span>
+										<span class="caret-bottom outline" style="font-size: 5rem"></span>
+									</div>
+								</div>
+							</div>
+							<div class="feature-box">
+								<div class="header"><h3>Button</h3></div>
+								<div class="content">
+<pre><![CDATA[<button class="caret-bottom">Button</button>
+<button class="caret-top">Button</button>
+<button class="caret-right">Button</button>
+<button class="caret-left">Button</button>]]></pre>
+									<div class="control-group valign-center">
+										<button class="caret-bottom">Button</button>
+										<button class="caret-top">Button</button>
+										<button class="caret-right">Button</button>
+										<span class="label" style="width: 30px;"></span>
+										<button class="caret-left">Button</button>
+									</div>
+								</div>
+							</div>
+							<div class="feature-box">
+								<div class="header"><h3>Background Caret</h3></div>
+								<div class="content">
+<pre><![CDATA[<div class="caret-right caret-background"></div>
+<div class="caret-left caret-background"></div>]]></pre>
+									<div class="bg-green caret-right caret-background" style="float:left; width:250px; height: 300px; margin:20px 50px;"></div>
+									<div class="bg-green caret-left caret-background" style="float:left; width:250px; height: 300px; margin:20px 50px;"></div>
 								</div>
 							</div>
 						</article>

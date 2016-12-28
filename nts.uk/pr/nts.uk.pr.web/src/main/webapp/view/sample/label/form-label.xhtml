@@ -12,7 +12,14 @@
             	<script>var dialogSize = { width: 300, height: 200 };</script>
             	
 				<com:ValidatorScript>
-				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+					nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
+					nts.uk.ctx.core.dom.company.CompanyCode
+					nts.arc.time.YearMonth
+					nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
+					nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate
    				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile path="start.js" />
@@ -26,9 +33,9 @@
 						<h1>FormLabel</h1>
 						<h2>Overview</h2>
 		            	<div data-bind="ntsFormLabel: {}"><span>レイア</span><span style="font-size:1.4rem;">アウトコ</span><span>ウトコード</span></div><br /><br />
-		            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br /><br />
-		            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br /><br />
-		            	<div data-bind="ntsFormLabel: { constraint: constraint, inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
+		            	<div data-bind="ntsFormLabel: { constraint: 'PersonId', enable: false }">レイアウトコード</div><br /><br />
+		            	<div data-bind="ntsFormLabel: { constraint: constraint, required: true }">レイアウトコード</div><br /><br />
+		            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
 						<article class="cf">
 							<div class="tabs">
 								<ol>

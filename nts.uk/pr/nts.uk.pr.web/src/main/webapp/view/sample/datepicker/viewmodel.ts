@@ -5,7 +5,7 @@ module sample.datepicker.viewmodel {
 
         constructor() {
             var self = this;            
-            self.date = ko.observable(new Date('2016/01/02'));
+            self.date = ko.observable(new Date('2016/12/01'));
         }
     }
 }

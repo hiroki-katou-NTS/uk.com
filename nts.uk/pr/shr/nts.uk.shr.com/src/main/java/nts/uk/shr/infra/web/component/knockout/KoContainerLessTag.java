@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component.knockout;
+package nts.uk.shr.infra.web.component.knockout;
 
 import java.io.IOException;
 import javax.faces.component.FacesComponent;

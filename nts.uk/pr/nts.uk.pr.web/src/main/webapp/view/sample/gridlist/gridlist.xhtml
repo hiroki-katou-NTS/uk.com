@@ -36,11 +36,9 @@
 								value: currentCode
 							}"
 							class="cf"></table>
-						<br /><br /><br /><br />
+						<br/>
 						currentCode: <span data-bind="text: currentCode"></span>
-						<button onclick="toggleColumns()">Toggle columns</button>
 						<hr />
-						
 						Multiple selectng mode
 						<table id="multi-list" data-bind="ntsGridList: {
 								height: 110,
@@ -62,6 +60,10 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+<pre><![CDATA[<ui:define name="htmlHead">
+	<com:scriptfile set="IGNITE" />
+</ui:define>]]></pre>
 <pre><![CDATA[<table id="single-list" data-bind="ntsGridList: {
 	width: 550,
 	height: 110,

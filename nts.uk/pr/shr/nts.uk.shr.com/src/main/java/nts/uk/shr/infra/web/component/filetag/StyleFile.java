@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component.filetag;
+package nts.uk.shr.infra.web.component.filetag;
 
 import java.io.IOException;
 import java.util.Arrays;

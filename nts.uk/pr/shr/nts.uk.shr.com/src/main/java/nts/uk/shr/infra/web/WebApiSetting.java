@@ -1,4 +1,4 @@
-package nts.uk.shr.web;
+package nts.uk.shr.infra.web;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

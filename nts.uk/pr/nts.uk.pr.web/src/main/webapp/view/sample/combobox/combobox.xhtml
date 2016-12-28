@@ -59,6 +59,10 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+<pre><![CDATA[<ui:define name="htmlHead">
+	<com:scriptfile set="IGNITE" />
+</ui:define>]]></pre>
 <pre><![CDATA[<div id="combo-box" data-bind="ntsComboBox: {
 	options: itemList,
 	optionsValue: 'code',

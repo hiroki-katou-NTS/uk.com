@@ -4,6 +4,7 @@
 @import "../base/_clearfix.scss";
 
 $button-border-color: #999999;
+$button-boxshadow-base-color: rgba(0,0,0,0.4);
 
 $button-normal-base-color: #fff;
 $button-proceed-base-color: #A4EEB0;
@@ -16,6 +17,7 @@ $button-disabled-base-color: #888888;
     display: inline-block;
     background: $button-normal-base-color;
     border: 1px solid $button-border-color;
+    outline: none;
     text-align: center;
     letter-spacing: 0.1em;
     white-space: nowrap;
@@ -24,7 +26,6 @@ $button-disabled-base-color: #888888;
     @include mix-propertySetPrefix(user-select, none);
     @include mix-propertySetPrefix(border-radius, 3px);
     
-    /* IgniteUI Ç∆ÇÃåìÇÀçáÇ¢Ç≈background-colorÇ…ÇÕ!importantÇ™ïKóvÇ¡Ç€Ç¢ÅH */
     &:hover {
         background-color: darken($button-normal-base-color, 5%);
     }
@@ -36,11 +37,9 @@ $button-disabled-base-color: #888888;
     }
 
     &:active {
-        bottom: -4px;
-        border-bottom-width: 1px;
-
+		
         &[disabled] {
-            bottom: 0;
+			
         }
     }
 
@@ -118,13 +117,12 @@ button {
     top: $_base_top;
     height: $_base_height;
     padding: $_base_padding_v $_base_padding_h;
-    border-bottom-width: $_base_border_bottom_width;
+    margin-bottom: $_base_border_bottom_width;
+   	box-shadow: 0 $_base_border_bottom_width $button-boxshadow-base-color;
 
     &:active {
-        top: $_base_top + $_base_thickness;
-        height: $_base_height - $_base_thickness;
-        border-bottom-width: $_base_border_bottom;
-        margin-bottom: $_base_thickness;
+        top: $_base_border_bottom_width;
+		box-shadow: 0 0 #999;
     }
     
     &.small {
@@ -139,12 +137,13 @@ button {
     	
     	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
     	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
-    	border-bottom-width: $_border_bottom_width;
+    	margin-bottom: $_border_bottom_width;
     	height: $_height;
+    	box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
     	&:active {
-    		height: $_height - $_base_thickness;
-        	border-bottom-width: $_base_border_bottom;
+    		top: $_border_bottom_width;
+			box-shadow: 0 0 $button-boxshadow-base-color;
     	}
     	/* END: SAME ALL SIZES */
     }
@@ -161,12 +160,13 @@ button {
     	
     	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
     	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
-    	border-bottom-width: $_border_bottom_width;
+    	margin-bottom: $_border_bottom_width;
     	height: $_height;
+ 	    box-shadow: 0 $_border_bottom_width $button-boxshadow-base-color;
     	
     	&:active {
-    		height: $_height - $_base_thickness;
-        	border-bottom-width: $_base_border_bottom;
+    		top: $_border_bottom_width;
+			box-shadow: 0 0 $button-boxshadow-base-color;
     	}
     	/* END: SAME ALL SIZES */
     }
@@ -183,12 +183,13 @@ button {
     	
     	font-size: $bfs * ($_base_font_size_ratio + $_font_size_gap);
     	padding: ($_base_padding_v + $_padding_gap_v) ($_base_padding_h + $_padding_gap_h);
-    	border-bottom-width: $_border_bottom_width;
+    	margin-bottom: $_border_bottom_width;
     	height: $_height;
+  	 	box-shadow: 0 $_border_bottom_width #999;
     	
     	&:active {
-    		height: $_height - $_base_thickness;
-        	border-bottom-width: $_base_border_bottom;
+    		top: $_border_bottom_width;
+			box-shadow: 0 0 $button-boxshadow-base-color;
     	}
     	/* END: SAME ALL SIZES */
 	}

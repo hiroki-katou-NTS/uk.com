@@ -6,7 +6,12 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             var setValue: (newText: string) => {} = data.value;
-
+            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+            var constraint = validation.getConstraint(constraintName);
+            var atomWidth = 9;
+            if(constraint && constraint.maxLength) {
+                $input.width(constraint.maxLength * atomWidth);
+            }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped'/>");
             $input.change(() => {
@@ -338,7 +343,6 @@ module nts.uk.ui.koExtentions {
         if(!(searchTerm instanceof String)) {
            searchTerm = "" + searchTerm; 
         }
-        console.log('searchTerm = ' + searchTerm);
         var filter = searchTerm.toLowerCase();
         //if filter is empty return all the items
         if (!filter) {
@@ -1348,7 +1352,6 @@ module nts.uk.ui.koExtentions {
             }
             if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                 container.trigger('validate');
-                console.log('triggered validate event');                   
             } 
         }
     }
@@ -1382,29 +1385,26 @@ module nts.uk.ui.koExtentions {
             });
 
             var features = [];
-            features.push({name: 'MultiColumnHeaders'});
-            features.push({ name: 'Hiding' });
-            //features.push({ name: 'MultiColumnHeaders'});
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
-
+            
             $grid.igGrid({
                 width: data.width,
-                height: data.height - HEADER_HEIGHT,
+                height: (data.height - HEADER_HEIGHT) + "px",
                 primaryKey: data.optionsValue,
-                columns: observableColumns(),
+                columns: iggridColumns,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 features: features
             });
-
+            
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
                 .height(data.height);
-
+            
             $grid.ntsGridList('setupSelecting');
-
+            
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
                     let selecteds: Array<any> = $grid.ntsGridList('getSelected');
@@ -1424,9 +1424,8 @@ module nts.uk.ui.koExtentions {
 
             var $grid = $(element);
             var data = valueAccessor();
-
+            
             $grid.igGrid('option', 'dataSource', data.options());
-
             $grid.ntsGridList('setSelected', data.value());
         }
     }
@@ -1693,7 +1692,7 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
             var data = valueAccessor();
-            var primitiveValueName = ko.unwrap(data.constraint);
+            var primitiveValue = ko.unwrap(data.constraint);
             var isRequired = ko.unwrap(data.required) === true;
             var isInline = ko.unwrap(data.inline) === true;
             var isEnable = ko.unwrap(data.enable) !== false;
@@ -1709,10 +1708,10 @@ module nts.uk.ui.koExtentions {
                 $formLabel.addClass('required');
             }
 
-            if (primitiveValueName !== undefined) {
+            if (primitiveValue !== undefined) {
                 $formLabel.addClass(isInline ? 'inline' : 'broken');
 
-                var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValueName);
+                var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
                 $('<i/>').text(constraintText).appendTo($formLabel);
             }
         }
@@ -1723,16 +1722,23 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
         }
 
-        static buildConstraintText(primitiveValueName: string) {
-            var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-
-            var constraintText: string;
-            switch (constraint.valueType) {
-                case 'String':
-                    return uk.text.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
-                default:
-                    return 'ERROR';
-            }
+        static buildConstraintText(primitiveValues: any) {
+            if (!Array.isArray(primitiveValues))
+                primitiveValues = [primitiveValues];
+            let constraintText: string = "";
+            _.forEach(primitiveValues, function(primitiveValue){
+                let constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                switch (constraint.valueType) {
+                    case 'String':
+                        constraintText += (constraintText.length > 0) ? "/" : ""; 
+                        constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                        break;
+                    default:
+                        constraintText += 'ERROR';
+                        break;
+                }
+            });
+            return constraintText;
         }
     }
 
@@ -1787,7 +1793,8 @@ module nts.uk.ui.koExtentions {
             var date = ko.unwrap(data.value());
             container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
             container.datepicker({
-                dateFormat: 'yy/mm/dd'
+                format: 'yyyy/mm/dd',
+                language: 'ja-JP'
             });
             container.on('change', (event: any) => {
                 data.value(new Date(container.val()));
@@ -1964,7 +1971,7 @@ module nts.uk.ui.koExtentions {
 
             $grid1.igGrid({
                 width: gridWidth + CHECKBOX_WIDTH,
-                height: height - HEADER_HEIGHT,
+                height: (height - HEADER_HEIGHT) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
                 virtualization: true,
@@ -1980,7 +1987,7 @@ module nts.uk.ui.koExtentions {
 
             $grid2.igGrid({
                 width: gridWidth + CHECKBOX_WIDTH,
-                height: height - HEADER_HEIGHT,
+                height: (height - HEADER_HEIGHT) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
                 virtualization: true,
@@ -2050,7 +2057,6 @@ module nts.uk.ui.koExtentions {
                         });
                         $(grid1Id).igGrid("option", "dataSource", newSource);
                         $(grid1Id).igGrid("option", "dataBind");
-//                        data.options(newSource);
                     }
                 }
             });
@@ -2080,16 +2086,15 @@ module nts.uk.ui.koExtentions {
                         }).length <= 0;
                     });
                     if(notExisted.length > 0){
-                        data.options(currentSource.concat(notExisted));   
                         var newSource = _.filter(source, function(list){
                             var x = _.filter(notExisted, function(data){
                                 return data[primaryKey] === list[primaryKey];
                             });
                             return (x.length <= 0)
                         });
-                        $(grid1Id).igGrid("option", "dataSource", newSource);
+                        data.value(newSource);   
+                        $(grid1Id).igGrid("option", "dataSource", currentSource.concat(notExisted));
                         $(grid1Id).igGrid("option", "dataBind");
-//                        data.value(newSource);
                     }
                 }
             });
@@ -2111,7 +2116,6 @@ module nts.uk.ui.koExtentions {
 
             $grid1.igGrid('option', 'dataSource', data.options());
             $grid2.igGrid('option', 'dataSource', data.value());
-            //            $grid2.ntsGridList('setSelected', data.value());
         }
     }
 

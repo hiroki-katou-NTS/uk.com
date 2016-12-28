@@ -18,6 +18,12 @@ var nts;
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
                         var setValue = data.value;
+                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
+                        var constraint = validation.getConstraint(constraintName);
+                        var atomWidth = 9;
+                        if (constraint && constraint.maxLength) {
+                            $input.width(constraint.maxLength * atomWidth);
+                        }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped'/>");
                         $input.change(function () {
@@ -352,7 +358,6 @@ var nts;
                     if (!(searchTerm instanceof String)) {
                         searchTerm = "" + searchTerm;
                     }
-                    console.log('searchTerm = ' + searchTerm);
                     var filter = searchTerm.toLowerCase();
                     //if filter is empty return all the items
                     if (!filter) {
@@ -1298,7 +1303,6 @@ var nts;
                         }
                         if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                             container.trigger('validate');
-                            console.log('triggered validate event');
                         }
                     };
                     return ListBoxBindingHandler;
@@ -1327,17 +1331,14 @@ var nts;
                             };
                         });
                         var features = [];
-                        features.push({ name: 'MultiColumnHeaders' });
-                        features.push({ name: 'Hiding' });
-                        //features.push({ name: 'MultiColumnHeaders'});
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
                         features.push({ name: 'Sorting', type: 'local' });
                         features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
                         $grid.igGrid({
                             width: data.width,
-                            height: data.height - HEADER_HEIGHT,
+                            height: (data.height - HEADER_HEIGHT) + "px",
                             primaryKey: data.optionsValue,
-                            columns: observableColumns(),
+                            columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             features: features
@@ -1597,7 +1598,7 @@ var nts;
                      */
                     NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var primitiveValueName = ko.unwrap(data.constraint);
+                        var primitiveValue = ko.unwrap(data.constraint);
                         var isRequired = ko.unwrap(data.required) === true;
                         var isInline = ko.unwrap(data.inline) === true;
                         var isEnable = ko.unwrap(data.enable) !== false;
@@ -1612,9 +1613,9 @@ var nts;
                         if (isRequired) {
                             $formLabel.addClass('required');
                         }
-                        if (primitiveValueName !== undefined) {
+                        if (primitiveValue !== undefined) {
                             $formLabel.addClass(isInline ? 'inline' : 'broken');
-                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValueName);
+                            var constraintText = NtsFormLabelBindingHandler.buildConstraintText(primitiveValue);
                             $('<i/>').text(constraintText).appendTo($formLabel);
                         }
                     };
@@ -1623,15 +1624,23 @@ var nts;
                      */
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
-                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValueName) {
-                        var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
-                        var constraintText;
-                        switch (constraint.valueType) {
-                            case 'String':
-                                return uk.text.getCharType(primitiveValueName).buildConstraintText(constraint.maxLength);
-                            default:
-                                return 'ERROR';
-                        }
+                    NtsFormLabelBindingHandler.buildConstraintText = function (primitiveValues) {
+                        if (!Array.isArray(primitiveValues))
+                            primitiveValues = [primitiveValues];
+                        var constraintText = "";
+                        _.forEach(primitiveValues, function (primitiveValue) {
+                            var constraint = __viewContext.primitiveValueConstraints[primitiveValue];
+                            switch (constraint.valueType) {
+                                case 'String':
+                                    constraintText += (constraintText.length > 0) ? "/" : "";
+                                    constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
+                                    break;
+                                default:
+                                    constraintText += 'ERROR';
+                                    break;
+                            }
+                        });
+                        return constraintText;
                     };
                     return NtsFormLabelBindingHandler;
                 }());
@@ -1682,7 +1691,8 @@ var nts;
                         var date = ko.unwrap(data.value());
                         container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
                         container.datepicker({
-                            dateFormat: 'yy/mm/dd'
+                            format: 'yyyy/mm/dd',
+                            language: 'ja-JP'
                         });
                         container.on('change', function (event) {
                             data.value(new Date(container.val()));
@@ -1847,7 +1857,7 @@ var nts;
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         $grid1.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
-                            height: height - HEADER_HEIGHT,
+                            height: (height - HEADER_HEIGHT) + "px",
                             primaryKey: primaryKey,
                             columns: iggridColumns,
                             virtualization: true,
@@ -1860,7 +1870,7 @@ var nts;
                         $grid1.ntsGridList('setupSelecting');
                         $grid2.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
-                            height: height - HEADER_HEIGHT,
+                            height: (height - HEADER_HEIGHT) + "px",
                             primaryKey: primaryKey,
                             columns: iggridColumns,
                             virtualization: true,
@@ -1956,14 +1966,14 @@ var nts;
                                     }).length <= 0;
                                 });
                                 if (notExisted.length > 0) {
-                                    data.options(currentSource.concat(notExisted));
                                     var newSource = _.filter(source, function (list) {
                                         var x = _.filter(notExisted, function (data) {
                                             return data[primaryKey] === list[primaryKey];
                                         });
                                         return (x.length <= 0);
                                     });
-                                    $(grid1Id).igGrid("option", "dataSource", newSource);
+                                    data.value(newSource);
+                                    $(grid1Id).igGrid("option", "dataSource", currentSource.concat(notExisted));
                                     $(grid1Id).igGrid("option", "dataBind");
                                 }
                             }
@@ -1983,7 +1993,6 @@ var nts;
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         $grid1.igGrid('option', 'dataSource', data.options());
                         $grid2.igGrid('option', 'dataSource', data.value());
-                        //            $grid2.ntsGridList('setSelected', data.value());
                     };
                     return NtsSwapListBindingHandler;
                 }());

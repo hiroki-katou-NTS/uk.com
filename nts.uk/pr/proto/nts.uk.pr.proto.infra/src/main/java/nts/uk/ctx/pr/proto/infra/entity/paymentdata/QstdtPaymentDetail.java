@@ -11,7 +11,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import nts.arc.layer.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 
 @Entity
 @Table(name = "QSTDT_PAYMENT_DETAIL")

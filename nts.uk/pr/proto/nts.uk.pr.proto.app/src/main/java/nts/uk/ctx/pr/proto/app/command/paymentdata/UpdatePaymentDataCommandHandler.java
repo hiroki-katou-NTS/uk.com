@@ -119,7 +119,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 					.filter(t -> !StringUtil.isNullOrEmpty(t.getItemCode(), true)).collect(Collectors.toList());
 			for (DetailItemCommandBase item : details) {
 
-				if ("".equals(item.getValue())) {
+				if ("".equals(item.getValue()) || item.getValue() == null) {
 					throw new BusinessException("入力にエラーがあります。");
 				}
 

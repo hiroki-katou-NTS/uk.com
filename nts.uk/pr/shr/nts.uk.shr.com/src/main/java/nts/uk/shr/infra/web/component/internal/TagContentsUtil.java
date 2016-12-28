@@ -1,4 +1,4 @@
-package nts.uk.shr.web.component.internal;
+package nts.uk.shr.infra.web.component.internal;
 
 import java.util.Arrays;
 import java.util.List;
