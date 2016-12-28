@@ -350,7 +350,7 @@ div.popup-panel {
 /* line 153, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
-  display: inline-block;
+  display: none;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -369,16 +369,20 @@ div.popup-panel {
   color: #cc2222;
   border-color: #cc2222;
 }
+/* line 172, ../sass/components/_commons.scss */
+#func-notifier-errors.shown {
+  display: inline-block;
+}
 
 /*****************************
   Label
 *****************************/
-/* line 177, ../sass/components/_commons.scss */
+/* line 181, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 181, ../sass/components/_commons.scss */
+/* line 185, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
@@ -386,7 +390,7 @@ div.popup-panel {
   color: #C12017;
 }
 
-/* line 188, ../sass/components/_commons.scss */
+/* line 192, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -1984,7 +1988,7 @@ button.nts-switch-button[disabled]:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: '￥';
+  content: 'ﾂ･';
   left: 0;
   top: 0;
   text-align: left;
