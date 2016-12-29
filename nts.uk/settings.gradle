@@ -2,10 +2,38 @@ include 'web:nts.uk.pr.web'
 
 include 'shr:nts.uk.shr.com'
 
+include 'ctx:basic:nts.uk.ctx.basic.ac'
+include 'ctx:basic:nts.uk.ctx.basic.app'
+include 'ctx:basic:nts.uk.ctx.basic.dom'
+include 'ctx:basic:nts.uk.ctx.basic.infra'
+include 'ctx:basic:nts.uk.ctx.basic.pub'
+include 'ctx:basic:nts.uk.ctx.basic.pubimp'
+include 'ctx:basic:nts.uk.ctx.basic.ws'
+
+
+include 'ctx:pr:core:nts.uk.ctx.pr.core.ac'
 include 'ctx:pr:core:nts.uk.ctx.pr.core.app'
 include 'ctx:pr:core:nts.uk.ctx.pr.core.dom'
 include 'ctx:pr:core:nts.uk.ctx.pr.core.infra'
+include 'ctx:pr:core:nts.uk.ctx.pr.core.pub'
+include 'ctx:pr:core:nts.uk.ctx.pr.core.pubimp'
 include 'ctx:pr:core:nts.uk.ctx.pr.core.ws'
+
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.ac'
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.app'
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.dom'
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.infra'
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.pub'
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.pubimp'
+include 'ctx:pr:formula:nts.uk.ctx.pr.formula.ws'
+
+include 'ctx:pr:report:nts.uk.ctx.pr.report.ac'
+include 'ctx:pr:report:nts.uk.ctx.pr.report.app'
+include 'ctx:pr:report:nts.uk.ctx.pr.report.dom'
+include 'ctx:pr:report:nts.uk.ctx.pr.report.infra'
+include 'ctx:pr:report:nts.uk.ctx.pr.report.pub'
+include 'ctx:pr:report:nts.uk.ctx.pr.report.pubimp'
+include 'ctx:pr:report:nts.uk.ctx.pr.report.ws'
 
 include 'screen:pr:nts.uk.screen.pr.ws'
 include 'screen:pr:nts.uk.screen.pr.app'
