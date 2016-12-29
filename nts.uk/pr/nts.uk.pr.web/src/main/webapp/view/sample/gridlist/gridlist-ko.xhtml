@@ -27,52 +27,21 @@
 						<hr/>
 						<div id="error-message" style="color: #FF0000; font-weight: bold;"></div>
 							<table id="gridKO" data-bind="igGrid: {
-								dataSource: data,
+								dataSource: dataSource,
 								primaryKey: 'ID',
 								width: '100%',
-								autoCommit: true,
-								features: [
-									{
-										name: 'Updating',
-										editMode: 'row',
-										columnSettings: [
-											{
-												columnKey: 'ID',
-												readOnly: true
-											}
-										],
-										generatePrimaryKeyValue: function ( evt, ui )
-										{
-											ui.value = 'PK' + ui.value;
-										},
-										rowDeleting: function (evt, ui) {
-											var rowID = ui.rowID;
-											var selectedRow = $('#gridKO').igGridSelection('selectedRow');
-											if (selectedRow == null || rowID != selectedRow.id) {
-												$('#error-message').html('You should select the row before deleting it!').stop(true, true).fadeIn(500).delay(3000).fadeOut(500);
-												return false;
-											}
-										}
-									},
-									{
-										name: 'Selection',
-										mode: 'row',
-										multipleSelection: false,
-										activation: false,
-										rowSelectionChanged: selectionChanged
-									}
-								],
+								autoCommit: true,							
+								features: igConfig.features,
 								autoGenerateColumns: false,
-								columns: [
-									{ headerText: 'Customer ID', key: 'ID', dataType: 'string', width: '25%'},
-									{ headerText: 'Contact Name', key: 'ContactName', dataType: 'string', width: '25%',
-										template: '&lt;div data-bind=&quot;ntsCheckBox: { checked: true }&quot; &gt;${City}&lt;/div&gt;' },
-									{ headerText: 'City', key: 'City', dataType: 'string', width: '25%' },
-									{ headerText: 'Country', key: 'Country', dataType: 'string', width: '25%' }
-								]
+								columns: igConfig.columns,
+						        rendered: function(evt, ui) {
+						            ko.applyBindingsToDescendants($data, $('#gridKO')[0]);
+						        }
 							}"></table>
-							<hr/>
-							<table id="grid"></table>
+							<br/>
+							<div data-bind="text: 'Selected: ' + ko.toJSON(selectedItemID)"></div>
+							<input data-bind="ntsTextEditor: { value: dataSource()[selectedItemID()].ContactName }" />
+							<div data-bind="text: ko.toJSON(dataSource)"></div>
 							<hr/>
 							<article class="cf">
 							<div class="tabs">
