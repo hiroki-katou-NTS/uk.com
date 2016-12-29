@@ -1,6 +1,6 @@
 ﻿module nts.uk.time {
      
-     
+    var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
     export function formatYearMonth(yearMonth: number) {
         var result: string;
         var num = parseInt(String(yearMonth));
@@ -319,6 +319,7 @@
         format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
         format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
         format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+        format = format.replace(/DDD/g, dotW[date.getDay()]);
         format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
         format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
         format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));

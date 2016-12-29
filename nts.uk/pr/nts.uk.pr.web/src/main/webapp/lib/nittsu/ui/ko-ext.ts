@@ -1790,14 +1790,15 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             // Container.
             var container = $(element);
-            var date = ko.unwrap(data.value());
-            container.attr('value', nts.uk.time.formatDate(date, 'yyyy/MM/dd'));
+            var date = ko.unwrap(data.value);
+            var dateFormat = ko.unwrap(data.dateFormat);
+            container.attr('value', nts.uk.time.formatDate(date, dateFormat));
             container.datepicker({
                 format: 'yyyy/mm/dd',
                 language: 'ja-JP'
             });
             container.on('change', (event: any) => {
-                data.value(new Date(container.val()));
+                data.value(new Date(container.val().substring(0,10)));
             });
         }
 
@@ -1805,6 +1806,13 @@ module nts.uk.ui.koExtentions {
          * Update
          */
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            
+            var data = valueAccessor();
+            var container = $(element);
+            var date = ko.unwrap(data.value);
+            var dateFormat = ko.unwrap(data.dateFormat);
+            //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
+            container.val(nts.uk.time.formatDate(date, dateFormat));          
         }
     }
     /**
