@@ -445,6 +445,8 @@ module qmm019.f.viewmodel {
             var alamRangeHigh = null;
             var isUseLowAlam = null;
             var alamRangeLow = null;
+            var strError = "";
+            var strErrorLimit = "";
             if (self.paramCategoryAtr() == 0 || self.paramCategoryAtr() == 1) {
                 sumScopeAtr = self.comboBoxSumScopeAtr().selectedCode();
                 calculationMethod = self.comboBoxCalcMethod().selectedCode();
@@ -467,6 +469,35 @@ module qmm019.f.viewmodel {
                 alamRangeHigh = itemSelected().alamRangeHigh();
                 isUseLowAlam = itemSelected().checkUseLowAlam();
                 alamRangeLow = itemSelected().alamRangeLow();
+
+                //入力値の整合チェックを行う
+                //エラー上限値<アラーム上限値<アラーム下限値<エラー下限値　の場合
+                if(isUseHighError && isUseHighAlam
+                   && (+errRangeHigh < +alamRangeHigh)){
+                    alert('範囲の指定が正しくありません。');    
+                    $('#INP_002').focus();
+                    return false;
+                }
+                //エラー上限値 < エラー下限値 || エラー上限値 = エラー下限値
+                if(isUseHighError && isUseLowError
+                    && (+errRangeHigh < +errRangeLow ||+errRangeHigh == +errRangeLow)){
+                    alert('範囲の指定が正しくありません。');    
+                    $('#INP_002').focus();
+                    return false;
+                }
+                if(isUseLowError && isUseLowAlam
+                    && +alamRangeLow < +errRangeLow){
+                    alert('範囲の指定が正しくありません。');    
+                    $('#INP_003').focus();
+                    return false;
+                }
+                //アラーム上限値 < アラーム下限値 || アラーム上限値 = アラーム下限値
+                if(isUseHighAlam && isUseLowAlam
+                    && (+alamRangeHigh < +alamRangeLow || +alamRangeHigh == +alamRangeLow)){
+                    alert('範囲の指定が正しくありません。');    
+                    $('#INP_004').focus();
+                    return false;
+                }
             }
             var data = {
                 itemCode: itemSelected().itemCode(),
