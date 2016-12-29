@@ -16,27 +16,28 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="btn_001" class="button separate-button fix-button">新規</button>
-				<button id="btn_002"
+				<button id="a_btn_001" class="button separate-button fix-button">新規</button>
+				<button id="a_btn_002"
 					class="button proceed separate-button fix-button">登録</button>
-				<button id="btn_003" class="button separate-button fix-button">コピー</button>
-				<button id="btn_004" class="button separate-button fix-button">Excel出力</button>
-				<button id="btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
+				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>
+				<button id="a_btn_004" class="button separate-button fix-button">Excel出力</button>
+				<button id="a_btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
+				<span id="a_lbl_001">計算式の登録</span>
 			</div>
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
-					<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-					<input id="inp_001" class="fix-input" />
-					<button id="sch_001">検索</button>
+					<div id="a_lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
+					<input id="a_inp_001" class="fix-input" />
+					<button id="a_sch_001">検索</button>
 					<br />
-					<button id="btn_005">履歴追加</button>
-					<button id="btn_006">履歴編集</button>
+					<button id="a_btn_005">履歴追加</button>
+					<button id="a_btn_006">履歴編集</button>
 					<br />
-					<div id="lst_001" data-bind="with: lst_001">
+					<div id="a_lst_001" data-bind="with: a_lst_001">
 						<table id="treeGrid"
 							data-bind="ntsTreeGridView:{
 									width: 280,
-									height: 550,
+									height: 400,
 									options: items,
 									value: singleSelectedCode,
 									optionsValue: 'code',
@@ -50,7 +51,7 @@
 
 				</div>
 				<div id="right-content">
-					<div id="sel_001"
+					<div id="a_sel_001"
 						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 						<div class="tab-content-1">
 							<ui:include src="../b/index.xhtml" />

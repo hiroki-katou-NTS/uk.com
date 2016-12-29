@@ -38,10 +38,29 @@ var nts;
                                 return TreeGrid;
                             }());
                             viewmodel.TreeGrid = TreeGrid;
+                            var SwitchButton = (function () {
+                                function SwitchButton(data) {
+                                    var self = this;
+                                    self.roundingRules = ko.observableArray(data);
+                                    self.selectedRuleCode = ko.observable(1);
+                                }
+                                return SwitchButton;
+                            }());
+                            viewmodel.SwitchButton = SwitchButton;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.lst_001 = ko.observable(new TreeGrid());
+                                    var b_sel_001 = [
+                                        { code: '1', name: 'かんたん設定' },
+                                        { code: '2', name: '詳細設定' }
+                                    ];
+                                    var b_sel_002 = [
+                                        { code: '1', name: '利用しない' },
+                                        { code: '2', name: '利用する' }
+                                    ];
+                                    self.a_lst_001 = ko.observable(new TreeGrid());
+                                    self.b_sel_001 = ko.observable(new SwitchButton(b_sel_001));
+                                    self.b_sel_002 = ko.observable(new SwitchButton(b_sel_002));
                                     self.tabs = ko.observableArray([
                                         { id: 'tab-1', title: '基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: 'tab-2', title: '計算式の設定', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
