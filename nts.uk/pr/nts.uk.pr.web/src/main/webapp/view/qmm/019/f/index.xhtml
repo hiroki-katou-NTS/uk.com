@@ -199,7 +199,7 @@
 										class="cf clsCheckbox"></div>
 								</div>
 								<div class="clsInp">
-									<input style="float: left; margin-left: 9px;"  id="INP_002" data-bind="ntsNumberEditor: {
+									<input style="float: left; margin-left: 9px;"  id="INP_003" data-bind="ntsNumberEditor: {
 										value: alamRangeHigh,
 										constraint: '',
 										enable: checkUseHighAlam,
@@ -252,7 +252,7 @@
 						</span>
 					</div>
 					<hr />
-					<button data-bind="click: returnBackData" style="margin-left: 50px"
+					<button data-bind="click: returnBackData, enable: $root.errors.isEmpty" style="margin-left: 50px"
 						class="x-large proceed">設定</button>
 					<button data-bind="click: close" style="margin-left: 15px">キャンセル</button>
 				</div>
