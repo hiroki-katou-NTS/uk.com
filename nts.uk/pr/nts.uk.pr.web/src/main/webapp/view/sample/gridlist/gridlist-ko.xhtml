@@ -40,7 +40,10 @@
 							}"></table>
 							<br/>
 							<div data-bind="text: 'Selected: ' + ko.toJSON(selectedItemID)"></div>
-							<input data-bind="ntsTextEditor: { value: dataSource()[selectedItemID()].ContactName }" />
+							<div data-bind="text: 'Selected: ' + ko.toJSON(selectedItem)"></div>
+							<div data-bind="with: selectedItem">
+								<input data-bind="ntsTextEditor: { value: ContactName }" />
+							</div>					
 							<div data-bind="text: ko.toJSON(dataSource)"></div>
 							<hr/>
 							<article class="cf">

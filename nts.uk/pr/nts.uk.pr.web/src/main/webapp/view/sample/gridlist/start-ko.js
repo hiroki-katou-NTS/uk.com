@@ -12,11 +12,12 @@ __viewContext.ready(function () {
     ];
     var ScreenModel = (function () {
         function ScreenModel() {
+            var self = this;
             this.igConfig = {};
             this.igConfig.columns = [
                 { headerText: 'Customer ID', key: 'ID', dataType: 'string', width: '25%' },
                 { headerText: 'Contact Name', key: 'ContactName', dataType: 'string', width: '25%',
-                    template: '<div data-bind="ntsCheckBox: { checked: true }">${ContactName}</div>' },
+                    template: '<div data-bind="ntsCheckBox: { checked: $data.testCheck}">${ContactName}</div>' },
                 { headerText: 'City', key: 'City', dataType: 'string', width: '25%' },
                 { headerText: 'Country', key: 'Country', dataType: 'string', width: '25%',
                     template: "<input data-bind='ntsTextEditor: { value: ko.observable(\"${Country}\") }' />" }
@@ -33,6 +34,12 @@ __viewContext.ready(function () {
                 this.dataSource.push(new Item(db[i].ID, db[i].ContactName, db[i].City, db[i].Country));
             }
             this.selectedItemID = ko.observable(0);
+            this.selectedItem = ko.computed(function () {
+                var dataArr = self.dataSource();
+                if (self.selectedItemID() >= 0)
+                    return dataArr[self.selectedItemID()];
+                return new Item('', '', '', '');
+            });
         }
         ScreenModel.prototype.selectionChanged = function (evt, ui) {
             var rowdata = ui.row;
@@ -55,6 +62,7 @@ __viewContext.ready(function () {
             this.ContactName = ko.observable(ContactName);
             this.City = ko.observable(City);
             this.Country = ko.observable(Country);
+            this.testCheck = ko.observable(true);
         }
         return Item;
     }());
