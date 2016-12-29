@@ -1791,7 +1791,13 @@ module nts.uk.ui.koExtentions {
             // Container.
             var container = $(element);
             var date = ko.unwrap(data.value);
-            var dateFormat = ko.unwrap(data.dateFormat);
+            var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var length = 10, atomWidth = 9;
+            if(dateFormat === "yyyy/MM/dd DDD") {
+               length = 16; 
+            } else if(dateFormat === "yyyy/MM/dd D") {
+               length = 14;
+            }
             container.attr('value', nts.uk.time.formatDate(date, dateFormat));
             container.datepicker({
                 format: 'yyyy/mm/dd',
@@ -1800,6 +1806,7 @@ module nts.uk.ui.koExtentions {
             container.on('change', (event: any) => {
                 data.value(new Date(container.val().substring(0,10)));
             });
+            container.width(atomWidth * length);
         }
 
         /**
@@ -1810,7 +1817,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var container = $(element);
             var date = ko.unwrap(data.value);
-            var dateFormat = ko.unwrap(data.dateFormat);
+            var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
             container.val(nts.uk.time.formatDate(date, dateFormat));          
         }

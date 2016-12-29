@@ -319,7 +319,14 @@
         format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
         format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
         format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
-        format = format.replace(/DDD/g, dotW[date.getDay()]);
+        if(format.indexOf("DDD") != -1) {
+            var daystr = "(" + dotW[date.getDay()] + ")";
+            format = format.replace("DDD", daystr);
+        }           
+        else if(format.indexOf("D") != -1) {
+            var daystr = "(" + dotW[date.getDay()].substring(0,1) + ")";
+            format = format.replace("D", daystr);
+        }          
         format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
         format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
         format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));

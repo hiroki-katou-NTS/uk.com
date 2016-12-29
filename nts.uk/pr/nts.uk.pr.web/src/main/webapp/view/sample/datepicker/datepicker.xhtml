@@ -27,7 +27,11 @@
 					<div id="content" class="cf">
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
-						<input id="date-picker" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd DDD'}"></input>
+						<h3>Datepicker with short day name</h3>
+						<input id="date-picker" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd D'}"></input>
+						<br/><br/>
+						<h3>Datepicker with full day name</h3>
+						<input id="date-picker1" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd DDD'}"></input>
 						<br/><br/>
 						<span data-bind="text: date"></span>
 						<article class="cf">

@@ -52,9 +52,9 @@
 									<tr>
 										<td class="bg-green"><span data-bind="text: $data.index"></span></td>
 										<td class="bg-green"><span data-bind="text: $data.index + '月の設定'"></span></td>
-										<td><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
-										<td><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
-										<td><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
+										<td><input data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}"></input></td>
+										<td><input data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}"></input></td>
+										<td><input data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}"></input></td>
 										<td><div data-bind="ntsCheckBox: { checked: true }"></div></td>
 										<td data-bind="css: { hidden: !$parent.show() }"><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
 										<td data-bind="css: { hidden: !$parent.show() }"><input data-bind="ntsDatePicker: {value: $parent.date}"></input></td>
