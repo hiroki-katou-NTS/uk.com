@@ -199,8 +199,6 @@ div.label {
 .icon {
 	position: relative;
 	display: inline-block;
-	width: 16px;
-	height: 16px;
 	
 	&::before, &::after {
 	    content: '';
@@ -209,6 +207,8 @@ div.label {
 	}
 	
 	&.icon-close {
+		width: 16px;
+		height: 16px;
 		&::before, &::after {
 		    height: 3px;
 		    width: 100%;
@@ -226,6 +226,8 @@ div.label {
 	}
 	
 	&.icon-dot {
+		width: 16px;
+		height: 16px;
 	    border: 2px solid #fff;
 	    border-radius: 50%;
 	    background: #3BC31C;
