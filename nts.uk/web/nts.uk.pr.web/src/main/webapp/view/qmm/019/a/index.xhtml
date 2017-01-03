@@ -5,11 +5,6 @@
       xmlns:com="http://xmlns.jcp.org/jsf/component"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 <head>
-<script>
-		function opensubwindowNewLayout(){
-			nts.uk.ui.windows.sub.modal("http://localhost:8080/nts.uk.pr.web/view/qmm/019/g/index.xhtml", {title: "明細レイアウトの作成＞新規登録"});
-		}
-	</script>
 </head>
     <body>
 		
@@ -18,9 +13,7 @@
             	<com:ValidatorScript>
 					nts.uk.ctx.pr.proto.dom.layout.LayoutName
 				</com:ValidatorScript>
-            	<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
-            	<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-            	<com:scriptfile path="../../../../view/sample/sortable/js/knockout-sortable.js" />
+            	<com:scriptfile set="IGNITE" />
                 <com:scriptfile path="viewmodel.js" />
             	<com:scriptfile path="start.js" />
             	<com:scriptfile path="service.js" />
