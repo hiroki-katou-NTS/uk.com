@@ -1462,6 +1462,7 @@ module nts.uk.ui.koExtentions {
                     let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
                     data.value(selectedOption[optionsValue]);
                 }
+                
             });
         }
 
@@ -1497,7 +1498,7 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
+            
             // Get data.
             var data = valueAccessor();
             var options: Array<any> = ko.unwrap(data.options);
@@ -1533,15 +1534,15 @@ module nts.uk.ui.koExtentions {
             }
 
             // Init ig grid.
+            var $treegrid = $(element);
             $(element).igTreeGrid({
                 width: width,
                 height: height,
-                dataSource: options,
-                autoGenerateColumns: false,
+                dataSource: options,                
                 primaryKey: optionsValue,
                 columns: displayColumns,
                 childDataKey: optionsChild,
-                initialExpandDepth: 10,
+                initialExpandDepth: 10,                     
                 features: [
                     {
                         name: "Selection",
@@ -1559,17 +1560,23 @@ module nts.uk.ui.koExtentions {
                                 if (ko.isObservable(data.value)) {
                                     data.value(selectedRows[0].id);
                                 }
-                            }
+                            }                         
                         }
                     },
                     {
                         name: "RowSelectors",
-                        enableCheckBoxes: showCheckBox,
+                        enableCheckBoxes: showCheckBox,                        
                         checkBoxMode: "biState"
                     }]
             });
-
+            var treeGridId = $treegrid.attr('id');
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
+            $treegrid.on("selectChange", function() {              
+                var scrollContainer = $("#" + treeGridId + "_scroll");
+                var row1 = treeGridId + "_" + $treegrid.igTreeGrid("selectedRows")[0].id;
+                scrollContainer.scrollTop($("#"+row1).position().top);
+                //console.log(row1);
+            });
         }
 
         /**
@@ -1624,6 +1631,7 @@ module nts.uk.ui.koExtentions {
                 $(element).igTreeGridSelection("clearSelection");
                 $(element).igTreeGridSelection("selectRowById", singleValue);
             }
+            $(element).trigger("selectChange");          
         }
     }
 

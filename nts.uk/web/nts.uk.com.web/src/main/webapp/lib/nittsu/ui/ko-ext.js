@@ -1471,11 +1471,11 @@ var nts;
                             displayColumns = displayColumns.concat(extColumns);
                         }
                         // Init ig grid.
+                        var $treegrid = $(element);
                         $(element).igTreeGrid({
                             width: width,
                             height: height,
                             dataSource: options,
-                            autoGenerateColumns: false,
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
@@ -1507,7 +1507,14 @@ var nts;
                                     checkBoxMode: "biState"
                                 }]
                         });
+                        var treeGridId = $treegrid.attr('id');
                         $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
+                        $treegrid.on("selectChange", function () {
+                            var scrollContainer = $("#" + treeGridId + "_scroll");
+                            var row1 = treeGridId + "_" + $treegrid.igTreeGrid("selectedRows")[0].id;
+                            scrollContainer.scrollTop($("#" + row1).position().top);
+                            //console.log(row1);
+                        });
                     };
                     /**
                      * Update
@@ -1554,6 +1561,7 @@ var nts;
                             $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
+                        $(element).trigger("selectChange");
                     };
                     return NtsTreeGridViewBindingHandler;
                 }());
