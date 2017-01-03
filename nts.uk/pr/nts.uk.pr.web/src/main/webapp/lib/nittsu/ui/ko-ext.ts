@@ -403,20 +403,7 @@ module nts.uk.ui.koExtentions {
             $container.append("<button class='search-btn'>Search</button>");
             var $input = $container.find("input.ntsSearchBox");
             var $button = $container.find("button.search-btn");
-            $input.keyup(function() {
-                $input.change();
-                //console.log('change');
-            }).keydown(function(event) {
-                if(event.which == 13) {
-                   event.preventDefault();
-                   $button.click();           
-                }
-            });
-            $input.change(function(event){
-                var searchTerm = $input.val();               
-                filteredArr(filteredArray(arr,searchTerm,fields));
-            });
-            $button.click(function() {
+            var nextSearch = function() {
                 var filtArr = filteredArr();
                 var compareKey = fields[0];             
                 var isArray = $.isArray(selected());
@@ -426,8 +413,22 @@ module nts.uk.ui.koExtentions {
                     selected([]);
                     selected.push(selectedItem);
                 }                        
-                console.log(selectedItem);
+                console.log(selectedItem); 
+            }
+            $input.keyup(function() {
+                $input.change();
+                //console.log('change');
+            }).keydown(function(event) {
+                if(event.which == 13) {
+                   event.preventDefault();
+                   nextSearch();    
+                }
+            });            
+            $input.change(function(event){
+                var searchTerm = $input.val();               
+                filteredArr(filteredArray(arr,searchTerm,fields));
             });
+            $button.click(nextSearch);
         }
         
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          

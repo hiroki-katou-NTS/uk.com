@@ -6,15 +6,19 @@ __viewContext.ready(function () {
         singleSelectedCode: any;
         selectedCodes: any;
         headers: any;
-        searchTerm: KnockoutObservable<string>;
         constructor() {
             var self = this;
             self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
                 new Node('0003', 'Bangkok Thailand', []),
                 new Node('0004', 'Tokyo Japan', []),
                 new Node('0005', 'Jakarta Indonesia', []), 
-                new Node('0002', 'Seoul Korea', [])]);
-            self.searchTerm = ko.observable('');         
+                new Node('0002', 'Seoul Korea', []),
+                new Node('0006', 'Paris France', []),
+                new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),                             
+                new Node('0010', 'Beijing China', []),
+                new Node('0011', 'London United Kingdom', []),
+                new Node('0012', '', [])]);
+             
             self.filteredData = ko.observableArray(self.dataSource());
             self.singleSelectedCode = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);
@@ -22,8 +26,7 @@ __viewContext.ready(function () {
             self.headers = ko.observableArray(["Item Value Header","Item Text Header", "Auto generated Field"]);
         }       
         resetSelection(): void {
-            var self = this;
-            self.searchTerm('');
+            var self = this;          
             self.filteredData(self.dataSource());
             self.singleSelectedCode('0002');
             self.selectedCodes(['002']);           

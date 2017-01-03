@@ -24,16 +24,14 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SearchBox Sample version = jumpsearch</h1>
-						<a href="../filter/searchbox-filter.xhtml">View Filter version, click here</a>
+						<h1>SearchBox Sample version = jumpsearch</h1>						
 						<h2>Overview</h2>
 						<button data-bind="click: resetSelection">Reset</button>
 						<button data-bind="click: changeDataSource">Next Datasource</button>
 						<div class="cf">
 							<div style="float:left">
 								<p>Input your search term below</p>																
-								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', filteredItems: filteredData, fields: ['name', 'code']}" />
-								<span data-bind="text: searchTerm"></span>																																							
+								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
