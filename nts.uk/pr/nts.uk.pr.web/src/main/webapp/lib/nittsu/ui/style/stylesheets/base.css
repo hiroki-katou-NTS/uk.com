@@ -2071,9 +2071,13 @@ input.ntsSearchBox {
 /* When the input field gets focus, change its width to 100% */
 /* line 16, ../sass/components/_searchbox.scss */
 input.ntsSearchBox:focus {
-  width: 100%;
   border: 2px solid #00BFFF;
   outline: none;
+}
+
+/* line 20, ../sass/components/_searchbox.scss */
+button.search-btn {
+  margin: 5px;
 }
 
 /*!
@@ -2443,7 +2447,7 @@ body {
   z-index: 1;
   padding-right: 8px;
   padding-left: 8px;
-  content: '笙･';
+  content: 'ΓÖÑ';
   background-color: #fff;
 }
 

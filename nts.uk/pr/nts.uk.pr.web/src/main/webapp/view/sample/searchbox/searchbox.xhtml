@@ -31,35 +31,29 @@
 						<button data-bind="click: changeDataSource">Next Datasource</button>
 						<div class="cf">
 							<div style="float:left">
-								<p>Input your search term below</p>
-								<div style="width: 700px; position: relative">
-									<div style="width: 500px; display: inline">
-									<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
-									</div>
-									<div style="width: 200px; display: inline">
-									<button id="nextSearch" data-bind="click: nextSearch">Next Search</button>
-									</div>
-								</div>
+								<p>Input your search term below</p>																
+								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', filteredItems: filteredData, fields: ['name', 'code']}" />
+								<span data-bind="text: searchTerm"></span>																																							
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
 										options: dataSource,
-										value: singleSelectedCode,										
+										selectedValues: selectedCodes,								
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
-										multiple: false,
+										multiple: true,
 										enable: true,										
-										showCheckBox: false}"
+										showCheckBox: true}"
 									class="cf">
 								</table>
 							</div>
 							<div style="float:left">
 								<br/><br/>
-								<h4>Your single selected code:</h4>
-								<span data-bind="text: singleSelectedCode"></span>
+								<h4>Your multiple selected code:</h4>
+								<span data-bind="text: selectedCodes"></span>
 							</div>
 						</div>
 						

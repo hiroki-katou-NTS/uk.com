@@ -362,32 +362,75 @@ module nts.uk.ui.koExtentions {
         });
         return filtered;
     };
+    var getNextItem = function (selected, arr, selectedKey, compareKey, isArray) {
+        var current = null;
+        if(isArray) {
+            if(selected.length > 0) current = selected[0];
+        } else if(selected !== undefined && selected !== '' && selected !== null) {
+            current = selected;
+        }
+        if(arr.length > 0) {           
+            if(current) {
+                for(var i = 0; i < arr.length-1; i++) {
+                    var item = arr[i];
+                    if(selectedKey) {
+                        if(item[selectedKey] === current) return arr[i+1][selectedKey];
+                    } else if(item[compareKey] === current[compareKey]) return arr[i+1];
+                }
+            }
+            if(selectedKey) return arr[0][selectedKey];
+            return arr[0];
+        }
+        return undefined;
+    }
     class NtsSearchBoxBindingHandler extends NtsEditorBindingHandler {
 
         /**
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new TextEditorProcessor().init($(element), valueAccessor());
-            var $input = $(element);         
-            $input.addClass("ntsSearchBox");           
-            $input.keyup(function() {$input.change();});
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var data = valueAccessor();
-            var editorOption = (data.option !== undefined) ? ko.mapping.toJS(data.option) : new nts.uk.ui.option.TextEditorOption();
-            var textmode: string = editorOption.textmode;
-            var searchTerm = ko.unwrap(data.value);
-            $(element).attr('type', textmode);
-            $(element).val(searchTerm);
-            var arr = ko.unwrap(data.items);
-            var filteredArr = ko.unwrap(data.filteredItems);
+            var data = valueAccessor();           
             var fields = ko.unwrap(data.fields);
-            data.filteredItems(filteredArray(arr,searchTerm,fields));
+            var selected = data.selected;
+            var selectedKey = null;
+            if(data.selectedKey) {
+                selectedKey = ko.unwrap(data.selectedKey);
+            }           
+            var arr = ko.unwrap(data.items);
+            var filteredArr = data.filteredItems;
+            var $container = $(element);
+            $container.append("<input class='ntsSearchBox' type='text' />");
+            $container.append("<button class='search-btn'>Search</button>");
+            var $input = $container.find("input.ntsSearchBox");
+            var $button = $container.find("button.search-btn");
+            $input.keyup(function() {
+                $input.change();
+                //console.log('change');
+            }).keydown(function(event) {
+                if(event.which == 13) {
+                   event.preventDefault();
+                   $button.click();           
+                }
+            });
+            $input.change(function(event){
+                var searchTerm = $input.val();               
+                filteredArr(filteredArray(arr,searchTerm,fields));
+            });
+            $button.click(function() {
+                var filtArr = filteredArr();
+                var compareKey = fields[0];             
+                var isArray = $.isArray(selected());
+                var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
+                if(!isArray) selected(selectedItem);
+                else {
+                    selected([]);
+                    selected.push(selectedItem);
+                }                        
+                console.log(selectedItem);
+            });
+        }
+        
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
         }
     }
     /**

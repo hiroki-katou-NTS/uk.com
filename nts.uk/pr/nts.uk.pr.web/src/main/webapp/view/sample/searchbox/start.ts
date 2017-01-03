@@ -4,6 +4,7 @@ __viewContext.ready(function () {
         dataSource: any;
         filteredData: any;
         singleSelectedCode: any;
+        selectedCodes: any;
         headers: any;
         searchTerm: KnockoutObservable<string>;
         constructor() {
@@ -16,6 +17,7 @@ __viewContext.ready(function () {
             self.searchTerm = ko.observable('');         
             self.filteredData = ko.observableArray(self.dataSource());
             self.singleSelectedCode = ko.observable(null);
+            self.selectedCodes = ko.observableArray([]);
             self.index = 0;
             self.headers = ko.observableArray(["Item Value Header","Item Text Header", "Auto generated Field"]);
         }       
@@ -23,7 +25,8 @@ __viewContext.ready(function () {
             var self = this;
             self.searchTerm('');
             self.filteredData(self.dataSource());
-            self.singleSelectedCode('0002');           
+            self.singleSelectedCode('0002');
+            self.selectedCodes(['002']);           
         }
         
         changeDataSource(): void {
@@ -37,26 +40,6 @@ __viewContext.ready(function () {
             };
             self.dataSource(newArrays);
             self.filteredData(newArrays);
-        }
-        nextSearch(): void {
-           var self = this;
-           var filteredData = self.filteredData();
-           console.log(filteredData[0]);
-           var singleSelectedCode = self.singleSelectedCode();
-           var index = -1;
-           if(singleSelectedCode) {
-               for(var i = 0; i < filteredData.length; i++) {
-                  var item = filteredData[i];
-                  if(item.code ===  singleSelectedCode) {
-                      index = i;
-                      break;
-                  }
-               }
-               if(filteredData && filteredData.length > 0)
-                    self.singleSelectedCode(filteredData[(index+1)%filteredData.length].code);
-           } else {
-              if(filteredData && filteredData.length > 0) self.singleSelectedCode(filteredData[0].code); 
-           }
         }
     }
     

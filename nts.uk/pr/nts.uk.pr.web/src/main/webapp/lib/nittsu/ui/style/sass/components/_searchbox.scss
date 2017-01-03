@@ -14,7 +14,9 @@ input.ntsSearchBox {
 
 /* When the input field gets focus, change its width to 100% */
 input.ntsSearchBox:focus {
-    width: 100%;
     border: 2px solid #00BFFF;
     outline: none;
+}
+button.search-btn {
+	margin: 5px;
 }
