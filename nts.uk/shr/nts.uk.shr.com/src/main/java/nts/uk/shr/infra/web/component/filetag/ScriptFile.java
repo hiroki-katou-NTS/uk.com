@@ -38,6 +38,7 @@ public class ScriptFile extends UIComponentBase {
             "/lib/nittsu/ui/textbox-options.js",
             "/lib/nittsu/time.js",
             "/lib/nittsu/number.js",
+            "/lib/generic/jquery/datepicker.js"
     }));
     
     private static Set<String> FILES_IGNITE = new LinkedHashSet<String>(Arrays.asList(new String[] {
