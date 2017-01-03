@@ -52,7 +52,8 @@ public class ValidatorScript extends UIComponentBase {
 	
 	private static void writePrimitiveValueConstraints(ResponseWriter rw, String fqnOfPrimitiveValueClass) throws IOException {
 		
-		val pvClass = TagContentsUtil.findClass(fqnOfPrimitiveValueClass).get();
+		val pvClass = TagContentsUtil.findClass(fqnOfPrimitiveValueClass)
+				.orElseThrow(() -> new RuntimeException("PrimitiveValue not found: " + fqnOfPrimitiveValueClass));
 		String pvName = pvClass.getSimpleName();
 		
 		rw.append("\n\t");

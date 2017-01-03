@@ -123,18 +123,13 @@ project (':ctx:pr:core:nts.uk.ctx.pr.core.infra') {
 	}
 }
 
-project (':web:nts.uk.pr.web') {
+project (':web:nts.uk.com.web') {
 	apply plugin: 'war'
 	war {
-		baseName= "nts.uk.pr.web"
+		baseName= "nts.uk.com.web"
 	}
-	def explodedPath = "${buildDir}/exploded"
-	def explodedWarPath = "${explodedPath}/${war.baseName}.war"
-	def explodedWarDeployPath = "${explodedWarPath}.dodeploy"
-	def explodedWarFolder = new File(explodedWarPath);
-	def explodedWarDeployFile = new File(explodedWarDeployPath);
-	def staticSourcePath = "${rootDir}/nts.uk.pr.web/src/main/webapp"
-	def deployPattern = ~/${war.baseName}\.war\.*/
+	def explodedWarPath = "${buildDir}/exploded/${war.baseName}.war"
+	def explodedWarDeployFile = new File("${explodedWarPath}.dodeploy");
 
 	task explodedWar(type: Copy) {  
 		into explodedWarPath
@@ -147,17 +142,58 @@ project (':web:nts.uk.pr.web') {
 	war.dependsOn explodedWar
 	
 	task copyStaticResource(type: Sync) {
-		from staticSourcePath
+		from "${rootDir}/${war.baseName}/src/main/webapp"
 		into explodedWarPath
 	}
+	
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 
-		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ws')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.ac')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.app')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.infra')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
+		runtime project (':ctx:basic:nts.uk.ctx.basic.ws')
+	}
+}
+
+project (':web:nts.uk.pr.web') {
+	apply plugin: 'war'
+	war {
+		baseName= "nts.uk.pr.web"
+	}
+	def explodedWarPath = "${buildDir}/exploded/${war.baseName}.war"
+	def explodedWarDeployFile = new File("${explodedWarPath}.dodeploy");
+
+	task explodedWar(type: Copy) {  
+		into explodedWarPath
+		with war
+		doLast {
+			explodedWarDeployFile.write ''
+		}
+	}
+	
+	war.dependsOn explodedWar
+	
+	task copyStaticResource(type: Sync) {
+		from "${rootDir}/${war.baseName}/src/main/webapp"
+		into explodedWarPath
+	}
+	
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.infra')
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pub')
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ws')
 		
 		runtime project (':screen:pr:nts.uk.screen.pr.ws')
 		runtime project (':screen:pr:nts.uk.screen.pr.app')
