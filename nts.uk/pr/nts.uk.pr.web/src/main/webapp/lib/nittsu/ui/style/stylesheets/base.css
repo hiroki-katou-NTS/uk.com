@@ -350,7 +350,7 @@ div.popup-panel {
 /* line 153, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
-  display: inline-block;
+  display: none;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -369,16 +369,20 @@ div.popup-panel {
   color: #cc2222;
   border-color: #cc2222;
 }
+/* line 172, ../sass/components/_commons.scss */
+#func-notifier-errors.shown {
+  display: inline-block;
+}
 
 /*****************************
   Label
 *****************************/
-/* line 177, ../sass/components/_commons.scss */
+/* line 181, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 181, ../sass/components/_commons.scss */
+/* line 185, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
@@ -386,9 +390,58 @@ div.popup-panel {
   color: #C12017;
 }
 
-/* line 188, ../sass/components/_commons.scss */
+/* line 192, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
+}
+
+/*****************************
+  Icon
+*****************************/
+/* line 195, ../sass/components/_commons.scss */
+.icon {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+/* line 201, ../sass/components/_commons.scss */
+.icon::before, .icon::after {
+  content: '';
+  position: absolute;
+  display: block;
+}
+/* line 208, ../sass/components/_commons.scss */
+.icon.icon-close::before, .icon.icon-close::after {
+  height: 3px;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  margin-top: -1px;
+  background: #404040;
+}
+/* line 216, ../sass/components/_commons.scss */
+.icon.icon-close::before {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* line 219, ../sass/components/_commons.scss */
+.icon.icon-close::after {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+/* line 224, ../sass/components/_commons.scss */
+.icon.icon-dot {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #3BC31C;
+  box-sizing: border-box;
 }
 
 /* line 2, ../sass/components/_accordion.scss */
@@ -1984,7 +2037,7 @@ button.nts-switch-button[disabled]:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: '￥';
+  content: 'ﾂ･';
   left: 0;
   top: 0;
   text-align: left;

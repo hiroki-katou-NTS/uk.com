@@ -152,7 +152,7 @@ div.popup-panel {
 *****************************/
 #func-notifier-errors {
 	position: absolute;
-	display: inline-block;
+	display: none;
 
 	@include border-radius(5px);
 	padding: 1px 17px 3px 17px;
@@ -167,6 +167,10 @@ div.popup-panel {
 		background-color: #ffcccc;
 		color: #cc2222;
 		border-color: #cc2222;
+	}
+	
+	&.shown {
+		display: inline-block;
 	}
 }
 
@@ -187,4 +191,44 @@ div.popup-panel {
 }
 div.label {
 	width: 100%;
+}
+
+/*****************************
+  Icon
+*****************************/
+.icon {
+	position: relative;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	
+	&::before, &::after {
+	    content: '';
+	    position: absolute;
+	    display: block;
+	}
+	
+	&.icon-close {
+		&::before, &::after {
+		    height: 3px;
+		    width: 100%;
+		    top: 50%;
+		    left: 0;
+		    margin-top: -1px;
+		    background: $button_font_color;
+		}
+		&::before {
+			@include transform(rotate(45deg));
+		}
+		&::after {
+			@include transform(rotate(-45deg));
+		}
+	}
+	
+	&.icon-dot {
+	    border: 2px solid #fff;
+	    border-radius: 50%;
+	    background: #3BC31C;
+	    box-sizing: border-box;
+	}
 }
