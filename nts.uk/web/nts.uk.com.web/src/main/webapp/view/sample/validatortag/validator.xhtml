@@ -15,13 +15,12 @@
 				<com:scriptfile path="../catalog/catalog.js" />
 				<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
-					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-					nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
-					nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
-					nts.uk.ctx.core.dom.company.CompanyCode
+					nts.uk.shr.com.primitive.EmployeeId
+					nts.uk.shr.com.primitive.sample.CommonAmount
+					nts.uk.shr.com.primitive.sample.PersonalWageCode
+					nts.uk.shr.com.primitive.sample.ProcessingNo
+					nts.uk.shr.com.primitive.sample.ResidenceCode
 					nts.arc.time.YearMonth
-					nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
-					nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate
 				</com:ValidatorScript>
             </ui:define>
             
@@ -36,13 +35,12 @@
 						<pre><![CDATA[//Test
 <com:ValidatorScript>
 	nts.uk.shr.com.primitive.PersonId
-	nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-	nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
-	nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
-	nts.uk.ctx.core.dom.company.CompanyCode
+	nts.uk.shr.com.primitive.EmployeeId
+	nts.uk.shr.com.primitive.sample.CommonAmount
+	nts.uk.shr.com.primitive.sample.PersonalWageCode
+	nts.uk.shr.com.primitive.sample.ProcessingNo
+	nts.uk.shr.com.primitive.sample.ResidenceCode
 	nts.arc.time.YearMonth
-	nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
-	nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate
 </com:ValidatorScript>]]></pre>
 <pre><![CDATA[//Result (at head)
 	__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};
