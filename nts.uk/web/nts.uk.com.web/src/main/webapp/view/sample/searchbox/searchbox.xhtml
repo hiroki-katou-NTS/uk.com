@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<body>
+		
+		<ui:composition template="../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				
+				<com:ValidatorScript>
+					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>SearchBox Sample version = jumpsearch</h1>						
+						<h2>Overview</h2>
+						<button data-bind="click: resetSelection">Reset</button>
+						<button data-bind="click: changeDataSource">Next Datasource</button>
+						<div class="cf">
+							<div style="float:left">
+								<p>Input your search term below</p>																
+								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
+								<h3>Single Selection</h3>
+								<table id="treegrid2"
+									data-bind="ntsTreeGridView:{
+										width: 700,
+										height: 250,
+										options: dataSource,
+										selectedValues: selectedCodes,								
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,										
+										showCheckBox: true}"
+									class="cf">
+								</table>
+							</div>
+							<div style="float:left">
+								<br/><br/>
+								<h4>Your multiple selected code:</h4>
+								<span data-bind="text: selectedCodes"></span>
+							</div>
+						</div>
+						
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+<pre><![CDATA[<p>Input your search term below</p>
+<div style="width: 500px">
+<input data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
+</div>
+<div style="width: 200px">
+<button style="float: left" data-bind="click: nextSearch">Next Search</button>
+</div>
+<h3>Single Selection</h3>
+<table id="treegrid2"
+	data-bind="ntsTreeGridView:{
+		width: 700,
+		height: 250,
+		options: dataSource,
+		value: singleSelectedCode,										
+		optionsValue: 'code',
+		optionsChild: 'childs',
+		optionsText: 'nodeText',
+		multiple: false,
+		enable: true,										
+		showCheckBox: false}"
+	class="cf">
+</table>
+]]></pre>
+									<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> string <br/>
+													<b>Default:</b> ""<br/>
+													<i>string:</i> The search term, used to looking up entry by lowercase matched
+												</td>
+											</tr>
+											<tr>
+												<td>dataSource</td>
+												<td>
+													<b>Type:</b> array of items, use for data source in grid<br/>													
+													<i>item:</i> object class that store our data<br/>
+												</td>
+											</tr>
+											<tr>
+												<td>filteredData</td>
+												<td>
+													<b>Type:</b> array of items<br/>
+													Save search result in an array for jump list.
+													Each time <a style="color: green" href="#nextSearch">next search button</a> clicked, the selectedItem will be the next or 0 from current
+													index that match the selectedItem
+												</td>
+											</tr>											
+										</tbody>
+									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+<pre><![CDATA[class ScreenModel {
+        index: number;
+        dataSource: any;
+        filteredData: any;
+        singleSelectedCode: any;
+        headers: any;
+        searchTerm: KnockoutObservable<string>;
+        constructor() {
+            var self = this;
+            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+                new Node('0003', 'Bangkok Thailand', []),
+                new Node('0004', 'Tokyo Japan', []),
+                new Node('0005', 'Jakarta Indonesia', []), 
+                new Node('0002', 'Seoul Korea', [])]);
+            self.searchTerm = ko.observable('');         
+            self.filteredData = ko.observableArray(self.dataSource());
+            self.singleSelectedCode = ko.observable(null);
+            self.index = 0;
+            self.headers = ko.observableArray(["Item Value Header","Item Text Header", "Auto generated Field"]);
+        }       
+        resetSelection(): void {
+            var self = this;
+            self.searchTerm('');
+            self.filteredData(self.dataSource());
+            self.singleSelectedCode('0002');           
+        }
+        
+        changeDataSource(): void {
+            var self = this;
+            var i = 0;
+            var newArrays = new Array();
+            while (i < 50) {
+                self.index ++;
+                i++;
+                newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
+            };
+            self.dataSource(newArrays);
+            self.filteredData(newArrays);
+        }
+        nextSearch(): void {
+           var self = this;
+           var filteredData = self.filteredData();
+           console.log(filteredData[0]);
+           var singleSelectedCode = self.singleSelectedCode();
+           var index = -1;
+           if(singleSelectedCode) {
+               for(var i = 0; i < filteredData.length; i++) {
+                  var item = filteredData[i];
+                  if(item.code ===  singleSelectedCode) {
+                      index = i;
+                      break;
+                  }
+               }
+               if(filteredData && filteredData.length > 0)
+                    self.singleSelectedCode(filteredData[(index+1)%filteredData.length].code);
+           } else {
+              if(filteredData && filteredData.length > 0) self.singleSelectedCode(filteredData[0].code); 
+           }
+        }
+    }]]></pre>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+					</div>
+		   		</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
