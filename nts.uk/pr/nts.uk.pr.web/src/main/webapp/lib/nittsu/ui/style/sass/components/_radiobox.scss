@@ -50,8 +50,7 @@
 		
 		&[disabled] + span,
 		&[disabled] + span + span {
-			cursor:none;
-		    cursor:not-allowed;
+		    cursor:default;
 			user-select: none;
 			opacity: 0.8;
 		}

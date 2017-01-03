@@ -1362,7 +1362,11 @@ var nts;
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
                         var data = valueAccessor();
-                        $grid.igGrid('option', 'dataSource', data.options());
+                        var currentSource = $grid.igGrid('option', 'dataSource');
+                        if (!_.isEqual(currentSource, data.options())) {
+                            $grid.igGrid('option', 'dataSource', data.options());
+                            $grid.igGrid("dataBind");
+                        }
                         $grid.ntsGridList('setSelected', data.value());
                         $grid.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
@@ -2006,8 +2010,16 @@ var nts;
                         }
                         var $grid1 = $swap.find("#" + elementId + "-grid1");
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
-                        $grid1.igGrid('option', 'dataSource', data.options());
-                        $grid2.igGrid('option', 'dataSource', data.value());
+                        var currentSource = $grid1.igGrid('option', 'dataSource');
+                        if (!_.isEqual(currentSource, data.options())) {
+                            $grid1.igGrid('option', 'dataSource', data.options());
+                            $grid1.igGrid("dataBind");
+                        }
+                        var currentSelected = $grid2.igGrid('option', 'dataSource');
+                        if (!_.isEqual(currentSelected, data.value())) {
+                            $grid2.igGrid('option', 'dataSource', data.value());
+                            $grid2.igGrid("dataBind");
+                        }
                     };
                     return NtsSwapListBindingHandler;
                 }());
