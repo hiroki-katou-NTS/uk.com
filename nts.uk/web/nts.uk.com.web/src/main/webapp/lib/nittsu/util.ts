@@ -9,7 +9,19 @@
             return true;
         }
         
-    
+        export function flatArray(arr, childField) {
+            var flatArr = [];
+            if(!childField) return arr;
+            for(var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                var childList = item[childField];
+                flatArr.push(item);
+                for(var j = 0; j < childList.length; j++) {
+                    flatArr.push(childList[j]);
+                } 
+            }
+            return flatArr;
+        }
         /**
          * Returns true if the target is null or undefined.
          */
