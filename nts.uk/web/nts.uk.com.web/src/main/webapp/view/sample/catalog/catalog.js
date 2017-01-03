@@ -1,6 +1,6 @@
 $(function(){
 	
-	$("#side-menu").load("/nts.uk.pr.web/view/sample/catalog/sidemenu.xhtml", function(){
+	$("#side-menu").load("/nts.uk.com.web/view/sample/catalog/sidemenu.xhtml", function(){
 	    $("#side-menu a").each(function () {
 	        var href = $(this).attr('href');
 	        if (window.location.pathname === href) {
