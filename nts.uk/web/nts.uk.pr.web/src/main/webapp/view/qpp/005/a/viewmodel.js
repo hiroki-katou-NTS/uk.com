@@ -196,7 +196,7 @@ var nts;
                                     var totalPayment = _.last(detailsPayment);
                                     var inputtingsDetailsPayment = _.reject(detailsPayment, totalPayment);
                                     var updateTotalPayment = function () {
-                                        var total = _(inputtingsDetailsPayment).map(function (d) { return Number(uk.util.orDefault(d.value(), 0)); }).sum();
+                                        var total = _(inputtingsDetailsPayment).map(function (d) { return Number(util.orDefault(d.value(), 0)); }).sum();
                                         totalPayment.value(total);
                                         var detailsTranfer = _.flatMap(tranfer.lines(), function (l) { return l.details(); });
                                         var totalValueTranfer = _.last(detailsTranfer).value();

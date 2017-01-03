@@ -350,7 +350,7 @@ var nts;
                 /**
                  * SearchBox Binding Handler
                  */
-                var filteredArray = function (array, searchTerm, fields) {
+                var filteredArray = function (array, searchTerm, fields, childField) {
                     //if items is empty return empty array
                     if (!array) {
                         return [];
@@ -358,13 +358,14 @@ var nts;
                     if (!(searchTerm instanceof String)) {
                         searchTerm = "" + searchTerm;
                     }
+                    var flatArr = nts.uk.util.flatArray(array, childField);
                     var filter = searchTerm.toLowerCase();
                     //if filter is empty return all the items
                     if (!filter) {
-                        return array;
+                        return flatArr;
                     }
                     //filter data
-                    var filtered = ko.utils.arrayFilter(array, function (item) {
+                    var filtered = ko.utils.arrayFilter(flatArr, function (item) {
                         var i = fields.length;
                         while (i--) {
                             var prop = fields[i];
@@ -423,6 +424,10 @@ var nts;
                         }
                         var arr = ko.unwrap(data.items);
                         var filteredArr = data.filteredItems;
+                        var childField = null;
+                        if (data.childField) {
+                            childField = ko.unwrap(data.childField);
+                        }
                         var $container = $(element);
                         $container.append("<input class='ntsSearchBox' type='text' />");
                         $container.append("<button class='search-btn'>Search</button>");
@@ -452,7 +457,7 @@ var nts;
                         });
                         $input.change(function (event) {
                             var searchTerm = $input.val();
-                            filteredArr(filteredArray(arr, searchTerm, fields));
+                            filteredArr(filteredArray(arr, searchTerm, fields, childField));
                         });
                         $button.click(nextSearch);
                     };
