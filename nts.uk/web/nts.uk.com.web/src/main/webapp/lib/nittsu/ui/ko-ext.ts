@@ -1846,8 +1846,8 @@ module nts.uk.ui.koExtentions {
                length = 14;
             }
             container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-            container.datepicker({
-                format: 'yyyy/mm/dd',
+            (<any>container).datepicker({
+                format: 'yyyy/mm/dd', // cast to avoid error
                 language: 'ja-JP'
             });
             container.on('change', (event: any) => {
