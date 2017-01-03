@@ -398,20 +398,23 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 195, ../sass/components/_commons.scss */
+/* line 199, ../sass/components/_commons.scss */
 .icon {
   position: relative;
   display: inline-block;
-  width: 16px;
-  height: 16px;
 }
-/* line 201, ../sass/components/_commons.scss */
+/* line 203, ../sass/components/_commons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 208, ../sass/components/_commons.scss */
+/* line 209, ../sass/components/_commons.scss */
+.icon.icon-close {
+  width: 16px;
+  height: 16px;
+}
+/* line 212, ../sass/components/_commons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -420,7 +423,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 216, ../sass/components/_commons.scss */
+/* line 220, ../sass/components/_commons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -428,7 +431,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 219, ../sass/components/_commons.scss */
+/* line 223, ../sass/components/_commons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -436,8 +439,10 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 224, ../sass/components/_commons.scss */
+/* line 228, ../sass/components/_commons.scss */
 .icon.icon-dot {
+  width: 16px;
+  height: 16px;
   border: 2px solid #fff;
   border-radius: 50%;
   background: #3BC31C;
@@ -2037,7 +2042,7 @@ button.nts-switch-button[disabled]:hover {
 }
 /* line 19, ../sass/components/_currency.scss */
 .currency.currencyLeft:after {
-  content: 'ﾂ･';
+  content: '\00a5';
   left: 0;
   top: 0;
   text-align: left;

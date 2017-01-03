@@ -9,6 +9,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
+            var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function formatYearMonth(yearMonth) {
                 var result;
                 var num = parseInt(String(yearMonth));
@@ -312,6 +313,14 @@ var nts;
                 format = format.replace(/yy/g, ('0' + (date.getFullYear() % 100)).slice(-2));
                 format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
                 format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+                if (format.indexOf("DDD") != -1) {
+                    var daystr = "(" + dotW[date.getDay()] + ")";
+                    format = format.replace("DDD", daystr);
+                }
+                else if (format.indexOf("D") != -1) {
+                    var daystr = "(" + dotW[date.getDay()].substring(0, 1) + ")";
+                    format = format.replace("D", daystr);
+                }
                 format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
                 format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
                 format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
