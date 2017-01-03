@@ -2,7 +2,7 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.constraint = ['LayoutCode', 'CompanyCode'];
+            self.constraint = ['ResidenceCode', 'CompanyCode'];
             self.inline = ko.observable(true);
             self.required = ko.observable(true);
             self.enable = ko.observable(true);

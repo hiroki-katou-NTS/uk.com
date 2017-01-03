@@ -11,9 +11,6 @@
 			<ui:define name="htmlHead">
 				<script>var dialogSize = { width: 300, height: 200 };</script>
 				
-				<com:ValidatorScript>
-					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
-   				</com:ValidatorScript>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
@@ -24,13 +21,12 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SearchBox Sample version = jumpsearch</h1>						
+						<h1>SearchBox Sample</h1>						
 						<h2>Overview</h2>
 						<button data-bind="click: resetSelection">Reset</button>
 						<button data-bind="click: changeDataSource">Next Datasource</button>
 						<div class="cf">
-							<div style="float:left">
-								<p>Input your search term below</p>																
+							<div style="float:left">																					
 								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
