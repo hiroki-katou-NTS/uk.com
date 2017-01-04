@@ -1,0 +1,101 @@
+@CHARSET "UTF-8";
+
+#tabpanel-1 #BTN_001 {
+	margin-left: 30px;
+}
+
+#tabpanel-1 #BTN_002 {
+	margin-left: 100px;
+}
+
+#LBL_001 {
+	float: right;
+	padding: 25px 10px 0px 0px;
+}
+
+#BTN_004 {
+	margin-left: 30px;
+}
+
+#content, #content2 {
+	padding: 20px 0px 20px 30px;
+}
+
+#SEL_001 .ntsRadioBox {
+	display: block;
+}
+
+#SEL_001 {
+	padding-top: 10px;
+}
+
+#SEL_001, #LBL_003 {
+	float: left;
+}
+
+.floatLeft {
+	float: left !important;
+}
+
+#SEL_002 {
+	float: left;
+	margin-top: 31px;
+	margin-left: 20px;
+	min-width: 200px !important;
+	height: 30px;
+}
+
+#LBL_004, #LBL_007, #LBL_009, #content2 #LBL_011, #LBL_012, #LBL_013 {
+	float: left;
+	margin-top: 20px;
+}
+
+#INP_001, #INP_002 {
+	width: 60px;
+}
+
+#INP_001, #INP_002, #INP_003, #INP_004 {
+	margin-top: 25px;
+	float: left;
+}
+
+input {
+	border-radius: 5px;
+	border: solid thin gray;
+	height: 25px;
+	padding: 2px 8px;
+}
+
+#LBL_005, #LBL_008, #LBL_010 {
+	margin: 30px 0px 0px 9px;
+}
+
+#LBL_006, #content #LBL_011 {
+	clear: both;
+	margin-top: 30px;
+	margin-left: 5px;
+	font-size: 1.3rem;
+}
+
+#INP_003 {
+	width: 90px;
+}
+
+#INP_004 {
+	width: 17px;
+}
+
+.hrLabel {
+	clear: both;
+	width: 400px;
+	float: left;
+	margin-top: 10px;
+}
+
+#LST_001 {
+	margin-top: 10px;
+}
+
+#content2 #SEL_003, #content2 #SEL_004 {
+	margin-top: 24px;
+}
