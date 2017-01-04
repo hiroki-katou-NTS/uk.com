@@ -9,10 +9,10 @@ public interface ClassificationRepository {
 	
 	void update(Classification classification);
 	
-	void remove(String companyCode, ClassificationCode classificationCode);
+	void remove(int companyCode, ClassificationCode classificationCode);
 	
-	Optional<Classification> findSingleClassification(String companyCode, ClassificationCode classificationCode);
+	Optional<Classification> findSingleClassification(int companyCode, ClassificationCode classificationCode);
 	
-	List<Classification> findAll(String code);
+	List<Classification> findAll(int companyCode);
 
 }
