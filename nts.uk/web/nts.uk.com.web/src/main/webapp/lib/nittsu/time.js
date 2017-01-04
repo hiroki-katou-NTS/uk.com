@@ -21,7 +21,7 @@ var nts;
             time_1.formatYearMonth = formatYearMonth;
             function getYearMonthJapan(year, month) {
                 if (month)
-                    return year + " 年" + month + " 月";
+                    return year + "年 " + month + " 月";
                 return year;
             }
             function yearInJapanEmpire(year) {

@@ -1573,8 +1573,9 @@ module nts.uk.ui.koExtentions {
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
             $treegrid.on("selectChange", function() {              
                 var scrollContainer = $("#" + treeGridId + "_scroll");
-                var row1 = treeGridId + "_" + $treegrid.igTreeGrid("selectedRows")[0].id;
-                scrollContainer.scrollTop($("#"+row1).position().top);
+                var row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
+                var rowidstr = "tr[data-id='" + row1 + "']";
+                scrollContainer.scrollTop($(rowidstr).position().top);
                 //console.log(row1);
             });
         }
