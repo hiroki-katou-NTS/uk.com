@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<style>
+					note{position:relative;display:block;background:#ffc;box-shadow:1px 2px 3px 0px rgba(0,0,0,0.3);padding:20px;margin:20px auto;}
+					note:before{position:absolute;display:block;content:'';width:50px;height:15px;left:15px;top:-8px;background:rgba(255,255,255,0.35);box-shadow:0 0 2px 1px rgba(0,0,0,0.2), 0 0 1px 1px rgba(255,255,255,0.7) inset;transform: rotate(-8deg);}
+            	</style>
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+				    nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+				    nts.uk.ctx.pr.proto.dom.paymentdata.ProcessingNo
+				    nts.uk.ctx.pr.proto.dom.paymentdata.DependentNumber
+				    nts.uk.ctx.core.dom.company.CompanyCode
+				    nts.arc.time.YearMonth
+				    nts.uk.ctx.pr.proto.dom.layout.detail.CommonAmount
+				    nts.uk.ctx.pr.proto.dom.paymentdata.BonusTaxRate
+   				</com:ValidatorScript>
+				
+				<script src="start.js">
+				</script>
+				<com:scriptfile path="/lib/nittsu/ui/sharedvm/timer.js"/>
+            </ui:define>
+            
+            <ui:define name="content">
+            	
+            	<div id="functions-area">
+            		<button data-bind="text: hoge">新規</button>
+            		<button class="proceed">登録</button>
+            		<button class="danger">削除</button>
+            	</div>
+            	
+            	<div id="contents-area">
+					<note style="width: 500px;"><b>CHÚ Ý!</b><br/>
+					Mọi sample đã được chuyển qua trang:<br/>
+					<a href="http://localhost:8080/nts.uk.com.web/view/sample/catalog.xhtml">http://localhost:8080/nts.uk.com.web/view/sample/catalog.xhtml</a><br/>
+					Trang này sẽ bị xóa sau 3 ngày nữa.
+					</note>
+            		<br />
+            		<br />
+            		<input data-bind="ntsDynamicEditor: { value: dynamic.value, constraint: dynamic.constraint }" />
+            		
+            		<div id="show-popup" style="border: solid 1px #000; display: inline-block; background-color: #fcc">click here</div>
+            		<div id="popup-area" style="display: none;">
+            			this is pop up panel<br />
+            			this is pop up panel<br />
+            			this is pop up panel<br />
+            		</div>
+            	
+            		<hr />
+            	
+            		<a data-bind="ntsLinkButton: { jump: 'dest.xhtml' }">リンク</a>
+            	
+            		<hr />
+            	
+            		<button class="small">小ボタン</button><br />
+            		<br />
+            		<button>中ボタン</button><br/>
+            		<br />
+            		<button class="large" data-bind="click: start">大ボタン</button><br />
+            		<br />
+            		<button class="x-large" data-bind="click: end">特大ボタン</button><br />
+            		<br />
+            		<button disabled="disabled">非活性</button>
+            		<span id="test"></span>
+	            	<hr />
+	            	
+	            	<div class="form-label"><label>項目名</label></div><br />
+	            	<br />
+	            	<div class="form-label broken"><label>項目名</label><i>半角英字20文字</i></div><br />
+	            	<br />
+	            	<div class="form-label broken required"><label>項目名</label><i>半角英字20文字</i></div><br />
+	            	<br />
+	            	<div class="form-label inline required"><label>項目名</label><i>半角英字20文字</i></div><br />
+	            	<br />
+	            	<br />
+	            	bindings:<br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: {}">レイアウトコード</div><br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', enable: false }">レイアウトコード</div><br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">レイアウトコード</div><br />
+	            	<br />
+	            	<div data-bind="ntsFormLabel: { constraint: 'LayoutCode', inline: true, required: true, enable: true}">レイアウトコード</div><br />
+	            	
+            	</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

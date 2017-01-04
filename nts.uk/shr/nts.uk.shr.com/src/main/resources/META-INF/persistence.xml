@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="UK" transaction-type="JTA">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<jta-data-source>java:jboss/datasources/UK</jta-data-source>
+		<jar-file>nts.uk.ctx.basic.infra.jar</jar-file>
+		<jar-file>nts.uk.ctx.pr.core.infra.jar</jar-file>
+		<jar-file>nts.uk.ctx.pr.formula.infra.jar</jar-file>
+		<jar-file>nts.uk.ctx.pr.report.infra.jar</jar-file>
+		<class>nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter</class>
+		<class>nts.arc.layer.infra.data.entity.type.LocalDateTimeToDBConverter</class>
+		<shared-cache-mode>NONE</shared-cache-mode>
+
+	</persistence-unit>
+</persistence>
