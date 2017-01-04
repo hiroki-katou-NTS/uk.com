@@ -55,9 +55,9 @@ __viewContext.ready(function () {
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
             _.each(self.items(), function (node) {
-                function forEach1() {
-                }
             });
+            function forEach1(items) {
+            }
             self.singleSelectedCode.subscribe(function (newValue) {
                 function findObj(items) {
                     var _node;
@@ -94,7 +94,6 @@ __viewContext.ready(function () {
                 ;
                 self.name1(findObj1(self.itemList()));
                 self.selectedCode(self.name1().code);
-                console.log(self.items());
             });
         }
         return ScreenModel;

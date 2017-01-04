@@ -69,10 +69,13 @@ __viewContext.ready(function() {
             self.name1 = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
-            _.each(self.items(), function(node: Node){
-                function forEach1():void{
-                    }
-                });
+            _.each(self.items(), function(node: Node) {
+              
+            });
+              function forEach1(items: Array<Node>): void {
+                  
+
+                }
             self.singleSelectedCode.subscribe(function(newValue) {
                 function findObj(items: Array<Node>): Node {
                     let _node: Node;
@@ -108,46 +111,44 @@ __viewContext.ready(function() {
                 };
 
                 self.name1(findObj1(self.itemList()));
-
                 self.selectedCode(self.name1().code);
-                console.log(self.items());
             });
-  
+
 
         }
 
-//        resetData(): void {
-//            let self = this;
-//            self.curentNode(new Node("", "", []));
-//            console.log(self.curentNode());
-//            self.items = ko.observableArray([new Node('1', '東北', [
-//                new Node('11', '青森県', [
-//                    new Node('022012', '青森市', []),
-//                    new Node('052019', '秋田市', [])
-//                ]),
-//                new Node('12', '東北', [
-//                    new Node('062014', '山形市', [])
-//                ]),
-//                new Node('13', '福島県', [
-//                    new Node('062015', '福島市', [])
-//                ])
-//            ]),
-//                new Node('2', '北海道', []),
-//                new Node('3', '東海', [])
-//            ]);
-//            console.log(self.items());
-//            self.singleSelectedCode=ko.observable(null);
-//            console.log(self.singleSelectedCode());
-//        }
-//         CheckChilds(items: Array<Node>): any{
-//             function checkchilds(items): any{
-//                 _.each(items, function(node: Node){
-//                     
-//                     
-//                     
-//                     });
-//                 }
-//             };
+        //        resetData(): void {
+        //            let self = this;
+        //            self.curentNode(new Node("", "", []));
+        //            console.log(self.curentNode());
+        //            self.items = ko.observableArray([new Node('1', '東北', [
+        //                new Node('11', '青森県', [
+        //                    new Node('022012', '青森市', []),
+        //                    new Node('052019', '秋田市', [])
+        //                ]),
+        //                new Node('12', '東北', [
+        //                    new Node('062014', '山形市', [])
+        //                ]),
+        //                new Node('13', '福島県', [
+        //                    new Node('062015', '福島市', [])
+        //                ])
+        //            ]),
+        //                new Node('2', '北海道', []),
+        //                new Node('3', '東海', [])
+        //            ]);
+        //            console.log(self.items());
+        //            self.singleSelectedCode=ko.observable(null);
+        //            console.log(self.singleSelectedCode());
+        //        }
+        //         CheckChilds(items: Array<Node>): any{
+        //             function checkchilds(items): any{
+        //                 _.each(items, function(node: Node){
+        //                     
+        //                     
+        //                     
+        //                     });
+        //                 }
+        //             };
 
     }
 
