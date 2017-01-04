@@ -1,0 +1,95 @@
+.ui-dialog {
+	$_border_color: #767171;
+	padding: 0px;
+	border-color: $_border_color !important;
+	border-radius: 0px;
+	z-index: 120001;
+	
+	.ui-dialog-titlebar {
+		$_title_back_color: #F2F2F2;
+		
+		background: $_title_back_color;
+		color: $font_color;
+		border-width: 0 0 1px 0;
+		border-color: $_border_color;
+		border-radius: 0px;
+	}
+
+	&.no-close .ui-dialog-titlebar-close {
+		display: none;
+	}
+
+	.ui-dialog-content {
+		padding: 20px;
+
+		&.notice-dialog {
+			min-width: 250px;
+			padding: 0;
+
+			> .text {
+				display: inline-block;
+				margin: 20px;
+				word-break: break-all;
+				-ms-word-break: break-all;
+				max-height: 160px;
+				overflow-y: auto;
+				line-height: 22px;
+			}
+		}
+	}
+	
+	> .ui-dialog-buttonpane {
+		padding: 10px 0;
+		margin: 0px;
+		border-top: solid 1px $_border_color;
+		text-align: center;
+		
+		.ui-dialog-buttonset {
+			float: none;
+		}
+		
+		button {
+			margin: 0 10px;
+			width: 80px;
+			font-family: $font_family;
+		}
+	}
+	
+	#error-board {
+		overflow: hidden;
+		
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			min-width: 510px;
+			margin: 0;
+		}
+		
+		table th,
+		table td {
+			border: solid 1px #bbb;
+			white-space: nowrap;
+			padding: 3px;
+			height: 24px;
+			font-family: "Meiryo UI";
+			font-size: 13px;
+			box-sizing: border-box;
+		}
+		
+		table th,
+		table td:first-child {
+			background-color: #A4EEB0;
+		}
+		
+		table thead tr{
+			display: block;
+			position: relative;
+		}
+		
+		table tbody {
+			float:left;
+			display: block;
+			overflow: auto;
+		}
+	}
+}
