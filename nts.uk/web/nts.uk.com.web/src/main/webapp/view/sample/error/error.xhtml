@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+            	
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.sample.ResidenceCode
+					nts.uk.shr.com.primitive.sample.ProcessingNo
+					nts.uk.shr.com.primitive.sample.PersonalWageCode
+					nts.uk.shr.com.primitive.sample.CommonAmount
+					nts.arc.time.YearMonth
+   				</com:ValidatorScript>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+				<div id="functions-area"></div>
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>Error</h1>
+						<h2>Overview</h2>
+						<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>
+						<div data-bind="with: texteditor">
+							<h3>ResidenceCode (CharType: number, Maxlegth: 6)</h3>
+							<input id="testPushError" data-name="ResidentCode" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+						</div>
+						<div data-bind="with: numbereditor">
+							<h3>Number</h3>
+							<input data-name="Number" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+						</div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-call">Javascript Call</a></li>
+									<li><a href="#tabs-api">API</a></li>
+								</ol>
+								<div id="tabs-call" class="cf">
+									
+								</div>
+								<div id="tabs-api" class="cf">
+
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

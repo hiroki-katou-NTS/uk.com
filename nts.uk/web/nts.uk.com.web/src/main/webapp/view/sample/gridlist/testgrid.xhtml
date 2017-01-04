@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+	<body>
+		
+		<ui:composition template="../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile set="IGNITE" />
+				<script type="text/javascript" src="/nts.uk.com.web/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"></script>
+				<script type="text/javascript" src="/nts.uk.com.web/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"></script>
+				<com:scriptfile path="start2.js" />
+				<com:scriptfile path="../catalog/catalog.js" />		
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>GridList </h1>
+						<button data-bind="click: test"><span>test</span></button>
+						<div>
+						<table id="test" data-bind="igGrid: {
+                               	dataSource: items,
+                               	primaryKey: 'ID',
+                               	width: '1000px',
+                               	height: '500px',
+                               	autoGenerateColumns: false,
+                               	features: [{
+                                        name: 'Updating',
+                                        enableAddRow: false,
+                                        enableDeleteRow: false
+                                    },
+                                    {
+                                    name: 'Selection',
+                                    mode: 'row',
+                                    multipleSelection : true
+                                    }
+                               	],
+                               	columns: [
+                               	    {headerText: 'ID', key: 'ID', dataType: 'string', width: 110},
+                                    {headerText: 'Contact Name', key: 'ContactName', dataType: 'string', width: 210},
+                                	{headerText: 'City', key: 'City', dataType: 'string', width: 120},
+                                	{headerText: 'Country', key: 'Country', dataType: 'string', width: 120}
+                               	]
+                               	}">
+                                </table>
+                                <br/>
+                                <hr/>
+                                <button data-bind="click: test2"><span>test 2</span></button>
+                                <table id="test2"></table>
+						</div>
+						<div class="footer cf">
+							<button class="previous large">Previous</button>
+							<button class="next proceed large">Next</button>
+						</div>
+					</div>
+		   		</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
