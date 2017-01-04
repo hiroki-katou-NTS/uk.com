@@ -7,7 +7,7 @@ __viewContext.ready(function () {
         
         constructor() {
             var self = this;
-            self.constraint = ['ResidenceCode','CompanyCode'];
+            self.constraint = ['ResidenceCode','PersonId'];
             self.inline = ko.observable(true);
             self.required = ko.observable(true)
             self.enable = ko.observable(true);
