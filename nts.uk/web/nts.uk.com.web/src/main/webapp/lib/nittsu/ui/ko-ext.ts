@@ -1472,7 +1472,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var currentSource = $grid.igGrid('option', 'dataSource');
             if(!_.isEqual(currentSource, data.options())){
-                $grid.igGrid('option', 'dataSource', data.options());
+                $grid.igGrid('option', 'dataSource', data.options().slice());
                 $grid.igGrid("dataBind");   
             }
             $grid.ntsGridList('setSelected', data.value());
@@ -1573,8 +1573,20 @@ module nts.uk.ui.koExtentions {
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
             $treegrid.on("selectChange", function() {              
                 var scrollContainer = $("#" + treeGridId + "_scroll");
-                var row1 = treeGridId + "_" + $treegrid.igTreeGrid("selectedRows")[0].id;
-                scrollContainer.scrollTop($("#"+row1).position().top);
+                var row1 = null;
+                var selectedRows = $treegrid.igTreeGrid("selectedRows");
+                if(selectedRows && selectedRows.length > 0)               
+                    row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
+                else {
+                    var selectedRow = $treegrid.igTreeGrid("selectedRow");
+                    if(selectedRow && selectedRow.id) {
+                        row1 = $treegrid.igTreeGrid("selectedRow").id;
+                    }
+                }
+                if(row1) {
+                    var rowidstr = "tr[data-id='" + row1 + "']";      
+                    scrollContainer.scrollTop($(rowidstr).position().top);
+                }
                 //console.log(row1);
             });
         }
@@ -1961,7 +1973,7 @@ module nts.uk.ui.koExtentions {
             });
         }
     }
-
+    
     class NtsSwapListBindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
@@ -2191,13 +2203,13 @@ module nts.uk.ui.koExtentions {
 
             var currentSource = $grid1.igGrid('option', 'dataSource');
             if(!_.isEqual(currentSource, data.options())){
-                $grid1.igGrid('option', 'dataSource', data.options());
+                $grid1.igGrid('option', 'dataSource', data.options().slice());
                 $grid1.igGrid("dataBind");   
             }
             
             var currentSelected = $grid2.igGrid('option', 'dataSource');
             if(!_.isEqual(currentSelected, data.value())){
-                $grid2.igGrid('option', 'dataSource', data.value());
+                $grid2.igGrid('option', 'dataSource', data.value().slice());
                 $grid2.igGrid("dataBind");
             }
         }
