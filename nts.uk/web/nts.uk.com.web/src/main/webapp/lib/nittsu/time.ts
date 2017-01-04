@@ -9,7 +9,74 @@
         result = year + '/' + month;
         return result;
     }
-    
+    function getYearMonthJapan(year, month?) {
+        if(month)
+        return year + " " + month + " 月";
+        return year; 
+    }
+    export function yearInJapanEmpire(year) {
+        if(!(year instanceof String)) {
+            year = "" + year; 
+        }
+        year = parseInt(year);
+        if(year == 1868) {
+            return "明治元年";
+        }
+        if(year <= 1912) {
+            var diff = year - 1867;
+            return "明治 " + diff;
+        }
+        if(year <= 1926) {
+            var diff = year-1911;
+            return "大正 " + diff;
+        }
+        if(year < 1989) {
+            var diff = year - 1925;
+            return "昭和 " + diff;
+        }
+        if(year == 1989) {
+            return "平成元年";
+        }
+        var diff = year - 1988;
+        return "平成 " + diff;
+    }
+    export function yearmonthInJapanEmpire(yearmonth) {
+        if(!(yearmonth instanceof String)) {
+            yearmonth = "" + yearmonth; 
+        }
+        var nguyennien= "元年";
+        yearmonth = yearmonth.replace("/","");
+        var year = parseInt(yearmonth.substring(0,4));
+        var month = parseInt(yearmonth.substring(4));      
+        if(year == 1868) {
+            return getYearMonthJapan("明治元年", month);
+        }
+        if(year < 1912) {
+            var diff = year-1867;
+            return getYearMonthJapan("明治 " + diff, month);           
+        }
+        if(year == 1912) {
+            if(month < 8) return getYearMonthJapan("明治 45", month);
+            return getYearMonthJapan("大正元年", month);
+        }
+        if(year < 1926) {
+            var diff = year-1911;
+            return getYearMonthJapan("大正 " + diff, month);
+        }
+        if(year == 1926) {
+            if(month < 12) return getYearMonthJapan("大正 15", month);
+            return getYearMonthJapan("昭和元年", month);
+        }
+        if(year < 1989) {
+            var diff = year - 1925;
+            return getYearMonthJapan("昭和 " + diff, month);
+        }
+        if(year == 1989) {
+            return getYearMonthJapan("平成元年", month);
+        }
+        var diff = year - 1988;
+        return getYearMonthJapan("平成 " + diff, month);
+    }
     export function formatSeconds(seconds: number, formatOption: string) {
         
         seconds = parseInt(String(seconds));
