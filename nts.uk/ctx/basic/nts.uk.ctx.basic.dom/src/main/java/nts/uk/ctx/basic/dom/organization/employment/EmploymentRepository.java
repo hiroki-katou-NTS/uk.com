@@ -3,7 +3,7 @@ package nts.uk.ctx.basic.dom.organization.employment;
 import java.util.List;
 import java.util.Optional;
 
-public interface EmploymentRespository {
+public interface EmploymentRepository {
 	
 	void add(Employment employment);
 	
