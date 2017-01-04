@@ -54,6 +54,15 @@ __viewContext.ready(function () {
             this.currentCode(null);
             this.currentCodeList.removeAll();
         }
+        
+        addItem() {
+            this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
+        }
+        
+        removeItem() {
+            this.items.shift();
+        }
+
     }
     
     class ItemModel {

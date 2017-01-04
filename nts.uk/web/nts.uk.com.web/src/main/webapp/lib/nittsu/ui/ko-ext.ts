@@ -1472,7 +1472,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var currentSource = $grid.igGrid('option', 'dataSource');
             if(!_.isEqual(currentSource, data.options())){
-                $grid.igGrid('option', 'dataSource', data.options());
+                $grid.igGrid('option', 'dataSource', data.options().slice());
                 $grid.igGrid("dataBind");   
             }
             $grid.ntsGridList('setSelected', data.value());
@@ -1962,7 +1962,7 @@ module nts.uk.ui.koExtentions {
             });
         }
     }
-
+    
     class NtsSwapListBindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
@@ -2192,13 +2192,13 @@ module nts.uk.ui.koExtentions {
 
             var currentSource = $grid1.igGrid('option', 'dataSource');
             if(!_.isEqual(currentSource, data.options())){
-                $grid1.igGrid('option', 'dataSource', data.options());
+                $grid1.igGrid('option', 'dataSource', data.options().slice());
                 $grid1.igGrid("dataBind");   
             }
             
             var currentSelected = $grid2.igGrid('option', 'dataSource');
             if(!_.isEqual(currentSelected, data.value())){
-                $grid2.igGrid('option', 'dataSource', data.value());
+                $grid2.igGrid('option', 'dataSource', data.value().slice());
                 $grid2.igGrid("dataBind");
             }
         }
