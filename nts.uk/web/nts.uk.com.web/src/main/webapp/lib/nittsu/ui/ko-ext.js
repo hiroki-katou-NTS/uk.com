@@ -1420,7 +1420,7 @@ var nts;
                         var data = valueAccessor();
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSource, data.options())) {
-                            $grid.igGrid('option', 'dataSource', data.options());
+                            $grid.igGrid('option', 'dataSource', data.options().slice());
                             $grid.igGrid("dataBind");
                         }
                         $grid.ntsGridList('setSelected', data.value());
@@ -1471,11 +1471,11 @@ var nts;
                             displayColumns = displayColumns.concat(extColumns);
                         }
                         // Init ig grid.
+                        var $treegrid = $(element);
                         $(element).igTreeGrid({
                             width: width,
                             height: height,
                             dataSource: options,
-                            autoGenerateColumns: false,
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
@@ -1507,7 +1507,19 @@ var nts;
                                     checkBoxMode: "biState"
                                 }]
                         });
+                        var treeGridId = $treegrid.attr('id');
                         $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
+                        $treegrid.on("selectChange", function () {
+                            var scrollContainer = $("#" + treeGridId + "_scroll");
+                            var row1;
+                            if ($treegrid.igTreeGrid("selectedRows"))
+                                row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
+                            else
+                                row1 = $treegrid.igTreeGrid("selectedRow").id;
+                            var rowidstr = "tr[data-id='" + row1 + "']";
+                            scrollContainer.scrollTop($(rowidstr).position().top);
+                            //console.log(row1);
+                        });
                     };
                     /**
                      * Update
@@ -1554,6 +1566,7 @@ var nts;
                             $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
+                        $(element).trigger("selectChange");
                     };
                     return NtsTreeGridViewBindingHandler;
                 }());
@@ -2068,12 +2081,12 @@ var nts;
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         var currentSource = $grid1.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSource, data.options())) {
-                            $grid1.igGrid('option', 'dataSource', data.options());
+                            $grid1.igGrid('option', 'dataSource', data.options().slice());
                             $grid1.igGrid("dataBind");
                         }
                         var currentSelected = $grid2.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSelected, data.value())) {
-                            $grid2.igGrid('option', 'dataSource', data.value());
+                            $grid2.igGrid('option', 'dataSource', data.value().slice());
                             $grid2.igGrid("dataBind");
                         }
                     };
