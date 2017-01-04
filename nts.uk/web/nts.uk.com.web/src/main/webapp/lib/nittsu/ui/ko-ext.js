@@ -1511,13 +1511,20 @@ var nts;
                         $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
                         $treegrid.on("selectChange", function () {
                             var scrollContainer = $("#" + treeGridId + "_scroll");
-                            var row1;
-                            if ($treegrid.igTreeGrid("selectedRows"))
+                            var row1 = null;
+                            var selectedRows = $treegrid.igTreeGrid("selectedRows");
+                            if (selectedRows && selectedRows.length > 0)
                                 row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
-                            else
-                                row1 = $treegrid.igTreeGrid("selectedRow").id;
-                            var rowidstr = "tr[data-id='" + row1 + "']";
-                            scrollContainer.scrollTop($(rowidstr).position().top);
+                            else {
+                                var selectedRow = $treegrid.igTreeGrid("selectedRow");
+                                if (selectedRow && selectedRow.id) {
+                                    row1 = $treegrid.igTreeGrid("selectedRow").id;
+                                }
+                            }
+                            if (row1) {
+                                var rowidstr = "tr[data-id='" + row1 + "']";
+                                scrollContainer.scrollTop($(rowidstr).position().top);
+                            }
                             //console.log(row1);
                         });
                     };
