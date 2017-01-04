@@ -21,19 +21,19 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SwapList </h1>
-						<div id="swap-list" data-bind="ntsSwapList: {
-								showSearchBox: true,
-								width: 1000,
-								height: 110,
-								options: itemsSwap,
-								optionsValue: 'code',
-								columns: columns,
-								value: currentCodeListSwap
-							}"
-							class=""></div>
+						<h1>Textarea </h1>
 							<br/>
 							<hr/>
+							<div id="input-containner">
+								<div id="auto-complete">
+									<select size="5" id="auto-complete-containner" data-bind="visible: showAutoComplete, options: autoComplete, optionsText: 'text', value: autoSelected">
+									</select>
+								</div>
+								<div id="input-content-area" data-bind="html: divValue"></div>
+								<div id="input-area">
+									<TEXTAREA id="input-text" rows="20" cols="100" data-bind="value: textArea"></TEXTAREA>
+								</div>
+							</div>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>
