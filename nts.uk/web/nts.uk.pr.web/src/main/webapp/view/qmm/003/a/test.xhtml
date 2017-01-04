@@ -4,13 +4,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<head>
-<script>
-		function opensubwindowNewLayout(){
-			nts.uk.ui.windows.sub.modal("http://localhost:8080/nts.uk.pr.web/view/qmm/019/g/index.xhtml", {title: "明細レイアウトの作成＞新規登録"});
-		}
-	</script>
-</head>
 <body>
 
 	<ui:composition template="../../../../master/base.xhtml">
@@ -21,7 +14,7 @@
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
 			<com:scriptfile
-				path="../../../../view/sample/sortable/js/knockout-sortable.js" />
+				path="../../../../../../../../../../nts.uk.pr.web/view/sample/sortable/js/knockout-sortable.js" />
 
 			<com:scriptfile path="test.js" />
 			<com:stylefile path="main.css" />
@@ -31,7 +24,7 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button id="A_BTN_001" data-bind="click: resetSelection">新規</button>
+				<button id="A_BTN_001">新規</button>
 				<button id="A_BTN_002" class="proceed">登録</button>
 				<button id="A_BTN_003">印刷（PDF）</button>
 				<button id="A_BTN_004">納付先の統合</button>
@@ -42,18 +35,16 @@
 			</div>
 
 			<div id="contents-area" class="cf">
-			
+
 				<div class="nts-left-content">
-				<div class="caret-right caret-background">
-					<div class="form-label">
-						<input id="A_INP_001" placeholder="コード/名称"></input>
-						<!-- 					    <input data-bind="ntsSearchBox: {value: searchTerm, items: items1, filteredItems: items2, fields: ['name', 'code']}" />
- -->
-						<button id="A_SCH_001">検索</button>
-					</div>
-					<div>
-						<table id="treegrid2"
-							data-bind="ntsTreeGridView:{
+					<div class="caret-right caret-background">
+						<div class="form-label">
+							<input id="A_INP_001" placeholder="コード/名称"></input>
+							<button id="A_SCH_001"  >検索</button>
+						</div>
+						<div>
+							<table id="treegrid2"
+								data-bind="ntsTreeGridView:{
 								   	width: 303,
 									height: 500,
 									options: items,
@@ -64,9 +55,9 @@
 									multiple: false,
 									enable: true,
 									showCheckBox: false}"
-							class="cf"></table>
-					</div>
-					<label id="A_LBL_011"> 【登録件数】 202件</label>
+								class="cf"></table>
+						</div>
+						<label id="A_LBL_011"> 【登録件数】 202件</label>
 					</div>
 				</div>
 				<div class="nts-right-content">
@@ -75,18 +66,19 @@
 							data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
 							<label id="A_LBL_002">コード/名称</label>
 						</div>
-						<input id="A_INP_002"
-							data-bind="value: singleSelectedCode()" />
+						<input id="A_INP_002" data-bind="value: singleSelectedCode()" />
 						<input type="text" data-bind="value: curentNode().name" />
 						<button id="A_BTN_007">参照</button>
 					</div>
-					
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: {}" class="form-label required broken">
-								<label id="A_LBL_003">都道府県</label>
-							</div>
 
-<div id="combo-box" data-bind="ntsComboBox: {
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {}"
+							class="form-label required broken">
+							<label id="A_LBL_003">都道府県</label>
+						</div>
+
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
 	options: itemList,
 	 optionsValue: 'code',
 	value: selectedCode,
@@ -97,69 +89,69 @@
 		{ prop: 'name', length: 10 }
 		
 	]}">
-	
-</div>
 
 						</div>
 
-						<div >
-							<div data-bind="ntsFormLabel: {}" class="form-label">
-								<label id="A_LBL_004"> 住民税報告先 </label>
-								<button id="A_BTN_009">参照</button>
-								<label id="A_LBL_012"> 062014 山形市 </label>
-							</div>
+					</div>
+
+					<div>
+						<div data-bind="ntsFormLabel: {}" class="form-label">
+							<label id="A_LBL_004"> 住民税報告先 </label>
+							<button id="A_BTN_009">参照</button>
+							<label id="A_LBL_012"> 062014 山形市 </label>
+						</div>
+					</div>
+
+					<div>
+						<div class="form-label"
+							data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
+							<label id="A_LBL_005">現在使用行数 / 最大行数 </label> <input
+								id="A_INP_004" />
 						</div>
 
-						<div>
-							<div class="form-label"
-								data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
-								<label id="A_LBL_005">現在使用行数 / 最大行数 </label> <input
-									id="A_INP_004" />
-							</div>
+					</div>
+					<div class="pseudo fixed-height">
+						<div class="form-label" data-bind="ntsFormLabel:{}">
+							<label id="A_LBL_006">加入者名</label>
 
 						</div>
-						<div class="pseudo fixed-height">
-							<div class="form-label" data-bind="ntsFormLabel:{}">
-								<label id="A_LBL_006">加入者名</label>
+						<input id="A_INP_005" />
+					</div>
 
-							</div>
-							<input id="A_INP_005" />
+					<!-- p3 -->
+					<div>
+						<div class="form-label" data-bind="ntsFormLabel:{}">
+							<label id="A_LBL_007">指定番号</label>
+
 						</div>
+						<input id="A_INP_006" />
+					</div>
 
-						<!-- p3 -->
-						<div>
-							<div class="form-label" data-bind="ntsFormLabel:{}">
-								<label id="A_LBL_007">指定番号</label>
+					<div>
+						<div class="form-label" data-bind="ntsFormLabel:{}">
+							<label id="A_LBL_008">とりまとめ局</label>
 
-							</div>
-							<input id="A_INP_006" />
 						</div>
+						<input id="A_INP_007" />
+					</div>
 
-						<div>
-							<div class="form-label" data-bind="ntsFormLabel:{}">
-								<label id="A_LBL_008">とりまとめ局</label>
+					<div>
+						<div class="form-label" data-bind="ntsFormLabel:{}">
+							<label id="A_LBL_009">とりまとめ局 名</label>
 
-							</div>
-							<input id="A_INP_007" />
 						</div>
+						<input id="A_INP_008" />
+					</div>
 
-						<div>
-							<div class="form-label" data-bind="ntsFormLabel:{}">
-								<label id="A_LBL_009">とりまとめ局 名</label>
+					<div>
+						<div class="form-label" data-bind="ntsFormLabel:{}">
+							<label id="A_LBL_010">メモ</label>
 
-							</div>
-							<input id="A_INP_008" />
 						</div>
+						<input id="A_INP_009" />
+					</div>
 
-						<div>
-							<div class="form-label" data-bind="ntsFormLabel:{}">
-								<label id="A_LBL_010">メモ</label>
 
-							</div>
-							<input id="A_INP_009" />
-						</div>
-
-					
 
 					<!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 				</div>

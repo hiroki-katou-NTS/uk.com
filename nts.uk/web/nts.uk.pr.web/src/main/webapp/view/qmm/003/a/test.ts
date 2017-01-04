@@ -2,14 +2,13 @@ __viewContext.ready(function() {
     class ScreenModel {
         index: number;
         items: any;
-       // selectedCode: any;
         singleSelectedCode: KnockoutObservable<any>;
         headers: any;
         test: any;
         curentNode: any;
-        text1: KnockoutObservable<any>;
         name1: any;
-        
+        textSearch: string = "";
+
         itemList: KnockoutObservableArray<Node>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
@@ -19,18 +18,18 @@ __viewContext.ready(function() {
 
         constructor() {
             let self = this;
-           // 青森市
-         self.itemList = ko.observableArray([
-            new Node('1', '青森市',[]),
-            new Node('2', '秋田市',[]),
-            new Node('3', '山形市',[]),
-            new Node('4','福島市',[]),
-            new Node('5','水戸市' ,[]),
-            new Node('6','宇都宮市',[]),
-            new Node('7','川越市',[]),
-            new Node('8','熊谷市',[]),
-            new Node('9','浦和市',[])
-        ]);           
+            // 青森市
+            self.itemList = ko.observableArray([
+                new Node('1', '青森市', []),
+                new Node('2', '秋田市', []),
+                new Node('3', '山形市', []),
+                new Node('4', '福島市', []),
+                new Node('5', '水戸市', []),
+                new Node('6', '宇都宮市', []),
+                new Node('7', '川越市', []),
+                new Node('8', '熊谷市', []),
+                new Node('9', '浦和市', [])
+            ]);
             self.items = ko.observableArray([new Node('1', '東北', [
                 new Node('11', '青森県', [
                     new Node('022012', '青森市', []),
@@ -60,31 +59,27 @@ __viewContext.ready(function() {
                 ]),
                 new Node('5', '東海', [])
             ]);
-         self.itemName = ko.observable('');
-        self.currentCode = ko.observable(null);
-        self.selectedCode = ko.observable(null)
-        self.isEnable = ko.observable(true);
-        self.isEditable = ko.observable(true);
-            
-           
+            self.itemName = ko.observable('');
+            self.currentCode = ko.observable(null);
+            self.selectedCode = ko.observable(null);
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
             self.singleSelectedCode = ko.observable(null);
-            self.text1 = ko.observable(null);
             self.test = ko.observable(null);
             self.name1 = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
-            
-            
             self.index = 0;
-            
-            
-   
+            _.each(self.items(), function(node: Node){
+                function forEach1():void{
+                    }
+                });
             self.singleSelectedCode.subscribe(function(newValue) {
-                function findObj(items: Array<Node>) : Node {
+                function findObj(items: Array<Node>): Node {
                     let _node: Node;
                     _.find(items, function(_obj: Node) {
-                        if(!_node){
+                        if (!_node) {
                             if (_obj.code == newValue) {
-                               _node = _obj;                          
+                                _node = _obj;
                             } else {
                                 _node = findObj(_obj.childs);
                             }
@@ -94,98 +89,65 @@ __viewContext.ready(function() {
                 };
                 self.curentNode(findObj(self.items()));
                 self.test = ko.observable(self.curentNode());
-           
-           function findObj1(items: Array<Node>) : Node {
+                function findObj1(items: Array<Node>): Node {
                     let _node: Node;
                     _.find(items, function(_obj: Node) {
-                        if(!_node){
+                        if (!_node) {
                             if (_obj.name == self.test().name) {
-                              
-                               _node = _obj; 
-                                                      
+
+                                _node = _obj;
+
                             } else {
                                 _node = findObj1(_obj.childs);
-                                 
+
                             }
                         }
                     });
-                console.log(_node);
+                    console.log(_node);
                     return _node;
                 };
-                
-               self.name1(findObj1(self.itemList()));
-                
-                  self.selectedCode(self.name1().code);
-            
-                
+
+                self.name1(findObj1(self.itemList()));
+
+                self.selectedCode(self.name1().code);
+                console.log(self.items());
             });
-      
-             function findObj(items: Array<Node>) : Node {
-                    let _node: Node;
-                    _.find(items, function(_obj: Node) {
-                        if(!_node){
-                            if (_obj.name ==self.singleSelectedCode()) {
-                               _node = _obj;                          
-                            } else {
-                                _node = findObj(_obj.childs);
-                            }
-                        }
-                    });
-                 
-                    return _node;
-                };
-            
-                    
-}
-        
-         resetSelection(): void {
-            let self = this;
-            self.curentNode(new Node("","",[]));
-             console.log(self.curentNode());
-               self.items = ko.observableArray([new Node('1', '東北', [
-                new Node('11', '青森県', [
-                    new Node('022012', '青森市', []),
-                    new Node('052019', '秋田市', [])
-                ]),
-                new Node('12', '東北', [
-                    new Node('062014', '山形市', [])
-                ]),
-                new Node('13', '福島県', [
-                    new Node('062015', '福島市', [])
-                ])
-            ]),
-                new Node('2', '北海道', []),
-                new Node('3', '東海', []),
-                new Node('4', '関東', [
-                    new Node('41', '茨城県', [
-                        new Node('062016', '水戸市', []),
-                    ]),
-                    new Node('42', '栃木県', [
-                        new Node('062017', '宇都宮市', [])
-                    ]),
-                    new Node('43', '埼玉県', [
-                        new Node('062019', '川越市', []),
-                        new Node('062020', '熊谷市', []),
-                        new Node('062022', '浦和市', []),
-                    ])
-                ]),
-                new Node('5', '東海', [])
-            ]);
-              console.log(self.items());
-             self.singleSelectedCode(" ");
-             console.log(self.singleSelectedCode());
-                      
+  
+
         }
-        
-     
-        
-        findName(items: Array<Node>): Node{
-            let node: Node;
-    
-            return node;
-            
-            }
-     
+
+//        resetData(): void {
+//            let self = this;
+//            self.curentNode(new Node("", "", []));
+//            console.log(self.curentNode());
+//            self.items = ko.observableArray([new Node('1', '東北', [
+//                new Node('11', '青森県', [
+//                    new Node('022012', '青森市', []),
+//                    new Node('052019', '秋田市', [])
+//                ]),
+//                new Node('12', '東北', [
+//                    new Node('062014', '山形市', [])
+//                ]),
+//                new Node('13', '福島県', [
+//                    new Node('062015', '福島市', [])
+//                ])
+//            ]),
+//                new Node('2', '北海道', []),
+//                new Node('3', '東海', [])
+//            ]);
+//            console.log(self.items());
+//            self.singleSelectedCode=ko.observable(null);
+//            console.log(self.singleSelectedCode());
+//        }
+//         CheckChilds(items: Array<Node>): any{
+//             function checkchilds(items): any{
+//                 _.each(items, function(node: Node){
+//                     
+//                     
+//                     
+//                     });
+//                 }
+//             };
 
     }
 
@@ -205,17 +167,6 @@ __viewContext.ready(function() {
 
         }
     }
-    
-    class ItemModel {
-    code: string;
-    name: string;
-    label: string;
-    
-    constructor(code: string, name: string) {
-        this.code = code;
-        this.name = name;
-    }
-}
 
     this.bind(new ScreenModel());
 
