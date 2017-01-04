@@ -1573,7 +1573,9 @@ var nts;
                             $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
-                        $(element).trigger("selectChange");
+                        if (selectedValues && selectedValues.length == 1) {
+                            $(element).trigger("selectChange");
+                        }
                     };
                     return NtsTreeGridViewBindingHandler;
                 }());
