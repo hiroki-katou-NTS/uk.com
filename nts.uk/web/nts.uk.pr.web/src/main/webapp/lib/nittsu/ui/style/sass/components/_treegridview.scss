@@ -1,0 +1,8 @@
+@import "_ignitecommons.scss";
+
+.nts-treegridview.ui-igtreegrid {
+	@include iggridstyle();
+	@include iggridrowselector();
+	
+	cursor: default;
+}
