@@ -426,6 +426,7 @@ var nts;
                             selectedKey = ko.unwrap(data.selectedKey);
                         }
                         var arr = ko.unwrap(data.items);
+                        var component = $("#" + ko.unwrap(data.comId));
                         var filteredArr = data.filteredItems;
                         var childField = null;
                         if (data.childField) {
@@ -447,7 +448,8 @@ var nts;
                                 selected([]);
                                 selected.push(selectedItem);
                             }
-                            console.log(selectedItem);
+                            component.trigger("selectChange");
+                            //console.log(selectedItem); 
                         };
                         $input.keyup(function () {
                             $input.change();
@@ -1450,8 +1452,6 @@ var nts;
                             .addClass('nts-gridlist')
                             .height(data.height);
                         var selectedList = data.value();
-                        if (selectedList && selectedList.length == 1)
-                            $grid.trigger('selectChange');
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -1597,9 +1597,6 @@ var nts;
                             }
                             $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
-                        }
-                        if ((selectedValues && selectedValues.length == 1) || singleValue) {
-                            $(element).trigger("selectChange");
                         }
                     };
                     return NtsTreeGridViewBindingHandler;

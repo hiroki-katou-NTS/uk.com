@@ -25,7 +25,7 @@
 						<h2>Overview</h2>						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
 								<h3>Single Selection TreeGrid</h3>
 								<table id="treegrid1"
 									data-bind="ntsTreeGridView:{
@@ -51,14 +51,14 @@
 						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', filteredItems: filteredData2, fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', filteredItems: filteredData2, fields: ['name', 'code']}" />																																														
 								<h3>Multi Selection TreeGrid</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
 										options: dataSource2,
-										value: selectedCodes2,								
+										selectedValues: selectedCodes2,								
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
@@ -86,6 +86,7 @@
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {
+		comId: 'treegrid1',
 		items: dataSource, 
 		filteredItems: filteredData, 
 		selected: singleSelectedCode, 
@@ -118,6 +119,7 @@
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {
+		comId: 'treegrid2',
 		items: dataSource2, 
 		selected: selectedCodes2, 
 		selectedKey: 'code', 
