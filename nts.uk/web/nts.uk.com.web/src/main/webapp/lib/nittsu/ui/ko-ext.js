@@ -1563,7 +1563,7 @@ var nts;
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         // Clear selection.
-                        if (selectedValues && selectedValues.length == 0) {
+                        if (!selectedValues) {
                             $(element).igTreeGridSelection("clearSelection");
                         }
                         // Update datasource.

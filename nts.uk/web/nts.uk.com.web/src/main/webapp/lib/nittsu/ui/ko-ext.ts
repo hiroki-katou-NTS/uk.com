@@ -1628,7 +1628,7 @@ module nts.uk.ui.koExtentions {
             var singleValue = ko.unwrap(data.value);
 
             // Clear selection.
-            if (selectedValues && selectedValues.length == 0) {
+            if (!selectedValues) {
                 $(element).igTreeGridSelection("clearSelection");
             }
 
