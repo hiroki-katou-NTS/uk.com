@@ -58,3 +58,13 @@ textarea {
 	position: absolute;
 	z-index: 1000;
 }
+#error-containner{
+		position: absolute;
+	z-index: 1000;
+	/* width: 100px; */
+	/* height: 32px; */
+	color: red;
+	background-color: white;
+	border: 1px solid black;
+	padding: 5px;
+}

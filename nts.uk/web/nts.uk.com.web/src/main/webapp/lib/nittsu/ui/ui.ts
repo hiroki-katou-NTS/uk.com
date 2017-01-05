@@ -183,7 +183,7 @@
 			}
 
 			getShared(key: string): any {
-				return this.shared[key] !== undefined ? this.shared[key] : this.localShared[key];
+				return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
 			}
 
 			setShared(key: string, data: any, isRoot: boolean, persist?: boolean) {
