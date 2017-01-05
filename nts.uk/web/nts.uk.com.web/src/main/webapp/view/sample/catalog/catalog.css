@@ -60,6 +60,9 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
     100% { background-color: none;}
 }
 
+pre {
+	tab-size: 2;
+}
 pre * {
 	font-family: Consolas;
 }
