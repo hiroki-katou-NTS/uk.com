@@ -21,11 +21,12 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SearchBox Sample</h1>						
+						<h1>SearchBox Sample</h1>
+						<h3>This is TreeGrid version, for GridList, view <a href="searchbox-gridlist.xhtml">THIS PAGE</a></h3>						
 						<h2>Overview</h2>						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
 								<h3>Single Selection TreeGrid</h3>
 								<table id="treegrid1"
 									data-bind="ntsTreeGridView:{
@@ -51,14 +52,14 @@
 						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', filteredItems: filteredData2, fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', filteredItems: filteredData2, fields: ['name', 'code']}" />																																														
 								<h3>Multi Selection TreeGrid</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
 										options: dataSource2,
-										value: selectedCodes2,								
+										selectedValues: selectedCodes2,								
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
@@ -86,6 +87,7 @@
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {
+		comId: 'treegrid1',
 		items: dataSource, 
 		filteredItems: filteredData, 
 		selected: singleSelectedCode, 
@@ -118,6 +120,7 @@
 <div class="cf">
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {
+		comId: 'treegrid2',
 		items: dataSource2, 
 		selected: selectedCodes2, 
 		selectedKey: 'code', 
@@ -158,7 +161,14 @@
 												<th><h4>Description</h4></th>
 											</tr>
 										</thead>
-										<tbody>										
+										<tbody>
+											<tr>
+												<td>comId</td>
+												<td>
+													<b>Type:</b> String, the ID of the component that SearchBox works with<br/>													
+													<i>required:</i> SearchBox will trigger 'selectChange' on each search call<br/>
+												</td>
+											</tr>								
 											<tr>
 												<td>items</td>
 												<td>

@@ -9,8 +9,13 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(1000)
 public class Memo extends StringPrimitiveValue<Memo> {
 
+	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Constructs.
+	 * @param rawValue value
+	 */
 	public Memo(String rawValue) {
 		super(rawValue);
 	}

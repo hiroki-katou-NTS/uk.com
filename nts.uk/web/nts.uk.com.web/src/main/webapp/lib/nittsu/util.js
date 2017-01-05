@@ -14,22 +14,26 @@ var nts;
             function addToArray(node, arr) {
                 arr.push(node);
             }
-            function visitDfs(node, func, arr, childField) {
+            function visitDfs(node, func, childField, arr) {
                 if (func) {
-                    func(node, arr);
+                    if (arr)
+                        func(node, arr);
+                    else
+                        func(node);
                 }
                 var childs = node[childField];
                 $.each(childs, function (child) {
-                    visitDfs(childs[child], func, arr, childField);
+                    visitDfs(childs[child], func, childField, arr);
                 });
             }
+            util.visitDfs = visitDfs;
             function flatArray(arr, childField) {
                 var flatArr = [];
                 if (!childField)
                     return arr;
                 for (var i = 0; i < arr.length; i++) {
                     var item = arr[i];
-                    visitDfs(item, addToArray, flatArr, childField);
+                    visitDfs(item, addToArray, childField, flatArr);
                 }
                 return flatArr;
             }

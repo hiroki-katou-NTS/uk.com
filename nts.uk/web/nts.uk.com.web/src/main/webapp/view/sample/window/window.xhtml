@@ -53,11 +53,13 @@
 											</thead>
 											<tbody>
 												<tr>
-													<td>setShared(key, data)</td>
+													<td>setShared(key, data, isPersist)</td>
 													<td>
 														<b>Return:</b> void<br/>
 														<b class="color">key: string</b> Set the key for stored share value<br/>
 														<b class="color">data: any</b> Set data for stored share value<br/>
+														<b class="color">isPersist: boolean</b> If true, data will be stored for this screen and all of dialog can use until screen is closed or jump to other screen.
+															If false, data will be removed after that dialog is closed. In screen case, isPersist is true or false, it also same logic.<br/>
 														Store a share pair &lt;key,value&gt;<br/>
 													</td>
 												</tr>
