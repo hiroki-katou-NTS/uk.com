@@ -1471,14 +1471,22 @@ module nts.uk.ui.koExtentions {
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
                     let selecteds: Array<any> = $grid.ntsGridList('getSelected');
-                    let selectedIdSet = {};
-                    selecteds.forEach(s => { selectedIdSet[s.id] = true; });
-                    var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
-                    data.value(_.map(selectedOptions, o => o[optionsValue]));
+                    if(selecteds) {
+                        let selectedIdSet = {};
+                        selecteds.forEach(s => { selectedIdSet[s.id] = true; });
+                        var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
+                        data.value(_.map(selectedOptions, o => o[optionsValue]));
+                    } else {
+                       data.value([]); 
+                    }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
-                    data.value(selectedOption[optionsValue]);
+                    if(selected) {
+                        let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
+                        data.value(selectedOption[optionsValue]);
+                    } else {
+                        data.value(''); 
+                    }
                 }
                 
             });
@@ -1512,7 +1520,7 @@ module nts.uk.ui.koExtentions {
                 $grid.igGrid('option', 'dataSource', data.options().slice());
                 $grid.igGrid("dataBind");   
             }
-            if(data.value)
+            
             $grid.ntsGridList('setSelected', data.value());
             
             $grid.closest('.ui-iggrid')

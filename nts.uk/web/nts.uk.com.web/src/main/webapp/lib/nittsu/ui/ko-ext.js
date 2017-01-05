@@ -1422,15 +1422,25 @@ var nts;
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
                                 var selecteds = $grid.ntsGridList('getSelected');
-                                var selectedIdSet_1 = {};
-                                selecteds.forEach(function (s) { selectedIdSet_1[s.id] = true; });
-                                var selectedOptions = _.filter(data.options(), function (o) { return selectedIdSet_1[o[optionsValue]]; });
-                                data.value(_.map(selectedOptions, function (o) { return o[optionsValue]; }));
+                                if (selecteds) {
+                                    var selectedIdSet_1 = {};
+                                    selecteds.forEach(function (s) { selectedIdSet_1[s.id] = true; });
+                                    var selectedOptions = _.filter(data.options(), function (o) { return selectedIdSet_1[o[optionsValue]]; });
+                                    data.value(_.map(selectedOptions, function (o) { return o[optionsValue]; }));
+                                }
+                                else {
+                                    data.value([]);
+                                }
                             }
                             else {
                                 var selected_1 = $grid.ntsGridList('getSelected');
-                                var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
-                                data.value(selectedOption[optionsValue]);
+                                if (selected_1) {
+                                    var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
+                                    data.value(selectedOption[optionsValue]);
+                                }
+                                else {
+                                    data.value('');
+                                }
                             }
                         });
                         var gridId = $grid.attr('id');
@@ -1459,8 +1469,7 @@ var nts;
                             $grid.igGrid('option', 'dataSource', data.options().slice());
                             $grid.igGrid("dataBind");
                         }
-                        if (data.value)
-                            $grid.ntsGridList('setSelected', data.value());
+                        $grid.ntsGridList('setSelected', data.value());
                         $grid.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(data.height);
