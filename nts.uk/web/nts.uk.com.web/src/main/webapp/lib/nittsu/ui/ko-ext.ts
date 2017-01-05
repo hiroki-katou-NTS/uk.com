@@ -1481,9 +1481,10 @@ module nts.uk.ui.koExtentions {
                     }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    if(selected) {
+                    if(selected) {                       
                         let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
-                        data.value(selectedOption[optionsValue]);
+                        if(selectedOption) data.value(selectedOption[optionsValue]);
+                        else data.value('');
                     } else {
                         data.value(''); 
                     }

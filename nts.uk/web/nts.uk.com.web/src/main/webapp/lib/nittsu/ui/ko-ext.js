@@ -1436,7 +1436,10 @@ var nts;
                                 var selected_1 = $grid.ntsGridList('getSelected');
                                 if (selected_1) {
                                     var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
-                                    data.value(selectedOption[optionsValue]);
+                                    if (selectedOption)
+                                        data.value(selectedOption[optionsValue]);
+                                    else
+                                        data.value('');
                                 }
                                 else {
                                     data.value('');
