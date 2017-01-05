@@ -1414,6 +1414,19 @@ module nts.uk.ui.koExtentions {
     /**
      * GridList binding handler
      */
+    function calculateTop(options, id, key) {
+        var atomTop  = 23.6363525390625;
+        var len = options.length;
+        var index = 0;
+        for(var i = 0; i < len; i++) {
+            var item = options[i];
+            if(item[key] == id) {
+                index = i;
+                break; 
+            } 
+        }
+        return atomTop * i;
+    }
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1427,7 +1440,7 @@ module nts.uk.ui.koExtentions {
 
             var data = valueAccessor();
             var optionsValue: string = data.optionsValue;
-
+            var options = ko.unwrap(data.options);
             var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
                 return {
@@ -1482,10 +1495,9 @@ module nts.uk.ui.koExtentions {
                         row1 = $grid.igGrid("selectedRow").id;
                     }
                 }
-                if(row1) {
-                    var rowidstr = "tr[data-id='" + row1 + "']";      
-                    scrollContainer.scrollTop($(rowidstr).position().top);
-                    console.log("scrolled");
+                if(row1) {                   
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                    //console.log(calculateTop(options, row1, iggridColumns[0].key));                 
                 }
                 
             });
@@ -1609,9 +1621,8 @@ module nts.uk.ui.koExtentions {
                         row1 = $treegrid.igTreeGrid("selectedRow").id;
                     }
                 }
-                if(row1) {
-                    var rowidstr = "tr[data-id='" + row1 + "']";      
-                    scrollContainer.scrollTop($(rowidstr).position().top);
+                if(row1) {                      
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));                  
                 }
                 //console.log(row1);
             });

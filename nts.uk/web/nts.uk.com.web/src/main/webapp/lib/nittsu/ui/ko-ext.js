@@ -1371,6 +1371,19 @@ var nts;
                 /**
                  * GridList binding handler
                  */
+                function calculateTop(options, id, key) {
+                    var atomTop = 23.6363525390625;
+                    var len = options.length;
+                    var index = 0;
+                    for (var i = 0; i < len; i++) {
+                        var item = options[i];
+                        if (item[key] == id) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    return atomTop * i;
+                }
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -1382,6 +1395,7 @@ var nts;
                         }
                         var data = valueAccessor();
                         var optionsValue = data.optionsValue;
+                        var options = ko.unwrap(data.options);
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             return {
@@ -1433,9 +1447,7 @@ var nts;
                                 }
                             }
                             if (row1) {
-                                var rowidstr = "tr[data-id='" + row1 + "']";
-                                scrollContainer.scrollTop($(rowidstr).position().top);
-                                console.log("scrolled");
+                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             }
                         });
                     };
@@ -1547,8 +1559,7 @@ var nts;
                                 }
                             }
                             if (row1) {
-                                var rowidstr = "tr[data-id='" + row1 + "']";
-                                scrollContainer.scrollTop($(rowidstr).position().top);
+                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             }
                             //console.log(row1);
                         });
