@@ -2447,8 +2447,52 @@ body {
   z-index: 1;
   padding-right: 8px;
   padding-left: 8px;
-  content: 'ΓÖÑ';
+  content: '笙･';
   background-color: #fff;
+}
+
+/* line 1, ../sass/components/_contextmenu.scss */
+.ntsContextMenu {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #aaa;
+  min-width: 150px;
+  padding: 4px 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
+/* line 10, ../sass/components/_contextmenu.scss */
+.ntsContextMenu li {
+  position: relative;
+  display: block;
+  list-style: none;
+  padding: 0 10px 0 30px;
+  line-height: 28px;
+  cursor: pointer;
+}
+/* line 18, ../sass/components/_contextmenu.scss */
+.ntsContextMenu li:hover {
+  background: rgba(0, 0, 0, 0.075);
+}
+/* line 22, ../sass/components/_contextmenu.scss */
+.ntsContextMenu li.disabled {
+  background: transparent;
+  opacity: 0.7;
+  cursor: default;
+}
+/* line 28, ../sass/components/_contextmenu.scss */
+.ntsContextMenu li .menu-icon {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  margin-top: -8px;
+}
+/* line 36, ../sass/components/_contextmenu.scss */
+.ntsContextMenu .divider {
+  height: 0;
+  border-top: 1px solid #ccc;
+  padding: 0;
+  margin: 5px 0;
 }
 
 /* line 1, ../sass/frame/_header.scss */
@@ -2558,12 +2602,12 @@ body {
   line-height: 50px;
 }
 
-/* line 30, ../sass/base.scss */
+/* line 31, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 34, ../sass/base.scss */
+/* line 35, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
