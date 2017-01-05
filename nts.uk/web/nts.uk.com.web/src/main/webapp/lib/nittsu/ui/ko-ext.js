@@ -1595,7 +1595,7 @@ var nts;
                             $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
-                        if (selectedValues && selectedValues.length == 1) {
+                        if ((selectedValues && selectedValues.length == 1) || singleValue) {
                             $(element).trigger("selectChange");
                         }
                     };
