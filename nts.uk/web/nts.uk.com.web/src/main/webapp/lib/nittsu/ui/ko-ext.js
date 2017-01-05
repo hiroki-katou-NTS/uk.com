@@ -1372,6 +1372,8 @@ var nts;
                  * GridList binding handler
                  */
                 function calculateTop(options, id, key) {
+                    if (!id)
+                        return 0;
                     var atomTop = 23.6363525390625;
                     var len = options.length;
                     var index = 0;
@@ -1459,7 +1461,8 @@ var nts;
                                     row1 = $grid.igGrid("selectedRow").id;
                                 }
                             }
-                            if (row1) {
+                            if (row1 && row1 !== 'undefined') {
+                                //console.log(row1);
                                 scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             }
                         });
@@ -1575,7 +1578,7 @@ var nts;
                                     row1 = $treegrid.igTreeGrid("selectedRow").id;
                                 }
                             }
-                            if (row1) {
+                            if (row1 && row1 !== 'undefined') {
                                 scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             }
                             //console.log(row1);
