@@ -11,7 +11,11 @@ __viewContext.ready(function () {
             self.selectedCode = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.index = 0;
-            self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
+            self.columns = ko.observableArray([{ headerText: "Item Code", width: "150px", key: 'code', dataType: "string", hidden: false },
+                { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }]);
+            self.columns2 = ko.observableArray([{ headerText: "Item Code", width: "150px", key: 'code', dataType: "string", hidden: false },
+                { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" },
+                { headerText: "Item Auto Generated Field", key: 'custom', width: "200px", dataType: "string" }]);
         }
         ScreenModel.prototype.resetSelection = function () {
             var self = this;

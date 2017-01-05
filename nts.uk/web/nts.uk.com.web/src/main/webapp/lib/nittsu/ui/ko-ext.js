@@ -1371,6 +1371,19 @@ var nts;
                 /**
                  * GridList binding handler
                  */
+                function calculateTop(options, id, key) {
+                    var atomTop = 23.6363525390625;
+                    var len = options.length;
+                    var index = 0;
+                    for (var i = 0; i < len; i++) {
+                        var item = options[i];
+                        if (item[key] == id) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    return atomTop * i;
+                }
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -1382,6 +1395,7 @@ var nts;
                         }
                         var data = valueAccessor();
                         var optionsValue = data.optionsValue;
+                        var options = ko.unwrap(data.options);
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             return {
@@ -1408,15 +1422,28 @@ var nts;
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
                                 var selecteds = $grid.ntsGridList('getSelected');
-                                var selectedIdSet_1 = {};
-                                selecteds.forEach(function (s) { selectedIdSet_1[s.id] = true; });
-                                var selectedOptions = _.filter(data.options(), function (o) { return selectedIdSet_1[o[optionsValue]]; });
-                                data.value(_.map(selectedOptions, function (o) { return o[optionsValue]; }));
+                                if (selecteds) {
+                                    var selectedIdSet_1 = {};
+                                    selecteds.forEach(function (s) { selectedIdSet_1[s.id] = true; });
+                                    var selectedOptions = _.filter(data.options(), function (o) { return selectedIdSet_1[o[optionsValue]]; });
+                                    data.value(_.map(selectedOptions, function (o) { return o[optionsValue]; }));
+                                }
+                                else {
+                                    data.value([]);
+                                }
                             }
                             else {
                                 var selected_1 = $grid.ntsGridList('getSelected');
-                                var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
-                                data.value(selectedOption[optionsValue]);
+                                if (selected_1) {
+                                    var selectedOption = _.find(data.options(), function (o) { return o[optionsValue] === selected_1.id; });
+                                    if (selectedOption)
+                                        data.value(selectedOption[optionsValue]);
+                                    else
+                                        data.value('');
+                                }
+                                else {
+                                    data.value('');
+                                }
                             }
                         });
                         var gridId = $grid.attr('id');
@@ -1433,9 +1460,7 @@ var nts;
                                 }
                             }
                             if (row1) {
-                                var rowidstr = "tr[data-id='" + row1 + "']";
-                                scrollContainer.scrollTop($(rowidstr).position().top);
-                                console.log("scrolled");
+                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             }
                         });
                     };
@@ -1451,7 +1476,6 @@ var nts;
                         $grid.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(data.height);
-                        var selectedList = data.value();
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -1473,6 +1497,9 @@ var nts;
                         var options = ko.unwrap(data.options);
                         var optionsValue = ko.unwrap(data.optionsValue);
                         var optionsText = ko.unwrap(data.optionsText);
+                        var columns = null;
+                        if (data.columns)
+                            columns = ko.unwrap(data.columns);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var optionsChild = ko.unwrap(data.optionsChild);
@@ -1492,6 +1519,8 @@ var nts;
                         }
                         var displayColumns = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
                             { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
+                        if (columns)
+                            displayColumns = columns;
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }
@@ -1547,8 +1576,7 @@ var nts;
                                 }
                             }
                             if (row1) {
-                                var rowidstr = "tr[data-id='" + row1 + "']";
-                                scrollContainer.scrollTop($(rowidstr).position().top);
+                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             }
                             //console.log(row1);
                         });
