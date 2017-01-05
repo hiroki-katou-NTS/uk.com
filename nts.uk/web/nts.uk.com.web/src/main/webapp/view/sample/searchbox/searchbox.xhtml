@@ -85,7 +85,13 @@
 <pre><![CDATA[<!--SINGLESELECT EXAMPLE-->
 <div class="cf">
 	<div style="float:left">																					
-		<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource, filteredItems: filteredData, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+		<div style="width: 700px" data-bind="ntsSearchBox: {
+		items: dataSource, 
+		filteredItems: filteredData, 
+		selected: singleSelectedCode, 
+		selectedKey: 'code', 
+		childField: 'childs', 
+		fields: ['name', 'code']}" />																																														
 		<h3>Single Selection TreeGrid</h3>
 		<table id="treegrid1"
 			data-bind="ntsTreeGridView:{
@@ -111,7 +117,13 @@
 <!--MULTISELECT EXAMPLE-->
 <div class="cf">
 	<div style="float:left">																					
-		<div style="width: 700px" data-bind="ntsSearchBox: {items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', filteredItems: filteredData2, fields: ['name', 'code']}" />																																														
+		<div style="width: 700px" data-bind="ntsSearchBox: {
+		items: dataSource2, 
+		selected: selectedCodes2, 
+		selectedKey: 'code', 
+		childField: 'childs', 
+		filteredItems: filteredData2, 
+		fields: ['name', 'code']}" />																																														
 		<h3>Multi Selection TreeGrid</h3>
 		<table id="treegrid2"
 			data-bind="ntsTreeGridView:{
