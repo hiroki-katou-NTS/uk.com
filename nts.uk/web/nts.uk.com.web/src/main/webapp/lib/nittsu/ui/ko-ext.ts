@@ -1464,6 +1464,26 @@ module nts.uk.ui.koExtentions {
                 }
                 
             });
+            var gridId = $grid.attr('id');
+            $grid.on("selectChange", function() {              
+                var scrollContainer = $("#" + gridId + "_scrollContainer");
+                var row1 = null;
+                var selectedRows = $grid.igGrid("selectedRows");
+                if(selectedRows && selectedRows.length > 0)               
+                    row1 = $grid.igGrid("selectedRows")[0].id;
+                else {
+                    var selectedRow = $grid.igGrid("selectedRow");
+                    if(selectedRow && selectedRow.id) {
+                        row1 = $grid.igGrid("selectedRow").id;
+                    }
+                }
+                if(row1) {
+                    var rowidstr = "tr[data-id='" + row1 + "']";      
+                    scrollContainer.scrollTop($(rowidstr).position().top);
+                    console.log("scrolled");
+                }
+                
+            });
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1480,6 +1500,9 @@ module nts.uk.ui.koExtentions {
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
                 .height(data.height);
+            var selectedList = data.value();
+            if(selectedList && selectedList.length == 1)
+            $grid.trigger('selectChange');
         }
     }
 
@@ -1643,7 +1666,9 @@ module nts.uk.ui.koExtentions {
                 $(element).igTreeGridSelection("clearSelection");
                 $(element).igTreeGridSelection("selectRowById", singleValue);
             }
-            $(element).trigger("selectChange");          
+            if((selectedValues && selectedValues.length == 1) || singleValue) {
+                $(element).trigger("selectChange");
+            }       
         }
     }
 
