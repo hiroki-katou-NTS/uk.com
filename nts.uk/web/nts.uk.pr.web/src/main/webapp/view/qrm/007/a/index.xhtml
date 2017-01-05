@@ -41,8 +41,8 @@
 						<div>
 							<div class="valign-center control-group">
 								<div class="right-column" data-bind="ntsFormLabel: { required: true }">コード/名称</div>
-								<span>LBL_003</span>
-								<span id="name-span">LBL_004</span>
+								<span data-bind="text: currentCode"></span>
+								<span id="name-span" data-bind="text: currentName"></span>
 							</div>
 							<div class="valign-center control-group">
 								<div class="right-column" data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">印刷用名称

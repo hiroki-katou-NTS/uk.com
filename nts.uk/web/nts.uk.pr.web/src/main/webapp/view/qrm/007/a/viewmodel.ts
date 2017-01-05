@@ -5,7 +5,7 @@ module qrm007.a.viewmodel {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
+        currentName: KnockoutObservable<string>;
         texteditor: any;
         multilineeditor: any;
         constructor() {
@@ -21,11 +21,13 @@ module qrm007.a.viewmodel {
                 { headerText: '名称', prop: 'name', width: 130 },
                 { headerText: '印刷用名称', prop: 'description', width: 160 }
             ]);
-            this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
-            
+            this.currentCode = ko.observable(_.first(self.items()).code);  
+            this.currentName = ko.observable(_.first(self.items()).name);
+            this.currentCode.subscribe(function(newValue) {
+                self.currentName(_.find(self.items(), function(item) { return item.code === newValue;}).name);
+            });
             self.texteditor = {
-                value: ko.observable(''),
+                value: self.currentName,
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
@@ -52,30 +54,26 @@ module qrm007.a.viewmodel {
             };
             
         }
-
+        /*
+        getItem(newValue): ItemModel {
+            let self = this;
+            let item: ItemModel = _.find(self.items(), function(item) {
+                return item.code === newValue;
+            });
+            return item;
+        }
+        */
         startPage(): JQueryPromise<any> {
             var self = this;
 
             var dfd = $.Deferred();
-            service.getPaymentDateProcessingList().done(function(data) {
+            qrm007.a.service.getPaymentDateProcessingList().done(function(data) {
                 self.paymentDateProcessingList(data);
                 dfd.resolve();
             }).fail(function(res) {
 
             });
             return dfd.promise();
-        }
-        
-        selectSomeItems() {
-            this.currentCode('150');
-            this.currentCodeList.removeAll();
-            this.currentCodeList.push('001');
-            this.currentCodeList.push('ABC');
-        }
-        
-        deselectAll() {
-            this.currentCode(null);
-            this.currentCodeList.removeAll();
         }
     }
     
