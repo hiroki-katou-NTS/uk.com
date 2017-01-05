@@ -12,7 +12,7 @@
         function addToArray(node, arr) {
             arr.push(node)
         }
-        function visitDfs(node, func, arr, childField) {
+        export function visitDfs(node, func, arr, childField) {
             if (func) {
                 func(node, arr);
             }

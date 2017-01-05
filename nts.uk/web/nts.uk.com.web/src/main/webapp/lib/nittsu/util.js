@@ -23,6 +23,7 @@ var nts;
                     visitDfs(childs[child], func, arr, childField);
                 });
             }
+            util.visitDfs = visitDfs;
             function flatArray(arr, childField) {
                 var flatArr = [];
                 if (!childField)
