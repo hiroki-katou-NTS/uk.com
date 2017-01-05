@@ -1512,6 +1512,7 @@ module nts.uk.ui.koExtentions {
                 $grid.igGrid('option', 'dataSource', data.options().slice());
                 $grid.igGrid("dataBind");   
             }
+            if(data.value)
             $grid.ntsGridList('setSelected', data.value());
             
             $grid.closest('.ui-iggrid')

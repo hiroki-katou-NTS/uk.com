@@ -1459,7 +1459,8 @@ var nts;
                             $grid.igGrid('option', 'dataSource', data.options().slice());
                             $grid.igGrid("dataBind");
                         }
-                        $grid.ntsGridList('setSelected', data.value());
+                        if (data.value)
+                            $grid.ntsGridList('setSelected', data.value());
                         $grid.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(data.height);
