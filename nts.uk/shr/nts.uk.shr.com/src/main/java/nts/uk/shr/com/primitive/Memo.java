@@ -4,8 +4,7 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * Memo common
- * @author kitahira
+ * メモ
  */
 @StringMaxLength(1000)
 public class Memo extends StringPrimitiveValue<Memo> {
@@ -15,7 +14,6 @@ public class Memo extends StringPrimitiveValue<Memo> {
 
 	/**
 	 * Constructs.
-	 * 
 	 * @param rawValue value
 	 */
 	public Memo(String rawValue) {
