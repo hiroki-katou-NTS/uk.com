@@ -9,8 +9,11 @@ module nts.uk.ui.koExtentions {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var atomWidth = 9;
+            //9 * 160 = 1440 max width, TextEditor shouldnt reach this width
+            // need to consider more
             if(constraint && constraint.maxLength) {
-                $input.width(constraint.maxLength * atomWidth);
+                var autoWidth = constraint.maxLength <= 160 ? constraint.maxLength * atomWidth : "100%";
+                $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped'/>");
