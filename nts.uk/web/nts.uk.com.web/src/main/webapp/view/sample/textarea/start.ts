@@ -1,5 +1,16 @@
 __viewContext.ready(function() {
 
+    function showError(event) {
+        var currentString = $("#input-text").val();
+        var selectValue = $(this).attr("messege");
+        $(this).tooltip({ content: selectValue });
+        $("#error-messege").text(selectValue);
+        var position = $("#input-containner").position();
+        $("#error-containner").css({ "top": (event.data.pageY - position.top + 2) + "px", 
+                    "left": (event.data.pageX - position.left + 2) + "px" });
+        $("#error-containner").show();
+    }
+    
     class ScreenModel {
         autoComplete: KnockoutObservableArray<any>;
         textArea: KnockoutObservable<any>;
@@ -8,6 +19,7 @@ __viewContext.ready(function() {
         showAutoComplete: KnockoutObservable<boolean>;
         row: KnockoutObservable<number>;
         col: KnockoutObservable<number>;
+        error: KnockoutObservable<string>;
 
         constructor() {
             //----------------------------------------------------------------------------
@@ -22,14 +34,15 @@ __viewContext.ready(function() {
                 new ItemModel2('155', '役職手当', "description 8"),
                 new ItemModel2('AB5', '基12本ghj給', "description 9")
             ]);
-            
+
             this.showAutoComplete = ko.observable(false);
             this.autoSelected = ko.observable("");
             this.row = ko.observable(1);
             this.col = ko.observable(1);
+            this.error = ko.observable("");
             this.autoSelected.subscribe(function(value) {
                 //                $("#auto-complete-containner").show()
-                if(value !== undefined){
+                if (value !== undefined) {
                     var currentString = $("#input-text").val();
                     var index = this.getIndex(currentString, this.row(), this.col()) + 1;
                     var selectValue = value.name();
@@ -39,13 +52,18 @@ __viewContext.ready(function() {
                     $("#input-text")[0].selectionStart = index + selectValue.length;
                     $("#input-text")[0].selectionEnd = index + selectValue.length;
                     this.testError();
-                    $("#auto-complete-containner").hide();   
-                    this.autoSelected(undefined); 
+                    $("#auto-complete-containner").hide();
+                    this.autoSelected(undefined);
                 }
             }, this);
             this.textArea = ko.observable("");
             this.divValue = ko.observable("");
+            $("#error-containner").hide();
+//            $("#error-content").mouseout(function(event){
+//                $("#error-containner").hide();
+//            }
             $("#input-text").keyup((event) => {
+                $("#error-containner").hide();
                 var start = $("#input-text")[0].selectionStart;
                 var end = $("#input-text")[0].selectionEnd;
                 var maxWidthCharacter = 15;
@@ -59,21 +77,39 @@ __viewContext.ready(function() {
                     this.row(currentRow);
                     this.col(currentCol);
                     $("#auto-complete-containner").show();
-                    $("#auto-complete-containner").css({"top": (currentRow*17) + "px", "left": (currentCol * maxWidthCharacter) + "px"});
+                    $("#auto-complete-containner").css({ "top": (currentRow * 17) + "px", "left": (currentCol * maxWidthCharacter) + "px" });
                 } else {
                     $("#auto-complete-containner").hide();
                     this.testError();
                 }
             });
+            $(document).on("mouseleave", "#error-containner", function(event) {
+                $("#error-containner").hide();
+            });
+
+            $("#input-area").click(function(event) {
+                $("#error-containner").hide();
+                var y = _.findLast($(".special-char"), function(d) {
+                    var x = $(d).offset();
+                    return x.top <= event.pageY && x.left <= event.pageX
+                        && (x.left + $(d).outerWidth()) >= event.pageX
+                        && (x.top + $(d).outerHeight()) >= event.pageY;
+                });
+                if (y !== undefined) {
+                    $(y).click({ pageX: event.pageX, pageY: event.pageY }, showError);
+                    $(y).click();
+                }
+            });
+
         }
-        
-        insertString(original, sub, position){
-            if(original.length === position){
+
+        insertString(original, sub, position) {
+            if (original.length === position) {
                 return original + sub;
             }
-            return original.substr(0, position) + sub + original.substr(position);    
+            return original.substr(0, position) + sub + original.substr(position);
         }
-        
+
         testError() {
             var value = $("#input-text").val();
             var count = 1;
@@ -111,8 +147,8 @@ __viewContext.ready(function() {
             this.divValue($("#input-content-area").html());
         }
 
-        getIndex(str, row, col){
-            if(row === 1){
+        getIndex(str, row, col) {
+            if (row === 1) {
                 return col - 1;
             }
             var rowValues = str.split("\n");
@@ -122,9 +158,9 @@ __viewContext.ready(function() {
             }
             return index + col - 1;
         }
-        
+
         getCurrentColumn(currentRow, position) {
-            if(currentRow === 1){
+            if (currentRow === 1) {
                 return position;
             }
             var rowValues = $("#input-text").val().split("\n");
@@ -149,7 +185,7 @@ __viewContext.ready(function() {
         }
 
         checkAlphaOrEmpty(char) {
-            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\\":<>\?\(\)]/);
+            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
             return !speChar.test(char) || char === " " || char === undefined;
         }
 
@@ -162,20 +198,20 @@ __viewContext.ready(function() {
                 "\}": "\{"
             };
             var singleSpecial = {
-                "+" : "+",
-                "-" : "-",
-                "." : ".",
-                "*" : "*",
-                "/" : "/",
-                "\\" : "\\",
-                "!" : "!",
-                "#" : "#",
-                "$" : "$",
-                "%" : "%"    
+                "+": "+",
+                "-": "-",
+                ".": ".",
+                "*": "*",
+                "/": "/",
+                "\\": "\\",
+                "!": "!",
+                "#": "#",
+                "$": "$",
+                "%": "%"
             };
             var doubleSpecial = {
-                "&" : "&",
-                "|" : "|"    
+                "&": "&",
+                "|": "|"
             };
             var element = this.toArrayChar(specialChar);
             for (var i = 0; i < specialChar.length; i++) {
@@ -189,42 +225,42 @@ __viewContext.ready(function() {
                     var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
                     var x = this.countPreviousElement(element, openComa, i);
                     if (x2 > x) {
-                        $data.addClass("error-char");
+                        $data.addClass("error-char").attr("messege", "test 1");
                     }
-                }else if(single !== undefined){
+                } else if (single !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if(neighborCount > 0){
-                        $data.addClass("error-char");
+                    if (neighborCount > 0) {
+                        $data.addClass("error-char").attr("messege", "test 2");
                     }
-                }else if(double !== undefined){
+                } else if (double !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if(neighborCount > 1){
-                        $data.addClass("error-char");
+                    if (neighborCount > 1) {
+                        $data.addClass("error-char").attr("messege", "test 3");
                     }
-                }else if(double !== "@"){
-                    $data.addClass("error-char");
+                } else if (double !== "@") {
+                    $data.addClass("error-char").attr("messege", "test 4");
                 }
             }
         }
-        
-        countNeighbor(index, array, countNext, countPrev){
+
+        countNeighbor(index, array, countNext, countPrev) {
             var previous = _.find(array, function(a) { return $(a).attr("id") === "span-" + (index - 1); });
             var next = _.find(array, function(a) { return $(a).attr("id") === "span-" + (index + 1); });
-            if(previous === undefined && next === undefined){
-                return 0; 
+            if (previous === undefined && next === undefined) {
+                return 0;
             }
             var previousCount = 0;
             var nextCount = 0;
-            if(countNext && next !== undefined){
+            if (countNext && next !== undefined) {
                 nextCount++;
                 nextCount += this.countNeighbor(index + 1, array, countNext, false);
             }
-            if(countPrev && previous !== undefined){
+            if (countPrev && previous !== undefined) {
                 previousCount++;
                 previousCount += this.countNeighbor(index - 1, array, false, countPrev);
             }
             return previousCount + nextCount;
-                           
+
         }
 
         countPreviousElement(element: Array<string>, x, index) {
