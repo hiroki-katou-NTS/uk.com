@@ -18,10 +18,13 @@ var qrm007;
                         { headerText: '名称', prop: 'name', width: 130 },
                         { headerText: '印刷用名称', prop: 'description', width: 160 }
                     ]);
-                    this.currentCode = ko.observable();
-                    this.currentCodeList = ko.observableArray([]);
+                    this.currentCode = ko.observable(_.first(self.items()).code);
+                    this.currentName = ko.observable(_.first(self.items()).name);
+                    this.currentCode.subscribe(function (newValue) {
+                        self.currentName(_.find(self.items(), function (item) { return item.code === newValue; }).name);
+                    });
                     self.texteditor = {
-                        value: ko.observable(''),
+                        value: self.currentName,
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
@@ -47,25 +50,24 @@ var qrm007;
                         readonly: ko.observable(false)
                     };
                 }
+                /*
+                getItem(newValue): ItemModel {
+                    let self = this;
+                    let item: ItemModel = _.find(self.items(), function(item) {
+                        return item.code === newValue;
+                    });
+                    return item;
+                }
+                */
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    a.service.getPaymentDateProcessingList().done(function (data) {
+                    qrm007.a.service.getPaymentDateProcessingList().done(function (data) {
                         self.paymentDateProcessingList(data);
                         dfd.resolve();
                     }).fail(function (res) {
                     });
                     return dfd.promise();
-                };
-                ScreenModel.prototype.selectSomeItems = function () {
-                    this.currentCode('150');
-                    this.currentCodeList.removeAll();
-                    this.currentCodeList.push('001');
-                    this.currentCodeList.push('ABC');
-                };
-                ScreenModel.prototype.deselectAll = function () {
-                    this.currentCode(null);
-                    this.currentCodeList.removeAll();
                 };
                 return ScreenModel;
             }());
