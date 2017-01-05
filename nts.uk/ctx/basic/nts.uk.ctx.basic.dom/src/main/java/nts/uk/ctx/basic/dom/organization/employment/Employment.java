@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.dom.organization.employment;
 
 import lombok.Getter;
+import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class Employment {
