@@ -1516,8 +1516,7 @@ module nts.uk.ui.koExtentions {
             
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(data.height);
-            var selectedList = data.value();            
+                .height(data.height);           
         }
     }
 
@@ -1542,7 +1541,8 @@ module nts.uk.ui.koExtentions {
             var options: Array<any> = ko.unwrap(data.options);
             var optionsValue = ko.unwrap(data.optionsValue);
             var optionsText = ko.unwrap(data.optionsText);
-
+            var columns = null;
+            if(data.columns) columns = ko.unwrap(data.columns);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
 
@@ -1567,6 +1567,7 @@ module nts.uk.ui.koExtentions {
             }
             var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
                 { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
+            if(columns) displayColumns = columns;
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }

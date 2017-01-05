@@ -1463,7 +1463,6 @@ var nts;
                         $grid.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(data.height);
-                        var selectedList = data.value();
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -1485,6 +1484,9 @@ var nts;
                         var options = ko.unwrap(data.options);
                         var optionsValue = ko.unwrap(data.optionsValue);
                         var optionsText = ko.unwrap(data.optionsText);
+                        var columns = null;
+                        if (data.columns)
+                            columns = ko.unwrap(data.columns);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         var optionsChild = ko.unwrap(data.optionsChild);
@@ -1504,6 +1506,8 @@ var nts;
                         }
                         var displayColumns = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
                             { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
+                        if (columns)
+                            displayColumns = columns;
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }
