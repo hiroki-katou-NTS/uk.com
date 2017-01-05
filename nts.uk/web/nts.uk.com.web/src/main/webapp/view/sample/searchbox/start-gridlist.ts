@@ -6,24 +6,21 @@ __viewContext.ready(function () {
         columns2: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        
+        filteredData: any;
         constructor() {
             
             this.items = ko.observableArray([
-                new ItemModel('001', '基本給', "description 1", "other1"),
-                new ItemModel('150', '役職手当', "description 2", "other2"),
-                new ItemModel('ABC', '基12本ghj給', "description 3", "other3"),
-                new ItemModel('002', '基本給', "description 1", "other1"),
-                new ItemModel('152', '役職手当', "description 2", "other2"),
-                new ItemModel('AB2', '基12本ghj給', "description 3", "other3"),
-                new ItemModel('003', '基本給', "description 1", "other1"),
-                new ItemModel('153', '役職手当', "description 2", "other2"),
-                new ItemModel('AB3', '基12本ghj給', "description 3", "other3"),
-                new ItemModel('004', '基本給', "description 1", "other1"),
-                new ItemModel('154', '役職手当', "description 2", "other2"),
-                new ItemModel('AB4', '基12本ghj給', "description 3", "other3"),            
+                new ItemModel('001', 'Hanoi Vietnam', "description 1", "other1"),
+                new ItemModel('150', 'Bankok Thailand', "description 2", "other2"),
+                new ItemModel('ABC', 'Tokyo Japan', "description 3", "other3"),
+                new ItemModel('002', 'London United Kingdoms', "description 1", "other1"),
+                new ItemModel('152', 'Washington United States', "description 2", "other2"),
+                new ItemModel('AB2', 'Jarkata Indonesia', "description 3", "other3"),
+                new ItemModel('003', 'Singapore Singapore', "description 1", "other1"),
+                new ItemModel('153', 'Beijing China', "description 2", "other2"),
+                new ItemModel('AB3', 'Berlin Germany', "description 3", "other3")       
             ]);
-            
+            this.filteredData = ko.observableArray(this.items());
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
                 { headerText: '名称', prop: 'name', width: 150 },
