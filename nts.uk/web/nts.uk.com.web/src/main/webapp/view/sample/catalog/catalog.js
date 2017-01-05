@@ -52,6 +52,11 @@ $(function(){
 		$(this).html($(this).html().replace("<!--[CDATA[","").replace("]]-->",""));
 	});
 	
+	$('pre').addClass('prettyprint')
+	$.getScript("https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js").done(function () {
+		$('pre').css('font-family', 'Consolas');
+	});
+	
 	$(".tabs").tabs();
 	
 });
