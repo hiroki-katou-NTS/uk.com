@@ -8,14 +8,11 @@
 
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
+		         	<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.layout.LayoutName
 				</com:ValidatorScript>
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-			<com:scriptfile
-				path="../../../../../../../../../../nts.uk.pr.web/view/sample/sortable/js/knockout-sortable.js" />
-
 			<com:scriptfile path="test.js" />
 			<com:stylefile path="main.css" />
 
@@ -24,7 +21,7 @@
 		<ui:define name="content">
 
 			<div id="functions-area">
-				<button id="A_BTN_001">新規</button>
+				<button id="A_BTN_001" data-bind="click: resetData">新規</button>
 				<button id="A_BTN_002" class="proceed">登録</button>
 				<button id="A_BTN_003">印刷（PDF）</button>
 				<button id="A_BTN_004">納付先の統合</button>
@@ -38,10 +35,11 @@
 
 				<div class="nts-left-content">
 					<div class="caret-right caret-background">
-						<div class="form-label">
+					<!-- 	<div class="form-label">
 							<input id="A_INP_001" placeholder="コード/名称"></input>
-							<button id="A_SCH_001"  >検索</button>
-						</div>
+							<button id="A_SCH_001">検索</button>
+						</div> -->
+						<div style="width: 50px" data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" class="form-label" />
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -53,7 +51,7 @@
 									optionsChild: 'childs',
 									optionsText: 'nodeText',
 									multiple: false,
-									enable: true,
+									enable: false,
 									showCheckBox: false}"
 								class="cf"></table>
 						</div>
@@ -79,16 +77,16 @@
 
 						<div id="combo-box"
 							data-bind="ntsComboBox: {
-	options: itemList,
-	 optionsValue: 'code',
-	value: selectedCode,
-	optionsText: 'name',
-	editable: isEditable,
-	enable: isEnable,
-	columns: [
-		{ prop: 'name', length: 10 }
+	                        options: itemList,
+							optionsValue: 'code',
+							value: selectedCode,
+							optionsText: 'name',
+							editable: isEditable,
+							enable: isEnable,
+							columns: [
+									{ prop: 'name', length: 10 }
 		
-	]}">
+							]}">
 
 						</div>
 

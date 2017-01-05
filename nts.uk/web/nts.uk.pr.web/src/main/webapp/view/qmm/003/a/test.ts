@@ -8,6 +8,7 @@ __viewContext.ready(function() {
         curentNode: any;
         name1: any;
         textSearch: string = "";
+        name: any;
 
         itemList: KnockoutObservableArray<Node>;
         itemName: KnockoutObservable<string>;
@@ -15,7 +16,10 @@ __viewContext.ready(function() {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-
+        editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
+        filteredData: any;
+        selectedCodes: any;
+        mutiMode: boolean = false; // 
         constructor() {
             let self = this;
             // 青森市
@@ -30,18 +34,20 @@ __viewContext.ready(function() {
                 new Node('8', '熊谷市', []),
                 new Node('9', '浦和市', [])
             ]);
-            self.items = ko.observableArray([new Node('1', '東北', [
-                new Node('11', '青森県', [
-                    new Node('022012', '青森市', []),
-                    new Node('052019', '秋田市', [])
+            self.items = ko.observableArray(
+                [
+                new Node('1', '東北', [
+                    new Node('11', '青森県', [
+                        new Node('022012', '青森市', []),
+                        new Node('052019', '秋田市', [])
+                    ]),
+                    new Node('12', '東北', [
+                        new Node('062014', '山形市', [])
+                    ]),
+                    new Node('13', '福島県', [
+                        new Node('062015', '福島市', [])
+                    ])
                 ]),
-                new Node('12', '東北', [
-                    new Node('062014', '山形市', [])
-                ]),
-                new Node('13', '福島県', [
-                    new Node('062015', '福島市', [])
-                ])
-            ]),
                 new Node('2', '北海道', []),
                 new Node('3', '東海', []),
                 new Node('4', '関東', [
@@ -69,86 +75,72 @@ __viewContext.ready(function() {
             self.name1 = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
-            _.each(self.items(), function(node: Node) {
-              
-            });
-              function forEach1(items: Array<Node>): void {
-                  
-
-                }
+            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
+            self.selectedCodes = ko.observableArray([]); 
             self.singleSelectedCode.subscribe(function(newValue) {
-                function findObj(items: Array<Node>): Node {
-                    let _node: Node;
-                    _.find(items, function(_obj: Node) {
-                        if (!_node) {
-                            if (_obj.code == newValue) {
-                                _node = _obj;
-                            } else {
-                                _node = findObj(_obj.childs);
+                 if (self.editMode) {
+                     let count =0;
+                     
+                     // tim theo Code
+                    function findObjByCode(items: Array<Node>): Node {
+                        let _node: Node;
+                        _.find(items, function(_obj: Node) {
+                            if (!_node) {
+                                if (_obj.code == newValue) {
+                                    _node = _obj;
+                                    count = count + 1;
+                                                                    
+                                } else {
+                                    console.log(_.size(_obj.childs));
+                                    _node = findObjByCode(_obj.childs);
+                                }
                             }
-                        }
-                    });
-                    return _node;
-                };
-                self.curentNode(findObj(self.items()));
-                self.test = ko.observable(self.curentNode());
-                function findObj1(items: Array<Node>): Node {
-                    let _node: Node;
-                    _.find(items, function(_obj: Node) {
-                        if (!_node) {
-                            if (_obj.name == self.test().name) {
-
-                                _node = _obj;
-
-                            } else {
-                                _node = findObj1(_obj.childs);
-
+                        });
+                        console.log(count);
+                        return _node;
+                    };
+                                       
+                     //tim theo Name
+                    function findObjByName(items: Array<Node>): Node {
+                        let _node: Node;
+                        _.find(items, function(_obj: Node) {
+                            if (!_node) {
+                                if (_obj.name == self.test().name) {
+                                    _node = _obj;
+                                } else {
+                                    _node = findObjByName(_obj.childs);
+                                }
                             }
-                        }
-                    });
-                    console.log(_node);
-                    return _node;
-                };
-
-                self.name1(findObj1(self.itemList()));
-                self.selectedCode(self.name1().code);
+                        });
+                        
+                        return _node;
+                    };
+                     
+                    self.curentNode(findObjByCode(self.items()));
+                    self.test = ko.observable(self.curentNode());
+                    self.name1(findObjByName(self.itemList()));
+                     if(count == 1){
+                          self.selectedCode(self.name1().code);
+                         }
+                    
+                } else {
+                    self.editMode=true; 
+                }
             });
-
-
+      
         }
+        resetData(): void {
+            let self = this;
+            self.editMode = false;
+            self.curentNode(new Node("","",[]));
+            self.singleSelectedCode("");
+            self.selectedCode("");     
+        } 
+        nextData(): void {
+            
+            }
+        
 
-        //        resetData(): void {
-        //            let self = this;
-        //            self.curentNode(new Node("", "", []));
-        //            console.log(self.curentNode());
-        //            self.items = ko.observableArray([new Node('1', '東北', [
-        //                new Node('11', '青森県', [
-        //                    new Node('022012', '青森市', []),
-        //                    new Node('052019', '秋田市', [])
-        //                ]),
-        //                new Node('12', '東北', [
-        //                    new Node('062014', '山形市', [])
-        //                ]),
-        //                new Node('13', '福島県', [
-        //                    new Node('062015', '福島市', [])
-        //                ])
-        //            ]),
-        //                new Node('2', '北海道', []),
-        //                new Node('3', '東海', [])
-        //            ]);
-        //            console.log(self.items());
-        //            self.singleSelectedCode=ko.observable(null);
-        //            console.log(self.singleSelectedCode());
-        //        }
-        //         CheckChilds(items: Array<Node>): any{
-        //             function checkchilds(items): any{
-        //                 _.each(items, function(node: Node){
-        //                     
-        //                     
-        //                     
-        //                     });
-        //                 }
-        //             };
 
     }
 

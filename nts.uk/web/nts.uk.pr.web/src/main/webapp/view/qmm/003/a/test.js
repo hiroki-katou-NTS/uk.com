@@ -2,6 +2,8 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             this.textSearch = "";
+            this.editMode = true; // true là mode thêm mới, false là mode sửa 
+            this.mutiMode = false; // 
             var self = this;
             // 青森市
             self.itemList = ko.observableArray([
@@ -15,7 +17,8 @@ __viewContext.ready(function () {
                 new Node('8', '熊谷市', []),
                 new Node('9', '浦和市', [])
             ]);
-            self.items = ko.observableArray([new Node('1', '東北', [
+            self.items = ko.observableArray([
+                new Node('1', '東北', [
                     new Node('11', '青森県', [
                         new Node('022012', '青森市', []),
                         new Node('052019', '秋田市', [])
@@ -54,48 +57,67 @@ __viewContext.ready(function () {
             self.name1 = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
-            _.each(self.items(), function (node) {
-            });
-            function forEach1(items) {
-            }
+            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            self.selectedCodes = ko.observableArray([]);
             self.singleSelectedCode.subscribe(function (newValue) {
-                function findObj(items) {
-                    var _node;
-                    _.find(items, function (_obj) {
-                        if (!_node) {
-                            if (_obj.code == newValue) {
-                                _node = _obj;
+                if (self.editMode) {
+                    var count_1 = 0;
+                    // tim theo Code
+                    function findObjByCode(items) {
+                        var _node;
+                        _.find(items, function (_obj) {
+                            if (!_node) {
+                                if (_obj.code == newValue) {
+                                    _node = _obj;
+                                    count_1 = count_1 + 1;
+                                }
+                                else {
+                                    console.log(_.size(_obj.childs));
+                                    _node = findObjByCode(_obj.childs);
+                                }
                             }
-                            else {
-                                _node = findObj(_obj.childs);
+                        });
+                        console.log(count_1);
+                        return _node;
+                    }
+                    ;
+                    //tim theo Name
+                    function findObjByName(items) {
+                        var _node;
+                        _.find(items, function (_obj) {
+                            if (!_node) {
+                                if (_obj.name == self.test().name) {
+                                    _node = _obj;
+                                }
+                                else {
+                                    _node = findObjByName(_obj.childs);
+                                }
                             }
-                        }
-                    });
-                    return _node;
+                        });
+                        return _node;
+                    }
+                    ;
+                    self.curentNode(findObjByCode(self.items()));
+                    self.test = ko.observable(self.curentNode());
+                    self.name1(findObjByName(self.itemList()));
+                    if (count_1 == 1) {
+                        self.selectedCode(self.name1().code);
+                    }
                 }
-                ;
-                self.curentNode(findObj(self.items()));
-                self.test = ko.observable(self.curentNode());
-                function findObj1(items) {
-                    var _node;
-                    _.find(items, function (_obj) {
-                        if (!_node) {
-                            if (_obj.name == self.test().name) {
-                                _node = _obj;
-                            }
-                            else {
-                                _node = findObj1(_obj.childs);
-                            }
-                        }
-                    });
-                    console.log(_node);
-                    return _node;
+                else {
+                    self.editMode = true;
                 }
-                ;
-                self.name1(findObj1(self.itemList()));
-                self.selectedCode(self.name1().code);
             });
         }
+        ScreenModel.prototype.resetData = function () {
+            var self = this;
+            self.editMode = false;
+            self.curentNode(new Node("", "", []));
+            self.singleSelectedCode("");
+            self.selectedCode("");
+        };
+        ScreenModel.prototype.nextData = function () {
+        };
         return ScreenModel;
     }());
     var Node = (function () {
