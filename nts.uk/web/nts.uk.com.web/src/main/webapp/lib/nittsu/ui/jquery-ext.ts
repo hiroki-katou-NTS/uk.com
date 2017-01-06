@@ -304,4 +304,8 @@ module nts.uk.ui.jqueryExtentions {
             });
         }
     }
+    
+    module userGuide {
+        
+    }
 }
