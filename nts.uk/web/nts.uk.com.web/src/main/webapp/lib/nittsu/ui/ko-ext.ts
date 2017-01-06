@@ -9,8 +9,11 @@ module nts.uk.ui.koExtentions {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var atomWidth = 9;
+            //9 * 160 = 1440 max width, TextEditor shouldnt reach this width
+            // need to consider more
             if(constraint && constraint.maxLength) {
-                $input.width(constraint.maxLength * atomWidth);
+                var autoWidth = constraint.maxLength <= 160 ? constraint.maxLength * atomWidth : "100%";
+                $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped'/>");
@@ -398,6 +401,7 @@ module nts.uk.ui.koExtentions {
                 selectedKey = ko.unwrap(data.selectedKey);
             }           
             var arr = ko.unwrap(data.items);
+            var component = $("#" + ko.unwrap(data.comId));
             var filteredArr = data.filteredItems;
             var childField = null;
             if(data.childField) {
@@ -417,8 +421,9 @@ module nts.uk.ui.koExtentions {
                 else {
                     selected([]);
                     selected.push(selectedItem);
-                }                        
-                console.log(selectedItem); 
+                } 
+                component.trigger("selectChange");                       
+                //console.log(selectedItem); 
             }
             $input.keyup(function() {
                 $input.change();
@@ -1409,6 +1414,19 @@ module nts.uk.ui.koExtentions {
     /**
      * GridList binding handler
      */
+    function calculateTop(options, id, key) {
+        var atomTop  = 23.6363525390625;
+        var len = options.length;
+        var index = 0;
+        for(var i = 0; i < len; i++) {
+            var item = options[i];
+            if(item[key] == id) {
+                index = i;
+                break; 
+            } 
+        }
+        return atomTop * i;
+    }
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1422,7 +1440,7 @@ module nts.uk.ui.koExtentions {
 
             var data = valueAccessor();
             var optionsValue: string = data.optionsValue;
-
+            var options = ko.unwrap(data.options);
             var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
                 return {
@@ -1477,10 +1495,9 @@ module nts.uk.ui.koExtentions {
                         row1 = $grid.igGrid("selectedRow").id;
                     }
                 }
-                if(row1) {
-                    var rowidstr = "tr[data-id='" + row1 + "']";      
-                    scrollContainer.scrollTop($(rowidstr).position().top);
-                    console.log("scrolled");
+                if(row1) {                   
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                    //console.log(calculateTop(options, row1, iggridColumns[0].key));                 
                 }
                 
             });
@@ -1500,9 +1517,7 @@ module nts.uk.ui.koExtentions {
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
                 .height(data.height);
-            var selectedList = data.value();
-            if(selectedList && selectedList.length == 1)
-            $grid.trigger('selectChange');
+            var selectedList = data.value();            
         }
     }
 
@@ -1606,9 +1621,8 @@ module nts.uk.ui.koExtentions {
                         row1 = $treegrid.igTreeGrid("selectedRow").id;
                     }
                 }
-                if(row1) {
-                    var rowidstr = "tr[data-id='" + row1 + "']";      
-                    scrollContainer.scrollTop($(rowidstr).position().top);
+                if(row1) {                      
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));                  
                 }
                 //console.log(row1);
             });
@@ -1625,7 +1639,7 @@ module nts.uk.ui.koExtentions {
             var singleValue = ko.unwrap(data.value);
 
             // Clear selection.
-            if (selectedValues && selectedValues.length == 0) {
+            if (!selectedValues) {
                 $(element).igTreeGridSelection("clearSelection");
             }
 
@@ -1665,10 +1679,7 @@ module nts.uk.ui.koExtentions {
                 }
                 $(element).igTreeGridSelection("clearSelection");
                 $(element).igTreeGridSelection("selectRowById", singleValue);
-            }
-            if((selectedValues && selectedValues.length == 1) || singleValue) {
-                $(element).trigger("selectChange");
-            }       
+            }    
         }
     }
 
@@ -2057,18 +2068,37 @@ module nts.uk.ui.koExtentions {
                 $swap.find(".ntsSearchButton").css({"marginLeft" : '10px'}).text("Search").click(function(){
                     var value = $swap.find(".ntsSearchInput").val();
                     var source = $(grid2Id).igGrid("option", "dataSource");
-                    var notExisted = _.filter(originalSource, function(list){
+                    var selected = $(grid1Id).ntsGridList("getSelected");
+                    var tempOrigiSour = originalSource.slice();
+                    var findSource;
+                    if(selected.length > 0){
+                        var gotoEnd = tempOrigiSour.splice(0, selected[0].index + 1);   
+                        findSource = tempOrigiSour.concat(gotoEnd);
+                    }else{
+                        findSource = tempOrigiSour;    
+                    }
+                    var notExisted = _.filter(findSource, function(list){
                         return _.filter(source, function(data){
                             return data[primaryKey] === list[primaryKey];
                         }).length <= 0;
                     });
-                    var searchedValues = _.filter(notExisted, function(val){
+                    var searchedValues = _.find(notExisted, function(val){
                         return _.valuesIn(val).filter(function(x){
                             return x.toString().indexOf(value) >= 0;    
                         }).length > 0;
                     });
-                    $(grid1Id).igGrid("option", "dataSource", searchedValues);
-                    $(grid1Id).igGrid("option", "dataBind");
+                    $(grid1Id).ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[primaryKey]] : []);
+                    
+                    if(searchedValues !== undefined){
+                        if(selected.length === 0 || selected[0].id !== searchedValues[primaryKey]){
+                            var scrollContainer = $(grid1Id + "_scrollContainer");
+                            var current = $(grid1Id).ntsGridList("getSelected");
+                            if(current.length > 0){
+                                var rowidstr = "tr[data-id='" + current[0].id + "']";
+                                scrollContainer.scrollTop($(rowidstr).position().top);
+                            }
+                        }
+                    }
                 });
             }
 
@@ -2112,14 +2142,6 @@ module nts.uk.ui.koExtentions {
                 .height(height);
 
             $grid2.ntsGridList('setupSelecting');
-
-//            $grid2.bind('selectionchanged', () => {
-//                let selecteds: Array<any> = $grid2.ntsGridList('getSelected');
-//                let selectedIdSet = {};
-//                selecteds.forEach(s => { selectedIdSet[s.id] = true; });
-//                var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[primaryKey]]);
-//                data.value(_.map(selectedOptions, o => o[primaryKey]));
-//            });
             
             var grid1Id = "#" + $grid1.attr('id');
             var grid2Id = "#" + $grid2.attr('id');

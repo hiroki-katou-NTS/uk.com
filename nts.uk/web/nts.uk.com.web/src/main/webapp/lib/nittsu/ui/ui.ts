@@ -183,7 +183,7 @@
 			}
 
 			getShared(key: string): any {
-				return this.shared[key] !== undefined ? this.shared[key] : this.localShared[key];
+				return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
 			}
 
 			setShared(key: string, data: any, isRoot: boolean, persist?: boolean) {
@@ -414,7 +414,7 @@
             selector: string;
             items: Array<ContextMenuItem>;
             enable: boolean;
-            private target: string;
+            private target: Element;
             
             constructor(selector: string, items: Array<ContextMenuItem>, enable?: boolean) {
                 this.selector = selector;
@@ -445,7 +445,7 @@
                 });
                 
                 // Hiding when click outside
-                $("body").on("mousedown", function() {
+                $("body").on("mousedown", function(event) {
                     if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                         $contextMenu.hide();
                     }
@@ -505,7 +505,7 @@
             }
 
             
-            private createMenuItems (container: Jquery) {
+            private createMenuItems (container: JQuery) {
                 var self = this;
                 _.forEach(self.items, function(item) {
                     if (item.key !== "divider") {

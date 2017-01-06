@@ -8,7 +8,7 @@ __viewContext.ready(function () {
                 new Node('0005', 'Jakarta Indonesia', []),
                 new Node('0002', 'Seoul Korea', []),
                 new Node('0006', 'Paris France', []),
-                new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
+                new Node('0007', 'United States', [new Node('0008', 'Washington US', [new Node('0008-1', 'Wasford US', []), new Node('0008-2', 'Newmece US', [])]), new Node('0009', 'Newyork US', [])]),
                 new Node('0010', 'Beijing China', []),
                 new Node('0011', 'London United Kingdom', []),
                 new Node('0012', '', [])]);

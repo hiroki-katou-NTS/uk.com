@@ -160,7 +160,7 @@ var nts;
                         return subWindow;
                     };
                     ScreenWindowContainer.prototype.getShared = function (key) {
-                        return this.shared[key] !== undefined ? this.shared[key] : this.localShared[key];
+                        return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
                     };
                     ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
                         if (persist || isRoot) {
@@ -401,7 +401,7 @@ var nts;
                             }
                         });
                         // Hiding when click outside
-                        $("body").on("mousedown", function () {
+                        $("body").on("mousedown", function (event) {
                             if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                                 $contextMenu.hide();
                             }
