@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+.aligntLeft {
+	float: left;
+}
+#A_BTN_004 {
+	margin-left: 165px;
+}
+.alignRight {
+	float: right;
+}
+.nts-left-content {
+	float: left;
+	width: 290px;
+    height: 440px;
+    padding: 20px 15px;
+}
+.nts-right-content {
+	float: left;
+	padding: 20px;
+	width: 600px;
+	margin-left:20px;
+}
+.tableRange {
+	width: 100%;
+	}
+
+.tableRange tr {
+	height: 45px;
+}
