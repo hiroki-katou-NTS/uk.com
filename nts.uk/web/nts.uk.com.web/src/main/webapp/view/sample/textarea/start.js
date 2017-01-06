@@ -330,13 +330,5 @@ __viewContext.ready(function () {
         }
         return ItemModel2;
     }());
-    var ItemModel = (function () {
-        function ItemModel(code, name, description) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-        return ItemModel;
-    }());
     this.bind(new ScreenModel());
 });

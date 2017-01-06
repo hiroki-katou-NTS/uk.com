@@ -353,18 +353,6 @@ __viewContext.ready(function() {
         }
     }
 
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-    }
-
-
     this.bind(new ScreenModel());
 
 });
