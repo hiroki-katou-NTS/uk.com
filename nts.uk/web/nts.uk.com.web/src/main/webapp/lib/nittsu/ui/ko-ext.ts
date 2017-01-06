@@ -1577,8 +1577,7 @@ module nts.uk.ui.koExtentions {
                 headers = ko.unwrap(data.headers);
             }
             var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
-            if(columns) displayColumns = columns;
+                { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
@@ -2104,10 +2103,10 @@ module nts.uk.ui.koExtentions {
                     if(searchedValues !== undefined){
                         if(selected.length === 0 || selected[0].id !== searchedValues[primaryKey]){
                             var scrollContainer = $(grid1Id + "_scrollContainer");
-                            var current = $(grid1Id).ntsGridList("getSelected");
-                            if(current.length > 0){
-                                var rowidstr = "tr[data-id='" + current[0].id + "']";
-                                scrollContainer.scrollTop($(rowidstr).position().top);
+                            var current = $(grid1Id).igGrid("selectedRows")
+                            if(current.length > 0 && scrollContainer.length > 0){
+                                $(grid1Id).igGrid("virtualScrollTo", current[0].index === tempOrigiSour.length - 1 
+                                    ? current[0].index : current[0].index + 1); 
                             }
                         }
                     }
