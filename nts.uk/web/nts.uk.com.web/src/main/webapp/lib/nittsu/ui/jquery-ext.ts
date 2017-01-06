@@ -185,10 +185,14 @@ module nts.uk.ui.jqueryExtentions {
         function getSelected($grid: JQuery): any {
             if ($grid.igGridSelection('option', 'multipleSelection')) {
                 var selectedRows: Array<any> = $grid.igGridSelection('selectedRows');
-                return _.map(selectedRows, convertSelected);
+                if(selectedRows)
+                    return _.map(selectedRows, convertSelected);
+                return [];
             } else {
                 var selectedRow: any = $grid.igGridSelection('selectedRow');
-                return convertSelected(selectedRow);
+                if(selectedRow)
+                    return convertSelected(selectedRow);
+                return undefined;
             }
         }
         
