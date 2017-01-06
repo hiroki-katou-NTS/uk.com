@@ -18,12 +18,15 @@ var qmm018;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    a.service.getPaymentDateProcessingList().done(function (data) {
+                    qmm018.a.service.getPaymentDateProcessingList().done(function (data) {
                         self.paymentDateProcessingList(data);
                         dfd.resolve();
                     }).fail(function (res) {
                     });
                     return dfd.promise();
+                };
+                ScreenModel.prototype.openSubWindow = function () {
+                    nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml");
                 };
                 return ScreenModel;
             }());

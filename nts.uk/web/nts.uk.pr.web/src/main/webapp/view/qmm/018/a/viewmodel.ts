@@ -20,13 +20,17 @@ module qmm018.a.viewmodel {
             var self = this;
 
             var dfd = $.Deferred();
-            service.getPaymentDateProcessingList().done(function(data) {
+            qmm018.a.service.getPaymentDateProcessingList().done(function(data) {
                 self.paymentDateProcessingList(data);
                 dfd.resolve();
             }).fail(function(res) {
 
             });
             return dfd.promise();
+        }
+        
+        openSubWindow() {
+            nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml"); 
         }
     }
 }
