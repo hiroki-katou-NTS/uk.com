@@ -1,9 +1,7 @@
 __viewContext.ready(function () {
     class ScreenModel {
         dataSource: any;
-        dataSource2: any;
-        filteredData: any;
-        filteredData2: any;
+        dataSource2: any;      
         singleSelectedCode: any;
         singleSelectedCode2: any;
         selectedCodes: any;
@@ -30,9 +28,7 @@ __viewContext.ready(function () {
                 new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),                             
                 new Node('0010', 'Beijing China', []),
                 new Node('0011', 'London United Kingdom', []),
-                new Node('0012', '', [])]);
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(),"childs"));
-            self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource2(),"childs"));
+                new Node('0012', '', [])]);            
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode2 = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);

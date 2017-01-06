@@ -393,6 +393,7 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var searchBox = $(element);
             var data = valueAccessor();           
             var fields = ko.unwrap(data.fields);
             var selected = data.selected;
@@ -400,20 +401,20 @@ module nts.uk.ui.koExtentions {
             if(data.selectedKey) {
                 selectedKey = ko.unwrap(data.selectedKey);
             }           
-            var arr = ko.unwrap(data.items);
-            var component = $("#" + ko.unwrap(data.comId));
-            var filteredArr = data.filteredItems;
+            var arr = ko.unwrap(data.items);            
+            var component = $("#" + ko.unwrap(data.comId));         
             var childField = null;
             if(data.childField) {
                 childField = ko.unwrap(data.childField); 
             }
+            searchBox.data("searchResult", nts.uk.util.flatArray(arr,childField));
             var $container = $(element);
             $container.append("<input class='ntsSearchBox' type='text' />");
             $container.append("<button class='search-btn'>Search</button>");
             var $input = $container.find("input.ntsSearchBox");
             var $button = $container.find("button.search-btn");
             var nextSearch = function() {
-                var filtArr = filteredArr();
+                var filtArr = searchBox.data("searchResult");
                 var compareKey = fields[0];             
                 var isArray = $.isArray(selected());
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
@@ -436,11 +437,10 @@ module nts.uk.ui.koExtentions {
             });            
             $input.change(function(event){
                 var searchTerm = $input.val();               
-                filteredArr(filteredArray(arr,searchTerm,fields,childField));
+                searchBox.data("searchResult",filteredArray(arr,searchTerm,fields,childField));
             });
             $button.click(nextSearch);
-        }
-        
+        }        
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
         }
     }

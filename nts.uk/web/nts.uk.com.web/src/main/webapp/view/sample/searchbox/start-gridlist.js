@@ -12,7 +12,6 @@ __viewContext.ready(function () {
                 new ItemModel('153', 'Beijing China', "description 2", "other2"),
                 new ItemModel('AB3', 'Berlin Germany', "description 3", "other3")
             ]);
-            this.filteredData = ko.observableArray(this.items());
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
                 { headerText: '名称', prop: 'name', width: 230 },
