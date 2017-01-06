@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+				<com:stylefile path="main.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+					<button id="A_BTN_001" class="proceed">登録</button>
+					<button id="A_BTN_002">マスタ修正ログ</button>
+					<a id="A_BTN_005" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">個人情報の登録へ</a>
+				</div>
+				<div id="contents-area">
+					<div class="valign-center control-group">
+						<div id="A_LBL_001" data-bind="ntsFormLabel:{required: true}" >対象年度</div>
+						<span id="A_INP_001" data-bind="with: texteditor1" >
+								<input class="text-editor1" data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" /></span>
+						<span id="A_LBL_002" >対象年度和暦</span>
+						<span id="A_LBL_003">年度</span>
+						<button id="A_BTN_003" class="proceed">リスト表示ボタン</button>
+					</div>	
+					
+					
+								
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

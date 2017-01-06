@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+
+#contents-area {
+	width: 1300px;
+	margin-top: 10px;
+}
+
+#A_BTN_001 {
+	margin: 4px 8px 0px 100px;
+	padding: 0px 20px
+}
+
+#A_BTN_002 {
+	margin-right: 850px;
+	padding: 0px 20px
+}
+
+#A_BTN_003 {
+	margin:0px 20px;
+}
+
+#A_LBL_002 {
+	margin: 0px 5px
+}
+
+#A_INP_001 {
+	margin: 0px 5px
+}
+
+.control-group {
+	padding: 8px;
+	margin-left: 88px;
+	border: 1px solid rgba(79, 79, 79, 0.85);
+	width: 1150px
+}
