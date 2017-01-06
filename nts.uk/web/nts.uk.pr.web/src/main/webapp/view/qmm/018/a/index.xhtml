@@ -25,15 +25,75 @@
 						<div data-bind="ntsFormLabel: { required: true } ">平均賃金の端数処理</div>
 						<div data-bind="ntsCheckBox: {}">平均賃金の小数第3位以下を切り捨てる</div>
 					</div>
-					<hr id="division"/>
+					<hr />
 					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: false } ">基本計算式</div>
+						<div class="pull-left column1">
+							<div data-bind="ntsFormLabel: { required: false } ">基本計算式</div>
+						</div>
+						<div class="pull-left column2">
+							<span>TOP</span>
+							<hr />
+							<span>BOTTOM</span>
+						</div>
+						<div class="column3">
+						</div>
 					</div>
 					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: false } ">例外計算式</div>
+						<div class="pull-left column1">
+							<div data-bind="ntsFormLabel: { required: false } ">例外計算式</div>
+						</div>
+						<div class="pull-left column2">
+							<span>TOP</span>
+							<hr />
+							<span>BOTTOM</span>
+						</div>
+						<div class="column3">
+						</div>
 					</div>
-					<div>
-						
+					<div class="valign-center control-group">
+						<div class="pull-left column1">
+							
+						</div>
+						<div>
+							<div data-bind="ntsFormLabel: { required: true } ">平均賃金の端数処理</div>
+							<span data-bind="ntsSwitchButton: {
+														options: roundingRules,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedRuleCode,
+														enable: true }"></span>
+						</div>
+						<div>
+							<span>LBL_006</span>
+							
+							<span>LBL_007</span>
+						</div>
+						<div>
+							<span>LBL_008</span>
+							<button data-bind="click: openSubWindow">BTN_002</button>
+							<div data-bind="with: texteditor">
+								<input data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</div>
+						</div>
+						<div>
+							<div data-bind="ntsFormLabel: { required: true } ">LBL_009</div>
+							<span data-bind="with: texteditor">
+								<input data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</span>
+							<span>LBL_010</span>
+						</div>
 					</div>
 				</div>
 			</ui:define>
