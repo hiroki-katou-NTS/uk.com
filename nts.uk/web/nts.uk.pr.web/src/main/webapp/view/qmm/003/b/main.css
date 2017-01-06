@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+.outer {outline:1px solid #FF6138;}
+.fixed-height {height: 45px;}
+.control-group.valign-center > * { vertical-align: middle; }
+#header {
+	color: #ccc;
+}
+
+#contents-area {
+	width: 1300px;
+}
+
+#A_INP_001 {
+	padding-left: 25px;
+	background:
+		url(http://localhost:8080/nts.uk.pr.web/view/qmm/003/a/search.png)
+		no-repeat center left;
+	background-size: 15px;
+	margin-bottom: 15px;
+}
+
+#A_SCH_001 {
+	margin-left: 20px;
+	margin-top: 5px;
+	width: 60px;
+	height: 30px;
+	margin-bottom: 15px;
+}
+.nts-center-content {
+	float: center;
+	padding: 20px;
+	width: 800px;
+}
+.form-label {
+	margin-bottom: 5px;
+	vertical-align: baseline;
+}
+
+/* ************************************************************************ */
+
+
