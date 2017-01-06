@@ -1938,7 +1938,9 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var date = ko.unwrap(data.value);
             var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-            container.datepicker("setDate", date);
+            var oldDate = container.datepicker("getDate");
+            if(date.getFullYear() != oldDate.getFullYear() || date.getMonth() != oldDate.getMonth() || date.getDate() != oldDate.getDate())
+                container.datepicker("setDate", date);
             container.val(nts.uk.time.formatDate(date, dateFormat));  
         }
     }
