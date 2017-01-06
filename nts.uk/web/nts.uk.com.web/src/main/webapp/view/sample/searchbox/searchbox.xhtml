@@ -21,7 +21,8 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SearchBox Sample</h1>						
+						<h1>SearchBox Sample</h1>
+						<h3>This is TreeGrid version, for GridList, view <a href="searchbox-gridlist.xhtml">THIS PAGE</a></h3>						
 						<h2>Overview</h2>						
 						<div class="cf">
 							<div style="float:left">																					
@@ -160,7 +161,14 @@
 												<th><h4>Description</h4></th>
 											</tr>
 										</thead>
-										<tbody>										
+										<tbody>
+											<tr>
+												<td>comId</td>
+												<td>
+													<b>Type:</b> String, the ID of the component that SearchBox works with<br/>													
+													<i>required:</i> SearchBox will trigger 'selectChange' on each search call<br/>
+												</td>
+											</tr>								
 											<tr>
 												<td>items</td>
 												<td>
