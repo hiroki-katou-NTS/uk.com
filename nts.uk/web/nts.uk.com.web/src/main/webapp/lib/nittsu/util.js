@@ -11,17 +11,29 @@ var nts;
                 return true;
             }
             util.alwaysTrue = alwaysTrue;
+            function addToArray(node, arr) {
+                arr.push(node);
+            }
+            function visitDfs(node, func, childField, arr) {
+                if (func) {
+                    if (arr)
+                        func(node, arr);
+                    else
+                        func(node);
+                }
+                var childs = node[childField];
+                $.each(childs, function (child) {
+                    visitDfs(childs[child], func, childField, arr);
+                });
+            }
+            util.visitDfs = visitDfs;
             function flatArray(arr, childField) {
                 var flatArr = [];
                 if (!childField)
                     return arr;
                 for (var i = 0; i < arr.length; i++) {
                     var item = arr[i];
-                    var childList = item[childField];
-                    flatArr.push(item);
-                    for (var j = 0; j < childList.length; j++) {
-                        flatArr.push(childList[j]);
-                    }
+                    visitDfs(item, addToArray, childField, flatArr);
                 }
                 return flatArr;
             }
