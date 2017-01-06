@@ -1,4 +1,14 @@
 __viewContext.ready(function () {
+    function showError(event) {
+        var currentString = $("#input-text").val();
+        var selectValue = $(this).attr("messege");
+        $(this).tooltip({ content: selectValue });
+        $("#error-messege").text(selectValue);
+        var position = $("#input-containner").position();
+        $("#error-containner").css({ "top": (event.data.pageY - position.top + 2) + "px",
+            "left": (event.data.pageX - position.left + 2) + "px" });
+        $("#error-containner").show();
+    }
     var ScreenModel = (function () {
         function ScreenModel() {
             var _this = this;
@@ -18,6 +28,7 @@ __viewContext.ready(function () {
             this.autoSelected = ko.observable("");
             this.row = ko.observable(1);
             this.col = ko.observable(1);
+            this.error = ko.observable("");
             this.autoSelected.subscribe(function (value) {
                 //                $("#auto-complete-containner").show()
                 if (value !== undefined) {
@@ -36,7 +47,12 @@ __viewContext.ready(function () {
             }, this);
             this.textArea = ko.observable("");
             this.divValue = ko.observable("");
+            $("#error-containner").hide();
+            //            $("#error-content").mouseout(function(event){
+            //                $("#error-containner").hide();
+            //            }
             $("#input-text").keyup(function (event) {
+                $("#error-containner").hide();
                 var start = $("#input-text")[0].selectionStart;
                 var end = $("#input-text")[0].selectionEnd;
                 var maxWidthCharacter = 15;
@@ -55,6 +71,22 @@ __viewContext.ready(function () {
                 else {
                     $("#auto-complete-containner").hide();
                     _this.testError();
+                }
+            });
+            $(document).on("mouseleave", "#error-containner", function (event) {
+                $("#error-containner").hide();
+            });
+            $("#input-area").click(function (event) {
+                $("#error-containner").hide();
+                var y = _.findLast($(".special-char"), function (d) {
+                    var x = $(d).offset();
+                    return x.top <= event.pageY && x.left <= event.pageX
+                        && (x.left + $(d).outerWidth()) >= event.pageX
+                        && (x.top + $(d).outerHeight()) >= event.pageY;
+                });
+                if (y !== undefined) {
+                    $(y).click({ pageX: event.pageX, pageY: event.pageY }, showError);
+                    $(y).click();
                 }
             });
         }
@@ -139,7 +171,7 @@ __viewContext.ready(function () {
             return count;
         };
         ScreenModel.prototype.checkAlphaOrEmpty = function (char) {
-            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\\":<>\?\(\)]/);
+            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
             return !speChar.test(char) || char === " " || char === undefined;
         };
         ScreenModel.prototype.testGachChan = function (specialChar) {
@@ -177,23 +209,23 @@ __viewContext.ready(function () {
                     var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
                     var x = this.countPreviousElement(element, openComa, i);
                     if (x2 > x) {
-                        $data.addClass("error-char");
+                        $data.addClass("error-char").attr("messege", "test 1");
                     }
                 }
                 else if (single !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
                     if (neighborCount > 0) {
-                        $data.addClass("error-char");
+                        $data.addClass("error-char").attr("messege", "test 2");
                     }
                 }
                 else if (double !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
                     if (neighborCount > 1) {
-                        $data.addClass("error-char");
+                        $data.addClass("error-char").attr("messege", "test 3");
                     }
                 }
                 else if (double !== "@") {
-                    $data.addClass("error-char");
+                    $data.addClass("error-char").attr("messege", "test 4");
                 }
             }
         };
