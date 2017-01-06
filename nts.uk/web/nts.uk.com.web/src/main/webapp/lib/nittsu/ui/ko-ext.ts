@@ -1415,9 +1415,10 @@ module nts.uk.ui.koExtentions {
      * GridList binding handler
      */
     function calculateTop(options, id, key) {
+        if(!id) return 0;
         var atomTop  = 23.6363525390625;
         var len = options.length;
-        var index = 0;
+        var index = 0;       
         for(var i = 0; i < len; i++) {
             var item = options[i];
             if(item[key] == id) {
@@ -1504,11 +1505,11 @@ module nts.uk.ui.koExtentions {
                         row1 = $grid.igGrid("selectedRow").id;
                     }
                 }
-                if(row1) {                   
+                if(row1 && row1 !== 'undefined') {
+                    //console.log(row1);
                     scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                     //console.log(calculateTop(options, row1, iggridColumns[0].key));                 
-                }
-                
+                }                
             });
         }
 
@@ -1632,7 +1633,7 @@ module nts.uk.ui.koExtentions {
                         row1 = $treegrid.igTreeGrid("selectedRow").id;
                     }
                 }
-                if(row1) {                      
+                if(row1 && row1 !== 'undefined') {                      
                     scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));                  
                 }
                 //console.log(row1);
