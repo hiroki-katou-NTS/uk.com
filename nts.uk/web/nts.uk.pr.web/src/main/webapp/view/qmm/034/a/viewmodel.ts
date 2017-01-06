@@ -49,24 +49,32 @@ module qmm034.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.currentEra(new EraModel('', '', new Date().toString()));
+            self.isUpdate = ko.observable(false);
         }
         insertData() {
             let self = this;
             let newData = self.currentEra();
             let newEradata = self;
-            var x = self.items();
-            x.push(newData);
-            self.items(x);
-
-
+            // var x = self.items();
+            //x.push(newData);
+            if (self.isUpdate() === false) {
+                self.items.push(newData);
+                self.isUpdate = ko.observable(true);
+            }
             // alert('insert ok');
+        }
+        alertDelete(){
+            let self= this;
+            if(confirm("do you wanna delete")=== true){
+                    self.deleteData();
+            }else{
+                    alert("you didnt delete!");
+            }
         }
         deleteData() {
             let self = this;
             let newDel = self.currentEra();
-            let y = self.items();
-            y.pop(newDel);
-            self.items(y);
+            self.items.splice(self.items().indexOf(newDel), 1);
         }
 
         getEra(codeNew): EraModel {

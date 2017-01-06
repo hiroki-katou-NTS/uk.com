@@ -42,22 +42,33 @@ var qmm034;
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.currentEra(new EraModel('', '', new Date().toString()));
+                    self.isUpdate = ko.observable(false);
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
                     var newData = self.currentEra();
                     var newEradata = self;
-                    var x = self.items();
-                    x.push(newData);
-                    self.items(x);
+                    // var x = self.items();
+                    //x.push(newData);
+                    if (self.isUpdate() === false) {
+                        self.items.push(newData);
+                        self.isUpdate = ko.observable(true);
+                    }
                     // alert('insert ok');
+                };
+                ScreenModel.prototype.alertDelete = function () {
+                    var self = this;
+                    if (confirm("do you wanna delete") === true) {
+                        self.deleteData();
+                    }
+                    else {
+                        alert("you didnt delete!");
+                    }
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var newDel = self.currentEra();
-                    var y = self.items();
-                    y.pop(newDel);
-                    self.items(y);
+                    self.items.splice(self.items().indexOf(newDel), 1);
                 };
                 ScreenModel.prototype.getEra = function (codeNew) {
                     var self = this;

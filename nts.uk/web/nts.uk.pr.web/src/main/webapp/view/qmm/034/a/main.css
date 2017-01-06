@@ -24,7 +24,7 @@
 .nts-right-content {
 	float: left;
 	padding: 20px;
-	width: 700px;
+	width: 450px;
 	margin-left:20px;
 }
 
@@ -38,4 +38,7 @@
 
 .gridList {
 	margin-top: 30px;
+}
+.nts-left-content .caret-background.caret-right:after {
+    left: 105% !important;
 }

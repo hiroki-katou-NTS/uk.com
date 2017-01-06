@@ -27,7 +27,7 @@
 					<button id="A_BTN_001" data-bind="click: refreshLayout">新規</button>
 					<button id="A_BTN_002" class="proceed" data-bind="click: register">登録</button>
 					<button id="A_BTN_004">マスタ修正ログ</button>
-					<button id="A_BTN_003" class="danger" data-bind="click: deleteData">削除</button>
+					<button id="A_BTN_003" class="danger" data-bind="click: alertDelete">削除</button>
 				</div>
 				<div class="alignRight">
 					<label id="A_LBL_001">元号の登録</label>
@@ -35,7 +35,7 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div class="nts-left-content bg-green relative">
-					<span class="caret-right caret-background"></span>
+					<div class="caret-right caret-background"></div>
 					<table id="single-list" data-bind="ntsGridList: {
 						width: 280,
 						height: 410,
