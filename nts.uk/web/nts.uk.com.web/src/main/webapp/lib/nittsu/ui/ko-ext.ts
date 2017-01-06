@@ -1577,8 +1577,7 @@ module nts.uk.ui.koExtentions {
                 headers = ko.unwrap(data.headers);
             }
             var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
-            if(columns) displayColumns = columns;
+                { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
