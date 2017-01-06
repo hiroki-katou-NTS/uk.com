@@ -1,11 +1,12 @@
 __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
-            this.textSearch = "";
+            this.firtSingleCode = " ";
             this.editMode = true; // true là mode thêm mới, false là mode sửa 
             this.mutiMode = false; // 
             var self = this;
             // 青森市
+            // itemList == RemoveData()
             self.itemList = ko.observableArray([
                 new Node('1', '青森市', []),
                 new Node('2', '秋田市', []),
@@ -54,11 +55,14 @@ __viewContext.ready(function () {
             self.isEditable = ko.observable(true);
             self.singleSelectedCode = ko.observable(null);
             self.test = ko.observable(null);
-            self.name1 = ko.observable(null);
+            self.nameBySelectedCode = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
+            self.labelSubsub = ko.observable(null);
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.selectedCodes = ko.observableArray([]);
+            FilterData(self.filteredData());
+            RemoveData(self.arrayAfterFilter());
             self.singleSelectedCode.subscribe(function (newValue) {
                 if (self.editMode) {
                     var count_1 = 0;
@@ -72,12 +76,10 @@ __viewContext.ready(function () {
                                     count_1 = count_1 + 1;
                                 }
                                 else {
-                                    console.log(_.size(_obj.childs));
                                     _node = findObjByCode(_obj.childs);
                                 }
                             }
                         });
-                        console.log(count_1);
                         return _node;
                     }
                     ;
@@ -99,15 +101,43 @@ __viewContext.ready(function () {
                     ;
                     self.curentNode(findObjByCode(self.items()));
                     self.test = ko.observable(self.curentNode());
-                    self.name1(findObjByName(self.itemList()));
+                    self.nameBySelectedCode(findObjByName(self.itemList()));
                     if (count_1 == 1) {
-                        self.selectedCode(self.name1().code);
+                        self.selectedCode(self.nameBySelectedCode().code);
                     }
+                    var co_1 = 0, co1_1 = 0;
+                    _.each(self.arrayAfterFilter(), function (obj) {
+                        if (obj.code != self.curentNode().code) {
+                            co_1++;
+                        }
+                        else {
+                            co1_1 = co_1 + 1;
+                        }
+                    });
+                    self.labelSubsub(self.arrayAfterFilter()[co1_1]);
                 }
                 else {
                     self.editMode = true;
                 }
             });
+            // change tree -> array include: root, sub, subsub;
+            function FilterData(items1) {
+                var node;
+                _.each(items1, function (obj) {
+                    if (!node) {
+                        if (obj.childs != null) {
+                            self.arrayAfterFilter = ko.observableArray(nts.uk.util.flatArray(items1, "childs"));
+                        }
+                    }
+                });
+            }
+            // remove data: return array of subsub tree
+            function RemoveData(items1) {
+                var self = this;
+                self.ttt = _.remove(items1, function (obj) {
+                    return _.size(obj.code) < 3;
+                });
+            }
         }
         ScreenModel.prototype.resetData = function () {
             var self = this;
@@ -115,8 +145,6 @@ __viewContext.ready(function () {
             self.curentNode(new Node("", "", []));
             self.singleSelectedCode("");
             self.selectedCode("");
-        };
-        ScreenModel.prototype.nextData = function () {
         };
         return ScreenModel;
     }());
@@ -132,3 +160,6 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+function OpenModalSubWindow(option) {
+    nts.uk.ui.windows.sub.modal("/view/qmm/003/b/test.xhtml", option);
+}

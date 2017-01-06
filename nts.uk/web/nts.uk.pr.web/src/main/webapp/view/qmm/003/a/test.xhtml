@@ -66,7 +66,8 @@
 						</div>
 						<input id="A_INP_002" data-bind="value: singleSelectedCode()" />
 						<input type="text" data-bind="value: curentNode().name" />
-						<button id="A_BTN_007">参照</button>
+						<button id="A_BTN_007" data-bind="click: OpenModalSubWindow({height: 600, width: 750})">参照</button>
+						
 					</div>
 
 					<div class="valign-center control-group">
@@ -96,7 +97,7 @@
 						<div data-bind="ntsFormLabel: {}" class="form-label">
 							<label id="A_LBL_004"> 住民税報告先 </label>
 							<button id="A_BTN_009">参照</button>
-							<label id="A_LBL_012"> 062014 山形市 </label>
+							<label id="A_LBL_012" data-bind="text: labelSubsub().nodeText">  </label>
 						</div>
 					</div>
 

@@ -1,15 +1,20 @@
 __viewContext.ready(function() {
     class ScreenModel {
+        
+        // data of items list - tree grid
         index: number;
         items: any;
         singleSelectedCode: KnockoutObservable<any>;
         headers: any;
         test: any;
         curentNode: any;
-        name1: any;
-        textSearch: string = "";
-        name: any;
+        nameBySelectedCode: any;
+        arrayAfterFilter: any;
+        ttt: any; // var for remove function
+        labelSubsub: any; // show label sub sub of root
+        firtSingleCode : string =" ";
 
+        // data of itemList - combox
         itemList: KnockoutObservableArray<Node>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
@@ -23,6 +28,8 @@ __viewContext.ready(function() {
         constructor() {
             let self = this;
             // 青森市
+            
+            // itemList == RemoveData()
             self.itemList = ko.observableArray([
                 new Node('1', '青森市', []),
                 new Node('2', '秋田市', []),
@@ -72,12 +79,17 @@ __viewContext.ready(function() {
             self.isEditable = ko.observable(true);
             self.singleSelectedCode = ko.observable(null);
             self.test = ko.observable(null);
-            self.name1 = ko.observable(null);
+            self.nameBySelectedCode = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
+            self.labelSubsub = ko.observable(null);
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
-            self.selectedCodes = ko.observableArray([]); 
+            self.selectedCodes = ko.observableArray([]);
+            FilterData(self.filteredData());
+            RemoveData(self.arrayAfterFilter());
+            
             self.singleSelectedCode.subscribe(function(newValue) {
+                 
                  if (self.editMode) {
                      let count =0;
                      
@@ -91,12 +103,12 @@ __viewContext.ready(function() {
                                     count = count + 1;
                                                                     
                                 } else {
-                                    console.log(_.size(_obj.childs));
+                                    
                                     _node = findObjByCode(_obj.childs);
                                 }
                             }
                         });
-                        console.log(count);
+                        
                         return _node;
                     };
                                        
@@ -118,16 +130,53 @@ __viewContext.ready(function() {
                      
                     self.curentNode(findObjByCode(self.items()));
                     self.test = ko.observable(self.curentNode());
-                    self.name1(findObjByName(self.itemList()));
+                    self.nameBySelectedCode(findObjByName(self.itemList()));
                      if(count == 1){
-                          self.selectedCode(self.name1().code);
+                          self.selectedCode(self.nameBySelectedCode().code);
                          }
-                    
+                     let co = 0, co1=0;
+                     _.each(self.arrayAfterFilter(), function (obj : Node){
+                           
+                         if(obj.code != self.curentNode().code){
+                               co ++; 
+                             }
+                         else {
+                             
+                             co1 = co + 1 ;
+                         }
+                         
+                         });
+                    self.labelSubsub(self.arrayAfterFilter()[co1]);         
+                                       
                 } else {
                     self.editMode=true; 
                 }
+                
             });
-      
+           
+           // change tree -> array include: root, sub, subsub;
+            function FilterData(items1: Array<Node>): any {
+                let node : Node;
+                 _.each(items1, function (obj : Node){
+                    if(!node){
+                        if(obj.childs!=null){
+                            self.arrayAfterFilter = ko.observableArray(nts.uk.util.flatArray(items1,"childs"));
+                            }
+                        }
+   
+                 });
+                }
+            
+            // remove data: return array of subsub tree
+            function RemoveData(items1: Array<Node>): any{
+                let self = this;
+                self.ttt= _.remove(items1, function(obj : Node){
+                     return _.size(obj.code) < 3;
+                    });
+            }
+            
+
+
         }
         resetData(): void {
             let self = this;
@@ -136,9 +185,7 @@ __viewContext.ready(function() {
             self.singleSelectedCode("");
             self.selectedCode("");     
         } 
-        nextData(): void {
-            
-            }
+
         
 
 
@@ -164,3 +211,6 @@ __viewContext.ready(function() {
     this.bind(new ScreenModel());
 
 });
+   function OpenModalSubWindow(option?: any){
+            nts.uk.ui.windows.sub.modal("/view/qmm/003/b/test.xhtml", option); 
+            }
