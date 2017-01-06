@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="btn_001" class="button separate-button fix-button">新規</button>
+				<button id="btn_002" class="button proceed separate-button fix-button">登録</button>
+				<button id="btn_003" class="button separate-button fix-button">コピー</button>
+				<button id="btn_004" class="button separate-button fix-button">Excel出力</button>
+				<button id="btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" style="width: 520px; float:left;" class="bg-green caret-right caret-background cf">
+					
+					<div id="lst_001">
+						<div style="width: 500px;" data-bind="ntsSearchBox: {
+							comId: 'treegrid1',
+							items: lst_001,  
+							filteredItems: filteredData, 
+							selected: singleSelectedCode, 
+							selectedKey: 'code', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />	
+							
+							<table id="treegrid1"
+								data-bind="ntsTreeGridView:{
+									width: 500,
+									height: 600,
+									options: lst_001,
+									value: singleSelectedCode,								
+									optionsValue: 'code',
+									optionsChild: 'childs',
+									optionsText: 'nodeText',
+									multiple: false,
+									enable: true,										
+									showCheckBox: false}"
+								class="cf">
+							</table>		
+					</div>
+
+				</div>
+				<div id="right-content" style="margin-left: 20px;">
+					<table>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">銀行コード/名称</div>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">銀行名称（カナ）</div>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: { required: true }">支店コード/名称</div>
+							</td>
+							<td></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
