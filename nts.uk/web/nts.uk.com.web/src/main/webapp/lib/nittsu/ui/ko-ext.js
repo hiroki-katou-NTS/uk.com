@@ -418,6 +418,7 @@ var nts;
                      * Init.
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
                         var selected = data.selected;
@@ -427,18 +428,18 @@ var nts;
                         }
                         var arr = ko.unwrap(data.items);
                         var component = $("#" + ko.unwrap(data.comId));
-                        var filteredArr = data.filteredItems;
                         var childField = null;
                         if (data.childField) {
                             childField = ko.unwrap(data.childField);
                         }
+                        searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
                         var $container = $(element);
                         $container.append("<input class='ntsSearchBox' type='text' />");
                         $container.append("<button class='search-btn'>Search</button>");
                         var $input = $container.find("input.ntsSearchBox");
                         var $button = $container.find("button.search-btn");
                         var nextSearch = function () {
-                            var filtArr = filteredArr();
+                            var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
                             var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
@@ -462,7 +463,7 @@ var nts;
                         });
                         $input.change(function (event) {
                             var searchTerm = $input.val();
-                            filteredArr(filteredArray(arr, searchTerm, fields, childField));
+                            searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
                         });
                         $button.click(nextSearch);
                     };
@@ -1521,9 +1522,7 @@ var nts;
                             headers = ko.unwrap(data.headers);
                         }
                         var displayColumns = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                            { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
-                        if (columns)
-                            displayColumns = columns;
+                            { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }
@@ -2008,10 +2007,10 @@ var nts;
                                 if (searchedValues !== undefined) {
                                     if (selected.length === 0 || selected[0].id !== searchedValues[primaryKey]) {
                                         var scrollContainer = $(grid1Id + "_scrollContainer");
-                                        var current = $(grid1Id).ntsGridList("getSelected");
-                                        if (current.length > 0) {
-                                            var rowidstr = "tr[data-id='" + current[0].id + "']";
-                                            scrollContainer.scrollTop($(rowidstr).position().top);
+                                        var current = $(grid1Id).igGrid("selectedRows");
+                                        if (current.length > 0 && scrollContainer.length > 0) {
+                                            $(grid1Id).igGrid("virtualScrollTo", current[0].index === tempOrigiSour.length - 1
+                                                ? current[0].index : current[0].index + 1);
                                         }
                                     }
                                 }

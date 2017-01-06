@@ -1,3 +1,18 @@
 .userguide {
 	
+	
+}
+
+.userguide-overlay {
+	position: fixed;
+	display: none;
+	background: #000;
+	opacity: 0.5;
+	z-index: 999;
+	
+	&overlay-right {
+		top:0;
+		bottom:0;
+		right:0;
+	}
 }
