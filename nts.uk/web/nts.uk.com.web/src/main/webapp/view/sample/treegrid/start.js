@@ -2,11 +2,31 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.items1 = ko.observableArray([new Node('0001', 'サービス部', [
-                    new Node('0001-1', 'サービス部1', []),
-                    new Node('0001-2', 'サービス部2', []),
-                    new Node('0001-3', 'サービス部3', [])
-                ]), new Node('0002', '開発部', [])]);
+            self.items1 = ko.observableArray([]);
+            for (var i = 1; i <= 2; i++) {
+                var level1 = new Node('0000' + i, 'サービス部' + i, []);
+                for (var j = 1; j <= 2; j++) {
+                    var ij = i + "" + j;
+                    var level2 = new Node('0000' + ij, 'サービス部' + ij, []);
+                    level1.childs.push(level2);
+                    for (var k = 1; k <= 2; k++) {
+                        var ijk = ij + "" + k;
+                        var level3 = new Node('0000' + ijk, 'サービス部' + ijk, []);
+                        level2.childs.push(level3);
+                        for (var l = 1; l <= 2; l++) {
+                            var ijkl = ijk + "" + l;
+                            var level4 = new Node('0000' + ijkl, 'サービス部' + ijkl, []);
+                            level3.childs.push(level4);
+                            for (var n = 1; n <= 2; n++) {
+                                var ijkln = ijkl + "" + n;
+                                var level5 = new Node('0000' + ijkln, 'サービス部' + ijkln, []);
+                                level4.childs.push(level5);
+                            }
+                        }
+                    }
+                }
+                self.items1.push(level1);
+            }
             self.items2 = ko.observableArray(self.items1());
             self.selectedCode = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
