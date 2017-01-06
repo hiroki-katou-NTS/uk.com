@@ -15,7 +15,7 @@ __viewContext.ready(function () {
             this.filteredData = ko.observableArray(this.items());
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 },
+                { headerText: '名称', prop: 'name', width: 230 },
                 { headerText: '説明', prop: 'description', width: 150 },
                 { headerText: '説明1', prop: 'other1', width: 150 },
                 { headerText: '説明2', prop: 'other2', width: 150 }

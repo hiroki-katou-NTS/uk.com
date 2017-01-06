@@ -401,7 +401,7 @@ var nts;
                             }
                         });
                         // Hiding when click outside
-                        $("body").on("mousedown", function () {
+                        $("body").on("mousedown", function (event) {
                             if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                                 $contextMenu.hide();
                             }
