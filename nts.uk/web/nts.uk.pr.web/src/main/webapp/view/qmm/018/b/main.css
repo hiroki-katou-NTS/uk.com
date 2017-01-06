@@ -1,0 +1,16 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+.control-group { margin: 10px; }
+.halign-left { text-align: left; }
+.halign-right { text-align: right; }
+.halign-center { text-align: center; }
+
+#contents-area {
+	width: 520px;
+	margin-left: 10px;
+}
+
+.center-e {
+	margin-left: 100px;
+}

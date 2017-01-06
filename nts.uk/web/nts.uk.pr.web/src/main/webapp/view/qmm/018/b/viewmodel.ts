@@ -26,8 +26,8 @@ module qmm018.b.viewmodel {
                 new ItemModel('003', 'name3')
             ]);
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 }
+                { headerText: 'コード', prop: 'code', width: 40 },
+                { headerText: '名称', prop: 'name', width: 130 },
             ]);
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
