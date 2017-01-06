@@ -1,0 +1,80 @@
+@CHARSET "UTF-8";
+
+#contents-area {
+	/*  width: 1000px; */
+}
+
+#functions-area {
+	padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 40px;
+}
+
+.btn-default {
+	margin-left: 10px;
+	min-width: 75px;
+}
+
+.inp-default {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-ms-border-radius: 3px;
+}
+
+#left-content {
+	margin-left: 30px;
+	padding: 20px;
+	float: left;
+	min-height: 400px;
+}
+
+#right-content {
+	margin-left: 40px;
+	float: left;
+	min-height: 600px;
+}
+
+#lbl_008 {
+}
+
+#inp_001 {
+	width: 150px;
+}
+
+#inp_002 {
+	width: 50px;
+}
+
+#inp_003 {
+	width: 250px;
+}
+
+#inp_004 {
+	width: 70px;
+}
+
+#inp_005 {
+	width: 110px;
+}
+
+#inp_006 textarea {
+	width: 380px;
+	height: 120px;
+}
+
+.nts-switch-button {
+	min-width: 80px;
+	font-size: 13px !important;
+	height: 30px !important;
+	padding: 3px 7px !important;
+	margin-bottom: 3px !important;
+}
+
+.valign-top {
+	vertical-align: top;
+}
+
+.control-group > td {
+	padding-bottom: 8px
+}

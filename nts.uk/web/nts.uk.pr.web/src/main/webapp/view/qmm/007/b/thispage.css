@@ -1,0 +1,40 @@
+@CHARSET "UTF-8";
+
+#this-contents-area {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+
+#this-functions-area {
+	margin-top: 15px;
+	max-width: 400px;
+}
+
+.tbl-default{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.btn-default {
+	min-width: 110px;
+}
+
+#btn_002 {
+	margin-left: 10px;
+}
+
+.inp-default {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-ms-border-radius: 3px;
+	width: 80px;
+	height: 25px;
+}
+
+.control-group > td {
+	padding-bottom: 8px
+}
+.valign-top {
+	vertical-align: top;
+}

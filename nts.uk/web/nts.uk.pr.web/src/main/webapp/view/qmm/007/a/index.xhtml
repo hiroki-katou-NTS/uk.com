@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="thispage.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="functions-area">
+				<button id="btn_001" data-bind="enable: false"
+					class="large btn-default">新規</button>
+				<button id="btn_002" class="large proceed btn-default">登録</button>
+				<button id="btn_003" class="large btn-default"
+					data-bind="click: goToB">印刷 (PDF)</button>
+				<button id="btn_006" class="large btn-default"
+					onclick="nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', {dialogClass: 'no-close', height: 450, width: 560}).setTitle('履歴の編集')">マスタ修正ログ</button>
+			</div>
+			<!-- END FUNCTION AREA-->
+
+			<!-- BEGIN CONTENT AREA-->
+			<div id="contents-area">
+				<!-- BEGIN LEFT CONTENT-->
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div class="control-group">
+						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<input id="inp_001" class="inp-default" />
+						<button id="sch_001">検索</button>
+					</div>
+					<div
+						data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+					<div class="control-group">
+						<button id="btn_004" data-bind="enable: false">履歴追加</button>
+						<button class="pull-right" id="btn_005" data-bind="enable: false">履歴編集</button>
+					</div>
+					<div style="float: left">
+						<table id="lst_001"
+							data-bind="ntsTreeGridView:{
+										width: 280,
+										height: 550,
+										options: dataSource,
+										selectedValues: selectedCodes,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: false,
+										enable: true,
+										showCheckBox: false}"
+							class="cf">
+						</table>
+					</div>
+				</div>
+				<!-- END LEFT CONTENT-->
+
+				<!-- BEGIN RIGHT CONTENT-->
+				<div id="right-content">
+					<table>
+						<tr class="control-group">
+							<td><div id="lbl_003"
+									data-bind="ntsFormLabel: { required: true }">コード/名称</div></td>
+							<td colspan="2"><input id="inp_002" class="inp-default"
+								data-bind="ntsTextEditor: {value: ko.observable('') }" /> <input
+								id="inp_003" class="inp-default"
+								data-bind="ntsTextEditor: {value: ko.observable('') }" /></td>
+						</tr>
+						<tr class="control-group">
+							<td><div id="lbl_004"
+									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
+							<td><input id="inp_004" class="inp-default"
+								data-bind="ntsTextEditor: {value: ko.observable('') }" /> <label
+								id="lbl_005">lbl_005</label></td>
+						</tr>
+						<tr class="control-group">
+							<td><div id="lbl_006"
+									data-bind="ntsFormLabel: { required: true }">金額</div></td>
+							<td><input id="inp_005" class="inp-default"
+								data-bind="ntsTextEditor: {value: ko.observable('') }" /></td>
+						</tr>
+						<tr class="control-group">
+							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
+							<td><label class="ntsRadioBox"> <input type="radio"
+									name="textRadio" value="2" data-bind="checked: 1" /> <span
+									class="box"></span><span class="label"
+									data-bind="text: '全員一律で指定する'"></span>
+							</label></td>
+							<td colspan="2"><label class="ntsRadioBox"><input
+									type="radio" name="textRadio" value="2" data-bind="checked: 1" />
+									<span class="box"></span><span class="label"
+									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
+						</tr>
+						<tr class="control-group">
+							<td> </td>
+							<td class="valign-top" rowspan="4"><div id="sel_002"
+									data-bind="ntsSwitchButton: {
+						options: sel_002,
+						optionsValue: 'code',
+						optionsText: 'name',
+						enable: enabled}"></div></td>
+							<td><label id="lbl_009">月給者</label></td>
+							<td class="">
+								<div id="sel_003"
+									data-bind="ntsSwitchButton: {
+						options: sel_002,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selected}"></div>
+							</td>
+						</tr>
+						<tr class="control-group">
+							<td> </td>
+							<td><label id="lbl_010">日給月給者</label></td>
+							<td class="">
+								<div id="sel_004"
+									data-bind="ntsSwitchButton: {
+						options: sel_002,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selected}"></div>
+							</td>
+						</tr>
+						<tr class="control-group">
+							<td> </td>
+							<td><label id="lbl_011">日給者</label></td>
+							<td class="">
+								<div id="sel_005"
+									data-bind="ntsSwitchButton: {
+						options: sel_002,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selected}"></div>
+							</td>
+						</tr>
+						<tr class="control-group">
+							<td> </td>
+							<td><label id="lbl_012">時給者</label></td>
+							<td class="">
+								<div id="sel_006"
+									data-bind="ntsSwitchButton: {
+						options: sel_002,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selected}"></div>
+							</td>
+						</tr>
+						<tr class="control-group">
+							<td></td>
+						</tr>
+						<tr class="control-group">
+							<td colspan="4"><hr /></td>
+						</tr>
+						<tr class="control-group">
+							<td class="valign-top"><div id="lbl_008"
+									data-bind="ntsFormLabel: {}">メモ</div></td>
+							<td colspan="3"><div id="inp_006">
+									<textarea placeholder="inp_006" class="inp-default" />
+								</div></td>
+						</tr>
+					</table>
+				</div>
+				<!-- END RIGHT CONTENT-->
+			</div>
+			<!-- END CONTENT AREA-->
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
