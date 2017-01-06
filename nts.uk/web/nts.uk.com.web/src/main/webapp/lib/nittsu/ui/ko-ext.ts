@@ -1909,6 +1909,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             // Container.
             var container = $(element);
+            container.prop("readonly", true);
             var date = ko.unwrap(data.value);
             var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             var length = 10, atomWidth = 9;
@@ -1937,8 +1938,8 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var date = ko.unwrap(data.value);
             var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-            //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-            container.val(nts.uk.time.formatDate(date, dateFormat));          
+            container.datepicker("setDate", date);
+            container.val(nts.uk.time.formatDate(date, dateFormat));  
         }
     }
     /**
