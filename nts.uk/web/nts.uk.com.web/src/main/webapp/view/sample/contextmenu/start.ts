@@ -45,10 +45,10 @@ __viewContext.ready(function () {
                 self.menu2.setEnable(value);
             });
             
-            // Enable "Cut" Item
+            // Enable "Cut/Copy" Item
             self.enableCut = ko.observable(true);
             self.enableCut.subscribe(function(value){
-                self.menu1.setEnableItem(value, 0); // Get item with index
+                self.menu1.setEnableItem(value, 0); // Set enable item by index
                 self.menu1.setEnableItem(value, 1);
                 self.menu2.setEnableItem(value, 0);
                 self.menu2.setEnableItem(value, 1);
@@ -57,7 +57,7 @@ __viewContext.ready(function () {
             // Visible "Copy" Item
             self.visibleCopy = ko.observable(true);
             self.visibleCopy.subscribe(function(value){
-                self.menu1.setVisibleItem(value, "copy"); // Get item with key
+                self.menu1.setVisibleItem(value, "copy"); // Set visible item by key
                 self.menu2.setVisibleItem(value, "copy");
             });
         }
