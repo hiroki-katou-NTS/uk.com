@@ -1414,6 +1414,20 @@ module nts.uk.ui.koExtentions {
     /**
      * GridList binding handler
      */
+    function calculateTop(options, id, key) {
+        if(!id) return 0;
+        var atomTop  = 23.6363525390625;
+        var len = options.length;
+        var index = 0;       
+        for(var i = 0; i < len; i++) {
+            var item = options[i];
+            if(item[key] == id) {
+                index = i;
+                break; 
+            } 
+        }
+        return atomTop * i;
+    }
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1427,7 +1441,7 @@ module nts.uk.ui.koExtentions {
 
             var data = valueAccessor();
             var optionsValue: string = data.optionsValue;
-
+            var options = ko.unwrap(data.options);
             var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
                 return {
@@ -1458,14 +1472,23 @@ module nts.uk.ui.koExtentions {
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
                     let selecteds: Array<any> = $grid.ntsGridList('getSelected');
-                    let selectedIdSet = {};
-                    selecteds.forEach(s => { selectedIdSet[s.id] = true; });
-                    var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
-                    data.value(_.map(selectedOptions, o => o[optionsValue]));
+                    if(selecteds) {
+                        let selectedIdSet = {};
+                        selecteds.forEach(s => { selectedIdSet[s.id] = true; });
+                        var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
+                        data.value(_.map(selectedOptions, o => o[optionsValue]));
+                    } else {
+                       data.value([]); 
+                    }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
-                    data.value(selectedOption[optionsValue]);
+                    if(selected) {                       
+                        let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
+                        if(selectedOption) data.value(selectedOption[optionsValue]);
+                        else data.value('');
+                    } else {
+                        data.value(''); 
+                    }
                 }
                 
             });
@@ -1482,12 +1505,11 @@ module nts.uk.ui.koExtentions {
                         row1 = $grid.igGrid("selectedRow").id;
                     }
                 }
-                if(row1) {
-                    var rowidstr = "tr[data-id='" + row1 + "']";      
-                    scrollContainer.scrollTop($(rowidstr).position().top);
-                    console.log("scrolled");
-                }
-                
+                if(row1 && row1 !== 'undefined') {
+                    //console.log(row1);
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                    //console.log(calculateTop(options, row1, iggridColumns[0].key));                 
+                }                
             });
         }
 
@@ -1500,12 +1522,12 @@ module nts.uk.ui.koExtentions {
                 $grid.igGrid('option', 'dataSource', data.options().slice());
                 $grid.igGrid("dataBind");   
             }
+            
             $grid.ntsGridList('setSelected', data.value());
             
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(data.height);
-            var selectedList = data.value();            
+                .height(data.height);           
         }
     }
 
@@ -1530,7 +1552,8 @@ module nts.uk.ui.koExtentions {
             var options: Array<any> = ko.unwrap(data.options);
             var optionsValue = ko.unwrap(data.optionsValue);
             var optionsText = ko.unwrap(data.optionsText);
-
+            var columns = null;
+            if(data.columns) columns = ko.unwrap(data.columns);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
 
@@ -1555,6 +1578,7 @@ module nts.uk.ui.koExtentions {
             }
             var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
                 { headerText: headers[1], key: optionsText, width: "200px", dataType: "string" }];
+            if(columns) displayColumns = columns;
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
@@ -1609,9 +1633,8 @@ module nts.uk.ui.koExtentions {
                         row1 = $treegrid.igTreeGrid("selectedRow").id;
                     }
                 }
-                if(row1) {
-                    var rowidstr = "tr[data-id='" + row1 + "']";      
-                    scrollContainer.scrollTop($(rowidstr).position().top);
+                if(row1 && row1 !== 'undefined') {                      
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));                  
                 }
                 //console.log(row1);
             });
