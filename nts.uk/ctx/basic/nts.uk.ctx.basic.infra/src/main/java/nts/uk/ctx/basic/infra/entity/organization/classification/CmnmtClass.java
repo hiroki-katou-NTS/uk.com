@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "CMNMT_CLASS")
-@IdClass(CmnmtClassPK.class)
 @AllArgsConstructor
 @NoArgsConstructor
 public class CmnmtClass implements Serializable {
