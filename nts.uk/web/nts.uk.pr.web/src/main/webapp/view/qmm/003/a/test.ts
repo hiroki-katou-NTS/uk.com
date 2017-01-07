@@ -12,7 +12,7 @@ __viewContext.ready(function() {
         arrayAfterFilter: any;
         ttt: any; // var for remove function
         labelSubsub: any; // show label sub sub of root
-        firtSingleCode : string =" ";
+        enableBTN_007: boolean = false; // false: init screen Id A, true click button 007 show screen id B
 
         // data of itemList - combox
         itemList: KnockoutObservableArray<Node>;
@@ -23,13 +23,12 @@ __viewContext.ready(function() {
         isEditable: KnockoutObservable<boolean>;
         editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
         filteredData: any;
+        filteredData1: any;
         selectedCodes: any;
-        mutiMode: boolean = false; // 
+        
         constructor() {
             let self = this;
-            // 青森市
-            
-            // itemList == RemoveData()
+            //青森市  itemList == RemoveData()
             self.itemList = ko.observableArray([
                 new Node('1', '青森市', []),
                 new Node('2', '秋田市', []),
@@ -74,20 +73,23 @@ __viewContext.ready(function() {
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(null);
-            self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            self.singleSelectedCode = ko.observable(null);
             self.test = ko.observable(null);
             self.nameBySelectedCode = ko.observable(null);
-            self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
-            self.labelSubsub = ko.observable(null);
+            self.singleSelectedCode = ko.observable("062019");
+            self.curentNode = ko.observable(new Node('062019', '川越市', []));
+            self.labelSubsub = ko.observable(new Node('062020', '熊谷市', []));
+            self.selectedCode = ko.observable("7");           
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
+            self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
+            console.log(self.filteredData1());
+            console.log(self.filteredData());
+            RemoveData(self.filteredData());
+            console.log(self.filteredData());
             self.selectedCodes = ko.observableArray([]);
-            FilterData(self.filteredData());
-            RemoveData(self.arrayAfterFilter());
-            
+            //Init();
             self.singleSelectedCode.subscribe(function(newValue) {
                  
                  if (self.editMode) {
@@ -135,38 +137,33 @@ __viewContext.ready(function() {
                           self.selectedCode(self.nameBySelectedCode().code);
                          }
                      let co = 0, co1=0;
-                     _.each(self.arrayAfterFilter(), function (obj : Node){
-                           
-                         if(obj.code != self.curentNode().code){
-                               co ++; 
-                             }
-                         else {
-                             
-                             co1 = co + 1 ;
-                         }
-                         
+                     console.log(_.size(self.filteredData()) -1 );
+                     _.each(self.filteredData(), function (obj : Node){
+                        
+                              if(obj.code != self.curentNode().code){
+                                  co ++;
+                                  } else {
+                                  if(co < (( _.size(self.filteredData()))-1)){
+                                      co1=co + 1;
+                                      
+                                      }else{
+                                      co1 = co ;
+                                  }
+                                  
+                                  console.log(co1);
+                                  }
                          });
-                    self.labelSubsub(self.arrayAfterFilter()[co1]);         
-                                       
+                
+                        self.labelSubsub(self.filteredData()[co1]);
+                        if(self.labelSubsub()==null){
+                            self.labelSubsub(new Node("11","22",[]));
+                            }   
                 } else {
                     self.editMode=true; 
                 }
                 
             });
            
-           // change tree -> array include: root, sub, subsub;
-            function FilterData(items1: Array<Node>): any {
-                let node : Node;
-                 _.each(items1, function (obj : Node){
-                    if(!node){
-                        if(obj.childs!=null){
-                            self.arrayAfterFilter = ko.observableArray(nts.uk.util.flatArray(items1,"childs"));
-                            }
-                        }
-   
-                 });
-                }
-            
             // remove data: return array of subsub tree
             function RemoveData(items1: Array<Node>): any{
                 let self = this;
@@ -174,7 +171,13 @@ __viewContext.ready(function() {
                      return _.size(obj.code) < 3;
                     });
             }
-            
+            function Init(): void{
+                 self.singleSelectedCode = ko.observable("062019");
+                 self.curentNode = ko.observable(new Node('062019', '川越市', []));
+                 self.labelSubsub = ko.observable(new Node('062020', '熊谷市', []));
+                 self.selectedCode = ko.observable("7");
+                // self.enableBTN_007= false;
+                }
 
 
         }
@@ -183,7 +186,8 @@ __viewContext.ready(function() {
             self.editMode = false;
             self.curentNode(new Node("","",[]));
             self.singleSelectedCode("");
-            self.selectedCode("");     
+            self.selectedCode("");
+            self.labelSubsub("");   
         } 
 
         

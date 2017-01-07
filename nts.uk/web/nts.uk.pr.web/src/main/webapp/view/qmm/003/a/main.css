@@ -77,22 +77,10 @@
 	background-size: 15px;
 	margin-bottom: 15px;
 }
-
-#A_SCH_001 {
-	margin-left: 20px;
-	margin-top: 5px;
-	width: 60px;
-	height: 30px;
-	margin-bottom: 15px;
-}
 .nts-left-content {
 	margin-top: 20px;
+	width: 700px;'
 	
-	float: left;
-}
-#A_LBL_011{
-	margin-left: 150px;
-	margin-top: 10px;
 }
 
 .nts-right-content {
@@ -176,7 +164,15 @@
 	width: 300px;
 	height: 200px;
 }
-
+#treegrid2_container{
+	margin-top: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+#contents-area > div.nts-left-content > div > div:nth-child(3){
+   margin-left: 180px;
+   margin-top: 50px;
+}
 /* ************************************************************************ */
 .group-root {
 	width: 900px;
@@ -237,14 +233,21 @@
 	opacity: 1;
 	pointer-events: auto;
 }
-
-.removed {
-	display: none;
+input.ntsSearchBox{
+	width: 150px;
+	margin-top: 15px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
-
-.addCategoryButton {
-	margin-bottom: 5px;
+div.ui-widget-header{
+	margin-top: 30px;
 }
+/* div.form-label.required {
+    border-color: #FAC002;
+}
+div.form-label{
+    border-color: #139637;
+} */
 .pseudo {}
 .pseudo:before {
 	content: '';

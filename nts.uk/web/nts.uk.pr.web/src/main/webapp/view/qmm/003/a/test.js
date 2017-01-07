@@ -1,12 +1,10 @@
 __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
-            this.firtSingleCode = " ";
+            this.enableBTN_007 = false; // false: init screen Id A, true click button 007 show screen id B
             this.editMode = true; // true là mode thêm mới, false là mode sửa 
-            this.mutiMode = false; // 
             var self = this;
-            // 青森市
-            // itemList == RemoveData()
+            //青森市  itemList == RemoveData()
             self.itemList = ko.observableArray([
                 new Node('1', '青森市', []),
                 new Node('2', '秋田市', []),
@@ -50,19 +48,23 @@ __viewContext.ready(function () {
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(null);
-            self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            self.singleSelectedCode = ko.observable(null);
             self.test = ko.observable(null);
             self.nameBySelectedCode = ko.observable(null);
-            self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
-            self.labelSubsub = ko.observable(null);
+            self.singleSelectedCode = ko.observable("062019");
+            self.curentNode = ko.observable(new Node('062019', '川越市', []));
+            self.labelSubsub = ko.observable(new Node('062020', '熊谷市', []));
+            self.selectedCode = ko.observable("7");
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            console.log(self.filteredData1());
+            console.log(self.filteredData());
+            RemoveData(self.filteredData());
+            console.log(self.filteredData());
             self.selectedCodes = ko.observableArray([]);
-            FilterData(self.filteredData());
-            RemoveData(self.arrayAfterFilter());
+            //Init();
             self.singleSelectedCode.subscribe(function (newValue) {
                 if (self.editMode) {
                     var count_1 = 0;
@@ -106,37 +108,43 @@ __viewContext.ready(function () {
                         self.selectedCode(self.nameBySelectedCode().code);
                     }
                     var co_1 = 0, co1_1 = 0;
-                    _.each(self.arrayAfterFilter(), function (obj) {
+                    console.log(_.size(self.filteredData()) - 1);
+                    _.each(self.filteredData(), function (obj) {
                         if (obj.code != self.curentNode().code) {
                             co_1++;
                         }
                         else {
-                            co1_1 = co_1 + 1;
+                            if (co_1 < ((_.size(self.filteredData())) - 1)) {
+                                co1_1 = co_1 + 1;
+                            }
+                            else {
+                                co1_1 = co_1;
+                            }
+                            console.log(co1_1);
                         }
                     });
-                    self.labelSubsub(self.arrayAfterFilter()[co1_1]);
+                    self.labelSubsub(self.filteredData()[co1_1]);
+                    if (self.labelSubsub() == null) {
+                        self.labelSubsub(new Node("11", "22", []));
+                    }
                 }
                 else {
                     self.editMode = true;
                 }
             });
-            // change tree -> array include: root, sub, subsub;
-            function FilterData(items1) {
-                var node;
-                _.each(items1, function (obj) {
-                    if (!node) {
-                        if (obj.childs != null) {
-                            self.arrayAfterFilter = ko.observableArray(nts.uk.util.flatArray(items1, "childs"));
-                        }
-                    }
-                });
-            }
             // remove data: return array of subsub tree
             function RemoveData(items1) {
                 var self = this;
                 self.ttt = _.remove(items1, function (obj) {
                     return _.size(obj.code) < 3;
                 });
+            }
+            function Init() {
+                self.singleSelectedCode = ko.observable("062019");
+                self.curentNode = ko.observable(new Node('062019', '川越市', []));
+                self.labelSubsub = ko.observable(new Node('062020', '熊谷市', []));
+                self.selectedCode = ko.observable("7");
+                // self.enableBTN_007= false;
             }
         }
         ScreenModel.prototype.resetData = function () {
@@ -145,6 +153,7 @@ __viewContext.ready(function () {
             self.curentNode(new Node("", "", []));
             self.singleSelectedCode("");
             self.selectedCode("");
+            self.labelSubsub("");
         };
         return ScreenModel;
     }());

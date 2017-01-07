@@ -34,16 +34,12 @@
 			<div id="contents-area" class="cf">
 
 				<div class="nts-left-content">
-					<div class="caret-right caret-background">
-					<!-- 	<div class="form-label">
-							<input id="A_INP_001" placeholder="コード/名称"></input>
-							<button id="A_SCH_001">検索</button>
-						</div> -->
-						<div style="width: 50px" data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" class="form-label" />
+					<div class="bg-green caret-right caret-background" style="float:left; width:400px; height: 600px; margin-top: 2px">
+						<div style="width: 350px" data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData1, fields: ['name', 'code']}"/>
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
-								   	width: 303,
+								   	width: 350,
 									height: 500,
 									options: items,
 									value: singleSelectedCode,
@@ -55,18 +51,20 @@
 									showCheckBox: false}"
 								class="cf"></table>
 						</div>
+						<div>
 						<label id="A_LBL_011"> 【登録件数】 202件</label>
+						</div>
 					</div>
 				</div>
 				<div class="nts-right-content">
-					<div>
+					<div >
 						<div
 							data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
 							<label id="A_LBL_002">コード/名称</label>
 						</div>
 						<input id="A_INP_002" data-bind="value: singleSelectedCode()" />
 						<input type="text" data-bind="value: curentNode().name" />
-						<button id="A_BTN_007" data-bind="click: OpenModalSubWindow({height: 600, width: 750})">参照</button>
+						<button id="A_BTN_007" onclick="OpenModalSubWindow({height: 650, width: 500})">参照</button>
 						
 					</div>
 
@@ -92,30 +90,32 @@
 						</div>
 
 					</div>
-
+                    <hr />
 					<div>
 						<div data-bind="ntsFormLabel: {}" class="form-label">
+
 							<label id="A_LBL_004"> 住民税報告先 </label>
 							<button id="A_BTN_009">参照</button>
-							<label id="A_LBL_012" data-bind="text: labelSubsub().nodeText">  </label>
+							<label id="A_LBL_012" data-bind="text: labelSubsub().nodeText"> </label>
 						</div>
 					</div>
 
 					<div>
 						<div class="form-label"
-							data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
-							<label id="A_LBL_005">現在使用行数 / 最大行数 </label> <input
-								id="A_INP_004" />
+							data-bind="ntsFormLabel: { constraint: 'LayoutName', required: false}">
+							<label id="A_LBL_005">現在使用行数 / 最大行数 </label>
+							 <input id="A_INP_004" />
 						</div>
 
 					</div>
 					<div class="pseudo fixed-height">
-						<div class="form-label" data-bind="ntsFormLabel:{}">
+						<div class="form-label" data-bind="ntsFormLabel:{constraint: 'LayoutName', required: false}">
 							<label id="A_LBL_006">加入者名</label>
 
 						</div>
 						<input id="A_INP_005" />
 					</div>
+					<hr />
 
 					<!-- p3 -->
 					<div>
@@ -149,8 +149,6 @@
 						</div>
 						<input id="A_INP_009" />
 					</div>
-
-
 
 					<!--             			 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 				</div>
