@@ -1808,6 +1808,12 @@ var nts;
                 /**
                  * Datepicker binding handler
                  */
+                function randomString(length, chars) {
+                    var result = '';
+                    for (var i = length; i > 0; --i)
+                        result += chars[Math.floor(Math.random() * chars.length)];
+                    return result;
+                }
                 var DatePickerBindingHandler = (function () {
                     /**
                      * Constructor.
@@ -1822,8 +1828,10 @@ var nts;
                         var data = valueAccessor();
                         // Container.
                         var container = $(element);
-                        if (!container.attr("id"))
-                            throw new Error("datepicker must has an id");
+                        if (!container.attr("id")) {
+                            var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                            container.attr("id", idString);
+                        }
                         var idatr = container.attr("id");
                         container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
                         var $input = container.find('#' + idatr + "_input");
@@ -1869,7 +1877,9 @@ var nts;
                         var date = ko.unwrap(data.value);
                         var $input = container.find('#' + idatr + "_input");
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        $input.datepicker("setDate", date);
+                        var oldDate = $input.datepicker("getDate");
+                        if (oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate())
+                            $input.datepicker("setDate", date);
                         $input.val(nts.uk.time.formatDate(date, dateFormat));
                     };
                     return DatePickerBindingHandler;
