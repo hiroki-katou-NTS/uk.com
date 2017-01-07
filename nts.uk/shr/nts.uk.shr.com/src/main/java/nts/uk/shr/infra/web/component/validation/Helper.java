@@ -7,11 +7,15 @@ import java.util.Map;
 import lombok.val;
 import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.constraint.LongMaxValue;
+import nts.arc.primitive.constraint.LongMinValue;
+import nts.arc.primitive.constraint.LongRange;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
@@ -26,6 +30,8 @@ class Helper {
 		CONSTRAINTS_SIGNLE_PARAM.put(StringMaxLength.class.getSimpleName(), "maxLength");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMaxValue.class.getSimpleName(), "max");
 		CONSTRAINTS_SIGNLE_PARAM.put(IntegerMinValue.class.getSimpleName(), "min");
+		CONSTRAINTS_SIGNLE_PARAM.put(LongMaxValue.class.getSimpleName(), "max");
+		CONSTRAINTS_SIGNLE_PARAM.put(LongMinValue.class.getSimpleName(), "min");
 	}
 	
 	/**
@@ -34,6 +40,7 @@ class Helper {
 	static HashSet<String> CONSTRAINTS_MAX_MIN_PARAM = new HashSet<>();
 	static {
 		CONSTRAINTS_MAX_MIN_PARAM.add(IntegerRange.class.getSimpleName());
+		CONSTRAINTS_MAX_MIN_PARAM.add(LongRange.class.getSimpleName());
 	}
 	
 	static HashMap<String, String> CHARTYPE_NAMES_MAP = new HashMap<>();
@@ -45,11 +52,13 @@ class Helper {
 	}
 	
 	static String getValueType(Class<?> inputClass) {
-		if(StringPrimitiveValue.class.isAssignableFrom(inputClass)) {
+		if (StringPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "String";
-		} else if(IntegerPrimitiveValue.class.isAssignableFrom(inputClass)) {
+		} else if (IntegerPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Integer";
-		} else if(DecimalPrimitiveValue.class.isAssignableFrom(inputClass)) {
+		} else if (LongPrimitiveValue.class.isAssignableFrom(inputClass)) {
+			return "Integer";
+		} else if (DecimalPrimitiveValue.class.isAssignableFrom(inputClass)) {
 			return "Decimal";
 		} else {
 			throw new RuntimeException("not supported: " + inputClass.getName());
