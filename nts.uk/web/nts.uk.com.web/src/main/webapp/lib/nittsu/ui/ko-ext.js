@@ -1822,7 +1822,15 @@ var nts;
                         var data = valueAccessor();
                         // Container.
                         var container = $(element);
-                        container.prop("readonly", true);
+                        if (!container.attr("id"))
+                            throw new Error("datepicker must has an id");
+                        var idatr = container.attr("id");
+                        container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
+                        var $input = container.find('#' + idatr + "_input");
+                        var button = null;
+                        if (data.button)
+                            button = idatr + "_button";
+                        $input.prop("readonly", true);
                         var date = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var length = 10, atomWidth = 9;
@@ -1832,15 +1840,24 @@ var nts;
                         else if (dateFormat === "yyyy/MM/dd D") {
                             length = 14;
                         }
-                        container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-                        container.datepicker({
-                            format: 'yyyy/mm/dd',
-                            language: 'ja-JP'
+                        $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+                        if (button) {
+                            container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
+                            $input.datepicker({
+                                format: 'yyyy/mm/dd',
+                                language: 'ja-JP',
+                                trigger: "#" + button
+                            });
+                        }
+                        else
+                            $input.datepicker({
+                                format: 'yyyy/mm/dd',
+                                language: 'ja-JP'
+                            });
+                        $input.on('change', function (event) {
+                            data.value(new Date($input.val().substring(0, 10)));
                         });
-                        container.on('change', function (event) {
-                            data.value(new Date(container.val().substring(0, 10)));
-                        });
-                        container.width(atomWidth * length);
+                        $input.width(atomWidth * length);
                     };
                     /**
                      * Update
@@ -1848,12 +1865,12 @@ var nts;
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
+                        var idatr = container.attr("id");
                         var date = ko.unwrap(data.value);
+                        var $input = container.find('#' + idatr + "_input");
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var oldDate = container.datepicker("getDate");
-                        if (date.getFullYear() != oldDate.getFullYear() || date.getMonth() != oldDate.getMonth() || date.getDate() != oldDate.getDate())
-                            container.datepicker("setDate", date);
-                        container.val(nts.uk.time.formatDate(date, dateFormat));
+                        $input.datepicker("setDate", date);
+                        $input.val(nts.uk.time.formatDate(date, dateFormat));
                     };
                     return DatePickerBindingHandler;
                 }());
