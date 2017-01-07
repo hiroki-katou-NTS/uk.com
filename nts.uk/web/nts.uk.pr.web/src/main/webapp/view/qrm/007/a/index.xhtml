@@ -19,9 +19,8 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed">登録</button>
+					<button class="proceed short-button">登録</button>
 					<button>マスタ修正ログ</button>
-					<span class="label">退職金項目設定</span>
 				</div>
 				<div id="contents-area">
 					<div class="cf">
@@ -39,35 +38,46 @@
 							</div>
 						</div>
 						<div>
-							<div class="valign-center control-group">
-								<div class="right-column" data-bind="ntsFormLabel: { required: true }">コード/名称</div>
-								<span data-bind="text: currentCode"></span>
-								<span id="name-span" data-bind="text: currentName"></span>
-							</div>
-							<div class="valign-center control-group">
-								<div class="right-column" data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">印刷用名称
+							<div class="table">
+								<div class="cell column1">
+									<div data-bind="ntsFormLabel: { required: true }">コード/名称</div>
 								</div>
-								<span data-bind="with: texteditor">
-									<input data-bind="ntsTextEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
-								</span>
+								<div class="cell">
+									<span data-bind="text: currentCode"></span>
+									<span id="name-span" data-bind="text: currentItem().name"></span>
+								</div>
+							</div>
+							<div class="table">
+								<div class="cell column1">
+									<div data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">印刷用名称</div>
+								</div>
+								<div class="cell valign-center">
+									<div data-bind="with: texteditor">
+										<input data-bind="ntsTextEditor: {
+											value: value,
+											constraint: constraint,
+											option: option,
+											required: required,
+											enable: enable,
+											readonly: readonly}" />
+									</div>
+								</div>
 							</div>
 							<hr id="division"/>
-							<div class="valign-top control-group">
-								<div class="right-column" data-bind="ntsFormLabel: { constraint: 'PersonId', required: false }">メモ</div>
-								<span data-bind="with: multilineeditor">
-									<textarea id="text-area" data-bind="ntsMultilineEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										enable: enable,
-										readonly: readonly}" />
-								</span>
+							<div class="table">
+								<div class="cell column1 valign-top">
+									<div class="right-column" data-bind="ntsFormLabel: { constraint: 'PersonId', required: false }">メモ</div>
+								</div>
+								<div class="cell">
+									<div data-bind="with: multilineeditor">
+										<textarea id="text-area" data-bind="ntsMultilineEditor: {
+											value: value,
+											constraint: constraint,
+											option: option,
+											enable: enable,
+											readonly: readonly}" />
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

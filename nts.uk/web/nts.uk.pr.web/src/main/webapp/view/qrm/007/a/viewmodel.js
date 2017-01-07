@@ -9,22 +9,22 @@ var qrm007;
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
-                    this.items = ko.observableArray([
+                    self.items = ko.observableArray([
                         new ItemModel('001', 'name1', "name1"),
                         new ItemModel('002', 'name2', "name2"),
                     ]);
-                    this.columns = ko.observableArray([
+                    self.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 40 },
                         { headerText: '名称', prop: 'name', width: 130 },
                         { headerText: '印刷用名称', prop: 'description', width: 160 }
                     ]);
-                    this.currentCode = ko.observable(_.first(self.items()).code);
-                    this.currentName = ko.observable(_.first(self.items()).name);
-                    this.currentCode.subscribe(function (newValue) {
-                        self.currentName(_.find(self.items(), function (item) { return item.code === newValue; }).name);
+                    self.currentCode = ko.observable(_.first(self.items()).code);
+                    self.currentItem = ko.observable(_.first(self.items()));
+                    self.currentCode.subscribe(function (newValue) {
+                        self.currentItem(_.find(self.items(), function (item) { return item.code === newValue; }));
                     });
                     self.texteditor = {
-                        value: self.currentName,
+                        value: ko.computed(function () { return self.currentItem().name; }),
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
