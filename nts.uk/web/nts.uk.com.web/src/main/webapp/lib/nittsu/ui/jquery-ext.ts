@@ -3,6 +3,7 @@ interface JQuery {
     ntsError(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
+    ntsUserGuide(action?: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -307,5 +308,79 @@ module nts.uk.ui.jqueryExtentions {
     
     module userGuide {
         
+        $.fn.ntsUserGuide = function (action: string): any {
+            var $controls = $(this);
+            if (nts.uk.util.isNullOrUndefined(action)) {
+                return init($controls);
+            }
+            else if (action === "show") {
+                return show($controls);
+            }
+            else {
+                
+            };
+        }
+        
+        function init(controls: JQuery) {
+            controls.each(function() {
+                // UserGuide container
+                let $control = $(this);
+                $control.remove();
+                if (!$control.hasClass("ntsUserGuide")) $control.addClass("ntsUserGuide");
+                $($control).appendTo($("body")).show();
+                let target = $control.data('target');
+                let direction = $control.data('direction');
+                
+                // Userguide Information Box
+                $control.children().each(function(){
+                    let $box = $(this);
+                    let boxDirection = $box.data("direction");
+                    $box.addClass("userguide-box caret-" + getReveseDirection(boxDirection) + " caret-overlay");
+                });
+
+                // Userguide Overlay
+                let $overlay = $("<div class='userguide-overlay'></div>")
+                                .addClass("overlay-" + direction)
+                                .on("click", function(){
+                                    $control.hide();
+                                })
+                                .appendTo($control);
+                $control.hide();
+            });
+            return controls;
+        }
+        
+        function show(controls: JQuery) {
+            controls.each(function() {
+                let $control = $(this);
+                let target = $control.data('target');
+                let direction = $control.data('direction');
+                $control.show();
+                $control.children().each(function(){
+                    let $box = $(this);
+                    let boxTarget = $box.data("target");
+                    $box.position({
+                        my: getReveseDirection(direction) + "+20",
+                        at: "right center",
+                        of: boxTarget
+                    });
+                });
+                let $overlay = $control.find(".userguide-overlay").css(getReveseDirection(direction), $(target).offset().left + $(target).outerWidth());
+            })
+            return controls;
+        }
+        
+        function getReveseDirection(direction: string) {
+            switch (direction) {
+                case "left":
+                    return "right";
+                case "right":
+                    return "left";
+                case "top":
+                    return "bottom";
+                case "bottom":
+                    return "top";
+            }
+        }
     }
 }

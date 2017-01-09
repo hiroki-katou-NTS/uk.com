@@ -11,14 +11,16 @@ __viewContext.ready(function () {
             for(let i = 0; i <= 10; i++) {
                 self.dataList.push({id: i, name: "Item " + i});
             }
+            $(".userguide").ntsUserGuide();
+            $(".userguide2").ntsUserGuide();
         }
         
         showOverlay() {
-            $(".userguide-overlay").show();
+            $(".userguide").ntsUserGuide("show");
         }
         
-        hideOverlay() {
-            $(".userguide-overlay").hide();
+        showOverlay2() {
+            $(".userguide2").ntsUserGuide("show");
         }
         
     }

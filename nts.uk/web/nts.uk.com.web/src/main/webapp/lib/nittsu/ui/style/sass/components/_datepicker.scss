@@ -378,3 +378,17 @@ body {
 
   background-color: #fff;
 }
+
+.ntsDatepicker {vertical-align: middle;}
+.datepicker-btn {
+	background-image: url(datepicker.png);
+    background-color: transparent; /* make the button transparent */
+    background-repeat: no-repeat;  /* make the background image appear only once */
+    background-position: center;  /* equivalent to 'top left' */
+    background-size: auto 100%;
+    border: none;           /* assuming we don't want any borders */
+    cursor: pointer;        /* make the cursor like hovering over an <a> element */
+    height: 22px;           /* make this the size of your image */
+    padding-left: 24px;     /* make text start to the right of the image */
+    vertical-align: middle;
+}
