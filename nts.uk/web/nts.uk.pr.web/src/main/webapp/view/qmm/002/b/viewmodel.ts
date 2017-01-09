@@ -25,6 +25,7 @@ module nts.uk.pr.view.qmm002.b {
             excute() {
                 var self = this;
                 nts.uk.ui.windows.setShared("data", self.selectedCodes());
+                nts.uk.ui.windows.close();
             }
              
             close() {

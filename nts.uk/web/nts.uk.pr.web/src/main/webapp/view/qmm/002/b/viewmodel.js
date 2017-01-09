@@ -30,6 +30,7 @@ var nts;
                                 ScreenModel.prototype.excute = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared("data", self.selectedCodes());
+                                    nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.close = function () {
                                     var self = this;
