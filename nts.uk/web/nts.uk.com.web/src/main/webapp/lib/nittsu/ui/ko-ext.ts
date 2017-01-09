@@ -443,7 +443,18 @@ module nts.uk.ui.koExtentions {
             });
             $button.click(nextSearch);
         }        
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var searchBox = $(element);
+            var $input = searchBox.find("input.ntsSearchBox");
+            var searchTerm = $input.val();
+            var data = valueAccessor();   
+            var arr = data.items();        
+            var fields = ko.unwrap(data.fields);
+            var childField = null;
+            if(data.childField) {
+                childField = ko.unwrap(data.childField); 
+            }
+            searchBox.data("searchResult",filteredArray(arr,searchTerm,fields,childField));           
         }
     }
     /**
