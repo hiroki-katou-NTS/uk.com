@@ -418,19 +418,14 @@ var nts;
                      * Init.
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
                         var searchBox = $(element);
-                        //            var data = valueAccessor();           
+                        var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
                         }
-                        //            var arr = ko.unwrap(data.items);
-                        //            var component = $("#" + ko.unwrap(data.comId));
-                        var filteredArr = data.filteredItems;
-                        //            }           
                         var arr = ko.unwrap(data.items);
                         var component = $("#" + ko.unwrap(data.comId));
                         var childField = null;
@@ -444,8 +439,6 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         var $button = $container.find("button.search-btn");
                         var nextSearch = function () {
-                            var filtArr = filteredArr();
-                            var compareKey = fields[0];
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
@@ -470,7 +463,7 @@ var nts;
                         });
                         $input.change(function (event) {
                             var searchTerm = $input.val();
-                            filteredArr(filteredArray(arr, searchTerm, fields, childField));
+                            searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
                         });
                         $button.click(nextSearch);
                     };
@@ -1384,6 +1377,23 @@ var nts;
                     return index;
                 }
                 /**
+                  * Grid scroll helper functions
+                  *
+                  */
+                function calculateIndex(options, id, key, childField) {
+                    if (!id)
+                        return 0;
+                    var index = 0;
+                    for (var i = 0; i < options.length; i++) {
+                        var item = options[i];
+                        if (item[key] == id) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    return index;
+                }
+                /**
                  * GridList binding handler
                  */
                 var NtsGridListBindingHandler = (function () {
@@ -1462,6 +1472,7 @@ var nts;
                                 }
                             }
                             if (row1 && row1 !== 'undefined') {
+                                //console.log(row1);
                                 var topPos = calculateIndex(options, row1, optionsValue);
                                 $grid.igGrid('virtualScrollTo', topPos);
                                 console.log(topPos);
@@ -1577,13 +1588,10 @@ var nts;
                                     row1 = $treegrid.igTreeGrid("selectedRow").id;
                                 }
                             }
-                            //                if (row1 && row1 !== 'undefined') {
-                            //                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             if (row1 && row1 !== 'undefined') {
-                                var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
+                                var index = calculateIndex(options, row1, optionsValue);
                                 var rowHeight = $('#' + treeGridId + "_" + row1).height();
                                 scrollContainer.scrollTop(rowHeight * index);
-                                console.log(rowHeight * index);
                             }
                             //console.log(row1);
                         });
