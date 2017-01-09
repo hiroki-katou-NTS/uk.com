@@ -394,19 +394,25 @@ module nts.uk.ui.koExtentions {
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var data = valueAccessor();
+            var searchBox = $(element);
+//            var data = valueAccessor();           
             var fields = ko.unwrap(data.fields);
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
                 selectedKey = ko.unwrap(data.selectedKey);
             }
-            var arr = ko.unwrap(data.items);
-            var component = $("#" + ko.unwrap(data.comId));
+//            var arr = ko.unwrap(data.items);
+//            var component = $("#" + ko.unwrap(data.comId));
             var filteredArr = data.filteredItems;
+//            }           
+            var arr = ko.unwrap(data.items);            
+            var component = $("#" + ko.unwrap(data.comId)); 
             var childField = null;
             if (data.childField) {
                 childField = ko.unwrap(data.childField);
             }
+            searchBox.data("searchResult", nts.uk.util.flatArray(arr,childField));
             var $container = $(element);
             $container.append("<input class='ntsSearchBox' type='text' />");
             $container.append("<button class='search-btn'>Search</button>");
@@ -415,6 +421,8 @@ module nts.uk.ui.koExtentions {
             var nextSearch = function() {
                 var filtArr = filteredArr();
                 var compareKey = fields[0];
+                var filtArr = searchBox.data("searchResult");
+                var compareKey = fields[0];          
                 var isArray = $.isArray(selected());
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
                 if (!isArray) selected(selectedItem);
@@ -440,8 +448,8 @@ module nts.uk.ui.koExtentions {
             });
             $button.click(nextSearch);
         }
-
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+      
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
         }
     }
     /**
@@ -1397,22 +1405,24 @@ module nts.uk.ui.koExtentions {
 
 
     /**
-     * GridList binding handler
+     * Grid scroll helper functions
+     * 
      */
-    function calculateTop(options, id, key) {
-        if (!id) return 0;
-        var atomTop = 23.6363525390625;
-        var len = options.length;
-        var index = 0;
-        for (var i = 0; i < len; i++) {
+    function calculateIndex(options, id, key) {
+        if(!id) return 0;      
+        var index = 0;  
+        for(var i = 0; i < options.length; i++) {
             var item = options[i];
             if (item[key] == id) {
                 index = i;
                 break;
             }
         }
-        return atomTop * i;
+        return index;
     }
+    /**
+     * GridList binding handler
+     */
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1490,11 +1500,11 @@ module nts.uk.ui.koExtentions {
                         row1 = $grid.igGrid("selectedRow").id;
                     }
                 }
-                if (row1 && row1 !== 'undefined') {
-                    //console.log(row1);
-                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
-                    //console.log(calculateTop(options, row1, iggridColumns[0].key));                 
-                }
+                if (row1 && row1 !== 'undefined') {    
+                    var topPos = calculateIndex(options, row1, optionsValue);       
+                    $grid.igGrid('virtualScrollTo', topPos);
+                    console.log(topPos);                            
+                }                
             });
         }
 
@@ -1617,8 +1627,13 @@ module nts.uk.ui.koExtentions {
                         row1 = $treegrid.igTreeGrid("selectedRow").id;
                     }
                 }
-                if (row1 && row1 !== 'undefined') {
-                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+//                if (row1 && row1 !== 'undefined') {
+//                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                if(row1 && row1 !== 'undefined') {                      
+                    var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
+                    var rowHeight = $('#' + treeGridId + "_" + row1).height();
+                    scrollContainer.scrollTop(rowHeight * index);
+                    console.log(rowHeight * index);   
                 }
                 //console.log(row1);
             });
@@ -1879,6 +1894,11 @@ module nts.uk.ui.koExtentions {
     /**
      * Datepicker binding handler
      */
+    function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
+    }
     class DatePickerBindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
@@ -1893,7 +1913,17 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Container.
-            var container = $(element);
+            var container = $(element);        
+            if(!container.attr("id")) {
+                var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                container.attr("id", idString);
+            }
+            var idatr = container.attr("id");
+            container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
+            var $input = container.find('#' + idatr + "_input");
+            var button = null;
+            if(data.button) button = idatr + "_button";
+            $input.prop("readonly", true);
             var date = ko.unwrap(data.value);
             var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             var length = 10, atomWidth = 9;
@@ -1902,15 +1932,26 @@ module nts.uk.ui.koExtentions {
             } else if (dateFormat === "yyyy/MM/dd D") {
                 length = 14;
             }
-            container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-            (<any>container).datepicker({
+            $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+            if(button) {              
+                container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
+                (<any>$input).datepicker({
+                    format: 'yyyy/mm/dd', // cast to avoid error
+                    language: 'ja-JP',
+                    trigger: "#"+button
+                });            
+            }
+            else (<any>$input).datepicker({
                 format: 'yyyy/mm/dd', // cast to avoid error
-                language: 'ja-JP'
+                language: 'ja-JP'              
             });
             container.on('change', (event: any) => {
                 data.value(new Date(container.val().substring(0, 10)));
             });
-            container.width(atomWidth * length);
+            $input.on('change', (event: any) => {
+                data.value(new Date($input.val().substring(0,10)));
+            });
+            $input.width(atomWidth * length);
         }
 
         /**
@@ -1920,10 +1961,17 @@ module nts.uk.ui.koExtentions {
 
             var data = valueAccessor();
             var container = $(element);
+            var idatr = container.attr("id");
             var date = ko.unwrap(data.value);
             var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
             container.val(nts.uk.time.formatDate(date, dateFormat));
+            var $input = container.find('#' + idatr + "_input");
+            var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var oldDate = $input.datepicker("getDate");
+            if(oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate()) 
+                $input.datepicker("setDate", date);
+            $input.val(nts.uk.time.formatDate(date, dateFormat));  
         }
     }
     /**

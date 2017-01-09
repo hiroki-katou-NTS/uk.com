@@ -419,19 +419,25 @@ var nts;
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
+                        var searchBox = $(element);
+                        //            var data = valueAccessor();           
                         var fields = ko.unwrap(data.fields);
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
                         }
+                        //            var arr = ko.unwrap(data.items);
+                        //            var component = $("#" + ko.unwrap(data.comId));
+                        var filteredArr = data.filteredItems;
+                        //            }           
                         var arr = ko.unwrap(data.items);
                         var component = $("#" + ko.unwrap(data.comId));
-                        var filteredArr = data.filteredItems;
                         var childField = null;
                         if (data.childField) {
                             childField = ko.unwrap(data.childField);
                         }
+                        searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
                         var $container = $(element);
                         $container.append("<input class='ntsSearchBox' type='text' />");
                         $container.append("<button class='search-btn'>Search</button>");
@@ -439,6 +445,8 @@ var nts;
                         var $button = $container.find("button.search-btn");
                         var nextSearch = function () {
                             var filtArr = filteredArr();
+                            var compareKey = fields[0];
+                            var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
                             var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
@@ -1359,23 +1367,25 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 /**
-                 * GridList binding handler
+                 * Grid scroll helper functions
+                 *
                  */
-                function calculateTop(options, id, key) {
+                function calculateIndex(options, id, key) {
                     if (!id)
                         return 0;
-                    var atomTop = 23.6363525390625;
-                    var len = options.length;
                     var index = 0;
-                    for (var i = 0; i < len; i++) {
+                    for (var i = 0; i < options.length; i++) {
                         var item = options[i];
                         if (item[key] == id) {
                             index = i;
                             break;
                         }
                     }
-                    return atomTop * i;
+                    return index;
                 }
+                /**
+                 * GridList binding handler
+                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -1452,8 +1462,9 @@ var nts;
                                 }
                             }
                             if (row1 && row1 !== 'undefined') {
-                                //console.log(row1);
-                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                                var topPos = calculateIndex(options, row1, optionsValue);
+                                $grid.igGrid('virtualScrollTo', topPos);
+                                console.log(topPos);
                             }
                         });
                     };
@@ -1566,8 +1577,13 @@ var nts;
                                     row1 = $treegrid.igTreeGrid("selectedRow").id;
                                 }
                             }
+                            //                if (row1 && row1 !== 'undefined') {
+                            //                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             if (row1 && row1 !== 'undefined') {
-                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                                var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
+                                var rowHeight = $('#' + treeGridId + "_" + row1).height();
+                                scrollContainer.scrollTop(rowHeight * index);
+                                console.log(rowHeight * index);
                             }
                             //console.log(row1);
                         });
@@ -1797,6 +1813,12 @@ var nts;
                 /**
                  * Datepicker binding handler
                  */
+                function randomString(length, chars) {
+                    var result = '';
+                    for (var i = length; i > 0; --i)
+                        result += chars[Math.floor(Math.random() * chars.length)];
+                    return result;
+                }
                 var DatePickerBindingHandler = (function () {
                     /**
                      * Constructor.
@@ -1811,6 +1833,17 @@ var nts;
                         var data = valueAccessor();
                         // Container.
                         var container = $(element);
+                        if (!container.attr("id")) {
+                            var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                            container.attr("id", idString);
+                        }
+                        var idatr = container.attr("id");
+                        container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
+                        var $input = container.find('#' + idatr + "_input");
+                        var button = null;
+                        if (data.button)
+                            button = idatr + "_button";
+                        $input.prop("readonly", true);
                         var date = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var length = 10, atomWidth = 9;
@@ -1820,15 +1853,27 @@ var nts;
                         else if (dateFormat === "yyyy/MM/dd D") {
                             length = 14;
                         }
-                        container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-                        container.datepicker({
-                            format: 'yyyy/mm/dd',
-                            language: 'ja-JP'
-                        });
+                        $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+                        if (button) {
+                            container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
+                            $input.datepicker({
+                                format: 'yyyy/mm/dd',
+                                language: 'ja-JP',
+                                trigger: "#" + button
+                            });
+                        }
+                        else
+                            $input.datepicker({
+                                format: 'yyyy/mm/dd',
+                                language: 'ja-JP'
+                            });
                         container.on('change', function (event) {
                             data.value(new Date(container.val().substring(0, 10)));
                         });
-                        container.width(atomWidth * length);
+                        $input.on('change', function (event) {
+                            data.value(new Date($input.val().substring(0, 10)));
+                        });
+                        $input.width(atomWidth * length);
                     };
                     /**
                      * Update
@@ -1836,10 +1881,17 @@ var nts;
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
+                        var idatr = container.attr("id");
                         var date = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
                         container.val(nts.uk.time.formatDate(date, dateFormat));
+                        var $input = container.find('#' + idatr + "_input");
+                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var oldDate = $input.datepicker("getDate");
+                        if (oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate())
+                            $input.datepicker("setDate", date);
+                        $input.val(nts.uk.time.formatDate(date, dateFormat));
                     };
                     return DatePickerBindingHandler;
                 }());

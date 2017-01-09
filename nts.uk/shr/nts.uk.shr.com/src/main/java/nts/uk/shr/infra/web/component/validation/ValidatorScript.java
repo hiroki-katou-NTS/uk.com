@@ -65,6 +65,12 @@ public class ValidatorScript extends UIComponentBase {
 		rw.append("\n\t\tvalueType: '");
 		rw.append(Helper.getValueType(pvClass));
 		rw.append("',");
+		writeConstraints(rw, pvClass);
+		
+		rw.append("\n\t};");
+	}
+
+	private static void writeConstraints(ResponseWriter rw, Class<?> pvClass) {
 		
 		Arrays.asList(pvClass.getDeclaredAnnotations()).stream()
 			.map(a -> a.toString())
@@ -72,13 +78,11 @@ public class ValidatorScript extends UIComponentBase {
 	        .forEach(representationOfAnnotation -> {
 	        	String constraintName = Helper.getAnnotationName(representationOfAnnotation);
 	        	String parametersString = Helper.getAnnotationParametersString(representationOfAnnotation);
-				writeConstraints(rw, constraintName, parametersString);
+				writeConstraint(rw, constraintName, parametersString);
 	        });
-		
-		rw.append("\n\t};");
 	}
 	
-	private static void writeConstraints(ResponseWriter rw, String constraintName, String parametersString) {
+	private static void writeConstraint(ResponseWriter rw, String constraintName, String parametersString) {
 		
 		if (Helper.CONSTRAINTS_SIGNLE_PARAM.containsKey(constraintName)) {
 			String jsName = Helper.CONSTRAINTS_SIGNLE_PARAM.get(constraintName);

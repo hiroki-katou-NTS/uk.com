@@ -171,10 +171,22 @@ button {
 	&:after {
 		position: absolute;
 		border-width: 30px 18px;
-		color: $green_background_color;
+		color: #fff;
 	}
 	&.caret-right:after {top: 30px; left: 100%;}
 	&.caret-left:after {top: 30px; right: 100%;}
+	&.caret-top:after {bottom: 100%;}
+	&.caret-bottom:after {top: 100%;}
+}
+
+.caret-overlay {
+	&:after {
+		position: absolute;
+		border-width: 10px;
+		color: #fff;
+	}
+	&.caret-right:after {top: 50%; left: 100%; margin-top:-10px;}
+	&.caret-left:after {top: 50%; right: 100%; margin-top:-10px;}
 	&.caret-top:after {bottom: 100%;}
 	&.caret-bottom:after {top: 100%;}
 }
