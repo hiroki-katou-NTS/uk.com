@@ -2474,8 +2474,34 @@ body {
   z-index: 1;
   padding-right: 8px;
   padding-left: 8px;
-  content: '笙･';
+  content: 'ΓÖÑ';
   background-color: #fff;
+}
+
+/* line 382, ../sass/components/_datepicker.scss */
+.ntsDatepicker {
+  vertical-align: middle;
+}
+
+/* line 383, ../sass/components/_datepicker.scss */
+.datepicker-btn {
+  background-image: url(datepicker.png);
+  background-color: transparent;
+  /* make the button transparent */
+  background-repeat: no-repeat;
+  /* make the background image appear only once */
+  background-position: center;
+  /* equivalent to 'top left' */
+  background-size: auto 100%;
+  border: none;
+  /* assuming we don't want any borders */
+  cursor: pointer;
+  /* make the cursor like hovering over an <a> element */
+  height: 22px;
+  /* make this the size of your image */
+  padding-left: 24px;
+  /* make text start to the right of the image */
+  vertical-align: middle;
 }
 
 /* line 1, ../sass/components/_contextmenu.scss */
