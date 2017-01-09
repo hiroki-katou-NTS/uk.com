@@ -96,7 +96,7 @@ __viewContext.ready(function () {
                     grouplength: 4,
                     decimallength: 2,
                     currencyformat: "USD",
-                    currencyposition: 'right'
+                    currencyposition: 'left'
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),

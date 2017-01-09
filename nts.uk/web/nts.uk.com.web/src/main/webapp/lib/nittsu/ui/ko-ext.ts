@@ -174,12 +174,12 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
             $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
-            var parent = $input.parent();
+            var $parent = $input.parent();
             var width = option.width ? option.width : '100%';
-            parent.css({ "display": "inline-block" });
-            var parentTag = parent.parent().prop("tagName").toLowerCase();
+            $parent.css({ "display": "inline-block" });
+            var parentTag = $parent.parent().prop("tagName").toLowerCase();
             if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
-                parent.css({ 'width': '100%' });
+                $parent.css({ 'width': '100%' });
             }
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
                 var marginLeft = 0;
@@ -188,14 +188,14 @@ module nts.uk.ui.koExtentions {
                     marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
                     marginRight = parseFloat($input.css('margin-left').split("px")[0]);
                 }
-                parent.addClass("currency").addClass(
+                $parent.addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
 
                 if (marginLeft !== 0) {
-                    parent.css({ "marginLeft": marginLeft + "px" });
+                    $parent.css({ "marginLeft": marginLeft + "px" });
                 }
                 if (marginRight !== 0) {
-                    parent.css({ "marginRight": marginRight + "px" });
+                    $parent.css({ "marginRight": marginRight + "px" });
                 }
                 var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
                 var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
@@ -203,8 +203,8 @@ module nts.uk.ui.koExtentions {
                     'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
                     'width': width, "marginLeft": "0px", "marginRight": "0px"
                 });
-                var format = option.currencyformat === "JPY" ? '\00a5' : '$' 
-                $input.attr("data-content", option.currencyformat);
+                var format = option.currencyformat === "JPY" ? "\u00A5" : '$' 
+                $parent.attr("data-content", format);
             } else {
                 $input.css({ 'paddingLeft': '12px', 'width': width });
             }
@@ -1411,22 +1411,6 @@ module nts.uk.ui.koExtentions {
                 index = i;
                 break;
             }
-        }
-        return index;
-    }
-   /**
-     * Grid scroll helper functions
-     * 
-     */
-    function calculateIndex(options, id, key, childField?) {
-        if(!id) return 0;             
-        var index = 0;  
-        for(var i = 0; i < options.length; i++) {
-            var item = options[i];
-            if(item[key] == id) {
-                index = i;
-                break; 
-            } 
         }
         return index;
     }
