@@ -1589,7 +1589,7 @@ var nts;
                                 }
                             }
                             if (row1 && row1 !== 'undefined') {
-                                var index = calculateIndex(options, row1, optionsValue);
+                                var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
                                 var rowHeight = $('#' + treeGridId + "_" + row1).height();
                                 scrollContainer.scrollTop(rowHeight * index);
                             }
