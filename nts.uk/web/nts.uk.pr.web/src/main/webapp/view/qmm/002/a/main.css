@@ -1,0 +1,30 @@
+@CHARSET "UTF-8";
+
+#contents-area {
+	width: 1300px;
+	margin-top: 10px;
+}
+
+.control-group {
+	margin-bottom: 15px;
+}
+
+.left-content {
+	float: left;
+	width: 40%;
+}
+
+.right-content {
+	float: left;
+	width: 60%;
+}
+
+.right-content-left {
+	float: left;
+	width: 18%
+}
+
+.right-content-right {
+	float: left;
+	width: 82%
+}

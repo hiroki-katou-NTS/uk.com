@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 500 };</script>
+			<script>var dialogSize = { width: 520, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
@@ -16,7 +16,6 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
 			<div id="contents-area">
 				<div>
 					<label id="lbl_001">「削除したい項目を選択してください。」を表示する。</label>
@@ -34,7 +33,7 @@
 					<table id="treegrid1"
 						data-bind="ntsTreeGridView:{
 									width: 500,
-									height: 600,
+									height: 400,
 									options: lst_001,
 									selectedValues: selectedCodes,								
 									optionsValue: 'code',
