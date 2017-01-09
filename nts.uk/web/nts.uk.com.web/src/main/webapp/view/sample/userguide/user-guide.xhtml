@@ -22,9 +22,25 @@
 						<h1>User Guide</h1>
 						<h2>Overview</h2>
 						<button id="button1" data-bind="click: showOverlay">Click here!</button>
-						<button id="button2" class="pull-right">Then click here!</button>
-						<div class="userguide">
-							<div class="userguide-overlay overlay-right" data-target="side-menu"></div>
+						<button id="button2" data-bind="click: showOverlay2" class="pull-right">Then click here!</button>
+						
+						<div class="userguide" data-target="#side-menu" data-direction="right" >
+							<div data-target="#button1" data-direction="right">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
+							</div>
+							<div data-target="#button-prev" data-direction="right">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. 
+							</div>
+						</div>
+						
+						
+						<div class="userguide2" data-target="#button1" data-direction="right" >
+							<div data-target="#button2" data-direction="left">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
+							</div>
+							<div data-target="#button-next" data-direction="left">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. 
+							</div>
 						</div>
 						<article class="cf">
 							<div class="tabs">
@@ -33,123 +49,8 @@
 									<li><a href="#tabs-method">Methods</a></li>
 								</ol>
 								<div id="tabs-class" class="cf">
-									<article>
-										<h2>Information</h2>
-										<b>Module:</b> nts.uk.ui.contextmenu<br/>
-										<b>File:</b> /lib/nittsu/ui/ui.ts<br/>
-									</article>
+
 									<br/>
-									<article>
-										<h2>ContextMenu Class</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>Properties</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>selector</td>
-													<td>
-														<b>Type:</b> string<br/>
-														Jquery selector for associate elements
-													</td>
-												</tr>
-												<tr>
-													<td>items</td>
-													<td>
-														<b>type:</b> Array&lt;<a class="color" href="#ContextMenuItem">ContextMenuItem</a>&gt;<br/>
-														List menu item
-													</td>
-												</tr>
-												<tr>
-													<td>enable<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> true<br/>
-														Set enable right click show ContextMenu
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</article>
-									<article id="ContextMenuItem">
-										<h2>ContextMenuItem Class</h2>
-										<table>
-											<colgroup>
-												<col width="200px" />
-											</colgroup>
-											<thead>
-												<tr>
-													<th><h4>Properties</h4></th>
-													<th><h4>Description</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>key</td>
-													<td>
-														<b>Type:</b> string<br/>
-														Unique key for item. If key is "divider" it will auto create a divider
-													</td>
-												</tr>
-												<tr>
-													<td>text<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> string<br/>
-														<b>Default:</b> ""<br/>
-														Display text for item
-													</td>
-												</tr>
-												<tr>
-													<td>handler<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> (ui: any) => void<br/>
-														<b>Default:</b> $.noop<br/>
-														Function when user click item. <b>"ui"</b> is the current target trigger show ContextMenu
-													</td>
-												</tr>
-												<tr>
-													<td>icon<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> string<br/>
-														<b>Default:</b> ""<br/>
-														Icon classes for icon. Can be <a href="http://api.jqueryui.com/theming/icons/" class="color">JqueryUI Icon</a> or <a href="/nts.uk.com.web/view/sample/commoncss/helper-classes.xhtml#icon" class="color">ntsIcon</a>
-													</td>
-												</tr>
-												<tr>
-													<td>visible<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> true<br/>
-														Set visible/hidden for item
-													</td>
-												</tr>
-												<tr>
-													<td>enable<br/><i>(optional)</i></td>
-													<td>
-														<b>Type:</b> boolean<br/>
-														<b>Default:</b> true<br/>
-														Set enable/disable for item
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</article>
-									<article>
-										<h2>Demo</h2>
-<pre><![CDATA[menu1 = new nts.uk.ui.contextmenu.ContextMenu(".context-menu", [
-    new nts.uk.ui.contextmenu.ContextMenuItem("cut", "Cut", (ui) => { alert("Cut: " + $(ui).data("test")) }, "ui-icon ui-icon-scissors", true, true),
-    new nts.uk.ui.contextmenu.ContextMenuItem("copy", "Copy", (ui) => {alert("Copy");}, "ui-icon ui-icon-copy"),
-    new nts.uk.ui.contextmenu.ContextMenuItem("paste", "Paste", (ui) => {alert("Paste");}, "ui-icon ui-icon-clipboard"),
-    new nts.uk.ui.contextmenu.ContextMenuItem("divider"),
-    new nts.uk.ui.contextmenu.ContextMenuItem("delete", "Delete", (ui) => {alert("Delete");}, "ui-icon ui-icon-trash")
-]);]]></pre>
-									</article>
 								</div>
 								<div id="tabs-method" class="cf">
 									<article>
@@ -233,8 +134,8 @@
 							</div>
 						</article>
 						<div class="footer cf">
-							<button class="previous large">Previous</button>
-							<button class="next proceed large">Next</button>
+							<button id="button-prev" class="previous large">Previous</button>
+							<button id="button-next" class="next proceed large">Next</button>
 						</div>
             		</div>
            		</div>
