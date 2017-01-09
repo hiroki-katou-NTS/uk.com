@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+<!-- 			<com:stylefile path="main.css" /> -->
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+<!-- 			<com:scriptfile path="service.js" /> -->
+			<script type="text/javascript">
+				// TODO: Code validate.
+				</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="divHeader">
+				<div class="function-class">
+					<button id="select-employee-button" class="proceed">選択した社員を印刷</button>
+					<button id="aggregate-setting-button">明細書項目の集約設定</button>
+					<button id="unknow-function-button">印刷実行ログ</button>
+				</div>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td id="contents-left">
+							<div class="select-target-year">
+								<div class="label" id="target-year-label">対象年度</div>
+								<input id="target-year-input" for="target-year-label" data-bind="ntsTextEditor: {value: targetYear}"></input>
+								<span id="year-label">年度</span>
+								<div id="preliminary-month-checkbox" data-bind="ntsCheckBox: { checked: isAggreatePreliminaryMonth }">予備月</div>
+							</div>
+							<div class="search-employee"></div>
+						</td>
+						<td id="contents-right">
+							<div id="aggregate-condition">
+								<div class="label" id="detail-process-label">処理の詳細設定</div>
+
+								<div id="output-layout-select">
+									<div id="ouput-layout-label" data-bind="ntsFormLabel: {}">出力するレイアウト</div>
+									<button id="unkown-button">?</button>
+									<span class="ntsControl"> <label class="ntsRadioBox">
+											<input type="radio" name="textRadio" id="wage-ledger-layout"
+											data-bind="checkedValue: 0, checked: layoutSelected" /> <span
+											class="box"></span><span class="label">賃金台帳（A4横1ページ）を出力する</span>
+									</label>
+									</span> <span class="ntsControl"> <label class="ntsRadioBox">
+											<input type="radio" name="textRadio" id="wage-list-layout"
+											data-bind="checkedValue: 1, checked: layoutSelected" /> <span
+											class="box"></span><span class="label">賃金一覧表を出力する</span>
+									</label>
+									</span>
+									<div id="page-break-indicator-checkbox"
+										data-bind="ntsCheckBox: { checked: isPageBreakIndicator, enable: layoutSelected() == 1}">改ページ区分</div>
+								</div>
+								<div id="output-items">
+									<div class="label" id="output-items-label" data-bind="ntsFormLabel: {}">出力する項目の選択</div>
+									<span class="ntsControl"> <label class="ntsRadioBox">
+											<input type="radio" name="textRadio" id="detail-item"
+											data-bind="checkedValue: 0, checked: outputTypeSelected" /> <span
+											class="box"></span><span class="label">明細書項目を出力する</span>
+									</label>
+									</span> <span class="ntsControl"> <label class="ntsRadioBox">
+											<input type="radio" name="textRadio" id="summary-detail-items"
+											data-bind="checkedValue: 1, checked: outputTypeSelected" /> <span
+											class="box"></span><span class="label">明細書の集約項目を出力する</span>
+									</label>
+									</span>
+									<div id="output-settings-selection"
+										data-bind="ntsComboBox: {
+											options: outputSettings,
+											optionsValue: 'code',
+											value: outputSettingSelectedCode,
+											optionsText: 'name',
+											editable: false,
+											enable: outputTypeSelected() == 1 }"></div>
+									<button id="output-settings-button">設定</button>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
