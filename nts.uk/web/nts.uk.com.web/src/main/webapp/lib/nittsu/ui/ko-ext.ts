@@ -1894,6 +1894,11 @@ module nts.uk.ui.koExtentions {
     /**
      * Datepicker binding handler
      */
+    function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
+    }
     class DatePickerBindingHandler implements KnockoutBindingHandler {
         /**
          * Constructor.
@@ -1908,7 +1913,17 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Container.
-            var container = $(element);
+            var container = $(element);        
+            if(!container.attr("id")) {
+                var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                container.attr("id", idString);
+            }
+            var idatr = container.attr("id");
+            container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
+            var $input = container.find('#' + idatr + "_input");
+            var button = null;
+            if(data.button) button = idatr + "_button";
+            $input.prop("readonly", true);
             var date = ko.unwrap(data.value);
             var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             var length = 10, atomWidth = 9;
@@ -1917,15 +1932,23 @@ module nts.uk.ui.koExtentions {
             } else if(dateFormat === "yyyy/MM/dd D") {
                length = 14;
             }
-            container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-            (<any>container).datepicker({
+            $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+            if(button) {              
+                container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
+                (<any>$input).datepicker({
+                    format: 'yyyy/mm/dd', // cast to avoid error
+                    language: 'ja-JP',
+                    trigger: "#"+button
+                });            
+            }
+            else (<any>$input).datepicker({
                 format: 'yyyy/mm/dd', // cast to avoid error
-                language: 'ja-JP'
+                language: 'ja-JP'              
             });
-            container.on('change', (event: any) => {
-                data.value(new Date(container.val().substring(0,10)));
+            $input.on('change', (event: any) => {
+                data.value(new Date($input.val().substring(0,10)));
             });
-            container.width(atomWidth * length);
+            $input.width(atomWidth * length);
         }
 
         /**
@@ -1935,10 +1958,14 @@ module nts.uk.ui.koExtentions {
             
             var data = valueAccessor();
             var container = $(element);
+            var idatr = container.attr("id");
             var date = ko.unwrap(data.value);
+            var $input = container.find('#' + idatr + "_input");
             var dateFormat = data.dateFormat? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-            //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-            container.val(nts.uk.time.formatDate(date, dateFormat));          
+            var oldDate = $input.datepicker("getDate");
+            if(oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate()) 
+                $input.datepicker("setDate", date);
+            $input.val(nts.uk.time.formatDate(date, dateFormat));  
         }
     }
     /**
