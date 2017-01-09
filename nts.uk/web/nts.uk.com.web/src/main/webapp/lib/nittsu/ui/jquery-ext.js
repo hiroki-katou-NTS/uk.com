@@ -258,6 +258,123 @@ var nts;
                         });
                     }
                 })(ntsGridList || (ntsGridList = {}));
+                var ntsListBox;
+                (function (ntsListBox) {
+                    $.fn.ntsListBox = function (action) {
+                        var $grid = $(this);
+                        switch (action) {
+                            case 'deselectAll':
+                                deselectAll($grid);
+                                break;
+                            case 'selectAll':
+                                selectAll($grid);
+                                break;
+                            case 'validate':
+                                return validate($grid);
+                            default:
+                                break;
+                        }
+                    };
+                    function selectAll($list) {
+                        $list.find('.nts-list-box > li').addClass("ui-selected");
+                        $list.find("li").attr("clicked", "");
+                        $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+                    }
+                    function deselectAll($list) {
+                        $list.data('value', '');
+                        $list.find('.nts-list-box > li').removeClass("ui-selected");
+                        $list.find('.nts-list-box > li > div').removeClass("ui-selected");
+                        $list.trigger("selectionChange");
+                    }
+                    function validate($list) {
+                        var required = $list.data('required');
+                        var $currentListBox = $list.find('.nts-list-box');
+                        if (required) {
+                            var itemsSelected = $list.data('value');
+                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                $currentListBox.ntsError('set', 'at least 1 item selection required');
+                                return false;
+                            }
+                            else {
+                                $currentListBox.ntsError('clear');
+                                return true;
+                            }
+                        }
+                    }
+                })(ntsListBox || (ntsListBox = {}));
+                var userGuide;
+                (function (userGuide) {
+                    $.fn.ntsUserGuide = function (action) {
+                        var $controls = $(this);
+                        if (nts.uk.util.isNullOrUndefined(action)) {
+                            return init($controls);
+                        }
+                        else if (action === "show") {
+                            return show($controls);
+                        }
+                        else {
+                        }
+                        ;
+                    };
+                    function init(controls) {
+                        controls.each(function () {
+                            // UserGuide container
+                            var $control = $(this);
+                            $control.remove();
+                            if (!$control.hasClass("ntsUserGuide"))
+                                $control.addClass("ntsUserGuide");
+                            $($control).appendTo($("body")).show();
+                            var target = $control.data('target');
+                            var direction = $control.data('direction');
+                            // Userguide Information Box
+                            $control.children().each(function () {
+                                var $box = $(this);
+                                var boxDirection = $box.data("direction");
+                                $box.addClass("userguide-box caret-" + getReveseDirection(boxDirection) + " caret-overlay");
+                            });
+                            // Userguide Overlay
+                            var $overlay = $("<div class='userguide-overlay'></div>")
+                                .addClass("overlay-" + direction)
+                                .on("click", function () {
+                                $control.hide();
+                            })
+                                .appendTo($control);
+                            $control.hide();
+                        });
+                        return controls;
+                    }
+                    function show(controls) {
+                        controls.each(function () {
+                            var $control = $(this);
+                            var target = $control.data('target');
+                            var direction = $control.data('direction');
+                            $control.show();
+                            $control.children().each(function () {
+                                var $box = $(this);
+                                var boxTarget = $box.data("target");
+                                $box.position({
+                                    my: getReveseDirection(direction) + "+20",
+                                    at: "right center",
+                                    of: boxTarget
+                                });
+                            });
+                            var $overlay = $control.find(".userguide-overlay").css(getReveseDirection(direction), $(target).offset().left + $(target).outerWidth());
+                        });
+                        return controls;
+                    }
+                    function getReveseDirection(direction) {
+                        switch (direction) {
+                            case "left":
+                                return "right";
+                            case "right":
+                                return "left";
+                            case "top":
+                                return "bottom";
+                            case "bottom":
+                                return "top";
+                        }
+                    }
+                })(userGuide || (userGuide = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
