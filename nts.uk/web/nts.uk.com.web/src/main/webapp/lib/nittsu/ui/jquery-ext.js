@@ -258,6 +258,50 @@ var nts;
                         });
                     }
                 })(ntsGridList || (ntsGridList = {}));
+                var ntsListBox;
+                (function (ntsListBox) {
+                    $.fn.ntsListBox = function (action) {
+                        var $grid = $(this);
+                        switch (action) {
+                            case 'deselectAll':
+                                deselectAll($grid);
+                                break;
+                            case 'selectAll':
+                                selectAll($grid);
+                                break;
+                            case 'validate':
+                                return validate($grid);
+                            default:
+                                break;
+                        }
+                    };
+                    function selectAll($list) {
+                        $list.find('.nts-list-box > li').addClass("ui-selected");
+                        $list.find("li").attr("clicked", "");
+                        $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+                    }
+                    function deselectAll($list) {
+                        $list.data('value', '');
+                        $list.find('.nts-list-box > li').removeClass("ui-selected");
+                        $list.find('.nts-list-box > li > div').removeClass("ui-selected");
+                        $list.trigger("selectionChange");
+                    }
+                    function validate($list) {
+                        var required = $list.data('required');
+                        var $currentListBox = $list.find('.nts-list-box');
+                        if (required) {
+                            var itemsSelected = $list.data('value');
+                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                $currentListBox.ntsError('set', 'at least 1 item selection required');
+                                return false;
+                            }
+                            else {
+                                $currentListBox.ntsError('clear');
+                                return true;
+                            }
+                        }
+                    }
+                })(ntsListBox || (ntsListBox = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));

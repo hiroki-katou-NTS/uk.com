@@ -125,8 +125,21 @@ __viewContext.ready(function() {
                     html += "</span>";
                     html += "<span class='editor-line'>";
                 } else {
-                    if (this.checkAlphaOrEmpty(toChar[i])) {
-                        if (toChar[i - 1] === undefined) {
+                    if(toChar[i] === "@"){
+                        html += "<span id='span-" + count + "' class='autocomplete-char'>" + toChar[i] + "</span>";
+                        count++;
+                    }else if(this.checkJapanese(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkJapanese(toChar[i - 1])) {
+                            html = this.insertString(html, toChar[i], html.length - 7);
+                        } else {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                    }else if (this.checkAlphaOrEmpty(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
                             html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                             count++;
                         } else if (this.checkAlphaOrEmpty(toChar[i - 1])) {
@@ -187,6 +200,10 @@ __viewContext.ready(function() {
         checkAlphaOrEmpty(char) {
             var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
             return !speChar.test(char) || char === " " || char === undefined;
+        }
+        
+        checkJapanese(char){
+            return !nts.uk.text.allHalf(char);    
         }
 
         testGachChan(specialChar) {
