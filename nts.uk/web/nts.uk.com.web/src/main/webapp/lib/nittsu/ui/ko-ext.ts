@@ -1412,25 +1412,12 @@ module nts.uk.ui.koExtentions {
 
 
     /**
-     * GridList binding handler
+     * Grid scroll helper functions
+     * 
      */
-    function calculateTop(options, id, key, scrollContainer) {
-        if(!id) return 0;
-        var height = $('#' + scrollContainer)[0].scrollHeight;
-        var len = options.length;
-        var index = 0;       
-        for(var i = 0; i < len; i++) {
-            var item = options[i];
-            if(item[key] == id) {
-                index = i;
-                break; 
-            } 
-        }
-        return index*height/len;
-    }
     function calculateIndex(options, id, key) {
-        if(!id) return 0;             
-        var index = 0;       
+        if(!id) return 0;      
+        var index = 0;  
         for(var i = 0; i < options.length; i++) {
             var item = options[i];
             if(item[key] == id) {
@@ -1440,6 +1427,9 @@ module nts.uk.ui.koExtentions {
         }
         return index;
     }
+    /**
+     * GridList binding handler
+     */
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1646,7 +1636,10 @@ module nts.uk.ui.koExtentions {
                     }
                 }
                 if(row1 && row1 !== 'undefined') {                      
-                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue, scrollContainer.attr('id')));                  
+                    var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
+                    var rowHeight = $('#' + treeGridId + "_" + row1).height();
+                    scrollContainer.scrollTop(rowHeight * index);
+                    console.log(rowHeight * index);             
                 }
                 //console.log(row1);
             });
