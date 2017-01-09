@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+		
+        <ui:composition template="../../../master/base.xhtml">
+            <ui:define name="htmlHead">
+            	<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:stylefile path="../catalog/catalog.css" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="../catalog/catalog.js" />
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+					<div id="side-menu" class="cf"></div>
+					<div id="content" class="cf">
+						<h1>User Guide</h1>
+						<h2>Overview</h2>
+						<button id="button1" data-bind="click: showOverlay">Click here!</button>
+						<button id="button2" data-bind="click: showOverlay2" class="pull-right">Then click here!</button>
+						
+						<div class="userguide" data-target="#side-menu" data-direction="right" >
+							<div data-target="#button1" data-direction="right">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
+							</div>
+							<div data-target="#button-prev" data-direction="right">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. 
+							</div>
+						</div>
+						
+						
+						<div class="userguide2" data-target="#button1" data-direction="right" >
+							<div data-target="#button2" data-direction="left">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
+							</div>
+							<div data-target="#button-next" data-direction="left">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. 
+							</div>
+						</div>
+						<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-class">Class</a></li>
+									<li><a href="#tabs-method">Methods</a></li>
+								</ol>
+								<div id="tabs-class" class="cf">
+
+									<br/>
+								</div>
+								<div id="tabs-method" class="cf">
+									<article>
+										<h2>Methods</h2>
+										<table>
+											<colgroup>
+												<col width="400px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>Methods</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>init()</td>
+													<td>
+														Init ContextMenu. Auto call when created
+													</td>
+												</tr>
+												<tr>
+													<td>destroy()</td>
+													<td>
+														Destroy ContextMenu
+													</td>
+												</tr>
+												<tr>
+													<td>refresh()</td>
+													<td>
+														Refresh ContextMenu with new data
+													</td>
+												</tr>
+												<tr>
+													<td>getItem(item: ContextMenuItem)</td>
+													<td>
+														<b>Return:</b> ContextMenuItem object<br/>
+														<b>Arguments:</b><br/>
+														<i>item: ContextMenuItem</i> Instance of ContextMenuItem class<br/>
+														Add an item to menu list items
+													</td>
+												</tr>
+												<tr>
+													<td>removeItem(target: any)</td>
+													<td>
+														<b>Arguments:</b><br/>
+														<i>target: any</i> Can be item key or index<br/>
+														Remove an item with given "key" or index
+													</td>
+												</tr>
+												<tr>
+													<td>setEnable(enable: boolean)</td>
+													<td>
+														<b>Arguments:</b><br/>
+														<i>enable: boolean</i> Enable value<br/>
+														Enable/Disable ContextMenu showing
+													</td>
+												</tr>
+												<tr>
+													<td>setEnableItem(enable: boolean, target: any)</td>
+													<td>
+														<b>Arguments:</b><br/>
+														<i>enable: boolean</i> Enable value<br/>
+														<i>target: any</i> Can be item key or index<br/>
+														Enable/Disable item with given "key" or index
+													</td>
+												</tr>
+												<tr>
+													<td>setVisibleItem(visible: boolean, target: any)</td>
+													<td>
+														<b>Arguments:</b><br/>
+														<i>visible: boolean</i> Visible value<br/>
+														<i>target: any</i> Can be item key or index<br/>
+														Show/hidden item with given "key" or index
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</article>
+								</div>
+							</div>
+						</article>
+						<div class="footer cf">
+							<button id="button-prev" class="previous large">Previous</button>
+							<button id="button-next" class="next proceed large">Next</button>
+						</div>
+            		</div>
+           		</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>
