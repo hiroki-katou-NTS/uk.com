@@ -22,8 +22,6 @@ __viewContext.ready(function () {
                 new Node('0010', 'Beijing China', []),
                 new Node('0011', 'London United Kingdom', []),
                 new Node('0012', '', [])]);
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "childs"));
-            self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource2(), "childs"));
             self.singleSelectedCode = ko.observable(null);
             self.singleSelectedCode2 = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);

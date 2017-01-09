@@ -6,11 +6,13 @@ __viewContext.ready(function() {
         $(this).tooltip({ content: selectValue });
         $("#error-messege").text(selectValue);
         var position = $("#input-containner").position();
-        $("#error-containner").css({ "top": (event.data.pageY - position.top + 2) + "px", 
-                    "left": (event.data.pageX - position.left + 2) + "px" });
+        $("#error-containner").css({
+            "top": (event.data.pageY - position.top + 2) + "px",
+            "left": (event.data.pageX - position.left + 2) + "px"
+        });
         $("#error-containner").show();
     }
-    
+
     class ScreenModel {
         autoComplete: KnockoutObservableArray<any>;
         textArea: KnockoutObservable<any>;
@@ -59,10 +61,13 @@ __viewContext.ready(function() {
             this.textArea = ko.observable("");
             this.divValue = ko.observable("");
             $("#error-containner").hide();
-//            $("#error-content").mouseout(function(event){
-//                $("#error-containner").hide();
-//            }
+            //            $("#error-content").mouseout(function(event){
+            //                $("#error-containner").hide();
+            //            }
             $("#input-text").keyup((event) => {
+                if (!event.shiftKey && event.keyCode === 16) {
+                    return;
+                }
                 $("#error-containner").hide();
                 var start = $("#input-text")[0].selectionStart;
                 var end = $("#input-text")[0].selectionEnd;
@@ -115,33 +120,28 @@ __viewContext.ready(function() {
             var count = 1;
             var toChar = value.split('');
             var html = "<span class='editor-line'>";
-            html += "<span id='span-" + count + "'>";
-            count++;
             for (var i = 0; i < toChar.length; i++) {
                 if (toChar[i] === "\n") {
-                    html += "</span></span>";
+                    html += "</span>";
                     html += "<span class='editor-line'>";
                 } else {
                     if (this.checkAlphaOrEmpty(toChar[i])) {
-                        if (this.checkAlphaOrEmpty(toChar[i - 1])) {
-                            html += toChar[i];
+                        if (toChar[i - 1] === undefined) {
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkAlphaOrEmpty(toChar[i - 1])) {
+                            html = this.insertString(html, toChar[i], html.length - 7);
                         } else {
-                            if (toChar[i - 1] !== "\n") {
-                                html += "</span>";
-                            }
-                            html += "<span id='span-" + count + "'>" + toChar[i];
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                             count++;
                         }
                     } else {
-                        if (toChar[i - 1] !== "\n" && this.checkAlphaOrEmpty(toChar[i - 1])) {
-                            html += "</span>";
-                        }
                         html += "<span id='span-" + count + "' class='special-char'>" + toChar[i] + "</span>";
                         count++;
                     }
                 }
             }
-            html += "</span></span>";
+            html += "</span>";
             this.divValue(html);
             this.testGachChan($(".special-char"));
             this.divValue($("#input-content-area").html());
@@ -191,53 +191,109 @@ __viewContext.ready(function() {
 
         testGachChan(specialChar) {
 
-            var openSpecial = {
-                "&gt;": "&lt;",
-                "\)": "\(",
-                "\]": "\[",
-                "\}": "\{"
-            };
+//            var openSpecial = {
+//                "&gt;": "&lt;",
+//                "&lt;": "&gt;"
+//            };
+//            
+//            var openSpecial2 = {
+//                "\)": "\(",
+//                "\(": "\)"
+//            };
+            
             var singleSpecial = {
                 "+": "+",
                 "-": "-",
-                ".": ".",
+                "^": "^",
                 "*": "*",
                 "/": "/",
-                "\\": "\\",
+                "=": "=",
                 "!": "!",
                 "#": "#",
                 "$": "$",
                 "%": "%"
             };
-            var doubleSpecial = {
-                "&": "&",
-                "|": "|"
-            };
+
+            var closeTriangle = _.remove(specialChar, function(n) {
+                return $(n).html() === "&gt;";
+            });
+            
+            var openTriangle = _.remove(specialChar, function(n) {
+                return $(n).html() === "&lt;";
+            });
+
+            var openRound = _.remove(specialChar, function(n) {
+                return $(n).html() === "\(";
+            });
+            
+            var closeRound = _.remove(specialChar, function(n) {
+                return $(n).html() === "\)";
+            });
+            
+            if(closeTriangle.length === 0){
+                $(openTriangle).addClass("error-char").attr("messege", "test 1");
+            }else if (openTriangle.length === 0){
+                $(closeTriangle).addClass("error-char").attr("messege", "test 1");
+            } else {
+                var openError = [];
+                for(var i = openTriangle.length - 1; i >= 0; i--){
+                    var currentOpen = openTriangle[i];
+                    var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                    var currentClose = _.find(closeTriangle, function(a) { 
+                        return parseInt($(a).attr("id").split("-")[1]) > id; 
+                    });
+                    if(currentClose === undefined){
+                        openError.unshift(currentOpen);  
+                    }else{
+                        closeTriangle.splice(closeTriangle.indexOf(currentClose) , 1);    
+                    }
+                }
+                $(openError).addClass("error-char").attr("messege", "test 1");
+                $(closeTriangle).addClass("error-char").attr("messege", "test 1");
+            }
+            
+            if(closeRound.length === 0){
+                $(openRound).addClass("error-char").attr("messege", "test 1");
+            }else if (openRound.length === 0){
+                $(closeRound).addClass("error-char").attr("messege", "test 1");
+            } else {
+                var openError = [];
+                for(var i = openRound.length - 1; i >= 0; i--){
+                    var currentOpen = openRound[i];
+                    var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                    var currentClose = _.find(closeRound, function(a) { 
+                        return parseInt($(a).attr("id").split("-")[1]) > id; 
+                    });
+                    if(currentClose === undefined){
+                        openError.unshift(currentOpen);  
+                    }else{
+                        closeRound.splice(closeRound.indexOf(currentClose) , 1);    
+                    }
+                }
+                $(openError).addClass("error-char").attr("messege", "test 3");
+                $(closeRound).addClass("error-char").attr("messege", "test 3");
+            }
+            
             var element = this.toArrayChar(specialChar);
             for (var i = 0; i < specialChar.length; i++) {
                 var $data = $(specialChar[i]);
                 var charCount = parseInt($data.attr("id").split("-")[1]);
                 var char = $data.text();
-                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
+//                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
                 var single = singleSpecial[char];
-                var double = doubleSpecial[char];
-                if (openComa !== undefined) {
-                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
-                    var x = this.countPreviousElement(element, openComa, i);
-                    if (x2 > x) {
-                        $data.addClass("error-char").attr("messege", "test 1");
-                    }
-                } else if (single !== undefined) {
+//                if (openComa !== undefined) {
+//                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
+//                    var x = this.countPreviousElement(element, openComa, i);
+//                    if (x2 > x) {
+//                        $data.addClass("error-char").attr("messege", "test 1");
+//                    }
+//                } else 
+                if (single !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
                     if (neighborCount > 0) {
                         $data.addClass("error-char").attr("messege", "test 2");
                     }
-                } else if (double !== undefined) {
-                    var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if (neighborCount > 1) {
-                        $data.addClass("error-char").attr("messege", "test 3");
-                    }
-                } else if (double !== "@") {
+                } else if (char !== "@") {
                     $data.addClass("error-char").attr("messege", "test 4");
                 }
             }
@@ -296,18 +352,6 @@ __viewContext.ready(function() {
             }, this).extend({ deferred: true });
         }
     }
-
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-    }
-
 
     this.bind(new ScreenModel());
 
