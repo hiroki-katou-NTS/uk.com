@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<script>var dialogSize = { width: 300, height: 200 };</script>
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+				</div>
+				<div id="contents-area">
+					<div id="j_lbl_001" class="label warning separate-vertical">新たに作成する履歴の、作成情報を入力してください。</div>
+					<br />
+					<div id="j_lbl_002" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+					<span id="j_lbl_003">0001</span>
+					<span id="j_lbl_004">日本0001</span>
+					<br />
+					<div id="j_lbl_005" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
+					<input size="5" id="l_inp_001" data-bind="value: '2016/12'"/>
+					<span id="j_lbl_007">(xxxxxxx) ~</span>
+					<br />
+					<div id="j_lbl_006" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
+					<div id="j_sel_001" data-bind="ntsRadioBoxGroup: {
+						options: itemList,
+						optionsValue: 'id',
+						optionsText: 'name',
+						value: selectedId,
+						enable: enable}"></div>
+					<br />
+					<button class="x-large proceed">X-large</button>
+					<button>Normal</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>
