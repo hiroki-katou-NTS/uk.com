@@ -158,11 +158,15 @@ var nts;
                     function getSelected($grid) {
                         if ($grid.igGridSelection('option', 'multipleSelection')) {
                             var selectedRows = $grid.igGridSelection('selectedRows');
-                            return _.map(selectedRows, convertSelected);
+                            if (selectedRows)
+                                return _.map(selectedRows, convertSelected);
+                            return [];
                         }
                         else {
                             var selectedRow = $grid.igGridSelection('selectedRow');
-                            return convertSelected(selectedRow);
+                            if (selectedRow)
+                                return convertSelected(selectedRow);
+                            return undefined;
                         }
                     }
                     function convertSelected(igGridSelectedRow) {

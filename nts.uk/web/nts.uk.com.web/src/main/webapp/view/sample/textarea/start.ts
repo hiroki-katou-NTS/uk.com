@@ -1,5 +1,18 @@
 __viewContext.ready(function() {
 
+    function showError(event) {
+        var currentString = $("#input-text").val();
+        var selectValue = $(this).attr("messege");
+        $(this).tooltip({ content: selectValue });
+        $("#error-messege").text(selectValue);
+        var position = $("#input-containner").position();
+        $("#error-containner").css({
+            "top": (event.data.pageY - position.top + 2) + "px",
+            "left": (event.data.pageX - position.left + 2) + "px"
+        });
+        $("#error-containner").show();
+    }
+
     class ScreenModel {
         autoComplete: KnockoutObservableArray<any>;
         textArea: KnockoutObservable<any>;
@@ -8,6 +21,7 @@ __viewContext.ready(function() {
         showAutoComplete: KnockoutObservable<boolean>;
         row: KnockoutObservable<number>;
         col: KnockoutObservable<number>;
+        error: KnockoutObservable<string>;
 
         constructor() {
             //----------------------------------------------------------------------------
@@ -22,14 +36,15 @@ __viewContext.ready(function() {
                 new ItemModel2('155', '役職手当', "description 8"),
                 new ItemModel2('AB5', '基12本ghj給', "description 9")
             ]);
-            
+
             this.showAutoComplete = ko.observable(false);
             this.autoSelected = ko.observable("");
             this.row = ko.observable(1);
             this.col = ko.observable(1);
+            this.error = ko.observable("");
             this.autoSelected.subscribe(function(value) {
                 //                $("#auto-complete-containner").show()
-                if(value !== undefined){
+                if (value !== undefined) {
                     var currentString = $("#input-text").val();
                     var index = this.getIndex(currentString, this.row(), this.col()) + 1;
                     var selectValue = value.name();
@@ -39,13 +54,21 @@ __viewContext.ready(function() {
                     $("#input-text")[0].selectionStart = index + selectValue.length;
                     $("#input-text")[0].selectionEnd = index + selectValue.length;
                     this.testError();
-                    $("#auto-complete-containner").hide();   
-                    this.autoSelected(undefined); 
+                    $("#auto-complete-containner").hide();
+                    this.autoSelected(undefined);
                 }
             }, this);
             this.textArea = ko.observable("");
             this.divValue = ko.observable("");
+            $("#error-containner").hide();
+            //            $("#error-content").mouseout(function(event){
+            //                $("#error-containner").hide();
+            //            }
             $("#input-text").keyup((event) => {
+                if (!event.shiftKey && event.keyCode === 16) {
+                    return;
+                }
+                $("#error-containner").hide();
                 var start = $("#input-text")[0].selectionStart;
                 var end = $("#input-text")[0].selectionEnd;
                 var maxWidthCharacter = 15;
@@ -59,60 +82,73 @@ __viewContext.ready(function() {
                     this.row(currentRow);
                     this.col(currentCol);
                     $("#auto-complete-containner").show();
-                    $("#auto-complete-containner").css({"top": (currentRow*17) + "px", "left": (currentCol * maxWidthCharacter) + "px"});
+                    $("#auto-complete-containner").css({ "top": (currentRow * 17) + "px", "left": (currentCol * maxWidthCharacter) + "px" });
                 } else {
                     $("#auto-complete-containner").hide();
                     this.testError();
                 }
             });
+            $(document).on("mouseleave", "#error-containner", function(event) {
+                $("#error-containner").hide();
+            });
+
+            $("#input-area").click(function(event) {
+                $("#error-containner").hide();
+                var y = _.findLast($(".special-char"), function(d) {
+                    var x = $(d).offset();
+                    return x.top <= event.pageY && x.left <= event.pageX
+                        && (x.left + $(d).outerWidth()) >= event.pageX
+                        && (x.top + $(d).outerHeight()) >= event.pageY;
+                });
+                if (y !== undefined) {
+                    $(y).click({ pageX: event.pageX, pageY: event.pageY }, showError);
+                    $(y).click();
+                }
+            });
+
         }
-        
-        insertString(original, sub, position){
-            if(original.length === position){
+
+        insertString(original, sub, position) {
+            if (original.length === position) {
                 return original + sub;
             }
-            return original.substr(0, position) + sub + original.substr(position);    
+            return original.substr(0, position) + sub + original.substr(position);
         }
-        
+
         testError() {
             var value = $("#input-text").val();
             var count = 1;
             var toChar = value.split('');
             var html = "<span class='editor-line'>";
-            html += "<span id='span-" + count + "'>";
-            count++;
             for (var i = 0; i < toChar.length; i++) {
                 if (toChar[i] === "\n") {
-                    html += "</span></span>";
+                    html += "</span>";
                     html += "<span class='editor-line'>";
                 } else {
                     if (this.checkAlphaOrEmpty(toChar[i])) {
-                        if (this.checkAlphaOrEmpty(toChar[i - 1])) {
-                            html += toChar[i];
+                        if (toChar[i - 1] === undefined) {
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkAlphaOrEmpty(toChar[i - 1])) {
+                            html = this.insertString(html, toChar[i], html.length - 7);
                         } else {
-                            if (toChar[i - 1] !== "\n") {
-                                html += "</span>";
-                            }
-                            html += "<span id='span-" + count + "'>" + toChar[i];
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                             count++;
                         }
                     } else {
-                        if (toChar[i - 1] !== "\n" && this.checkAlphaOrEmpty(toChar[i - 1])) {
-                            html += "</span>";
-                        }
                         html += "<span id='span-" + count + "' class='special-char'>" + toChar[i] + "</span>";
                         count++;
                     }
                 }
             }
-            html += "</span></span>";
+            html += "</span>";
             this.divValue(html);
             this.testGachChan($(".special-char"));
             this.divValue($("#input-content-area").html());
         }
 
-        getIndex(str, row, col){
-            if(row === 1){
+        getIndex(str, row, col) {
+            if (row === 1) {
                 return col - 1;
             }
             var rowValues = str.split("\n");
@@ -122,9 +158,9 @@ __viewContext.ready(function() {
             }
             return index + col - 1;
         }
-        
+
         getCurrentColumn(currentRow, position) {
-            if(currentRow === 1){
+            if (currentRow === 1) {
                 return position;
             }
             var rowValues = $("#input-text").val().split("\n");
@@ -149,82 +185,138 @@ __viewContext.ready(function() {
         }
 
         checkAlphaOrEmpty(char) {
-            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\\":<>\?\(\)]/);
+            var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
             return !speChar.test(char) || char === " " || char === undefined;
         }
 
         testGachChan(specialChar) {
 
-            var openSpecial = {
-                "&gt;": "&lt;",
-                "\)": "\(",
-                "\]": "\[",
-                "\}": "\{"
-            };
+//            var openSpecial = {
+//                "&gt;": "&lt;",
+//                "&lt;": "&gt;"
+//            };
+//            
+//            var openSpecial2 = {
+//                "\)": "\(",
+//                "\(": "\)"
+//            };
+            
             var singleSpecial = {
-                "+" : "+",
-                "-" : "-",
-                "." : ".",
-                "*" : "*",
-                "/" : "/",
-                "\\" : "\\",
-                "!" : "!",
-                "#" : "#",
-                "$" : "$",
-                "%" : "%"    
+                "+": "+",
+                "-": "-",
+                "^": "^",
+                "*": "*",
+                "/": "/",
+                "=": "=",
+                "!": "!",
+                "#": "#",
+                "$": "$",
+                "%": "%"
             };
-            var doubleSpecial = {
-                "&" : "&",
-                "|" : "|"    
-            };
+
+            var closeTriangle = _.remove(specialChar, function(n) {
+                return $(n).html() === "&gt;";
+            });
+            
+            var openTriangle = _.remove(specialChar, function(n) {
+                return $(n).html() === "&lt;";
+            });
+
+            var openRound = _.remove(specialChar, function(n) {
+                return $(n).html() === "\(";
+            });
+            
+            var closeRound = _.remove(specialChar, function(n) {
+                return $(n).html() === "\)";
+            });
+            
+            if(closeTriangle.length === 0){
+                $(openTriangle).addClass("error-char").attr("messege", "test 1");
+            }else if (openTriangle.length === 0){
+                $(closeTriangle).addClass("error-char").attr("messege", "test 1");
+            } else {
+                var openError = [];
+                for(var i = openTriangle.length - 1; i >= 0; i--){
+                    var currentOpen = openTriangle[i];
+                    var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                    var currentClose = _.find(closeTriangle, function(a) { 
+                        return parseInt($(a).attr("id").split("-")[1]) > id; 
+                    });
+                    if(currentClose === undefined){
+                        openError.unshift(currentOpen);  
+                    }else{
+                        closeTriangle.splice(closeTriangle.indexOf(currentClose) , 1);    
+                    }
+                }
+                $(openError).addClass("error-char").attr("messege", "test 1");
+                $(closeTriangle).addClass("error-char").attr("messege", "test 1");
+            }
+            
+            if(closeRound.length === 0){
+                $(openRound).addClass("error-char").attr("messege", "test 1");
+            }else if (openRound.length === 0){
+                $(closeRound).addClass("error-char").attr("messege", "test 1");
+            } else {
+                var openError = [];
+                for(var i = openRound.length - 1; i >= 0; i--){
+                    var currentOpen = openRound[i];
+                    var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                    var currentClose = _.find(closeRound, function(a) { 
+                        return parseInt($(a).attr("id").split("-")[1]) > id; 
+                    });
+                    if(currentClose === undefined){
+                        openError.unshift(currentOpen);  
+                    }else{
+                        closeRound.splice(closeRound.indexOf(currentClose) , 1);    
+                    }
+                }
+                $(openError).addClass("error-char").attr("messege", "test 3");
+                $(closeRound).addClass("error-char").attr("messege", "test 3");
+            }
+            
             var element = this.toArrayChar(specialChar);
             for (var i = 0; i < specialChar.length; i++) {
                 var $data = $(specialChar[i]);
                 var charCount = parseInt($data.attr("id").split("-")[1]);
                 var char = $data.text();
-                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
+//                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
                 var single = singleSpecial[char];
-                var double = doubleSpecial[char];
-                if (openComa !== undefined) {
-                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
-                    var x = this.countPreviousElement(element, openComa, i);
-                    if (x2 > x) {
-                        $data.addClass("error-char");
-                    }
-                }else if(single !== undefined){
+//                if (openComa !== undefined) {
+//                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
+//                    var x = this.countPreviousElement(element, openComa, i);
+//                    if (x2 > x) {
+//                        $data.addClass("error-char").attr("messege", "test 1");
+//                    }
+//                } else 
+                if (single !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if(neighborCount > 0){
-                        $data.addClass("error-char");
+                    if (neighborCount > 0) {
+                        $data.addClass("error-char").attr("messege", "test 2");
                     }
-                }else if(double !== undefined){
-                    var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if(neighborCount > 1){
-                        $data.addClass("error-char");
-                    }
-                }else if(double !== "@"){
-                    $data.addClass("error-char");
+                } else if (char !== "@") {
+                    $data.addClass("error-char").attr("messege", "test 4");
                 }
             }
         }
-        
-        countNeighbor(index, array, countNext, countPrev){
+
+        countNeighbor(index, array, countNext, countPrev) {
             var previous = _.find(array, function(a) { return $(a).attr("id") === "span-" + (index - 1); });
             var next = _.find(array, function(a) { return $(a).attr("id") === "span-" + (index + 1); });
-            if(previous === undefined && next === undefined){
-                return 0; 
+            if (previous === undefined && next === undefined) {
+                return 0;
             }
             var previousCount = 0;
             var nextCount = 0;
-            if(countNext && next !== undefined){
+            if (countNext && next !== undefined) {
                 nextCount++;
                 nextCount += this.countNeighbor(index + 1, array, countNext, false);
             }
-            if(countPrev && previous !== undefined){
+            if (countPrev && previous !== undefined) {
                 previousCount++;
                 previousCount += this.countNeighbor(index - 1, array, false, countPrev);
             }
             return previousCount + nextCount;
-                           
+
         }
 
         countPreviousElement(element: Array<string>, x, index) {
@@ -260,18 +352,6 @@ __viewContext.ready(function() {
             }, this).extend({ deferred: true });
         }
     }
-
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-    }
-
 
     this.bind(new ScreenModel());
 

@@ -9,20 +9,11 @@ __viewContext.ready(function () {
         
         constructor() {
             
-            this.items = ko.observableArray([
-                new ItemModel('001', '基本給', "description 1", "other1"),
-                new ItemModel('150', '役職手当', "description 2", "other2"),
-                new ItemModel('ABC', '基12本ghj給', "description 3", "other3"),
-                new ItemModel('002', '基本給', "description 1", "other1"),
-                new ItemModel('152', '役職手当', "description 2", "other2"),
-                new ItemModel('AB2', '基12本ghj給', "description 3", "other3"),
-                new ItemModel('003', '基本給', "description 1", "other1"),
-                new ItemModel('153', '役職手当', "description 2", "other2"),
-                new ItemModel('AB3', '基12本ghj給', "description 3", "other3"),
-                new ItemModel('004', '基本給', "description 1", "other1"),
-                new ItemModel('154', '役職手当', "description 2", "other2"),
-                new ItemModel('AB4', '基12本ghj給', "description 3", "other3"),            
-            ]);
+            this.items = ko.observableArray([]);
+            
+            for(let i = 1; i < 100; i++) {
+                this.items.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
+            }
             
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
@@ -47,7 +38,7 @@ __viewContext.ready(function () {
             this.currentCode('150');
             this.currentCodeList.removeAll();
             this.currentCodeList.push('001');
-            this.currentCodeList.push('ABC');
+            this.currentCodeList.push('002');
         }
         
         deselectAll() {

@@ -21,8 +21,11 @@ var nts;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
                         var atomWidth = 9;
+                        //9 * 160 = 1440 max width, TextEditor shouldnt reach this width
+                        // need to consider more
                         if (constraint && constraint.maxLength) {
-                            $input.width(constraint.maxLength * atomWidth);
+                            var autoWidth = constraint.maxLength <= 160 ? constraint.maxLength * atomWidth : "100%";
+                            $input.width(autoWidth);
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped'/>");
@@ -423,6 +426,7 @@ var nts;
                             selectedKey = ko.unwrap(data.selectedKey);
                         }
                         var arr = ko.unwrap(data.items);
+                        var component = $("#" + ko.unwrap(data.comId));
                         var filteredArr = data.filteredItems;
                         var childField = null;
                         if (data.childField) {
@@ -444,7 +448,8 @@ var nts;
                                 selected([]);
                                 selected.push(selectedItem);
                             }
-                            console.log(selectedItem);
+                            component.trigger("selectChange");
+                            //console.log(selectedItem); 
                         };
                         $input.keyup(function () {
                             $input.change();
@@ -1414,19 +1419,39 @@ var nts;
                                 data.value(selectedOption[optionsValue]);
                             }
                         });
+                        var gridId = $grid.attr('id');
+                        $grid.on("selectChange", function () {
+                            var scrollContainer = $("#" + gridId + "_scrollContainer");
+                            var row1 = null;
+                            var selectedRows = $grid.igGrid("selectedRows");
+                            if (selectedRows && selectedRows.length > 0)
+                                row1 = $grid.igGrid("selectedRows")[0].id;
+                            else {
+                                var selectedRow = $grid.igGrid("selectedRow");
+                                if (selectedRow && selectedRow.id) {
+                                    row1 = $grid.igGrid("selectedRow").id;
+                                }
+                            }
+                            if (row1) {
+                                var rowidstr = "tr[data-id='" + row1 + "']";
+                                scrollContainer.scrollTop($(rowidstr).position().top);
+                                console.log("scrolled");
+                            }
+                        });
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
                         var data = valueAccessor();
                         var currentSource = $grid.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSource, data.options())) {
-                            $grid.igGrid('option', 'dataSource', data.options());
+                            $grid.igGrid('option', 'dataSource', data.options().slice());
                             $grid.igGrid("dataBind");
                         }
                         $grid.ntsGridList('setSelected', data.value());
                         $grid.closest('.ui-iggrid')
                             .addClass('nts-gridlist')
                             .height(data.height);
+                        var selectedList = data.value();
                     };
                     return NtsGridListBindingHandler;
                 }());
@@ -1511,8 +1536,20 @@ var nts;
                         $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
                         $treegrid.on("selectChange", function () {
                             var scrollContainer = $("#" + treeGridId + "_scroll");
-                            var row1 = treeGridId + "_" + $treegrid.igTreeGrid("selectedRows")[0].id;
-                            scrollContainer.scrollTop($("#" + row1).position().top);
+                            var row1 = null;
+                            var selectedRows = $treegrid.igTreeGrid("selectedRows");
+                            if (selectedRows && selectedRows.length > 0)
+                                row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
+                            else {
+                                var selectedRow = $treegrid.igTreeGrid("selectedRow");
+                                if (selectedRow && selectedRow.id) {
+                                    row1 = $treegrid.igTreeGrid("selectedRow").id;
+                                }
+                            }
+                            if (row1) {
+                                var rowidstr = "tr[data-id='" + row1 + "']";
+                                scrollContainer.scrollTop($(rowidstr).position().top);
+                            }
                             //console.log(row1);
                         });
                     };
@@ -1526,7 +1563,7 @@ var nts;
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         // Clear selection.
-                        if (selectedValues && selectedValues.length == 0) {
+                        if (!selectedValues) {
                             $(element).igTreeGridSelection("clearSelection");
                         }
                         // Update datasource.
@@ -1561,7 +1598,6 @@ var nts;
                             $(element).igTreeGridSelection("clearSelection");
                             $(element).igTreeGridSelection("selectRowById", singleValue);
                         }
-                        $(element).trigger("selectChange");
                     };
                     return NtsTreeGridViewBindingHandler;
                 }());
@@ -1917,18 +1953,37 @@ var nts;
                             $swap.find(".ntsSearchButton").css({ "marginLeft": '10px' }).text("Search").click(function () {
                                 var value = $swap.find(".ntsSearchInput").val();
                                 var source = $(grid2Id).igGrid("option", "dataSource");
-                                var notExisted = _.filter(originalSource, function (list) {
+                                var selected = $(grid1Id).ntsGridList("getSelected");
+                                var tempOrigiSour = originalSource.slice();
+                                var findSource;
+                                if (selected.length > 0) {
+                                    var gotoEnd = tempOrigiSour.splice(0, selected[0].index + 1);
+                                    findSource = tempOrigiSour.concat(gotoEnd);
+                                }
+                                else {
+                                    findSource = tempOrigiSour;
+                                }
+                                var notExisted = _.filter(findSource, function (list) {
                                     return _.filter(source, function (data) {
                                         return data[primaryKey] === list[primaryKey];
                                     }).length <= 0;
                                 });
-                                var searchedValues = _.filter(notExisted, function (val) {
+                                var searchedValues = _.find(notExisted, function (val) {
                                     return _.valuesIn(val).filter(function (x) {
                                         return x.toString().indexOf(value) >= 0;
                                     }).length > 0;
                                 });
-                                $(grid1Id).igGrid("option", "dataSource", searchedValues);
-                                $(grid1Id).igGrid("option", "dataBind");
+                                $(grid1Id).ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[primaryKey]] : []);
+                                if (searchedValues !== undefined) {
+                                    if (selected.length === 0 || selected[0].id !== searchedValues[primaryKey]) {
+                                        var scrollContainer = $(grid1Id + "_scrollContainer");
+                                        var current = $(grid1Id).igGrid("selectedRows");
+                                        if (current.length > 0 && scrollContainer.length > 0) {
+                                            $(grid1Id).igGrid("virtualScrollTo", current[0].index === tempOrigiSour.length - 1
+                                                ? current[0].index : current[0].index + 1);
+                                        }
+                                    }
+                                }
                             });
                         }
                         $swap.append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea1" + "/>");
@@ -1964,13 +2019,6 @@ var nts;
                             .addClass('nts-gridlist')
                             .height(height);
                         $grid2.ntsGridList('setupSelecting');
-                        //            $grid2.bind('selectionchanged', () => {
-                        //                let selecteds: Array<any> = $grid2.ntsGridList('getSelected');
-                        //                let selectedIdSet = {};
-                        //                selecteds.forEach(s => { selectedIdSet[s.id] = true; });
-                        //                var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[primaryKey]]);
-                        //                data.value(_.map(selectedOptions, o => o[primaryKey]));
-                        //            });
                         var grid1Id = "#" + $grid1.attr('id');
                         var grid2Id = "#" + $grid2.attr('id');
                         $swap.find(".ntsSwapComponent").css({ display: 'table-cell' });
@@ -2076,12 +2124,12 @@ var nts;
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         var currentSource = $grid1.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSource, data.options())) {
-                            $grid1.igGrid('option', 'dataSource', data.options());
+                            $grid1.igGrid('option', 'dataSource', data.options().slice());
                             $grid1.igGrid("dataBind");
                         }
                         var currentSelected = $grid2.igGrid('option', 'dataSource');
                         if (!_.isEqual(currentSelected, data.value())) {
-                            $grid2.igGrid('option', 'dataSource', data.value());
+                            $grid2.igGrid('option', 'dataSource', data.value().slice());
                             $grid2.igGrid("dataBind");
                         }
                     };
