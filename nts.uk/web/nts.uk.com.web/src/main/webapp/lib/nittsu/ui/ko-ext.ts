@@ -1428,6 +1428,18 @@ module nts.uk.ui.koExtentions {
         }
         return index*height/len;
     }
+    function calculateIndex(options, id, key) {
+        if(!id) return 0;             
+        var index = 0;       
+        for(var i = 0; i < options.length; i++) {
+            var item = options[i];
+            if(item[key] == id) {
+                index = i;
+                break; 
+            } 
+        }
+        return index;
+    }
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1506,8 +1518,10 @@ module nts.uk.ui.koExtentions {
                     }
                 }
                 if(row1 && row1 !== 'undefined') {
-                    //console.log(row1);                  
-                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue, scrollContainer.attr('id')));                            
+                    //console.log(row1);
+                    var topPos = calculateIndex(options, row1, optionsValue);       
+                    $grid.igGrid('virtualScrollTo', topPos);
+                    console.log(topPos);                            
                 }                
             });
         }
