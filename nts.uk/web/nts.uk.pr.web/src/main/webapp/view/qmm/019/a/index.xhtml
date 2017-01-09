@@ -107,10 +107,16 @@
 											<div><input type="button" class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick" /></div>
 											<div data-bind="foreach: details">
 									            <span data-bind="click: itemClick, 
+									            			text: itemAbName,
 									            			attr: {
 									            				id: itemCode,
-									            				class: isRequired() ? 'fixed-button ui-state-disabled li-on-row' : itemAbName() !== '+' ? 'button-with-text li-on-row' : 'li-on-row'}">
-									                <a data-bind="text: itemAbName"></a>
+									            				'data-test': itemCode,
+									            				'data-itemcode': itemCode,
+									            				class: isRequired() 
+									            					? 'fixed-button ui-state-disabled li-on-row context-menu-' + itemCode() 
+									            					: itemAbName() !== '+' 
+									            						? 'button-with-text li-on-row context-menu-' + itemCode()
+									            						: 'li-on-row context-menu-' + itemCode()}">
 									            </span>
 											</div>
 										</div>

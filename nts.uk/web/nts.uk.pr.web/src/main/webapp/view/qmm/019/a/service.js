@@ -43,12 +43,12 @@ var qmm019;
             /**
              * Get list getCategoryFull.
              */
-            function getCategoryFull(layoutCode, startYm, screenModel) {
+            function getCategoryFull(layoutCode, startYm) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
                     .done(function (res) {
                     var result = _.map(res, function (category) {
-                        return new model.Category(category.lines, category.categoryAtr, screenModel);
+                        return new model.Category(category.lines, category.categoryAtr);
                     });
                     dfd.resolve(result);
                 })
@@ -185,16 +185,15 @@ var qmm019;
                 }());
                 model.LayoutMasterDto = LayoutMasterDto;
                 var Category = (function () {
-                    function Category(lines, categoryAtr, screenModel) {
+                    function Category(lines, categoryAtr) {
                         this.hasSetting = false;
                         this.isRemoved = false;
-                        this.screenModel = ko.observable(screenModel);
                         this.lines = ko.observableArray([]);
                         this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
-                                return new model.ItemDetail(detail, screenModel);
+                                return new model.ItemDetail(detail);
                             });
-                            return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition, screenModel);
+                            return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
                         }));
                         this.categoryAtr = categoryAtr;
                         switch (categoryAtr) {
@@ -242,18 +241,18 @@ var qmm019;
                                 $("#group-" + data.categoryAtr).addClass("removed");
                                 self.isRemoved = true;
                                 if (data.categoryAtr === 2)
-                                    self.screenModel().notHasKintai(true);
+                                    screenQmm019().notHasKintai(true);
                                 if (data.categoryAtr === 3)
-                                    self.screenModel().notHasKiji(true);
+                                    screenQmm019().notHasKiji(true);
                             }
-                            self.screenModel().calculateLine();
+                            screenQmm019().calculateLine();
                             return _this;
                         });
                     };
                     Category.prototype.addLine = function () {
                         var _this = this;
                         var self = this;
-                        if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {
+                        if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {
                             return this;
                         }
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml', { title: '明細レイアウトの作成＞＋行追加' }).onClosed(function () {
@@ -268,9 +267,9 @@ var qmm019;
                                     setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                                     distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                                     errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                    alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 }, self.screenModel()));
+                                    alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 }));
                             }
-                            var line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length, self.screenModel());
+                            var line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length);
                             if (selectedCode === "1") {
                                 // cho phep print
                                 line.setPrint(true);
@@ -280,10 +279,10 @@ var qmm019;
                                 line.setPrint(false);
                             }
                             self.lines.push(line);
-                            self.screenModel().calculateLine();
-                            self.screenModel().bindSortable();
-                            self.screenModel().destroySortable();
-                            self.screenModel().bindSortable();
+                            screenQmm019().calculateLine();
+                            screenQmm019().bindSortable();
+                            screenQmm019().destroySortable();
+                            screenQmm019().bindSortable();
                             return _this;
                         });
                     };
@@ -291,10 +290,9 @@ var qmm019;
                 }());
                 model.Category = Category;
                 var Line = (function () {
-                    function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition, screenModel) {
+                    function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition) {
                         this.hasRequiredItem = false;
                         this.isRemoved = false;
-                        this.screenModel = ko.observable(screenModel);
                         this.details = itemDetails;
                         this.autoLineId = autoLineId;
                         this.rowId = categoryAtr + autoLineId;
@@ -334,7 +332,7 @@ var qmm019;
                                     self.isRemoved = true;
                                 }
                             }
-                            self.screenModel().calculateLine();
+                            screenQmm019().calculateLine();
                             return _this;
                         });
                     };
@@ -357,12 +355,12 @@ var qmm019;
                 }());
                 model.Line = Line;
                 var ItemDetail = (function () {
-                    function ItemDetail(itemObject, screenModel) {
+                    function ItemDetail(itemObject) {
                         this.updateItemCode = ko.observable("");
                         this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
-                        this.screenModel = ko.observable(screenModel);
+                        var self = this;
                         this.itemCode = ko.observable(itemObject.itemCode);
                         this.itemAbName = ko.observable(itemObject.itemAbName);
                         if (itemObject.categoryAtr === 0 &&
@@ -391,6 +389,19 @@ var qmm019;
                         this.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
                         this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
                         this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
+                        //Setup context menu for item:
+                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu(".context-menu-" + self.itemCode(), [
+                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", function (ui) {
+                                alert($(ui).data("itemcode"));
+                                self.contextMenu.setVisibleItem(false, "delete");
+                                self.contextMenu.setVisibleItem(true, "undoDelete");
+                            }, "", true),
+                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻る", function (ui) {
+                                alert($(ui).data("itemcode"));
+                                self.contextMenu.setVisibleItem(true, "delete");
+                                self.contextMenu.setVisibleItem(false, "undoDelete");
+                            }, "", false)
+                        ]);
                     }
                     ItemDetail.prototype.itemClick = function (data, event) {
                         var _this = this;
@@ -399,8 +410,8 @@ var qmm019;
                             categoryId: data.categoryAtr(),
                             itemCode: data.itemCode(),
                             isUpdate: data.itemAbName() === "+" ? false : true,
-                            startYm: self.screenModel().layoutMaster().startYm,
-                            stmtCode: self.screenModel().layoutMaster().stmtCode
+                            startYm: screenQmm019().layoutMaster().startYm,
+                            stmtCode: screenQmm019().layoutMaster().stmtCode
                         };
                         nts.uk.ui.windows.setShared('param', param);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { title: '項目の選択・設定', width: 1200, height: 670 }).onClosed(function () {
