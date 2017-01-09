@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition>
+			<div class="wrap-tab">
+				<com:ko-if bind="b_sel_001().selectedRuleCode() === 1">
+					<com:ko-if bind="b_sel_002().selectedRuleCode() === 2">
+						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+						<br/>
+						<div style="width: 69%" class="control-group valign-center">
+							<div id="c_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
+							<div id="c_sel_001" class="ib" data-bind="with: c_sel_001">
+							<div id="combo-box" data-bind="ntsComboBox: {
+										options: itemList,
+										optionsValue: 'code',
+										value: selectedCode,
+										optionsText: 'name',
+										editable: isEditable,
+										enable: isEnable
+										}"></div>
+							</div>
+							<hr/>
+						</div>
+					</com:ko-if>
+					<com:ko-if bind="b_sel_002().selectedRuleCode() === 1">
+						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+						<button id="c_btn_019">aaaa</button>
+						<span id="c_lbl_011">aaaaaa</span>
+					</com:ko-if>
+				</com:ko-if>
+				<com:ko-if bind="b_sel_001().selectedRuleCode() === 2">
+					<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+					<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+					<br/>
+					<div id="c_sel_006" data-bind="ntsTabPanel: { dataSource: c_sel_006, active: selectedTabCSel006}">
+						<div class="tab-content-1">
+							<ui:include src="../d/index.xhtml" />
+						</div>
+						<div class="tab-content-2">
+							
+						</div>
+						<div class="tab-content-3">
+							
+						</div>
+						<div class="tab-content-4">
+							
+						</div>
+						<div class="tab-content-5">
+							
+						</div>
+						<div class="tab-content-6">
+							
+						</div>
+					</div>
+					<br/>
+					<table class="c-table">
+						  <tr>
+						    <td colspan="2" class="td-left">
+						    	<div id="c_lbl_005" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+						    	<button style="font-weight: bold;" id="c_btn_017">←</button>
+						    	<button style="font-weight: bold;" id="c_btn_018">→</button>
+						    	<button id="c_btn_002" class="separate-button">計算式チェック</button>
+						    	<button id="c_btn_003">お試し計算</button>
+						    	<hr/>
+						    </td>
+						    <td class="td-right">
+						    	<div id="c_lbl_006" class="separate-vertical" data-bind="ntsFormLabel: {enable: false}">金額情報の参照月</div>
+						    	<hr/>
+						    </td>
+						  </tr>
+						  <tr>
+						  	<td class="td-left-1">
+						  		<button id="c_btn_004" class="fix-button-operation">+</button>
+						  		<button id="c_btn_005" class="fix-button-operation">-</button><br/>
+						  		<button id="c_btn_006" class="fix-button-operation">×</button>
+						  		<button id="c_btn_007" class="fix-button-operation">÷</button><br/>
+						  		<button id="c_btn_008" class="fix-button-operation">＾</button><br/>
+						  		<button id="c_btn_009" class="fix-button-operation">（</button>
+						  		<button id="c_btn_010" class="fix-button-operation">）</button><br/>
+						  		<button id="c_btn_011" class="fix-button-operation">＜</button>
+						  		<button id="c_btn_012" class="fix-button-operation">＞</button><br/>
+						  		<button id="c_btn_013" class="fix-button-operation">≦</button>
+						  		<button id="c_btn_014" class="fix-button-operation">≧</button><br/>
+						  		<button id="c_btn_015" class="fix-button-operation">＝</button>
+						  		<button id="c_btn_016" class="fix-button-operation">≠</button>
+						  	</td>
+						  	<td class="td-left-2">
+						  		<div data-bind="with: c_inp_003">
+						  			<div id="input-containner">
+										<div id="auto-complete">
+											<select size="5" id="auto-complete-containner" data-bind="visible: showAutoComplete, options: autoComplete, optionsText: 'text', value: autoSelected">
+											</select>
+											<div id="error-content">
+												<div id="error-containner"><span id="error-message"></span></div>
+											</div>
+										</div>
+										<div id="input-content-area" data-bind="html: divValue"></div>
+										<div id="input-area">
+											<TEXTAREA id="input-text" rows="14" cols="78" data-bind="value: textArea"></TEXTAREA>
+										</div>
+									</div>
+						  		</div>
+						  	</td>
+						  	<td class="td-right">
+						  		<div id="c_sel_007" class="ib" data-bind="with: c_sel_007">
+								<div id="combo-box" data-bind="ntsComboBox: {
+											options: itemList,
+											optionsValue: 'code',
+											value: selectedCode,
+											optionsText: 'name',
+											editable: isEditable,
+											enable: isEnable
+											}"></div>
+								</div>
+								<br/>
+								<span id="c_lbl_007">を参照して計算を行う</span><br/>
+								<span class="separate-vertical ib" id="c_lbl_009">※明細データを参照する場合の設定です。</span> <br/>
+								<div id="c_lbl_006" class="separate-vertical" data-bind="ntsFormLabel: {required: true}">端数処理</div>
+								<hr/>
+								<div id="c_sel_008" class="ib" data-bind="with: c_sel_008">
+								<div id="combo-box" data-bind="ntsComboBox: {
+											options: itemList,
+											optionsValue: 'code',
+											value: selectedCode,
+											optionsText: 'name',
+											editable: isEditable,
+											enable: isEnable
+											}"></div>
+								</div>
+						  	</td>
+						  </tr>
+					</table>
+				</com:ko-if>
+			</div>
+		</ui:composition>
+   	</body>
+</html>
