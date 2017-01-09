@@ -6,12 +6,14 @@ __viewContext.ready(function () {
             for (var i = 0; i <= 10; i++) {
                 self.dataList.push({ id: i, name: "Item " + i });
             }
+            $(".userguide").ntsUserGuide();
+            $(".userguide2").ntsUserGuide();
         }
         ScreenModel.prototype.showOverlay = function () {
-            $(".userguide-overlay").show();
+            $(".userguide").ntsUserGuide("show");
         };
-        ScreenModel.prototype.hideOverlay = function () {
-            $(".userguide-overlay").hide();
+        ScreenModel.prototype.showOverlay2 = function () {
+            $(".userguide2").ntsUserGuide("show");
         };
         return ScreenModel;
     }());
