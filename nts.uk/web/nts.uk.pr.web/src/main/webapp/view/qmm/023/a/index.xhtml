@@ -17,27 +17,47 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="aligntLeft">
-					<button id="A_BTN_001">新規</button>
-					<button id="A_BTN_002" class="proceed">登録</button>
+					<button id="A_BTN_001" data-bind="click: refreshLayout">新規</button>
+					<button id="A_BTN_002" class="proceed" data-bind="click: insertData">登録</button>
 					<button id="A_BTN_003">印刷（PDF）</button>
 					<button id="A_BTN_005">マスタ修正ログ</button>
-					<button id="A_BTN_004" class="danger">削除</button>
+					<button id="A_BTN_004" class="danger" data-bind="click: alertDelete">削除</button>
 				</div>
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content">
-					<div class="caret-right caret-background">
-						<div style="width: 500px">
-							<input
-								data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" />
+					<div class="bg-green caret-right caret-background"
+						style="float: left; width: 450px; height: 500px;">
+						<!-- 						<div class="ntsSearchDiv"> -->
+						<!-- 							<input style="float: left; width: 250px; height: 24px;" -->
+						<!-- 								data-bind="ntsSearchBox: {value: searchTerm, items: dataSource, filteredItems: filteredData, fields: ['name', 'code']}" /> -->
+						<!-- 							<button id="SCH_001" class="caret-bottom" -->
+						<!-- 								data-bind="click: nextSearch">検索</button> -->
+						<!-- 						</div> -->
+						<!-- 						<div style="width: 700px" data-bind="ntsSearchBox: { -->
+						<!-- 							comId: 'single-list', -->
+						<!-- 							items: items,  -->
+						<!-- 							filteredItems: filteredData,  -->
+						<!-- 							selected: singleSelectedCode,  -->
+						<!-- 							selectedKey: 'code',  -->
+						<!-- 							childField: 'childs',  -->
+						<!-- 							fields: ['name', 'code']}" />																																														 -->
+						<div class="single-list">
+							<table id="single-list"
+								data-bind="ntsGridList: {
+										width: 400,
+										height: 410,
+										options: items,
+										optionsValue: 'code',
+										columns: columns,
+										multiple: false,
+										value: currentCode
+					}"></table>
 						</div>
-						<div style="width: 200px">
-							<button style="float: left" data-bind="click: nextSearch">Next
-								Search</button>
-						</div>
+
 					</div>
 				</div>
-				<div class="nts-right-content">
+				<div class="nts-right-content" data-bind="with: currentTax">
 					<table class="tableRange">
 						<tr>
 							<td>
@@ -45,15 +65,31 @@
 								</div>
 							</td>
 							<td>
-							<div data-bind="with: texteditor">
-								<input data-bind="ntsTextEditor: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
-								</div></td>
+								<div>
+									<!-- <span data-bind="text: codeValue()"></span> -->
+									<span><input id="INP_002"
+										data-bind="ntsTextEditor: {
+													value: code,
+													constraint: 'ResidenceCode', 
+													enable: $parent.allowEditCode
+													}"/></span>
+									<span><input id="INP_003" data-bind="ntsTextEditor: {
+													value: name,
+													constraint: 'ResidenceCode'}" /></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">限度額</div>
+							</td>
+							<td>
+								<div>
+									<input id="INP_004" data-bind="ntsTextEditor: {
+													value: taxLimit,
+													constraint: 'ResidenceCode'}" />
+								</div>
+							</td>
 						</tr>
 					</table>
 				</div>
