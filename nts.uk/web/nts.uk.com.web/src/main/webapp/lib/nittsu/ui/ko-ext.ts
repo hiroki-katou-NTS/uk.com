@@ -1414,9 +1414,9 @@ module nts.uk.ui.koExtentions {
     /**
      * GridList binding handler
      */
-    function calculateTop(options, id, key) {
+    function calculateTop(options, id, key, scrollContainer) {
         if(!id) return 0;
-        var atomTop  = 23.6363525390625;
+        var height = $('#' + scrollContainer)[0].scrollHeight;
         var len = options.length;
         var index = 0;       
         for(var i = 0; i < len; i++) {
@@ -1426,7 +1426,7 @@ module nts.uk.ui.koExtentions {
                 break; 
             } 
         }
-        return atomTop * i;
+        return index*height/len;
     }
     class NtsGridListBindingHandler implements KnockoutBindingHandler {
 
@@ -1506,9 +1506,8 @@ module nts.uk.ui.koExtentions {
                     }
                 }
                 if(row1 && row1 !== 'undefined') {
-                    //console.log(row1);
-                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
-                    //console.log(calculateTop(options, row1, iggridColumns[0].key));                 
+                    //console.log(row1);                  
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue, scrollContainer.attr('id')));                            
                 }                
             });
         }
@@ -1633,7 +1632,7 @@ module nts.uk.ui.koExtentions {
                     }
                 }
                 if(row1 && row1 !== 'undefined') {                      
-                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));                  
+                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue, scrollContainer.attr('id')));                  
                 }
                 //console.log(row1);
             });
