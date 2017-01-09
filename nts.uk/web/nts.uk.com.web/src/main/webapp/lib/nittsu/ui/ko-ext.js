@@ -217,6 +217,8 @@ var nts;
                                 'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
                                 'width': width, "marginLeft": "0px", "marginRight": "0px"
                             });
+                            var format = option.currencyformat === "JPY" ? '\00a5' : '$';
+                            $input.attr("data-content", option.currencyformat);
                         }
                         else {
                             $input.css({ 'paddingLeft': '12px', 'width': width });
