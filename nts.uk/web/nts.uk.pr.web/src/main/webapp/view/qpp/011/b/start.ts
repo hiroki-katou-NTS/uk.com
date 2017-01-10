@@ -20,8 +20,8 @@ __viewContext.ready(function() {
             var self = this;
             //radiogroup data
             self.RadioItemList = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(2, 'box 2')
+                new BoxModel(1, '本社'),
+                new BoxModel(2, '法定調書出力用会社')
             ]);
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
@@ -37,13 +37,25 @@ __viewContext.ready(function() {
             self.isEditable = ko.observable(true);
             //gridlist data
             this.items = ko.observableArray([
-                new GridItemModel('001', '基本給'),
-                new GridItemModel('150', '役職手当'),
-                new GridItemModel('ABC', '基12本ghj給')
+                new GridItemModel('001', '蝓ｺ譛ｬ邨ｦ'),
+                new GridItemModel('150', '蠖ｹ閨ｷ謇句ｽ�'),
+                new GridItemModel('ABC', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC1', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC2', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC3', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC4', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC5', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC6', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC7', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC8', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC9', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC10', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC11', '蝓ｺ12譛ｬghj邨ｦ'),
+                new GridItemModel('ABC12', '蝓ｺ12譛ｬghj邨ｦ')
             ]);
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 }
+                { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 100 },
+                { headerText: '蜷咲ｧｰ', prop: 'name', width: 150 }
             ]);
             this.gridListCurrentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
@@ -78,6 +90,14 @@ __viewContext.ready(function() {
             this.name = name;
             this.description = description;
         }
-        
+
+    }
+
     this.bind(new ScreenModel());
 });
+function OpenModeSubWindow(url: string, option?: any) {
+    nts.uk.ui.windows.sub.modal(url, option);
+}
+function closeDialog(): any {
+    nts.uk.ui.windows.close();
+}

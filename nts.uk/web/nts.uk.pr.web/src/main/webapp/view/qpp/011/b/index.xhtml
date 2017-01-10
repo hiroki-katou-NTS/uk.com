@@ -7,18 +7,18 @@
 
 <body>
 
-	<ui:composition template="../master/sidebar.xhtml">
+	<ui:composition template="/master/sidebar.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile path="start.js" />
-			<com:stylefile path="main.css" />
+			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" class="active">の間</a></li>
-				<li><a href="#tabpanel-2">操作</a></li>
+				<li><a href="#tabpanel-1" class="active">納付書の印刷</a></li>
+				<li><a href="#tabpanel-2">納付データの出力</a></li>
 				<!-- 	<li><a href="#tabpanel-3">切断</a></li>
 					<li><a href="#tabpanel-4">接続</a></li> -->
 			</ul>
@@ -30,16 +30,15 @@
 		<ui:define name="content">
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">の間</span>
-					<button class="proceed" id="BTN_001">BTN_001</button>
-					<button id="BTN_002">BTN_002</button>
-					<button id="BTN_003">BTN_003</button>
-					<label id="LBL_001">LBL_001</label>
+					<span class="title">納付書の印刷</span>
+					<button class="proceed" id="B_BTN_001">印刷（PDF)</button>
+					<button id="B_BTN_002" onclick="OpenModeSubWindow('/view/qpp/011/f/index.xhtml',{height: 550, width: 740,dialogClass: 'no-close'})" >住民税チェックリスト</button>
+					<button id="B_BTN_003">印刷実行ログ</button>
 				</div>
 				<div class="contents-area">
 					<div id="content">
 						<div style="float: left">
-							<div id="LBL_003" data-bind="ntsFormLabel: {  required: true }">LBL_003</div>
+							<div id="LBL_003" data-bind="ntsFormLabel: {  required: true }">会社選択</div>
 							<div id="SEL_001"
 								data-bind="ntsRadioBoxGroup: {
 							options: RadioItemList,
@@ -61,37 +60,40 @@
 							]}">
 							</div>
 							<div style="clear: both;">
-								<div id="LBL_004" data-bind="ntsFormLabel: {  required: true }">LBL_004</div>
+								<div id="LBL_004" data-bind="ntsFormLabel: {  required: true }">対象年月
+								</div>
 								<input id="INP_001" type="text"></input> <span id="LBL_005"
-									style="margin-bottom: 15px; float: left">LBL_005</span> <span
-									id="LBL_006" style="float: left">LBL_006</span>
+									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
+									id="LBL_006" style="float: left">納付書印刷の設定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
-								<div id="LBL_007" data-bind="ntsFormLabel: {  required: true }">LBL_007</div>
+								<div id="LBL_007" data-bind="ntsFormLabel: {  required: true }">指定年月
+								</div>
 								<input id="INP_002" type="text"></input> <span id="LBL_008"
-									style="float: left">LBL_008</span>
+									style="float: left">指定年月和暦 </span>
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="LBL_009"
-									data-bind="ntsFormLabel: {  required: true }">LBL_009</div>
+									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
 								<input id="INP_003" type="text"></input> <span id="LBL_010"
-									class="floatLeft">LBL_010</span> <span id="LBL_011"
-									style="float: left">LBL_011</span>
+									class="floatLeft">納付期限和暦 </span> <span id="LBL_011"
+									style="float: left">納付先ごとの設定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
-								<div id="LBL_012" data-bind="ntsFormLabel: {  }">LBL_012</div>
-								<button id="BTN_004" class="large">BTN_004</button>
+								<div id="LBL_012" data-bind="ntsFormLabel: {  }">詳細設定</div>
+								<button id="B_BTN_004" class="large"
+									onclick="OpenModeSubWindow('/view/qpp/011/d/index.xhtml',{height: 550, width: 1000,dialogClass: 'no-close'})">納付書詳細設定</button>
 							</div>
 						</div>
 						<div style="float: left; margin-left: 120px;">
-							<div id="LBL_013" data-bind="ntsFormLabel: {  }">LBL_013</div>
-							<div id="LST_001">
+							<div id="LBL_013" data-bind="ntsFormLabel: {  }">住民税納付先</div>
+							<div class="LST_001">
 								<table id="LST_001"
 									data-bind="ntsGridList: {
-								width: 400,
-								height: 110,
+								width: 280,
+								height: 350,
 								options: items,
 								optionsValue: 'code',
 								columns: columns,
@@ -105,17 +107,20 @@
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
-					<span class="title">操作</span>
-					<button class="proceed" id="BTN_001">BTN_001</button>
-					<button id="BTN_002">BTN_002</button>
-					<button id="BTN_003">BTN_003</button>
-					<button id="BTN_004">BTN_004</button>
-					<label id="LBL_001">LBL_001</label>
+					<span class="title">納付データの出力</span>
+					<button class="proceed" id="C_BTN_001">テキスト出力</button>
+					<button id="C_BTN_002"
+						onclick="OpenModeSubWindow('/view/qpp/011/e/index.xhtml',{height: 180, width: 300,dialogClass: 'no-close'})">出力の設定
+					</button>
+					<button id="C_BTN_003"
+						onclick="OpenModeSubWindow('/view/qpp/011/f/index.xhtml',{height: 550, width: 740,dialogClass: 'no-close'})">住民税チェックリスト
+					</button>
+					<button id="C_BTN_004">出力実行ログ</button>
 				</div>
 				<div class="contents-area">
 					<div id="content2">
 						<div style="float: left">
-							<div id="LBL_003" data-bind="ntsFormLabel: {  required: true }">LBL_003</div>
+							<div id="LBL_003" data-bind="ntsFormLabel: {  required: true }">会社選択</div>
 							<div id="SEL_001"
 								data-bind="ntsRadioBoxGroup: {
 							options: RadioItemList,
@@ -137,26 +142,28 @@
 							]}">
 							</div>
 							<div style="clear: both;">
-								<div id="LBL_004" data-bind="ntsFormLabel: {  required: true }">LBL_004</div>
+								<div id="LBL_004" data-bind="ntsFormLabel: {  required: true }">対象年月
+								</div>
 								<input id="INP_001" type="text"></input> <span id="LBL_005"
-									style="margin-bottom: 15px; float: left">LBL_005</span> <span
-									id="LBL_006" style="float: left">LBL_006</span>
+									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
+									id="LBL_006" style="float: left">振込の指定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
-								<div id="LBL_007" data-bind="ntsFormLabel: {  required: true }">LBL_007</div>
+								<div id="LBL_007" data-bind="ntsFormLabel: {  required: true }">指定年月
+								</div>
 								<input id="INP_002" type="text"></input> <span id="LBL_008"
-									style="float: left">LBL_008</span>
+									style="float: left">指定年月和暦 </span>
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="LBL_009"
-									data-bind="ntsFormLabel: {  required: true }">LBL_009</div>
+									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
 								<input id="INP_003" type="text"></input> <span id="LBL_010"
-									class="floatLeft">LBL_010</span>
+									class="floatLeft">納付期限和暦 </span>
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="LBL_011"
-									data-bind="ntsFormLabel: {  required: true }">LBL_011</div>
+									data-bind="ntsFormLabel: {  required: true }">振込元銀行名</div>
 								<div id="SEL_003"
 									data-bind="ntsComboBox: {
 														options: ComboBoxItemList,
@@ -172,7 +179,7 @@
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="LBL_012"
-									data-bind="ntsFormLabel: {  required: true }">LBL_012</div>
+									data-bind="ntsFormLabel: {  required: true }">委託者コード</div>
 								<div id="SEL_004"
 									data-bind="ntsComboBox: {
 														options: ComboBoxItemList,
@@ -188,17 +195,17 @@
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="LBL_013"
-									data-bind="ntsFormLabel: {  required: true }">LBL_013</div>
+									data-bind="ntsFormLabel: {  required: true }">種別コード</div>
 								<input id="INP_004" type="text"></input>
 							</div>
 						</div>
 						<div style="float: left; margin-left: 120px;">
-							<div id="LBL_013" data-bind="ntsFormLabel: {  }">LBL_013</div>
-							<div id="LST_001">
+							<div id="LBL_014" data-bind="ntsFormLabel: {  }">住民税納付先</div>
+							<div class="LST_001">
 								<table id="LST_001"
 									data-bind="ntsGridList: {
-								width: 400,
-								height: 110,
+								width: 280,
+								height: 350,
 								options: items,
 								optionsValue: 'code',
 								columns: columns,

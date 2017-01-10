@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="start.js" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="content-header">
+				<button class="proceed" onclick="submitInfo()" id="BTN_001">印刷（PDF)</button>
+				<button id="BTN_002" onclick="closeDialog()">閉じる</button>
+			</div>
+			<div id="contents-area">
+				<div class="floatLeft" style="width: 300px;">
+					<div class="clearBoth" style="margin: 10px 0px 0px 25px;">
+						<div id="LBL_001" data-bind="ntsFormLabel: {   }">対象年月</div>
+						<label id="LBL_002">LBL_002</label> <label id="LBL_003">LBL_003</label>
+					</div>
+					<div class="clearBoth" style="margin: 10px 0px 0px 25px;">
+						<div id="LBL_004" data-bind="ntsFormLabel: {   }">出力形式</div>
+						<div id="SEL_001" class="cf"
+							data-bind="ntsSwitchButton: {
+					options: roundingRules,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: selectedRuleCode,
+					enable: enable }"></div>
+					</div>
+				</div>
+				<div class="floatLeft"
+					style="width: 300px; margin: 10px 0px 0px 100px;">
+					<div id="LBL_005" data-bind="ntsFormLabel: {   }">住民税納付先</div>
+					<div class="LST_001">
+						<table id="LST_001"
+							data-bind="ntsGridList: {
+								width: 280,
+								height: 350,
+								options: items,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: currentCodeList
+							}"></table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

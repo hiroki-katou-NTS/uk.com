@@ -1,0 +1,46 @@
+#content-header {
+	position: relative;
+	padding: 10px;
+	border-bottom: solid 1px #B1B1B1;
+	width: 100%;
+}
+
+#contents-area {
+	/* height: 440px; */
+	
+}
+
+#LBL_001 {
+	margin-top: 10px;
+}
+
+.LST_001 {
+	padding: 10px 25px;
+}
+
+.floatLeft {
+	float: left;
+}
+
+.fullHeight {
+	height: 100%;
+}
+
+.fullWidth {
+	width: 100%;
+}
+
+#SEL_001 {
+	margin: 10px 0px 0px 12px;
+	display: inline-block;
+}
+
+#SEL_001 button {
+	height: 30px !important;
+}
+
+#BTN_001 {
+	height: 45px;
+	width: 120px;
+	margin-left: 25px;
+}

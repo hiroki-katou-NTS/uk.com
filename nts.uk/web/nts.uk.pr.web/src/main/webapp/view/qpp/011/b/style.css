@@ -1,6 +1,6 @@
 @CHARSET "UTF-8";
 
-#tabpanel-1 #BTN_001 {
+#tabpanel-1 #B_BTN_001 {
 	margin-left: 30px;
 }
 
@@ -13,8 +13,12 @@
 	padding: 25px 10px 0px 0px;
 }
 
-#BTN_004 {
-	margin-left: 30px;
+#B_BTN_004 {
+	margin: 20px 0px 0px 30px;
+}
+
+#C_BTN_004 {
+	
 }
 
 #content, #content2 {
@@ -45,7 +49,8 @@
 	height: 30px;
 }
 
-#LBL_004, #LBL_007, #LBL_009, #content2 #LBL_011, #LBL_012, #LBL_013 {
+#LBL_004, #LBL_007, #LBL_009, #content2 #LBL_011, #LBL_012, #LBL_013,
+	#LBL_014 {
 	float: left;
 	margin-top: 20px;
 }
@@ -92,10 +97,30 @@ input {
 	margin-top: 10px;
 }
 
-#LST_001 {
+.LST_001 {
+	clear: both;
+	float: inherit;
 	margin-top: 10px;
 }
 
 #content2 #SEL_003, #content2 #SEL_004 {
 	margin-top: 24px;
+}
+
+#LBL_013 {
+	clear: both;
+}
+
+#C_BTN_001 {
+	margin-left: 20px;
+}
+
+#C_BTN_002, #C_BTN_003 {
+	margin-left: 10px;
+}
+#C_BTN_004{
+	margin-left: 15px;
+}
+#B_BTN_002 {
+	margin-left: 100px;
 }
