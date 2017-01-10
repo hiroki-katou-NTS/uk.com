@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
@@ -14,50 +14,52 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="E_LBL_001">ナビゲーションメッセージ</div>
-			<table id="health_insurance_rate_table" class="table_border_black">
-				<tbody>
-					<tr>
-						<td class="bg-green">1</td>
-						<td><input class="health-input" value="事業種類名1"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green">2</td>
-						<td><input class="health-input" value="事業種類名2"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green ">3</td>
-						<td><input class="health-input" value="事業種類名3"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green">4</td>
-						<td><input class="health-input" value="事業種類名4"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green ">5</td>
-						<td><input class="health-input" value="事業種類名5"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green ">6</td>
-						<td><input class="health-input" value="事業種類名6"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green ">7</td>
-						<td><input class="health-input" value="事業種類名7"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green ">8</td>
-						<td><input class="health-input" value="事業種類名8"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green ">9</td>
-						<td><input class="health-input" value="事業種類名9"></input></td>
-					</tr>
-					<tr>
-						<td class="bg-green">10</td>
-						<td><input class="health-input" value="事業種類名10"></input></td>
-					</tr>
-				</tbody>
-			</table>
+			<center>
+				<table>
+					<tbody>
+						<tr>
+							<td class="bg-green">1</td>
+							<td><input class="health-input" value="事業種類名1"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green">2</td>
+							<td><input class="health-input" value="事業種類名2"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green ">3</td>
+							<td><input class="health-input" value="事業種類名3"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green">4</td>
+							<td><input class="health-input" value="事業種類名4"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green ">5</td>
+							<td><input class="health-input" value="事業種類名5"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green ">6</td>
+							<td><input class="health-input" value="事業種類名6"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green ">7</td>
+							<td><input class="health-input" value="事業種類名7"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green ">8</td>
+							<td><input class="health-input" value="事業種類名8"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green ">9</td>
+							<td><input class="health-input" value="事業種類名9"></input></td>
+						</tr>
+						<tr>
+							<td class="bg-green">10</td>
+							<td><input class="health-input" value="事業種類名10"></input></td>
+						</tr>
+					</tbody>
+				</table>
+			</center>
 			<hr />
 			<div id="this-functions-area" class="control-group halign-center">
 				<button class="btn-default proceed x-large" id="btn_001">決定</button>

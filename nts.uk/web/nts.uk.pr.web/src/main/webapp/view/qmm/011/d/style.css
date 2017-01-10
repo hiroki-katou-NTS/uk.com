@@ -45,3 +45,24 @@
 .right-content {
 	float: right;
 }
+
+table, td, th {
+	width: 510px;
+}
+
+.w80 {
+	width: 80px;
+}
+
+table {
+	height: 250px;
+}
+
+.ntsRadioBox {
+	display: block;
+	padding-top: 20px;
+}
+
+.control-group {
+	margin-top: 30px;
+}

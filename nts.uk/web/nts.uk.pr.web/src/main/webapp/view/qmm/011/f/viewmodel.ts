@@ -1,15 +1,15 @@
-module qmm011.d {
+module qmm011.f {
     export module viewmodel {
         export class ScreenModel {
-            dsel001: KnockoutObservableArray<any>;
+            fsel001: KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<number>;
             enable: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
-                self.dsel001 = ko.observableArray([
-                    new BoxModel(1, '最新の履歴（N）から引き継ぐ'),
-                    new BoxModel(2, '初めから作成する')
+                self.fsel001 = ko.observableArray([
+                    new BoxModel(1, '履歴を削除する'),
+                    new BoxModel(2, '履歴を修正する')
                 ]);
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
