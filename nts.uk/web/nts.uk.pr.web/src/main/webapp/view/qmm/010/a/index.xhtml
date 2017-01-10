@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="divHeader">
+				<button id="A_BTN_001" class="btnStyle">新規</button>
+				<button class="proceed btnStyle" id="A_BTN_002">登録</button>
+				<button id="A_BTN_003">印刷 (PDF)</button>
+				<button id="A_BTN_004">社会保険事業所から読み込み</button>
+				<button id="A_BTN_007">マスタ修正ログ</button>
+				<button class="danger btnStyle" id="A_BTN_005">削除</button>
+				<label id="A_LBL_001">労働保険事業所の登録</label>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td id="contents-left"  class="bg-green caret-right caret-background">
+							<div data-bind="with: textSearch" class="leftTop">
+								<input id="INP_001"
+									data-bind="ntsTextEditor: {
+										value: valueSearch,
+										constraint: '',
+										option: option,
+										required: true,
+										enable: true}" />
+								<span class="label relative spanSearch">
+									<button id="SCH_001" class="bg-green caret-bottom caret-background" >検索</button> 
+								</span>
+							</div>
+							<div id="search_001">
+							<table id="single-list"
+								data-bind="ntsGridList: {
+								width: 300,
+								height: 500,
+								options: items,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: currentCode,
+								enable: true
+							}"></table>
+							</div>
+						</td>
+						<td id="contents-right">
+							<table id="tableRight">
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true}">
+											<label>コード/名称<br /></label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_002"
+										data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+										<input id="A_INP_003" data-name="name"
+										data-bind="ntsTextEditor: {value: employmentName, 
+																					constraint: 'EmploymentName',
+																					option: textEditorOption,
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_003"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>略名</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_004"
+										class="trFull25" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+										constraint: 'EmploymentCode', 
+										option: textEditorOption, 
+										enable: true}" />
+									</td>
+								</tr>
+
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_004"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>代表者名</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_005"
+										class="trFull25" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_005" data-bind="ntsFormLabel: {required: true}">
+											<label>代表者職位</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_006"
+										class="trFull25" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2"><hr /></td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_006"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>郵便番号</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_006"
+										class="trFull15" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+										<button id="A_BTN_006" class="btnStyle">
+											<label class="labelRed">〒</label>検索
+										</button></td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_007"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>住所1</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_008"
+										class="trFull30" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_008" class="left20">
+											<label>ｶﾅ1</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_009"
+										class="trFull30" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_009"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>住所2</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_010"
+										class="trFull45" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_010" class="left20">
+											<label>ｶﾅ2</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_011"
+										class="trFull45" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_011"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>電話番号</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_012"
+										class="trFull45" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td>雇用保険</td>
+								</tr>
+								<tr>
+									<td colspan="2"><hr /></td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_013"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>時期媒体・e-Gov用</label>
+										</div>
+									</td>
+									<td class="contentsRR"><label id="A_LBL_014">都市区符号
+											:</label><input id="A_INP_013" class="trFull5" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+
+										<label id="A_LBL_014">事業所記号 :</label><input id="A_INP_014"
+										class="trFull5" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_016"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>事務所整理番号</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="A_INP_015"
+										class="trFull5" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+										<label id="A_LBL_017">-</label><input id="A_INP_016"
+										class="trFull5" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+										<label id="A_LBL_018">-</label> <input id="A_INP_017"
+										class="trFull5" data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2"><hr /></td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="A_LBL_019"
+											data-bind="ntsFormLabel: {required: false}">
+											<label>メモ</label>
+										</div>
+									</td>
+									<td class="contentsRR"><div
+											data-bind="with: multilineeditor">
+											<textarea style="width: 440px; height: 100px"
+												data-bind="ntsMultilineEditor: {
+													value: memoValue,
+													constraint: constraint,
+													option: option,
+													enable: true,
+													readonly: false}" />
+										</div></td>
+								</tr>
+							</table>
+
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
