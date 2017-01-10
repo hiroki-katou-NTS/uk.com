@@ -7,12 +7,12 @@
 #functions-area {
 	padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 40px;
+    padding-left: 50px;
 }
 
 .btn-default {
 	margin-left: 10px;
-	min-width: 75px;
+	min-width: 80px;
 }
 
 .inp-default {
@@ -43,19 +43,15 @@
 }
 
 #inp_002 {
-	width: 50px;
 }
 
 #inp_003 {
-	width: 250px;
 }
 
 #inp_004 {
-	width: 70px;
 }
 
 #inp_005 {
-	width: 110px;
 }
 
 #inp_006 textarea {
@@ -75,6 +71,14 @@
 	vertical-align: top;
 }
 
-.control-group > td {
-	padding-bottom: 8px
+.controls-group td {
+	padding-bottom: 6px;
+}
+
+.controls-group td span, .controls-group td > div {
+	float:left;
+}
+
+.controls-group td > * {
+	padding-left: 4px
 }
