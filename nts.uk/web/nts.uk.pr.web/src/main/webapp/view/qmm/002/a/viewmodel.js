@@ -20,7 +20,7 @@ var nts;
                                     self.singleSelectedCode = ko.observable(null);
                                     self.selectedCodes = ko.observableArray([]);
                                     self.currentEra = ko.observable();
-                                    self.texteditor1 = {
+                                    self.A_INP_003 = {
                                         value: ko.observable(''),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -33,7 +33,7 @@ var nts;
                                         enable: ko.observable(false),
                                         readonly: ko.observable(true)
                                     };
-                                    self.texteditor2 = {
+                                    self.A_INP_004 = {
                                         value: ko.observable(''),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -46,7 +46,7 @@ var nts;
                                         enable: ko.observable(true),
                                         readonly: ko.observable(true)
                                     };
-                                    self.texteditor3 = {
+                                    self.A_INP_005 = {
                                         value: ko.observable(''),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -59,7 +59,7 @@ var nts;
                                         enable: ko.observable(true),
                                         readonly: ko.observable(true)
                                     };
-                                    self.multilineeditor = {
+                                    self.A_INP_002 = {
                                         value: ko.observable(''),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
@@ -72,7 +72,7 @@ var nts;
                                         enable: ko.observable(true),
                                         readonly: ko.observable(false)
                                     };
-                                    self.multilineeditor1 = {
+                                    self.A_LBL_006 = {
                                         value: ko.observable(''),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
