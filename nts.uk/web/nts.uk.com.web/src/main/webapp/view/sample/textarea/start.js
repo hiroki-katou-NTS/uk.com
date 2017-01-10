@@ -112,8 +112,25 @@ __viewContext.ready(function () {
                     html += "<span class='editor-line'>";
                 }
                 else {
-                    if (this.checkAlphaOrEmpty(toChar[i])) {
-                        if (toChar[i - 1] === undefined) {
+                    if (toChar[i] === "@") {
+                        html += "<span id='span-" + count + "' class='autocomplete-char'>" + toChar[i] + "</span>";
+                        count++;
+                    }
+                    else if (this.checkJapanese(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                        else if (this.checkJapanese(toChar[i - 1])) {
+                            html = this.insertString(html, toChar[i], html.length - 7);
+                        }
+                        else {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                    }
+                    else if (this.checkAlphaOrEmpty(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
                             html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                             count++;
                         }
@@ -174,6 +191,9 @@ __viewContext.ready(function () {
         ScreenModel.prototype.checkAlphaOrEmpty = function (char) {
             var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
             return !speChar.test(char) || char === " " || char === undefined;
+        };
+        ScreenModel.prototype.checkJapanese = function (char) {
+            return !nts.uk.text.allHalf(char);
         };
         ScreenModel.prototype.testGachChan = function (specialChar) {
             //            var openSpecial = {
