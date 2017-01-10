@@ -12,6 +12,9 @@ __viewContext.ready(function () {
             self.selectedCode = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
+            self.isMulti = ko.observable(true);
+            self.isMulti2 = ko.observable(true);
+            self.isValidate = ko.observable(true);
             $('#list-box').on('selectionChanging', function (event) {
                 console.log('Selecting value:' + event.originalEvent.detail);
             });

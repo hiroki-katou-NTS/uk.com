@@ -30,6 +30,8 @@
 						<button data-bind="click: selectAll">Select All</button>
 						<button data-bind="click: deselectAll">Deselect All</button>
 						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
+						<span data-bind="ntsCheckBox: { checked: isMulti }">Multiple for list 1</span>
+						<span data-bind="ntsCheckBox: { checked: isValidate }">Validate</span>
 						<br />
 						<!-- Multiple is false -->
 						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span><br/>
@@ -41,11 +43,11 @@
 											options: itemList,
 											optionsValue: 'code',
 											optionsText: 'name',
-											multiple: true,
+											multiple: isMulti(),
 											value: selectedCodes,
 											enable: isEnable(),
 											rows: 10,
-											required: true,
+											required: isValidate(),
 											columns: [
 												{ prop: 'code', length: 4 },
 												{ prop: 'name', length: 10 },
@@ -60,7 +62,7 @@
 											value: selectedCode,
 											enable: isEnable(),
 											rows: 5,
-											required: true }"></div>						
+											required: isValidate() }"></div>						
 						<article class="cf">
 							<div class="tabs">
 								<ol>

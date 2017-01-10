@@ -398,6 +398,7 @@ module nts.uk.ui.koExtentions {
             var searchBox = $(element);
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
+            var searchText = (data.enable !== undefined) ? ko.unwrap(data.searchText) : "Search";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -412,7 +413,7 @@ module nts.uk.ui.koExtentions {
             searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
             var $container = $(element);
             $container.append("<input class='ntsSearchBox' type='text' />");
-            $container.append("<button class='search-btn'>Search</button>");
+            $container.append("<button class='search-btn'>" + searchText + "</button>");
             var $input = $container.find("input.ntsSearchBox");
             var $button = $container.find("button.search-btn");
             var nextSearch = function() {
@@ -1139,14 +1140,14 @@ module nts.uk.ui.koExtentions {
             var enable: boolean = ko.unwrap(data.enable);
             var columns: Array<any> = data.columns;
             var rows = data.rows;
-            var required = data.required || false;
+            var required = ko.unwrap(data.required) || false;
             // Container
             var container = $(element);
             container.addClass('ntsListBox ntsControl').data('required', required);
-            // Default value
-            var selectSize = 6;
+            
             container.data("options", options.slice());
             container.data("init", true);
+            container.data("enable", enable);
             // Create select
             container.append('<ol class="nts-list-box"></ol>');
             var selectListBoxContainer = container.find('.nts-list-box');
@@ -1162,7 +1163,6 @@ module nts.uk.ui.koExtentions {
                 selected: function(event, ui) {
                 },
                 stop: function(event, ui) {
-
                     // If not Multi Select.
                     if (!isMultiSelect) {
                         $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
@@ -1171,7 +1171,7 @@ module nts.uk.ui.koExtentions {
 
                     // Add selected value.
                     var data: any = isMultiSelect ? [] : '';
-                    $("li.ui-selected").each(function(index, opt) {
+                    $("li.ui-selected", container).each(function(index, opt) {
                         var optValue = $(opt).data('value');
                         if (!isMultiSelect) {
                             data = optValue;
@@ -1188,32 +1188,35 @@ module nts.uk.ui.koExtentions {
                     //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 },
                 selecting: function(event, ui) {
-                    if (event.shiftKey) {
-                        if ($(ui.selecting).attr("clicked") !== "true") {
-                            var source = container.find("li");
-                            var clicked = _.find(source, function(row) {
-                                return $(row).attr("clicked") === "true";
-                            });
-                            if (clicked === undefined) {
-                                $(ui.selecting).attr("clicked", "true");
-                            } else {
-                                container.find("li").attr("clicked", "");
-                                $(ui.selecting).attr("clicked", "true");
-                                var start = parseInt($(clicked).attr("data-idx"));
-                                var end = parseInt($(ui.selecting).attr("data-idx"));
-                                var max = start > end ? start : end;
-                                var min = start < end ? start : end;
-                                var range = _.filter(source, function(row) {
-                                    var index = parseInt($(row).attr("data-idx"));
-                                    return index >= min && index <= max;
+                    if(isMultiSelect){
+                        if (event.shiftKey) {
+                            if ($(ui.selecting).attr("clicked") !== "true") {
+                                var source = container.find("li");
+                                var clicked = _.find(source, function(row) {
+                                    return $(row).attr("clicked") === "true";
                                 });
-                                $(range).addClass("ui-selected");
+                                if (clicked === undefined) {
+                                    $(ui.selecting).attr("clicked", "true");
+                                } else {
+                                    container.find("li").attr("clicked", "");
+                                    $(ui.selecting).attr("clicked", "true");
+                                    var start = parseInt($(clicked).attr("data-idx"));
+                                    var end = parseInt($(ui.selecting).attr("data-idx"));
+                                    var max = start > end ? start : end;
+                                    var min = start < end ? start : end;
+                                    var range = _.filter(source, function(row) {
+                                        var index = parseInt($(row).attr("data-idx"));
+                                        return index >= min && index <= max;
+                                    });
+                                    $(range).addClass("ui-selected");
+                                }
                             }
+                        } else if (!event.ctrlKey) {
+                            container.find("li").attr("clicked", "");
+                            $(ui.selecting).attr("clicked", "true");
                         }
-                    } else if (!event.ctrlKey) {
-                        container.find("li").attr("clicked", "");
-                        $(ui.selecting).attr("clicked", "true");
                     }
+                    
                 }
             });
 
@@ -1249,7 +1252,8 @@ module nts.uk.ui.koExtentions {
             container.on('validate', (function(e: Event) {
                 // Check empty value
                 var itemsSelected: any = container.data('value');
-                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) 
+                    && container.data("enable")) {
                     selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
                 } else {
                     selectListBoxContainer.ntsError('clear');
@@ -1279,7 +1283,9 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var selectListBoxContainer = container.find('.nts-list-box');
             var maxWidthCharacter = 15;
-
+            var required = ko.unwrap(data.required) || false;
+            container.data('required', required);
+            
             var getOptionValue = item => {
                 if (optionValue === undefined) {
                     return item;
@@ -1374,7 +1380,6 @@ module nts.uk.ui.koExtentions {
                 if (rows && rows > 0) {
                     container.css('height', rows * rowHeight);
                     container.find('.nts-list-box').css('height', rows * rowHeight);
-                    container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                 }
             }
             container.data("options", options.slice());
@@ -1394,6 +1399,7 @@ module nts.uk.ui.koExtentions {
                 selectListBoxContainer.selectable("enable");
                 container.removeClass('disabled');
             }
+            container.data("enable", enable);
 
             if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                 container.trigger('validate');
