@@ -10,21 +10,18 @@ __viewContext.ready(function () {
         constructor() {
             var self = this;
             var temp = [];
-            for(var i = 0; i < 1000; i++){
+            for(var i = 0; i < 100; i++){
                 temp.push(new ItemModel('基本給' + (i + 1), '基本給', "description " + (i + 1)));
             }
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable(null);
-            self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
+            self.isEnable = ko.observable(true);
             
             $('#list-box').on('selectionChanging', function(event) {
                 console.log('Selecting value:' + (<any>event.originalEvent).detail);
-                //Cancel event.
-                //event.preventDefault();
-                //return false;
             })
             $('#list-box').on('selectionChanged', function(event: any) {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
@@ -40,7 +37,7 @@ __viewContext.ready(function () {
                 itemCode = '0' + itemCode;
                 codeLength++;
             }
-            self.itemList.push(new ItemModel(itemCode, self.itemName(), "New Item"));
+            self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
             self.currentCode(newCode);
         }
         
