@@ -1,0 +1,36 @@
+.ntsRadioBox{
+	display: block;
+}
+.sidebar-content-header{
+	background-size:0%;
+}
+.border_none {
+	border: none;
+}
+.no_left_border {
+	border-left: none;
+}
+
+.no_right_border {
+	border-right: none;
+}
+
+.no_top_border {
+	border-top: none;
+}
+
+.no_bottom_border {
+	border-bottom: none;
+}
+.padding_top{
+	padding-top:20px;
+}
+.padding_left{
+	padding-left:10px;
+}
+.margin_bottom{
+	margin_bottom:10px;
+}
+.border_bottom{
+	border-bottom : solid 1px;
+}

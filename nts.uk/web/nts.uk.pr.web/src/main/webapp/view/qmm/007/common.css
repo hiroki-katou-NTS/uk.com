@@ -1,0 +1,19 @@
+.inp-default {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-ms-border-radius: 3px;
+}
+
+.margin-top-bot-20{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.form-default td{
+	padding-bottom: 6px;
+}
+
+.valign-top {
+	vertical-align: top;
+}

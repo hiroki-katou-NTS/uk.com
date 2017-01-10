@@ -1,0 +1,579 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/sidebar.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 900,
+					height : 700
+				};
+			</script>
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="caret.css" />
+			<com:stylefile path="main.css" />
+		</ui:define>
+
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a href="#tabpanel-1" class="active">健康保険</a></li>
+				<li><a href="#tabpanel-2">厚生年金</a></li>
+			</ul>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="tabpanel-1" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">健康保険</span>
+					<button class="proceed">登録</button>
+					<button>印刷(PDF)</button>
+					<button data-bind="click: OpenModalStandardMonthlyPriceHealth">標準報酬月額保険料額表</button>
+					<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
+					<button>マスタ修正登録</button>
+				</div>
+				<div class="contents-area">
+					<!-- left -->
+					<div class="bg-green caret-right caret-background"
+						style="float: left; width: 350px; height: 100%; margin: 20px 50px;">
+						<div style="width: 400px"
+							data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+						<button data-bind="click: OpenModalSubWindow">履歴追加</button>
+						<button data-bind="click: OpenModalConfigHistory"
+							style="float: right;" class="danger">履歴編集</button>
+						<div style="padding-left: 25px; padding-top: 5px;">
+							<table id="treegrid2"
+								data-bind="ntsTreeGridView:{
+										width: 300,
+										height: 400,
+										options: dataSource,
+										selectedValues: selectedCodes,								
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,										
+										showCheckBox: true}"
+								class="cf">
+							</table>
+							`
+						</div>
+					</div>
+					<!-- right -->
+					<div class="right">
+						<table class="border_none">
+							<tr>
+								<td class="border_none"><div style="margin-top: 20px;"
+										data-bind="ntsFormLabel: {required: true}">期間</div></td>
+								<td class="border_none"><div
+										data-bind="with: health_inp_002">
+										<input
+											data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+									</div></td>
+								<td class="border_none">(平成28年04月) ~ 9999/12 <br /></td>
+							</tr>
+							<tr>
+								<td class="border_none"><div
+										style="margin-top: 20px; float: left;"
+										data-bind="ntsFormLabel: {}">自動計算</div></td>
+								<td class="border_none"><div
+										style="margin-top: 20px; float: left;" class="cf"
+										data-bind="ntsSwitchButton: {
+							options: roundingRules,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedRuleCode,
+							enable: enable }"></div></td>
+								<td class="border_none"><button
+										style="margin-left: 20px; margin-top: 20px; float: left;">?</button>
+								</td>
+							</tr>
+						</table>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<div>健康保険料率</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<table id="health_insurance_rate_table" class="table_border_black">
+							<tbody>
+								<tr class="bg-green">
+									<th colspan="2" rowspan="2"></th>
+									<th class="text_center" colspan="2">給与</th>
+									<th class="text_center" colspan="2">賞与</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center"
+										colspan="2">健康保険率(介護なし)</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_003">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_004">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_005">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_006">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center"
+										colspan="2">健康保険率(介護ある)</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_007">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_008">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_009">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_010">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+								</tr>
+								<tr>
+									<td class="empty-col bg-green no_right_border no_bottom_border"></td>
+									<td class="bg-green text_center no_left_border no_right_border">健康保険の内訳</td>
+									<td colspan="4" class="bg-green no_left_border"></td>
+								</tr>
+								<tr>
+									<td class="empty-col bg-green no_top_border no_bottom_border "></td>
+									<td class="bg-green text_center">特定保険率</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_011">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_012">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_013">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_014">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+								</tr>
+								<tr>
+									<td class="empty-col bg-green no_top_border no_bottom_border"></td>
+									<td class="bg-green text_center">基本保険率</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_015">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_016">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_017">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+									<td><div class="float_left"
+											data-bind="with: health_inp_018">
+											<input
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>/1000</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="pad_top_10">健康保険端数区分</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<table id="health_insurance_round" class="table_border_black">
+							<tbody>
+								<tr class="bg-green">
+									<th class="empty-col" rowspan="3"></th>
+									<th class="text_center" colspan="2">給与</th>
+									<th class="text_center" colspan="2">賞与</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+								</tr>
+								<tr>
+									<td><div class="rounding_width" id="combo-box-1"
+											data-bind="ntsComboBox: {options: comboBox1,
+												optionsValue: 'code',
+												value: comboBox1SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div>
+									</td>
+									<td><div class="rounding_width" id="combo-box-2"
+											data-bind="ntsComboBox: {options: comboBox2,
+												optionsValue: 'code',
+												value: comboBox2SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+									<td><div class="rounding_width" id="combo-box-3"
+											data-bind="ntsComboBox: {options: comboBox3,
+												optionsValue: 'code',
+												value: comboBox3SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+									<td><div class="rounding_width" id="combo-box-4"
+											data-bind="ntsComboBox: {options: comboBox4,
+												optionsValue: 'code',
+												value: comboBox4SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="pad_top_10">賞与限度額</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<div style="float: left;" data-bind="ntsFormLabel: {}">健康保険累計限度額</div>
+						<div data-bind="with: healthTotal">
+							<input
+								data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="tabpanel-2" role="tabpanel">
+				<div class="sidebar-content-header">
+					<span class="title">厚生年金</span>
+					<button class="proceed">登録</button>
+					<button>印刷(PDF)</button>
+					<button data-bind="click: OpenModalStandardMonthlyPricePension">標準報酬月額保険料額表</button>
+					<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
+					<button>マスタ修正登録</button>
+				</div>
+				<div class="contents-area">
+					<!-- left -->
+					<div class="bg-green caret-right caret-background"
+						style="float: left; width: 350px; height: 100%; margin: 20px 50px;">
+						<div style="width: 400px"
+							data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+						<button data-bind="click: OpenModalSubWindow">履歴追加</button>
+						<button data-bind="click: OpenModalConfigHistory"
+							style="float: right;" class="danger">履歴編集</button>
+						<div style="padding-left: 25px; padding-top: 5px;">
+							<table id="treegrid2"
+								data-bind="ntsTreeGridView:{
+										width: 300,
+										height: 400,
+										options: dataSource,
+										selectedValues: selectedCodes,								
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,										
+										showCheckBox: true}"
+								class="cf">
+							</table>
+							`
+						</div>
+					</div>
+					<!-- right -->
+					<div class="right">
+						<table id="pension_detail_table" class="border_none">
+							<tr>
+								<td class="border_none">
+									<div style="margin-top: 20px;"
+										data-bind="ntsFormLabel: {required: true}">期間</div>
+								</td>
+								<td class="border_none"><div
+										data-bind="with: pension_inp_002">
+										<input
+											data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+									</div></td>
+								<td class="border_none">(平成28年04月) ~ 9999/12</td>
+							</tr>
+							<tr>
+								<td class="border_none"><div
+										style="margin-top: 20px; float: left;"
+										data-bind="ntsFormLabel: {}">厚生年金基金加入</div></td>
+								<td colspan="2" class="border_none"><div
+										style="margin-top: 20px; float: left;" class="cf"
+										data-bind="ntsSwitchButton: {
+							options: pensionFundInputOptions,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: pensionFundInputSelectedCode,
+							enable: pensionFundInputEnable }"></div></td>
+							</tr>
+							<tr>
+								<td class="border_none"><div
+										style="margin-top: 20px; float: left;"
+										data-bind="ntsFormLabel: {}">自動計算</div></td>
+								<td class="border_none"><div
+										style="margin-top: 20px; float: left;" class="cf"
+										data-bind="ntsSwitchButton: {
+							options: pensionCalculateOptions,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: pensionCalculateSelectedCode,
+							enable: pensionCalculateEnable }"></div></td>
+								<td class="border_none"><button
+										style="margin-left: 20px; margin-top: 20px; float: left;">?</button></td>
+							</tr>
+						</table>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<div>厚生年金保険料率</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<table id="expand-example">
+							<tbody>
+								<tr class="bg-green">
+									<th colspan="2" rowspan="2"></th>
+									<th class="text_center" colspan="2">給与</th>
+									<th class="text_center" colspan="2">賞与</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center"
+										colspan="2">男子負担率（第1種）</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center"
+										colspan="2">女子負担率（第2種）</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center"
+										colspan="2">坑内員負担率（第3種）</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div>基金用</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<table id="expand-example">
+							<tbody>
+								<tr class="bg-green">
+									<th colspan="2" rowspan="2"></th>
+									<th class="text_center" colspan="2">給与</th>
+									<th class="text_center" colspan="2">賞与</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+								</tr>
+								<tr>
+									<td rowspan="2"
+										class="bg-green tbl_health_insurance_rate text_center">男子負担率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td rowspan="2"
+										class="bg-green tbl_health_insurance_rate text_center">女子負担率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td rowspan="2"
+										class="bg-green tbl_health_insurance_rate text_center">坑内員負担率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+									<td><input class="health-input" value="40.900"></input>/1000</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+						<div class="pad_top_10">厚生年金端数区分</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<table id="health_insurance_round">
+							<tbody>
+								<tr class="bg-green">
+									<th class="empty-col" rowspan="3"></th>
+									<th class="text_center" colspan="2">給与</th>
+									<th class="text_center" colspan="2">賞与</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+									<th class="text_center">個人負担率</th>
+									<th class="text_center">事業主負担率</th>
+								</tr>
+								<tr>
+									<td><div class="rounding_width" id="combo-box-5"
+											data-bind="ntsComboBox: {options: comboBox5,
+												optionsValue: 'code',
+												value: comboBox5SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div>
+									</td>
+									<td><div class="rounding_width" id="combo-box-6"
+											data-bind="ntsComboBox: {options: comboBox6,
+												optionsValue: 'code',
+												value: comboBox6SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+									<td><div class="rounding_width" id="combo-box-7"
+											data-bind="ntsComboBox: {options: comboBox7,
+												optionsValue: 'code',
+												value: comboBox7SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+									<td><div class="rounding_width" id="combo-box-8"
+											data-bind="ntsComboBox: {options: comboBox8,
+												optionsValue: 'code',
+												value: comboBox8SelectedCode,
+												optionsText: 'name',
+												enable:true,
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="pad_top_10">賞与限度額</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<div style="float: left;" data-bind="ntsFormLabel: {}">健康保険累計限度額</div>
+						<div>
+							<div data-bind="with: pensionCurrency">
+								<input
+									data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							</div>
+						</div>
+						<br />
+						<div class="pad_top_10">子ども。子育て</div>
+						<div class="hr_width">
+							<hr />
+						</div>
+						<div style="float: left;"
+							data-bind="ntsFormLabel: {}">事業主負担率</div>
+						<div style="display:inline-flex;">
+							<div data-bind="with: pensionOwnerRate">
+								<input
+									data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							</div>
+							/1000
+						</div>
+					</div>
+					<!-- end right -->
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

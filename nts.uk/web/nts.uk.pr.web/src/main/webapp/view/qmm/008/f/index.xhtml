@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 550,
+					height : 350
+				};
+			</script>
+<!-- 			<com:stylefile path="../catalog/catalog.css" /> -->
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+<!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="content" class="cf">
+					<table>
+						<tr>
+							<td colspan="2">履歴情報を確認し、削除またはしゅうせいを行ってださい。</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">コード/名称</div>
+							</td>
+							<td colspan="3" >name -code</td>
+						</tr>
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {required: true}">編集方法の選択</div>
+							</td>
+							<td colspan="3" >
+								<div id="first-list"
+									data-bind="ntsRadioBoxGroup: {options: listOptions,
+											optionsText: 'name',
+											value: selectedValue}">
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td>
+								<div style="margin-top: 20px;" data-bind="ntsFormLabel: {}">期間：</div>
+							</td>
+							<td><div data-bind="with: inp_001">
+									<input
+										data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+								</div></td>
+								<td>~ 9999/12</td>
+						</tr>
+					</table>
+					<br />
+					<div>
+						<hr />
+					</div>
+					<button class="proceed">決定</button><button data-bind="click: CloseModalSubWindow" style="float:right;" >キャンセル</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -36,7 +36,7 @@ var nts;
                                         new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
                                         new Node('0010', 'Beijing China', []),
                                         new Node('0011', 'London United Kingdom', []),
-                                        new Node('0012', '', [])]);
+                                        new Node('0012', 'USA', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])])]);
                                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "childs"));
                                     self.singleSelectedCode = ko.observable(null);
                                     self.selectedCodes = ko.observableArray([]);
@@ -116,7 +116,7 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.goToB = function () {
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 400 }).setTitle('履歴の追加');
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 450 }).setTitle('履歴の追加');
                                 };
                                 ScreenModel.prototype.goToC = function () {
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { dialogClass: 'no-close', height: 450, width: 560 }).setTitle('履歴の編集');

@@ -52,7 +52,7 @@ module nts.uk.pr.view.qmm007.a {
                     new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
                     new Node('0010', 'Beijing China', []),
                     new Node('0011', 'London United Kingdom', []),
-                    new Node('0012', '', [])]);
+                    new Node('0012', 'USA', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])])]);
 
                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "childs"));
                 self.singleSelectedCode = ko.observable(null);
@@ -146,7 +146,7 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             goToB() {
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 400 }).setTitle('履歴の追加');
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 450 }).setTitle('履歴の追加');
             }
 
             goToC() {

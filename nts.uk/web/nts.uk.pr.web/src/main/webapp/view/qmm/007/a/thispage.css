@@ -1,26 +1,10 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	/*  width: 1000px; */
-}
-
 #functions-area {
 	padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 50px;
     padding-right: 20px;
-}
-
-.btn-default {
-	margin-left: 10px;
-	min-width: 80px;
-}
-
-.inp-default {
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-ms-border-radius: 3px;
 }
 
 #left-content {
@@ -44,18 +28,6 @@
 	width: 150px;
 }
 
-#inp_002 {
-}
-
-#inp_003 {
-}
-
-#inp_004 {
-}
-
-#inp_005 {
-}
-
 #inp_006 textarea {
 	width: 380px;
 	height: 120px;
@@ -69,18 +41,7 @@
 	margin-bottom: 3px !important;
 }
 
-.valign-top {
-	vertical-align: top;
-}
-
-.controls-group td {
-	padding-bottom: 6px;
-}
-
-.controls-group td span, .controls-group td > div {
-	float:left;
-}
-
-.controls-group td > * {
-	padding-left: 4px
+.btn-default {
+	margin-left: 10px;
+	min-width: 80px;
 }
