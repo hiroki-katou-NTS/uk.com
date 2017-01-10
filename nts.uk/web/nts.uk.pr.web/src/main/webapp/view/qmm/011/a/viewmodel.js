@@ -4,6 +4,7 @@ var qmm011;
     (function (a) {
         var viewmodel;
         (function (viewmodel) {
+            var option = nts.uk.ui.option;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
@@ -28,6 +29,12 @@ var qmm011;
                     self.bsel004 = valuebsel001;
                     self.bsel005 = valuebsel001;
                     self.bsel006 = valuebsel001;
+                    self.binp001 = ko.observable('');
+                    self.binp002 = ko.observable('40.009');
+                    self.binp003 = ko.observable('40.009');
+                    self.binp004 = ko.observable('40.009');
+                    self.binp005 = ko.observable('40.009');
+                    self.binp006 = ko.observable('40.009');
                     self.bsel001Code = ko.observable(null);
                     self.bsel002Code = ko.observable(null);
                     self.bsel003Code = ko.observable(null);
@@ -69,9 +76,21 @@ var qmm011;
                     self.csel0017Code = ko.observable(null);
                     self.csel0018Code = ko.observable(null);
                     self.csel0019Code = ko.observable(null);
+                    self.cinp001 = ko.observable(null);
+                    self.cinp002 = ko.observable('40.009');
+                    self.cinp003 = ko.observable('40.009');
+                    self.cinp004 = ko.observable('40.009');
+                    self.cinp005 = ko.observable('40.009');
+                    self.cinp006 = ko.observable('40.009');
+                    self.cinp007 = ko.observable('40.009');
+                    self.cinp008 = ko.observable('40.009');
+                    self.cinp009 = ko.observable('40.009');
+                    self.cinp010 = ko.observable('40.009');
+                    self.cinp011 = ko.observable('40.009');
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable(2);
                     self.isEnable = ko.observable(true);
+                    self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                 }
                 return ScreenModel;
             }());

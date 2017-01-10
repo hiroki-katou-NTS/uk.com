@@ -1,10 +1,13 @@
 module qmm010.b {
+    import option = nts.uk.ui.option;
     export module viewmodel {
         export class ScreenModel {
             items: KnockoutObservableArray<viewmodel.ItemModel>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
+            binp001: KnockoutObservable<string>;
+            textEditorOption: KnockoutObservable<any>;
 
             constructor() {
                 this.items = ko.observableArray([
@@ -19,6 +22,8 @@ module qmm010.b {
                 ]);
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
+                this.binp001 = ko.observable('');
+                this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             }
             selectSomeItems() {
                 this.currentCode('150');
@@ -44,5 +49,5 @@ module qmm010.b {
             }
         }
     }
-     
+
 }

@@ -21,8 +21,12 @@
 					<hr />
 					<div id="B_LBL_001" data-bind="ntsFormLabel: {}">労働保険事業所の登録</div>
 					<br />
-					<div >
-						<input id="inp_001" />
+					<div>
+						<input id="B_INP_001" data-name="code"
+							data-bind="ntsTextEditor: {value: binp001, 
+							constraint: 'B_INP_001', 
+							option: textEditorOption, 
+							enable: true}" />
 						<button id="B_SCH_001" class="caret-bottom caret-background">検索</button>
 					</div>
 					<table id="single-list"

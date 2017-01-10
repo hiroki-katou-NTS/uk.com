@@ -3,7 +3,24 @@ module qmm010.a.viewmodel {
 
     export class ScreenModel {
         textSearch: any;
-        employmentCode: KnockoutObservable<string>;
+        ainp001: KnockoutObservable<string>;
+        ainp002: KnockoutObservable<string>;
+        ainp003: KnockoutObservable<string>;
+        ainp004: KnockoutObservable<string>;
+        ainp005: KnockoutObservable<string>;
+        ainp006: KnockoutObservable<string>;
+        ainp007: KnockoutObservable<string>;
+        ainp008: KnockoutObservable<string>;
+        ainp009: KnockoutObservable<string>;
+        ainp010: KnockoutObservable<string>;
+        ainp011: KnockoutObservable<string>;
+        ainp012: KnockoutObservable<string>;
+        ainp013: KnockoutObservable<string>;
+        ainp014: KnockoutObservable<string>;
+        ainp015: KnockoutObservable<string>;
+        ainp016: KnockoutObservable<string>;
+        ainp017: KnockoutObservable<string>;
+        ainp018: KnockoutObservable<string>;
         employmentName: KnockoutObservable<string>;
         textEditorOption: KnockoutObservable<any>;
         items: KnockoutObservableArray<viewmodel.ItemModel>;
@@ -12,7 +29,24 @@ module qmm010.a.viewmodel {
         currentCodeList: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
-            self.employmentCode = ko.observable("");
+            self.ainp001 = ko.observable("");
+            self.ainp002 = ko.observable("");
+            self.ainp003 = ko.observable("");
+            self.ainp004 = ko.observable("");
+            self.ainp005 = ko.observable("");
+            self.ainp006 = ko.observable("");
+            self.ainp007 = ko.observable("");
+            self.ainp008 = ko.observable("");
+            self.ainp009 = ko.observable("");
+            self.ainp010 = ko.observable("");
+            self.ainp011 = ko.observable("");
+            self.ainp012 = ko.observable("");
+            self.ainp013 = ko.observable("");
+            self.ainp014 = ko.observable("");
+            self.ainp015 = ko.observable("");
+            self.ainp016 = ko.observable("");
+            self.ainp017 = ko.observable("");
+            self.ainp018 = ko.observable("");
             self.employmentName = ko.observable("");
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             self.textSearch = {

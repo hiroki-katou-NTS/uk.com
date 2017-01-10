@@ -8,7 +8,24 @@ var qmm010;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.employmentCode = ko.observable("");
+                    self.ainp001 = ko.observable("");
+                    self.ainp002 = ko.observable("");
+                    self.ainp003 = ko.observable("");
+                    self.ainp004 = ko.observable("");
+                    self.ainp005 = ko.observable("");
+                    self.ainp006 = ko.observable("");
+                    self.ainp007 = ko.observable("");
+                    self.ainp008 = ko.observable("");
+                    self.ainp009 = ko.observable("");
+                    self.ainp010 = ko.observable("");
+                    self.ainp011 = ko.observable("");
+                    self.ainp012 = ko.observable("");
+                    self.ainp013 = ko.observable("");
+                    self.ainp014 = ko.observable("");
+                    self.ainp015 = ko.observable("");
+                    self.ainp016 = ko.observable("");
+                    self.ainp017 = ko.observable("");
+                    self.ainp018 = ko.observable("");
                     self.employmentName = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.textSearch = {

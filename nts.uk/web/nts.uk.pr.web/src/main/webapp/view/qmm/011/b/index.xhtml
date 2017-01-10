@@ -30,8 +30,13 @@
 								</div>
 							</td>
 							<td class="contentsRR"><input id="B_INP_001"
-								class="trFull15" /> <label id="B_LBL_002"> ~ </label> <label
-								id="B_LBL_003"> 終了年月 </label></td>
+								class="trFull15" data-name="code"
+								data-bind="ntsTextEditor: {value: binp001, 
+									constraint: 'B_INP_001', 
+									option: textEditorOption, 
+									enable: true}" />
+								<label id="B_LBL_002"> ~ </label> <label id="B_LBL_003">
+									終了年月 </label></td>
 						</tr>
 						<tr>
 							<td colspan="2"><hr /></td>
@@ -43,14 +48,19 @@
 									<tbody>
 										<tr class="bg-green">
 											<th></th>
-											<th class="text_center">A</th>
+											<th class="text_center" width="170">A</th>
 											<th class="text_center">B</th>
-											<th class="text_center">C</th>
+											<th class="text_center" width="170">C</th>
 											<th class="text_center">D</th>
 										</tr>
 										<tr>
 											<td class="bg-green text_center">E</td>
-											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td><input class="health-input" data-name="code"
+												data-bind="ntsTextEditor: {value: binp002, 
+													constraint: 'B_INP_002', 
+													option: textEditorOption, 
+													enable: true}">
+											</input>/1000</td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
@@ -64,7 +74,14 @@
 														{ prop: 'name', length: 10 },
 													]}"></div>
 											</td>
-											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<input class="health-input" 
+													data-name="code"
+													data-bind="ntsTextEditor: {value: binp003, 
+													constraint: 'B_INP_003', 
+													option: textEditorOption, 
+													enable: true}">
+												</input>/1000</td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
@@ -97,7 +114,14 @@
 													]}">
 												</div>
 											</td>
-											<td><input class="health-input" value="40.900"></input>/1000</td>
+												<td>
+													<input class="health-input" 
+														data-name="code"
+														data-bind="ntsTextEditor: {value: binp004, 
+														constraint: 'B_INP_004', 
+														option: textEditorOption, 
+														enable: true}">
+													</input>/1000</td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
@@ -115,7 +139,14 @@
 										</tr>
 										<tr>
 											<td class="bg-green text_center">G</td>
-											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<input class="health-input" 
+													data-name="code"
+													data-bind="ntsTextEditor: {value: binp005, 
+													constraint: 'B_INP_005', 
+													option: textEditorOption, 
+													enable: true}">
+												</input>/1000</td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
@@ -130,7 +161,14 @@
 													]}">
 												</div>
 											</td>
-											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<input class="health-input" 
+													data-name="code"
+													data-bind="ntsTextEditor: {value: binp006, 
+													constraint: 'B_INP_006', 
+													option: textEditorOption, 
+													enable: true}">
+												</input>/1000</td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {

@@ -2,6 +2,7 @@ var qmm010;
 (function (qmm010) {
     var b;
     (function (b) {
+        var option = nts.uk.ui.option;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
@@ -18,6 +19,8 @@ var qmm010;
                     ]);
                     this.currentCode = ko.observable();
                     this.currentCodeList = ko.observableArray([]);
+                    this.binp001 = ko.observable('');
+                    this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                 }
                 ScreenModel.prototype.selectSomeItems = function () {
                     this.currentCode('150');

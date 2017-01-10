@@ -1,5 +1,5 @@
 module qmm011.a.viewmodel {
-
+    import option = nts.uk.ui.option;
     export class ScreenModel {
         blst001: KnockoutObservableArray<BItemModelLST001>;
         blstsel001: KnockoutObservableArray<string>;
@@ -15,6 +15,12 @@ module qmm011.a.viewmodel {
         bsel004Code: KnockoutObservable<string>;
         bsel005Code: KnockoutObservable<string>;
         bsel006Code: KnockoutObservable<string>;
+        binp001: KnockoutObservable<string>;
+        binp002: KnockoutObservable<string>;
+        binp003: KnockoutObservable<string>;
+        binp004: KnockoutObservable<string>;
+        binp005: KnockoutObservable<string>;
+        binp006: KnockoutObservable<string>;
         clst001: KnockoutObservableArray<CItemModelLST001>;
         clstsel001: KnockoutObservableArray<string>;
         csel001: KnockoutObservableArray<CItemModelSEL001>;
@@ -37,9 +43,21 @@ module qmm011.a.viewmodel {
         csel0017Code: KnockoutObservable<string>;
         csel0018Code: KnockoutObservable<string>;
         csel0019Code: KnockoutObservable<string>;
+        cinp001: KnockoutObservable<string>;
+        cinp002: KnockoutObservable<string>;
+        cinp003: KnockoutObservable<string>;
+        cinp004: KnockoutObservable<string>;
+        cinp005: KnockoutObservable<string>;
+        cinp006: KnockoutObservable<string>;
+        cinp007: KnockoutObservable<string>;
+        cinp008: KnockoutObservable<string>;
+        cinp009: KnockoutObservable<string>;
+        cinp010: KnockoutObservable<string>;
+        cinp011: KnockoutObservable<string>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         isEnable: KnockoutObservable<boolean>;
+        textEditorOption: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -64,6 +82,12 @@ module qmm011.a.viewmodel {
             self.bsel004 = valuebsel001;
             self.bsel005 = valuebsel001;
             self.bsel006 = valuebsel001;
+            self.binp001 = ko.observable('');
+            self.binp002 = ko.observable('40.009');
+            self.binp003 = ko.observable('40.009');
+            self.binp004 = ko.observable('40.009');
+            self.binp005 = ko.observable('40.009');
+            self.binp006 = ko.observable('40.009');
             self.bsel001Code = ko.observable(null);
             self.bsel002Code = ko.observable(null);
             self.bsel003Code = ko.observable(null);
@@ -105,9 +129,21 @@ module qmm011.a.viewmodel {
             self.csel0017Code = ko.observable(null);
             self.csel0018Code = ko.observable(null);
             self.csel0019Code = ko.observable(null);
+            self.cinp001 = ko.observable(null);
+            self.cinp002 = ko.observable('40.009');
+            self.cinp003 = ko.observable('40.009');
+            self.cinp004 = ko.observable('40.009');
+            self.cinp005 = ko.observable('40.009');
+            self.cinp006 = ko.observable('40.009');
+            self.cinp007 = ko.observable('40.009');
+            self.cinp008 = ko.observable('40.009');
+            self.cinp009 = ko.observable('40.009');
+            self.cinp010 = ko.observable('40.009');
+            self.cinp011 = ko.observable('40.009');
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(2);
             self.isEnable = ko.observable(true);
+            self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
         }
     }
 
