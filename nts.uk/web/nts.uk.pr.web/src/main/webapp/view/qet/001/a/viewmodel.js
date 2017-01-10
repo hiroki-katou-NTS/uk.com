@@ -6,7 +6,7 @@ var qet001;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.targetYear = ko.observable(null);
+                    this.targetYear = ko.observable(2016);
                     this.isAggreatePreliminaryMonth = ko.observable(true);
                     this.layoutSelected = ko.observable(LayoutOutput.WAGE_LEDGER);
                     this.isPageBreakIndicator = ko.observable(false);
