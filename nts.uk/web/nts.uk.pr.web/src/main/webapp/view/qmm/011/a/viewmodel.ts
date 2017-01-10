@@ -3,6 +3,18 @@ module qmm011.a.viewmodel {
     export class ScreenModel {
         blst001: KnockoutObservableArray<BItemModelLST001>;
         blstsel001: KnockoutObservableArray<string>;
+        bsel001: KnockoutObservableArray<BItemModelSEL001>;
+        bsel002: KnockoutObservableArray<BItemModelSEL001>;
+        bsel003: KnockoutObservableArray<BItemModelSEL001>;
+        bsel004: KnockoutObservableArray<BItemModelSEL001>;
+        bsel005: KnockoutObservableArray<BItemModelSEL001>;
+        bsel006: KnockoutObservableArray<BItemModelSEL001>;
+        bsel001Code: KnockoutObservable<string>;
+        bsel002Code: KnockoutObservable<string>;
+        bsel003Code: KnockoutObservable<string>;
+        bsel004Code: KnockoutObservable<string>;
+        bsel005Code: KnockoutObservable<string>;
+        bsel006Code: KnockoutObservable<string>;
         clst001: KnockoutObservableArray<CItemModelLST001>;
         clstsel001: KnockoutObservableArray<string>;
         csel001: KnockoutObservableArray<CItemModelSEL001>;
@@ -37,8 +49,27 @@ module qmm011.a.viewmodel {
                 new BItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
                 new BItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
             ]);
+            var valuebsel001 = ko.observableArray([
+                new BItemModelSEL001("0", "切り捨て"),
+                new BItemModelSEL001("1", "切り上げ"),
+                new BItemModelSEL001("2", "四捨五入"),
+                new BItemModelSEL001("3", "五捨六入"),
+                new BItemModelSEL001("4", "五捨五超入")
+            ]);
             self.blst001 = valueblst001;
             self.blstsel001 = ko.observableArray([]);
+            self.bsel001 = valuebsel001;
+            self.bsel002 = valuebsel001;
+            self.bsel003 = valuebsel001;
+            self.bsel004 = valuebsel001;
+            self.bsel005 = valuebsel001;
+            self.bsel006 = valuebsel001;
+            self.bsel001Code = ko.observable(null);
+            self.bsel002Code = ko.observable(null);
+            self.bsel003Code = ko.observable(null);
+            self.bsel004Code = ko.observable(null);
+            self.bsel005Code = ko.observable(null);
+            self.bsel006Code = ko.observable(null);
             var valueclst001 = ko.observableArray([
                 new CItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
                 new CItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
@@ -63,7 +94,7 @@ module qmm011.a.viewmodel {
             self.csel0017 = valuecsel001;
             self.csel0018 = valuecsel001;
             self.csel0019 = valuecsel001;
-            self.clstsel001=ko.observableArray([]);
+            self.clstsel001 = ko.observableArray([]);
             self.csel001Code = ko.observable(null);
             self.csel0011Code = ko.observable(null);
             self.csel0012Code = ko.observable(null);
@@ -81,6 +112,14 @@ module qmm011.a.viewmodel {
     }
 
     export class BItemModelLST001 {
+        code: string;
+        name: string
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+    export class BItemModelSEL001 {
         code: string;
         name: string
         constructor(code: string, name: string) {

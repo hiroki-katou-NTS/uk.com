@@ -13,8 +13,27 @@ var qmm011;
                         new BItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
                         new BItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
                     ]);
+                    var valuebsel001 = ko.observableArray([
+                        new BItemModelSEL001("0", "切り捨て"),
+                        new BItemModelSEL001("1", "切り上げ"),
+                        new BItemModelSEL001("2", "四捨五入"),
+                        new BItemModelSEL001("3", "五捨六入"),
+                        new BItemModelSEL001("4", "五捨五超入")
+                    ]);
                     self.blst001 = valueblst001;
                     self.blstsel001 = ko.observableArray([]);
+                    self.bsel001 = valuebsel001;
+                    self.bsel002 = valuebsel001;
+                    self.bsel003 = valuebsel001;
+                    self.bsel004 = valuebsel001;
+                    self.bsel005 = valuebsel001;
+                    self.bsel006 = valuebsel001;
+                    self.bsel001Code = ko.observable(null);
+                    self.bsel002Code = ko.observable(null);
+                    self.bsel003Code = ko.observable(null);
+                    self.bsel004Code = ko.observable(null);
+                    self.bsel005Code = ko.observable(null);
+                    self.bsel006Code = ko.observable(null);
                     var valueclst001 = ko.observableArray([
                         new CItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
                         new CItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
@@ -65,6 +84,14 @@ var qmm011;
                 return BItemModelLST001;
             }());
             viewmodel.BItemModelLST001 = BItemModelLST001;
+            var BItemModelSEL001 = (function () {
+                function BItemModelSEL001(code, name) {
+                    this.code = code;
+                    this.name = name;
+                }
+                return BItemModelSEL001;
+            }());
+            viewmodel.BItemModelSEL001 = BItemModelSEL001;
             var CItemModelLST001 = (function () {
                 function CItemModelLST001(code, name) {
                     this.code = code;
