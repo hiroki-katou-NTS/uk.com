@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+#functions-area {
+	padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    padding-right: 20px;
+}
+
+#left-content {
+	margin-left: 30px;
+	padding: 20px;
+	float: left;
+	min-height: 400px;
+}
+
+#right-content {
+	margin-left: 40px;
+	float: left;
+	min-height: 600px;
+}
+
+#lbl_001 {
+	padding-top: 10px;
+}
+
+#inp_001 {
+	width: 150px;
+}
+
+#inp_006 textarea {
+	width: 380px;
+	height: 120px;
+}
+
+.nts-switch-button {
+	min-width: 80px;
+	font-size: 13px !important;
+	height: 30px !important;
+	padding: 3px 7px !important;
+	margin-bottom: 3px !important;
+}
+
+.btn-default {
+	margin-left: 10px;
+	min-width: 80px;
+}

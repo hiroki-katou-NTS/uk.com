@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+
+#this-contents-area {
+	margin-top: 20px;
+	margin-left: 20px;
+	min-width: 560px;
+}
+
+#this-functions-area {
+	margin-top: 15px;
+}
+
+#inp_001 {
+	width: 80px;
+}
+
+#btn_001 {
+	min-width: 120px;
+}
+
+#btn_002 {
+	margin-left: 10px;
+	min-width: 100px;
+}
+
+#lbl_004 {
+	margin-left: 25px;
+}

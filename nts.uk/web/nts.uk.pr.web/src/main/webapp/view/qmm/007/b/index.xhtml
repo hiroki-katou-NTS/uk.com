@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../common.css" />
+			<com:stylefile path="thispage.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- BEGIN CONTENT AREA-->
+			<div id="this-contents-area" class="margin-top-bot-20">
+				<label id="lbl_001">新たに作成する履歴の、作成情報を入力してください。</label>
+				<table class="margin-top-bot-20 form-default">
+					<tr>
+						<td><div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div></td>
+						<td><label id="lbl_003" data-bind="text: lbl_003()"></label>
+							<label id="lbl_004" data-bind="text: lbl_004()"></label></td>
+					</tr>
+					<tr>
+						<td><div id="lbl_005"
+								data-bind="ntsFormLabel: { required: true }">期間</div></td>
+						<td><span data-bind="with: inp_001">
+								<input id="inp_001" class="inp-default"
+									data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</span> <label data-bind="text: lbl_006()"></label> <label
+							data-bind="text: lbl_007()"></label></td>
+					</tr>
+					<tr>
+						<td><div id="lbl_008"
+								data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
+						<td><label class="ntsRadioBox"> <input type="radio"
+								name="textRadio"
+								data-bind="checkedValue: '1', checked: sel_001_radio" /> <span
+								class="box"></span><span class="label"
+								data-bind="text: '最新の履歴（2016/04）から引き継ぐ'"></span>
+						</label></td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td><label class="ntsRadioBox"> <input type="radio"
+								name="textRadio"
+								data-bind="checkedValue: '2', checked: sel_001_radio" /> <span
+								class="box"></span><span class="label"
+								data-bind="text: '初めから作成する'"></span>
+						</label></td>
+					</tr>
+				</table>
+			</div>
+			<hr />
+			<!-- END CONTENT AREA-->
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="this-functions-area" class="halign-center">
+				<button class="proceed x-large" id="btn_001" data-bind="click: btn_001_clicked">決定</button>
+				<button id="btn_002" data-bind="click: btn_002_clicked">キャンセル</button>
+			</div>
+			<!-- END FUNCTION AREA-->
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
