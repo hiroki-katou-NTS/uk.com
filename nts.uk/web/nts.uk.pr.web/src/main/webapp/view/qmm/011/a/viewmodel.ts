@@ -1,37 +1,93 @@
 module qmm011.a.viewmodel {
 
-     export class ScreenModel {
+    export class ScreenModel {
+        blst001: KnockoutObservableArray<BItemModelLST001>;
+        blstsel001: KnockoutObservableArray<string>;
         clst001: KnockoutObservableArray<CItemModelLST001>;
+        clstsel001: KnockoutObservableArray<string>;
         csel001: KnockoutObservableArray<CItemModelSEL001>;
+        csel0011: KnockoutObservableArray<CItemModelSEL001>;
+        csel0012: KnockoutObservableArray<CItemModelSEL001>;
+        csel0013: KnockoutObservableArray<CItemModelSEL001>;
+        csel0014: KnockoutObservableArray<CItemModelSEL001>;
+        csel0015: KnockoutObservableArray<CItemModelSEL001>;
+        csel0016: KnockoutObservableArray<CItemModelSEL001>;
+        csel0017: KnockoutObservableArray<CItemModelSEL001>;
+        csel0018: KnockoutObservableArray<CItemModelSEL001>;
+        csel0019: KnockoutObservableArray<CItemModelSEL001>;
+        csel001Code: KnockoutObservable<string>;
+        csel0011Code: KnockoutObservable<string>;
+        csel0012Code: KnockoutObservable<string>;
+        csel0013Code: KnockoutObservable<string>;
+        csel0014Code: KnockoutObservable<string>;
+        csel0015Code: KnockoutObservable<string>;
+        csel0016Code: KnockoutObservable<string>;
+        csel0017Code: KnockoutObservable<string>;
+        csel0018Code: KnockoutObservable<string>;
+        csel0019Code: KnockoutObservable<string>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
         isEnable: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
-            self.clst001 = ko.observableArray([
+            var valueblst001 = ko.observableArray([
+                new BItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
+                new BItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
+                new BItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
+                new BItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
+            ]);
+            self.blst001 = valueblst001;
+            self.blstsel001 = ko.observableArray([]);
+            var valueclst001 = ko.observableArray([
                 new CItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
                 new CItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
                 new CItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
                 new CItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
             ]);
-             self.csel001 = ko.observableArray([
+            var valuecsel001 = ko.observableArray([
                 new CItemModelSEL001("0", "切り捨て"),
                 new CItemModelSEL001("1", "切り上げ"),
                 new CItemModelSEL001("2", "四捨五入"),
                 new CItemModelSEL001("3", "五捨六入"),
                 new CItemModelSEL001("4", "五捨五超入")
             ]);
+            self.clst001 = valueclst001;
+            self.csel001 = valuecsel001;
+            self.csel0011 = valuecsel001;
+            self.csel0012 = valuecsel001;
+            self.csel0013 = valuecsel001;
+            self.csel0014 = valuecsel001;
+            self.csel0015 = valuecsel001;
+            self.csel0016 = valuecsel001;
+            self.csel0017 = valuecsel001;
+            self.csel0018 = valuecsel001;
+            self.csel0019 = valuecsel001;
+            self.clstsel001=ko.observableArray([]);
+            self.csel001Code = ko.observable(null);
+            self.csel0011Code = ko.observable(null);
+            self.csel0012Code = ko.observable(null);
+            self.csel0013Code = ko.observable(null);
+            self.csel0014Code = ko.observable(null);
+            self.csel0015Code = ko.observable(null);
+            self.csel0016Code = ko.observable(null);
+            self.csel0017Code = ko.observable(null);
+            self.csel0018Code = ko.observable(null);
+            self.csel0019Code = ko.observable(null);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(2);
-            self.selectedCode = ko.observable(null);
             self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
         }
     }
 
+    export class BItemModelLST001 {
+        code: string;
+        name: string
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
     export class CItemModelLST001 {
         code: string;
         name: string

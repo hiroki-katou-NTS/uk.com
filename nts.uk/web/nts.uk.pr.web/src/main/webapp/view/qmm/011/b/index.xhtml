@@ -4,17 +4,17 @@
 			<tr>
 				<td id="contents-left" class="bg-green caret-right caret-background">
 					<div class="leftTop">
-						<button id="C_BTN_001">履歴追加</button>
-						<button id="C_BTN_002" class="danger">履歴編集</button>
+						<button id="B_BTN_001">履歴追加</button>
+						<button id="B_BTN_002" class="danger">履歴編集</button>
 					</div>
 					<div id="list-box"
 						data-bind="ntsListBox: {
-						options: clst001,
+						options: blst001,
 						optionsValue: 'code',
 						optionsText: 'name',
 						multiple: true,
-						value: selectedCodes,
-						enable: isEnable(),
+						value: blstsel001,
+						enable: true,
 						rows: 4,
 						required: true,
 						columns: [
@@ -25,13 +25,13 @@
 					<table id="tableRight">
 						<tr>
 							<td class="contentsRL">
-								<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true}">
+								<div id="B_LBL_001" data-bind="ntsFormLabel: {required: true}">
 									<label>期間<br /></label>
 								</div>
 							</td>
-							<td class="contentsRR"><input id="C_INP_001"
-								class="trFull15" /> <label id="C_LBL_002"> ~ </label> <label
-								id="C_LBL_003"> 終了年月 </label></td>
+							<td class="contentsRR"><input id="B_INP_001"
+								class="trFull15" /> <label id="B_LBL_002"> ~ </label> <label
+								id="B_LBL_003"> 終了年月 </label></td>
 						</tr>
 						<tr>
 							<td colspan="2"><hr /></td>
@@ -43,20 +43,20 @@
 									<tbody>
 										<tr class="bg-green">
 											<th></th>
-											<th></th>
 											<th class="text_center">A</th>
 											<th class="text_center">B</th>
+											<th class="text_center">C</th>
+											<th class="text_center">D</th>
 										</tr>
 										<tr>
-											<td class="bg-green text_center">1</td>
-											<td class="bg-green text_center">事業種類名1</td>
+											<td class="bg-green text_center">E</td>
 											<td><input class="health-input" value="40.900"></input>/1000</td>
 											<td>
-												<div 
+												<div
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -66,15 +66,14 @@
 											</td>
 										</tr>
 										<tr>
-											<td class="bg-green text_center">2</td>
-											<td class="bg-green text_center">事業種類名2</td>
+											<td class="bg-green text_center">F</td>
 											<td><input class="health-input" value="40.900"></input>/1000</td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -93,7 +92,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -112,7 +111,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -131,7 +130,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -150,7 +149,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -169,7 +168,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -188,7 +187,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -207,7 +206,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -226,7 +225,7 @@
 													data-bind="ntsComboBox: {
 													options: csel001,
 													optionsValue: 'code',
-													value: selectedCode,
+													value: csel001Code,
 													optionsText: 'name',
 													editable: true,
 													enable: true,

@@ -7,28 +7,64 @@ var qmm011;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.clst001 = ko.observableArray([
+                    var valueblst001 = ko.observableArray([
+                        new BItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
+                        new BItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
+                        new BItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
+                        new BItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
+                    ]);
+                    self.blst001 = valueblst001;
+                    self.blstsel001 = ko.observableArray([]);
+                    var valueclst001 = ko.observableArray([
                         new CItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
                         new CItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
                         new CItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
                         new CItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
                     ]);
-                    self.csel001 = ko.observableArray([
+                    var valuecsel001 = ko.observableArray([
                         new CItemModelSEL001("0", "切り捨て"),
                         new CItemModelSEL001("1", "切り上げ"),
                         new CItemModelSEL001("2", "四捨五入"),
                         new CItemModelSEL001("3", "五捨六入"),
                         new CItemModelSEL001("4", "五捨五超入")
                     ]);
+                    self.clst001 = valueclst001;
+                    self.csel001 = valuecsel001;
+                    self.csel0011 = valuecsel001;
+                    self.csel0012 = valuecsel001;
+                    self.csel0013 = valuecsel001;
+                    self.csel0014 = valuecsel001;
+                    self.csel0015 = valuecsel001;
+                    self.csel0016 = valuecsel001;
+                    self.csel0017 = valuecsel001;
+                    self.csel0018 = valuecsel001;
+                    self.csel0019 = valuecsel001;
+                    self.clstsel001 = ko.observableArray([]);
+                    self.csel001Code = ko.observable(null);
+                    self.csel0011Code = ko.observable(null);
+                    self.csel0012Code = ko.observable(null);
+                    self.csel0013Code = ko.observable(null);
+                    self.csel0014Code = ko.observable(null);
+                    self.csel0015Code = ko.observable(null);
+                    self.csel0016Code = ko.observable(null);
+                    self.csel0017Code = ko.observable(null);
+                    self.csel0018Code = ko.observable(null);
+                    self.csel0019Code = ko.observable(null);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable(2);
-                    self.selectedCode = ko.observable(null);
                     self.isEnable = ko.observable(true);
-                    self.selectedCodes = ko.observableArray([]);
                 }
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var BItemModelLST001 = (function () {
+                function BItemModelLST001(code, name) {
+                    this.code = code;
+                    this.name = name;
+                }
+                return BItemModelLST001;
+            }());
+            viewmodel.BItemModelLST001 = BItemModelLST001;
             var CItemModelLST001 = (function () {
                 function CItemModelLST001(code, name) {
                     this.code = code;
