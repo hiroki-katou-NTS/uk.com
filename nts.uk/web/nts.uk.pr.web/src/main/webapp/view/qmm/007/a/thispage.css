@@ -8,6 +8,7 @@
 	padding-top: 10px;
     padding-bottom: 10px;
     padding-left: 50px;
+    padding-right: 20px;
 }
 
 .btn-default {
@@ -35,7 +36,8 @@
 	min-height: 600px;
 }
 
-#lbl_008 {
+#lbl_001 {
+	padding-top: 10px;
 }
 
 #inp_001 {

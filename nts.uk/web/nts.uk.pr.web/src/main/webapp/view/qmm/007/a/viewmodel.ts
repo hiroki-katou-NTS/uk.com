@@ -24,6 +24,8 @@ module nts.uk.pr.view.qmm007.a {
             selectedCodes: any;
             headers: any;
 
+            lbl_005: KnockoutObservable<string>;
+
             inp_002_code: any;
             inp_003_name: any;
             inp_004_date: any;
@@ -58,12 +60,14 @@ module nts.uk.pr.view.qmm007.a {
                 self.index = 0;
                 self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
 
+                self.lbl_005 = ko.observable('（平成29年01月） ~');
+
                 self.inp_002_code = {
-                    value: ko.observable(''),
+                    value: ko.observable('001'),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
-                        placeholder: "INP_002",
+                        placeholder: "CODE",
                         width: "50px",
                         textalign: "left"
                     })),
@@ -73,11 +77,11 @@ module nts.uk.pr.view.qmm007.a {
                 };
 
                 self.inp_003_name = {
-                    value: ko.observable(''),
+                    value: ko.observable('ガソリン単価'),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
-                        placeholder: "INP_003",
+                        placeholder: "NAME",
                         width: "250px",
                         textalign: "left"
                     })),
@@ -87,11 +91,11 @@ module nts.uk.pr.view.qmm007.a {
                 };
 
                 self.inp_004_date = {
-                    value: ko.observable(''),
+                    value: ko.observable('2015-04'),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
-                        placeholder: "INP_004",
+                        placeholder: "START_DATE",
                         width: "70px",
                         textalign: "left"
                     })),
@@ -101,13 +105,15 @@ module nts.uk.pr.view.qmm007.a {
                 };
 
                 self.inp_005_money = {
-                    value: ko.observable(1200),
+                    value: ko.observable(120),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                         grouplength: 3,
                         decimallength: 2,
                         currencyformat: "JPY",
-                        currencyposition: 'right'
+                        currencyposition: 'right',
+                        width: "100px",
+                        textalign: "left"
                     })),
                     required: ko.observable(false),
                     enable: ko.observable(true),
@@ -121,13 +127,13 @@ module nts.uk.pr.view.qmm007.a {
                     { code: '2', name: '対象外' }
                 ]);
 
-                self.sel_001_radio = ko.observable(2);
+                self.sel_001_radio = ko.observable('2');
 
-                self.sel_002_xxx = ko.observable('1');
-                self.sel_003_monthly = ko.observable('1');
-                self.sel_004_dayMonth = ko.observable('1');
-                self.sel_005_daily = ko.observable('1');
-                self.sel_006_hourly = ko.observable('1');
+                self.sel_002_xxx = ko.observable('2');
+                self.sel_003_monthly = ko.observable('2');
+                self.sel_004_dayMonth = ko.observable('2');
+                self.sel_005_daily = ko.observable('2');
+                self.sel_006_hourly = ko.observable('2');
 
             }
 
