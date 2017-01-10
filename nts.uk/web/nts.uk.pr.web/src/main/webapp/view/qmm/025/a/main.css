@@ -5,8 +5,13 @@
 	margin-top: 10px;
 }
 
+.right-content{
+	float: left;
+	margin-left: 100px;
+}
+
 #A_BTN_001 {
-	margin: 4px 8px 0px 100px;
+	margin: 4px 8px 0px 110px;
 	padding: 0px 20px
 }
 
@@ -36,14 +41,12 @@
 .config{
 	width: 180px;
     height: 30px;
-    margin-left: 90px;
     padding: 12px;
     border-radius: 5px;
 }
 
 .control-group {
 	padding: 8px;
-	margin-left: 88px;
 	border: 1px solid rgba(79, 79, 79, 0.85);
 	width: 1150px
 }
