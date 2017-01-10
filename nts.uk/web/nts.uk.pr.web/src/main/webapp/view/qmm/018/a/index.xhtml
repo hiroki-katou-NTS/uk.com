@@ -50,7 +50,7 @@
 							<span class="formula-text">直近3か月間の    A：出勤日数</span>
 						</div>
 						<div class="cell valign-center halign-center">
-							<span style="margin-left: 5px;" class="formula-text">× B: 60%</span>
+							<span style="margin-left: 5px;" class="formula-text">× B: <span class="formula-text" data-bind="text: percentage"></span>%</span>
 						</div>
 					</div>
 					<div class="table">
@@ -106,7 +106,6 @@
 							</div>
 						</div>
 					</div>
-					<span data-bind="text: selectedCodeList()[0]"></span>
 				</div>
 			</ui:define>
 		</ui:composition>

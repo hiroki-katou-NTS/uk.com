@@ -10,6 +10,7 @@ module qmm018.a.viewmodel {
         selectedCodeList: KnockoutObservableArray<any>;
         texteditor1: any;
         texteditor2: any;
+        percentage: any;
         constructor() {
             var self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
@@ -30,7 +31,7 @@ module qmm018.a.viewmodel {
                 value: ko.computed(function(){
                     let s: string = self.selectedCodeList()[0];
                     for(let i=1;i<self.selectedCodeList().length;i++){
-                        s += self.selectedCodeList().pop[i];   
+                        s += " + " + self.selectedCodeList()[i];   
                     } 
                     return s;
                 }),
@@ -45,8 +46,9 @@ module qmm018.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.percentage = ko.observable('60');
             self.texteditor2 = {
-                value: ko.observable(''),
+                value: self.percentage,
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
@@ -79,18 +81,9 @@ module qmm018.a.viewmodel {
         openSubWindow() {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", {title: "労働日数項目一覧", dialogClass: "no-close"}).onClosed(function(){
-                //self.selectedCodeList.push(nts.uk.ui.windows.getShared('selectedCodeList')); 
-                //console.log(self.selectedCodeList);
-                //$("#selected-inp").val(self.selectedCodeList()[0]);
-                let selectedList = nts.uk.ui.windows.getShared('selectedCodeList');
-                console.log(selectedList()[0]);
+                let selectedList: KnockoutObservableArray<any> = nts.uk.ui.windows.getShared('selectedCodeList');
                 self.selectedCodeList.removeAll();
-                self.selectedCodeList.push(selectedList()[0]);
-                console.log(self.selectedCodeList()[0]);
-                for(let i=1;i<selectedList().length;i++){
-                    self.selectedCodeList.push(selectedList()[i]);   
-                } 
-                console.log(self.selectedCodeList()[1]);
+                for(let i=0;i<selectedList().length;i++){self.selectedCodeList.push(selectedList()[i]);}
             }); 
         }
     }
