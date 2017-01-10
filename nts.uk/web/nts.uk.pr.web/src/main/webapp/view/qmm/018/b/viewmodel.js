@@ -21,16 +21,6 @@ var qmm018;
                     this.currentCode = ko.observable();
                     this.currentCodeList = ko.observableArray([]);
                 }
-                ScreenModel.prototype.selectSomeItems = function () {
-                    this.currentCode('001');
-                    this.currentCodeList.removeAll();
-                    this.currentCodeList.push('002');
-                    this.currentCodeList.push('003');
-                };
-                ScreenModel.prototype.deselectAll = function () {
-                    this.currentCode(null);
-                    this.currentCodeList.removeAll();
-                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -40,6 +30,14 @@ var qmm018;
                     }).fail(function (res) {
                     });
                     return dfd.promise();
+                };
+                ScreenModel.prototype.saveData = function () {
+                    nts.uk.ui.windows.setShared('selectedCodeList', this.currentCodeList);
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.closeWindow = function () {
+                    nts.uk.ui.windows.setShared('selectedCodeList', ko.observableArray([]));
+                    nts.uk.ui.windows.close();
                 };
                 return ScreenModel;
             }());

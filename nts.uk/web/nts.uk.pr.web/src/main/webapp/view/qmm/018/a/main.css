@@ -2,6 +2,7 @@
 .control-group.valign-top > * { vertical-align: top; }
 .control-group.valign-bottom > * { vertical-align: bottom; }
 .control-group { margin: 10px; }
+
 .halign-left { text-align: left; }
 .halign-right { text-align: right; }
 .halign-center { text-align: center; }
@@ -37,9 +38,19 @@ button.nts-switch-button selected, button.nts-switch-button  {
 
 #combo-box {
 	width: 100px;
+	height: 30px;
 }
 
-.ui-igcombo-button, .ui-igcombo-field, .ui-igcombo-fieldholder {
+.ui-igcombo-button {
+	
+	
+}
+
+.ui-igcombo-field {
+	
+}
+
+.ui-igcombo-fieldholder {
 	background-color: #c5c5c5;
 }
 
@@ -72,7 +83,15 @@ button {
 	width: 300px;
 }
 
+.formula-text {
+	font-weight: bold;
+	font-size: 20px;
+}
+
 #item-inp {
 	margin-top: 10px;
 }
  
+#checkbox {
+	vertical-align: bottom;
+}

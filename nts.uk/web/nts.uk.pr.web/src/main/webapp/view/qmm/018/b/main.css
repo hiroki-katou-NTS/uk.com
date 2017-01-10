@@ -7,10 +7,39 @@
 .halign-center { text-align: center; }
 
 #contents-area {
-	width: 520px;
-	margin-left: 10px;
+	width: 450px;
 }
 
-.center-e {
-	margin-left: 100px;
+#center-top {
+	margin-left: 20px;
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+#center-middle {
+	margin-left: 20px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+input.ntsSearchBox {
+	width: 324px;
+}
+
+#search-box {
+	margin-bottom: 10px;
+}
+
+#division {
+	width: 430px;
+	margin-left: 5px;
+}
+
+#center-bottom {
+	margin-left: 120px;
+	margin-bottom: 0px;
+}
+
+#center-bottom > button {
+	margin-right: 10px;
 }

@@ -7,15 +7,6 @@ module qmm018.b.viewmodel {
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        dataSource: any;
-        dataSource2: any;
-        filteredData: any;
-        filteredData2: any;
-        singleSelectedCode: any;
-        singleSelectedCode2: any;
-        selectedCodes: any;
-        selectedCodes2: any;
-        headers: any;
         constructor() {
             var self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
@@ -33,18 +24,6 @@ module qmm018.b.viewmodel {
             this.currentCodeList = ko.observableArray([]);
         }
 
-        selectSomeItems() {
-            this.currentCode('001');
-            this.currentCodeList.removeAll();
-            this.currentCodeList.push('002');
-            this.currentCodeList.push('003');
-        }
-
-        deselectAll() {
-            this.currentCode(null);
-            this.currentCodeList.removeAll();
-        }
-
         startPage(): JQueryPromise<any> {
             var self = this;
 
@@ -57,7 +36,19 @@ module qmm018.b.viewmodel {
             });
             return dfd.promise();
         }
+    
+        saveData() {
+            nts.uk.ui.windows.setShared('selectedCodeList', this.currentCodeList);
+            nts.uk.ui.windows.close();
+        }
+    
+        closeWindow() {
+            nts.uk.ui.windows.setShared('selectedCodeList', ko.observableArray([]));
+            nts.uk.ui.windows.close();
+        }
     }
+    
+    
 
     class ItemModel {
         code: string;

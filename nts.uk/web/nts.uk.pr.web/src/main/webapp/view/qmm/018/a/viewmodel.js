@@ -20,10 +20,15 @@ var qmm018;
                     ]);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable(3);
-                    self.isEnable = ko.observable(true);
-                    self.isEditable = ko.observable(true);
+                    self.selectedCodeList = ko.observableArray(['']);
                     self.texteditor1 = {
-                        value: ko.observable(''),
+                        value: ko.computed(function () {
+                            var s = self.selectedCodeList()[0];
+                            for (var i = 1; i < self.selectedCodeList().length; i++) {
+                                s += self.selectedCodeList().pop[i];
+                            }
+                            return s;
+                        }),
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
@@ -60,7 +65,21 @@ var qmm018;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.openSubWindow = function () {
-                    nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml");
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function () {
+                        //self.selectedCodeList.push(nts.uk.ui.windows.getShared('selectedCodeList')); 
+                        //console.log(self.selectedCodeList);
+                        //$("#selected-inp").val(self.selectedCodeList()[0]);
+                        var selectedList = nts.uk.ui.windows.getShared('selectedCodeList');
+                        console.log(selectedList()[0]);
+                        self.selectedCodeList.removeAll();
+                        self.selectedCodeList.push(selectedList()[0]);
+                        console.log(self.selectedCodeList()[0]);
+                        for (var i = 1; i < selectedList().length; i++) {
+                            self.selectedCodeList.push(selectedList()[i]);
+                        }
+                        console.log(self.selectedCodeList()[1]);
+                    });
                 };
                 return ScreenModel;
             }());

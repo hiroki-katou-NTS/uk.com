@@ -26,7 +26,7 @@
 							<div data-bind="ntsFormLabel: { required: true } ">平均賃金の端数処理</div>
 						</div>
 						<div class="cell">
-							<div data-bind="ntsCheckBox: {}">平均賃金の小数第3位以下を切り捨てる</div>
+							<div id="checkbox" data-bind="ntsCheckBox: {}">平均賃金の小数第3位以下を切り捨てる</div>
 						</div>
 					</div>
 					<hr class="division"/>
@@ -35,9 +35,9 @@
 							<div data-bind="ntsFormLabel: { required: false } ">基本計算式</div>
 						</div>
 						<div class="cell valign-center halign-center">
-							<span>直近3か月間に支払われた賃金総額</span>
+							<span class="formula-text">直近3か月間に支払われた賃金総額</span>
 							<hr class="formula-division" />
-							<span>直近3か月間の暦日数</span>
+							<span class="formula-text">直近3か月間の暦日数</span>
 						</div>
 					</div>
 					<div class="table formula">
@@ -45,12 +45,12 @@
 							<div data-bind="ntsFormLabel: { required: false } ">例外計算式</div>
 						</div>
 						<div class="cell valign-center halign-center">
-							<span>直近3か月間に支払われた賃金総額</span>
+							<span class="formula-text">直近3か月間に支払われた賃金総額</span>
 							<hr class="formula-division" />
-							<span>直近3か月間の  A：出勤日数</span>
+							<span class="formula-text">直近3か月間の    A：出勤日数</span>
 						</div>
 						<div class="cell valign-center halign-center">
-							<span style="margin-left: 5px;">× B: 60%</span>
+							<span style="margin-left: 5px;" class="formula-text">× B: 60%</span>
 						</div>
 					</div>
 					<div class="table">
@@ -82,7 +82,7 @@
 								<span class="sub">対象労働日数項目</span>
 								<button class="short-button" data-bind="click: openSubWindow">設定</button>
 								<div id="item-inp" data-bind="with: texteditor1">
-									<input class="sub" data-bind="ntsTextEditor: {
+									<input id="selected-inp" class="sub" data-bind="ntsTextEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
@@ -106,6 +106,7 @@
 							</div>
 						</div>
 					</div>
+					<span data-bind="text: selectedCodeList()[0]"></span>
 				</div>
 			</ui:define>
 		</ui:composition>

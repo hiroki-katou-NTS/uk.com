@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 520, height: 400 };</script>
+				<script>var dialogSize = { width: 460, height: 485 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
@@ -17,19 +17,29 @@
 			
 			<ui:define name="content">
 				<div id="contents-area">
-					<span class="center-e">対象労働日数項目を選択してください。</span>
-					<table id="multiple-list" data-bind="ntsGridList: {
-						width: 500,
-						height: 245,
-						options: items,
-						optionsValue: 'code',
-						columns: columns,
-						multiple: true,
-						value: currentCodeList }"></table>
-					<hr />
-					<div class="valign-center control-group">
-						<button class="x-large proceed center-e">BTN_001</button>
-						<button>BTN_002</button>
+					<div id="center-top">
+						<span>対象労働日数項目を選択してください。</span>
+					</div>
+					<div id="center-middle">
+						<div id="search-box" data-bind="ntsSearchBox: {
+														comId: 'multiple-list',
+														items: items, 
+														selected: currentCodeList, 
+														selectedKey: 'code',	 
+														fields: ['name', 'code']}" />
+						<table id="multiple-list" data-bind="ntsGridList: {
+														width: 400,
+														height: 250,
+														options: items,
+														optionsValue: 'code',
+														columns: columns,
+														multiple: true,
+														value: currentCodeList }"></table>
+					</div>
+					<hr id="division"/>
+					<div id="center-bottom" class="valign-center control-group">
+						<button class="x-large proceed center-e" data-bind="click: saveData">決定</button>
+						<button class="ui-dialog-titlebar-close" data-bind="click: closeWindow">キャンセル</button>
 					</div>
 				</div>
 			</ui:define>
