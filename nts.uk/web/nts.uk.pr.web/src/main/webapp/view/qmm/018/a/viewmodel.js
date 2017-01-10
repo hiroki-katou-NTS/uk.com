@@ -20,13 +20,16 @@ var qmm018;
                     ]);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable(3);
-                    self.selectedCodeList = ko.observableArray(['']);
+                    self.selectedItemList = ko.observableArray([]);
                     self.texteditor1 = {
                         value: ko.computed(function () {
-                            var s = self.selectedCodeList()[0];
-                            for (var i = 1; i < self.selectedCodeList().length; i++) {
-                                s += " + " + self.selectedCodeList()[i];
+                            var s;
+                            ko.utils.arrayForEach(self.selectedItemList(), function (item) { if (!s) {
+                                s = item.name;
                             }
+                            else {
+                                s += " + " + item.name;
+                            } });
                             return s;
                         }),
                         constraint: 'ResidenceCode',
@@ -68,16 +71,23 @@ var qmm018;
                 ScreenModel.prototype.openSubWindow = function () {
                     var self = this;
                     nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function () {
-                        var selectedList = nts.uk.ui.windows.getShared('selectedCodeList');
-                        self.selectedCodeList.removeAll();
-                        for (var i = 0; i < selectedList().length; i++) {
-                            self.selectedCodeList.push(selectedList()[i]);
+                        var selectedList = nts.uk.ui.windows.getShared('selectedItemList');
+                        self.selectedItemList.removeAll();
+                        if (selectedList().length) {
+                            ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList.push(item); });
                         }
                     });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var ItemModel = (function () {
+                function ItemModel(code, name) {
+                    this.code = code;
+                    this.name = name;
+                }
+                return ItemModel;
+            }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));

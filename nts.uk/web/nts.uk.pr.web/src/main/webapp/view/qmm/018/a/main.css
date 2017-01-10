@@ -51,7 +51,6 @@ input.ui-igcombo-field {
 }
 
 input {
-	border-radius: 5px;
 	padding-left: 5px;
 	padding-right: 5px;
 }
@@ -76,8 +75,7 @@ button {
 }
 
 .formula-text {
-	font-weight: bold;
-	font-size: 20px;
+	font-size: 18px;
 }
 
 #item-inp {

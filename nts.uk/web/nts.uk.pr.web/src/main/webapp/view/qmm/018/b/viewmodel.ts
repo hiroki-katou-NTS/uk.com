@@ -5,23 +5,29 @@ module qmm018.b.viewmodel {
 
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        currentItemList: KnockoutObservableArray<ItemModel>;
         constructor() {
             var self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
-            this.items = ko.observableArray([
+            self.items = ko.observableArray([
                 new ItemModel('001', 'name1'),
                 new ItemModel('002', 'name2'),
                 new ItemModel('003', 'name3')
             ]);
-            this.columns = ko.observableArray([
+            self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 40 },
                 { headerText: '名称', prop: 'name', width: 130 },
             ]);
-            this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
+            self.currentCodeList = ko.observableArray([]);
+            self.currentItemList = ko.observableArray([]);
+            self.currentCodeList.subscribe(function(newCodeList){
+                self.currentItemList.removeAll();
+                ko.utils.arrayForEach(newCodeList,function(newCode){
+                    self.currentItemList.push(_.find(self.items(), function(item) { return item.code === newCode; }));
+                });
+            });
         }
 
         startPage(): JQueryPromise<any> {
@@ -38,12 +44,12 @@ module qmm018.b.viewmodel {
         }
     
         saveData() {
-            nts.uk.ui.windows.setShared('selectedCodeList', this.currentCodeList);
+            nts.uk.ui.windows.setShared('selectedItemList', this.currentItemList);
             nts.uk.ui.windows.close();
         }
     
         closeWindow() {
-            nts.uk.ui.windows.setShared('selectedCodeList', ko.observableArray([]));
+            nts.uk.ui.windows.setShared('selectedItemList', ko.observableArray([]));
             nts.uk.ui.windows.close();
         }
     }

@@ -7,7 +7,7 @@ module qmm018.a.viewmodel {
         itemList: KnockoutObservableArray<any>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
-        selectedCodeList: KnockoutObservableArray<any>;
+        selectedItemList: KnockoutObservableArray<ItemModel>;
         texteditor1: any;
         texteditor2: any;
         percentage: any;
@@ -26,13 +26,11 @@ module qmm018.a.viewmodel {
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCodeList = ko.observableArray(['']);
+            self.selectedItemList = ko.observableArray([]);
             self.texteditor1 = {
                 value: ko.computed(function(){
-                    let s: string = self.selectedCodeList()[0];
-                    for(let i=1;i<self.selectedCodeList().length;i++){
-                        s += " + " + self.selectedCodeList()[i];   
-                    } 
+                    let s: string;
+                    ko.utils.arrayForEach(self.selectedItemList(),function(item){if(!s){s=item.name} else {s+=" + "+item.name}});
                     return s;
                 }),
                 constraint: 'ResidenceCode',
@@ -81,10 +79,24 @@ module qmm018.a.viewmodel {
         openSubWindow() {
             var self = this;
             nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", {title: "労働日数項目一覧", dialogClass: "no-close"}).onClosed(function(){
-                let selectedList: KnockoutObservableArray<any> = nts.uk.ui.windows.getShared('selectedCodeList');
-                self.selectedCodeList.removeAll();
-                for(let i=0;i<selectedList().length;i++){self.selectedCodeList.push(selectedList()[i]);}
+                let selectedList: KnockoutObservableArray<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList');
+                self.selectedItemList.removeAll();
+                if(selectedList().length){
+                    ko.utils.arrayForEach(selectedList(),function(item){self.selectedItemList.push(item)});
+                }
             }); 
+        }
+        
+        
+    }
+    
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
 }
