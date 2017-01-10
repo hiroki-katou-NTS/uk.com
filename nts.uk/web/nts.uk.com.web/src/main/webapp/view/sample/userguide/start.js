@@ -6,14 +6,20 @@ __viewContext.ready(function () {
             for (var i = 0; i <= 10; i++) {
                 self.dataList.push({ id: i, name: "Item " + i });
             }
-            $(".userguide").ntsUserGuide();
-            $(".userguide2").ntsUserGuide();
+            // Init UserGuide
+            $("[data-toggle='userguide']").ntsUserGuide();
         }
-        ScreenModel.prototype.showOverlay = function () {
-            $(".userguide").ntsUserGuide("show");
+        ScreenModel.prototype.showOverlayLeft = function () {
+            $(".userguide-left").ntsUserGuide("show");
         };
-        ScreenModel.prototype.showOverlay2 = function () {
-            $(".userguide2").ntsUserGuide("show");
+        ScreenModel.prototype.showOverlayRight = function () {
+            $(".userguide-right").ntsUserGuide("show");
+        };
+        ScreenModel.prototype.showOverlayTop = function () {
+            $(".userguide-top").ntsUserGuide("show");
+        };
+        ScreenModel.prototype.showOverlayBottom = function () {
+            $(".userguide-bottom").ntsUserGuide("show");
         };
         return ScreenModel;
     }());

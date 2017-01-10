@@ -313,6 +313,7 @@ var nts;
                             return show($controls);
                         }
                         else {
+                            return hide($controls);
                         }
                         ;
                     };
@@ -346,33 +347,63 @@ var nts;
                     function show(controls) {
                         controls.each(function () {
                             var $control = $(this);
+                            $control.show();
                             var target = $control.data('target');
                             var direction = $control.data('direction');
-                            $control.show();
+                            $control.find(".userguide-overlay").each(function (index, elem) {
+                                calcOverlayPosition($(elem), target, direction);
+                            });
                             $control.children().each(function () {
                                 var $box = $(this);
                                 var boxTarget = $box.data("target");
-                                $box.position({
-                                    my: getReveseDirection(direction) + "+20",
-                                    at: "right center",
-                                    of: boxTarget
-                                });
+                                var boxDirection = $box.data("direction");
+                                var boxMargin = ($box.data("margin")) ? $box.data("margin") : "20";
+                                calcBoxPosition($box, boxTarget, boxDirection, boxMargin);
                             });
-                            var $overlay = $control.find(".userguide-overlay").css(getReveseDirection(direction), $(target).offset().left + $(target).outerWidth());
                         });
                         return controls;
                     }
+                    function hide(controls) {
+                        controls.each(function () {
+                            var $control = $(this);
+                            $control.hide();
+                        });
+                        return controls;
+                    }
+                    function calcOverlayPosition(overlay, target, direction) {
+                        if (direction === "left")
+                            return overlay.css("right", "auto")
+                                .css("width", $(target).offset().left);
+                        else if (direction === "right")
+                            return overlay.css("left", $(target).offset().left + $(target).outerWidth());
+                        else if (direction === "top")
+                            return overlay.css("position", "absolute")
+                                .css("bottom", "auto")
+                                .css("height", $(target).offset().top);
+                        else if (direction === "bottom")
+                            return overlay.css("position", "absolute")
+                                .css("top", $(target).offset().top + $(target).outerHeight());
+                    }
+                    function calcBoxPosition(box, target, direction, margin) {
+                        var operation = "+";
+                        if (direction === "left" || direction === "top")
+                            operation = "-";
+                        return box.position({
+                            my: getReveseDirection(direction) + operation + margin,
+                            at: direction,
+                            of: target,
+                            collision: "none"
+                        });
+                    }
                     function getReveseDirection(direction) {
-                        switch (direction) {
-                            case "left":
-                                return "right";
-                            case "right":
-                                return "left";
-                            case "top":
-                                return "bottom";
-                            case "bottom":
-                                return "top";
-                        }
+                        if (direction === "left")
+                            return "right";
+                        else if (direction === "right")
+                            return "left";
+                        else if (direction === "top")
+                            return "bottom";
+                        else if (direction === "bottom")
+                            return "top";
                     }
                 })(userGuide || (userGuide = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));

@@ -1116,25 +1116,25 @@ var nts;
                     ListBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
-                        // Get options.
+                        // Get options
                         var options = ko.unwrap(data.options);
-                        // Get options value.
+                        // Get options value
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
-                        var isMultiSelect = data.multiple;
-                        var enable = data.enable;
+                        var isMultiSelect = ko.unwrap(data.multiple);
+                        var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
                         var rows = data.rows;
                         var required = data.required || false;
-                        // Container.
+                        // Container
                         var container = $(element);
-                        container.data('required', required);
-                        // Default value.
+                        container.addClass('ntsListBox ntsControl').data('required', required);
+                        // Default value
                         var selectSize = 6;
                         container.data("options", options.slice());
                         container.data("init", true);
-                        // Create select.
+                        // Create select
                         container.append('<ol class="nts-list-box"></ol>');
                         var selectListBoxContainer = container.find('.nts-list-box');
                         // Create changing event.
@@ -1244,8 +1244,8 @@ var nts;
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
-                        var isMultiSelect = data.multiple;
-                        var enable = data.enable;
+                        var isMultiSelect = ko.unwrap(data.multiple);
+                        var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
                         var rows = data.rows;
                         // Container.
@@ -1288,7 +1288,7 @@ var nts;
                             }
                             // Append options.
                             options.forEach(function (item, idx) {
-                                // Check option is Selected.
+                                // Check option is Selected
                                 var isSelected = false;
                                 if (isMultiSelect) {
                                     isSelected = selectedValue.indexOf(getOptionValue(item)) != -1;
@@ -1301,7 +1301,7 @@ var nts;
                                     return optValue == getOptionValue(item);
                                 });
                                 if (init || target === undefined) {
-                                    // Add option.
+                                    // Add option
                                     var selectedClass = isSelected ? 'ui-selected' : '';
                                     var itemTemplate = '';
                                     if (columns && columns.length > 0) {
@@ -1327,36 +1327,33 @@ var nts;
                                 }
                             });
                             var padding = 10;
-                            // Set width for multi columns.
+                            var rowHeight = 28;
+                            // Set width for multi columns
                             if (columns && columns.length > 0) {
                                 var totalWidth = 0;
                                 columns.forEach(function (item, cIdx) {
-                                    $('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                                    container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
                                     totalWidth += item.length * maxWidthCharacter + 20;
                                 });
-                                if ($('.nts-column').css('padding')) {
-                                    var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
-                                    padding = parseInt(ntsCommonPadding) * 2;
-                                }
                                 totalWidth += padding * (columns.length + 1); // + 50;
-                                $('.nts-list-box > li').css({ 'min-width': totalWidth });
-                                $('.nts-list-box').css({ 'min-width': totalWidth });
-                                container.css({ 'min-width': totalWidth });
+                                container.find('.nts-list-box > li').css({ 'width': totalWidth });
+                                container.find('.nts-list-box').css({ 'width': totalWidth });
+                                container.css({ 'width': totalWidth });
                             }
                             if (rows && rows > 0) {
-                                container.css({ 'height': rows * (18 + padding) });
-                                $('.nts-list-box').css({ 'height': rows * (18 + padding) });
+                                container.css('height', rows * rowHeight);
+                                container.find('.nts-list-box').css('height', rows * rowHeight);
                                 container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                             }
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
-                        // Set value.
+                        // Set value
                         if (!_.isEqual(originalSelected, selectedValue) || init) {
                             container.data('value', selectedValue);
                             container.trigger('selectionChange');
                         }
-                        // Check enable.
+                        // Check enable
                         if (!enable) {
                             selectListBoxContainer.selectable("disable");
                             ;
