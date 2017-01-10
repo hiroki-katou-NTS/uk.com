@@ -1,0 +1,9 @@
+.ntsRadioBox{
+	display: block;
+}
+.border_none {
+	border: none;
+}
+th, td {
+	padding: 2px;
+}
