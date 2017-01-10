@@ -1119,6 +1119,8 @@ var nts;
                         container.data('required', required);
                         // Default value.
                         var selectSize = 6;
+                        container.data("options", options.slice());
+                        container.data("init", true);
                         // Create select.
                         container.append('<ol class="nts-list-box"></ol>');
                         var selectListBoxContainer = container.find('.nts-list-box');
@@ -1128,6 +1130,7 @@ var nts;
                         });
                         // Bind selectable.
                         selectListBoxContainer.selectable({
+                            filter: 'li',
                             selected: function (event, ui) {
                             },
                             stop: function (event, ui) {
@@ -1138,22 +1141,50 @@ var nts;
                                 }
                                 // Add selected value.
                                 var data = isMultiSelect ? [] : '';
-                                var i = 0;
                                 $("li.ui-selected").each(function (index, opt) {
                                     var optValue = $(opt).data('value');
                                     if (!isMultiSelect) {
                                         data = optValue;
                                         return;
                                     }
-                                    data[i] = optValue;
-                                    i++;
+                                    data[index] = optValue;
                                 });
                                 container.data('value', data);
                                 // fire event change.
                                 document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
                             },
                             unselecting: function (event, ui) {
-                                $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected');
+                                //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
+                            },
+                            selecting: function (event, ui) {
+                                if (event.shiftKey) {
+                                    if ($(ui.selecting).attr("clicked") !== "true") {
+                                        var source = container.find("li");
+                                        var clicked = _.find(source, function (row) {
+                                            return $(row).attr("clicked") === "true";
+                                        });
+                                        if (clicked === undefined) {
+                                            $(ui.selecting).attr("clicked", "true");
+                                        }
+                                        else {
+                                            container.find("li").attr("clicked", "");
+                                            $(ui.selecting).attr("clicked", "true");
+                                            var start = parseInt($(clicked).attr("data-idx"));
+                                            var end = parseInt($(ui.selecting).attr("data-idx"));
+                                            var max = start > end ? start : end;
+                                            var min = start < end ? start : end;
+                                            var range = _.filter(source, function (row) {
+                                                var index = parseInt($(row).attr("data-idx"));
+                                                return index >= min && index <= max;
+                                            });
+                                            $(range).addClass("ui-selected");
+                                        }
+                                    }
+                                }
+                                else if (!event.ctrlKey) {
+                                    container.find("li").attr("clicked", "");
+                                    $(ui.selecting).attr("clicked", "true");
+                                }
                             }
                         });
                         // Fire event.
@@ -1167,6 +1198,7 @@ var nts;
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
                             data.value(itemsSelected);
+                            container.data("selected", typeof itemsSelected === "string" ? itemsSelected : itemsSelected.slice());
                             // Create event changed.
                             var changedEvent = new CustomEvent("selectionChanged", {
                                 detail: itemsSelected,
@@ -1176,47 +1208,6 @@ var nts;
                             // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
                             document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
                         }));
-                        // Create method.
-                        $.fn.deselectAll = function () {
-                            $(this).data('value', '');
-                            $(this).find('.nts-list-box > li').removeClass("ui-selected");
-                            $(this).find('.nts-list-box > li > div').removeClass("ui-selected");
-                            $(this).trigger("selectionChange");
-                        };
-                        $.fn.selectAll = function () {
-                            $(this).find('.nts-list-box > li').addClass("ui-selected");
-                            $(this).find('.nts-list-box').data("ui-selectable")._mouseStop(null);
-                        };
-                        $.fn.validate = function () {
-                            var $container = $(this);
-                            var required = $container.data('required');
-                            var $currentListBox = $container.find('.nts-list-box');
-                            if (required) {
-                                var itemsSelected = $container.data('value');
-                                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                    $currentListBox.ntsError('set', 'at least 1 item selection required');
-                                    return false;
-                                }
-                                else {
-                                    $currentListBox.ntsError('clear');
-                                    return true;
-                                }
-                            }
-                        };
-                        $.fn.ntsListBox = function (method) {
-                            switch (method) {
-                                case 'deselectAll':
-                                    this.deselectAll();
-                                    break;
-                                case 'selectAll':
-                                    this.selectAll();
-                                    break;
-                                case 'validate':
-                                    return this.validate();
-                                default:
-                                    break;
-                            }
-                        };
                         container.on('validate', (function (e) {
                             // Check empty value
                             var itemsSelected = container.data('value');
@@ -1256,78 +1247,102 @@ var nts;
                                 return item[optionValue];
                             }
                         };
+                        var originalOptions = container.data("options");
+                        var init = container.data("init");
+                        var originalSelected = container.data("selected");
                         // Check selected code.
                         if (!isMultiSelect && options.filter(function (item) { return getOptionValue(item) === selectedValue; }).length == 0) {
                             selectedValue = '';
                         }
-                        // Remove options.
-                        $('li', container).each(function (index, option) {
-                            var optValue = $(option).data('value');
-                            // Check if btn is contained in options.
-                            var foundFlag = _.findIndex(options, function (opt) {
-                                return getOptionValue(opt) == optValue;
-                            }) != -1;
-                            if (!foundFlag) {
-                                // Remove selected if not found option.
-                                selectedValue = jQuery.grep(selectedValue, function (value) {
-                                    return value != optValue;
+                        if (!_.isEqual(originalOptions, options) || init) {
+                            if (!init) {
+                                // Remove options.
+                                $('li', container).each(function (index, option) {
+                                    var optValue = $(option).data('value');
+                                    // Check if btn is contained in options.
+                                    var foundFlag = _.findIndex(options, function (opt) {
+                                        return getOptionValue(opt) == optValue;
+                                    }) !== -1;
+                                    if (!foundFlag) {
+                                        // Remove selected if not found option.
+                                        selectedValue = jQuery.grep(selectedValue, function (value) {
+                                            return value != optValue;
+                                        });
+                                        option.remove();
+                                        return;
+                                    }
                                 });
-                                option.remove();
-                                return;
                             }
-                        });
-                        // Append options.
-                        options.forEach(function (item) {
-                            // Find option.
-                            var targetOption;
-                            $('li', container).each(function (index, opt) {
-                                var optValue = $(opt).data('value');
-                                if (optValue == getOptionValue(item)) {
-                                    targetOption = $(opt);
-                                    return;
+                            // Append options.
+                            options.forEach(function (item, idx) {
+                                // Check option is Selected.
+                                var isSelected = false;
+                                if (isMultiSelect) {
+                                    isSelected = selectedValue.indexOf(getOptionValue(item)) != -1;
+                                }
+                                else {
+                                    isSelected = selectedValue === getOptionValue(item);
+                                }
+                                var target = _.find($('li', container), function (opt) {
+                                    var optValue = $(opt).data('value');
+                                    return optValue == getOptionValue(item);
+                                });
+                                if (init || target === undefined) {
+                                    // Add option.
+                                    var selectedClass = isSelected ? 'ui-selected' : '';
+                                    var itemTemplate = '';
+                                    if (columns && columns.length > 0) {
+                                        columns.forEach(function (col, cIdx) {
+                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
+                                        });
+                                    }
+                                    else {
+                                        itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
+                                    }
+                                    $('<li/>').addClass(selectedClass).attr("data-idx", idx)
+                                        .html(itemTemplate).data('value', getOptionValue(item))
+                                        .appendTo(selectListBoxContainer);
+                                }
+                                else {
+                                    var targetOption = $(target);
+                                    if (isSelected) {
+                                        targetOption.addClass('ui-selected');
+                                    }
+                                    else {
+                                        targetOption.removeClass('ui-selected');
+                                    }
                                 }
                             });
-                            // Check option is Selected.
-                            var isSelected = false;
-                            if (isMultiSelect) {
-                                isSelected = selectedValue.indexOf(getOptionValue(item)) != -1;
-                            }
-                            else {
-                                isSelected = selectedValue == getOptionValue(item);
-                            }
-                            if (!targetOption) {
-                                // Add option.
-                                var selectedClass = isSelected ? 'ui-selected' : '';
-                                var itemTemplate = '';
-                                if (columns && columns.length > 0) {
-                                    var i = 0;
-                                    columns.forEach(function (col) {
-                                        var prop = item[col.prop];
-                                        itemTemplate += '<div class="nts-column nts-list-box-column-' + i + '">' + prop + '</div>';
-                                        i++;
-                                    });
+                            var padding = 10;
+                            // Set width for multi columns.
+                            if (columns && columns.length > 0) {
+                                var totalWidth = 0;
+                                columns.forEach(function (item, cIdx) {
+                                    $('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                                    totalWidth += item.length * maxWidthCharacter + 20;
+                                });
+                                if ($('.nts-column').css('padding')) {
+                                    var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
+                                    padding = parseInt(ntsCommonPadding) * 2;
                                 }
-                                else {
-                                    itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
-                                }
-                                $('<li/>')
-                                    .addClass(selectedClass)
-                                    .html(itemTemplate)
-                                    .data('value', getOptionValue(item))
-                                    .appendTo(selectListBoxContainer);
+                                totalWidth += padding * (columns.length + 1); // + 50;
+                                $('.nts-list-box > li').css({ 'min-width': totalWidth });
+                                $('.nts-list-box').css({ 'min-width': totalWidth });
+                                container.css({ 'min-width': totalWidth });
                             }
-                            else {
-                                if (isSelected) {
-                                    targetOption.addClass('ui-selected');
-                                }
-                                else {
-                                    targetOption.removeClass('ui-selected');
-                                }
+                            if (rows && rows > 0) {
+                                container.css({ 'height': rows * (18 + padding) });
+                                $('.nts-list-box').css({ 'height': rows * (18 + padding) });
+                                container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                             }
-                        });
+                        }
+                        container.data("options", options.slice());
+                        container.data("init", false);
                         // Set value.
-                        container.data('value', selectedValue);
-                        container.trigger('selectionChange');
+                        if (!_.isEqual(originalSelected, selectedValue) || init) {
+                            container.data('value', selectedValue);
+                            container.trigger('selectionChange');
+                        }
                         // Check enable.
                         if (!enable) {
                             selectListBoxContainer.selectable("disable");
@@ -1338,31 +1353,6 @@ var nts;
                             selectListBoxContainer.selectable("enable");
                             container.removeClass('disabled');
                         }
-                        var padding = 10;
-                        // Set width for multi columns.
-                        if (columns && columns.length > 0) {
-                            var i = 0;
-                            var totalWidth = 0;
-                            columns.forEach(function (item) {
-                                var length = item.length;
-                                $('.nts-list-box-column-' + i).width(length * maxWidthCharacter + 20);
-                                totalWidth += length * maxWidthCharacter + 20;
-                                i++;
-                            });
-                            if ($('.nts-column').css('padding')) {
-                                var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
-                                padding = parseInt(ntsCommonPadding) * 2;
-                            }
-                            totalWidth += padding * (columns.length + 1); // + 50;
-                            $('.nts-list-box > li').css({ 'min-width': totalWidth });
-                            $('.nts-list-box').css({ 'min-width': totalWidth });
-                            container.css({ 'min-width': totalWidth });
-                        }
-                        if (rows && rows > 0) {
-                            container.css({ 'height': rows * (18 + padding) });
-                            $('.nts-list-box').css({ 'height': rows * (18 + padding) });
-                            container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
-                        }
                         if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                             container.trigger('validate');
                         }
@@ -1370,23 +1360,42 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 /**
-                 * GridList binding handler
+                 * Grid scroll helper functions
+                 *
                  */
-                function calculateTop(options, id, key) {
+                function calculateIndex(options, id, key) {
                     if (!id)
                         return 0;
-                    var atomTop = 23.6363525390625;
-                    var len = options.length;
                     var index = 0;
-                    for (var i = 0; i < len; i++) {
+                    for (var i = 0; i < options.length; i++) {
                         var item = options[i];
                         if (item[key] == id) {
                             index = i;
                             break;
                         }
                     }
-                    return atomTop * i;
+                    return index;
                 }
+                /**
+                  * Grid scroll helper functions
+                  *
+                  */
+                function calculateIndex(options, id, key, childField) {
+                    if (!id)
+                        return 0;
+                    var index = 0;
+                    for (var i = 0; i < options.length; i++) {
+                        var item = options[i];
+                        if (item[key] == id) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    return index;
+                }
+                /**
+                 * GridList binding handler
+                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }
@@ -1464,7 +1473,9 @@ var nts;
                             }
                             if (row1 && row1 !== 'undefined') {
                                 //console.log(row1);
-                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                                var topPos = calculateIndex(options, row1, optionsValue);
+                                $grid.igGrid('virtualScrollTo', topPos);
+                                console.log(topPos);
                             }
                         });
                     };
@@ -1578,7 +1589,9 @@ var nts;
                                 }
                             }
                             if (row1 && row1 !== 'undefined') {
-                                scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
+                                var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
+                                var rowHeight = $('#' + treeGridId + "_" + row1).height();
+                                scrollContainer.scrollTop(rowHeight * index);
                             }
                             //console.log(row1);
                         });
@@ -1862,6 +1875,9 @@ var nts;
                                 format: 'yyyy/mm/dd',
                                 language: 'ja-JP'
                             });
+                        container.on('change', function (event) {
+                            data.value(new Date(container.val().substring(0, 10)));
+                        });
                         $input.on('change', function (event) {
                             data.value(new Date($input.val().substring(0, 10)));
                         });
@@ -1875,6 +1891,9 @@ var nts;
                         var container = $(element);
                         var idatr = container.attr("id");
                         var date = ko.unwrap(data.value);
+                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
+                        container.val(nts.uk.time.formatDate(date, dateFormat));
                         var $input = container.find('#' + idatr + "_input");
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var oldDate = $input.datepicker("getDate");
@@ -2002,12 +2021,16 @@ var nts;
                         features.push({ name: 'Sorting', type: 'local' });
                         features.push({ name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true });
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList'/>");
-                        $swap.parent().css({ width: totalwidth + 'px', height: height + 'px', overflowY: 'auto', overflowX: 'auto', display: 'table' });
+                        $swap.parent().css({
+                            width: totalwidth + 'px', height: height + 'px', overflowY: 'auto',
+                            overflowX: 'auto', display: 'table'
+                        });
                         $swap.css({ display: 'table', tableLayout: 'fixed' });
                         if (showSearchBox) {
                             var searchAreaId = elementId + "-search-area";
                             $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
-                            $swap.find(".ntsSearchArea").css({ display: "table-row" }).append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput'/>")
+                            $swap.find(".ntsSearchArea").css({ display: "table-row" })
+                                .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput'/>")
                                 .append("<button class='ntsSearchButton'/>");
                             $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
                             $swap.find(".ntsSearchButton").css({ "marginLeft": '10px' }).text("Search").click(function () {
