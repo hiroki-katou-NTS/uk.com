@@ -1,0 +1,249 @@
+<div class="contents-area">
+	<div class="contentvalue">
+		<table>
+			<tr>
+				<td id="contents-left" class="bg-green caret-right caret-background">
+					<div class="leftTop">
+						<button id="C_BTN_001">履歴追加</button>
+						<button id="C_BTN_002" class="danger">履歴編集</button>
+					</div>
+					<div id="list-box"
+						data-bind="ntsListBox: {
+						options: clst001,
+						optionsValue: 'code',
+						optionsText: 'name',
+						multiple: true,
+						value: clstsel001,
+						enable: true,
+						rows: 4,
+						required: true,
+						columns: [
+							{ prop: 'name', length: 10 }
+						]}"></div>
+				</td>
+				<td id="contents-right">
+					<table id="tableRight">
+						<tr>
+							<td class="contentsRL">
+								<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true}">
+									<label>期間<br /></label>
+								</div>
+							</td>
+							<td class="contentsRR"><input id="C_INP_001"
+								class="trFull15" /> <label id="C_LBL_002"> ~ </label> <label
+								id="C_LBL_003"> 終了年月 </label></td>
+						</tr>
+						<tr>
+							<td colspan="2"><hr /></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table id="health_insurance_rate_table"
+									class="table_border_black">
+									<tbody>
+										<tr class="bg-green">
+											<th></th>
+											<th></th>
+											<th class="text_center">A</th>
+											<th class="text_center">B</th>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">1</td>
+											<td class="bg-green text_center">事業種類名1</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div 
+													data-bind="ntsComboBox: {
+													options: csel001,
+													optionsValue: 'code',
+													value: csel001Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}"></div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">2</td>
+											<td class="bg-green text_center">事業種類名2</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0011,
+													optionsValue: 'code',
+													value: csel0011Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">3</td>
+											<td class="bg-green text_center">事業種類名3</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0012,
+													optionsValue: 'code',
+													value: csel0012Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">4</td>
+											<td class="bg-green text_center">事業種類名4</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0013,
+													optionsValue: 'code',
+													value: csel0013Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">5</td>
+											<td class="bg-green text_center">事業種類名5</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0014,
+													optionsValue: 'code',
+													value: csel0014Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">6</td>
+											<td class="bg-green text_center">事業種類名6</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0015,
+													optionsValue: 'code',
+													value: csel0015Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">7</td>
+											<td class="bg-green text_center">事業種類名7</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0016,
+													optionsValue: 'code',
+													value: csel0016Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">8</td>
+											<td class="bg-green text_center">事業種類名8</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0017,
+													optionsValue: 'code',
+													value: csel0017Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">9</td>
+											<td class="bg-green text_center">事業種類名9</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0018,
+													optionsValue: 'code',
+													value: csel0018Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">10</td>
+											<td class="bg-green text_center">事業種類名10</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: csel0019,
+													optionsValue: 'code',
+													value: csel0019Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</table>
+
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

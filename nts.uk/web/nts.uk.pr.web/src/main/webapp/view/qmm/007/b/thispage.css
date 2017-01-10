@@ -3,38 +3,26 @@
 #this-contents-area {
 	margin-top: 20px;
 	margin-left: 20px;
+	min-width: 560px;
 }
 
 #this-functions-area {
 	margin-top: 15px;
-	max-width: 400px;
 }
 
-.tbl-default{
-	margin-top: 20px;
-	margin-bottom: 20px;
+#inp_001 {
+	width: 80px;
 }
 
-.btn-default {
-	min-width: 110px;
+#btn_001 {
+	min-width: 120px;
 }
 
 #btn_002 {
 	margin-left: 10px;
+	min-width: 100px;
 }
 
-.inp-default {
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-ms-border-radius: 3px;
-	width: 80px;
-	height: 25px;
-}
-
-.control-group > td {
-	padding-bottom: 8px
-}
-.valign-top {
-	vertical-align: top;
+#lbl_004 {
+	margin-left: 25px;
 }

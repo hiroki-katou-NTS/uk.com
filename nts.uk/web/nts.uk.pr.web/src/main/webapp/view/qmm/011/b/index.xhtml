@@ -1,0 +1,158 @@
+<div class="contents-area">
+	<div class="contentvalue">
+		<table>
+			<tr>
+				<td id="contents-left" class="bg-green caret-right caret-background">
+					<div class="leftTop">
+						<button id="B_BTN_001">履歴追加</button>
+						<button id="B_BTN_002" class="danger">履歴編集</button>
+					</div>
+					<div id="list-box"
+						data-bind="ntsListBox: {
+						options: blst001,
+						optionsValue: 'code',
+						optionsText: 'name',
+						multiple: true,
+						value: blstsel001,
+						enable: true,
+						rows: 4,
+						required: true,
+						columns: [
+							{ prop: 'name', length: 10 }
+						]}"></div>
+				</td>
+				<td id="contents-right">
+					<table id="tableRight">
+						<tr>
+							<td class="contentsRL">
+								<div id="B_LBL_001" data-bind="ntsFormLabel: {required: true}">
+									<label>期間<br /></label>
+								</div>
+							</td>
+							<td class="contentsRR"><input id="B_INP_001"
+								class="trFull15" /> <label id="B_LBL_002"> ~ </label> <label
+								id="B_LBL_003"> 終了年月 </label></td>
+						</tr>
+						<tr>
+							<td colspan="2"><hr /></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table id="health_insurance_rate_table"
+									class="table_border_black">
+									<tbody>
+										<tr class="bg-green">
+											<th></th>
+											<th class="text_center">A</th>
+											<th class="text_center">B</th>
+											<th class="text_center">C</th>
+											<th class="text_center">D</th>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">E</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: bsel001,
+													optionsValue: 'code',
+													value: bsel001Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}"></div>
+											</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: bsel002,
+													optionsValue: 'code',
+													value: bsel002Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">F</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: bsel003,
+													optionsValue: 'code',
+													value: bsel003Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: bsel004,
+													optionsValue: 'code',
+													value: bsel004Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="bg-green text_center">G</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: bsel005,
+													optionsValue: 'code',
+													value: bsel005Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td>
+												<div
+													data-bind="ntsComboBox: {
+													options: bsel006,
+													optionsValue: 'code',
+													value: bsel006Code,
+													optionsText: 'name',
+													editable: true,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

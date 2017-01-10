@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="left-content">
+					<div id="B_LBL_000">社会保険事業所から読み込み</div>
+					<hr />
+					<div id="B_LBL_001" data-bind="ntsFormLabel: {}">労働保険事業所の登録</div>
+					<br />
+					<div >
+						<input id="inp_001" />
+						<button id="B_SCH_001" class="caret-bottom caret-background">検索</button>
+					</div>
+					<table id="single-list"
+						data-bind="ntsGridList: {
+						width: 550,
+						height: 110,
+						options: items,
+						optionsValue: 'code',
+						columns: columns,
+						multiple: false,
+						value: currentCode
+					}"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

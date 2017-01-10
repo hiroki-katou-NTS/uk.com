@@ -1,0 +1,310 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1200,
+					height : 600
+				};
+			</script>
+			<!-- 			<com:stylefile path="../catalog/catalog.css" /> -->
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="content" class="cf">
+					<div class="sidebar-content-header">
+						<button class="proceed">新規</button>
+						<button>登録</button>
+						<button>印刷</button>
+						<button>削除</button>
+						<button>閉じる</button>
+					</div>
+					<div class="contents-area">
+						<!-- left -->
+						<div style="width: 40%; float: left;">
+							<div class="bg-green caret-right caret-background"
+								style="float: left; width: 350px; height: 500px; margin: 20px 50px;">
+								<div style="width: 400px"
+									data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+								<div style="padding-left: 25px; padding-top: 5px;">
+									<table id="treegrid2"
+										data-bind="ntsTreeGridView:{
+										width: 300,
+										height: 400,
+										options: dataSource,
+										selectedValues: selectedCodes,								
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,										
+										showCheckBox: true}"
+										class="cf">
+									</table>
+									`
+								</div>
+							</div>
+						</div>
+						<!-- right -->
+						<div style="width: 60%; float: left;">
+							<div style="padding-right: 10px;">
+								<div id="tab-panel"
+									data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
+									<div class="tab-content-1">
+										<table class="border_none">
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {required: true}">コード/名称</div></td>
+												<td colspan="2" class="border_none padding_top"><div
+														data-bind="with: basicInfo_inp_001">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+												<td colspan="2" class="border_none padding_top padding_left"><div
+														data-bind="with: basicInfo_inp_002">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">略名</div></td>
+												<td colspan="2" class="border_none padding_top">
+													<div data-bind="with: basicInfo_inp_003">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">代表者名</div></td>
+												<td colspan="2" class="border_none padding_top">
+													<div data-bind="with: basicInfo_inp_004">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td
+													class="no_left_border no_right_border no_top_border border_bottom "><div
+														style="margin-top: 20px; margin-bottom: 10px;"
+														data-bind="ntsFormLabel: {required: true}">代表者</div></td>
+												<td colspan="4"
+													class="no_left_border no_right_border no_top_border border_bottom "><div
+														data-bind="with: basicInfo_inp_005">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">郵便番号</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_006">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+												<td>
+													<button>検索</button>
+												</td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">都道府県名</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_007">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">住所 １</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_008">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">カナ１</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_009">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">住所 ２</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_010">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">カナ ２</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_011">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td class="border_none"><div style="margin-top: 20px;"
+														data-bind="ntsFormLabel: {}">電話番号</div></td>
+												<td class="border_none"><div
+														data-bind="with: basicInfo_inp_012">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+
+										</table>
+									</div>
+									<div class="tab-content-2">
+										<table class="border_none">
+											<tr>
+												<td colspan="6" class="border_none">事業所整理番号</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">健康保険事</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_001">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_002">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">厚生年金事</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_003">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_004">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="6" class="border_none">厚生年金基金</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">厚生年金基金番号</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_005">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">厚生年金事</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_006">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="6" class="border_none">気休用</td>
+											</tr>
+											<tr>
+												<td colspan="" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">健康保険</div></td>
+												<td>市区府号:</td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_007">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+												<td>事業所記号:</td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_008">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">厚生年金</div></td>
+												<td>市区府号:</td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_009">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+												<td>事業所記号:</td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_010">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">健康保険事業所番号</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_011">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">健康具合事業所番号</div></td>
+												<td class="border_none"><div
+														data-bind="with: insuranceInfo_inp_012">
+														<input
+															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+													</div></td>
+											</tr>
+											<tr>
+												<td colspan="2" class="border_none"><div
+														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">メモ</div></td>
+												<td colspan="4" class="border_none">
+												<TEXTAREA id="input-text" rows="4" cols="60" data-bind="value: textArea"></TEXTAREA>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

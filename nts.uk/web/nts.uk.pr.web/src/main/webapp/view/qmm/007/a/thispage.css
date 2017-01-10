@@ -1,25 +1,10 @@
 @CHARSET "UTF-8";
 
-#contents-area {
-	/*  width: 1000px; */
-}
-
 #functions-area {
 	padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 40px;
-}
-
-.btn-default {
-	margin-left: 10px;
-	min-width: 75px;
-}
-
-.inp-default {
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-ms-border-radius: 3px;
+    padding-left: 50px;
+    padding-right: 20px;
 }
 
 #left-content {
@@ -35,27 +20,12 @@
 	min-height: 600px;
 }
 
-#lbl_008 {
+#lbl_001 {
+	padding-top: 10px;
 }
 
 #inp_001 {
 	width: 150px;
-}
-
-#inp_002 {
-	width: 50px;
-}
-
-#inp_003 {
-	width: 250px;
-}
-
-#inp_004 {
-	width: 70px;
-}
-
-#inp_005 {
-	width: 110px;
 }
 
 #inp_006 textarea {
@@ -71,10 +41,7 @@
 	margin-bottom: 3px !important;
 }
 
-.valign-top {
-	vertical-align: top;
-}
-
-.control-group > td {
-	padding-bottom: 8px
+.btn-default {
+	margin-left: 10px;
+	min-width: 80px;
 }

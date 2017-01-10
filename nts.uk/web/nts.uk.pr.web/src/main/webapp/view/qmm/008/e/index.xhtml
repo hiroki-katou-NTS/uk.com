@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1200,
+					height : 600
+				};
+			</script>
+<!-- 			<com:stylefile path="../catalog/catalog.css" /> -->
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+<!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="content" class="cf">
+					<div class="sidebar-content-header">
+						<button class="proceed">新規</button>
+						<button>登録</button>
+						<button>印刷</button>
+						<button>再計算</button>
+						<button>閉じる</button>
+					</div>
+					<div class="contents-area">
+						<div style=" float:left;">
+							<div style="margin-top: 20px;width:35%;"
+								data-bind="ntsFormLabel: {required: true}">事業所 :</div>
+							code - namecode - namecodee
+						</div>
+						<div>
+						<div style="margin-top: 20px;width:35%;"
+							data-bind="ntsFormLabel: {required: true}">期間 : </div>
+							(平成28年04月) ~ 9999/12
+						</div>
+						<div style="padding-top:30px;">
+						<table id="health_insurance_per_month" >
+							<tbody>
+								<tr class="bg-green">
+									<th colspan="2" rowspan="2">数</th>
+									<th class="text_center" rowspan="4">標準月額</th>
+									<th class="text_center" colspan="2" rowspan="2">報酬月額</th>
+									<th class="text_center" colspan="6">健康保険料</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center" colspan="4">被保険者負担</th>
+									<th class="text_center" colspan="2">事業主負担</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center" rowspan="2">健保</th>
+									<th class="text_center" rowspan="2">厚保</th>
+									<th class="text_center" rowspan="2">以上</th>
+									<th class="text_center" rowspan="2">末満</th>
+									
+									<th class="text_center" >健康保険</th>
+									<th class="text_center" >介護</th>
+									<th class="text_center" >内（特定）</th>
+									<th class="text_center" >内（基本）</th>
+									<th class="text_center" >健康保険</th>
+									<th class="text_center" >介護</th>
+								</tr>
+								<tr class="bg-green">
+									<th class="text_center" >40.900/1000</th>
+									<th class="text_center" >40.900/1000</th>
+									<th class="text_center" >40.900/1000</th>
+									<th class="text_center" >40.900/1000</th>
+									<th class="text_center" >40.900/1000</th>
+									<th class="text_center" >40.900/1000</th>
+								</tr>
+								<tr>
+								<td class="bg-green">1</td>
+								<td class="bg-green">1</td>
+								<td class="bg-green">58000</td>
+								<td class="bg-green"></td>
+								<td class="bg-green">63000</td>
+								<td>1233</td>
+								<td>4223</td>
+								<td>1723</td>
+								<td>5523</td>
+								<td>2475</td>
+								<td>1234</td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

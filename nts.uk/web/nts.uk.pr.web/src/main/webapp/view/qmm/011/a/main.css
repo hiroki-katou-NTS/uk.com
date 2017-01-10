@@ -1,0 +1,191 @@
+.divHeader {
+	margin: 5px;
+}
+
+.btnStyle {
+	width: 70px;
+	margin-right: 5px;
+}
+
+.trFull25 {
+	width: 25%;
+}
+
+.trFull45 {
+	width: 45%;
+}
+
+.trFull30 {
+	width: 30%;
+}
+
+.trFull5 {
+	width: 5%;
+}
+
+.left20 {
+	margin-left: 20px;
+}
+
+.labelRed {
+	font-weight: bold;
+	color: red;
+}
+
+.trFull15 {
+	width: 15%;
+}
+
+#A_BTN_005 {
+	margin-left: 200px;
+}
+
+.floatRight {
+	float: right;
+}
+
+#contents-left, #contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+}
+
+#contents-right {
+	padding-left: 40px !important;
+}
+
+.leftTop {
+	display: inline;
+	width: 100%;
+}
+
+#SCH_001 {
+	width: 100%;
+}
+
+.spanSearch {
+	float: right;
+	width: 20%;
+}
+
+.contentsRL {
+	width: 20%;
+	padding-bottom: 5px;
+}
+
+.contentsRR {
+	width: 70%;
+}
+
+#tableRight {
+	width: 100%;
+}
+
+#A_INP_002 {
+	width: 100px;
+}
+
+#A_INP_003 {
+	width: 30%;
+	margin-left: 10px;
+}
+
+button.nts-switch-button {
+	min-width: 80px;
+}
+
+#SEL-002, #SEL-004 {
+	min-width: 0px !important;
+	max-width: 160px !important;
+}
+
+#search_001 {
+	margin-top: 20px;
+}
+
+.contentvalue {
+	margin-top: 40px;
+	margin-left: 40px;
+}
+
+#list-box {
+	width: 150px;
+	margin-top: 10px;
+}
+
+.backgroundGreen {
+	background-color: #7CFC00;
+}
+
+.health-input {
+	width: 100px;
+	border-radius: 4px;
+}
+
+.empty-col {
+	width: 30px;
+}
+
+.select_round {
+	width: 175px;
+}
+
+.tbl_health_insurance_rate {
+	width: 150px;
+}
+
+.text_center {
+	text-align: center;
+}
+
+.hr_width {
+	width: 99%
+}
+
+.pad_top_10 {
+	padding-top: 10px;
+}
+
+.table_border_black td, th {
+	border: 1px solid black;
+}
+
+.table_border_black {
+	width: 100%;
+}
+
+th, td {
+	padding: 2px;
+}
+
+.no_left_border {
+	border-left: none;
+}
+
+.no_right_border {
+	border-right: none;
+}
+
+.no_top_border {
+	border-top: none;
+}
+
+.no_bottom_border {
+	border-bottom: none;
+}
+
+.pad_left_10 {
+	padding-left: 10px;
+}
+
+.pad_right_10 {
+	padding-right: 10px;
+}
+
+.border_none {
+	border: none;
+}
+
+.right {
+	width: 62%;
+	float: left;
+}

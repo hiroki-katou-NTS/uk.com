@@ -8,6 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../common.css" />
 			<com:stylefile path="thispage.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -15,47 +16,56 @@
 
 		<ui:define name="content">
 			<!-- BEGIN CONTENT AREA-->
-			<div id="this-contents-area">
+			<div id="this-contents-area" class="margin-top-bot-20">
 				<label id="lbl_001">履歴情報を確認し、削除または修正を行ってください。</label>
-				<table class="tbl-default">
-					<tr class="control-group">
+				<table class="margin-top-bot-20 form-default">
+					<tr>
 						<td><div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div></td>
-						<td><label id="lbl_003">lbl_003</label> <label id="lbl_004">lbl_004</label></td>
+						<td><label id="lbl_003" data-bind="text: lbl_003()"></label>
+							<label id="lbl_004" data-bind="text: lbl_004()"></label></td>
 					</tr>
-					<tr class="control-group">
+					<tr>
 						<td><div id="lbl_005"
 								data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
-								name="textRadio" value="2" data-bind="checked: 1" /> <span
+								name="textRadio" data-bind="checkedValue: '1', checked: sel_001_radio" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '最新の履歴（2016/04）から引き継ぐ'"></span>
 						</label></td>
 					</tr>
-					<tr class="control-group">
+					<tr>
 						<td> </td>
-						<td><div id="lbl_006" class="margin-left-20 bg-yellow color-danger">全ての履歴を削除すると、会社一律金額のデータも削除します。</div></td>
+						<td><div id="lbl_006" class="bg-yellow color-danger">全ての履歴を削除すると、会社一律金額のデータも削除します。</div></td>
 					</tr>
-					<tr class="control-group">
+					<tr>
 						<td><div class="invisible" data-bind="ntsFormLabel: {}"> </div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
-								name="textRadio" value="2" data-bind="checked: 1" /> <span
+								name="textRadio" data-bind="checkedValue: '2', checked: sel_001_radio" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '初めから作成する'"></span>
 						</label></td>
 					</tr>
-					<tr class="control-group">
+					<tr>
 						<td> </td>
-						<td><div id="lbl_007" class="margin-left-20" data-bind="ntsFormLabel: {}">期間</div> <input
-							id="inp_001" class="inp-default" value="2017/01" /> <label>lbl_008</label></td>
+						<td><div id="lbl_007" data-bind="ntsFormLabel: {}">期間</div> <span data-bind="with: inp_001">
+								<input id="inp_001" class="inp-default"
+									data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</span> <label data-bind="text: lbl_008"></label></td>
 					</tr>
 				</table>
 			</div>
 			<hr />
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
-			<div id="this-functions-area" class="control-group halign-center">
-				<button class="btn-default proceed x-large" id="btn_001">決定</button>
-				<button class="" id="btn_002" onclick="nts.uk.ui.windows.close()">キャンセル</button>
+			<div id="this-functions-area" class="halign-center">
+				<button class="proceed x-large" id="btn_001" data-bind="click: btn_001_clicked">決定</button>
+				<button id="btn_002" data-bind="click: btn_002_clicked">キャンセル</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 		</ui:define>
