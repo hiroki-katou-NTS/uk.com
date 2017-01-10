@@ -115,6 +115,11 @@ module nts.uk.pr.view.qmm002_1.a {
             {
                 nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml",{title:"銀行の登録　＞　一括削除"});
             }
+          
+            OpenDdialog(): any
+            {
+                nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml",{title:"銀行の登録　＞　銀行の追加"});
+            }
             
             getEra(codeNew): BankInfo {
                 var self = this;

@@ -103,6 +103,9 @@ var nts;
                                 ScreenModel.prototype.OpenBdialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" });
                                 };
+                                ScreenModel.prototype.OpenDdialog = function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" });
+                                };
                                 ScreenModel.prototype.getEra = function (codeNew) {
                                     var self = this;
                                     var node = _.find(self.lst_001(), function (item) {
