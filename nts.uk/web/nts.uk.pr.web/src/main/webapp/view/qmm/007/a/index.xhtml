@@ -8,6 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../common.css" />
 			<com:stylefile path="thispage.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -33,12 +34,12 @@
 			<div id="contents-area">
 				<!-- BEGIN LEFT CONTENT-->
 				<div id="left-content" class="bg-green caret-right caret-background">
-					<div class="control-group">
+					<div>
 						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
 						<input id="inp_001" class="inp-default" />
-						<button id="sch_001">検索</button>
+						<button id="sch_001" class="caret-bottom caret-background">検索</button>
 					</div>
-					<div class="control-group"
+					<div
 						data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 					<div class="control-group cf">
 						<button class="pull-left" id="btn_004"
@@ -67,11 +68,11 @@
 
 				<!-- BEGIN RIGHT CONTENT-->
 				<div id="right-content">
-					<table>
-						<tr class="controls-group">
+					<table class="form-default">
+						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: { required: true }">コード/名称</div></td>
-							<td colspan="2"><div class="" data-bind="with: inp_002_code">
+							<td colspan="2"><span class="" data-bind="with: inp_002_code">
 									<input id="inp_002" class="inp-default"
 										data-bind="ntsTextEditor: {
 									value: value,
@@ -80,8 +81,8 @@
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-								</div>
-								<div class="padding-left-4" data-bind="with: inp_003_name">
+								</span>
+								<span data-bind="with: inp_003_name">
 									<input id="inp_003" class="inp-default"
 										data-bind="ntsTextEditor: {
 									value: value,
@@ -90,12 +91,12 @@
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-								</div></td>
+								</span></td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><div class="" data-bind="with: inp_004_date">
+							<td><span data-bind="with: inp_004_date">
 									<input id="inp_004" class="inp-default"
 										data-bind="ntsTextEditor: {
 									value: value,
@@ -104,9 +105,9 @@
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-								</div> <label id="lbl_005" data-bind="text: lbl_005()">lbl_005</label></td>
+								</span> <label id="lbl_005" data-bind="text: lbl_005()">lbl_005</label></td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { required: true }">金額</div></td>
 							<td><div data-bind="with: inp_005_money">
@@ -120,7 +121,7 @@
 									readonly: readonly}" />
 								</div></td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
@@ -129,12 +130,12 @@
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
-									type="radio" name="textRadio" value="2"
+									type="radio" name="textRadio"
 									data-bind="checkedValue: '2', checked: sel_001_radio" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td> </td>
 							<td class="valign-top" rowspan="4"><div id="sel_002"
 									data-bind="ntsSwitchButton: {
@@ -154,7 +155,7 @@
 						value: sel_003_monthly}"></div>
 							</td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td> </td>
 							<td><label id="lbl_010">日給月給者</label></td>
 							<td class="">
@@ -167,7 +168,7 @@
 						value: sel_004_dayMonth}"></div>
 							</td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td> </td>
 							<td><label id="lbl_011">日給者</label></td>
 							<td class="">
@@ -180,7 +181,7 @@
 						value: sel_005_daily}"></div>
 							</td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td> </td>
 							<td><label id="lbl_012">時給者</label></td>
 							<td class="">
@@ -193,13 +194,13 @@
 						value: sel_006_hourly}"></div>
 							</td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td></td>
 						</tr>
-						<tr class="controls-group">
-							<td colspan="4"><hr /></td>
+						<tr>
+							<td colspan="4"><hr/></td>
 						</tr>
-						<tr class="controls-group">
+						<tr>
 							<td class="valign-top"><div id="lbl_008"
 									data-bind="ntsFormLabel: {}">メモ</div></td>
 							<td colspan="3"><div id="inp_006">
