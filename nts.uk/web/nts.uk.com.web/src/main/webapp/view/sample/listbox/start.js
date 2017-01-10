@@ -2,11 +2,11 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('基本給2', '基本給', "description 1"),
-                new ItemModel('基本給1', '役職手当', "description 2"),
-                new ItemModel('基本給3', '基本給', "description 3")
-            ]);
+            var temp = [];
+            for (var i = 0; i < 1000; i++) {
+                temp.push(new ItemModel('基本給' + (i + 1), '基本給', "description " + (i + 1)));
+            }
+            self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable(null);

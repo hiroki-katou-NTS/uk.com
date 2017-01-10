@@ -21,25 +21,43 @@
 					<div id="content" class="cf">
 						<h1>User Guide</h1>
 						<h2>Overview</h2>
-						<button id="button1" data-bind="click: showOverlay">Click here!</button>
-						<button id="button2" data-bind="click: showOverlay2" class="pull-right">Then click here!</button>
-						
-						<div class="userguide" data-target="#side-menu" data-direction="right" >
-							<div data-target="#button1" data-direction="right">
+						<button id="button-right" data-bind="click: showOverlayRight">Right</button>
+						<button id="button-left" data-bind="click: showOverlayLeft">Left</button>
+						<br/><br/><br/><br/><br/>
+						<button id="button-top" data-bind="click: showOverlayTop">Top</button>
+						<button id="button-bottom" data-bind="click: showOverlayBottom">Bottom</button>
+						<!-- UserGuide Right -->
+						<div class="userguide-right" data-toggle="userguide" data-target="#side-menu" data-direction="right" data-margin="50">
+							<div data-target="#side-menu > h1:first" data-direction="right">
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
 							</div>
 							<div data-target="#button-prev" data-direction="right">
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. 
 							</div>
 						</div>
-						
-						
-						<div class="userguide2" data-target="#button1" data-direction="right" >
-							<div data-target="#button2" data-direction="left">
+						<!-- UserGuide Left -->
+						<div class="userguide-left" data-toggle="userguide" data-target="#button-next" data-direction="left" >
+							<div data-target="#button-left" data-direction="right">
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
 							</div>
 							<div data-target="#button-next" data-direction="left">
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. 
+							</div>
+						</div>
+						<!-- UserGuide Top -->
+						<div class="userguide-top" data-toggle="userguide" data-target="#button-top" data-direction="top" >
+							<div data-target="#button-top" data-direction="top">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
+							</div>
+							<div data-target="#button-prev" data-direction="top">North</div>
+							<div data-target="#button-prev" data-direction="bottom">South</div>
+							<div data-target="#button-prev" data-direction="left">West</div>
+							<div data-target="#button-prev" data-direction="right">East</div>
+						</div>
+						<!-- UserGuide Bottom -->
+						<div class="userguide-bottom" data-toggle="userguide" data-target="#button-bottom" data-direction="bottom" >
+							<div data-target="#button-bottom" data-direction="bottom">
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean a nibh vel ligula pulvinar eleifend. Aenean finibus turpis eu suscipit mollis. In ipsum nibh, finibus at luctus et, venenatis non neque. Mauris volutpat leo ut consequat vulputate. Morbi vitae massa nec ligula congue pretium. Morbi tristique erat sed lacinia ornare. Fusce ut iaculis nulla, nec fringilla neque. Sed vehicula lorem neque, vel laoreet quam accumsan in.
 							</div>
 						</div>
 						<article class="cf">
