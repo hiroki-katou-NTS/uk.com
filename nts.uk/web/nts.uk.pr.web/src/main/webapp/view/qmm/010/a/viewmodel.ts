@@ -1,25 +1,25 @@
 module qmm010.a.viewmodel {
     import option = nts.uk.ui.option;
-
     export class ScreenModel {
+        laborInsuranceOffice: KnockoutObservable<LaborInsuranceOffice>;
         textSearch: any;
         ainp001: KnockoutObservable<string>;
-        ainp002: KnockoutObservable<string>;
-        ainp003: KnockoutObservable<string>;
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
         ainp004: KnockoutObservable<string>;
         ainp005: KnockoutObservable<string>;
-        ainp006: KnockoutObservable<string>;
+        postalCode: KnockoutObservable<string>;
         ainp007: KnockoutObservable<string>;
-        ainp008: KnockoutObservable<string>;
-        ainp009: KnockoutObservable<string>;
-        ainp010: KnockoutObservable<string>;
-        ainp011: KnockoutObservable<string>;
-        ainp012: KnockoutObservable<string>;
+        address1st: KnockoutObservable<string>;
+        kanaAddress1st: KnockoutObservable<string>;
+        address2nd: KnockoutObservable<string>;
+        kanaAddress2nd: KnockoutObservable<string>;
+        phoneNumber: KnockoutObservable<string>;
         ainp013: KnockoutObservable<string>;
         ainp014: KnockoutObservable<string>;
-        ainp015: KnockoutObservable<string>;
-        ainp016: KnockoutObservable<string>;
-        ainp017: KnockoutObservable<string>;
+        officeNoA: KnockoutObservable<string>;
+        officeNoB: KnockoutObservable<string>;
+        officeNoC: KnockoutObservable<string>;
         ainp018: KnockoutObservable<string>;
         multilineeditor: any;
         employmentName: KnockoutObservable<string>;
@@ -30,23 +30,24 @@ module qmm010.a.viewmodel {
         currentCodeList: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
+            self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC'));
             self.ainp001 = ko.observable("");
-            self.ainp002 = ko.observable("");
-            self.ainp003 = ko.observable("");
+            self.code = ko.observable(self.laborInsuranceOffice().code);
+            self.name = ko.observable(self.laborInsuranceOffice().name);
             self.ainp004 = ko.observable("");
             self.ainp005 = ko.observable("");
-            self.ainp006 = ko.observable("");
+            self.postalCode = ko.observable(self.laborInsuranceOffice().postalCode);
             self.ainp007 = ko.observable("");
-            self.ainp008 = ko.observable("");
-            self.ainp009 = ko.observable("");
-            self.ainp010 = ko.observable("");
-            self.ainp011 = ko.observable("");
-            self.ainp012 = ko.observable("");
+            self.address1st = ko.observable(self.laborInsuranceOffice().address1st);
+            self.kanaAddress1st = ko.observable(self.laborInsuranceOffice().kanaAddress1st);
+            self.address2nd = ko.observable(self.laborInsuranceOffice().address2nd);
+            self.kanaAddress2nd = ko.observable(self.laborInsuranceOffice().kanaAddress2nd);
+            self.phoneNumber = ko.observable(self.laborInsuranceOffice().phoneNumber);
             self.ainp013 = ko.observable("");
             self.ainp014 = ko.observable("");
-            self.ainp015 = ko.observable("");
-            self.ainp016 = ko.observable("");
-            self.ainp017 = ko.observable("");
+            self.officeNoA = ko.observable(self.laborInsuranceOffice().officeNoA);
+            self.officeNoB = ko.observable(self.laborInsuranceOffice().officeNoB);
+            self.officeNoC = ko.observable(self.laborInsuranceOffice().officeNoC);
             self.ainp018 = ko.observable("");
             self.employmentName = ko.observable("");
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
@@ -121,6 +122,34 @@ module qmm010.a.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    export class LaborInsuranceOffice {
+        code: string;
+        name: string;
+        postalCode: string;
+        address1st: string;
+        address2nd: string;
+        kanaAddress1st: string;
+        kanaAddress2nd: string;
+        phoneNumber: string;
+        officeNoA: string;
+        officeNoB: string;
+        officeNoC: string;
+        constructor(code: string, name: string, postalCode: string, address1st: string, address2nd: string,
+            kanaAddress1st: string, kanaAddress2nd: string, phoneNumber: string, officeNoA: string, officeNoB: string, officeNoC: string) {
+            this.code = code;
+            this.name = name;
+            this.postalCode = postalCode;
+            this.address1st = address1st;
+            this.address2nd = address2nd;
+            this.kanaAddress1st = kanaAddress1st;
+            this.kanaAddress2nd = kanaAddress2nd;
+            this.phoneNumber = phoneNumber;
+            this.officeNoA = officeNoA;
+            this.officeNoB = officeNoB;
+            this.officeNoC = officeNoC;
         }
     }
 }

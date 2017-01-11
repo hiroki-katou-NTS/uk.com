@@ -36,11 +36,11 @@
 	width: 15%;
 }
 
-#A_BTN_005 {
+#btn_delete {
 	margin-left: 200px;
 }
 
-#A_LBL_001 {
+#lbl_registrationOfLaborInsurancePlant {
 	float: right;
 }
 
@@ -80,11 +80,11 @@
 	width: 100%;
 }
 
-#A_INP_002 {
+#inp_code {
 	width: 100px;
 }
 
-#A_INP_003 {
+#inp_name {
 	width: 30%;
 	margin-left: 10px;
 }

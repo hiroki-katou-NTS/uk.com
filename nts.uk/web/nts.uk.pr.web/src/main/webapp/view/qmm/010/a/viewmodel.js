@@ -8,23 +8,24 @@ var qmm010;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC'));
                     self.ainp001 = ko.observable("");
-                    self.ainp002 = ko.observable("");
-                    self.ainp003 = ko.observable("");
+                    self.code = ko.observable(self.laborInsuranceOffice().code);
+                    self.name = ko.observable(self.laborInsuranceOffice().name);
                     self.ainp004 = ko.observable("");
                     self.ainp005 = ko.observable("");
-                    self.ainp006 = ko.observable("");
+                    self.postalCode = ko.observable(self.laborInsuranceOffice().postalCode);
                     self.ainp007 = ko.observable("");
-                    self.ainp008 = ko.observable("");
-                    self.ainp009 = ko.observable("");
-                    self.ainp010 = ko.observable("");
-                    self.ainp011 = ko.observable("");
-                    self.ainp012 = ko.observable("");
+                    self.address1st = ko.observable(self.laborInsuranceOffice().address1st);
+                    self.kanaAddress1st = ko.observable(self.laborInsuranceOffice().kanaAddress1st);
+                    self.address2nd = ko.observable(self.laborInsuranceOffice().address2nd);
+                    self.kanaAddress2nd = ko.observable(self.laborInsuranceOffice().kanaAddress2nd);
+                    self.phoneNumber = ko.observable(self.laborInsuranceOffice().phoneNumber);
                     self.ainp013 = ko.observable("");
                     self.ainp014 = ko.observable("");
-                    self.ainp015 = ko.observable("");
-                    self.ainp016 = ko.observable("");
-                    self.ainp017 = ko.observable("");
+                    self.officeNoA = ko.observable(self.laborInsuranceOffice().officeNoA);
+                    self.officeNoB = ko.observable(self.laborInsuranceOffice().officeNoB);
+                    self.officeNoC = ko.observable(self.laborInsuranceOffice().officeNoC);
                     self.ainp018 = ko.observable("");
                     self.employmentName = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
@@ -48,6 +49,19 @@ var qmm010;
                     ]);
                     self.currentCode = ko.observable();
                     self.currentCodeList = ko.observableArray([]);
+                    self.multilineeditor = {
+                        value: ko.observable(''),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                            resizeable: true,
+                            placeholder: "Placeholder for text editor",
+                            width: "",
+                            textalign: "left"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
                 }
                 ScreenModel.prototype.selectSomeItems = function () {
                     this.currentCode('150');
@@ -86,6 +100,23 @@ var qmm010;
                 return ItemModel;
             }());
             viewmodel.ItemModel = ItemModel;
+            var LaborInsuranceOffice = (function () {
+                function LaborInsuranceOffice(code, name, postalCode, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, officeNoA, officeNoB, officeNoC) {
+                    this.code = code;
+                    this.name = name;
+                    this.postalCode = postalCode;
+                    this.address1st = address1st;
+                    this.address2nd = address2nd;
+                    this.kanaAddress1st = kanaAddress1st;
+                    this.kanaAddress2nd = kanaAddress2nd;
+                    this.phoneNumber = phoneNumber;
+                    this.officeNoA = officeNoA;
+                    this.officeNoB = officeNoB;
+                    this.officeNoC = officeNoC;
+                }
+                return LaborInsuranceOffice;
+            }());
+            viewmodel.LaborInsuranceOffice = LaborInsuranceOffice;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm010.a || (qmm010.a = {}));
 })(qmm010 || (qmm010 = {}));
