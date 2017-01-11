@@ -16,7 +16,7 @@ module nts.uk.ui.koExtentions {
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
-            $input.wrap("<span class= 'nts-editor-wrapped'/>");
+            $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             $input.change(() => {
                 var validator = this.getValidator(data);
                 var formatter = this.getFormatter(data);
@@ -175,10 +175,9 @@ module nts.uk.ui.koExtentions {
 
             $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
             var $parent = $input.parent();
-            var width = option.width ? option.width : '100%';
-            $parent.css({ "display": "inline-block" });
+            var width = option.width;// ? option.width : '100%';
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
-            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 $parent.css({ 'width': '100%' });
             }
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
@@ -237,10 +236,10 @@ module nts.uk.ui.koExtentions {
             var parent = $input.parent();
             parent.css({ "display": "inline-block" });
             var parentTag = parent.parent().prop("tagName").toLowerCase();
-            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+            var width = option.width;// ? option.width : '100%';
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 parent.css({ 'width': '100%' });
             }
-            var width = option.width ? option.width : '100%';
             $input.css({ 'paddingLeft': '12px', 'width': width });
         }
 
