@@ -16,7 +16,7 @@ module nts.uk.ui.koExtentions {
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
-            $input.wrap("<span class= 'nts-editor-wrapped'/>");
+            $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             $input.change(() => {
                 var validator = this.getValidator(data);
                 var formatter = this.getFormatter(data);
@@ -175,10 +175,9 @@ module nts.uk.ui.koExtentions {
 
             $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
             var $parent = $input.parent();
-            var width = option.width ? option.width : '100%';
-            $parent.css({ "display": "inline-block" });
+            var width = option.width;// ? option.width : '100%';
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
-            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 $parent.css({ 'width': '100%' });
             }
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
@@ -237,10 +236,10 @@ module nts.uk.ui.koExtentions {
             var parent = $input.parent();
             parent.css({ "display": "inline-block" });
             var parentTag = parent.parent().prop("tagName").toLowerCase();
-            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+            var width = option.width;// ? option.width : '100%';
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 parent.css({ 'width': '100%' });
             }
-            var width = option.width ? option.width : '100%';
             $input.css({ 'paddingLeft': '12px', 'width': width });
         }
 
@@ -359,7 +358,7 @@ module nts.uk.ui.koExtentions {
             var i = fields.length;
             while (i--) {
                 var prop = fields[i];
-                var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
+                var strProp = ("" + item[prop]).toLocaleLowerCase();
                 if (strProp.indexOf(filter) !== -1) {
                     return true;
                 };
@@ -369,19 +368,24 @@ module nts.uk.ui.koExtentions {
         return filtered;
     };
     var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
+//        console.log(selected + "," + selectedKey + "," + compareKey);
+//        console.log(isArray);
         var current = null;
         if (isArray) {
             if (selected.length > 0) current = selected[0];
         } else if (selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
         }
+//        console.log("current = "  + current);
         if (arr.length > 0) {
             if (current) {
+                
                 for (var i = 0; i < arr.length - 1; i++) {
                     var item = arr[i];
                     if (selectedKey) {
-                        if (item[selectedKey] === current) return arr[i + 1][selectedKey];
-                    } else if (item[compareKey] === current[compareKey]) return arr[i + 1];
+//                        console.log(i);
+                        if (item[selectedKey] == current) return arr[i + 1][selectedKey];
+                    } else if (item[compareKey] == current[compareKey]) return arr[i + 1];
                 }
             }
             if (selectedKey) return arr[0][selectedKey];
@@ -421,13 +425,20 @@ module nts.uk.ui.koExtentions {
                 var compareKey = fields[0];
                 var isArray = $.isArray(selected());
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
-                if (!isArray) selected(selectedItem);
-                else {
-                    selected([]);
-                    selected.push(selectedItem);
-                }
-                component.trigger("selectChange");
+                console.log(selectedItem);
+                if(data.mode) {
+                    var selectArr = []; selectArr.push("" + selectedItem);
+                    component.ntsGridList("setSelected", selectArr);
+                    component.trigger("selectionChanged");
+                } else {
+                    if (!isArray) selected(selectedItem);
+                    else {
+                        selected([]);
+                        selected.push(selectedItem);
+                    }
+                    component.trigger("selectChange");
                 //console.log(selectedItem); 
+                }
             }
             $input.keyup(function() {
                 $input.change();
@@ -449,7 +460,7 @@ module nts.uk.ui.koExtentions {
             var $input = searchBox.find("input.ntsSearchBox");
             var searchTerm = $input.val();
             var data = valueAccessor();
-            var arr = data.items();
+            var arr = ko.unwrap(data.items);
             var fields = ko.unwrap(data.fields);
             var childField = null;
             if (data.childField) {
@@ -1133,13 +1144,11 @@ module nts.uk.ui.koExtentions {
             // Get options
             var options: Array<any> = ko.unwrap(data.options);
             // Get options value
-            var optionValue = ko.unwrap(data.optionsValue);
-            var optionText = ko.unwrap(data.optionsText);
+            var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+            var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
             var selectedValue = ko.unwrap(data.value);
             var isMultiSelect = ko.unwrap(data.multiple);
             var enable: boolean = ko.unwrap(data.enable);
-            var columns: Array<any> = data.columns;
-            var rows = data.rows;
             var required = ko.unwrap(data.required) || false;
             // Container
             var container = $(element);
@@ -1168,7 +1177,6 @@ module nts.uk.ui.koExtentions {
                         $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
                         $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
                     }
-
                     // Add selected value.
                     var data: any = isMultiSelect ? [] : '';
                     $("li.ui-selected", container).each(function(index, opt) {
@@ -1267,13 +1275,12 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
-
             // Get options.
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
-            var optionValue = ko.unwrap(data.optionsValue);
-            var optionText = ko.unwrap(data.optionsText);
+            var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+            var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
             var selectedValue = ko.unwrap(data.value);
             var isMultiSelect = ko.unwrap(data.multiple);
             var enable: boolean = ko.unwrap(data.enable);
@@ -1385,6 +1392,25 @@ module nts.uk.ui.koExtentions {
             container.data("options", options.slice());
             container.data("init", false);
 
+            // Set width for multi columns
+            if (columns && columns.length > 0) {
+                var padding = 10;
+                var totalWidth = 0;
+                columns.forEach((item, cIdx) => {
+                    container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                    totalWidth += item.length * maxWidthCharacter + 20;
+                });
+                totalWidth += padding * (columns.length + 1); // + 50;
+                selectListBoxContainer.find('li').css({ 'width': totalWidth });
+                selectListBoxContainer.css({ 'width': totalWidth });
+                container.css({ 'width': totalWidth });
+            }
+            if (rows && rows > 0) {
+                var rowHeight = 28;
+                container.css('height', rows * rowHeight);
+                container.find('.nts-list-box').css('height', rows * rowHeight);
+            }
+            
             // Set value
             if (!_.isEqual(originalSelected, selectedValue) || init) {
                 container.data('value', selectedValue);
@@ -1576,8 +1602,10 @@ module nts.uk.ui.koExtentions {
             if (data.headers) {
                 headers = ko.unwrap(data.headers);
             }
-            var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
+            var displayColumns: Array<any> = [
+                { headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                { headerText: headers[1], key: optionsText, dataType: "string" }
+            ];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
