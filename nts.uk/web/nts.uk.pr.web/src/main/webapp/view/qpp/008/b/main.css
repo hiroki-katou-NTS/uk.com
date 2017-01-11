@@ -1,0 +1,82 @@
+.div1 {
+	width: 700px;
+	border-bottom: grey solid 1px;
+	margin-left: 15px;
+}
+
+.div2 {
+	margin-left: 18px;
+	margin-top: 15px;
+	width: 700px;
+	height: 270px;
+}
+
+.div2Left {
+	width: 160px;
+	float: left;
+}
+.div2Right{
+	padding-top:110px;
+	float: left;
+	width: 500px;
+	height: 70px
+}
+.div2Bottom{
+	height: 50px;
+}
+.div2Label04{
+	height: 50px;
+}
+
+.tableCheckBox {
+	width: 100%;
+}
+
+.tableCheckBox tr {
+	height: 40px !important;
+}
+#B_LBL_001{
+	font-size: 1.2rem !important;
+}
+#B_LBL_004{
+	font-size: 1.2rem !important;
+}
+#B_LBL_005{
+	font-size: 1.2rem !important;
+}
+#B_LBL_008{
+	font-size: 1.2rem !important;
+}
+.divLBL004{
+	border-bottom: grey solid 1px;
+	width: 700px;
+	margin-left: 18px;
+}
+.B_SEL_010{
+	margin-left: 20px;
+	margin-top: 15px;
+}
+.div4{
+	border-bottom: grey solid 1px;
+	width: 700px;
+	margin-left: 18px;
+	margin-top: 30px;
+}
+.LBL_0607{
+	margin-left: 115px;
+}
+.divLBL008{
+	border-bottom: grey solid 1px;
+	width: 700px;
+	margin-left: 18px;
+	margin-top: 20px;
+}
+.divBottom{
+	border-top: grey solid 1px;
+	margin-top: 150px;
+	width: 900px;
+}	
+#B_BTN_001{
+	margin-left: 235px;
+	margin-right: 10px;
+}
