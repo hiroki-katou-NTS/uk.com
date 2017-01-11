@@ -15,11 +15,11 @@ var qmm011;
                         new BItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
                     ]);
                     var valuebsel001 = ko.observableArray([
-                        new BItemModelSEL001("0", "切り捨て"),
-                        new BItemModelSEL001("1", "切り上げ"),
-                        new BItemModelSEL001("2", "四捨五入"),
-                        new BItemModelSEL001("3", "五捨六入"),
-                        new BItemModelSEL001("4", "五捨五超入")
+                        new RoundingMethod("0", "切り捨て"),
+                        new RoundingMethod("1", "切り上げ"),
+                        new RoundingMethod("2", "四捨五入"),
+                        new RoundingMethod("3", "五捨六入"),
+                        new RoundingMethod("4", "五捨五超入")
                     ]);
                     self.blst001 = valueblst001;
                     self.blstsel001 = ko.observableArray([]);
@@ -29,8 +29,8 @@ var qmm011;
                     self.bsel004 = valuebsel001;
                     self.bsel005 = valuebsel001;
                     self.bsel006 = valuebsel001;
-                    self.binp001 = ko.observable('');
-                    self.binp002 = ko.observable('40.009');
+                    self.inp_historyb = ko.observable('');
+                    self.rateGeneralBusinessPerson = ko.observable('40.009');
                     self.binp003 = ko.observable('40.009');
                     self.binp004 = ko.observable('40.009');
                     self.binp005 = ko.observable('40.009');
@@ -103,14 +103,14 @@ var qmm011;
                 return BItemModelLST001;
             }());
             viewmodel.BItemModelLST001 = BItemModelLST001;
-            var BItemModelSEL001 = (function () {
-                function BItemModelSEL001(code, name) {
+            var RoundingMethod = (function () {
+                function RoundingMethod(code, name) {
                     this.code = code;
                     this.name = name;
                 }
-                return BItemModelSEL001;
+                return RoundingMethod;
             }());
-            viewmodel.BItemModelSEL001 = BItemModelSEL001;
+            viewmodel.RoundingMethod = RoundingMethod;
             var CItemModelLST001 = (function () {
                 function CItemModelLST001(code, name) {
                     this.code = code;
@@ -127,6 +127,23 @@ var qmm011;
                 return CItemModelSEL001;
             }());
             viewmodel.CItemModelSEL001 = CItemModelSEL001;
+            var UnemployeeInsuranceRate = (function () {
+                function UnemployeeInsuranceRate(historyId, companyCode, monthRange) {
+                    this.historyId = historyId;
+                    this.companyCode = companyCode;
+                    this.monthRange = monthRange;
+                }
+                return UnemployeeInsuranceRate;
+            }());
+            viewmodel.UnemployeeInsuranceRate = UnemployeeInsuranceRate;
+            var MonthRange = (function () {
+                function MonthRange(startMonth, endMonth) {
+                    this.startMonth = startMonth;
+                    this.endMonth = endMonth;
+                }
+                return MonthRange;
+            }());
+            viewmodel.MonthRange = MonthRange;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm011.a || (qmm011.a = {}));
 })(qmm011 || (qmm011 = {}));

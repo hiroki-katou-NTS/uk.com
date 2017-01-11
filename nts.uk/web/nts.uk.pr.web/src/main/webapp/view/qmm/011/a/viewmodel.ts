@@ -3,20 +3,20 @@ module qmm011.a.viewmodel {
     export class ScreenModel {
         blst001: KnockoutObservableArray<BItemModelLST001>;
         blstsel001: KnockoutObservableArray<string>;
-        bsel001: KnockoutObservableArray<BItemModelSEL001>;
-        bsel002: KnockoutObservableArray<BItemModelSEL001>;
-        bsel003: KnockoutObservableArray<BItemModelSEL001>;
-        bsel004: KnockoutObservableArray<BItemModelSEL001>;
-        bsel005: KnockoutObservableArray<BItemModelSEL001>;
-        bsel006: KnockoutObservableArray<BItemModelSEL001>;
+        bsel001: KnockoutObservableArray<RoundingMethod>;
+        bsel002: KnockoutObservableArray<RoundingMethod>;
+        bsel003: KnockoutObservableArray<RoundingMethod>;
+        bsel004: KnockoutObservableArray<RoundingMethod>;
+        bsel005: KnockoutObservableArray<RoundingMethod>;
+        bsel006: KnockoutObservableArray<RoundingMethod>;
         bsel001Code: KnockoutObservable<string>;
         bsel002Code: KnockoutObservable<string>;
         bsel003Code: KnockoutObservable<string>;
         bsel004Code: KnockoutObservable<string>;
         bsel005Code: KnockoutObservable<string>;
         bsel006Code: KnockoutObservable<string>;
-        binp001: KnockoutObservable<string>;
-        binp002: KnockoutObservable<string>;
+        inp_historyb: KnockoutObservable<string>;
+        rateGeneralBusinessPerson: KnockoutObservable<string>;
         binp003: KnockoutObservable<string>;
         binp004: KnockoutObservable<string>;
         binp005: KnockoutObservable<string>;
@@ -68,11 +68,11 @@ module qmm011.a.viewmodel {
                 new BItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
             ]);
             var valuebsel001 = ko.observableArray([
-                new BItemModelSEL001("0", "切り捨て"),
-                new BItemModelSEL001("1", "切り上げ"),
-                new BItemModelSEL001("2", "四捨五入"),
-                new BItemModelSEL001("3", "五捨六入"),
-                new BItemModelSEL001("4", "五捨五超入")
+                new RoundingMethod("0", "切り捨て"),
+                new RoundingMethod("1", "切り上げ"),
+                new RoundingMethod("2", "四捨五入"),
+                new RoundingMethod("3", "五捨六入"),
+                new RoundingMethod("4", "五捨五超入")
             ]);
             self.blst001 = valueblst001;
             self.blstsel001 = ko.observableArray([]);
@@ -82,8 +82,8 @@ module qmm011.a.viewmodel {
             self.bsel004 = valuebsel001;
             self.bsel005 = valuebsel001;
             self.bsel006 = valuebsel001;
-            self.binp001 = ko.observable('');
-            self.binp002 = ko.observable('40.009');
+            self.inp_historyb = ko.observable('');
+            self.rateGeneralBusinessPerson = ko.observable('40.009');
             self.binp003 = ko.observable('40.009');
             self.binp004 = ko.observable('40.009');
             self.binp005 = ko.observable('40.009');
@@ -155,7 +155,7 @@ module qmm011.a.viewmodel {
             this.name = name;
         }
     }
-    export class BItemModelSEL001 {
+    export class RoundingMethod {
         code: string;
         name: string
         constructor(code: string, name: string) {
@@ -177,6 +177,24 @@ module qmm011.a.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+    export class UnemployeeInsuranceRate {
+        historyId: string;
+        companyCode: string;
+        monthRange: MonthRange;
+        constructor(historyId: string, companyCode: string, monthRange: MonthRange) {
+            this.historyId = historyId;
+            this.companyCode = companyCode;
+            this.monthRange = monthRange;
+        }
+    }
+    export class MonthRange {
+        startMonth: number;
+        endMonth: number;
+        constructor(startMonth: number, endMonth: number) {
+            this.startMonth = startMonth;
+            this.endMonth = endMonth;
         }
     }
 }
