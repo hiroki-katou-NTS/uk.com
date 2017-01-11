@@ -1435,7 +1435,7 @@ var nts;
                         var options = ko.unwrap(data.options);
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
-                            c["key"] = c.key === undefined ? c.key : c.prop;
+                            c["key"] = c.key === undefined ? c.prop : c.key;
                             c["dataType"] = 'string';
                             return c;
                         });

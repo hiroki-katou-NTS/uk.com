@@ -1469,7 +1469,7 @@ module nts.uk.ui.koExtentions {
             var options = ko.unwrap(data.options);
             var observableColumns: KnockoutObservableArray<any> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
-                c["key"] = c.key === undefined ? c.key : c.prop;
+                c["key"] = c.key === undefined ? c.prop : c.key;
                 c["dataType"] = 'string';
                 return c;
             });
