@@ -1,9 +1,19 @@
+#functions-area button {
+	margin-left: 150px;
+	margin-top: 5px;
+	width: 90px;
+}
+
+#functions-area button:NTH-CHILD(2) {
+	margin-left: 180px;
+}
+
 .column1 {
 	width: 140px;
 }
 
 .column2 {
-	width: 350px;
+	width: 280px;
 }
 
 .column3 {
@@ -11,8 +21,61 @@
 }
 
 .column4 {
+	width: 465px;
+}
+
+#contents-area button {
+	height: 24px;
+}
+
+#profile-div {
 	width: 500px;
+	border: 1px solid #c5c5c5;
+	height: 30px;
+	padding: 0px;
+	margin-top: 10px;
+}
+
+#find-group-btn {
+	background-color: #E0F59E;
+	border-right: 1px solid #c5c5c5;
+	width: 146px;
+}
+
+#find-group-btn button {
+	box-shadow: none;
+	margin-top: 3px;
+}
+
+#find-group-btn button:NTH-CHILD(1){
+	width: 70px;
+	margin-left: 3px;
+	margin-right: 0px;
+} 
+
+#find-group-btn button:NTH-CHILD(2){
+	margin-right: 0px;
+} 
+
+#find-group-btn button:NTH-CHILD(3){
+	margin-left: -3px;
+	margin-right: 3px;
+} 
+
+#inp-1 {
+	width: 100px;
+	padding-left: 5px;
 	padding-right: 20px;
+	margin-left: 5px;
+	margin-bottom: 3px;
+}
+
+#note-btn {
+	margin-left: 520px;
+}
+
+#division {
+	width: 690px;
 }
 
 thead, tr, th {
@@ -24,7 +87,14 @@ thead, tr, th {
 
 thead th {
 	background-color: #E0F59E;
-	height: 36px;
+	height: 20px;
+	text-align: center;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+tbody th {
+	height: 24px;
 	text-align: center;
 	padding-left: 2px;
 	padding-right: 2px;
@@ -34,6 +104,89 @@ thead th {
 	border-color: black;
 }
 
+table {
+	margin-top: -4px;
+}
+
+#table-1, #hr-1 {
+	width: 440px;
+}
+
 #table-1 thead th {
-	width: 70px;
+	width: 110px;
+}
+
+#table-2, #hr-2 {
+	width: 270px;
+}
+
+#table-2 thead th{
+	width: 90px;
+}
+
+#table-3, #hr-3, #table-10, #hr-10 {
+	width: 735px;
+}
+
+#table-3 thead th {
+	width: 110px;
+}
+
+#table-3 thead th:NTH-CHILD(2) {
+	width: 405px;
+}
+
+#table-4, #table-5, #table-6, #hr-4, #hr-5, #hr-6 {
+	width: 165px;
+}
+
+#table-4 tbody th, #table-5 tbody th, #table-6 tbody th {
+	height: 40px;
+}
+
+#table-7, #table-8, #table-9, #hr-7, #hr-8, #hr-9 {
+	width: 345px;
+}
+
+#table-7 tbody th {
+	height: 40px;
+	width: 110px;
+}
+
+#table-8 thead th:NTH-CHILD(2) {
+	width: 110px;
+}
+
+#table-9 thead th {
+	width: 110px;
+}
+
+#table-9 {
+	margin-top: 5px;
+}
+
+#btn-2 {
+	margin-top: 10px;
+}
+
+#hr-11 {
+	width: 700px;
+}
+
+#table-10 thead th {
+	width: 100px;
+}
+
+#table-10 thead th:NTH-CHILD(2), #table-10 thead th:NTH-CHILD(3) {
+	width: 200px;
+}
+
+ textarea {
+ 	margin-top: -4px;
+	width: 700px;
+	height: 60px;
+}
+
+.title-label {
+	margin-top: 5px;
 }

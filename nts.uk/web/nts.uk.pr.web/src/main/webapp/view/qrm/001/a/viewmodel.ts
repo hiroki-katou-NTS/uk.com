@@ -2,19 +2,31 @@ module qrm001.a.viewmodel {
     export class ScreenModel {
         paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymentDate: KnockoutObservable<any>;
-        texteditor: any;
+        multilineeditor: any;
+        texteditor1: any;
         
         constructor() {
             var self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
-            self.texteditor = {
+            self.texteditor1 = {
                 value: ko.observable(''),
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
                     placeholder: "Placeholder for text editor",
-                    width: "100px",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            self.multilineeditor = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                    resizeable: true,
+                    placeholder: "",
                     textalign: "left"
                 })),
                 required: ko.observable(true),
@@ -34,6 +46,10 @@ module qrm001.a.viewmodel {
                 
             });
             return dfd.promise();
+        }
+        
+        openDialog(){
+            nts.uk.ui.windows.sub.modal('/view/qrm/001/b/index.xhtml', {title: '入力欄の背景色について', dialogClass: "no-close"});
         }
     }
 }

@@ -13,12 +13,15 @@ var qrm001;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qrm001.a.service.getPaymentDateProcessingList().done(function (data) {
+                    qrm001.b.service.getPaymentDateProcessingList().done(function (data) {
                         self.paymentDateProcessingList(data);
                         dfd.resolve();
                     }).fail(function (res) {
                     });
                     return dfd.promise();
+                };
+                ScreenModel.prototype.closeWindow = function () {
+                    nts.uk.ui.windows.close();
                 };
                 return ScreenModel;
             }());

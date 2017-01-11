@@ -14,32 +14,42 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area" class="table">
-				<div class="cell column1"></div>
-				<div class="cell column2">
-					<button class="proceed">計算/登録</button>
-				</div>
-				<div class="cell column3">
-					<button class="danger">削除</button>
-				</div>
+			<div id="functions-area">
+				<button class="proceed">計算/登録</button>
+				<button class="danger">削除</button>
 			</div>
 			<div id="contents-area" class="table">
 				<div class="cell column1"></div>
-
-
 				<div class="cell">
-					<div>
-						<button>asfgasga</button>
+					<div id="profile-div" class="table">
+						<div id="find-group-btn" class="cell">
+							<button>対象者</button>
+							<button>&#9664;</button>
+							<button>&#9654;</button>
+						</div>
+						<div class="cell">
+							<span data-bind="with: texteditor1"> <input id="inp-1"
+								data-bind="ntsTextEditor1: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</span> <span
+								style="margin-left: -20px; font-size: 20px; color: #c5c5c5;">&#8629;</span>
+						</div>
+						<span></span>
 					</div>
 					<div>
-						<button>入力欄の背景色について</button>
+						<button id="note-btn" data-bind="click: openDialog">入力欄の背景色について</button>
 					</div>
-					<hr />
+					<hr id="division" align="left"/>
 					<div>
 						<div>
 							<div class="cell column4">
-								<span>勤続年数</span>
-								<hr class="table-division"/>
+								<p class="title-label">勤続年数</p>
+								<hr id="hr-1" class="table-division" align="left" />
 								<table id="table-1">
 									<thead>
 										<tr>
@@ -59,15 +69,15 @@
 									</tbody>
 								</table>
 							</div>
-							<div class="cell column3">
-								<span>役員の期間&#9656;</span>
-								<hr class="table-division"/>
+							<div class="cell">
+								<p class="title-label">役員の期間</p>
+								<hr id="hr-2" class="table-division" align="left" />
 								<table id="table-2">
 									<thead>
 										<tr>
 											<th><span>兼任年数</span></th>
 											<th><span>役員年数</span></th>
-											<th><span>%雇用%区分</span></th>
+											<th><span>雇用区分</span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -81,146 +91,81 @@
 							</div>
 						</div>
 						<div>
-							<span>退職理由</span>
-							<hr class="table-division"/>
+							<p class="title-label">退職理由</p>
+							<hr id="hr-3" class="table-division" align="left" />
 							<table id="table-3">
-									<thead>
-										<tr>
-											<th><span>退職区分</span></th>
-											<th><span>退職理由区分</span></th>
-											<th><span>退職事由区分</span></th>
-											<th><span>退職理由区分</span></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<th><span>A</span></th>
-											<th><span>B</span></th>
-											<th><span>C</span></th>
-											<th><span>D</span></th>
-										</tr>
-									</tbody>
+								<thead>
+									<tr>
+										<th><span>退職区分</span></th>
+										<th><span>退職理由区分</span></th>
+										<th><span>退職事由区分</span></th>
+										<th><span>退職理由区分</span></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<th><span>A</span></th>
+										<th><span>B</span></th>
+										<th><span>C</span></th>
+										<th><span>D</span></th>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div>
 							<div class="cell column2">
-								<span>退職理由</span>
-								<hr class="table-division"/>
+								<p class="title-label">退職金 支給額</p>
+								<hr id="hr-4" class="table-division" align="left" />
 								<table id="table-4">
-										<thead>
-											<tr>
-												<th><span>退職区分</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><span>A</span></th>
-											</tr>
-										</tbody>
-								</table>
-								<span>退職理由</span>
-								<hr class="table-division"/>
-								<table id="table-5">
-										<thead>
-											<tr>
-												<th><span>退職区分</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><span>A</span></th>
-											</tr>
-										</tbody>
-								</table>
-								<span>退職理由</span>
-								<hr class="table-division"/>
-								<table id="table-6">
-										<thead>
-											<tr>
-												<th><span>退職区分</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><span>A</span></th>
-											</tr>
-										</tbody>
-								</table>			
-							</div>
-							<div class="cell column3">
-								<span>退職理由</span>
-								<hr class="table-division"/>
-								<table id="table-7">
-										<thead>
-											<tr>
-												<th><span>退職区分</span></th>
-												<th><span>退職理由区分</span></th>
-												<th><span>退職事由区分</span></th>
-												<th><span>退職理由区分</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><span>A</span></th>
-												<th><span>B</span></th>
-												<th><span>C</span></th>
-												<th><span>D</span></th>
-											</tr>
-										</tbody>
-								</table>
-								<span>退職理由</span>
-								<hr class="table-division"/>
-								<table id="table-8">
-										<thead>
-											<tr>
-												<th><span>退職区分</span></th>
-												<th><span>退職理由区分</span></th>
-												<th><span>退職事由区分</span></th>
-												<th><span>退職理由区分</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><span>A</span></th>
-												<th><span>B</span></th>
-												<th><span>C</span></th>
-												<th><span>D</span></th>
-											</tr>
-										</tbody>
-								</table>
-								<span>退職理由</span>
-								<hr class="table-division"/>
-								<table id="table-9">
-										<thead>
-											<tr>
-												<th><span>退職区分</span></th>
-												<th><span>退職理由区分</span></th>
-												<th><span>退職事由区分</span></th>
-												<th><span>退職理由区分</span></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><span>A</span></th>
-												<th><span>B</span></th>
-												<th><span>C</span></th>
-												<th><span>D</span></th>
-											</tr>
-										</tbody>
-								</table>
-								<button>計算結果の確認</button>	
-							</div>
-						</div>
-						<div>
-							<span>退職理由</span>
-							<hr class="table-division"/>
-							<table id="table-9">
 									<thead>
 										<tr>
-											<th><span>退職区分</span></th>
-											<th><span>退職理由区分</span></th>
-											<th><span>退職事由区分</span></th>
-											<th><span>退職理由区分</span></th>
+											<th><span>退職金支給合計</span></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><span>A</span></th>
+										</tr>
+									</tbody>
+								</table>
+								<p class="title-label">退職金 控除合計</p>
+								<hr id="hr-5" class="table-division" align="left" />
+								<table id="table-5">
+									<thead>
+										<tr>
+											<th><span>控除合計金額</span></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><span>A</span></th>
+										</tr>
+									</tbody>
+								</table>
+								<p class="title-label">退職金 差引支給額</p>
+								<hr id="hr-6" class="table-division" align="left" />
+								<table id="table-6">
+									<thead>
+										<tr>
+											<th><span>退職金差引支給額</span></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><span>A</span></th>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="cell column3">
+								<p class="title-label">退職金控除額</p>
+								<hr id="hr-7" class="table-division" align="left" />
+								<table id="table-7">
+									<thead>
+										<tr>
+											<th><span>退職金控除1</span></th>
+											<th><span>退職金控除2</span></th>
+											<th><span>退職金控除3</span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -228,16 +173,102 @@
 											<th><span>A</span></th>
 											<th><span>B</span></th>
 											<th><span>C</span></th>
-											<th><span>D</span></th>
 										</tr>
 									</tbody>
+								</table>
+								<p class="title-label">退職金税計算</p>
+								<hr id="hr-8" class="table-division" align="left" />
+								<table id="table-8">
+									<thead>
+										<tr>
+											<th><span>退職所得の受給に関する申告書</span></th>
+											<th><span>税計算方法</span></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><span>A</span></th>
+											<th><span>B</span></th>
+										</tr>
+									</tbody>
+								</table>
+								<table id="table-9">
+									<thead>
+										<tr>
+											<th><span>所得税金額</span></th>
+											<th><span>市区町村民税</span></th>
+											<th><span>都道府県民税</span></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><span>A</span></th>
+											<th><span>B</span></th>
+											<th><span>C</span></th>
+										</tr>
+									</tbody>
+								</table>
+								<button id="btn-2">計算結果の確認</button>
+							</div>
+						</div>
+						<div>
+							<p class="title-label">退職金振込設定</p>
+							<hr id="hr-10" class="table-division" align="left" />
+							<table id="table-10">
+								<thead>
+									<tr>
+										<th><span>支給1～5</span></th>
+										<th><span>銀行</span></th>
+										<th><span>支店</span></th>
+										<th><span>口座番号</span></th>
+										<th><span>振込金額</span></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<th><span>銀行名（選択）</span></th>
+										<th><span>B</span></th>
+										<th><span>支店名（選択）</span></th>
+										<th><span>D</span></th>
+										<th><span>E</span></th>
+									</tr>
+									<tr>
+										<th><span>銀行名（選択）</span></th>
+										<th><span>B</span></th>
+										<th><span>支店名（選択）</span></th>
+										<th><span>D</span></th>
+										<th><span>E</span></th>
+									</tr>
+									<tr>
+										<th><span>銀行名（選択）</span></th>
+										<th><span>B</span></th>
+										<th><span>支店名（選択）</span></th>
+										<th><span>D</span></th>
+										<th><span>E</span></th>
+									</tr>
+									<tr>
+										<th><span>銀行名（選択）</span></th>
+										<th><span>B</span></th>
+										<th><span>支店名（選択）</span></th>
+										<th><span>D</span></th>
+										<th><span>E</span></th>
+									</tr>
+									<tr>
+										<th><span>銀行名（選択）</span></th>
+										<th><span>B</span></th>
+										<th><span>支店名（選択）</span></th>
+										<th><span>D</span></th>
+										<th><span>E</span></th>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div>
-							<span>退職理由</span>
-							<hr class="table-division"/>
-							<div data-bind="with: texteditor">
-								<input data-bind="ntsTextEditor: {
+							<p class="title-label">退職所得の源泉徴収票、摘要欄記載事項</p>
+							<hr id="hr-11" class="table-division" align="left" />
+							<div data-bind="with: multilineeditor">
+								<textarea
+									data-bind="ntsMultilineEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,

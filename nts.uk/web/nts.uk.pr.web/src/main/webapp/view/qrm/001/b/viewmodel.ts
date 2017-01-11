@@ -13,13 +13,17 @@ module qrm001.b.viewmodel {
             var self = this;
             
             var dfd = $.Deferred();
-            qrm001.a.service.getPaymentDateProcessingList().done(function(data) {
+            qrm001.b.service.getPaymentDateProcessingList().done(function(data) {
                 self.paymentDateProcessingList(data);
                 dfd.resolve();
             }).fail(function(res) {
                 
             });
             return dfd.promise();
+        }
+        
+        closeWindow(){
+            nts.uk.ui.windows.close();    
         }
     }
 }
