@@ -20,6 +20,9 @@ var qet001;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                ScreenModel.prototype.goToOutputSetting = function () {
+                    nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

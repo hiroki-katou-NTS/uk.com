@@ -51,3 +51,12 @@ button.help-button {
 div#report-item-list {
     margin-top: 10px;
 }
+
+.caret-background.caret-right:after {
+    top: 30%;
+    border-width: 65px 18px;
+    color: #92D050;
+}
+.caret-right.caret-background {
+    margin-right: 15px;
+}

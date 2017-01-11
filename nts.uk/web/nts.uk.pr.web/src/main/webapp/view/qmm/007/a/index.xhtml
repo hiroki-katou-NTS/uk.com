@@ -7,14 +7,31 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.primitive.PersonId
+  			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../common.css" />
 			<com:stylefile path="thispage.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
-			<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
-			<com:scriptfile path="/lib/nittsu/ui/file.js" />
+			<script>
+				__viewContext.primitiveValueConstraints.Code = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 4,
+				};
+				__viewContext.primitiveValueConstraints.Name = {
+					valueType : 'String',
+					maxLength : 20,
+				};
+				__viewContext.primitiveValueConstraints.Money = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 10,
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -26,7 +43,6 @@
 				<button id="btn_003" class="large btn-default" data-bind="">印刷
 					(PDF)</button>
 				<button id="btn_006" class="large btn-default" data-bind="">マスタ修正ログ</button>
-				<label class="pull-right" id="lbl_001">会社一律金額の登録</label>
 			</div>
 			<!-- END FUNCTION AREA-->
 
@@ -39,20 +55,20 @@
 						<input id="inp_001" class="inp-default" />
 						<button id="sch_001" class="caret-bottom caret-background">検索</button>
 					</div>
-					<div
-						data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-					<div class="control-group cf">
+					<div class="hidden"
+						data-bind="ntsSearchBox: {items: lst_001, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}"></div>
+					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: true">履歴追加</button>
 						<button class="pull-right" id="btn_005"
 							data-bind="click: goToC, enable: true">履歴編集</button>
 					</div>
-					<div class="pull-left control-group cf">
+					<div class="padding-top-10 pull-left cf">
 						<table id="lst_001"
 							data-bind="ntsTreeGridView:{
-										width: 280,
+										width: 310,
 										height: 350,
-										options: dataSource,
+										options: lst_001,
 										selectedValues: selectedCodes,
 										optionsValue: 'code',
 										optionsChild: 'childs',
@@ -71,45 +87,45 @@
 					<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
-									data-bind="ntsFormLabel: { required: true }">コード/名称</div></td>
-							<td colspan="2"><span class="" data-bind="with: inp_002_code">
-									<input id="inp_002" class="inp-default"
-										data-bind="ntsTextEditor: {
+									data-bind="ntsFormLabel: {constraint: ['Code','Name'], required: true }">コード/名称</div></td>
+							<td colspan="2"><span class=""
+								data-bind="with: inp_002_code"> <input id="inp_002"
+									class="inp-default"
+									data-bind="ntsTextEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-								</span>
-								<span data-bind="with: inp_003_name">
-									<input id="inp_003" class="inp-default"
-										data-bind="ntsTextEditor: {
+							</span> <span data-bind="with: inp_003_name"> <input id="inp_003"
+									class="inp-default"
+									data-bind="ntsTextEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-								</span></td>
+							</span></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span data-bind="with: inp_004_date">
-									<input id="inp_004" class="inp-default"
-										data-bind="ntsTextEditor: {
+							<td><span data-bind="with: inp_004_date"> <input
+									id="inp_004" class="inp-default"
+									data-bind="ntsTextEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-								</span> <label id="lbl_005" data-bind="text: lbl_005()">lbl_005</label></td>
+							</span> <label id="lbl_005" data-bind="text: lbl_005()">lbl_005</label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
-									data-bind="ntsFormLabel: { required: true }">金額</div></td>
+									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
 							<td><div data-bind="with: inp_005_money">
 									<input class="inp-default"
 										data-bind="ntsNumberEditor: {
@@ -137,7 +153,8 @@
 						</tr>
 						<tr>
 							<td> </td>
-							<td class="valign-top" rowspan="4"><div id="sel_002"
+							<td style="vertical-align: top" class="valign-top" rowspan="4"><div
+									id="sel_002"
 									data-bind="ntsSwitchButton: {
 						options: switchButtonDataSource,
 						optionsValue: 'code',
@@ -198,7 +215,7 @@
 							<td></td>
 						</tr>
 						<tr>
-							<td colspan="4"><hr/></td>
+							<td colspan="4"><hr /></td>
 						</tr>
 						<tr>
 							<td class="valign-top"><div id="lbl_008"
