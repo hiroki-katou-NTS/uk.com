@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 300,
+					height : 200
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+
+				<button id="A_BTN_001" class="proceed">選択社員処理実行ボタン(PDF)</button>
+				<button id="A_BTN_002">Excel出力ボタン</button>
+				<button id="A_BTN_003">差異を確認ボタン</button>
+				<button id="A_BTN_004">印刷設定ボタン</button>
+				<button id="A_BTN_006">印刷実行ログボタン</button>
+			</div>
+			<div id="contents-area">
+				<div class="nts-left-content">
+					<div class="nts-left-contentTop">
+						<div class="nts-left-contentTopUp">
+							<span id="A_LBL_002" class="label" style="margin-bottom: 15px;">比較年月
+							</span> <span><div data-bind="with: texteditor1">
+									<input id="A_INP_001"
+										data-bind="ntsTextEditor: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+								</div></span> <span id="A_LBL_003" class="label" style="margin-bottom: 15px;">月度と
+							</span> <span><div data-bind="with: texteditor2">
+									<input id="A_INP_002"
+										data-bind="ntsTextEditor: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+								</div></span> <span id="A_LBL_004" class="label" style="margin-bottom: 15px;">月度を比較します。
+							</span>
+						</div>
+						<div class="nts-left-contentTopDown">
+							<span id="A_LBL_005" class="label" style="margin-bottom: 15px;">部門と社員を抽出する基準日
+							</span> <span id="A_LBL_006" class="label" style="margin-bottom: 15px;">
+								: 2017/01/09 </span>
+						</div>
+					</div>
+					<div class="nts-left-contentBottom">cccc</div>
+				</div>
+				<div class="nts-right-content">
+					<div>
+						<span id="A_LBL_007" class="label" style="margin-bottom: 15px;">処理の詳細設定
+						</span>
+					</div>
+					<div>
+						<table class="tableRight">
+							<tr>
+								<td><span><div id="A_LBL_008"
+											data-bind="ntsFormLabel: { required: true }">必須項目見出し</div></span></td>
+								<td><span><button>設定</button></span></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><span><div id="A_SEL_001"
+											data-bind="ntsComboBox: {
+													options: itemListCbb1,
+													optionsValue: 'codeCbb1',
+													value: selectedCodeCbb1,
+													optionsText: 'nameCbb1',
+													editable: isEditableCbb1,
+													enable: isEnableCbb1,
+													columns: [
+														{ prop: 'codeCbb1', length: 4 },
+														{ prop: 'nameCbb1', length: 10 },
+													]}"></div></span></td>
+							</tr>
+							<tr>
+								<td><span><div id="A_LBL_009"
+											data-bind="ntsFormLabel: { required: true }">改ページ</div></span></td>
+								<td><span><div id="A_SEL_002"
+											data-bind="ntsComboBox: {
+													options: itemListCbb2,
+													optionsValue: 'nameCbb2',
+													value: selectedCodeCbb2,
+													optionsText: 'nameCbb2',
+													editable: isEditableCbb2,
+													enable: isEnableCbb2,
+													columns: [
+														{ prop: 'nameCbb2', length: 4 },
+													]}"></div></span>
+									<span id="A_LBL_010" class="label" style="margin-bottom: 5px;">階層指定
+								</span> <span><div id="A_SEL_003"
+											data-bind="ntsComboBox: {
+													options: itemListCbb3,
+													optionsValue: 'codeCbb3',
+													value: selectedCodeCbb3,
+													optionsText: 'nameCbb3',
+													editable: isEditableCbb3,
+													enable: isEnableCbb3,
+													columns: [
+														{ prop: 'codeCbb3', length: 4 },
+														{ prop: 'nameCbb3', length: 10 },
+													]}"></div></span>
+								</td>
+							</tr>
+							<tr>
+								<td><span><div id="A_LBL_011"
+											data-bind="ntsFormLabel: {}">登録状況の印刷</div></span></td>
+								<td><span><table id="multi-list"
+											data-bind="ntsGridList: {
+													height: 150,
+													width: 300,
+													options: items,
+													optionsValue: 'name',
+													columns: columns,
+													multiple: true,
+													value: currentCodeList
+												}"
+											class="cf"></table></span></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
