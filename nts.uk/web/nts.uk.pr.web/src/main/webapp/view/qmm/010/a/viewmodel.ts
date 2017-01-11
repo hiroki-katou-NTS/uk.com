@@ -21,6 +21,7 @@ module qmm010.a.viewmodel {
         ainp016: KnockoutObservable<string>;
         ainp017: KnockoutObservable<string>;
         ainp018: KnockoutObservable<string>;
+        multilineeditor: any;
         employmentName: KnockoutObservable<string>;
         textEditorOption: KnockoutObservable<any>;
         items: KnockoutObservableArray<viewmodel.ItemModel>;
@@ -69,8 +70,19 @@ module qmm010.a.viewmodel {
             ]);
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
-
-
+            self.multilineeditor = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                    resizeable: true,
+                    placeholder: "Placeholder for text editor",
+                    width: "",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
         }
         selectSomeItems() {
             this.currentCode('150');

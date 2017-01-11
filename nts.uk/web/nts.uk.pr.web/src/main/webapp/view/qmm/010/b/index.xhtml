@@ -5,40 +5,50 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
-
+			<com:scriptfile path="service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="left-content">
-					<div id="B_LBL_000">社会保険事業所から読み込み</div>
-					<hr />
-					<div id="B_LBL_001" data-bind="ntsFormLabel: {}">労働保険事業所の登録</div>
-					<br />
-					<div>
-						<input id="B_INP_001" data-name="code"
-							data-bind="ntsTextEditor: {value: binp001, 
-							constraint: 'B_INP_001', 
-							option: textEditorOption, 
-							enable: true}" />
-						<button id="B_SCH_001" class="caret-bottom caret-background">検索</button>
+				<div id="B_LBL_001">ナビゲーションメッセージ</div>
+				<hr />
+				<div id="contents-left">
+					<div data-bind="with: textSearch" class="leftTop">
+						<input id="B_INP_001"
+							data-bind="ntsTextEditor: {
+										value: valueSearch,
+										constraint: '',
+										option: option,
+										required: true,
+										enable: true}" />
+						<span class="label relative spanSearch">
+							<button id="B_SCH_001" class="caret-bottom caret-background">検索</button>
+						</span>
 					</div>
-					<table id="single-list"
-						data-bind="ntsGridList: {
-						width: 550,
-						height: 110,
-						options: items,
-						optionsValue: 'code',
-						columns: columns,
-						multiple: false,
-						value: currentCode
-					}"></table>
+					<div id="search_001">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+								width: 400,
+								height: 500,
+								options: blst001,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: blstsel001,
+								enable: true
+							}"></table>
+					</div>
+				</div>
+				<hr />
+				<div id="this-functions-area" class="control-group halign-center">
+					<button class="btn-default proceed x-large" id="btn_001">決定</button>
+					<button class="" id="btn_002" onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

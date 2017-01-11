@@ -1,0 +1,112 @@
+.divHeader {
+	margin: 5px;
+}
+
+.btnStyle {
+	width: 70px;
+	margin-right: 5px;
+}
+
+.trFull25 {
+	width: 25%;
+}
+
+.trFull45 {
+	width: 45%;
+}
+
+.trFull30 {
+	width: 30%;
+}
+
+.trFull5 {
+	width: 5%;
+}
+
+.left20 {
+	margin-left: 20px;
+}
+
+.labelRed {
+	font-weight: bold;
+	color: red;
+}
+
+.trFull15 {
+	width: 15%;
+}
+
+#A_BTN_005 {
+	margin-left: 200px;
+}
+
+#A_LBL_001 {
+	float: right;
+}
+
+#contents-left, #contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+}
+
+#contents-right {
+	padding-left: 40px !important;
+}
+
+.leftTop {
+	display: inline;
+	width: 100%;
+}
+
+#SCH_001 {
+	width: 100%;
+}
+
+.spanSearch {
+	float: right;
+	width: 20%;
+}
+
+.contentsRL {
+	width: 20%;
+	padding-bottom: 5px;
+}
+
+.contentsRR {
+	width: 70%;
+}
+
+#tableRight {
+	width: 100%;
+}
+
+#A_INP_002 {
+	width: 100px;
+}
+
+#A_INP_003 {
+	width: 30%;
+	margin-left: 10px;
+}
+
+button.nts-switch-button {
+	min-width: 80px;
+}
+
+#SEL-002, #SEL-004 {
+	min-width: 0px !important;
+	max-width: 160px !important;
+}
+
+#search_001 {
+	margin-top: 20px;
+}
+
+.ntsRadioBox {
+	display: block;
+	padding-top: 20px;
+}
+
+.control-group {
+	margin-top: 30px;
+}
