@@ -11,18 +11,25 @@ __viewContext.ready(function () {
             for(let i = 0; i <= 10; i++) {
                 self.dataList.push({id: i, name: "Item " + i});
             }
-            $(".userguide").ntsUserGuide();
-            $(".userguide2").ntsUserGuide();
+            // Init UserGuide
+            $("[data-toggle='userguide']").ntsUserGuide();
         }
         
-        showOverlay() {
-            $(".userguide").ntsUserGuide("show");
+        showOverlayLeft() {
+            $(".userguide-left").ntsUserGuide("show");
         }
         
-        showOverlay2() {
-            $(".userguide2").ntsUserGuide("show");
+        showOverlayRight() {
+            $(".userguide-right").ntsUserGuide("show");
         }
         
+        showOverlayTop() {
+            $(".userguide-top").ntsUserGuide("show");
+        }
+        
+        showOverlayBottom() {
+            $(".userguide-bottom").ntsUserGuide("show");
+        }
     }
     
     this.bind(new ScreenModel());
