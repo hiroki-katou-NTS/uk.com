@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
@@ -13,8 +13,12 @@
 			<com:scriptfile path="start.js" />
 <!-- 			<com:scriptfile path="service.js" /> -->
 			<script type="text/javascript">
+				var dialogSize = {
+					width : 1300,
+					height : 700
+				};
 				// TODO: Code validate.
-				</script>
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -51,6 +55,7 @@
 							</div>
 						</td>
 						<td id="contents-center">
+							<div class="caret-right caret-background">
 							<div id="code-name-input">
 								<div>
 									<div id="code-name-label" data-bind="ntsFormLabel: {}">コード/名称</div>
@@ -62,7 +67,43 @@
 							</div>
 							
 							<div id="aggregate-category-tab" data-bind="ntsTabPanel: { dataSource: aggregateCategories, active: selectedCategory}">
-								<div id="salary-payment"></div>
+								<div id="salary-payment">
+<!-- 									<table> -->
+<!-- 										<tr> -->
+<!-- 											<td class="tab-contents-left"> -->
+<!-- 												<div> -->
+<!-- 													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる給与支給項目</div> -->
+<!-- 													<table id="salary-payment-pay-items" data-bind="ntsGridList: { -->
+<!-- 															width: 250, -->
+<!-- 															height: 400, -->
+<!-- 															options: payItemList, -->
+<!-- 															optionsValue: 'payItemCode', -->
+<!-- 															columns: payItemColumns, -->
+<!-- 															multiple: false, -->
+<!-- 															value: payItemSelected -->
+<!-- 														}"></table> -->
+<!-- 												</div> -->
+<!-- 												<div> -->
+<!-- 													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる集約項目</div> -->
+<!-- 													<table id="salary-payment-aggregate-items" data-bind="ntsGridList: { -->
+<!-- 															width: 250, -->
+<!-- 															height: 400, -->
+<!-- 															options: aggregateItemList, -->
+<!-- 															optionsValue: 'aggregateItemCode', -->
+<!-- 															columns: aggregateItemColumns, -->
+<!-- 															multiple: false, -->
+<!-- 															value: aggregateItemSelected -->
+<!-- 														}"></table> -->
+<!-- 												</div> -->
+												
+<!-- 											</td> -->
+<!-- 											<td class="tab-contents-right"> -->
+												
+<!-- 											</td> -->
+<!-- 										</tr> -->
+<!-- 									</table> -->
+									
+								</div>
 								<div id="salary-deduction"></div>
 								<div id="salary-attendance"></div>
 								<div id="bonus-payment"></div>
@@ -70,6 +111,7 @@
 								<div id="bonus-attendance"></div>
 							</div>
 							<div id="common-tab"></div>
+							</div>
 						</td>
 						<td id="contents-right">
 							<div id="report-items-label" data-bind="ntsFormLabel: {}">帳票出力項目の一覧</div>
