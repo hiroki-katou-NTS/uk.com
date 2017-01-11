@@ -1,6 +1,5 @@
 package nts.uk.ctx.basic.dom.organization.payclassification;
 
-import org.eclipse.persistence.internal.jpa.metadata.accessors.objects.MetadataMethod;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -30,7 +29,7 @@ public class PayClassification extends AggregateRoot {
 	
 	public PayClassification(GeneralDate endDate, 
 			PayClassificationName payClassificationName, GeneralDate startDate, PayClassificationCode payClassCode,
-			String historyID ,String companyCode, Memo Memo) {
+			String historyID ,String companyCode, Memo memo) {
 		super();
 		this.endDate = endDate;
 		this.payClassificationName = payClassificationName;
