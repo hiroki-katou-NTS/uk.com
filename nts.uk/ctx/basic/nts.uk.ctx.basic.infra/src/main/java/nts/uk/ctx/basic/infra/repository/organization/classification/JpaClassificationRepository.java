@@ -10,11 +10,11 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.organization.classification.Classification;
 import nts.uk.ctx.basic.dom.organization.classification.ClassificationCode;
-import nts.uk.ctx.basic.dom.organization.classification.ClassificationMemo;
 import nts.uk.ctx.basic.dom.organization.classification.ClassificationName;
 import nts.uk.ctx.basic.dom.organization.classification.ClassificationRepository;
 import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClass;
 import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClassPK;
+import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
 public class JpaClassificationRepository extends JpaRepository implements ClassificationRepository {
@@ -84,7 +84,7 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 				new ClassificationCode(cmnmtClass.getCmnmtClassPK().getClassificationCode()),
 				cmnmtClass.getName() != null ? new ClassificationName(cmnmtClass.getName()) : null,
 				cmnmtClass.getOutCode() != null ? new ClassificationCode(cmnmtClass.getOutCode()) : null,
-				cmnmtClass.getMemo() != null ? new ClassificationMemo(cmnmtClass.getMemo()) : null);
+				cmnmtClass.getMemo() != null ? new Memo(cmnmtClass.getMemo()) : null);
 		return classification;
 	}
 
