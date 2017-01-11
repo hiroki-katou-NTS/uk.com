@@ -1534,8 +1534,10 @@ var nts;
                         if (data.headers) {
                             headers = ko.unwrap(data.headers);
                         }
-                        var displayColumns = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                            { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
+                        var displayColumns = [
+                            { headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                            { headerText: headers[1], key: optionsText, dataType: "string" }
+                        ];
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }
