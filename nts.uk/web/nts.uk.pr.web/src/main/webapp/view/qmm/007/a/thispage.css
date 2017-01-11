@@ -24,11 +24,6 @@
 	width: 150px;
 }
 
-#inp_006 textarea {
-	width: 380px;
-	height: 120px;
-}
-
 .nts-switch-button {
 	min-width: 80px;
 	font-size: 13px !important;
@@ -48,4 +43,6 @@
 
 textarea {
 	resize: none;
+	width: 350px;
+	height: 120px;
 }

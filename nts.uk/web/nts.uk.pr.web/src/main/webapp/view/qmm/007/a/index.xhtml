@@ -31,6 +31,10 @@
 					charType : 'Numeric',
 					maxLength : 10,
 				};
+				__viewContext.primitiveValueConstraints.Memo = {
+					valueType : 'String',
+					maxLength : 1000,
+				};
 			</script>
 		</ui:define>
 
@@ -56,7 +60,7 @@
 						<button id="sch_001" class="caret-bottom caret-background">検索</button>
 					</div>
 					<div class="hidden"
-						data-bind="ntsSearchBox: {items: lst_001, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}"></div>
+						data-bind="ntsSearchBox: {items: historyList, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}"></div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: true">履歴追加</button>
@@ -68,7 +72,7 @@
 							data-bind="ntsTreeGridView:{
 										width: 310,
 										height: 350,
-										options: lst_001,
+										options: historyList,
 										selectedValues: selectedCodes,
 										optionsValue: 'code',
 										optionsChild: 'childs',
@@ -219,7 +223,7 @@
 						</tr>
 						<tr>
 							<td class="valign-top"><div id="lbl_008"
-									data-bind="ntsFormLabel: {}">メモ</div></td>
+									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inp_006">
 									<TEXTAREA placeholder="" data-bind="value: inp_006_memo"
 										class="inp-default"></TEXTAREA>
