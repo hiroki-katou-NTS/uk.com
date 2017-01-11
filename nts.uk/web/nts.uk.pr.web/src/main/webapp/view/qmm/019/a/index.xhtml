@@ -110,13 +110,12 @@
 									            			text: itemAbName,
 									            			attr: {
 									            				id: itemCode,
-									            				'data-test': itemCode,
 									            				'data-itemcode': itemCode,
 									            				class: isRequired() 
-									            					? 'fixed-button ui-state-disabled li-on-row context-menu-' + itemCode() 
+									            					? 'fixed-button ui-state-disabled li-on-row ' + contextMenuClassId 
 									            					: itemAbName() !== '+' 
-									            						? 'button-with-text li-on-row context-menu-' + itemCode()
-									            						: 'li-on-row context-menu-' + itemCode()}">
+									            						? 'button-with-text li-on-row ' + contextMenuClassId
+									            						: 'li-on-row ' + contextMenuClassId}">
 									            </span>
 											</div>
 										</div>

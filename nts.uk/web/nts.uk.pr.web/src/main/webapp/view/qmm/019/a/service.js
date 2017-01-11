@@ -129,7 +129,8 @@ var qmm019;
                                         isAlamUseLow: detail.isUseLowAlam(),
                                         alamRangeLow: detail.alamRangeLow() });
                                 }
-                                else {
+                                else if (!detail.added()) {
+                                    //Chỉ đưa vào mảng những itemCode đã đc lưu trước đó 
                                     listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
                                 }
                                 itemPosColumn++;
@@ -360,52 +361,72 @@ var qmm019;
                         this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
+                        this.contextMenuClassId = "";
                         var self = this;
-                        this.itemCode = ko.observable(itemObject.itemCode);
-                        this.itemAbName = ko.observable(itemObject.itemAbName);
+                        self.itemCode = ko.observable(itemObject.itemCode);
+                        self.itemAbName = ko.observable(itemObject.itemAbName);
                         if (itemObject.categoryAtr === 0 &&
                             (itemObject.itemCode === "F001" || itemObject.itemCode === "F002" || itemObject.itemCode === "F003")) {
-                            this.isRequired = ko.observable(true);
+                            self.isRequired = ko.observable(true);
                         }
                         if (itemObject.categoryAtr === 1 &&
                             (itemObject.itemCode === "F114")) {
-                            this.isRequired = ko.observable(true);
+                            self.isRequired = ko.observable(true);
                         }
-                        this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
-                        this.categoryAtr = ko.observable(itemObject.categoryAtr);
-                        this.autoLineId = ko.observable(itemObject.autoLineId);
-                        this.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
-                        this.setOffItemCode = ko.observable(itemObject.setOffItemCode);
-                        this.commuteAtr = ko.observable(itemObject.commuteAtr);
-                        this.calculationMethod = ko.observable(itemObject.calculationMethod);
-                        this.distributeSet = ko.observable(itemObject.distributeSet);
-                        this.distributeWay = ko.observable(itemObject.distributeWay);
-                        this.personalWageCode = ko.observable(itemObject.personalWageCode);
-                        this.isUseHighError = ko.observable(itemObject.isUseHighError);
-                        this.errRangeHigh = ko.observable(itemObject.errRangeHigh);
-                        this.isUseLowError = ko.observable(itemObject.isUseLowError);
-                        this.errRangeLow = ko.observable(itemObject.errRangeLow);
-                        this.isUseHighAlam = ko.observable(itemObject.isUseHighAlam);
-                        this.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
-                        this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
-                        this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
-                        //Setup context menu for item:
-                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu(".context-menu-" + self.itemCode(), [
-                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", function (ui) {
-                                alert($(ui).data("itemcode"));
-                                self.contextMenu.setVisibleItem(false, "delete");
-                                self.contextMenu.setVisibleItem(true, "undoDelete");
-                            }, "", true),
-                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻る", function (ui) {
-                                alert($(ui).data("itemcode"));
-                                self.contextMenu.setVisibleItem(true, "delete");
-                                self.contextMenu.setVisibleItem(false, "undoDelete");
-                            }, "", false)
-                        ]);
+                        self.itemPosColumn = ko.observable(itemObject.itemPosColumn);
+                        self.categoryAtr = ko.observable(itemObject.categoryAtr);
+                        self.autoLineId = ko.observable(itemObject.autoLineId);
+                        self.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
+                        self.setOffItemCode = ko.observable(itemObject.setOffItemCode);
+                        self.commuteAtr = ko.observable(itemObject.commuteAtr);
+                        self.calculationMethod = ko.observable(itemObject.calculationMethod);
+                        self.distributeSet = ko.observable(itemObject.distributeSet);
+                        self.distributeWay = ko.observable(itemObject.distributeWay);
+                        self.personalWageCode = ko.observable(itemObject.personalWageCode);
+                        self.isUseHighError = ko.observable(itemObject.isUseHighError);
+                        self.errRangeHigh = ko.observable(itemObject.errRangeHigh);
+                        self.isUseLowError = ko.observable(itemObject.isUseLowError);
+                        self.errRangeLow = ko.observable(itemObject.errRangeLow);
+                        self.isUseHighAlam = ko.observable(itemObject.isUseHighAlam);
+                        self.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
+                        self.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
+                        self.alamRangeLow = ko.observable(itemObject.alamRangeLow);
+                        self.initContextMenu();
                     }
+                    ItemDetail.prototype.initContextMenu = function () {
+                        var self = this;
+                        self.contextMenuClassId = "context-menu-" + self.itemCode();
+                        //Chỉ cho phép xóa những item khác dấu "+" và không phải là item required
+                        if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
+                            //Setup context menu for item:
+                            self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
+                                new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", function (ui) {
+                                    self.setDelete(true);
+                                }, "", true),
+                                new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", function (ui) {
+                                    self.setDelete(false);
+                                }, "", false)
+                            ]);
+                        }
+                    };
+                    ItemDetail.prototype.setDelete = function (isDelete) {
+                        var self = this;
+                        self.isRemoved = isDelete;
+                        self.contextMenu.setVisibleItem(!isDelete, "delete");
+                        self.contextMenu.setVisibleItem(isDelete, "undoDelete");
+                        if (isDelete) {
+                            $("#" + self.itemCode()).addClass("item-isDeleting");
+                        }
+                        else {
+                            $("#" + self.itemCode()).removeClass("item-isDeleting");
+                        }
+                    };
                     ItemDetail.prototype.itemClick = function (data, event) {
                         var _this = this;
                         var self = this;
+                        // Nếu đang bị delete thì ko cho bật dialog detail
+                        if (self.isRemoved)
+                            return this;
                         var param = {
                             categoryId: data.categoryAtr(),
                             itemCode: data.itemCode(),
@@ -422,6 +443,7 @@ var qmm019;
                                 // Them moi
                                 self.itemCode(itemResult.itemCode);
                                 self.added(true);
+                                self.initContextMenu();
                             }
                             else {
                                 if (self.added()) {
