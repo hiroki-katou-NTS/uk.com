@@ -2,11 +2,17 @@ module cmm008.a.viewmodel{
     import option = nts.uk.ui.option;
     
     export class ScreenModel {
-        textSearch: any;
         employmentCode: KnockoutObservable<string>;
         employmentName: KnockoutObservable<string>;
         textEditorOption: KnockoutObservable<any>;
         isCheckbox: KnockoutObservable<Boolean>;
+        
+        //search box
+        dataSource: any;
+        columns: KnockoutObservableArray<any>;
+        currentCode: KnockoutObservable<any>;
+        singleSelectedCode: any;
+//        headers: any;
         //締め日 DATA COMBOBOX
         closeDateList: KnockoutObservableArray<ItemCloseDate>;
         selectedCloseCode: KnockoutObservable<number>;
@@ -35,15 +41,7 @@ module cmm008.a.viewmodel{
             self.employmentOutCode = ko.observable("");
             self.memoValue = ko.observable("");
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-            self.textSearch = {
-                valueSearch: ko.observable(""),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "コード・名称で検索・・・",
-                        width: "75%",
-                        textalign: "left"
-                        }))
-            }  
+            self.dataSource = ko.observableArray([]);
             self.multilineeditor = {
                 memoValue: ko.observable(''),
                 constraint: '',
@@ -55,8 +53,6 @@ module cmm008.a.viewmodel{
                 })),
                 required: ko.observable(true),
             };
-            
-            
         }
         // start function
         start(): JQueryPromise<any> {
@@ -71,6 +67,8 @@ module cmm008.a.viewmodel{
             self.closeDateListItem();
             self.managementHolidaylist();
             self.processingDateItem();
+            self.dataSourceItem();
+            
             dfd.resolve();
             // Return.
             return dfd.promise();
@@ -98,6 +96,24 @@ module cmm008.a.viewmodel{
             self.processingDateList.push(new ItemProcessingDate(1, '1')); 
             self.processingDateList.push(new ItemProcessingDate(2, '2')); 
         }
+        
+        dataSourceItem(): any{
+            var self = this;
+            self.dataSource = ko.observableArray([]);
+            for(let i = 1; i < 100; i++) {
+                self.dataSource.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
+            }
+            
+            this.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'code', width: 100 },
+                { headerText: '名称', prop: 'name', width: 150 },
+                { headerText: '説明', prop: 'description', width: 150 },
+                { headerText: '説明1', prop: 'other1', width: 150 },
+                { headerText: '説明2', prop: 'other2', width: 150 }
+            ]);
+            this.currentCode = ko.observable();
+            self.singleSelectedCode = ko.observable(null);
+        }
     }   
     
     export class ItemCloseDate{
@@ -116,5 +132,21 @@ module cmm008.a.viewmodel{
             this.processingDateCode = processingDateCode;
             this.processingDatename = processingDatename;    
         }   
+    }
+   class ItemModel {
+        code: string;
+        name: string;
+        description: string;
+        other1: string;
+        other2: string;
+        //childs: any;
+        constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
+            this.code = code;
+            this.name = name;
+            this.description = description;
+            this.other1 = other1;
+            this.other2 = other2 || other1;    
+            //this.childs = childs;     
+        }
     }
 }

@@ -26,31 +26,43 @@
 							<input data-bind="value: itemName"></input>
 							<button data-bind="click: addOptions">Add Item</button>
 						</div>
+						<button data-bind="click: remove">Remove Item</button>
+						<button data-bind="click: selectAll">Select All</button>
+						<button data-bind="click: deselectAll">Deselect All</button>
+						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
+						<span data-bind="ntsCheckBox: { checked: isMulti }">Multiple for list 1</span>
+						<span data-bind="ntsCheckBox: { checked: isValidate }">Validate</span>
+						<br />
+						<!-- Multiple is false -->
+						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span><br/>
+						<!-- Multiple is true -->
+						<b>Multi Selected:</b><span data-bind="text: selectedCodes()"></span><br />
+						<b>Selected:</b><span data-bind="text: selectedCodes().length"></span><br />
 						<br />
 						<div id="list-box" data-bind="ntsListBox: {
 											options: itemList,
-											optionsValue: 'code',
-											optionsText: 'name',
-											multiple: true,
+											primaryKey: 'code',
+											primaryText: 'name',
+											multiple: isMulti(),
 											value: selectedCodes,
 											enable: isEnable(),
-											rows: 20,
-											required: true,
+											rows: 10,
+											required: isValidate(),
 											columns: [
 												{ prop: 'code', length: 4 },
 												{ prop: 'name', length: 10 },
 												{ prop: 'description', length: 10 }
 											]}"></div>
-						<button data-bind="click: remove">Remove Item</button>
-						<button data-bind="click: selectAll">Select All</button>
-						<button data-bind="click: deselectAll">Deselect All</button>
-						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
-						<br />
-						<!-- Multiple is false -->
-						<span data-bind="text: selectedCode()"></span>
-						<!-- Multiple is true -->
-						<span data-bind="text: selectedCodes()"></span> <br />
-						<span data-bind="text: 'Selected: ' + selectedCodes().length"></span> <br />
+											
+						<div id="list-box2" data-bind="ntsListBox: {
+											options: itemList,
+											primaryKey: 'code',
+											primaryText: 'name',
+											multiple: false,
+											value: selectedCode,
+											enable: isEnable(),
+											rows: 5,
+											required: isValidate() }"></div>						
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -63,16 +75,16 @@
 									<h2>HTML</h2>
 <pre><![CDATA[<div id="list-box" data-bind="ntsListBox: {
 	options: itemList,
-	optionsValue: 'code',
-	optionsText: 'name',
+	primaryKey: 'code',
+	primaryText: 'name',
 	multiple: true,
 	value: selectedCodes,
 	enable: isEnable(),
 	rows: 3,
 	columns: [
-		{ prop: 'code', length: 4 },
-		{ prop: 'name', length: 10 },
-		{ prop: 'description', length: 10 }
+		{ key: 'code', length: 4 },
+		{ key: 'name', length: 10 },
+		{ key: 'description', length: 10 }
 	]}"></div>]]></pre>
 									<h2>API</h2>
 									<table>
@@ -94,14 +106,14 @@
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue<br/><i>(optional)</i></td>
+												<td>optionsValue / primaryKey<br/><i>(optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as ListBox value. If null object will be set as value
 												</td>
 											</tr>
 											<tr>
-												<td>optionsText</td>
+												<td>optionsText / primaryText</td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as ListBox text
@@ -142,7 +154,7 @@
 												<td>
 													<b>Type:</b> array&lt;column&gt;<br/>
 													Array of column object will be displayed in drop down part.<br/>
-													<i>prop:</i> field name of data<br/>
+													<i>prop / key:</i> field name of data<br/>
 													<i>length:</i> length of character for this field 
 												</td>
 											</tr>
