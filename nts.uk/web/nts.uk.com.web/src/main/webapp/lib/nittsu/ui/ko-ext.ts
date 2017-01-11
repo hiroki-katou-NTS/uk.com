@@ -1142,14 +1142,14 @@ module nts.uk.ui.koExtentions {
             // Container
             var container = $(element);
             container.addClass('ntsListBox ntsControl').data('required', required);
-
+            
+            container.data("options", options.slice());
+            container.data("init", true);
+            container.data("enable", enable);
             // Create select
             container.append('<ol class="nts-list-box"></ol>');
             var selectListBoxContainer = container.find('.nts-list-box');
 
-            container.data("options", options.slice());
-            container.data("init", true);
-            container.data("enable", enable);
             // Create changing event.
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
@@ -1158,14 +1158,13 @@ module nts.uk.ui.koExtentions {
             // Bind selectable.
             selectListBoxContainer.selectable({
                 filter: 'li',
-                autoRefresh: false,
                 selected: function(event, ui) {
                 },
                 stop: function(event, ui) {
                     // If not Multi Select.
                     if (!isMultiSelect) {
                         $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
-                        //                        $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
+                        $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
                     }
                     // Add selected value.
                     var data: any = isMultiSelect ? [] : '';
@@ -1183,10 +1182,10 @@ module nts.uk.ui.koExtentions {
                     document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
                 },
                 unselecting: function(event, ui) {
-                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
+                    //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                 },
                 selecting: function(event, ui) {
-                    if (isMultiSelect) {
+                    if(isMultiSelect){
                         if (event.shiftKey) {
                             if ($(ui.selecting).attr("clicked") !== "true") {
                                 var source = container.find("li");
@@ -1214,12 +1213,10 @@ module nts.uk.ui.koExtentions {
                             $(ui.selecting).attr("clicked", "true");
                         }
                     }
-
+                    
                 }
             });
-            selectListBoxContainer.on("mousedown", function(event, ui) {
-                container.children("li").removeClass("ui-selected");
-            });
+
             // Fire event.
             container.on('selectionChange', (function(e: Event) {
                 // Check is multi-selection.
@@ -1252,7 +1249,7 @@ module nts.uk.ui.koExtentions {
             container.on('validate', (function(e: Event) {
                 // Check empty value
                 var itemsSelected: any = container.data('value');
-                if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0)
+                if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) 
                     && container.data("enable")) {
                     selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
                 } else {
@@ -1284,7 +1281,7 @@ module nts.uk.ui.koExtentions {
             var maxWidthCharacter = 15;
             var required = ko.unwrap(data.required) || false;
             container.data('required', required);
-
+            
             var getOptionValue = item => {
                 if (optionValue === undefined) {
                     return item;
@@ -1307,10 +1304,10 @@ module nts.uk.ui.koExtentions {
                     $('li', container).each(function(index, option) {
                         var optValue = $(option).data('value');
                         // Check if btn is contained in options.
-                        var foundFlag = _.find(options, function(opt) {
+                        var foundFlag = _.findIndex(options, function(opt) {
                             return getOptionValue(opt) == optValue;
-                        });
-                        if (foundFlag === undefined) {
+                        }) !== -1;
+                        if (!foundFlag) {
 
                             // Remove selected if not found option.
                             selectedValue = jQuery.grep(selectedValue, function(value: string) {
@@ -1327,7 +1324,7 @@ module nts.uk.ui.koExtentions {
                     // Check option is Selected
                     var isSelected: boolean = false;
                     if (isMultiSelect) {
-                        isSelected = (<Array<string>>selectedValue).indexOf(getOptionValue(item)) >= 0;
+                        isSelected = (<Array<string>>selectedValue).indexOf(getOptionValue(item)) != -1;
                     } else {
                         isSelected = selectedValue === getOptionValue(item);
                     }
@@ -1341,8 +1338,7 @@ module nts.uk.ui.koExtentions {
                         var itemTemplate: string = '';
                         if (columns && columns.length > 0) {
                             columns.forEach((col, cIdx) => {
-                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + 
-                                    (item[col.prop] === undefined ? item[col.key] : item[col.prop]) + '</div>';
+                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
                             });
                         } else {
                             itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
@@ -1363,7 +1359,24 @@ module nts.uk.ui.koExtentions {
 
                 });
 
-                selectListBoxContainer.selectable("refresh");
+                var padding = 10;
+                var rowHeight = 28;
+                // Set width for multi columns
+                if (columns && columns.length > 0) {
+                    var totalWidth = 0;
+                    columns.forEach((item, cIdx) => {
+                        container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                        totalWidth += item.length * maxWidthCharacter + 20;
+                    });
+                    totalWidth += padding * (columns.length + 1); // + 50;
+                    container.find('.nts-list-box > li').css({ 'width': totalWidth });
+                    container.find('.nts-list-box').css({ 'width': totalWidth });
+                    container.css({ 'width': totalWidth });
+                }
+                if (rows && rows > 0) {
+                    container.css('height', rows * rowHeight);
+                    container.find('.nts-list-box').css('height', rows * rowHeight);
+                }
             }
             container.data("options", options.slice());
             container.data("init", false);
@@ -1578,10 +1591,8 @@ module nts.uk.ui.koExtentions {
             if (data.headers) {
                 headers = ko.unwrap(data.headers);
             }
-            var displayColumns: Array<any> = [
-                { headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1], key: optionsText, dataType: "string" }
-            ];
+            var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }

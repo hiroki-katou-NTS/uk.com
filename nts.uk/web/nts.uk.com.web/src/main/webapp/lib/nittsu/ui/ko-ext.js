@@ -1129,12 +1129,12 @@ var nts;
                         // Container
                         var container = $(element);
                         container.addClass('ntsListBox ntsControl').data('required', required);
-                        // Create select
-                        container.append('<ol class="nts-list-box"></ol>');
-                        var selectListBoxContainer = container.find('.nts-list-box');
                         container.data("options", options.slice());
                         container.data("init", true);
                         container.data("enable", enable);
+                        // Create select
+                        container.append('<ol class="nts-list-box"></ol>');
+                        var selectListBoxContainer = container.find('.nts-list-box');
                         // Create changing event.
                         var changeEvent = new CustomEvent("selectionChange", {
                             detail: {},
@@ -1142,13 +1142,13 @@ var nts;
                         // Bind selectable.
                         selectListBoxContainer.selectable({
                             filter: 'li',
-                            autoRefresh: false,
                             selected: function (event, ui) {
                             },
                             stop: function (event, ui) {
                                 // If not Multi Select.
                                 if (!isMultiSelect) {
                                     $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
+                                    $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
                                 }
                                 // Add selected value.
                                 var data = isMultiSelect ? [] : '';
@@ -1165,7 +1165,7 @@ var nts;
                                 document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
                             },
                             unselecting: function (event, ui) {
-                                $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected');
+                                //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                             },
                             selecting: function (event, ui) {
                                 if (isMultiSelect) {
@@ -1199,9 +1199,6 @@ var nts;
                                     }
                                 }
                             }
-                        });
-                        selectListBoxContainer.on("mousedown", function (event, ui) {
-                            container.children("li").removeClass("ui-selected");
                         });
                         // Fire event.
                         container.on('selectionChange', (function (e) {
@@ -1279,10 +1276,10 @@ var nts;
                                 $('li', container).each(function (index, option) {
                                     var optValue = $(option).data('value');
                                     // Check if btn is contained in options.
-                                    var foundFlag = _.find(options, function (opt) {
+                                    var foundFlag = _.findIndex(options, function (opt) {
                                         return getOptionValue(opt) == optValue;
-                                    });
-                                    if (foundFlag === undefined) {
+                                    }) !== -1;
+                                    if (!foundFlag) {
                                         // Remove selected if not found option.
                                         selectedValue = jQuery.grep(selectedValue, function (value) {
                                             return value != optValue;
@@ -1297,7 +1294,7 @@ var nts;
                                 // Check option is Selected
                                 var isSelected = false;
                                 if (isMultiSelect) {
-                                    isSelected = selectedValue.indexOf(getOptionValue(item)) >= 0;
+                                    isSelected = selectedValue.indexOf(getOptionValue(item)) != -1;
                                 }
                                 else {
                                     isSelected = selectedValue === getOptionValue(item);
@@ -1312,8 +1309,7 @@ var nts;
                                     var itemTemplate = '';
                                     if (columns && columns.length > 0) {
                                         columns.forEach(function (col, cIdx) {
-                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' +
-                                                (item[col.prop] === undefined ? item[col.key] : item[col.prop]) + '</div>';
+                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
                                         });
                                     }
                                     else {
@@ -1333,7 +1329,24 @@ var nts;
                                     }
                                 }
                             });
-                            selectListBoxContainer.selectable("refresh");
+                            var padding = 10;
+                            var rowHeight = 28;
+                            // Set width for multi columns
+                            if (columns && columns.length > 0) {
+                                var totalWidth = 0;
+                                columns.forEach(function (item, cIdx) {
+                                    container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                                    totalWidth += item.length * maxWidthCharacter + 20;
+                                });
+                                totalWidth += padding * (columns.length + 1); // + 50;
+                                container.find('.nts-list-box > li').css({ 'width': totalWidth });
+                                container.find('.nts-list-box').css({ 'width': totalWidth });
+                                container.css({ 'width': totalWidth });
+                            }
+                            if (rows && rows > 0) {
+                                container.css('height', rows * rowHeight);
+                                container.find('.nts-list-box').css('height', rows * rowHeight);
+                            }
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
@@ -1533,10 +1546,8 @@ var nts;
                         if (data.headers) {
                             headers = ko.unwrap(data.headers);
                         }
-                        var displayColumns = [
-                            { headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                            { headerText: headers[1], key: optionsText, dataType: "string" }
-                        ];
+                        var displayColumns = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                            { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }
