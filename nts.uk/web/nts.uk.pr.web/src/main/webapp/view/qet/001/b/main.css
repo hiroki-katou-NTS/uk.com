@@ -1,0 +1,53 @@
+.function-class > div {
+    float: left;
+    margin-left: 30px;
+    padding-top: 4px;
+}
+td#contents-left {
+    width: 280px;
+    height: 500px;
+    background-color: #E2F79F;
+    border-radius: 5px;
+}
+
+td#contents-left > div {
+    margin-left: 15px;
+}
+div#search-grid {
+    margin-bottom: 20px;
+    width: 250px;
+}
+input#search-input {
+    width: 190px;
+}
+.function-middle {
+    margin-left: 175px !important;
+}
+td#contents-center {
+    width: 700px;
+    height: 500px;
+    padding: 5px;
+}
+div#aggregate-category-tab > div {
+    min-height: 400px;
+}
+
+input#code-input {
+    width: 50px;
+    margin-left: 20px;
+}
+div#print-one-page-checkbox {
+    margin-left: 113px;
+}
+button.help-button {
+    margin-left: 10px;
+}
+.head-end {
+    width: 100%;
+    height: 1px;
+    background: #B1B1B1;
+    margin-top: 4px;
+}
+div#report-item-list {
+    margin-top: 10px;
+}
