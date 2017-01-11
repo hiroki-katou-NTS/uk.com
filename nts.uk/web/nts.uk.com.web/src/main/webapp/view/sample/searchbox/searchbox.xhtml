@@ -22,11 +22,12 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>SearchBox Sample</h1>
-						<h3>This is TreeGrid version, for GridList, view <a href="searchbox-gridlist.xhtml">THIS PAGE</a></h3>						
+						<h3>This is TreeGrid version, for GridList, view <a href="searchbox-gridlist.xhtml">THIS PAGE</a></h3>
+						<h3>for igGrid version (igGrid without binding), view <a href="searchbox-igGrid.xhtml">THIS PAGE</a></h3>				
 						<h2>Overview</h2>						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 								<h3>Single Selection TreeGrid</h3>
 								<table id="treegrid1"
 									data-bind="ntsTreeGridView:{
@@ -52,7 +53,7 @@
 						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', filteredItems: filteredData2, fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 								<h3>Multi Selection TreeGrid</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
@@ -88,8 +89,7 @@
 	<div style="float:left">																					
 		<div style="width: 700px" data-bind="ntsSearchBox: {
 		comId: 'treegrid1',
-		items: dataSource, 
-		filteredItems: filteredData, 
+		items: dataSource, 		
 		selected: singleSelectedCode, 
 		selectedKey: 'code', 
 		childField: 'childs', 
@@ -124,8 +124,7 @@
 		items: dataSource2, 
 		selected: selectedCodes2, 
 		selectedKey: 'code', 
-		childField: 'childs', 
-		filteredItems: filteredData2, 
+		childField: 'childs',		 
 		fields: ['name', 'code']}" />																																														
 		<h3>Multi Selection TreeGrid</h3>
 		<table id="treegrid2"
@@ -175,16 +174,14 @@
 													<b>Type:</b> array of items, data source of grid<br/>													
 													<i>item:</i> object class that store our data<br/>
 												</td>
-											</tr>
+											</tr>								
 											<tr>
-												<td>filteredItems</td>
+												<td>searchText</td>
 												<td>
-													<b>Type:</b> array of items<br/>
-													Save search result in an array for jump list.
-													Each time <a style="color: green" href="#nextSearch">next search button</a> clicked / 'enter' pressed, the selectedItem will be the next or 0 from current
-													index that match the selectedItem
+													<b>Type:</b> String, text is showed in button<br/>													
+													<i>default:</i> Search<br/>
 												</td>
-											</tr>
+											</tr>											
 											<tr>
 												<td>selected</td>
 												<td>
@@ -222,9 +219,7 @@
 								The data with form "DATA" + "2" is for multi select mode example
 <pre><![CDATA[class ScreenModel {
     dataSource: any;
-    dataSource2: any;
-    filteredData: any;
-    filteredData2: any;
+    dataSource2: any;   
     singleSelectedCode: any;
     singleSelectedCode2: any;
     selectedCodes: any;
@@ -251,9 +246,7 @@
             new Node('0007', 'United States', [new Node('0008', 'Washington US', []),new Node('0009', 'Newyork US', [])]),                             
             new Node('0010', 'Beijing China', []),
             new Node('0011', 'London United Kingdom', []),
-            new Node('0012', '', [])]);
-        self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(),"childs"));
-        self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.dataSource2(),"childs"));
+            new Node('0012', '', [])]);       
         self.singleSelectedCode = ko.observable(null);
         self.singleSelectedCode2 = ko.observable(null);
         self.selectedCodes = ko.observableArray([]);

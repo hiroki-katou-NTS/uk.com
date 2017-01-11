@@ -20,15 +20,7 @@ var cmm008;
                     self.employmentOutCode = ko.observable("");
                     self.memoValue = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                    self.textSearch = {
-                        valueSearch: ko.observable(""),
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "コード・名称で検索・・・",
-                            width: "75%",
-                            textalign: "left"
-                        }))
-                    };
+                    self.dataSource = ko.observableArray([]);
                     self.multilineeditor = {
                         memoValue: ko.observable(''),
                         constraint: '',
@@ -54,6 +46,7 @@ var cmm008;
                     self.closeDateListItem();
                     self.managementHolidaylist();
                     self.processingDateItem();
+                    self.dataSourceItem();
                     dfd.resolve();
                     // Return.
                     return dfd.promise();
@@ -79,6 +72,22 @@ var cmm008;
                     self.processingDateList.push(new ItemProcessingDate(1, '1'));
                     self.processingDateList.push(new ItemProcessingDate(2, '2'));
                 };
+                ScreenModel.prototype.dataSourceItem = function () {
+                    var self = this;
+                    self.dataSource = ko.observableArray([]);
+                    for (var i = 1; i < 100; i++) {
+                        self.dataSource.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
+                    }
+                    this.columns = ko.observableArray([
+                        { headerText: 'コード', prop: 'code', width: 100 },
+                        { headerText: '名称', prop: 'name', width: 150 },
+                        { headerText: '説明', prop: 'description', width: 150 },
+                        { headerText: '説明1', prop: 'other1', width: 150 },
+                        { headerText: '説明2', prop: 'other2', width: 150 }
+                    ]);
+                    this.currentCode = ko.observable();
+                    self.singleSelectedCode = ko.observable(null);
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
@@ -98,6 +107,18 @@ var cmm008;
                 return ItemProcessingDate;
             }());
             viewmodel.ItemProcessingDate = ItemProcessingDate;
+            var ItemModel = (function () {
+                //childs: any;
+                function ItemModel(code, name, description, other1, other2) {
+                    this.code = code;
+                    this.name = name;
+                    this.description = description;
+                    this.other1 = other1;
+                    this.other2 = other2 || other1;
+                    //this.childs = childs;     
+                }
+                return ItemModel;
+            }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm008.a || (cmm008.a = {}));
 })(cmm008 || (cmm008 = {}));

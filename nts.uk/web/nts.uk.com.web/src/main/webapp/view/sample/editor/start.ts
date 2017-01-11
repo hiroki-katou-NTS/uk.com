@@ -82,7 +82,7 @@ __viewContext.ready(function () {
                     grouplength: 3,
                     decimallength: 2,
                     currencyformat: "JPY",
-                    currencyposition: 'right'
+                    currencyposition: 'left'
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),

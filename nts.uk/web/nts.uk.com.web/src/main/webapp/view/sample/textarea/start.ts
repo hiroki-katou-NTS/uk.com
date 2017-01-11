@@ -3,14 +3,18 @@ __viewContext.ready(function() {
     function showError(event) {
         var currentString = $("#input-text").val();
         var selectValue = $(this).attr("messege");
-        $(this).tooltip({ content: selectValue });
-        $("#error-messege").text(selectValue);
-        var position = $("#input-containner").position();
-        $("#error-containner").css({ "top": (event.data.pageY - position.top + 2) + "px", 
-                    "left": (event.data.pageX - position.left + 2) + "px" });
-        $("#error-containner").show();
+        if(selectValue !== undefined){
+            $(this).tooltip({ content: selectValue });
+            $("#error-messege").text(selectValue);
+            var position = $("#input-containner").position();
+            $("#error-containner").css({
+                "top": (event.data.pageY - position.top + 2) + "px",
+                "left": (event.data.pageX - position.left + 2) + "px"
+            });
+            $("#error-containner").show();    
+        }
     }
-    
+
     class ScreenModel {
         autoComplete: KnockoutObservableArray<any>;
         textArea: KnockoutObservable<any>;
@@ -19,6 +23,7 @@ __viewContext.ready(function() {
         showAutoComplete: KnockoutObservable<boolean>;
         row: KnockoutObservable<number>;
         col: KnockoutObservable<number>;
+        index: KnockoutObservable<number>;
         error: KnockoutObservable<string>;
 
         constructor() {
@@ -39,12 +44,13 @@ __viewContext.ready(function() {
             this.autoSelected = ko.observable("");
             this.row = ko.observable(1);
             this.col = ko.observable(1);
+            this.index = ko.observable(1);
             this.error = ko.observable("");
             this.autoSelected.subscribe(function(value) {
                 //                $("#auto-complete-containner").show()
                 if (value !== undefined) {
                     var currentString = $("#input-text").val();
-                    var index = this.getIndex(currentString, this.row(), this.col()) + 1;
+                    var index = this.index() + 1;
                     var selectValue = value.name();
                     var inserted = this.insertString(currentString, selectValue, index);
                     this.textArea(inserted);
@@ -59,10 +65,13 @@ __viewContext.ready(function() {
             this.textArea = ko.observable("");
             this.divValue = ko.observable("");
             $("#error-containner").hide();
-//            $("#error-content").mouseout(function(event){
-//                $("#error-containner").hide();
-//            }
+            //            $("#error-content").mouseout(function(event){
+            //                $("#error-containner").hide();
+            //            }
             $("#input-text").keyup((event) => {
+                if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
+                    return;
+                }
                 $("#error-containner").hide();
                 var start = $("#input-text")[0].selectionStart;
                 var end = $("#input-text")[0].selectionEnd;
@@ -70,14 +79,16 @@ __viewContext.ready(function() {
                 //                if(event.keyCode === 8){
                 //                      
                 //                }else 
-                if ((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) {
+                if (((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) && event.key === "@") {
                     //                    $("#auto-complete-containner").css("top": start);
-                    var currentRow = this.getCurrentRows(end);
-                    var currentCol = this.getCurrentColumn(currentRow, end);
-                    this.row(currentRow);
-                    this.col(currentCol);
+                    this.testError();
+                    var currentRow = this.getCurrentPosition(end);
+//                    var currentCol = this.getCurrentColumn(currentRow, end);
+//                    this.row(currentRow);
+//                    this.col(currentCol);
+                    this.index(end);
                     $("#auto-complete-containner").show();
-                    $("#auto-complete-containner").css({ "top": (currentRow * 17) + "px", "left": (currentCol * maxWidthCharacter) + "px" });
+                    $("#auto-complete-containner").css({ "top": (currentRow.top + 17) + "px", "left": (currentRow.left + 15) + "px" });
                 } else {
                     $("#auto-complete-containner").hide();
                     this.testError();
@@ -115,73 +126,63 @@ __viewContext.ready(function() {
             var count = 1;
             var toChar = value.split('');
             var html = "<span class='editor-line'>";
-            html += "<span id='span-" + count + "'>";
-            count++;
             for (var i = 0; i < toChar.length; i++) {
                 if (toChar[i] === "\n") {
-                    html += "</span></span>";
+                    html += "</span>";
                     html += "<span class='editor-line'>";
                 } else {
-                    if (this.checkAlphaOrEmpty(toChar[i])) {
-                        if (this.checkAlphaOrEmpty(toChar[i - 1])) {
-                            html += toChar[i];
+                    if (toChar[i] === "@") {
+                        html += "<span id='span-" + count + "' class='autocomplete-char'>" + toChar[i] + "</span>";
+                        count++;
+                    } else if (this.checkJapanese(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkJapanese(toChar[i - 1])) {
+                            html = this.insertString(html, toChar[i], html.length - 7);
                         } else {
-                            if (toChar[i - 1] !== "\n") {
-                                html += "</span>";
-                            }
-                            html += "<span id='span-" + count + "'>" + toChar[i];
+                            html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                    } else if (this.checkAlphaOrEmpty(toChar[i])) {
+                        if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (this.checkAlphaOrEmpty(toChar[i - 1]) && toChar[i - 1] !== "@") {
+                            html = this.insertString(html, toChar[i], html.length - 7);
+                        } else {
+                            html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                             count++;
                         }
                     } else {
-                        if (toChar[i - 1] !== "\n" && this.checkAlphaOrEmpty(toChar[i - 1])) {
-                            html += "</span>";
-                        }
                         html += "<span id='span-" + count + "' class='special-char'>" + toChar[i] + "</span>";
                         count++;
                     }
                 }
             }
-            html += "</span></span>";
+            html += "</span>";
             this.divValue(html);
             this.testGachChan($(".special-char"));
             this.divValue($("#input-content-area").html());
         }
 
-        getIndex(str, row, col) {
-            if (row === 1) {
-                return col - 1;
-            }
-            var rowValues = str.split("\n");
+        getCurrentPosition(position) {
+            var uiPosition = {};
+            var $lines = $("#input-content-area").find(".editor-line");
             var index = 0;
-            for (var i = 0; i < row - 1; i++) {
-                index = rowValues[i].length + 1;
-            }
-            return index + col - 1;
-        }
-
-        getCurrentColumn(currentRow, position) {
-            if (currentRow === 1) {
-                return position;
-            }
-            var rowValues = $("#input-text").val().split("\n");
-            var count = 1;
-            var x = position;
-            for (var i = 0; i < currentRow - 1; i++) {
-                count = x - rowValues[i].length - 1;
-                x = count;
-            }
-            return count + 1;
-        }
-
-        getCurrentRows(position) {
-            var currentText = $("#input-text").val();
-            var count = 1;
-            var start = currentText.indexOf("\n", 0);
-            while (start !== -1 && start < position) {
-                count++;
-                start = currentText.indexOf("\n", start + 1);
-            };
-            return count;
+            $lines.each(function(index, line) {
+                var $line = $(line);
+                var char = _.find($line.children(), function(text) {
+                    var current = index + $(text).text().length;
+                    index += $(text).text().length;
+                    return current === position;
+                });
+                if(char !== undefined){
+                    uiPosition = $(char).position();
+                    return;
+                }
+            });
+            return uiPosition;
         }
 
         checkAlphaOrEmpty(char) {
@@ -189,57 +190,83 @@ __viewContext.ready(function() {
             return !speChar.test(char) || char === " " || char === undefined;
         }
 
+        checkJapanese(char) {
+            return !nts.uk.text.allHalf(char);
+        }
+
         testGachChan(specialChar) {
 
-            var openSpecial = {
-                "&gt;": "&lt;",
-                "\)": "\(",
-                "\]": "\[",
-                "\}": "\{"
-            };
             var singleSpecial = {
                 "+": "+",
                 "-": "-",
-                ".": ".",
+                "^": "^",
                 "*": "*",
                 "/": "/",
-                "\\": "\\",
+                "=": "=",
                 "!": "!",
                 "#": "#",
                 "$": "$",
                 "%": "%"
             };
-            var doubleSpecial = {
-                "&": "&",
-                "|": "|"
-            };
+
+            var closeTriangle = _.remove(specialChar, function(n) {
+                return $(n).html() === "&gt;";
+            });
+
+            var openTriangle = _.remove(specialChar, function(n) {
+                return $(n).html() === "&lt;";
+            });
+
+            var openRound = _.remove(specialChar, function(n) {
+                return $(n).html() === "\(";
+            });
+
+            var closeRound = _.remove(specialChar, function(n) {
+                return $(n).html() === "\)";
+            });
+
+            this.checkOpenClose(openTriangle, closeTriangle);
+
+            this.checkOpenClose(openRound, closeRound);
+
             var element = this.toArrayChar(specialChar);
             for (var i = 0; i < specialChar.length; i++) {
                 var $data = $(specialChar[i]);
                 var charCount = parseInt($data.attr("id").split("-")[1]);
                 var char = $data.text();
-                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
                 var single = singleSpecial[char];
-                var double = doubleSpecial[char];
-                if (openComa !== undefined) {
-                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
-                    var x = this.countPreviousElement(element, openComa, i);
-                    if (x2 > x) {
-                        $data.addClass("error-char").attr("messege", "test 1");
-                    }
-                } else if (single !== undefined) {
+                if (single !== undefined) {
                     var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
                     if (neighborCount > 0) {
                         $data.addClass("error-char").attr("messege", "test 2");
                     }
-                } else if (double !== undefined) {
-                    var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if (neighborCount > 1) {
-                        $data.addClass("error-char").attr("messege", "test 3");
-                    }
-                } else if (double !== "@") {
+                } else if (char !== "@") {
                     $data.addClass("error-char").attr("messege", "test 4");
                 }
+            }
+        }
+
+        checkOpenClose(openTriangle, closeTriangle) {
+            if (closeTriangle.length === 0) {
+                $(openTriangle).addClass("error-char").attr("messege", "test 1");
+            } else if (openTriangle.length === 0) {
+                $(closeTriangle).addClass("error-char").attr("messege", "test 1");
+            } else {
+                var openError = [];
+                for (var i = openTriangle.length - 1; i >= 0; i--) {
+                    var currentOpen = openTriangle[i];
+                    var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                    var currentClose = _.find(closeTriangle, function(a) {
+                        return parseInt($(a).attr("id").split("-")[1]) > id;
+                    });
+                    if (currentClose === undefined) {
+                        openError.unshift(currentOpen);
+                    } else {
+                        closeTriangle.splice(closeTriangle.indexOf(currentClose), 1);
+                    }
+                }
+                $(openError).addClass("error-char").attr("messege", "test 1");
+                $(closeTriangle).addClass("error-char").attr("messege", "test 1");
             }
         }
 
@@ -296,18 +323,6 @@ __viewContext.ready(function() {
             }, this).extend({ deferred: true });
         }
     }
-
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-    }
-
 
     this.bind(new ScreenModel());
 
