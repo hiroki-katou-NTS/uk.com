@@ -23,7 +23,7 @@ module nts.uk.pr.view.qmm007.a {
             selectedCodes: any;
             headers: any;
 
-            lst_001: any;
+            historyList: any;
 
             lbl_005: KnockoutObservable<string>;
 
@@ -44,7 +44,7 @@ module nts.uk.pr.view.qmm007.a {
 
             constructor() {
                 var self = this;
-                self.lst_001 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
+                self.historyList = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
                     new Node('0003', 'Bangkok Thailand', []),
                     new Node('0004', 'Tokyo Japan', []),
                     new Node('0005', 'Jakarta Indonesia', []),
@@ -55,7 +55,7 @@ module nts.uk.pr.view.qmm007.a {
                     new Node('0011', 'London United Kingdom', []),
                     new Node('0012', 'USA', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])])]);
 
-                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.lst_001(), "childs"));
+                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
                 self.singleSelectedCode = ko.observable(null);
                 self.selectedCodes = ko.observableArray([]);
                 self.index = 0;
@@ -146,11 +146,11 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             goToB() {
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 380, width: 450 });
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 450 });
             }
 
             goToC() {
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 450, width: 560 });
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 560 });
             }
 
         }
