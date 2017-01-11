@@ -1332,7 +1332,8 @@ var nts;
                                     var itemTemplate = '';
                                     if (columns && columns.length > 0) {
                                         columns.forEach(function (col, cIdx) {
-                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
+                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' +
+                                                (item[col.prop] === undefined ? item[col.key] : item[col.prop]) + '</div>';
                                         });
                                     }
                                     else {
