@@ -1,0 +1,85 @@
+@CHARSET "UTF-8";
+
+.outer {
+	outline: 1px solid #FF6138;
+}
+
+#header {
+	color: #ccc;
+}
+
+#contents-area {
+	width: 1300px;
+	height: 620px;
+	border-bottom: solid 1px #B1B1B1;
+}
+#contents-area > div.nts-left-content > div.caret-right.caret-background{
+	float: left;
+    width: 400px;
+    height: 550px;
+    margin-top: 30px;
+    font-size: 5rem;
+}
+.nts-left-content {
+	margin-top: 20px;
+	width: 500px; '
+	border-bottom: solid 1px #B1B1B1;
+}
+
+.nts-right-content {
+	float: left;
+	width: 700px;
+	border-left: solid 1px #B1B1B1;
+	border-botton: solid 1px #B1B1B1;
+}
+#contents-area > div.nts-right-content > div:nth-child(2) > div:nth-child(1) > input{
+	width: 200px;
+    margin-top: 35px;
+    margin-left: 40px;
+    margin-right: 10px;
+}
+#E_LBL_003{
+	margin-left:15px;
+}
+#treegrid2_container {
+	margin-left: 40px;
+}
+input.ntsSearchBox {
+	width: 200px;
+	margin-top: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+div.ui-widget-header {
+	margin-top: 30px;
+}
+
+/* 
+#E_LBL_002 {
+	margin-top: 5px;
+} */
+
+.caret-right:after {
+	border-width: 1.4em 0.5em;
+	margin-top: 100px;
+}
+
+.caret-right.outline {
+	width: 1em;
+	height: 2em;
+}
+
+#E_BTN_001 {
+    width: 90px;
+    height: 50px;
+    margin-left: -80px;
+    margin-top: 10px;
+}
+
+#E_BTN_002 {
+	width: 80px;
+	margin-left: 20px;
+	margin-top: 5px;
+	height: 40px;
+}
