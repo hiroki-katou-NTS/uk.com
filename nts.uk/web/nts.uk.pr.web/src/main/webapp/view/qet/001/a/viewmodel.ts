@@ -25,6 +25,12 @@ module qet001.a.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * Go To Output setting dialog.
+         */
+        public goToOutputSetting() {
+            nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
+        }
     }
     
     /**

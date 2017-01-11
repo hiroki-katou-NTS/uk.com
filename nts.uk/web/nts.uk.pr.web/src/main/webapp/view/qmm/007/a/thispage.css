@@ -20,10 +20,6 @@
 	min-height: 600px;
 }
 
-#lbl_001 {
-	padding-top: 10px;
-}
-
 #inp_001 {
 	width: 150px;
 }
@@ -41,7 +37,15 @@
 	margin-bottom: 3px !important;
 }
 
+#sch_001 {
+	min-width: 60px;
+}
+
 .btn-default {
 	margin-left: 10px;
 	min-width: 80px;
+}
+
+textarea {
+	resize: none;
 }
