@@ -3,7 +3,7 @@ package nts.uk.ctx.basic.dom.organization.position;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.organization.payclassification.ExclusVersion;
+import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class Position extends AggregateRoot {
@@ -14,7 +14,7 @@ public class Position extends AggregateRoot {
 
 	private JobCode jobCode;
 
-	private ExternalCode jobOutCode;
+	private JobCode jobOutCode;
 
 	private GeneralDate startDate;
 
@@ -22,10 +22,13 @@ public class Position extends AggregateRoot {
 
 	private String companyCode;
 
-	private ExclusVersion exclusVersion;
+	private String exclusVersion;
 	
-	public Position(GeneralDate endDate, JobName jobName, JobCode jobCode, ExternalCode jobOutCode,
-			GeneralDate startDate, String historyID, String companyCode, ExclusVersion exclusVersion) {
+	private Memo memo;
+	
+	
+	public Position(GeneralDate endDate, JobName jobName, JobCode jobCode, JobCode jobOutCode,
+			GeneralDate startDate, String historyID, String companyCode, String exclusVersion, Memo memo) {
 		super();
 		this.endDate = endDate;
 		this.jobName = jobName;
@@ -35,6 +38,7 @@ public class Position extends AggregateRoot {
 		this.historyID = historyID;
 		this.companyCode = companyCode;
 		this.exclusVersion = exclusVersion;
+		this.memo = memo;
 	}
 
 }
