@@ -28,7 +28,7 @@ var nts;
                             $input.width(autoWidth);
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
-                        $input.wrap("<span class= 'nts-editor-wrapped'/>");
+                        $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
                         $input.change(function () {
                             var validator = _this.getValidator(data);
                             var formatter = _this.getFormatter(data);
@@ -191,10 +191,9 @@ var nts;
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
                         var $parent = $input.parent();
-                        var width = option.width ? option.width : '100%';
-                        $parent.css({ "display": "inline-block" });
+                        var width = option.width; // ? option.width : '100%';
                         var parentTag = $parent.parent().prop("tagName").toLowerCase();
-                        if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+                        if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             $parent.css({ 'width': '100%' });
                         }
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
@@ -250,10 +249,10 @@ var nts;
                         var parent = $input.parent();
                         parent.css({ "display": "inline-block" });
                         var parentTag = parent.parent().prop("tagName").toLowerCase();
-                        if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+                        var width = option.width; // ? option.width : '100%';
+                        if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                             parent.css({ 'width': '100%' });
                         }
-                        var width = option.width ? option.width : '100%';
                         $input.css({ 'paddingLeft': '12px', 'width': width });
                     };
                     TimeEditorProcessor.prototype.getDefaultOption = function () {
@@ -374,7 +373,7 @@ var nts;
                         var i = fields.length;
                         while (i--) {
                             var prop = fields[i];
-                            var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
+                            var strProp = ("" + item[prop]).toLocaleLowerCase();
                             if (strProp.indexOf(filter) !== -1) {
                                 return true;
                             }
@@ -385,6 +384,8 @@ var nts;
                     return filtered;
                 };
                 var getNextItem = function (selected, arr, selectedKey, compareKey, isArray) {
+                    //        console.log(selected + "," + selectedKey + "," + compareKey);
+                    //        console.log(isArray);
                     var current = null;
                     if (isArray) {
                         if (selected.length > 0)
@@ -393,15 +394,17 @@ var nts;
                     else if (selected !== undefined && selected !== '' && selected !== null) {
                         current = selected;
                     }
+                    //        console.log("current = "  + current);
                     if (arr.length > 0) {
                         if (current) {
                             for (var i = 0; i < arr.length - 1; i++) {
                                 var item = arr[i];
                                 if (selectedKey) {
-                                    if (item[selectedKey] === current)
+                                    //                        console.log(i);
+                                    if (item[selectedKey] == current)
                                         return arr[i + 1][selectedKey];
                                 }
-                                else if (item[compareKey] === current[compareKey])
+                                else if (item[compareKey] == current[compareKey])
                                     return arr[i + 1];
                             }
                         }
@@ -446,14 +449,22 @@ var nts;
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
                             var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
-                            if (!isArray)
-                                selected(selectedItem);
-                            else {
-                                selected([]);
-                                selected.push(selectedItem);
+                            console.log(selectedItem);
+                            if (data.mode) {
+                                var selectArr = [];
+                                selectArr.push("" + selectedItem);
+                                component.ntsGridList("setSelected", selectArr);
+                                component.trigger("selectionChanged");
                             }
-                            component.trigger("selectChange");
-                            //console.log(selectedItem); 
+                            else {
+                                if (!isArray)
+                                    selected(selectedItem);
+                                else {
+                                    selected([]);
+                                    selected.push(selectedItem);
+                                }
+                                component.trigger("selectChange");
+                            }
                         };
                         $input.keyup(function () {
                             $input.change();
@@ -475,7 +486,7 @@ var nts;
                         var $input = searchBox.find("input.ntsSearchBox");
                         var searchTerm = $input.val();
                         var data = valueAccessor();
-                        var arr = data.items();
+                        var arr = ko.unwrap(data.items);
                         var fields = ko.unwrap(data.fields);
                         var childField = null;
                         if (data.childField) {
@@ -1120,13 +1131,11 @@ var nts;
                         // Get options
                         var options = ko.unwrap(data.options);
                         // Get options value
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+                        var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
-                        var columns = data.columns;
-                        var rows = data.rows;
                         var required = ko.unwrap(data.required) || false;
                         // Container
                         var container = $(element);
@@ -1244,8 +1253,8 @@ var nts;
                         // Get options.
                         var options = ko.unwrap(data.options);
                         // Get options value.
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+                        var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
@@ -1352,6 +1361,24 @@ var nts;
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
+                        // Set width for multi columns
+                        if (columns && columns.length > 0) {
+                            var padding = 10;
+                            var totalWidth = 0;
+                            columns.forEach(function (item, cIdx) {
+                                container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                                totalWidth += item.length * maxWidthCharacter + 20;
+                            });
+                            totalWidth += padding * (columns.length + 1); // + 50;
+                            selectListBoxContainer.find('li').css({ 'width': totalWidth });
+                            selectListBoxContainer.css({ 'width': totalWidth });
+                            container.css({ 'width': totalWidth });
+                        }
+                        if (rows && rows > 0) {
+                            var rowHeight = 28;
+                            container.css('height', rows * rowHeight);
+                            container.find('.nts-list-box').css('height', rows * rowHeight);
+                        }
                         // Set value
                         if (!_.isEqual(originalSelected, selectedValue) || init) {
                             container.data('value', selectedValue);
@@ -1530,8 +1557,10 @@ var nts;
                         if (data.headers) {
                             headers = ko.unwrap(data.headers);
                         }
-                        var displayColumns = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                            { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
+                        var displayColumns = [
+                            { headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                            { headerText: headers[1], key: optionsText, dataType: "string" }
+                        ];
                         if (extColumns) {
                             displayColumns = displayColumns.concat(extColumns);
                         }

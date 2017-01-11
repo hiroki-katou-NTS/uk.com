@@ -306,14 +306,26 @@ var nts;
                 (function (userGuide) {
                     $.fn.ntsUserGuide = function (action) {
                         var $controls = $(this);
-                        if (nts.uk.util.isNullOrUndefined(action)) {
+                        if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
                             return init($controls);
+                        }
+                        else if (action === "destroy") {
+                            return destroy($controls);
                         }
                         else if (action === "show") {
                             return show($controls);
                         }
-                        else {
+                        else if (action === "hide") {
                             return hide($controls);
+                        }
+                        else if (action === "toggle") {
+                            return toggle($controls);
+                        }
+                        else if (action === "isShow") {
+                            return isShow($controls);
+                        }
+                        else {
+                            return $controls;
                         }
                         ;
                     };
@@ -336,11 +348,14 @@ var nts;
                             // Userguide Overlay
                             var $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
-                                .on("click", function () {
-                                $control.hide();
-                            })
                                 .appendTo($control);
                             $control.hide();
+                        });
+                        return controls;
+                    }
+                    function destroy(controls) {
+                        controls.each(function () {
+                            $(this).remove();
                         });
                         return controls;
                     }
@@ -365,10 +380,24 @@ var nts;
                     }
                     function hide(controls) {
                         controls.each(function () {
-                            var $control = $(this);
-                            $control.hide();
+                            $(this).hide();
                         });
                         return controls;
+                    }
+                    function toggle(controls) {
+                        if (isShow(controls))
+                            hide(controls);
+                        else
+                            show(controls);
+                        return controls;
+                    }
+                    function isShow(controls) {
+                        var result = true;
+                        controls.each(function () {
+                            if (!$(this).is(":visible"))
+                                result = false;
+                        });
+                        return result;
                     }
                     function calcOverlayPosition(overlay, target, direction) {
                         if (direction === "left")
@@ -382,7 +411,8 @@ var nts;
                                 .css("height", $(target).offset().top);
                         else if (direction === "bottom")
                             return overlay.css("position", "absolute")
-                                .css("top", $(target).offset().top + $(target).outerHeight());
+                                .css("top", $(target).offset().top + $(target).outerHeight())
+                                .css("height", $("body").height() - $(target).offset().top);
                     }
                     function calcBoxPosition(box, target, direction, margin) {
                         var operation = "+";
