@@ -1,6 +1,7 @@
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
+    ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
