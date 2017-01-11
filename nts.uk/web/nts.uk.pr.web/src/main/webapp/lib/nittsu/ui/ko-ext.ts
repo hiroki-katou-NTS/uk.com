@@ -174,12 +174,12 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
 
             $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
-            var parent = $input.parent();
+            var $parent = $input.parent();
             var width = option.width ? option.width : '100%';
-            parent.css({ "display": "inline-block" });
-            var parentTag = parent.parent().prop("tagName").toLowerCase();
+            $parent.css({ "display": "inline-block" });
+            var parentTag = $parent.parent().prop("tagName").toLowerCase();
             if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
-                parent.css({ 'width': '100%' });
+                $parent.css({ 'width': '100%' });
             }
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
                 var marginLeft = 0;
@@ -188,14 +188,14 @@ module nts.uk.ui.koExtentions {
                     marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
                     marginRight = parseFloat($input.css('margin-left').split("px")[0]);
                 }
-                parent.addClass("currency").addClass(
+                $parent.addClass("currency").addClass(
                     option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
 
                 if (marginLeft !== 0) {
-                    parent.css({ "marginLeft": marginLeft + "px" });
+                    $parent.css({ "marginLeft": marginLeft + "px" });
                 }
                 if (marginRight !== 0) {
-                    parent.css({ "marginRight": marginRight + "px" });
+                    $parent.css({ "marginRight": marginRight + "px" });
                 }
                 var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
                 var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
@@ -203,6 +203,8 @@ module nts.uk.ui.koExtentions {
                     'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
                     'width': width, "marginLeft": "0px", "marginRight": "0px"
                 });
+                var format = option.currencyformat === "JPY" ? "\u00A5" : '$' 
+                $parent.attr("data-content", format);
             } else {
                 $input.css({ 'paddingLeft': '12px', 'width': width });
             }
@@ -338,27 +340,27 @@ module nts.uk.ui.koExtentions {
     /**
      * SearchBox Binding Handler
      */
-    var filteredArray = function(array, searchTerm, fields, childField) {
+    var filteredArray = function (array, searchTerm, fields, childField) {
         //if items is empty return empty array
         if (!array) {
             return [];
         }
-        if (!(searchTerm instanceof String)) {
-            searchTerm = "" + searchTerm;
+        if(!(searchTerm instanceof String)) {
+           searchTerm = "" + searchTerm; 
         }
-        var flatArr = nts.uk.util.flatArray(array, childField);
+        var flatArr = nts.uk.util.flatArray(array,childField);
         var filter = searchTerm.toLowerCase();
         //if filter is empty return all the items
         if (!filter) {
             return flatArr;
         }
         //filter data
-        var filtered = ko.utils.arrayFilter(flatArr, function(item) {
+        var filtered = ko.utils.arrayFilter(flatArr, function (item) {
             var i = fields.length;
             while (i--) {
                 var prop = fields[i];
                 var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
-                if (strProp.indexOf(filter) !== -1) {
+                if (strProp.indexOf(filter) !== -1){
                     return true;
                 };
             }
@@ -366,23 +368,23 @@ module nts.uk.ui.koExtentions {
         });
         return filtered;
     };
-    var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
+    var getNextItem = function (selected, arr, selectedKey, compareKey, isArray) {
         var current = null;
-        if (isArray) {
-            if (selected.length > 0) current = selected[0];
-        } else if (selected !== undefined && selected !== '' && selected !== null) {
+        if(isArray) {
+            if(selected.length > 0) current = selected[0];
+        } else if(selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
         }
-        if (arr.length > 0) {
-            if (current) {
-                for (var i = 0; i < arr.length - 1; i++) {
+        if(arr.length > 0) {           
+            if(current) {
+                for(var i = 0; i < arr.length-1; i++) {
                     var item = arr[i];
-                    if (selectedKey) {
-                        if (item[selectedKey] === current) return arr[i + 1][selectedKey];
-                    } else if (item[compareKey] === current[compareKey]) return arr[i + 1];
+                    if(selectedKey) {
+                        if(item[selectedKey] === current) return arr[i+1][selectedKey];
+                    } else if(item[compareKey] === current[compareKey]) return arr[i+1];
                 }
             }
-            if (selectedKey) return arr[0][selectedKey];
+            if(selectedKey) return arr[0][selectedKey];
             return arr[0];
         }
         return undefined;
@@ -393,24 +395,19 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var data = valueAccessor();
             var searchBox = $(element);
-//            var data = valueAccessor();           
+            var data = valueAccessor();           
             var fields = ko.unwrap(data.fields);
             var selected = data.selected;
             var selectedKey = null;
-            if (data.selectedKey) {
+            if(data.selectedKey) {
                 selectedKey = ko.unwrap(data.selectedKey);
-            }
-//            var arr = ko.unwrap(data.items);
-//            var component = $("#" + ko.unwrap(data.comId));
-            var filteredArr = data.filteredItems;
-//            }           
+            }           
             var arr = ko.unwrap(data.items);            
-            var component = $("#" + ko.unwrap(data.comId)); 
+            var component = $("#" + ko.unwrap(data.comId));         
             var childField = null;
-            if (data.childField) {
-                childField = ko.unwrap(data.childField);
+            if(data.childField) {
+                childField = ko.unwrap(data.childField); 
             }
             searchBox.data("searchResult", nts.uk.util.flatArray(arr,childField));
             var $container = $(element);
@@ -419,36 +416,33 @@ module nts.uk.ui.koExtentions {
             var $input = $container.find("input.ntsSearchBox");
             var $button = $container.find("button.search-btn");
             var nextSearch = function() {
-                var filtArr = filteredArr();
-                var compareKey = fields[0];
                 var filtArr = searchBox.data("searchResult");
-                var compareKey = fields[0];          
+                var compareKey = fields[0];             
                 var isArray = $.isArray(selected());
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
-                if (!isArray) selected(selectedItem);
+                if(!isArray) selected(selectedItem);
                 else {
                     selected([]);
                     selected.push(selectedItem);
-                }
-                component.trigger("selectChange");
+                } 
+                component.trigger("selectChange");                       
                 //console.log(selectedItem); 
             }
             $input.keyup(function() {
                 $input.change();
                 //console.log('change');
             }).keydown(function(event) {
-                if (event.which == 13) {
-                    event.preventDefault();
-                    nextSearch();
+                if(event.which == 13) {
+                   event.preventDefault();
+                   nextSearch();    
                 }
-            });
-            $input.change(function(event) {
-                var searchTerm = $input.val();
-                filteredArr(filteredArray(arr, searchTerm, fields, childField));
+            });            
+            $input.change(function(event){
+                var searchTerm = $input.val();               
+                searchBox.data("searchResult",filteredArray(arr,searchTerm,fields,childField));
             });
             $button.click(nextSearch);
-        }
-      
+        }        
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {          
         }
     }
@@ -1451,7 +1445,7 @@ module nts.uk.ui.koExtentions {
             features.push({ name: 'Selection', multipleSelection: data.multiple });
             features.push({ name: 'Sorting', type: 'local' });
             features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
-
+            
             $grid.igGrid({
                 width: data.width,
                 height: (data.height - HEADER_HEIGHT) + "px",
@@ -1461,46 +1455,47 @@ module nts.uk.ui.koExtentions {
                 virtualizationMode: 'continuous',
                 features: features
             });
-
+            
             $grid.ntsGridList('setupSelecting');
-
+            
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
                     let selecteds: Array<any> = $grid.ntsGridList('getSelected');
-                    if (selecteds) {
+                    if(selecteds) {
                         let selectedIdSet = {};
                         selecteds.forEach(s => { selectedIdSet[s.id] = true; });
                         var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
                         data.value(_.map(selectedOptions, o => o[optionsValue]));
                     } else {
-                        data.value([]);
+                       data.value([]); 
                     }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
-                    if (selected) {
+                    if(selected) {                       
                         let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
-                        if (selectedOption) data.value(selectedOption[optionsValue]);
+                        if(selectedOption) data.value(selectedOption[optionsValue]);
                         else data.value('');
                     } else {
-                        data.value('');
+                        data.value(''); 
                     }
                 }
-
+                
             });
             var gridId = $grid.attr('id');
-            $grid.on("selectChange", function() {
+            $grid.on("selectChange", function() {              
                 var scrollContainer = $("#" + gridId + "_scrollContainer");
                 var row1 = null;
                 var selectedRows = $grid.igGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0)
+                if(selectedRows && selectedRows.length > 0)               
                     row1 = $grid.igGrid("selectedRows")[0].id;
                 else {
                     var selectedRow = $grid.igGrid("selectedRow");
-                    if (selectedRow && selectedRow.id) {
+                    if(selectedRow && selectedRow.id) {
                         row1 = $grid.igGrid("selectedRow").id;
                     }
                 }
-                if (row1 && row1 !== 'undefined') {    
+                if(row1 && row1 !== 'undefined') {
+                    //console.log(row1);
                     var topPos = calculateIndex(options, row1, optionsValue);       
                     $grid.igGrid('virtualScrollTo', topPos);
                     console.log(topPos);                            
@@ -1513,16 +1508,16 @@ module nts.uk.ui.koExtentions {
             var $grid = $(element);
             var data = valueAccessor();
             var currentSource = $grid.igGrid('option', 'dataSource');
-            if (!_.isEqual(currentSource, data.options())) {
+            if(!_.isEqual(currentSource, data.options())){
                 $grid.igGrid('option', 'dataSource', data.options().slice());
-                $grid.igGrid("dataBind");
+                $grid.igGrid("dataBind");   
             }
-
+            
             $grid.ntsGridList('setSelected', data.value());
-
+            
             $grid.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(data.height);
+                .height(data.height);           
         }
     }
 
@@ -1541,14 +1536,14 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-
+            
             // Get data.
             var data = valueAccessor();
             var options: Array<any> = ko.unwrap(data.options);
             var optionsValue = ko.unwrap(data.optionsValue);
             var optionsText = ko.unwrap(data.optionsText);
             var columns = null;
-            if (data.columns) columns = ko.unwrap(data.columns);
+            if(data.columns) columns = ko.unwrap(data.columns);
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
 
@@ -1582,11 +1577,11 @@ module nts.uk.ui.koExtentions {
             $(element).igTreeGrid({
                 width: width,
                 height: height,
-                dataSource: options,
+                dataSource: options,                
                 primaryKey: optionsValue,
                 columns: displayColumns,
                 childDataKey: optionsChild,
-                initialExpandDepth: 10,
+                initialExpandDepth: 10,                     
                 features: [
                     {
                         name: "Selection",
@@ -1604,36 +1599,34 @@ module nts.uk.ui.koExtentions {
                                 if (ko.isObservable(data.value)) {
                                     data.value(selectedRows[0].id);
                                 }
-                            }
+                            }                         
                         }
                     },
                     {
                         name: "RowSelectors",
-                        enableCheckBoxes: showCheckBox,
+                        enableCheckBoxes: showCheckBox,                        
                         checkBoxMode: "biState"
                     }]
             });
             var treeGridId = $treegrid.attr('id');
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
-            $treegrid.on("selectChange", function() {
+            $treegrid.on("selectChange", function() {              
                 var scrollContainer = $("#" + treeGridId + "_scroll");
                 var row1 = null;
                 var selectedRows = $treegrid.igTreeGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0)
+                if(selectedRows && selectedRows.length > 0)               
                     row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
                 else {
                     var selectedRow = $treegrid.igTreeGrid("selectedRow");
-                    if (selectedRow && selectedRow.id) {
+                    if(selectedRow && selectedRow.id) {
                         row1 = $treegrid.igTreeGrid("selectedRow").id;
                     }
                 }
-//                if (row1 && row1 !== 'undefined') {
-//                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                 if(row1 && row1 !== 'undefined') {                      
                     var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
                     var rowHeight = $('#' + treeGridId + "_" + row1).height();
                     scrollContainer.scrollTop(rowHeight * index);
-                    console.log(rowHeight * index);   
+                    //console.log(rowHeight * index);             
                 }
                 //console.log(row1);
             });
@@ -1690,10 +1683,9 @@ module nts.uk.ui.koExtentions {
                 }
                 $(element).igTreeGridSelection("clearSelection");
                 $(element).igTreeGridSelection("selectRowById", singleValue);
-            }
+            }    
         }
     }
-
 
     class WizardBindingHandler implements KnockoutBindingHandler {
         /**
