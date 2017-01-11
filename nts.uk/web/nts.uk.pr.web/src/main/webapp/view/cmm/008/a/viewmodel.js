@@ -108,13 +108,14 @@ var cmm008;
             }());
             viewmodel.ItemProcessingDate = ItemProcessingDate;
             var ItemModel = (function () {
-                function ItemModel(code, name, description, other1, other2, childs) {
+                //childs: any;
+                function ItemModel(code, name, description, other1, other2) {
                     this.code = code;
                     this.name = name;
                     this.description = description;
                     this.other1 = other1;
                     this.other2 = other2 || other1;
-                    this.childs = childs;
+                    //this.childs = childs;     
                 }
                 return ItemModel;
             }());

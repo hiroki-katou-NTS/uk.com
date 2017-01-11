@@ -139,14 +139,14 @@ module cmm008.a.viewmodel{
         description: string;
         other1: string;
         other2: string;
-        childs: any;
-        constructor(code: string, name: string, description: string, other1?: string, other2?: string,  childs: Array<ItemModel>) {
+        //childs: any;
+        constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
             this.code = code;
             this.name = name;
             this.description = description;
             this.other1 = other1;
             this.other2 = other2 || other1;    
-            this.childs = childs;     
+            //this.childs = childs;     
         }
     }
 }
