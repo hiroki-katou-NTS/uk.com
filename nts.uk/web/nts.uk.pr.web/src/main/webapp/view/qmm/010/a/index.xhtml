@@ -256,22 +256,22 @@
 											<label>事務所整理番号</label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="A_INP_015"
-										class="trFull5" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp015, 
-										constraint: 'A_INP_015', 
+									<td class="contentsRR"><input id="inp_officeNoA"
+										class="trFull5" data-name="officeNoA"
+										data-bind="ntsTextEditor: {value: officeNoA, 
+										constraint: 'OfficeNoA', 
 										option: textEditorOption, 
 										enable: true}" />
-										<label id="A_LBL_017">-</label><input id="A_INP_016"
-										class="trFull5" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp016, 
-										constraint: 'A_INP_016', 
+										<label id="A_LBL_017">-</label><input id="inp_officeNoB"
+										class="trFull5" data-name="officeNoB"
+										data-bind="ntsTextEditor: {value: officeNoB, 
+										constraint: 'OfficeNoB', 
 										option: textEditorOption, 
 										enable: true}" />
-										<label id="A_LBL_018">-</label> <input id="A_INP_017"
+										<label id="A_LBL_018">-</label> <input id="inp_officeNoC"
 										class="trFull5" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp017, 
-										constraint: 'A_INP_017', 
+										data-bind="ntsTextEditor: {value: officeNoC, 
+										constraint: 'OfficeNoC', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -290,8 +290,8 @@
 											data-bind="with: multilineeditor">
 											<textarea style="width: 500px; height: 60px"
 												data-bind="ntsMultilineEditor: {
-												value: value,
-												constraint: constraint,
+												value: memo,
+												constraint: 'Memo',
 												option: option,
 												enable: enable,
 												readonly: readonly}" />

@@ -20,7 +20,7 @@ module qmm010.a.viewmodel {
         officeNoA: KnockoutObservable<string>;
         officeNoB: KnockoutObservable<string>;
         officeNoC: KnockoutObservable<string>;
-        ainp018: KnockoutObservable<string>;
+        memo: KnockoutObservable<string>;
         multilineeditor: any;
         employmentName: KnockoutObservable<string>;
         textEditorOption: KnockoutObservable<any>;
@@ -30,7 +30,7 @@ module qmm010.a.viewmodel {
         currentCodeList: KnockoutObservableArray<any>;
         constructor() {
             var self = this;
-            self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC'));
+            self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC','memo'));
             self.ainp001 = ko.observable("");
             self.code = ko.observable(self.laborInsuranceOffice().code);
             self.name = ko.observable(self.laborInsuranceOffice().name);
@@ -48,7 +48,7 @@ module qmm010.a.viewmodel {
             self.officeNoA = ko.observable(self.laborInsuranceOffice().officeNoA);
             self.officeNoB = ko.observable(self.laborInsuranceOffice().officeNoB);
             self.officeNoC = ko.observable(self.laborInsuranceOffice().officeNoC);
-            self.ainp018 = ko.observable("");
+            self.memo = ko.observable(self.laborInsuranceOffice().memo);
             self.employmentName = ko.observable("");
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             self.textSearch = {
@@ -72,7 +72,7 @@ module qmm010.a.viewmodel {
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
             self.multilineeditor = {
-                value: ko.observable(''),
+                memo: ko.observable(self.laborInsuranceOffice().memo),
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: true,
@@ -137,8 +137,9 @@ module qmm010.a.viewmodel {
         officeNoA: string;
         officeNoB: string;
         officeNoC: string;
+        memo: string;
         constructor(code: string, name: string, postalCode: string, address1st: string, address2nd: string,
-            kanaAddress1st: string, kanaAddress2nd: string, phoneNumber: string, officeNoA: string, officeNoB: string, officeNoC: string) {
+            kanaAddress1st: string, kanaAddress2nd: string, phoneNumber: string, officeNoA: string, officeNoB: string, officeNoC: string, memo: string) {
             this.code = code;
             this.name = name;
             this.postalCode = postalCode;
@@ -150,6 +151,7 @@ module qmm010.a.viewmodel {
             this.officeNoA = officeNoA;
             this.officeNoB = officeNoB;
             this.officeNoC = officeNoC;
+            this.memo = memo;
         }
     }
 }
