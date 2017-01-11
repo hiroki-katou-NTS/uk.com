@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.dom.organization.classification;
 
 import lombok.Getter;
+import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class Classification {
@@ -13,10 +14,10 @@ public class Classification {
 
 	private ClassificationCode classificationOutCode;
 
-	private ClassificationMemo classificationMemo;
+	private Memo classificationMemo;
 
 	public Classification(int companyCode, ClassificationCode classificationCode, ClassificationName classificationName,
-			ClassificationCode classificationOutCode, ClassificationMemo classificationMemo) {
+			ClassificationCode classificationOutCode, Memo classificationMemo) {
 		this.companyCode = companyCode;
 		this.classificationCode = classificationCode;
 		this.classificationName = classificationName;
