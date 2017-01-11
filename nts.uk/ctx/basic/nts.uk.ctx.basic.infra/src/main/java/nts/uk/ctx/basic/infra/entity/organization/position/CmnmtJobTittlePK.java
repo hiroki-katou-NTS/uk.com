@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.position;
+package nts.uk.ctx.basic.infra.entity.organization.position;
 
 import java.io.Serializable;
 

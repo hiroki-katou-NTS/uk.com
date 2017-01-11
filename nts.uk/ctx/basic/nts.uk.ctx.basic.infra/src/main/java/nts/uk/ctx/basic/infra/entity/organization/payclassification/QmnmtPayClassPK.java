@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.payclassification;
+package nts.uk.ctx.basic.infra.entity.organization.payclassification;
 
 import java.io.Serializable;
 
