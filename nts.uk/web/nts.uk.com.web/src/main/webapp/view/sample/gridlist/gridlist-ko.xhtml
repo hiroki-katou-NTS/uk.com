@@ -24,29 +24,33 @@
 					<div id="content" class="cf">
 						<h1>GridList </h1>
 						<h2>Overview</h2>
+						<h3>Normal Grid</h3>
+						<table id="grid"></table>
 						<hr/>
+						<h3>KO Binding</h3>
 						<div id="error-message" style="color: #FF0000; font-weight: bold;"></div>
-							<table id="gridKO" data-bind="igGrid: {
-								dataSource: dataSource,
-								primaryKey: 'ID',
-								width: '100%',
-								autoCommit: true,							
-								features: igConfig.features,
-								autoGenerateColumns: false,
-								columns: igConfig.columns,
-						        rendered: function(evt, ui) {
-						            ko.applyBindingsToDescendants($data, $('#gridKO')[0]);
-						        }
-							}"></table>
-							<br/>
-							<div data-bind="text: 'Selected: ' + ko.toJSON(selectedItemID)"></div>
-							<div data-bind="text: 'Selected: ' + ko.toJSON(selectedItem)"></div>
-							<div data-bind="with: selectedItem">
-								<input data-bind="ntsTextEditor: { value: ContactName }" />
-							</div>					
-							<div data-bind="text: ko.toJSON(dataSource)"></div>
-							<hr/>
-							<article class="cf">
+<!-- 						<table id="gridKO" data-bind="igGrid: { -->
+<!-- 							dataSource: dataSourceObs, -->
+<!-- 							primaryKey: 'ID', -->
+<!-- 							width: '100%', -->
+<!-- 							height: '350px', -->
+<!-- 							autoCommit: true,							 -->
+<!-- 							features: igConfig.features, -->
+<!-- 							autoGenerateColumns: false, -->
+<!-- 							columns: igConfig.columns, -->
+<!-- 			                virtualization: true, -->
+<!-- 			                virtualizationMode: 'continuous', -->
+<!-- 					        rendered: function(evt, ui) { -->
+<!-- 					            ko.applyBindingsToDescendants($data, $('#gridKO')[0]); -->
+<!-- 					        } -->
+<!-- 						}"></table> -->
+						<br/><br/>
+						<div data-bind="with: selectedItem">
+							<input data-bind="ntsTextEditor: { value: City }" />
+						</div>					
+						<div data-bind="text: 'Selected: ' + ko.toJSON(selectedItem)"></div>
+						<hr/>
+						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
@@ -54,13 +58,13 @@
 									<li><a href="#tabs-method">Methods</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
-
+	
 								</div>
 								<div id="tabs-viewmodel" class="cf">
-
+	
 								</div>
 								<div id="tabs-method" class="cf">
-
+	
 								</div>
 							</div>
 						</article>

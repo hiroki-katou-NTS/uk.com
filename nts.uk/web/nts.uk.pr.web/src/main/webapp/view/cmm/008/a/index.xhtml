@@ -39,19 +39,22 @@
 				<table>
 					<tr>
 						<td id="contents-left" class="bg-green">
-							<div data-bind="with: textSearch" class="leftTop">
-								<input id="INP_001"
-									data-bind="ntsTextEditor: {
-										value: valueSearch,
-										constraint: '',
-										option: option,
-										required: true,
-										enable: true}" />
-								<span class="label relative spanSearch">
-									<button id="SCH_001">検索</button> <span
-									class="caret-bottom absolute"></span>
-								</span>
-							</div> <!-- <span class="caret-right caret-inline"></span> -->
+							<div  class="leftTop" data-bind="ntsSearchBox: {
+								comId: 'LST_001',
+								items: dataSource, 		
+								selected: singleSelectedCode, 
+								selectedKey: 'code', 
+								childField: 'childs', 
+								fields: ['name', 'code']}" />																																														
+							<table id="LST_001" data-bind="ntsGridList: {								
+								height: 350,
+								options: dataSource,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: currentCode
+							}"
+							class="cf"></table>
 						</td>
 						<td id="contents-right">
 							<table id="tableRight">
