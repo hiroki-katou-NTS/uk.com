@@ -1,6 +1,7 @@
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
+    ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
@@ -356,20 +357,32 @@ module nts.uk.ui.jqueryExtentions {
 
     module userGuide {
         
-        $.fn.ntsUserGuide = function (action: string): any {
+        $.fn.ntsUserGuide = function (action?: string): any {
             var $controls = $(this);
-            if (nts.uk.util.isNullOrUndefined(action)) {
+            if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
                 return init($controls);
+            }
+            else if (action === "destroy") {
+                return destroy($controls);
             }
             else if (action === "show") {
                 return show($controls);
             }
-            else {
+            else if (action === "hide") {
                 return hide($controls);
+            }
+            else if (action === "toggle") {
+                return toggle($controls);
+            }
+            else if (action === "isShow") {
+                return isShow($controls);
+            }
+            else {
+                return $controls;
             };
         }
         
-        function init(controls: JQuery) {
+        function init(controls: JQuery): JQuery {
             controls.each(function() {
                 // UserGuide container
                 let $control = $(this);
@@ -390,16 +403,20 @@ module nts.uk.ui.jqueryExtentions {
                 // Userguide Overlay
                 let $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
-                                .on("click", function(){
-                                    $control.hide();
-                                })
                                 .appendTo($control);
                 $control.hide();
             });
             return controls;
         }
         
-        function show(controls: JQuery) {
+        function destroy(controls: JQuery) {
+            controls.each(function() {
+                $(this).remove();
+            });
+            return controls;
+        }
+        
+        function show(controls: JQuery): JQuery {
             controls.each(function() {
                 let $control = $(this);
                 $control.show();
@@ -420,15 +437,31 @@ module nts.uk.ui.jqueryExtentions {
             return controls;
         }
         
-        function hide(controls: JQuery) {
+        function hide(controls: JQuery): JQuery {
             controls.each(function() {
-                let $control = $(this);
-                $control.hide();
+                $(this).hide();
             });
             return controls;
         }
         
-        function calcOverlayPosition(overlay: JQuery, target: string, direction: string) {
+        function toggle(controls: JQuery): JQuery {
+            if (isShow(controls))
+                hide(controls);
+            else
+                show(controls);
+            return controls;
+        }
+        
+        function isShow(controls: JQuery): boolean {
+            let result = true;
+            controls.each(function() {
+                if (!$(this).is(":visible"))
+                    result = false;
+            });
+            return result;
+        }
+        
+        function calcOverlayPosition(overlay: JQuery, target: string, direction: string): JQuery {
             if (direction === "left") 
                 return overlay.css("right", "auto")
                               .css("width", $(target).offset().left);
@@ -440,10 +473,11 @@ module nts.uk.ui.jqueryExtentions {
                               .css("height", $(target).offset().top);
             else if (direction === "bottom") 
                 return overlay.css("position", "absolute")
-                              .css("top", $(target).offset().top + $(target).outerHeight());
+                              .css("top", $(target).offset().top + $(target).outerHeight())
+                              .css("height", $("body").height() - $(target).offset().top);
         }
         
-        function calcBoxPosition(box: JQuery, target: string, direction: string, margin: string) {
+        function calcBoxPosition(box: JQuery, target: string, direction: string, margin: string): JQuery {
             let operation = "+";
             if (direction === "left" || direction === "top")
                 operation = "-";
@@ -455,7 +489,7 @@ module nts.uk.ui.jqueryExtentions {
             });
         }
         
-        function getReveseDirection(direction: string) {
+        function getReveseDirection(direction: string): string {
             if (direction === "left") 
                 return "right";
             else if (direction === "right") 
