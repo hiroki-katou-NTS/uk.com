@@ -368,22 +368,22 @@ module nts.uk.ui.koExtentions {
         return filtered;
     };
     var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
-        console.log(selected + "," + selectedKey + "," + compareKey);
-        console.log(isArray);
+//        console.log(selected + "," + selectedKey + "," + compareKey);
+//        console.log(isArray);
         var current = null;
         if (isArray) {
             if (selected.length > 0) current = selected[0];
         } else if (selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
         }
-        console.log("current = "  + current);
+//        console.log("current = "  + current);
         if (arr.length > 0) {
             if (current) {
                 
                 for (var i = 0; i < arr.length - 1; i++) {
                     var item = arr[i];
                     if (selectedKey) {
-                        console.log(i);
+//                        console.log(i);
                         if (item[selectedKey] == current) return arr[i + 1][selectedKey];
                     } else if (item[compareKey] == current[compareKey]) return arr[i + 1];
                 }
