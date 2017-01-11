@@ -1120,13 +1120,11 @@ var nts;
                         // Get options
                         var options = ko.unwrap(data.options);
                         // Get options value
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+                        var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
-                        var columns = data.columns;
-                        var rows = data.rows;
                         var required = ko.unwrap(data.required) || false;
                         // Container
                         var container = $(element);
@@ -1247,8 +1245,8 @@ var nts;
                         // Get options.
                         var options = ko.unwrap(data.options);
                         // Get options value.
-                        var optionValue = ko.unwrap(data.optionsValue);
-                        var optionText = ko.unwrap(data.optionsText);
+                        var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+                        var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
                         var selectedValue = ko.unwrap(data.value);
                         var isMultiSelect = ko.unwrap(data.multiple);
                         var enable = ko.unwrap(data.enable);
@@ -1274,24 +1272,6 @@ var nts;
                         // Check selected code.
                         if (!isMultiSelect && options.filter(function (item) { return getOptionValue(item) === selectedValue; }).length == 0) {
                             selectedValue = '';
-                        }
-                        // Set width for multi columns
-                        if (columns && columns.length > 0) {
-                            var padding = 10;
-                            var totalWidth = 0;
-                            columns.forEach(function (item, cIdx) {
-                                container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
-                                totalWidth += item.length * maxWidthCharacter + 20;
-                            });
-                            totalWidth += padding * (columns.length + 1); // + 50;
-                            container.find('.nts-list-box > li').css({ 'width': totalWidth });
-                            container.find('.nts-list-box').css({ 'width': totalWidth });
-                            container.css({ 'width': totalWidth });
-                        }
-                        if (rows && rows > 0) {
-                            var rowHeight = 28;
-                            container.css('height', rows * rowHeight);
-                            container.find('.nts-list-box').css('height', rows * rowHeight);
                         }
                         if (!_.isEqual(originalOptions, options) || init) {
                             if (!init) {
@@ -1357,6 +1337,24 @@ var nts;
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
+                        // Set width for multi columns
+                        if (columns && columns.length > 0) {
+                            var padding = 10;
+                            var totalWidth = 0;
+                            columns.forEach(function (item, cIdx) {
+                                container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                                totalWidth += item.length * maxWidthCharacter + 20;
+                            });
+                            totalWidth += padding * (columns.length + 1); // + 50;
+                            selectListBoxContainer.find('li').css({ 'width': totalWidth });
+                            selectListBoxContainer.css({ 'width': totalWidth });
+                            container.css({ 'width': totalWidth });
+                        }
+                        if (rows && rows > 0) {
+                            var rowHeight = 28;
+                            container.css('height', rows * rowHeight);
+                            container.find('.nts-list-box').css('height', rows * rowHeight);
+                        }
                         // Set value
                         if (!_.isEqual(originalSelected, selectedValue) || init) {
                             container.data('value', selectedValue);
