@@ -1,35 +1,34 @@
 __viewContext.ready(function () {
     class ScreenModel {
-        inputText: KnockoutObservable<string>;
-        checked: KnockoutObservable<boolean>;
+        dataList: KnockoutObservableArray<any>;
+        enable: KnockoutObservable<boolean>;
+        enableCut: KnockoutObservable<boolean>;
+        visibleCopy: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
-            // Input Text
-            self.inputText = ko.observable("a");
-            self.inputText.subscribe(function(value){
-                if (value.length > 0)
-                    $(".userguide-right").ntsUserGuide("hide");
-                else
-                    $(".userguide-right").ntsUserGuide("show");
-                    
-            });
-            // CheckBox
-            self.checked = ko.observable(true);
-            self.checked.subscribe(function(value){
-                (value) ? $(".userguide-left").ntsUserGuide("hide") : $(".userguide-left").ntsUserGuide("show"); 
-            });
-            
+            self.dataList = ko.observableArray([]);
+            for(let i = 0; i <= 10; i++) {
+                self.dataList.push({id: i, name: "Item " + i});
+            }
             // Init UserGuide
             $("[data-toggle='userguide']").ntsUserGuide();
         }
         
+        showOverlayLeft() {
+            $(".userguide-left").ntsUserGuide("show");
+        }
+        
+        showOverlayRight() {
+            $(".userguide-right").ntsUserGuide("show");
+        }
+        
         showOverlayTop() {
-            $(".userguide-top").ntsUserGuide("toggle");
+            $(".userguide-top").ntsUserGuide("show");
         }
         
         showOverlayBottom() {
-            $(".userguide-bottom").ntsUserGuide("toggle");
+            $(".userguide-bottom").ntsUserGuide("show");
         }
     }
     

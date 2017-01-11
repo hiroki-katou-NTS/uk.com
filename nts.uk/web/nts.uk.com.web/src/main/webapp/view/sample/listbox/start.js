@@ -3,7 +3,7 @@ __viewContext.ready(function () {
         function ScreenModel() {
             var self = this;
             var temp = [];
-            for (var i = 0; i < 300; i++) {
+            for (var i = 0; i < 100; i++) {
                 temp.push(new ItemModel('基本給' + (i + 1), '基本給', "description " + (i + 1)));
             }
             self.itemList = ko.observableArray(temp);
