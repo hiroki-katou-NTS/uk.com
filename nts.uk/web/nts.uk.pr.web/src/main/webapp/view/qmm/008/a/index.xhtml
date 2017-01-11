@@ -44,11 +44,12 @@
 					<!-- left -->
 					<div class="bg-green caret-right caret-background"
 						style="float: left; width: 350px; height: 100%; margin: 20px 50px;">
-						<div style="width: 400px"
+						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-						<button data-bind="click: OpenModalSubWindow">履歴追加</button>
+						<button style="margin-left: 25px;"
+							data-bind="click: OpenModalSubWindow">履歴追加</button>
 						<button data-bind="click: OpenModalConfigHistory"
-							style="float: right;" class="danger">履歴編集</button>
+							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -73,12 +74,14 @@
 							<tr>
 								<td class="border_none"><div style="margin-top: 20px;"
 										data-bind="ntsFormLabel: {required: true}">期間</div></td>
-								<td class="border_none"><div
+								<td class="border_none padding_top_20"><div
 										data-bind="with: health_inp_002">
 										<input
 											data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
 									</div></td>
-								<td class="border_none">(平成28年04月) ~ 9999/12 <br /></td>
+								<td class="border_none padding_top_20">(平成28年04月) ~ 9999/12
+									<br />
+								</td>
 							</tr>
 							<tr>
 								<td class="border_none"><div
@@ -283,7 +286,7 @@
 							<hr />
 						</div>
 						<div style="float: left;" data-bind="ntsFormLabel: {}">健康保険累計限度額</div>
-						<div data-bind="with: healthTotal">
+						<div class="pad_top_10" data-bind="with: healthTotal">
 							<input
 								data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 						</div>
@@ -303,11 +306,12 @@
 					<!-- left -->
 					<div class="bg-green caret-right caret-background"
 						style="float: left; width: 350px; height: 100%; margin: 20px 50px;">
-						<div style="width: 400px"
+						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: dataSource, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
-						<button data-bind="click: OpenModalSubWindow">履歴追加</button>
+						<button style="margin-left: 25px;"
+							data-bind="click: OpenModalSubWindow">履歴追加</button>
 						<button data-bind="click: OpenModalConfigHistory"
-							style="float: right;" class="danger">履歴編集</button>
+							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -334,12 +338,12 @@
 									<div style="margin-top: 20px;"
 										data-bind="ntsFormLabel: {required: true}">期間</div>
 								</td>
-								<td class="border_none"><div
+								<td class="border_none padding_top_20"><div
 										data-bind="with: pension_inp_002">
 										<input
 											data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
 									</div></td>
-								<td class="border_none">(平成28年04月) ~ 9999/12</td>
+								<td class="border_none padding_top_20">(平成28年04月) ~ 9999/12</td>
 							</tr>
 							<tr>
 								<td class="border_none"><div
@@ -549,7 +553,7 @@
 							<hr />
 						</div>
 						<div style="float: left;" data-bind="ntsFormLabel: {}">健康保険累計限度額</div>
-						<div>
+						<div class="pad_top_10">
 							<div data-bind="with: pensionCurrency">
 								<input
 									data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
@@ -560,9 +564,8 @@
 						<div class="hr_width">
 							<hr />
 						</div>
-						<div style="float: left;"
-							data-bind="ntsFormLabel: {}">事業主負担率</div>
-						<div style="display:inline-flex;">
+						<div style="float: left;" data-bind="ntsFormLabel: {}">事業主負担率</div>
+						<div style="display: inline-flex;" class="pad_top_10">
 							<div data-bind="with: pensionOwnerRate">
 								<input
 									data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />

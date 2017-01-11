@@ -59,6 +59,10 @@ th, td {
 	padding-right: 10px;
 }
 
+.pad_top_10 {
+	padding-top: 10px;
+}
+
 .border_none {
 	border: none;
 }
@@ -67,9 +71,19 @@ th, td {
 	width: 62%;
 	float: left;
 }
-.float_left{
-	float:left;
+
+.float_left {
+	float: left;
 }
-.rounding_width{
-	width:176px;
+
+.rounding_width {
+	width: 176px;
+}
+
+.margin_left {
+	margin-left: 23px;
+}
+
+.padding_top_20 {
+	padding-top: 20px;
 }

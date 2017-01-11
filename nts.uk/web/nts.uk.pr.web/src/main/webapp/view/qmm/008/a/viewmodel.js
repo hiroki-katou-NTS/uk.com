@@ -368,35 +368,35 @@ var nts;
                                 ScreenModel.prototype.OpenModalSubWindow = function () {
                                     nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml").onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     nts.uk.ui.windows.setShared("listOfficeOfParentValue", this.value());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml").onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
                                     nts.uk.ui.windows.setShared("dataParentValue", this.value());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/d/index.xhtml").onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/d/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePension = function () {
                                     nts.uk.ui.windows.setShared("dataParentValue", this.value());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml").onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalConfigHistory = function () {
                                     nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml").onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
                                     });
                                 };
