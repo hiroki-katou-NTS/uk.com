@@ -1,6 +1,7 @@
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
+    ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
@@ -365,7 +366,7 @@ module nts.uk.ui.jqueryExtentions {
                 return show($controls);
             }
             else {
-                
+                return hide($controls);
             };
         }
         
@@ -374,7 +375,8 @@ module nts.uk.ui.jqueryExtentions {
                 // UserGuide container
                 let $control = $(this);
                 $control.remove();
-                if (!$control.hasClass("ntsUserGuide")) $control.addClass("ntsUserGuide");
+                if (!$control.hasClass("ntsUserGuide"))
+                    $control.addClass("ntsUserGuide");
                 $($control).appendTo($("body")).show();
                 let target = $control.data('target');
                 let direction = $control.data('direction');
@@ -401,34 +403,68 @@ module nts.uk.ui.jqueryExtentions {
         function show(controls: JQuery) {
             controls.each(function() {
                 let $control = $(this);
+                $control.show();
+                
                 let target = $control.data('target');
                 let direction = $control.data('direction');
-                $control.show();
+                $control.find(".userguide-overlay").each(function(index, elem){
+                    calcOverlayPosition($(elem), target, direction)
+                });
                 $control.children().each(function(){
                     let $box = $(this);
                     let boxTarget = $box.data("target");
-                    $box.position({
-                        my: getReveseDirection(direction) + "+20",
-                        at: "right center",
-                        of: boxTarget
-                    });
+                    let boxDirection = $box.data("direction");
+                    let boxMargin = ($box.data("margin")) ? $box.data("margin") : "20";
+                    calcBoxPosition($box, boxTarget, boxDirection, boxMargin);
                 });
-                let $overlay = $control.find(".userguide-overlay").css(getReveseDirection(direction), $(target).offset().left + $(target).outerWidth());
-            })
+            });
             return controls;
         }
         
+        function hide(controls: JQuery) {
+            controls.each(function() {
+                let $control = $(this);
+                $control.hide();
+            });
+            return controls;
+        }
+        
+        function calcOverlayPosition(overlay: JQuery, target: string, direction: string) {
+            if (direction === "left") 
+                return overlay.css("right", "auto")
+                              .css("width", $(target).offset().left);
+            else if (direction === "right") 
+                return overlay.css("left", $(target).offset().left + $(target).outerWidth());
+            else if (direction === "top") 
+                return overlay.css("position", "absolute")
+                              .css("bottom", "auto")
+                              .css("height", $(target).offset().top);
+            else if (direction === "bottom") 
+                return overlay.css("position", "absolute")
+                              .css("top", $(target).offset().top + $(target).outerHeight());
+        }
+        
+        function calcBoxPosition(box: JQuery, target: string, direction: string, margin: string) {
+            let operation = "+";
+            if (direction === "left" || direction === "top")
+                operation = "-";
+            return box.position({
+                my: getReveseDirection(direction) + operation + margin,
+                at: direction,
+                of: target,
+                collision: "none"
+            });
+        }
+        
         function getReveseDirection(direction: string) {
-            switch (direction) {
-                case "left":
-                    return "right";
-                case "right":
-                    return "left";
-                case "top":
-                    return "bottom";
-                case "bottom":
-                    return "top";
-            }
+            if (direction === "left") 
+                return "right";
+            else if (direction === "right") 
+                return "left";
+            else if (direction === "top") 
+                return "bottom";
+            else if (direction === "bottom") 
+                return "top";
         }
     }
 }

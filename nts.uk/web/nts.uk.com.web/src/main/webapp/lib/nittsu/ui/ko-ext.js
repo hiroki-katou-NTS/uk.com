@@ -190,12 +190,12 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
-                        var parent = $input.parent();
+                        var $parent = $input.parent();
                         var width = option.width ? option.width : '100%';
-                        parent.css({ "display": "inline-block" });
-                        var parentTag = parent.parent().prop("tagName").toLowerCase();
+                        $parent.css({ "display": "inline-block" });
+                        var parentTag = $parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
-                            parent.css({ 'width': '100%' });
+                            $parent.css({ 'width': '100%' });
                         }
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
                             var marginLeft = 0;
@@ -204,12 +204,12 @@ var nts;
                                 marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
                                 marginRight = parseFloat($input.css('margin-left').split("px")[0]);
                             }
-                            parent.addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
+                            $parent.addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
                             if (marginLeft !== 0) {
-                                parent.css({ "marginLeft": marginLeft + "px" });
+                                $parent.css({ "marginLeft": marginLeft + "px" });
                             }
                             if (marginRight !== 0) {
-                                parent.css({ "marginRight": marginRight + "px" });
+                                $parent.css({ "marginRight": marginRight + "px" });
                             }
                             var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
                             var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
@@ -217,6 +217,8 @@ var nts;
                                 'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
                                 'width': width, "marginLeft": "0px", "marginRight": "0px"
                             });
+                            var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
+                            $parent.attr("data-content", format);
                         }
                         else {
                             $input.css({ 'paddingLeft': '12px', 'width': width });
@@ -421,6 +423,7 @@ var nts;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
+                        var searchText = (data.enable !== undefined) ? ko.unwrap(data.searchText) : "Search";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -435,7 +438,7 @@ var nts;
                         searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
                         var $container = $(element);
                         $container.append("<input class='ntsSearchBox' type='text' />");
-                        $container.append("<button class='search-btn'>Search</button>");
+                        $container.append("<button class='search-btn'>" + searchText + "</button>");
                         var $input = $container.find("input.ntsSearchBox");
                         var $button = $container.find("button.search-btn");
                         var nextSearch = function () {
@@ -468,6 +471,17 @@ var nts;
                         $button.click(nextSearch);
                     };
                     NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var searchBox = $(element);
+                        var $input = searchBox.find("input.ntsSearchBox");
+                        var searchTerm = $input.val();
+                        var data = valueAccessor();
+                        var arr = data.items();
+                        var fields = ko.unwrap(data.fields);
+                        var childField = null;
+                        if (data.childField) {
+                            childField = ko.unwrap(data.childField);
+                        }
+                        searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
                     };
                     return NtsSearchBoxBindingHandler;
                 }(NtsEditorBindingHandler));
@@ -1103,25 +1117,24 @@ var nts;
                     ListBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
-                        // Get options.
+                        // Get options
                         var options = ko.unwrap(data.options);
-                        // Get options value.
+                        // Get options value
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
-                        var isMultiSelect = data.multiple;
-                        var enable = data.enable;
+                        var isMultiSelect = ko.unwrap(data.multiple);
+                        var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
                         var rows = data.rows;
-                        var required = data.required || false;
-                        // Container.
+                        var required = ko.unwrap(data.required) || false;
+                        // Container
                         var container = $(element);
-                        container.data('required', required);
-                        // Default value.
-                        var selectSize = 6;
+                        container.addClass('ntsListBox ntsControl').data('required', required);
                         container.data("options", options.slice());
                         container.data("init", true);
-                        // Create select.
+                        container.data("enable", enable);
+                        // Create select
                         container.append('<ol class="nts-list-box"></ol>');
                         var selectListBoxContainer = container.find('.nts-list-box');
                         // Create changing event.
@@ -1141,7 +1154,7 @@ var nts;
                                 }
                                 // Add selected value.
                                 var data = isMultiSelect ? [] : '';
-                                $("li.ui-selected").each(function (index, opt) {
+                                $("li.ui-selected", container).each(function (index, opt) {
                                     var optValue = $(opt).data('value');
                                     if (!isMultiSelect) {
                                         data = optValue;
@@ -1157,33 +1170,35 @@ var nts;
                                 //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                             },
                             selecting: function (event, ui) {
-                                if (event.shiftKey) {
-                                    if ($(ui.selecting).attr("clicked") !== "true") {
-                                        var source = container.find("li");
-                                        var clicked = _.find(source, function (row) {
-                                            return $(row).attr("clicked") === "true";
-                                        });
-                                        if (clicked === undefined) {
-                                            $(ui.selecting).attr("clicked", "true");
-                                        }
-                                        else {
-                                            container.find("li").attr("clicked", "");
-                                            $(ui.selecting).attr("clicked", "true");
-                                            var start = parseInt($(clicked).attr("data-idx"));
-                                            var end = parseInt($(ui.selecting).attr("data-idx"));
-                                            var max = start > end ? start : end;
-                                            var min = start < end ? start : end;
-                                            var range = _.filter(source, function (row) {
-                                                var index = parseInt($(row).attr("data-idx"));
-                                                return index >= min && index <= max;
+                                if (isMultiSelect) {
+                                    if (event.shiftKey) {
+                                        if ($(ui.selecting).attr("clicked") !== "true") {
+                                            var source = container.find("li");
+                                            var clicked = _.find(source, function (row) {
+                                                return $(row).attr("clicked") === "true";
                                             });
-                                            $(range).addClass("ui-selected");
+                                            if (clicked === undefined) {
+                                                $(ui.selecting).attr("clicked", "true");
+                                            }
+                                            else {
+                                                container.find("li").attr("clicked", "");
+                                                $(ui.selecting).attr("clicked", "true");
+                                                var start = parseInt($(clicked).attr("data-idx"));
+                                                var end = parseInt($(ui.selecting).attr("data-idx"));
+                                                var max = start > end ? start : end;
+                                                var min = start < end ? start : end;
+                                                var range = _.filter(source, function (row) {
+                                                    var index = parseInt($(row).attr("data-idx"));
+                                                    return index >= min && index <= max;
+                                                });
+                                                $(range).addClass("ui-selected");
+                                            }
                                         }
                                     }
-                                }
-                                else if (!event.ctrlKey) {
-                                    container.find("li").attr("clicked", "");
-                                    $(ui.selecting).attr("clicked", "true");
+                                    else if (!event.ctrlKey) {
+                                        container.find("li").attr("clicked", "");
+                                        $(ui.selecting).attr("clicked", "true");
+                                    }
                                 }
                             }
                         });
@@ -1211,7 +1226,8 @@ var nts;
                         container.on('validate', (function (e) {
                             // Check empty value
                             var itemsSelected = container.data('value');
-                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                            if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0)
+                                && container.data("enable")) {
                                 selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
                             }
                             else {
@@ -1231,14 +1247,16 @@ var nts;
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
-                        var isMultiSelect = data.multiple;
-                        var enable = data.enable;
+                        var isMultiSelect = ko.unwrap(data.multiple);
+                        var enable = ko.unwrap(data.enable);
                         var columns = data.columns;
                         var rows = data.rows;
                         // Container.
                         var container = $(element);
                         var selectListBoxContainer = container.find('.nts-list-box');
                         var maxWidthCharacter = 15;
+                        var required = ko.unwrap(data.required) || false;
+                        container.data('required', required);
                         var getOptionValue = function (item) {
                             if (optionValue === undefined) {
                                 return item;
@@ -1275,7 +1293,7 @@ var nts;
                             }
                             // Append options.
                             options.forEach(function (item, idx) {
-                                // Check option is Selected.
+                                // Check option is Selected
                                 var isSelected = false;
                                 if (isMultiSelect) {
                                     isSelected = selectedValue.indexOf(getOptionValue(item)) != -1;
@@ -1288,7 +1306,7 @@ var nts;
                                     return optValue == getOptionValue(item);
                                 });
                                 if (init || target === undefined) {
-                                    // Add option.
+                                    // Add option
                                     var selectedClass = isSelected ? 'ui-selected' : '';
                                     var itemTemplate = '';
                                     if (columns && columns.length > 0) {
@@ -1314,36 +1332,32 @@ var nts;
                                 }
                             });
                             var padding = 10;
-                            // Set width for multi columns.
+                            var rowHeight = 28;
+                            // Set width for multi columns
                             if (columns && columns.length > 0) {
                                 var totalWidth = 0;
                                 columns.forEach(function (item, cIdx) {
-                                    $('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
+                                    container.find('.nts-list-box-column-' + cIdx).width(item.length * maxWidthCharacter + 20);
                                     totalWidth += item.length * maxWidthCharacter + 20;
                                 });
-                                if ($('.nts-column').css('padding')) {
-                                    var ntsCommonPadding = $('.nts-column').css('padding').split('px')[0];
-                                    padding = parseInt(ntsCommonPadding) * 2;
-                                }
                                 totalWidth += padding * (columns.length + 1); // + 50;
-                                $('.nts-list-box > li').css({ 'min-width': totalWidth });
-                                $('.nts-list-box').css({ 'min-width': totalWidth });
-                                container.css({ 'min-width': totalWidth });
+                                container.find('.nts-list-box > li').css({ 'width': totalWidth });
+                                container.find('.nts-list-box').css({ 'width': totalWidth });
+                                container.css({ 'width': totalWidth });
                             }
                             if (rows && rows > 0) {
-                                container.css({ 'height': rows * (18 + padding) });
-                                $('.nts-list-box').css({ 'height': rows * (18 + padding) });
-                                container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
+                                container.css('height', rows * rowHeight);
+                                container.find('.nts-list-box').css('height', rows * rowHeight);
                             }
                         }
                         container.data("options", options.slice());
                         container.data("init", false);
-                        // Set value.
+                        // Set value
                         if (!_.isEqual(originalSelected, selectedValue) || init) {
                             container.data('value', selectedValue);
                             container.trigger('selectionChange');
                         }
-                        // Check enable.
+                        // Check enable
                         if (!enable) {
                             selectListBoxContainer.selectable("disable");
                             ;
@@ -1353,6 +1367,7 @@ var nts;
                             selectListBoxContainer.selectable("enable");
                             container.removeClass('disabled');
                         }
+                        container.data("enable", enable);
                         if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                             container.trigger('validate');
                         }
@@ -1364,23 +1379,6 @@ var nts;
                  *
                  */
                 function calculateIndex(options, id, key) {
-                    if (!id)
-                        return 0;
-                    var index = 0;
-                    for (var i = 0; i < options.length; i++) {
-                        var item = options[i];
-                        if (item[key] == id) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    return index;
-                }
-                /**
-                  * Grid scroll helper functions
-                  *
-                  */
-                function calculateIndex(options, id, key, childField) {
                     if (!id)
                         return 0;
                     var index = 0;

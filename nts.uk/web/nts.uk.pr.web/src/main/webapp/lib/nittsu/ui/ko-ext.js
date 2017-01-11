@@ -190,12 +190,12 @@ var nts;
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
-                        var parent = $input.parent();
+                        var $parent = $input.parent();
                         var width = option.width ? option.width : '100%';
-                        parent.css({ "display": "inline-block" });
-                        var parentTag = parent.parent().prop("tagName").toLowerCase();
+                        $parent.css({ "display": "inline-block" });
+                        var parentTag = $parent.parent().prop("tagName").toLowerCase();
                         if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
-                            parent.css({ 'width': '100%' });
+                            $parent.css({ 'width': '100%' });
                         }
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
                             var marginLeft = 0;
@@ -204,12 +204,12 @@ var nts;
                                 marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
                                 marginRight = parseFloat($input.css('margin-left').split("px")[0]);
                             }
-                            parent.addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
+                            $parent.addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
                             if (marginLeft !== 0) {
-                                parent.css({ "marginLeft": marginLeft + "px" });
+                                $parent.css({ "marginLeft": marginLeft + "px" });
                             }
                             if (marginRight !== 0) {
-                                parent.css({ "marginRight": marginRight + "px" });
+                                $parent.css({ "marginRight": marginRight + "px" });
                             }
                             var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
                             var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
@@ -217,6 +217,8 @@ var nts;
                                 'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
                                 'width': width, "marginLeft": "0px", "marginRight": "0px"
                             });
+                            var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
+                            $parent.attr("data-content", format);
                         }
                         else {
                             $input.css({ 'paddingLeft': '12px', 'width': width });
@@ -418,19 +420,14 @@ var nts;
                      * Init.
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
                         var searchBox = $(element);
-                        //            var data = valueAccessor();           
+                        var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
                             selectedKey = ko.unwrap(data.selectedKey);
                         }
-                        //            var arr = ko.unwrap(data.items);
-                        //            var component = $("#" + ko.unwrap(data.comId));
-                        var filteredArr = data.filteredItems;
-                        //            }           
                         var arr = ko.unwrap(data.items);
                         var component = $("#" + ko.unwrap(data.comId));
                         var childField = null;
@@ -444,8 +441,6 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         var $button = $container.find("button.search-btn");
                         var nextSearch = function () {
-                            var filtArr = filteredArr();
-                            var compareKey = fields[0];
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
@@ -470,7 +465,7 @@ var nts;
                         });
                         $input.change(function (event) {
                             var searchTerm = $input.val();
-                            filteredArr(filteredArray(arr, searchTerm, fields, childField));
+                            searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
                         });
                         $button.click(nextSearch);
                     };
@@ -1462,6 +1457,7 @@ var nts;
                                 }
                             }
                             if (row1 && row1 !== 'undefined') {
+                                //console.log(row1);
                                 var topPos = calculateIndex(options, row1, optionsValue);
                                 $grid.igGrid('virtualScrollTo', topPos);
                                 console.log(topPos);
@@ -1577,13 +1573,10 @@ var nts;
                                     row1 = $treegrid.igTreeGrid("selectedRow").id;
                                 }
                             }
-                            //                if (row1 && row1 !== 'undefined') {
-                            //                    scrollContainer.scrollTop(calculateTop(options, row1, optionsValue));
                             if (row1 && row1 !== 'undefined') {
                                 var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
                                 var rowHeight = $('#' + treeGridId + "_" + row1).height();
                                 scrollContainer.scrollTop(rowHeight * index);
-                                console.log(rowHeight * index);
                             }
                             //console.log(row1);
                         });
