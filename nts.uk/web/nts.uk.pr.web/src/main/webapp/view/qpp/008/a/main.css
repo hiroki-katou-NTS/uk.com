@@ -18,7 +18,7 @@
 
 .nts-left-contentTop {
 	width: 570px;
-	height: 90px;
+	height: 72px;
 	margin-bottom: 5px;
 	border-width: 3px;
 	border-radius: 4px;
@@ -27,26 +27,26 @@
 
 .nts-left-contentTopUp {
 	width: 570px;
-	height: 45px;
-	float: left;
-	
-}
-.nts-left-contentTop div>span{
-	float:left;
-	margin-left: 5px;
-	margin-right: 5px;
+	height: 25px;
 	margin-top: 5px;
+	margin-left: 5px;
 }
-.nts-left-contentTop div div>input{
-	width: 70px;
-	margin-left: 5px !important;
-	border-radius: 2px;
-	border: solid thin gray;
-}
+/* .nts-left-contentTop div>span{ */
+/* 	float:left; */
+/* 	margin-left: 5px; */
+/* 	margin-right: 5px; */
+/* 	margin-top: 5px; */
+/* } */
+/* .nts-left-contentTop div div>input{ */
+/* 	width: 70px; */
+/* 	margin-left: 5px !important; */
+/* 	border-radius: 2px; */
+/* 	border: solid thin gray; */
+/* } */
 
 nts-left-contentTopDown{
 	width: 570px;
-	height: 40px;
+	height: 10px;
 	float: left;
 }
 #A_LBL_005{
@@ -74,6 +74,10 @@ nts-left-contentBottom {
 	border-radius: 4px;
 	border: solid thin gray;
 }
+#A_INP_001, #A_INP_002 {
+	width: 100px !important;	
+}
+
 #A_LBL_007{
 	font-size: 1.2rem !important;
 }
@@ -85,14 +89,9 @@ nts-left-contentBottom {
 .tableRight{
 	width: 100%;
 }
-.tableRight tr {
-	/*  height: 45px;*/
-		margin-top: 20px;
-}
-.tableRight tr>td>span{
-	float: left;
-	margin-top: 10px;
-	margin-bottom: 10px;	
+.tableRight tr>td {
+	  padding-top: 10px;
+	/*	margin-top: 20px !important;*/
 }
 #A_SEL_002>div,#A_SEL_002{
 	width: 120px !important;
@@ -109,6 +108,9 @@ nts-left-contentBottom {
 .tableRight td:first-child {
 	width: 150px !important;
 	margin-left:5px;
+}
+.tableRight>td>div{
+	float: left;
 }
 #A_LBL_011{
 	margin-top: 5px;

@@ -9,6 +9,15 @@ var qpp008;
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
+                    self.yearmontheditor = {
+                        value: ko.observable(200001),
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+                            inputFormat: 'yearmonth'
+                        })),
+                        required: ko.observable(false),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
                     /*
                             GridList
                     */
@@ -58,7 +67,7 @@ var qpp008;
                     ]);
                     self.itemNameCbb3 = ko.observable('');
                     self.currentCodeCbb3 = ko.observable(3);
-                    self.selectedCodeCbb3 = ko.observable('0002');
+                    self.selectedCodeCbb3 = ko.observable('');
                     self.isEnableCbb3 = ko.observable(true);
                     self.isEditableCbb3 = ko.observable(true);
                     /**
