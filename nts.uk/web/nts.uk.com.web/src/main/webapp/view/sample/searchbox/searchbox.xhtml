@@ -26,14 +26,15 @@
 						<h2>Overview</h2>						
 						<div class="cf">
 							<div style="float:left">																					
-								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId:'treegrid1', items: dataSource, 
+										searchText: 'test',		selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
 								<h3>Single Selection TreeGrid</h3>
 								<table id="treegrid1"
 									data-bind="ntsTreeGridView:{
 										width: 700,
 										height: 250,
 										options: dataSource,
-										value: singleSelectedCode,								
+										value: singleSelectedCode,						
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',

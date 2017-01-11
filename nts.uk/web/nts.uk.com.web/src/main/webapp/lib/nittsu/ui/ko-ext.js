@@ -422,7 +422,7 @@ var nts;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
-                        var searchText = (data.enable !== undefined) ? ko.unwrap(data.searchText) : "Search";
+                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "Search";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -1419,16 +1419,13 @@ var nts;
                             throw new Error('the element NtsGridList must have id attribute.');
                         }
                         var data = valueAccessor();
-                        var optionsValue = data.optionsValue;
+                        var optionsValue = data.primaryKey === undefined ? data.primaryKey : data.optionsValue;
                         var options = ko.unwrap(data.options);
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
-                            return {
-                                headerText: c.headerText,
-                                key: c.prop,
-                                width: c.width,
-                                dataType: 'string'
-                            };
+                            c["key"] = c.key === undefined ? c.key : c.prop;
+                            c["dataType"] = 'string';
+                            return c;
                         });
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
