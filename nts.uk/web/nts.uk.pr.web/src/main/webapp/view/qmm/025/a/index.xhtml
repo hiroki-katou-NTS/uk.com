@@ -17,8 +17,7 @@
 			<com:scriptfile path="service.js" />
 
 			<!-- igniteUI -->
-			<script
-				src="http://www.igniteui.com/data-files/nw-customers-with-orders.js"></script>
+			<script src="http://www.igniteui.com/data-files/nw-customers-with-orders.js"></script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -54,7 +53,8 @@
 					<script>
 		        $(function () {
 		            $("#grid").igGrid({
-		                columns: [
+		            	renderCheckboxes: true,
+		            	columns: [
 		                    { headerText: "Customer ID", key: "ID", dataType: "string", width: "150px" },
 		                    { headerText: "Company Name", key: "CompanyName", dataType: "string", width: "200px" },
 		                    { headerText: "Contact Name", key: "ContactName", dataType: "string", width: "200px" },
@@ -87,10 +87,27 @@
 		                            }
 		                        ]
 		                    },
-		                    /* { 
-		                        name: "Selection", 
+		                    {
+		                        name : 'Paging',
+		                        type: "local",
+		                        pageSize : 5,
+		                        pageSizeDropDownTrailingLabel: "件",
+		                        /* pagerRecordsLabelTemplate: "$recordCount$ records", */
+		                        nextPageLabelText: "",
+		                        prevPageLabelText: "",
+		                    },
+		                    {
+		                        name: 'Selection',
+		                        multipleSelection: true,
+		                        activation: true,
 		                        persist: true 
-		                     } */
+		                     },
+		                     {
+		                         name: 'RowSelectors',
+		                         enableCheckBoxes: true,
+		                         enableSelectAllForPaging: true,
+		                         multipleSelection: true 
+		                     },
 		                ]
 		            });
 		        });
