@@ -358,7 +358,7 @@ module nts.uk.ui.koExtentions {
             var i = fields.length;
             while (i--) {
                 var prop = fields[i];
-                var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
+                var strProp = ("" + item[prop]).toLocaleLowerCase();
                 if (strProp.indexOf(filter) !== -1) {
                     return true;
                 };
@@ -368,19 +368,24 @@ module nts.uk.ui.koExtentions {
         return filtered;
     };
     var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
+//        console.log(selected + "," + selectedKey + "," + compareKey);
+//        console.log(isArray);
         var current = null;
         if (isArray) {
             if (selected.length > 0) current = selected[0];
         } else if (selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
         }
+//        console.log("current = "  + current);
         if (arr.length > 0) {
             if (current) {
+                
                 for (var i = 0; i < arr.length - 1; i++) {
                     var item = arr[i];
                     if (selectedKey) {
-                        if (item[selectedKey] === current) return arr[i + 1][selectedKey];
-                    } else if (item[compareKey] === current[compareKey]) return arr[i + 1];
+//                        console.log(i);
+                        if (item[selectedKey] == current) return arr[i + 1][selectedKey];
+                    } else if (item[compareKey] == current[compareKey]) return arr[i + 1];
                 }
             }
             if (selectedKey) return arr[0][selectedKey];
@@ -420,13 +425,20 @@ module nts.uk.ui.koExtentions {
                 var compareKey = fields[0];
                 var isArray = $.isArray(selected());
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
-                if (!isArray) selected(selectedItem);
-                else {
-                    selected([]);
-                    selected.push(selectedItem);
-                }
-                component.trigger("selectChange");
+                console.log(selectedItem);
+                if(data.mode) {
+                    var selectArr = []; selectArr.push("" + selectedItem);
+                    component.ntsGridList("setSelected", selectArr);
+                    component.trigger("selectionChanged");
+                } else {
+                    if (!isArray) selected(selectedItem);
+                    else {
+                        selected([]);
+                        selected.push(selectedItem);
+                    }
+                    component.trigger("selectChange");
                 //console.log(selectedItem); 
+                }
             }
             $input.keyup(function() {
                 $input.change();
@@ -448,7 +460,7 @@ module nts.uk.ui.koExtentions {
             var $input = searchBox.find("input.ntsSearchBox");
             var searchTerm = $input.val();
             var data = valueAccessor();
-            var arr = data.items();
+            var arr = ko.unwrap(data.items);
             var fields = ko.unwrap(data.fields);
             var childField = null;
             if (data.childField) {
@@ -1587,8 +1599,10 @@ module nts.uk.ui.koExtentions {
             if (data.headers) {
                 headers = ko.unwrap(data.headers);
             }
-            var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
+            var displayColumns: Array<any> = [
+                { headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
+                { headerText: headers[1], key: optionsText, dataType: "string" }
+            ];
             if (extColumns) {
                 displayColumns = displayColumns.concat(extColumns);
             }
