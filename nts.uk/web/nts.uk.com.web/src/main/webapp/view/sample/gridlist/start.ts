@@ -35,7 +35,7 @@ __viewContext.ready(function () {
         }
         
         selectSomeItems() {
-            this.currentCode('150');
+            this.currentCode('0010');
             this.currentCodeList.removeAll();
             this.currentCodeList.push('001');
             this.currentCodeList.push('002');
