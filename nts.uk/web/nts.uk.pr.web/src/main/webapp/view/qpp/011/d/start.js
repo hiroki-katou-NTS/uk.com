@@ -33,7 +33,7 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "USD",
+                    currencyformat: "JPY",
                     currencyposition: 'right'
                 })),
                 required: ko.observable(false),

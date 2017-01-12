@@ -2,7 +2,6 @@
 	position: relative;
 	padding: 10px;
 	border-bottom: solid 1px #B1B1B1;
-	width: 100%;
 }
 
 #BTN_001 {
@@ -79,8 +78,11 @@ input {
 
 #INP_002, #INP_003, #INP_004, #INP_005 {
 	display: inline-block;
-	width: 100px;
 	margin-top: 10px;
+}
+
+#INP_002 input, #INP_003 input, #INP_004 input, #INP_005 input {
+	width: 100px;
 }
 
 #INP_002 input, #INP_003 input, #INP_004 input, #INP_005 input, #INP_006 input,
@@ -101,11 +103,11 @@ input {
 	margin-left: 10px;
 }
 
-#INP_006 {
-	width: 180px;
+#INP_006 input{
+	width: 190px;
 }
 
-#INP_007 {
+#INP_007 input{
 	width: 100px;
 }
 
@@ -113,7 +115,7 @@ input {
 	margin-left: 128px;
 }
 
-#INP_008, #INP_009, #INP_010, #INP_011 {
+#INP_008 input, #INP_009 input, #INP_010 input, #INP_011 input{
 	width: 100px;
 }
 
@@ -146,7 +148,7 @@ input {
 	display: inline;
 }
 
-#D_LBL_006 , #D_LBL_007 , #D_LBL_008 , #D_LBL_009 ,
-	#D_LBL_014 , #D_LBL_015 , #D_LBL_016  {
-	padding-top:10px;
+#D_LBL_006, #D_LBL_007, #D_LBL_008, #D_LBL_009, #D_LBL_014, #D_LBL_015,
+	#D_LBL_016 {
+	padding-top: 10px;
 }
