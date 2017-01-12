@@ -39,30 +39,6 @@ var nts;
                                     return LaborInsuranceOffice;
                                 }());
                                 model.LaborInsuranceOffice = LaborInsuranceOffice;
-                                var LaborInsuranceOfficeDTO = (function () {
-                                    function LaborInsuranceOfficeDTO(companyCode, code, name, shortName, picName, picPosition, potalCode, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, citySign, officeMark, officeNoA, officeNoB, officeNoC, memo) {
-                                        this.companyCode = companyCode;
-                                        this.code = code;
-                                        this.name = name;
-                                        this.shortName = shortName;
-                                        this.picName = picName;
-                                        this.picPosition = picPosition;
-                                        this.potalCode = potalCode;
-                                        this.address1st = address1st;
-                                        this.address2nd = address2nd;
-                                        this.kanaAddress1st = kanaAddress1st;
-                                        this.kanaAddress2nd = kanaAddress2nd;
-                                        this.phoneNumber = phoneNumber;
-                                        this.citySign = citySign;
-                                        this.officeMark = officeMark;
-                                        this.officeNoA = officeNoA;
-                                        this.officeNoB = officeNoB;
-                                        this.officeNoC = officeNoC;
-                                        this.memo = memo;
-                                    }
-                                    return LaborInsuranceOfficeDTO;
-                                }());
-                                model.LaborInsuranceOfficeDTO = LaborInsuranceOfficeDTO;
                                 var LaborInsuranceOfficeInDTO = (function () {
                                     function LaborInsuranceOfficeInDTO(companyCode, code, name) {
                                         this.companyCode = companyCode;

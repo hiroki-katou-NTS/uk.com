@@ -29,10 +29,10 @@
 									<label>期間<br /></label>
 								</div>
 							</td>
-							<td class="contentsRR"><input id="inp_history"
+							<td class="contentsRR"><input id="inp_historystart"
 								class="trFull15" data-name="code"
-								data-bind="ntsTextEditor: {value: binp001, 
-									constraint: 'B_INP_001', 
+								data-bind="ntsTextEditor: {value: historystart, 
+									constraint: 'Historystart', 
 									option: textEditorOption, 
 									enable: true}" />
 								<label id="B_LBL_002"> ~ </label> <label id="B_LBL_003">
@@ -55,7 +55,8 @@
 										</tr>
 										<tr>
 											<td class="bg-green">一般の事業</td>
-											<td><input class="health-input" data-name="rateGeneralBusinessPerson"
+											<td><input class="health-input"
+												data-name="rateGeneralBusinessPerson"
 												data-bind="ntsTextEditor: {value: rateGeneralBusinessPerson, 
 													constraint: 'RateGeneralBusinessPerson', 
 													option: textEditorOption, 

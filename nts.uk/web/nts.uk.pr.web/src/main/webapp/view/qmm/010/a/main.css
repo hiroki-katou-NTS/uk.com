@@ -93,12 +93,11 @@
 }
 
 #inp_code {
-	width: 100px;
+	width: 30%;
 }
 
 #inp_name {
 	width: 30%;
-	margin-left: 10px;
 }
 
 button.nts-switch-button {

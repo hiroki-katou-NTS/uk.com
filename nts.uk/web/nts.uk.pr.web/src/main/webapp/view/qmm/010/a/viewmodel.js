@@ -11,14 +11,14 @@ var nts;
                     var a;
                     (function (a) {
                         var option = nts.uk.ui.option;
-                        var LaborInsuranceOfficeDTO = a.service.model.LaborInsuranceOfficeDTO;
+                        var LaborInsuranceOffice = a.service.model.LaborInsuranceOffice;
                         var LaborInsuranceOfficeInDTO = a.service.model.LaborInsuranceOfficeInDTO;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    var officeInfo = new LaborInsuranceOfficeDTO('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                                    var officeInfo = new LaborInsuranceOffice('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
                                     self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo));
                                     self.lstlaborInsuranceOffice = ko.observableArray([new LaborInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
                                         new LaborInsuranceOfficeInDTO('companyCode002', '000000000002', 'B事業所'), new LaborInsuranceOfficeInDTO('companyCode003', '000000000003', 'C事業所')]);
@@ -48,6 +48,7 @@ var nts;
                                     this.name = ko.observable(officeInfo.name);
                                     this.shortName = ko.observable(officeInfo.shortName);
                                     this.picName = ko.observable(officeInfo.picName);
+                                    this.picPosition = ko.observable(officeInfo.picPosition);
                                     this.postalCode = ko.observable(officeInfo.potalCode);
                                     this.address1st = ko.observable(officeInfo.address1st);
                                     this.kanaAddress1st = ko.observable(officeInfo.kanaAddress1st);

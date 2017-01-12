@@ -9,8 +9,6 @@ module nts.uk.pr.view.qmm010.b {
             columnsLstSocialInsuranceOffice: KnockoutObservableArray<any>;
             multilineeditor: any;
             employmentName: KnockoutObservable<string>;
-
-
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
             constructor() {

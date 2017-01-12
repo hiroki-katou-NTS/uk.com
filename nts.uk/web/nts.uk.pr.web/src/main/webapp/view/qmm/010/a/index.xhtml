@@ -12,6 +12,10 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
+			<com:ValidatorScript>
+			    nts.uk.ctx.pr.core.dom.insurance.OfficeName
+			    nts.uk.ctx.pr.core.dom.insurance.OfficeCode
+			 </com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -62,21 +66,23 @@
 								<tr>
 									<td class="contentsRL">
 										<div id="lbl_code_name"
-											data-bind="ntsFormLabel: {required: true}">
+											data-bind="ntsFormLabel: {constraint:['OfficeCode','OfficeName'], required: true}">
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_code"
-										data-name="code"
+									<td class="contentsRR"><input 
+										id="inp_code" data-name="code"
 										data-bind="ntsTextEditor: {value: code,
-										constraint: 'OfficeCode', 
-										option: textEditorOption, 
-										enable: true}" />
-										<input id="inp_name" data-name="name"
+											constraint: 'OfficeCode', 
+											option: textEditorOption, 
+											enable: true,
+											required:true}" />
+										<input id="inp_name" data-name="name" 
 										data-bind="ntsTextEditor: {value: name, 
-										constraint: 'OfficeName',
-										option: textEditorOption,
-										enable: true}" />
+											constraint: 'OfficeName',
+											option: textEditorOption,
+											enable: true,
+											required:true}" />
 									</td>
 								</tr>
 								<tr>
@@ -117,10 +123,10 @@
 											<label>代表者職位</label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_postalCode2"
-										class="trFull25" data-name="code"
-										data-bind="ntsTextEditor: {value: postalCode, 
-										constraint: 'PostalCode', 
+									<td class="contentsRR"><input id="inp_picPosition"
+										class="trFull25" data-name="picPosition"
+										data-bind="ntsTextEditor: {value: picPosition, 
+										constraint: 'PicPosition', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -136,7 +142,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_postalCode"
-										class="trFull15" data-name="code"
+										class="trFull15" data-name="postalCode"
 										data-bind="ntsTextEditor: {value: postalCode, 
 										constraint: 'PostalCode', 
 										option: textEditorOption, 
@@ -153,7 +159,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address1st"
-										class="trFull30" data-name="code"
+										class="trFull30" data-name="address1st"
 										data-bind="ntsTextEditor: {value: address1st, 
 										constraint: 'Address1ST', 
 										option: textEditorOption, 
@@ -168,7 +174,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress1st"
-										class="trFull30" data-name="code"
+										class="trFull30" data-name="kanaAddress1st"
 										data-bind="ntsTextEditor: {value: kanaAddress1st, 
 										constraint: 'KanaAddress1ST', 
 										option: textEditorOption, 
@@ -184,7 +190,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address2nd"
-										class="trFull45" data-name="code"
+										class="trFull45" data-name="address2nd"
 										data-bind="ntsTextEditor: {value: address2nd, 
 										constraint: 'Address2ND', 
 										option: textEditorOption, 
@@ -270,7 +276,7 @@
 										option: textEditorOption, 
 										enable: true}" />
 										<label id="A_LBL_018">-</label> <input id="inp_officeNoC"
-										class="trFull5" data-name="code"
+										class="trFull5" data-name="officeNoC"
 										data-bind="ntsTextEditor: {value: officeNoC, 
 										constraint: 'OfficeNoC', 
 										option: textEditorOption, 

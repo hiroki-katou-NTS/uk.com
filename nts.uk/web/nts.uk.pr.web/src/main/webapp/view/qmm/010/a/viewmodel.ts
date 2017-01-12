@@ -1,18 +1,18 @@
 module nts.uk.pr.view.qmm010.a {
     import option = nts.uk.ui.option;
-    import LaborInsuranceOfficeDTO = service.model.LaborInsuranceOfficeDTO;
+    import LaborInsuranceOffice = service.model.LaborInsuranceOffice;
     import LaborInsuranceOfficeInDTO = service.model.LaborInsuranceOfficeInDTO;
     export module viewmodel {
         export class ScreenModel {
             //ojbect value binding
             laborInsuranceOffice: KnockoutObservable<LaborInsuranceOfficeModel>;
-            lstlaborInsuranceOffice: KnockoutObservableArray<LaborInsuranceOfficeInDTO>;
+            lstlaborInsuranceOffice: KnockoutObservableArray<LaborInsuranceOffice>;
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
             textSearch: any;
             constructor() {
                 var self = this;
-                var officeInfo = new LaborInsuranceOfficeDTO('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                var officeInfo = new LaborInsuranceOffice('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
                 self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo));
                 self.lstlaborInsuranceOffice = ko.observableArray([new LaborInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
                     new LaborInsuranceOfficeInDTO('companyCode002', '000000000002', 'B事業所'), new LaborInsuranceOfficeInDTO('companyCode003', '000000000003', 'C事業所')]);
@@ -42,6 +42,7 @@ module nts.uk.pr.view.qmm010.a {
             name: KnockoutObservable<string>;
             shortName: KnockoutObservable<string>;
             picName: KnockoutObservable<string>;
+            picPosition: KnockoutObservable<string>;
             postalCode: KnockoutObservable<string>;
             address1st: KnockoutObservable<string>;
             kanaAddress1st: KnockoutObservable<string>;
@@ -56,11 +57,12 @@ module nts.uk.pr.view.qmm010.a {
             memo: KnockoutObservable<string>;
             textEditorOption: KnockoutObservable<any>;
             multilineeditor: any;
-            constructor(officeInfo: LaborInsuranceOfficeDTO) {
+            constructor(officeInfo: LaborInsuranceOffice) {
                 this.code = ko.observable(officeInfo.code);
                 this.name = ko.observable(officeInfo.name);
                 this.shortName = ko.observable(officeInfo.shortName);
                 this.picName = ko.observable(officeInfo.picName);
+                this.picPosition = ko.observable(officeInfo.picPosition);
                 this.postalCode = ko.observable(officeInfo.potalCode);
                 this.address1st = ko.observable(officeInfo.address1st);
                 this.kanaAddress1st = ko.observable(officeInfo.kanaAddress1st);
