@@ -1,26 +1,36 @@
 __viewContext.ready(function () {
     class ScreenModel {
-        dataList: KnockoutObservableArray<any>;
-        enable: KnockoutObservable<boolean>;
-        enableCut: KnockoutObservable<boolean>;
-        visibleCopy: KnockoutObservable<boolean>;
+        inputText: KnockoutObservable<string>;
+        checked: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
-            self.dataList = ko.observableArray([]);
-            for(let i = 0; i <= 10; i++) {
-                self.dataList.push({id: i, name: "Item " + i});
-            }
+            // Input Text
+            self.inputText = ko.observable("a");
+            self.inputText.subscribe(function(value){
+                if (value.length > 0)
+                    $(".userguide-right").ntsUserGuide("hide");
+                else
+                    $(".userguide-right").ntsUserGuide("show");
+                    
+            });
+            // CheckBox
+            self.checked = ko.observable(true);
+            self.checked.subscribe(function(value){
+                (value) ? $(".userguide-left").ntsUserGuide("hide") : $(".userguide-left").ntsUserGuide("show"); 
+            });
+            
+            // Init UserGuide
+            $("[data-toggle='userguide']").ntsUserGuide();
         }
         
-        showOverlay() {
-            $(".userguide-overlay").show();
+        showOverlayTop() {
+            $(".userguide-top").ntsUserGuide("toggle");
         }
         
-        hideOverlay() {
-            $(".userguide-overlay").hide();
+        showOverlayBottom() {
+            $(".userguide-bottom").ntsUserGuide("toggle");
         }
-        
     }
     
     this.bind(new ScreenModel());

@@ -24,7 +24,7 @@ public class FileTaskRepoImpl implements FileTaskRepository{
 	
 	@Override
 	public boolean isFinishedTask(String taskId) {
-		return this.taskInfo.find(taskId).get().getStatus() == AsyncTaskStatus.FINISHED;
+		return this.taskInfo.find(taskId).get().getStatus() == AsyncTaskStatus.COMPLETED;
 	}
 
 	@Override
