@@ -1,3 +1,18 @@
 .separate-vertical {
 	margin-bottom: 10px;
 }
+#j_sel_001{
+    margin-left: 20px;
+    width: 270px;
+    vertical-align: text-top;
+    display: inline-block;
+}
+#j_lbl_003, #l_inp_001{
+	margin-left: 20px;
+}
+#j_lbl_002, #j_lbl_005, #j_lbl_006{
+	width: 100px;
+}
+#j_btn_001{
+	margin-left: 50px;
+}

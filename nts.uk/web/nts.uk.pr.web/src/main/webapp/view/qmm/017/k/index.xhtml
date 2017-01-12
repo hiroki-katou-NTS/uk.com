@@ -21,38 +21,44 @@
 		<ui:define name="content">
 			<div id="functions-area"></div>
 			<div id="contents-area">
-				<div id="j_lbl_001" class="label warning separate-vertical">新たに作成する履歴の、作成情報を入力してください。</div>
+				<div id="k_lbl_001" class="label warning separate-vertical">履歴情報を確認し、削除または修正を行ってください。</div>
 				<br />
-				<div id="j_lbl_002" class="separate-vertical"
+				<div id="k_lbl_002" class="separate-vertical"
 					data-bind="ntsFormLabel: {}">コード/名称</div>
-				<span id="j_lbl_003">0001</span> <span id="j_lbl_004">日本0001</span>
+				<span id="k_lbl_003">0001</span> <span id="j_lbl_004">日本0001</span>
 				<br />
-				<div id="j_lbl_005" class="separate-vertical"
-					data-bind="ntsFormLabel: {required: true }">開始年月</div>
-				<input size="5" id="l_inp_001" data-bind="value: '2016/12'" /> <span
-					id="j_lbl_007">(xxxxxxx) ~</span> <br />
 				<div>
 					<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">
-						<label id="j_lbl_006" >編集方法の選択</label>
+						<label id="k_lbl_005" >コード/名称</label>
 					</div>
-					<div id="j_sel_001">
+					<div id="k_sel_001">
 						<span class="ntsControl"> <label class="ntsRadioBox">
 								<input type="radio" name="textRadio" data-bind="checkedValue: 2" />
 								<span class="box"></span><span class="label"
 								data-bind="text: 'radio1'"></span>
 						</label></span>
-						<br />
+						<br />						
+						<div id="k_lbl_006" class="label warning separate-vertical">
+							<label>最後の履歴データを削除します。</label><br />
+							<label>全ての履歴を削除すると、計算式のデータも削除します</label>
+						</div>
 						<span class="ntsControl"> 
 							<label class="ntsRadioBox">
 								<input type="radio" name="textRadio" data-bind="checkedValue: 4" />
 								<span class="box"></span><span class="label" data-bind="text: 'radio2'"></span>
 							</label>
 						</span>
-					</div>
+						<br />
+						<div id="k_lbl_005" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">期間</div>
+							 <input size="5" id="l_inp_001" data-bind="value: '2016/12'" />
+							 <span id="j_lbl_007">(xxxxxxx) ~</span>
+							 <br />
+						</div>
 				</div>
+
 				<br />
-				<button id="j_btn_001" class="x-large proceed">決定</button>
-				<button id="j_btn_002" >キャンセル</button>
+				<button id="k_btn_001" class="x-large proceed">決定</button>
+				<button id="k_btn_002" >キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>

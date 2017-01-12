@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm017.j {
+module nts.uk.pr.view.qmm017.k {
     export module viewmodel {
         export class ScreenModel {
             enable: KnockoutObservable<boolean>;

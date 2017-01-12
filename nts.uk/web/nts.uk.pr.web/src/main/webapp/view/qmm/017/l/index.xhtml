@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="l_btn_001" class="button separate-button fix-button">新規</button>
+				<button id="l_btn_002"
+					class="button proceed separate-button fix-button">登録</button>
+				<button id="l_btn_003" class="button separate-button fix-button">コピー</button>
+				<button id="l_btn_006" class="button separate-button fix-button">閉じる</button>
+				<button id="l_btn_005" class="button separate-button fix-button">削除</button>
+				<span id="l_lbl_001">計算式の登録</span>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<div id="l_lst_001"
+						data-bind="ntsListBox: {
+											options: itemList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											multiple: true,
+											value: selectedCodes,
+											enable: isEnable(),
+											rows: 3,
+											required: true,
+											columns: [
+												{ prop: 'code', length: 4 },
+												{ prop: 'name', length: 10 }
+											]}"></div>
+
+				</div>
+				<div id="right-content">
+					<div>
+						<div>
+							<div id="l_lbl_001" class="separate-vertical"
+								data-bind="ntsFormLabel: {required: true }">名称</div>
+							<input size="3" id="l_inp_001" data-bind="value: '003'" />
+						</div>
+						<table>						
+							<colgroup>
+								<col width="120px" />
+								<col width="*" />
+
+							</colgroup>
+							<tbody>
+								<tr>
+									<td></td>
+									<td><div class="cf" data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode
+											}"></div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_002" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">A：基準金額</div></td>
+									<td><div id="l_sel_002"
+											data-bind="ntsComboBox: {options: itemListCombo,
+												optionsValue: 'code',
+												value: selectedCode,
+												enable : true,
+												optionsText: 'name'}"></div></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+<!-- 									<button id="l_btn_007">選択</button> -->
+									<div data-bind="with: currencyeditor">
+											<input id="l_inp_002" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_003" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">B：基底値</div></td>
+									<td><div id="l_sel_003"
+											data-bind="ntsComboBox: {options: itemListCombo,
+												optionsValue: 'code',
+												value: selectedCode,
+												enable : true,
+												optionsText: 'name'}"></div></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><div>
+											<input id="l_inp_004" data-bind="enable: enaleInp4" />
+										</div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_004" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">C：割増率</div></td>
+									<td><div data-bind="with: currencyeditor2">
+											<input id="l_inp_005" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_005" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">D：端数処理</div></td>
+									<td><div id="l_sel_004" class="cf" data-bind="ntsSwitchButton: {
+											options: roundingRules2,
+											optionsValue: 'code2',
+											optionsText: 'name2',
+											value: selectedRuleCode2
+											}"></div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_006" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">E：係数</div></td>
+									<td><div id="l_sel_005"
+											data-bind="ntsComboBox: {options: itemListCombo,
+												optionsValue: 'code',
+												value: selectedCode,
+												enable : true,
+												optionsText: 'name'}"></div></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><div>
+											<input id="l_inp_006" />
+										</div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_007" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">F：調整</div></td>
+									<td><div id="l_sel_006"
+											data-bind="ntsComboBox: {options: itemListCombo,
+												optionsValue: 'code',
+												value: selectedCode,
+												enable : true,
+												optionsText: 'name'}"></div></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td><div id="l_inp_007" class="label" data-bind="with: currencyeditor">
+											<input  data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div>
+										<span class="label">~</span>
+										<div id="l_inp_008" class="label" data-bind="with: currencyeditor">
+											<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required}" />
+										</div></td>
+								</tr>
+								<tr>
+									<td><div id="l_lbl_008" class="separate-vertical"
+											data-bind="ntsFormLabel: {required: true }">G：端数処理</div></td>
+									<td><div id="l_sel_007"
+											data-bind="ntsComboBox: {options: itemListCombo,
+												optionsValue: 'code',
+												value: selectedCode,
+												enable : true,
+												optionsText: 'name'}"></div></td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="control-group valign-center"></div>
+
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

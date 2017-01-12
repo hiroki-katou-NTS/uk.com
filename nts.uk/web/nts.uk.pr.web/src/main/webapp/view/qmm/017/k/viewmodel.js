@@ -8,8 +8,8 @@ var nts;
             (function (view) {
                 var qmm017;
                 (function (qmm017) {
-                    var j;
-                    (function (j) {
+                    var k;
+                    (function (k) {
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -26,7 +26,7 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                        })(viewmodel = j.viewmodel || (j.viewmodel = {}));
+                        })(viewmodel = k.viewmodel || (k.viewmodel = {}));
                         var BoxModel = (function () {
                             function BoxModel(id, name) {
                                 var self = this;
@@ -35,7 +35,7 @@ var nts;
                             }
                             return BoxModel;
                         }());
-                    })(j = qmm017.j || (qmm017.j = {}));
+                    })(k = qmm017.k || (qmm017.k = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
