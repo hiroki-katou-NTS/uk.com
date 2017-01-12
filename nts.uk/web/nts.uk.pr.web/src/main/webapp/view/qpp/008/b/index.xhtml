@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 300,
-					height : 200
+					width : 700,
+					height : 900
 				};
 			</script>
 			<com:ValidatorScript>
@@ -99,7 +99,7 @@
 				</div>
 				<div class="divBottom">
 					<button id="B_BTN_001" class="proceed x-large" >設定</button>
-					<button id="B_BTN_002">キャンセル</button>				
+					<button id="B_BTN_002" data-bind="click: closeDialog">キャンセル</button>				
 				</div>
 			</div>
 		</ui:define>

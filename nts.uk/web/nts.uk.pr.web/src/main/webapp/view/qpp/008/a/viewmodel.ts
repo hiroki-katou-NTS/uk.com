@@ -2,6 +2,7 @@ module qpp008.a.viewmodel {
     export class ScreenModel {
         paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymentDate: KnockoutObservable<any>;
+        singleSelectedCode: KnockoutObservable<string>;
         texteditor1: any;
         texteditor2: any;
 
@@ -47,13 +48,13 @@ module qpp008.a.viewmodel {
         isEnableCbb3: KnockoutObservable<boolean>;
         isEditableCbb3: KnockoutObservable<boolean>;
         yearmontheditor: any;
-        
+
 
         constructor() {
             let self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
-            
+
             self.yearmontheditor = {
                 value: ko.observable(200001),
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
@@ -63,7 +64,7 @@ module qpp008.a.viewmodel {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
-            
+
             /*
                     GridList
             */
@@ -73,12 +74,12 @@ module qpp008.a.viewmodel {
                 new ItemModel('基本給2'),
                 new ItemModel('基本給1')
             ]);
-            
+
             self.columns = ko.observableArray([
                 { headerText: '名称', prop: 'name', width: 150 }
-            
-                ]);
-            
+
+            ]);
+
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
             /* Label  */
@@ -107,7 +108,7 @@ module qpp008.a.viewmodel {
                 new ItemModelCbb2('役職手当'),
                 new ItemModelCbb2('基本給2')
             ]);
-            
+
             self.selectedCodeCbb2 = ko.observable('基本給');
             self.isEnableCbb2 = ko.observable(true);
             self.isEditableCbb2 = ko.observable(true);
@@ -156,8 +157,12 @@ module qpp008.a.viewmodel {
                 readonly: ko.observable(false)
             };
         }
-    }
 
+        openBDialog() {
+            var self = this;
+            nts.uk.ui.windows.sub.modal('/view/qpp/008/b/index.xhtml', { title: '印刷設定', dialogClass: 'no-close' }).onClosed(function(): any {
+            });
+        }
     /* ItemModelCbb1 of combobox */
     class ItemModelCbb1 {
         codeCbb1: string;
@@ -178,7 +183,7 @@ module qpp008.a.viewmodel {
             this.labelCbb2 = nameCbb2;
         }
     }
-    
+
     class ItemModelCbb3 {
         codeCbb3: string;
         nameCbb3: string;

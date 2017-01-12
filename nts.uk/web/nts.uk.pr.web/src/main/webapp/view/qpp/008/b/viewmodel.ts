@@ -57,5 +57,8 @@ module qpp008.b.viewmodel {
             });
             return dfd.promise();
         }
+        closeDialog(): any{
+            nts.uk.ui.windows.close();   
+        }
     }
 }

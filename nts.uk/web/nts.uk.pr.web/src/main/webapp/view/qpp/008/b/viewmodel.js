@@ -41,6 +41,9 @@ var qpp008;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.closeDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

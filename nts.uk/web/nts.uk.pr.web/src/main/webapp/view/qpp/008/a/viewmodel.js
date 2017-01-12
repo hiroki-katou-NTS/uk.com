@@ -100,6 +100,11 @@ var qpp008;
                         readonly: ko.observable(false)
                     };
                 }
+                ScreenModel.prototype.openBDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal('/view/qpp/008/b/index.xhtml', { title: '印刷設定', dialogClass: 'no-close' }).onClosed(function () {
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
