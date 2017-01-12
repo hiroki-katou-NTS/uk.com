@@ -459,7 +459,7 @@ div.label {
   height: 16px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: #3BC31C;
+  background: #00B050;
   box-sizing: border-box;
 }
 /* line 242, ../sass/components/_commons.scss */
@@ -477,6 +477,36 @@ div.label {
   height: 10px;
   width: 2px;
   background-color: #333333;
+}
+/* line 256, ../sass/components/_commons.scss */
+.icon.icon-searchbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  background: #00B050;
+  border-radius: 5px;
+}
+/* line 266, ../sass/components/_commons.scss */
+.icon.icon-searchbox:before {
+  width: 12px;
+  height: 12px;
+  border: solid 2px #FFF;
+  border-radius: 100%;
+  top: 6px;
+  left: 7px;
+}
+/* line 274, ../sass/components/_commons.scss */
+.icon.icon-searchbox::after {
+  top: 18px;
+  left: 22px;
+  height: 8px;
+  width: 2px;
+  border-radius: 0 0 5px 5px;
+  background-color: #FFF;
+  transform: rotate(-45deg);
 }
 
 /* line 2, ../sass/components/_accordion.scss */
@@ -1654,6 +1684,18 @@ button.nts-switch-button[disabled]:hover {
   font-family: "DroidSansMono", "Meiryo";
   font-size: 14px;
   color: #000;
+}
+
+/* line 8, ../sass/components/_combobox.scss */
+.nts-combo-item {
+  height: 20px;
+}
+
+/* line 11, ../sass/components/_combobox.scss */
+.nts-column {
+  height: 20px;
+  overflow: hidden;
+  margin-right: 5px;
 }
 
 /* line 1, ../sass/components/_dialog.scss */

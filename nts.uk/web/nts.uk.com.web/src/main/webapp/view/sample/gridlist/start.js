@@ -6,8 +6,8 @@ __viewContext.ready(function () {
                 this.items.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
             }
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 },
+                { headerText: 'コード', prop: 'code', width: 100, hidden: true },
+                { headerText: '名称', prop: 'name', width: 150, hidden: true },
                 { headerText: '説明', prop: 'description', width: 150 },
                 { headerText: '説明1', prop: 'other1', width: 150 },
                 { headerText: '説明2', prop: 'other2', width: 150 }
@@ -23,7 +23,7 @@ __viewContext.ready(function () {
             this.currentCodeList = ko.observableArray([]);
         }
         ScreenModel.prototype.selectSomeItems = function () {
-            this.currentCode('150');
+            this.currentCode('0010');
             this.currentCodeList.removeAll();
             this.currentCodeList.push('001');
             this.currentCodeList.push('002');

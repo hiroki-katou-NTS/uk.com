@@ -41,8 +41,8 @@
 						<br />
 						<div id="list-box" data-bind="ntsListBox: {
 											options: itemList,
-											optionsValue: 'code',
-											optionsText: 'name',
+											primaryKey: 'code',
+											primaryText: 'name',
 											multiple: isMulti(),
 											value: selectedCodes,
 											enable: isEnable(),
@@ -56,8 +56,8 @@
 											
 						<div id="list-box2" data-bind="ntsListBox: {
 											options: itemList,
-											optionsValue: 'code',
-											optionsText: 'name',
+											primaryKey: 'code',
+											primaryText: 'name',
 											multiple: false,
 											value: selectedCode,
 											enable: isEnable(),
@@ -69,22 +69,21 @@
 									<li><a href="#tabs-html">HTML Binding</a></li>
 									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 									<li><a href="#tabs-methods">Methods</a></li>
-									<li><a href="#tabs-events">Events</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<div id="list-box" data-bind="ntsListBox: {
 	options: itemList,
-	optionsValue: 'code',
-	optionsText: 'name',
+	primaryKey: 'code',
+	primaryText: 'name',
 	multiple: true,
 	value: selectedCodes,
 	enable: isEnable(),
 	rows: 3,
 	columns: [
-		{ prop: 'code', length: 4 },
-		{ prop: 'name', length: 10 },
-		{ prop: 'description', length: 10 }
+		{ key: 'code', length: 4 },
+		{ key: 'name', length: 10 },
+		{ key: 'description', length: 10 }
 	]}"></div>]]></pre>
 									<h2>API</h2>
 									<table>
@@ -106,14 +105,14 @@
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue<br/><i>(optional)</i></td>
+												<td>optionsValue / primaryKey<br/><i>(optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as ListBox value. If null object will be set as value
 												</td>
 											</tr>
 											<tr>
-												<td>optionsText</td>
+												<td>optionsText / primaryText</td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as ListBox text
@@ -154,7 +153,7 @@
 												<td>
 													<b>Type:</b> array&lt;column&gt;<br/>
 													Array of column object will be displayed in drop down part.<br/>
-													<i>prop:</i> field name of data<br/>
+													<i>prop / key:</i> field name of data<br/>
 													<i>length:</i> length of character for this field 
 												</td>
 											</tr>
@@ -243,33 +242,6 @@ class ItemModel {
 												<td>$("#list-box").ntsListBox('deselectAll');</td>
 												<td>
 													Deselect all values
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-								<div id="tabs-events" class="cf">
-									<table>
-										<colgroup>
-											<col width="200px" />
-										</colgroup>
-										<thead>
-											<tr>
-												<th><h4>Events</h4></th>
-												<th><h4>Description</h4></th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>selectionChanging(event)</td>
-												<td>
-													Fire when user changing selected value(s), can be cancel. Use event.detail to get selected value(s).
-												</td>
-											</tr>
-											<tr>
-												<td>selectionChanged(event)</td>
-												<td>
-													Fire when user changed selected value(s), cannot be cancel. Use event.detail to get selected value(s).
 												</td>
 											</tr>
 										</tbody>
