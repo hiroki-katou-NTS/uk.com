@@ -1662,6 +1662,7 @@ var nts;
                         }
                         // Update datasource.
                         $(element).igTreeGrid("option", "dataSource", options);
+                        $(element).igTreeGrid("dataBind");
                         // Set multiple data source.
                         var multiple = ko.unwrap(data.multiple);
                         multiple = multiple != undefined ? multiple : true;
