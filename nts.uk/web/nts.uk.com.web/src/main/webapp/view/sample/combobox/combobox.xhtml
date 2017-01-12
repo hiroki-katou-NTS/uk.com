@@ -36,8 +36,9 @@
 												editable: isEditable,
 												enable: isEnable,
 												columns: [
-													{ prop: 'code', length: 4 },
-													{ prop: 'name', length: 10 },
+													{ prop: 'name', length: 4 },
+														{ prop: 'code', length: 10 },
+														{prop: 'label', length: 10}
 												]}"></div>
 							<button data-bind="click: removeByCode">Remove Item</button>
 						</div>
@@ -48,6 +49,72 @@
 						<div>
 							Your selected code: <span data-bind="text:selectedCode"></span>
 						</div>
+						<div>
+						<table class="tableRight">
+							<tr>
+								<td>
+									<div id="A_LBL_008" data-bind="ntsFormLabel: { required: true }">必須項目見出し
+									</div>
+								</td>
+								<td><button>設定</button></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><div id="A_SEL_001"
+											data-bind="ntsComboBox: {
+													options: itemListCbb1,
+													optionsValue: 'codeCbb1',
+													value: selectedCodeCbb1,
+													optionsText: 'nameCbb1',
+													editable: isEditableCbb1,
+													enable: isEnableCbb1,
+													columns: [
+														{ prop: 'codeCbb1', length: 4 },
+														{ prop: 'nameCbb1', length: 10 },
+													]}">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div id="A_LBL_009"
+										data-bind="ntsFormLabel: { required: true }">改ページ
+									</div>
+								</td>
+								<td class="flex valign-center">
+									<div id="A_SEL_002"
+											data-bind="ntsComboBox: {
+													options: itemListCbb2,
+													optionsValue: 'nameCbb2',
+													value: selectedCodeCbb2,
+													optionsText: 'nameCbb2',
+													editable: isEditableCbb2,
+													enable: isEnableCbb2,
+													columns: [
+														{ prop: 'nameCbb2', length: 4 }
+													]}">
+									</div>
+									<div>
+										<span id="A_LBL_010" class="label" style="margin-bottom: 5px;">階層指定
+										</span>
+									</div> 
+								<div id="A_SEL_003"
+											data-bind="ntsComboBox: {
+													options: itemListCbb3,
+													optionsValue: 'codeCbb3',
+													value: selectedCodeCbb3,
+													optionsText: 'nameCbb3',
+													editable: isEditableCbb3,
+													enable: isEnableCbb3,
+													columns: [
+														{ prop: 'codeCbb3', length: 4 },
+														{ prop: 'nameCbb3', length: 10 }
+													]}">
+								</div>
+								</td>
+							</tr>
+						</table>
+					</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
