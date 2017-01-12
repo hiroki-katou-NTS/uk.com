@@ -8,34 +8,17 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
+				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode
+				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName
+				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money
+				nts.uk.shr.com.primitive.Memo
   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../common.css" />
 			<com:stylefile path="thispage.css" />
 			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
-			<script>
-				__viewContext.primitiveValueConstraints.Code = {
-					valueType : 'String',
-					charType : 'Numeric',
-					maxLength : 4,
-				};
-				__viewContext.primitiveValueConstraints.Name = {
-					valueType : 'String',
-					maxLength : 20,
-				};
-				__viewContext.primitiveValueConstraints.Money = {
-					valueType : 'String',
-					charType : 'Numeric',
-					maxLength : 10,
-				};
-				__viewContext.primitiveValueConstraints.Memo = {
-					valueType : 'String',
-					maxLength : 1000,
-				};
-			</script>
+			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -44,9 +27,9 @@
 				<button id="btn_001" data-bind="enable: false"
 					class="large btn-default">新規</button>
 				<button id="btn_002" class="large proceed btn-default">登録</button>
-				<button id="btn_003" class="large btn-default" data-bind="">印刷
+				<button id="btn_003" class="large btn-default" data-bind="click: collectData">印刷
 					(PDF)</button>
-				<button id="btn_006" class="large btn-default" data-bind="">マスタ修正ログ</button>
+				<button id="btn_006" class="large btn-default" data-bind="click: test">マスタ修正ログ</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 
@@ -91,7 +74,7 @@
 					<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
-									data-bind="ntsFormLabel: {constraint: ['Code','Name'], required: true }">コード/名称</div></td>
+									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
 							<td colspan="2"><span class=""
 								data-bind="with: inp_002_code"> <input id="inp_002"
 									class="inp-default"
@@ -145,13 +128,13 @@
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: '1', checked: sel_001_radio" /> <span
+									data-bind="checkedValue: 1, checked: sel_001_settingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: '2', checked: sel_001_radio" /> <span
+									data-bind="checkedValue: 2, checked: sel_001_settingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
@@ -163,8 +146,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_radio()==1),
-						value: sel_002_xxx}"></div></td>
+						enable: (sel_001_settingType()==1),
+						value: sel_002_payAtr}"></div></td>
 							<td><label id="lbl_009">月給者</label></td>
 							<td class="">
 								<div id="sel_003"
@@ -172,8 +155,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_radio()==2),
-						value: sel_003_monthly}"></div>
+						enable: (sel_001_settingType()==2),
+						value: sel_003_payAtrMonthly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -185,8 +168,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_radio()==2),
-						value: sel_004_dayMonth}"></div>
+						enable: (sel_001_settingType()==2),
+						value: sel_004_payAtrDayMonth}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -198,8 +181,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_radio()==2),
-						value: sel_005_daily}"></div>
+						enable: (sel_001_settingType()==2),
+						value: sel_005_payAtrDaily}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -211,8 +194,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_radio()==2),
-						value: sel_006_hourly}"></div>
+						enable: (sel_001_settingType()==2),
+						value: sel_006_payAtrHourly}"></div>
 							</td>
 						</tr>
 						<tr>
