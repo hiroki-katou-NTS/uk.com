@@ -7,20 +7,32 @@
 	margin-right: 5px;
 }
 
-.trFull25 {
-	width: 25%;
+.trFull5 {
+	width: 5%;
 }
 
-.trFull45 {
-	width: 45%;
+.trFull10 {
+	width: 10%;
+}
+
+.trFull15 {
+	width: 15%;
+}
+
+.trFull25 {
+	width: 25%;
 }
 
 .trFull30 {
 	width: 30%;
 }
 
-.trFull5 {
-	width: 5%;
+.trFull35 {
+	width: 35%;
+}
+
+.trFull45 {
+	width: 45%;
 }
 
 .left20 {
@@ -97,6 +109,7 @@ button.nts-switch-button {
 	min-width: 0px !important;
 	max-width: 160px !important;
 }
-#search_001{
-	margin-top:20px;
+
+#search_001 {
+	margin-top: 20px;
 }

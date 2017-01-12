@@ -10,8 +10,8 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -36,11 +36,11 @@
 							data-bind="ntsGridList: {
 								width: 400,
 								height: 500,
-								options: blst001,
+								options: lstSocialInsuranceOffice,
 								optionsValue: 'code',
-								columns: columns,
+								columns: columnsLstSocialInsuranceOffice,
 								multiple: false,
-								value: blstsel001,
+								value: selectLstSocialInsuranceOffice,
 								enable: true
 							}"></table>
 					</div>

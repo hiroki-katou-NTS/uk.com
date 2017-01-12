@@ -1,204 +1,93 @@
-module qmm010.a.viewmodel {
+module nts.uk.pr.view.qmm010.a {
     import option = nts.uk.ui.option;
-    export class ScreenModel {
-        laborInsuranceOffice: KnockoutObservable<LaborInsuranceOffice>;
-        textSearch: any;
-        ainp001: KnockoutObservable<string>;
-        code: KnockoutObservable<string>;
-        name: KnockoutObservable<string>;
-        ainp004: KnockoutObservable<string>;
-        ainp005: KnockoutObservable<string>;
-        postalCode: KnockoutObservable<string>;
-        ainp007: KnockoutObservable<string>;
-        address1st: KnockoutObservable<string>;
-        kanaAddress1st: KnockoutObservable<string>;
-        address2nd: KnockoutObservable<string>;
-        kanaAddress2nd: KnockoutObservable<string>;
-        phoneNumber: KnockoutObservable<string>;
-        ainp013: KnockoutObservable<string>;
-        ainp014: KnockoutObservable<string>;
-        officeNoA: KnockoutObservable<string>;
-        officeNoB: KnockoutObservable<string>;
-        officeNoC: KnockoutObservable<string>;
-        memo: KnockoutObservable<string>;
-        multilineeditor: any;
-        employmentName: KnockoutObservable<string>;
-        textEditorOption: KnockoutObservable<any>;
-        items: KnockoutObservableArray<viewmodel.ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        constructor() {
-            var self = this;
-            self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC','memo'));
-            self.ainp001 = ko.observable("");
-            self.code = ko.observable(self.laborInsuranceOffice().code);
-            self.name = ko.observable(self.laborInsuranceOffice().name);
-            self.ainp004 = ko.observable("");
-            self.ainp005 = ko.observable("");
-            self.postalCode = ko.observable(self.laborInsuranceOffice().postalCode);
-            self.ainp007 = ko.observable("");
-            self.address1st = ko.observable(self.laborInsuranceOffice().address1st);
-            self.kanaAddress1st = ko.observable(self.laborInsuranceOffice().kanaAddress1st);
-            self.address2nd = ko.observable(self.laborInsuranceOffice().address2nd);
-            self.kanaAddress2nd = ko.observable(self.laborInsuranceOffice().kanaAddress2nd);
-            self.phoneNumber = ko.observable(self.laborInsuranceOffice().phoneNumber);
-            self.ainp013 = ko.observable("");
-            self.ainp014 = ko.observable("");
-            self.officeNoA = ko.observable(self.laborInsuranceOffice().officeNoA);
-            self.officeNoB = ko.observable(self.laborInsuranceOffice().officeNoB);
-            self.officeNoC = ko.observable(self.laborInsuranceOffice().officeNoC);
-            self.memo = ko.observable(self.laborInsuranceOffice().memo);
-            self.employmentName = ko.observable("");
-            self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-            self.textSearch = {
-                valueSearch: ko.observable(""),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "コード・名称で検索・・・",
-                    width: "75%",
-                    textalign: "left"
-                }))
+    import LaborInsuranceOfficeDTO = service.model.LaborInsuranceOfficeDTO;
+    import LaborInsuranceOfficeInDTO = service.model.LaborInsuranceOfficeInDTO;
+    export module viewmodel {
+        export class ScreenModel {
+            //ojbect value binding
+            laborInsuranceOffice: KnockoutObservable<LaborInsuranceOfficeModel>;
+            lstlaborInsuranceOffice: KnockoutObservableArray<LaborInsuranceOfficeInDTO>;
+            columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
+            selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
+            textSearch: any;
+            constructor() {
+                var self = this;
+                var officeInfo = new LaborInsuranceOfficeDTO('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo));
+                self.lstlaborInsuranceOffice = ko.observableArray([new LaborInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
+                    new LaborInsuranceOfficeInDTO('companyCode002', '000000000002', 'B事業所'), new LaborInsuranceOfficeInDTO('companyCode003', '000000000003', 'C事業所')]);
+                self.ainp001 = ko.observable("");
+
+                self.employmentName = ko.observable("");
+
+                self.textSearch = {
+                    valueSearch: ko.observable(""),
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                        textmode: "text",
+                        placeholder: "コード・名称で検索・・・",
+                        width: "75%",
+                        textalign: "left"
+                    }))
+                }
+                self.columnsLstlaborInsuranceOffice = ko.observableArray([
+                    { headerText: 'コード', prop: 'code', width: 120 },
+                    { headerText: '名称', prop: 'name', width: 120 }
+                ]);
+                self.selectCodeLstlaborInsuranceOffice = ko.observable('');
             }
-            self.items = ko.observableArray([
-                new ItemModel('001', '基本給'),
-                new ItemModel('150', '役職手当'),
-                new ItemModel('ABC', '基12本ghj給')
-            ]);
-            self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 }
-            ]);
-            self.currentCode = ko.observable();
-            self.currentCodeList = ko.observableArray([]);
-            self.multilineeditor = {
-                memo: ko.observable(self.laborInsuranceOffice().memo),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: true,
-                    placeholder: "Placeholder for text editor",
-                    width: "",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-        }
-        selectSomeItems() {
-            this.currentCode('150');
-            this.currentCodeList.removeAll();
-            this.currentCodeList.push('001');
-            this.currentCodeList.push('ABC');
         }
 
-        deselectAll() {
-            this.currentCode(null);
-            this.currentCodeList.removeAll();
+        export class LaborInsuranceOfficeModel {
+            code: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            shortName: KnockoutObservable<string>;
+            picName: KnockoutObservable<string>;
+            postalCode: KnockoutObservable<string>;
+            address1st: KnockoutObservable<string>;
+            kanaAddress1st: KnockoutObservable<string>;
+            address2nd: KnockoutObservable<string>;
+            kanaAddress2nd: KnockoutObservable<string>;
+            phoneNumber: KnockoutObservable<string>;
+            citySign: KnockoutObservable<string>;
+            officeMark: KnockoutObservable<string>;
+            officeNoA: KnockoutObservable<string>;
+            officeNoB: KnockoutObservable<string>;
+            officeNoC: KnockoutObservable<string>;
+            memo: KnockoutObservable<string>;
+            textEditorOption: KnockoutObservable<any>;
+            multilineeditor: any;
+            constructor(officeInfo: LaborInsuranceOfficeDTO) {
+                this.code = ko.observable(officeInfo.code);
+                this.name = ko.observable(officeInfo.name);
+                this.shortName = ko.observable(officeInfo.shortName);
+                this.picName = ko.observable(officeInfo.picName);
+                this.postalCode = ko.observable(officeInfo.potalCode);
+                this.address1st = ko.observable(officeInfo.address1st);
+                this.kanaAddress1st = ko.observable(officeInfo.kanaAddress1st);
+                this.address2nd = ko.observable(officeInfo.address2nd);
+                this.kanaAddress2nd = ko.observable(officeInfo.kanaAddress2nd);
+                this.phoneNumber = ko.observable(officeInfo.phoneNumber);
+                this.citySign = ko.observable(officeInfo.citySign);
+                this.officeMark = ko.observable(officeInfo.officeMark);
+                this.officeNoA = ko.observable(officeInfo.officeNoA);
+                this.officeNoB = ko.observable(officeInfo.officeNoB);
+                this.officeNoC = ko.observable(officeInfo.officeNoC);
+                this.memo = ko.observable(officeInfo.memo);
+                this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                this.multilineeditor = {
+                    memo: ko.observable(officeInfo.memo),
+                    readonly: false,
+                    constraint: 'ResidenceCode',
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                        resizeable: true,
+                        placeholder: "Placeholder for text editor",
+                        width: "",
+                        textalign: "left"
+                    })),
+                }
+
+
+            }
         }
-    }
-
-    export class ItemCloseDate {
-        closeDateCode: number;
-        closeDatename: string;
-        constructor(closeDateCode: number, closeDatename: string) {
-            this.closeDateCode = closeDateCode;
-            this.closeDatename = closeDatename;
-        }
-    }
-
-    export class ItemProcessingDate {
-        processingDateCode: number;
-        processingDatename: string;
-        constructor(processingDateCode: number, processingDatename: string) {
-            this.processingDateCode = processingDateCode;
-            this.processingDatename = processingDatename;
-        }
-    }
-    export class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
-
-    export class LaborInsuranceOfficeDTO {
-        companyCode: string;
-        code: string;
-        name: string;
-        shortName: string;
-        picName: string;
-        picPosition: string;
-        potalCode: string;
-        address1st: string;
-        address2nd: string;
-        kanaAddress1st: string;
-        kanaAddress2nd: string;
-        phoneNumber: string;
-        officeNoA: string;
-        officeNoB: string;
-        officeNoC: string;
-        memo: string;
-        
-        
-        
-
-
-    /** The prefecture. */
-    private String prefecture;
-
-    /** The address 1 st. */
-    private Address address1st;
-
-    /** The address 2 nd. */
-    private Address address2nd;
-
-    /** The kana address 1 st. */
-    private KanaAddress kanaAddress1st;
-
-    /** The kana address 2 nd. */
-    private KanaAddress kanaAddress2nd;
-
-    /** The phone number. */
-    // TODO: TelephoneNo
-    private String phoneNumber;
-
-    /** The city sign. */
-    private String citySign;
-
-    /** The office mark. */
-    private String officeMark;
-
-    /** The office no A. */
-    private String officeNoA;
-
-    /** The office no B. */
-    private String officeNoB;
-
-    /** The office no C. */
-    private String officeNoC;
-
-    /** The memo. */
-    private Memo memo;
-        constructor(code: string, name: string, postalCode: string, address1st: string, address2nd: string,
-            kanaAddress1st: string, kanaAddress2nd: string, phoneNumber: string, officeNoA: string, officeNoB: string, officeNoC: string, memo: string) {
-            this.code = code;
-            this.name = name;
-            this.postalCode = postalCode;
-            this.address1st = address1st;
-            this.address2nd = address2nd;
-            this.kanaAddress1st = kanaAddress1st;
-            this.kanaAddress2nd = kanaAddress2nd;
-            this.phoneNumber = phoneNumber;
-            this.officeNoA = officeNoA;
-            this.officeNoB = officeNoB;
-            this.officeNoC = officeNoC;
-            this.memo = memo;
-        }
-        
-        
     }
 }

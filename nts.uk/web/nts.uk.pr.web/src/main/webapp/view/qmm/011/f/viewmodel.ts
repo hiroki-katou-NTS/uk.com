@@ -8,8 +8,8 @@ module qmm011.f {
             constructor() {
                 var self = this;
                 self.fsel001 = ko.observableArray([
-                    new BoxModel(1, '履歴を削除する'),
-                    new BoxModel(2, '履歴を修正する')
+                    new BoxModel(1, 'å±¥æ­´ã‚’å‰Šé™¤ã�™ã‚‹'),
+                    new BoxModel(2, 'å±¥æ­´ã‚’ä¿®æ­£ã�™ã‚‹')
                 ]);
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
@@ -23,6 +23,8 @@ module qmm011.f {
                 var self = this;
                 self.id = id;
                 self.name = name;
+                
+                
             }
         }
 

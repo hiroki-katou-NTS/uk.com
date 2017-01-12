@@ -10,8 +10,8 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -46,18 +46,18 @@
 							<div id="search_001">
 								<table id="single-list"
 									data-bind="ntsGridList: {
-								width: 300,
-								height: 500,
-								options: items,
-								optionsValue: 'code',
-								columns: columns,
-								multiple: false,
-								value: currentCode,
-								enable: true
+									width: 350,
+									height: 500,
+									options: lstlaborInsuranceOffice,
+									optionsValue: 'code',
+									columns: columnsLstlaborInsuranceOffice,
+									multiple: false,
+									value: selectCodeLstlaborInsuranceOffice,
+									enable: true
 							}"></table>
 							</div>
 						</td>
-						<td id="contents-right">
+						<td id="contents-right" data-bind="with: laborInsuranceOffice">
 							<table id="tableRight">
 								<tr>
 									<td class="contentsRL">
@@ -86,10 +86,10 @@
 											<label>略名</label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="A_INP_004"
-										class="trFull25" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp004, 
-										constraint: 'A_INP_004', 
+									<td class="contentsRR"><input id="inp_shortName"
+										class="trFull35" data-name="shortName"
+										data-bind="ntsTextEditor: {value: shortName,
+										constraint: 'ShortName', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -102,10 +102,10 @@
 											<label>代表者名</label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="A_INP_005"
-										class="trFull25" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp005, 
-										constraint: 'A_INP_005', 
+									<td class="contentsRR"><input id="inp_picName"
+										class="trFull25" data-name="picName"
+										data-bind="ntsTextEditor: {value: picName, 
+										constraint: 'PicName', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -235,16 +235,17 @@
 										</div>
 									</td>
 									<td class="contentsRR"><label id="A_LBL_014">都市区符号
-											:</label><input id="A_INP_013" class="trFull5" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp013, 
-										constraint: 'A_INP_013', 
+											:</label><input id="inp_citySign" class="trFull5"
+										data-name="citySign"
+										data-bind="ntsTextEditor: {value: citySign, 
+										constraint: 'CitySign', 
 										option: textEditorOption, 
 										enable: true}" />
 
-										<label id="A_LBL_014">事業所記号 :</label><input id="A_INP_014"
-										class="trFull5" data-name="code"
-										data-bind="ntsTextEditor: {value: ainp014, 
-										constraint: 'A_INP_014', 
+										<label id="A_LBL_014">事業所記号 :</label><input
+										id="inp_officeMark" class="trFull5" data-name="officeMark"
+										data-bind="ntsTextEditor: {value: officeMark, 
+										constraint: 'OfficeMark', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -257,13 +258,13 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_officeNoA"
-										class="trFull5" data-name="officeNoA"
+										class="trFull10" data-name="officeNoA"
 										data-bind="ntsTextEditor: {value: officeNoA, 
 										constraint: 'OfficeNoA', 
 										option: textEditorOption, 
 										enable: true}" />
 										<label id="A_LBL_017">-</label><input id="inp_officeNoB"
-										class="trFull5" data-name="officeNoB"
+										class="trFull15" data-name="officeNoB"
 										data-bind="ntsTextEditor: {value: officeNoB, 
 										constraint: 'OfficeNoB', 
 										option: textEditorOption, 
@@ -293,7 +294,7 @@
 												value: memo,
 												constraint: 'Memo',
 												option: option,
-												enable: enable,
+												enable: true,
 												readonly: readonly}" />
 										</div></td>
 								</tr>
