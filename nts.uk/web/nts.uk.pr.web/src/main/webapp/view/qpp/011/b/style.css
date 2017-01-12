@@ -4,11 +4,7 @@
 	margin-left: 30px;
 }
 
-#tabpanel-1 #BTN_002 {
-	margin-left: 100px;
-}
-
-#LBL_001 {
+#B_LBL_001 {
 	float: right;
 	padding: 25px 10px 0px 0px;
 }
@@ -17,23 +13,19 @@
 	margin: 20px 0px 0px 30px;
 }
 
-#C_BTN_004 {
-	
-}
-
 #content, #content2 {
 	padding: 20px 0px 20px 30px;
 }
 
-#SEL_001 .ntsRadioBox {
+#B_SEL_001 .ntsRadioBox, #C_SEL_001 .ntsRadioBox {
 	display: block;
 }
 
-#SEL_001 {
+#B_SEL_001, #C_SEL_001 {
 	padding-top: 10px;
 }
 
-#SEL_001, #LBL_003 {
+#B_SEL_001, #B_LBL_003, #C_SEL_001, #C_LBL_003 {
 	float: left;
 }
 
@@ -41,7 +33,7 @@
 	float: left !important;
 }
 
-#SEL_002 {
+#B_SEL_002, #C_SEL_002 {
 	float: left;
 	margin-top: 31px;
 	margin-left: 20px;
@@ -49,17 +41,22 @@
 	height: 30px;
 }
 
-#LBL_004, #LBL_007, #LBL_009, #content2 #LBL_011, #LBL_012, #LBL_013,
-	#LBL_014 {
+#B_LBL_004, #B_LBL_007, #C_LBL_007, #B_LBL_009, #C_LBL_009, #B_LBL_013,
+	#content2 #C_LBL_011, #C_LBL_012, #C_LBL_013, #C_LBL_014, #C_LBL_004 {
 	float: left;
 	margin-top: 20px;
 }
 
-#INP_001, #INP_002 {
+#B_INP_001, #B_INP_002, #C_INP_001, #C_INP_002 {
 	width: 60px;
 }
 
-#INP_001, #INP_002, #INP_003, #INP_004 {
+#C_INP_002, #C_INP_003 {
+	margin-left: 30px;
+}
+
+#B_INP_001, #B_INP_002, #B_INP_003, #B_INP_004, #C_INP_001, #C_INP_002,
+	#C_INP_003, #C_INP_004 {
 	margin-top: 25px;
 	float: left;
 }
@@ -71,23 +68,25 @@ input {
 	padding: 2px 8px;
 }
 
-#LBL_005, #LBL_008, #LBL_010 {
+#B_LBL_005, #B_LBL_008, #B_LBL_010, #C_LBL_005, #C_LBL_008, #C_LBL_010 {
 	margin: 30px 0px 0px 9px;
 }
 
-#LBL_006, #content #LBL_011 {
+#B_LBL_006, #C_LBL_006, #content #B_LBL_011 {
 	clear: both;
 	margin-top: 30px;
 	margin-left: 5px;
 	font-size: 1.3rem;
 }
 
-#INP_003 {
+#B_INP_003, #C_INP_003 {
 	width: 90px;
 }
 
-#INP_004 {
-	width: 17px;
+#C_INP_004 input {
+	padding: 2px 9px !important;
+	width: 38px;
+	margin-left: 26px;
 }
 
 .hrLabel {
@@ -103,11 +102,19 @@ input {
 	margin-top: 10px;
 }
 
-#content2 #SEL_003, #content2 #SEL_004 {
+#content2 #C_SEL_003, #content2 #C_SEL_004 {
 	margin-top: 24px;
 }
 
-#LBL_013 {
+#C_SEL_003 {
+	margin-left: 2px;
+}
+
+#C_SEL_004 {
+	margin-left: 13px;
+}
+
+#B_LBL_013 {
 	clear: both;
 }
 
@@ -118,9 +125,11 @@ input {
 #C_BTN_002, #C_BTN_003 {
 	margin-left: 10px;
 }
-#C_BTN_004{
+
+#C_BTN_004 {
 	margin-left: 15px;
 }
+
 #B_BTN_002 {
 	margin-left: 100px;
 }

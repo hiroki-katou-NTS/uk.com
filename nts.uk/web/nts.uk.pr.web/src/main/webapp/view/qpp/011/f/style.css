@@ -4,11 +4,11 @@
 	border-bottom: solid 1px #B1B1B1;
 }
 
-#BTN_001 {
+#F_BTN_001 {
 	margin-left: 30px;
 }
 
-#BTN_002 {
+#F_BTN_002 {
 	margin-left: 15px;
 }
 
@@ -23,7 +23,7 @@
 	height: 440px;
 }
 
-#LBL_001 {
+#F_LBL_001 {
 	
 }
 
@@ -52,22 +52,22 @@ input {
 	width: 100%;
 }
 
-#LBL_003 {
+#F_LBL_003 {
 	margin-left: 10px;
 }
 
-#LBL_004 {
+#F_LBL_004 {
 	margin-top: 20px;
 	display: inline-block;
 }
 
-#SEL_001 {
+#F_SEL_001 {
 	display: inline-block;
 }
 
-#SEL_001 button {
+#F_SEL_001 button {
 	height: 30px !important;
 }
-.LST_001{
+.F_LST_001{
 	margin-top:20px;
 }

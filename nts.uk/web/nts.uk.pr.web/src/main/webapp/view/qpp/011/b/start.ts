@@ -16,16 +16,19 @@ __viewContext.ready(function() {
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         gridListCurrentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        //number editter
+        numbereditor: any;
         constructor() {
             var self = this;
-            //radiogroup data
+            //start radiogroup data
             self.RadioItemList = ko.observableArray([
                 new BoxModel(1, '本社'),
                 new BoxModel(2, '法定調書出力用会社')
             ]);
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
-            //combobox data
+            //end radiogroup data
+            //start combobox data
             self.ComboBoxItemList = ko.observableArray([
                 new ComboboxItemModel('0001', 'Item1'),
                 new ComboboxItemModel('0002', 'Item2'),
@@ -35,7 +38,8 @@ __viewContext.ready(function() {
             self.selectedCode = ko.observable('0001')
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            //gridlist data
+            //end combobox data
+            // start gridlist
             this.items = ko.observableArray([
                 new GridItemModel('001', '蝓ｺ譛ｬ邨ｦ'),
                 new GridItemModel('150', '蠖ｹ閨ｷ謇句ｽ�'),
@@ -59,8 +63,24 @@ __viewContext.ready(function() {
             ]);
             this.gridListCurrentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
+            //end gridlist
+            //start number editer
+            self.numbereditor = {
+                value: ko.observable(),
+                constraint: '',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 0,
+                    decimallength: 0,
+                    placeholder: "",
+                    width: "",
+                    textalign: "right"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            }
+            //end number editer
         }
-    }
     class BoxModel {
         id: number;
         name: string;

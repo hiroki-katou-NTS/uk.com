@@ -4,11 +4,11 @@
 	border-bottom: solid 1px #B1B1B1;
 }
 
-#BTN_001 {
+#D_BTN_001 {
 	margin-left: 30px;
 }
 
-#BTN_002 {
+#D_BTN_002 {
 	margin-left: 15px;
 }
 
@@ -23,7 +23,7 @@
 	height: 440px;
 }
 
-#LBL_001 {
+#D_LBL_001 {
 	margin: 10px 0px 0px 25px;
 }
 
@@ -31,7 +31,7 @@
 	clear: both;
 }
 
-#INP_001 {
+#D_INP_001 {
 	width: 100px;
 }
 
@@ -48,7 +48,7 @@ input {
 	margin-left: 30px;
 }
 
-.LST_001 {
+.D_LST_001 {
 	padding: 10px 25px;
 }
 
@@ -64,74 +64,74 @@ input {
 	width: 100%;
 }
 
-#LBL_002, #LBL_003 {
+#D_LBL_002, #D_LBL_003 {
 	font-size: 1.1rem;
 }
 
-#LBL_003 {
+#D_LBL_003 {
 	margin-left: 10px;
 }
 
-#LBL_004 {
+#D_LBL_004 {
 	margin-top: 20px;
 }
 
-#INP_002, #INP_003, #INP_004, #INP_005 {
+#D_INP_002, #D_INP_003, #D_INP_004, #D_INP_005 {
 	display: inline-block;
 	margin-top: 10px;
 }
 
-#INP_002 input, #INP_003 input, #INP_004 input, #INP_005 input {
+#D_INP_002 input, #D_INP_003 input, #D_INP_004 input, #D_INP_005 input {
 	width: 100px;
 }
 
-#INP_002 input, #INP_003 input, #INP_004 input, #INP_005 input, #INP_006 input,
-	#INP_007 input, #INP_008 input, #INP_009 input, #INP_010 input,
-	#INP_011 input {
+#D_INP_002 input, #D_INP_003 input, #D_INP_004 input, #D_INP_005 input, #D_INP_006 input,
+	#D_INP_007 input, #D_INP_008 input, #D_INP_009 input, #D_INP_010 input,
+	#D_INP_011 input {
 	height: 29px;
 }
 
-#LBL_005 {
+#D_LBL_005 {
 	margin-left: -10px;
 }
 
-#INP_006 {
+#D_INP_006 {
 	margin-left: 30px;
 }
 
-#INP_007 {
+#D_INP_007 {
 	margin-left: 10px;
 }
 
-#INP_006 input{
+#D_INP_006 input{
 	width: 190px;
 }
 
-#INP_007 input{
+#D_INP_007 input{
 	width: 100px;
 }
 
-#INP_008 {
+#D_INP_008 {
 	margin-left: 128px;
 }
 
-#INP_008 input, #INP_009 input, #INP_010 input, #INP_011 input{
+#D_INP_008 input, #D_INP_009 input, #D_INP_010 input, #D_INP_011 input{
 	width: 100px;
 }
 
-#INP_009 {
+#D_INP_009 {
 	width: 100px;
 	margin-top: 10px;
 	margin-left: 35px;
 }
 
-#INP_010, #INP_011 {
+#D_INP_010, #D_INP_011 {
 	width: 100px;
 	margin-top: 10px;
 	margin-left: 30px;
 }
 
-#INP_006, #INP_007, #INP_008, #INP_009, #INP_010, #INP_011 {
+#D_INP_006, #D_INP_007, #D_INP_008, #D_INP_009, #D_INP_010, #D_INP_011 {
 	display: inline-block;
 }
 

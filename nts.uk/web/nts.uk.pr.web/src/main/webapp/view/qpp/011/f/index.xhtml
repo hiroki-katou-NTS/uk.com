@@ -17,18 +17,18 @@
 		<ui:define name="content">
 
 			<div id="content-header">
-				<button class="proceed" onclick="submitInfo()" id="BTN_001">印刷（PDF)</button>
-				<button id="BTN_002" onclick="closeDialog()">閉じる</button>
+				<button class="proceed" onclick="submitInfo()" id="F_BTN_001">印刷（PDF)</button>
+				<button id="F_BTN_002" onclick="closeDialog()">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div class="floatLeft" style="width: 300px;">
 					<div class="clearBoth" style="margin: 10px 0px 0px 25px;">
-						<div id="LBL_001" data-bind="ntsFormLabel: {   }">対象年月</div>
-						<label id="LBL_002">LBL_002</label> <label id="LBL_003">LBL_003</label>
+						<div id="F_LBL_001" data-bind="ntsFormLabel: {   }">対象年月</div>
+						<label id="F_LBL_002">LBL_002</label> <label id="F_LBL_003">LBL_003</label>
 					</div>
 					<div class="clearBoth" style="margin: 10px 0px 0px 25px;">
-						<div id="LBL_004" data-bind="ntsFormLabel: {   }">出力形式</div>
-						<div id="SEL_001" class="cf"
+						<div id="F_LBL_004" data-bind="ntsFormLabel: {   }">出力形式</div>
+						<div id="F_SEL_001" class="cf"
 							data-bind="ntsSwitchButton: {
 					options: roundingRules,
 					optionsValue: 'code',
@@ -39,9 +39,9 @@
 				</div>
 				<div class="floatLeft"
 					style="width: 300px; margin: 10px 0px 0px 100px;">
-					<div id="LBL_005" data-bind="ntsFormLabel: {   }">住民税納付先</div>
-					<div class="LST_001">
-						<table id="LST_001"
+					<div id="F_LBL_005" data-bind="ntsFormLabel: {   }">住民税納付先</div>
+					<div class="F_LST_001">
+						<table id="F_LST_001"
 							data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
