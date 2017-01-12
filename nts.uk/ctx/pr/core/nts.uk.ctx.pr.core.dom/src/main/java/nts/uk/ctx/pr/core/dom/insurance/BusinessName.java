@@ -7,18 +7,17 @@ package nts.uk.ctx.pr.core.dom.insurance;
 import nts.arc.primitive.StringPrimitiveValue;
 
 /**
- * Name of Office.
+ * The Class BusinessName.
  */
 public class BusinessName extends StringPrimitiveValue<BusinessName> {
 
-	/** serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs.
-	 * 
-	 * @param rawValue
-	 *            raw value
+	 * Instantiates a new business name.
+	 *
+	 * @param rawValue the raw value
 	 */
 	public BusinessName(String rawValue) {
 		super(rawValue);

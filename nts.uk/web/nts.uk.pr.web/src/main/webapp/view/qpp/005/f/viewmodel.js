@@ -126,7 +126,7 @@ var nts;
                             var NumberEditor = (function () {
                                 function NumberEditor() {
                                     var self = this;
-                                    self.option = ko.mapping.fromJS(new ui.option.CurrencyEditorOption({ grouplength: 3,
+                                    self.option = ko.mapping.fromJS(new uk.ui.option.CurrencyEditorOption({ grouplength: 3,
                                         decimallength: 0,
                                         currencyformat: 'JPY',
                                         width: "80" }));

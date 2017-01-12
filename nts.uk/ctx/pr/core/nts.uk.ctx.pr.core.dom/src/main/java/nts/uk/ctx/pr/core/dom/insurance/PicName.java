@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * Name of Office.
  */
-@StringMaxLength(120)
+@StringMaxLength(20)
 public class PicName extends StringPrimitiveValue<PicName> {
 
 	/** serialVersionUID. */

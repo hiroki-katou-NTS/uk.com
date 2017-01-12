@@ -5,20 +5,21 @@
 package nts.uk.ctx.pr.core.dom.insurance;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * Name of Office.
+ * The Class Address.
  */
+@StringMaxLength(120)
 public class Address extends StringPrimitiveValue<Address> {
 
-	/** serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs.
-	 * 
-	 * @param rawValue
-	 *            raw value
+	 * Instantiates a new address.
+	 *
+	 * @param rawValue the raw value
 	 */
 	public Address(String rawValue) {
 		super(rawValue);
