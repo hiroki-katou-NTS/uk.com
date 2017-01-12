@@ -7,16 +7,19 @@ package nts.uk.ctx.pr.core.dom.insurance.social;
 import lombok.Getter;
 
 /**
- * The Class HealthCareLevelMaster.
+ * The Class AvgEarnLevelMasterSetting.
  */
 @Getter
-public class HealthCareLevelMaster {
+public class AvgEarnLevelMasterSetting {
 
 	/** The code. */
 	private Integer code;
 
-	/** The grade. */
-	private Long grade;
+	/** The health level. */
+	private Integer healthLevel;
+	
+	/** The pension level. */
+	private Integer pensionLevel;
 
 	/** The avg earn. */
 	private Long avgEarn;
