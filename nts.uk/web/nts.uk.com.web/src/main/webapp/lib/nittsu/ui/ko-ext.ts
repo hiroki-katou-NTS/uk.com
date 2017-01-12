@@ -1048,33 +1048,31 @@ module nts.uk.ui.koExtentions {
 
             // Set attribute for multi column.
             var itemTempalate: string = undefined;
+            var haveColumn = columns && columns.length > 0;
             options = options.map((option) => {
                 var newOptionText: string = '';
 
                 // Check muti columns.
-                if (columns && columns.length > 0) {
-                    var i = 0;
+                if (haveColumn) {
                     itemTempalate = '<div class="nts-combo-item">';
-                    columns.forEach(item => {
+                    columns.forEach((item, i) => {
                         var prop: string = option[item.prop];
                         var length: number = item.length;
 
                         var proLength: number = prop.length;
-                        while (proLength < length && i != columns.length - 1) {
-                            // Add space character to properties.
-                            prop += fillCharacter;
-
-                            proLength++;
-                        }
-                        if (i == columns.length - 1) {
+//                        while (proLength < length && i != columns.length - 1) {
+//                            // Add space character to properties.
+//                            prop += fillCharacter;
+//                            proLength++;
+//                        }
+                        if (i === columns.length - 1) {
                             newOptionText += prop;
                         } else {
-                            newOptionText += prop + distanceColumns;
+                            newOptionText += text.padRight(prop, fillCharacter, proLength) + distanceColumns;
                         }
 
                         // Set item template.
                         itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
-                        i++;
                     });
                     itemTempalate += '</div>';
                 } else {
@@ -1106,17 +1104,16 @@ module nts.uk.ui.koExtentions {
             });
 
             // Set width for multi columns.
-            if (columns && columns.length > 0) {
-                var i = 0;
+            if (haveColumn) {
                 var totalWidth = 0;
-                columns.forEach(item => {
-                    var length: number = item.length;
-                    $('.nts-combo-column-' + i).width(length * maxWidthCharacter + 10);
+                columns.forEach((item, i) => {
+                    var charLength: number = item.length;
+                    var width = charLength * maxWidthCharacter + 10;
+                    $('.nts-combo-column-' + i).width(width);
                     if (i != columns.length - 1) {
                         $('.nts-combo-column-' + i).css({ 'float': 'left' });
                     }
-                    totalWidth += length * maxWidthCharacter + 10;
-                    i++;
+                    totalWidth += width;
                 });
                 $('.nts-combo-item').css({ 'min-width': totalWidth });
                 container.css({ 'min-width': totalWidth });
