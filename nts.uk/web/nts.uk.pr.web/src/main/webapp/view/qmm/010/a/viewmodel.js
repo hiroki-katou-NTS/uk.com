@@ -8,7 +8,7 @@ var qmm010;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC'));
+                    self.laborInsuranceOffice = ko.observable(new LaborInsuranceOffice('code', 'name', 'postalCode', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', 'officeNoA', 'officeNoB', 'officeNoC', 'memo'));
                     self.ainp001 = ko.observable("");
                     self.code = ko.observable(self.laborInsuranceOffice().code);
                     self.name = ko.observable(self.laborInsuranceOffice().name);
@@ -26,7 +26,7 @@ var qmm010;
                     self.officeNoA = ko.observable(self.laborInsuranceOffice().officeNoA);
                     self.officeNoB = ko.observable(self.laborInsuranceOffice().officeNoB);
                     self.officeNoC = ko.observable(self.laborInsuranceOffice().officeNoC);
-                    self.ainp018 = ko.observable("");
+                    self.memo = ko.observable(self.laborInsuranceOffice().memo);
                     self.employmentName = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.textSearch = {
@@ -50,7 +50,7 @@ var qmm010;
                     self.currentCode = ko.observable();
                     self.currentCodeList = ko.observableArray([]);
                     self.multilineeditor = {
-                        value: ko.observable(''),
+                        memo: ko.observable(self.laborInsuranceOffice().memo),
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                             resizeable: true,
@@ -100,8 +100,20 @@ var qmm010;
                 return ItemModel;
             }());
             viewmodel.ItemModel = ItemModel;
-            var LaborInsuranceOffice = (function () {
-                function LaborInsuranceOffice(code, name, postalCode, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, officeNoA, officeNoB, officeNoC) {
+            var LaborInsuranceOfficeDTO = (function () {
+                function LaborInsuranceOfficeDTO(code, name, postalCode, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, officeNoA, officeNoB, officeNoC, memo) {
+                    this.String = prefecture;
+                    this.Address = address1st;
+                    this.Address = address2nd;
+                    this.KanaAddress = kanaAddress1st;
+                    this.KanaAddress = kanaAddress2nd;
+                    this.String = phoneNumber;
+                    this.String = citySign;
+                    this.String = officeMark;
+                    this.String = officeNoA;
+                    this.String = officeNoB;
+                    this.String = officeNoC;
+                    this.Memo = memo;
                     this.code = code;
                     this.name = name;
                     this.postalCode = postalCode;
@@ -113,10 +125,11 @@ var qmm010;
                     this.officeNoA = officeNoA;
                     this.officeNoB = officeNoB;
                     this.officeNoC = officeNoC;
+                    this.memo = memo;
                 }
-                return LaborInsuranceOffice;
+                return LaborInsuranceOfficeDTO;
             }());
-            viewmodel.LaborInsuranceOffice = LaborInsuranceOffice;
+            viewmodel.LaborInsuranceOfficeDTO = LaborInsuranceOfficeDTO;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm010.a || (qmm010.a = {}));
 })(qmm010 || (qmm010 = {}));

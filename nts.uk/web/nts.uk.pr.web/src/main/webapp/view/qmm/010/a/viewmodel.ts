@@ -125,10 +125,14 @@ module qmm010.a.viewmodel {
         }
     }
 
-    export class LaborInsuranceOffice {
+    export class LaborInsuranceOfficeDTO {
+        companyCode: string;
         code: string;
         name: string;
-        postalCode: string;
+        shortName: string;
+        picName: string;
+        picPosition: string;
+        potalCode: string;
         address1st: string;
         address2nd: string;
         kanaAddress1st: string;
@@ -138,6 +142,47 @@ module qmm010.a.viewmodel {
         officeNoB: string;
         officeNoC: string;
         memo: string;
+        
+        
+        
+
+
+    /** The prefecture. */
+    private String prefecture;
+
+    /** The address 1 st. */
+    private Address address1st;
+
+    /** The address 2 nd. */
+    private Address address2nd;
+
+    /** The kana address 1 st. */
+    private KanaAddress kanaAddress1st;
+
+    /** The kana address 2 nd. */
+    private KanaAddress kanaAddress2nd;
+
+    /** The phone number. */
+    // TODO: TelephoneNo
+    private String phoneNumber;
+
+    /** The city sign. */
+    private String citySign;
+
+    /** The office mark. */
+    private String officeMark;
+
+    /** The office no A. */
+    private String officeNoA;
+
+    /** The office no B. */
+    private String officeNoB;
+
+    /** The office no C. */
+    private String officeNoC;
+
+    /** The memo. */
+    private Memo memo;
         constructor(code: string, name: string, postalCode: string, address1st: string, address2nd: string,
             kanaAddress1st: string, kanaAddress2nd: string, phoneNumber: string, officeNoA: string, officeNoB: string, officeNoC: string, memo: string) {
             this.code = code;
@@ -153,5 +198,7 @@ module qmm010.a.viewmodel {
             this.officeNoC = officeNoC;
             this.memo = memo;
         }
+        
+        
     }
 }
