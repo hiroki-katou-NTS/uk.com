@@ -435,11 +435,19 @@
              * Create ContextMenu and bind event in DOM
              */
             init() {
-                // Initial
                 var self = this;
+                // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
+                $('body .ntsContextMenu').each(function(){
+                    if ($(this).data("selector") === self.selector) {
+                        $("body").off("contextmenu", self.selector);
+                        $(this).remove();
+                    }
+                });
+                
+                // Initial
                 self.guid = nts.uk.util.randomId();
-                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").hide();
-                this.createMenuItems($contextMenu);
+                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                self.createMenuItems($contextMenu);
                 $('body').append($contextMenu);
                 
                 // Binding contextmenu event

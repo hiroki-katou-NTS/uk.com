@@ -26,6 +26,16 @@
 							<input data-bind="value: itemName"></input>
 							<button data-bind="click: addOptions">Add Item</button>
 						</div>
+						<button data-bind="click: remove">Remove Item</button>
+						<button data-bind="click: selectAll">Select All</button>
+						<button data-bind="click: deselectAll">Deselect All</button>
+						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
+						<br />
+						<!-- Multiple is false -->
+						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span><br/>
+						<!-- Multiple is true -->
+						<b>Multi Selected:</b><span data-bind="text: selectedCodes()"></span><br />
+						<b>Selected:</b><span data-bind="text: selectedCodes().length"></span><br />
 						<br />
 						<div id="list-box" data-bind="ntsListBox: {
 											options: itemList,
@@ -34,23 +44,23 @@
 											multiple: true,
 											value: selectedCodes,
 											enable: isEnable(),
-											rows: 3,
+											rows: 10,
 											required: true,
 											columns: [
 												{ prop: 'code', length: 4 },
 												{ prop: 'name', length: 10 },
 												{ prop: 'description', length: 10 }
 											]}"></div>
-						<button data-bind="click: remove">Remove Item</button>
-						<button data-bind="click: selectAll">Select All</button>
-						<button data-bind="click: deselectAll">Deselect All</button>
-						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
-						<br />
-						<!-- Multiple is false -->
-						<span data-bind="text: selectedCode()"></span>
-						<!-- Multiple is true -->
-						<span data-bind="text: selectedCodes()"></span> <br />
-						<span data-bind="text: 'Selected: ' + selectedCodes().length"></span> <br />
+											
+						<div id="list-box2" data-bind="ntsListBox: {
+											options: itemList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											multiple: false,
+											value: selectedCode,
+											enable: isEnable(),
+											rows: 5,
+											required: true }"></div>						
 						<article class="cf">
 							<div class="tabs">
 								<ol>
