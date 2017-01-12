@@ -5,10 +5,12 @@
 package nts.uk.ctx.pr.core.dom.insurance;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * Name of Office.
  */
+@StringMaxLength(40)
 public class KanaAddress extends StringPrimitiveValue<KanaAddress> {
 
 	/** serialVersionUID. */

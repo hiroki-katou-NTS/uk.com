@@ -5,20 +5,21 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * Name of Office.
+ * The Class UnitPriceName.
  */
+@StringMaxLength(30)
 public class UnitPriceName extends StringPrimitiveValue<UnitPriceName> {
 
-	/** serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs.
-	 * 
-	 * @param rawValue
-	 *            raw value
+	 * Instantiates a new unit price name.
+	 *
+	 * @param rawValue the raw value
 	 */
 	public UnitPriceName(String rawValue) {
 		super(rawValue);

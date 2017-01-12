@@ -4,23 +4,27 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
+import java.math.BigDecimal;
+
+import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
- * Name of Office.
+ * The Class Money.
  */
-public class Money extends IntegerPrimitiveValue<Money> {
+@DecimalRange(min = "0", max = "99999.99")
+public class Money extends DecimalPrimitiveValue<Money> {
 
-	/** serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs.
-	 * 
+	 * Instantiates a new money.
+	 *
 	 * @param rawValue
-	 *            raw value
+	 *            the raw value
 	 */
-	public Money(Integer rawValue) {
+	public Money(BigDecimal rawValue) {
 		super(rawValue);
 	}
 
