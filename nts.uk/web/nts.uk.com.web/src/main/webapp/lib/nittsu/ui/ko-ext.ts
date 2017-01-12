@@ -1689,6 +1689,7 @@ module nts.uk.ui.koExtentions {
                 }
                 //console.log(row1);
             });
+            $(element).data("options", options);
         }
 
         /**
@@ -1707,12 +1708,14 @@ module nts.uk.ui.koExtentions {
             }
 
             // Update datasource.
-            $(element).igTreeGrid("option", "dataSource", options);
-            $(element).igTreeGrid("dataBind");
+            var originalSource = $(element).data("options");
+            if(!_.isEqual(originalSource, options)){
+                $(element).igTreeGrid("option", "dataSource", options);
+                $(element).igTreeGrid("dataBind");    
+            }
 
             // Set multiple data source.
-            var multiple = ko.unwrap(data.multiple);
-            multiple = multiple != undefined ? multiple : true;
+            var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
             $(element).igTreeGridSelection("option", "multipleSelection", multiple);
 
             // Set show checkbox.
