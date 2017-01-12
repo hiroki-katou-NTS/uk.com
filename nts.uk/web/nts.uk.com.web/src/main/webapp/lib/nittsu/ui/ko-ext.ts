@@ -402,7 +402,7 @@ module nts.uk.ui.koExtentions {
             var searchBox = $(element);
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
-            var searchText = (data.enable !== undefined) ? ko.unwrap(data.searchText) : "Search";
+            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "Search";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -1197,7 +1197,7 @@ module nts.uk.ui.koExtentions {
                 },
                 selecting: function(event, ui) {
                     if(isMultiSelect){
-                        if (event.shiftKey) {
+                        if ((<any>event).shiftKey) {
                             if ($(ui.selecting).attr("clicked") !== "true") {
                                 var source = container.find("li");
                                 var clicked = _.find(source, function(row) {
@@ -1219,7 +1219,7 @@ module nts.uk.ui.koExtentions {
                                     $(range).addClass("ui-selected");
                                 }
                             }
-                        } else if (!event.ctrlKey) {
+                        } else if (!(<any>event).ctrlKey) {
                             container.find("li").attr("clicked", "");
                             $(ui.selecting).attr("clicked", "true");
                         }
@@ -1465,16 +1465,13 @@ module nts.uk.ui.koExtentions {
             }
 
             var data = valueAccessor();
-            var optionsValue: string = data.optionsValue;
+            var optionsValue: string = data.primaryKey === undefined ? data.primaryKey : data.optionsValue;
             var options = ko.unwrap(data.options);
-            var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
+            var observableColumns: KnockoutObservableArray<any> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
-                return {
-                    headerText: c.headerText,
-                    key: c.prop,
-                    width: c.width,
-                    dataType: 'string'
-                };
+                c["key"] = c.key === undefined ? c.prop : c.key;
+                c["dataType"] = 'string';
+                return c;
             });
 
             var features = [];
@@ -1525,9 +1522,9 @@ module nts.uk.ui.koExtentions {
                 if (selectedRows && selectedRows.length > 0)
                     row1 = $grid.igGrid("selectedRows")[0].id;
                 else {
-                    var selectedRow = $grid.igGrid("selectedRow");
+                    var selectedRow: any = $grid.igGrid("selectedRow");
                     if (selectedRow && selectedRow.id) {
-                        row1 = $grid.igGrid("selectedRow").id;
+                        row1 = (<any>$grid.igGrid("selectedRow")).id;
                     }
                 }
                 if (row1 && row1 !== 'undefined') {

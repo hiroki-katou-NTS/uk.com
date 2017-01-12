@@ -2,16 +2,14 @@ __viewContext.ready(function () {
     function showError(event) {
         var currentString = $("#input-text").val();
         var selectValue = $(this).attr("messege");
-        if (selectValue !== undefined) {
-            $(this).tooltip({ content: selectValue });
-            $("#error-messege").text(selectValue);
-            var position = $("#input-containner").position();
-            $("#error-containner").css({
-                "top": (event.data.pageY - position.top + 2) + "px",
-                "left": (event.data.pageX - position.left + 2) + "px"
-            });
-            $("#error-containner").show();
-        }
+        $(this).tooltip({ content: selectValue });
+        $("#error-messege").text(selectValue);
+        var position = $("#input-containner").position();
+        $("#error-containner").css({
+            "top": (event.data.pageY - position.top + 2) + "px",
+            "left": (event.data.pageX - position.left + 2) + "px"
+        });
+        $("#error-containner").show();
     }
     var ScreenModel = (function () {
         function ScreenModel() {
@@ -32,13 +30,12 @@ __viewContext.ready(function () {
             this.autoSelected = ko.observable("");
             this.row = ko.observable(1);
             this.col = ko.observable(1);
-            this.index = ko.observable(1);
             this.error = ko.observable("");
             this.autoSelected.subscribe(function (value) {
                 //                $("#auto-complete-containner").show()
                 if (value !== undefined) {
                     var currentString = $("#input-text").val();
-                    var index = this.index() + 1;
+                    var index = this.getIndex(currentString, this.row(), this.col()) + 1;
                     var selectValue = value.name();
                     var inserted = this.insertString(currentString, selectValue, index);
                     this.textArea(inserted);
@@ -57,7 +54,7 @@ __viewContext.ready(function () {
             //                $("#error-containner").hide();
             //            }
             $("#input-text").keyup(function (event) {
-                if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
+                if (!event.shiftKey && event.keyCode === 16) {
                     return;
                 }
                 $("#error-containner").hide();
@@ -67,16 +64,14 @@ __viewContext.ready(function () {
                 //                if(event.keyCode === 8){
                 //                      
                 //                }else 
-                if (((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) && event.key === "@") {
+                if ((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) {
                     //                    $("#auto-complete-containner").css("top": start);
-                    _this.testError();
-                    var currentRow = _this.getCurrentPosition(end);
-                    //                    var currentCol = this.getCurrentColumn(currentRow, end);
-                    //                    this.row(currentRow);
-                    //                    this.col(currentCol);
-                    _this.index(end);
+                    var currentRow = _this.getCurrentRows(end);
+                    var currentCol = _this.getCurrentColumn(currentRow, end);
+                    _this.row(currentRow);
+                    _this.col(currentCol);
                     $("#auto-complete-containner").show();
-                    $("#auto-complete-containner").css({ "top": (currentRow.top + 17) + "px", "left": (currentRow.left + 15) + "px" });
+                    $("#auto-complete-containner").css({ "top": (currentRow * 17) + "px", "left": (currentCol * maxWidthCharacter) + "px" });
                 }
                 else {
                     $("#auto-complete-containner").hide();
@@ -139,7 +134,7 @@ __viewContext.ready(function () {
                             html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                             count++;
                         }
-                        else if (this.checkAlphaOrEmpty(toChar[i - 1]) && toChar[i - 1] !== "@") {
+                        else if (this.checkAlphaOrEmpty(toChar[i - 1])) {
                             html = this.insertString(html, toChar[i], html.length - 7);
                         }
                         else {
@@ -158,23 +153,40 @@ __viewContext.ready(function () {
             this.testGachChan($(".special-char"));
             this.divValue($("#input-content-area").html());
         };
-        ScreenModel.prototype.getCurrentPosition = function (position) {
-            var uiPosition = {};
-            var $lines = $("#input-content-area").find(".editor-line");
+        ScreenModel.prototype.getIndex = function (str, row, col) {
+            if (row === 1) {
+                return col - 1;
+            }
+            var rowValues = str.split("\n");
             var index = 0;
-            $lines.each(function (index, line) {
-                var $line = $(line);
-                var char = _.find($line.children(), function (text) {
-                    var current = index + $(text).text().length;
-                    index += $(text).text().length;
-                    return current === position;
-                });
-                if (char !== undefined) {
-                    uiPosition = $(char).position();
-                    return;
-                }
-            });
-            return uiPosition;
+            for (var i = 0; i < row - 1; i++) {
+                index = rowValues[i].length + 1;
+            }
+            return index + col - 1;
+        };
+        ScreenModel.prototype.getCurrentColumn = function (currentRow, position) {
+            if (currentRow === 1) {
+                return position;
+            }
+            var rowValues = $("#input-text").val().split("\n");
+            var count = 1;
+            var x = position;
+            for (var i = 0; i < currentRow - 1; i++) {
+                count = x - rowValues[i].length - 1;
+                x = count;
+            }
+            return count + 1;
+        };
+        ScreenModel.prototype.getCurrentRows = function (position) {
+            var currentText = $("#input-text").val();
+            var count = 1;
+            var start = currentText.indexOf("\n", 0);
+            while (start !== -1 && start < position) {
+                count++;
+                start = currentText.indexOf("\n", start + 1);
+            }
+            ;
+            return count;
         };
         ScreenModel.prototype.checkAlphaOrEmpty = function (char) {
             var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
@@ -184,6 +196,15 @@ __viewContext.ready(function () {
             return !nts.uk.text.allHalf(char);
         };
         ScreenModel.prototype.testGachChan = function (specialChar) {
+            //            var openSpecial = {
+            //                "&gt;": "&lt;",
+            //                "&lt;": "&gt;"
+            //            };
+            //            
+            //            var openSpecial2 = {
+            //                "\)": "\(",
+            //                "\(": "\)"
+            //            };
             var singleSpecial = {
                 "+": "+",
                 "-": "-",
@@ -208,26 +229,6 @@ __viewContext.ready(function () {
             var closeRound = _.remove(specialChar, function (n) {
                 return $(n).html() === "\)";
             });
-            this.checkOpenClose(openTriangle, closeTriangle);
-            this.checkOpenClose(openRound, closeRound);
-            var element = this.toArrayChar(specialChar);
-            for (var i = 0; i < specialChar.length; i++) {
-                var $data = $(specialChar[i]);
-                var charCount = parseInt($data.attr("id").split("-")[1]);
-                var char = $data.text();
-                var single = singleSpecial[char];
-                if (single !== undefined) {
-                    var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                    if (neighborCount > 0) {
-                        $data.addClass("error-char").attr("messege", "test 2");
-                    }
-                }
-                else if (char !== "@") {
-                    $data.addClass("error-char").attr("messege", "test 4");
-                }
-            }
-        };
-        ScreenModel.prototype.checkOpenClose = function (openTriangle, closeTriangle) {
             if (closeTriangle.length === 0) {
                 $(openTriangle).addClass("error-char").attr("messege", "test 1");
             }
@@ -251,6 +252,54 @@ __viewContext.ready(function () {
                 }
                 $(openError).addClass("error-char").attr("messege", "test 1");
                 $(closeTriangle).addClass("error-char").attr("messege", "test 1");
+            }
+            if (closeRound.length === 0) {
+                $(openRound).addClass("error-char").attr("messege", "test 1");
+            }
+            else if (openRound.length === 0) {
+                $(closeRound).addClass("error-char").attr("messege", "test 1");
+            }
+            else {
+                var openError = [];
+                for (var i = openRound.length - 1; i >= 0; i--) {
+                    var currentOpen = openRound[i];
+                    var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                    var currentClose = _.find(closeRound, function (a) {
+                        return parseInt($(a).attr("id").split("-")[1]) > id;
+                    });
+                    if (currentClose === undefined) {
+                        openError.unshift(currentOpen);
+                    }
+                    else {
+                        closeRound.splice(closeRound.indexOf(currentClose), 1);
+                    }
+                }
+                $(openError).addClass("error-char").attr("messege", "test 3");
+                $(closeRound).addClass("error-char").attr("messege", "test 3");
+            }
+            var element = this.toArrayChar(specialChar);
+            for (var i = 0; i < specialChar.length; i++) {
+                var $data = $(specialChar[i]);
+                var charCount = parseInt($data.attr("id").split("-")[1]);
+                var char = $data.text();
+                //                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
+                var single = singleSpecial[char];
+                //                if (openComa !== undefined) {
+                //                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
+                //                    var x = this.countPreviousElement(element, openComa, i);
+                //                    if (x2 > x) {
+                //                        $data.addClass("error-char").attr("messege", "test 1");
+                //                    }
+                //                } else 
+                if (single !== undefined) {
+                    var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
+                    if (neighborCount > 0) {
+                        $data.addClass("error-char").attr("messege", "test 2");
+                    }
+                }
+                else if (char !== "@") {
+                    $data.addClass("error-char").attr("messege", "test 4");
+                }
             }
         };
         ScreenModel.prototype.countNeighbor = function (index, array, countNext, countPrev) {
