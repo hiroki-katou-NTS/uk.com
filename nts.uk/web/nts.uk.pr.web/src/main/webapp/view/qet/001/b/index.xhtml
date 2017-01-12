@@ -68,41 +68,50 @@
 							
 							<div id="aggregate-category-tab" data-bind="ntsTabPanel: { dataSource: aggregateCategories, active: selectedCategory}">
 								<div id="salary-payment">
-<!-- 									<table> -->
-<!-- 										<tr> -->
-<!-- 											<td class="tab-contents-left"> -->
-<!-- 												<div> -->
-<!-- 													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる給与支給項目</div> -->
-<!-- 													<table id="salary-payment-pay-items" data-bind="ntsGridList: { -->
-<!-- 															width: 250, -->
-<!-- 															height: 400, -->
-<!-- 															options: payItemList, -->
-<!-- 															optionsValue: 'payItemCode', -->
-<!-- 															columns: payItemColumns, -->
-<!-- 															multiple: false, -->
-<!-- 															value: payItemSelected -->
-<!-- 														}"></table> -->
-<!-- 												</div> -->
-<!-- 												<div> -->
-<!-- 													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる集約項目</div> -->
-<!-- 													<table id="salary-payment-aggregate-items" data-bind="ntsGridList: { -->
-<!-- 															width: 250, -->
-<!-- 															height: 400, -->
-<!-- 															options: aggregateItemList, -->
-<!-- 															optionsValue: 'aggregateItemCode', -->
-<!-- 															columns: aggregateItemColumns, -->
-<!-- 															multiple: false, -->
-<!-- 															value: aggregateItemSelected -->
-<!-- 														}"></table> -->
-<!-- 												</div> -->
+									<!-- <table data-bind="with: salaryPaymentInfo">
+										<tr>
+											<td class="tab-contents-left">
+												<div>
+													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる給与支給項目</div>
+													<table id="salary-payment-items" data-bind="ntsGridList: {
+ 															width: 250,
+ 															height: 400,
+ 															options: itemList,
+ 															optionsValue: 'itemCode',
+ 															columns: itemColumns,
+ 															multiple: false,
+ 															value: payItemSelected
+ 														}"></table> 
+												</div>
+												<div>
+													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる集約項目</div>
+													<table id="salary-payment-aggregate-items" data-bind="ntsGridList: {
+ 															width: 250,
+ 															height: 400,
+ 															options: aggregateItemList,
+															optionsValue: 'aggregateItemCode',
+															columns: aggregateItemColumns,
+ 															multiple: false,
+ 															value: aggregateItemSelected
+ 														}"></table>
+												</div>
 												
-<!-- 											</td> -->
-<!-- 											<td class="tab-contents-right"> -->
-												
-<!-- 											</td> -->
-<!-- 										</tr> -->
-<!-- 									</table> -->
-									
+											</td>
+											<td class="tab-contents-right">
+												<div id="display-items-label" data-bind="ntsFormLabel: {}">表示する項目</div>
+												<table id="display-item-list" data-bind="ntsGridList: {
+ 															width: 250,
+ 															height: 400,
+ 															options: displayItemList,
+															optionsValue: 'displayItemCode',
+															columns: displayItemColumns,
+ 															multiple: false,
+ 															value: displayItemSelected
+ 														}"></table>
+											</td>
+										</tr>
+									</table>
+									 -->
 								</div>
 								<div id="salary-deduction"></div>
 								<div id="salary-attendance"></div>
