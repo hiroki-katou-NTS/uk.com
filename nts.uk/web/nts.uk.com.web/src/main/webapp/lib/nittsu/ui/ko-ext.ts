@@ -402,7 +402,7 @@ module nts.uk.ui.koExtentions {
             var searchBox = $(element);
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
-            var searchText = (data.enable !== undefined) ? ko.unwrap(data.searchText) : "Search";
+            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "Search";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -1048,33 +1048,31 @@ module nts.uk.ui.koExtentions {
 
             // Set attribute for multi column.
             var itemTempalate: string = undefined;
+            var haveColumn = columns && columns.length > 0;
             options = options.map((option) => {
                 var newOptionText: string = '';
 
                 // Check muti columns.
-                if (columns && columns.length > 0) {
-                    var i = 0;
+                if (haveColumn) {
                     itemTempalate = '<div class="nts-combo-item">';
-                    columns.forEach(item => {
+                    columns.forEach((item, i) => {
                         var prop: string = option[item.prop];
                         var length: number = item.length;
 
                         var proLength: number = prop.length;
-                        while (proLength < length && i != columns.length - 1) {
-                            // Add space character to properties.
-                            prop += fillCharacter;
-
-                            proLength++;
-                        }
-                        if (i == columns.length - 1) {
+//                        while (proLength < length && i != columns.length - 1) {
+//                            // Add space character to properties.
+//                            prop += fillCharacter;
+//                            proLength++;
+//                        }
+                        if (i === columns.length - 1) {
                             newOptionText += prop;
                         } else {
-                            newOptionText += prop + distanceColumns;
+                            newOptionText += text.padRight(prop, fillCharacter, proLength) + distanceColumns;
                         }
 
                         // Set item template.
                         itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
-                        i++;
                     });
                     itemTempalate += '</div>';
                 } else {
@@ -1106,17 +1104,16 @@ module nts.uk.ui.koExtentions {
             });
 
             // Set width for multi columns.
-            if (columns && columns.length > 0) {
-                var i = 0;
+            if (haveColumn) {
                 var totalWidth = 0;
-                columns.forEach(item => {
-                    var length: number = item.length;
-                    $('.nts-combo-column-' + i).width(length * maxWidthCharacter + 10);
+                columns.forEach((item, i) => {
+                    var charLength: number = item.length;
+                    var width = charLength * maxWidthCharacter + 10;
+                    $('.nts-combo-column-' + i).width(width);
                     if (i != columns.length - 1) {
                         $('.nts-combo-column-' + i).css({ 'float': 'left' });
                     }
-                    totalWidth += length * maxWidthCharacter + 10;
-                    i++;
+                    totalWidth += width;
                 });
                 $('.nts-combo-item').css({ 'min-width': totalWidth });
                 container.css({ 'min-width': totalWidth });
@@ -1197,7 +1194,7 @@ module nts.uk.ui.koExtentions {
                 },
                 selecting: function(event, ui) {
                     if(isMultiSelect){
-                        if (event.shiftKey) {
+                        if ((<any>event).shiftKey) {
                             if ($(ui.selecting).attr("clicked") !== "true") {
                                 var source = container.find("li");
                                 var clicked = _.find(source, function(row) {
@@ -1219,7 +1216,7 @@ module nts.uk.ui.koExtentions {
                                     $(range).addClass("ui-selected");
                                 }
                             }
-                        } else if (!event.ctrlKey) {
+                        } else if (!(<any>event).ctrlKey) {
                             container.find("li").attr("clicked", "");
                             $(ui.selecting).attr("clicked", "true");
                         }
@@ -1465,16 +1462,13 @@ module nts.uk.ui.koExtentions {
             }
 
             var data = valueAccessor();
-            var optionsValue: string = data.optionsValue;
+            var optionsValue: string = data.primaryKey === undefined ? data.primaryKey : data.optionsValue;
             var options = ko.unwrap(data.options);
-            var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
+            var observableColumns: KnockoutObservableArray<any> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
-                return {
-                    headerText: c.headerText,
-                    key: c.prop,
-                    width: c.width,
-                    dataType: 'string'
-                };
+                c["key"] = c.key === undefined ? c.prop : c.key;
+                c["dataType"] = 'string';
+                return c;
             });
 
             var features = [];
@@ -1525,9 +1519,9 @@ module nts.uk.ui.koExtentions {
                 if (selectedRows && selectedRows.length > 0)
                     row1 = $grid.igGrid("selectedRows")[0].id;
                 else {
-                    var selectedRow = $grid.igGrid("selectedRow");
+                    var selectedRow: any = $grid.igGrid("selectedRow");
                     if (selectedRow && selectedRow.id) {
-                        row1 = $grid.igGrid("selectedRow").id;
+                        row1 = (<any>$grid.igGrid("selectedRow")).id;
                     }
                 }
                 if (row1 && row1 !== 'undefined') {

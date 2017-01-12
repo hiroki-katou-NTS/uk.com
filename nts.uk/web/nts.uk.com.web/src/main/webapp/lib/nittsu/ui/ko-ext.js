@@ -426,7 +426,7 @@ var nts;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
-                        var searchText = (data.enable !== undefined) ? ko.unwrap(data.searchText) : "Search";
+                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "Search";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -1041,30 +1041,29 @@ var nts;
                         }
                         // Set attribute for multi column.
                         var itemTempalate = undefined;
+                        var haveColumn = columns && columns.length > 0;
                         options = options.map(function (option) {
                             var newOptionText = '';
                             // Check muti columns.
-                            if (columns && columns.length > 0) {
-                                var i = 0;
+                            if (haveColumn) {
                                 itemTempalate = '<div class="nts-combo-item">';
-                                columns.forEach(function (item) {
+                                columns.forEach(function (item, i) {
                                     var prop = option[item.prop];
                                     var length = item.length;
                                     var proLength = prop.length;
-                                    while (proLength < length && i != columns.length - 1) {
-                                        // Add space character to properties.
-                                        prop += fillCharacter;
-                                        proLength++;
-                                    }
-                                    if (i == columns.length - 1) {
+                                    //                        while (proLength < length && i != columns.length - 1) {
+                                    //                            // Add space character to properties.
+                                    //                            prop += fillCharacter;
+                                    //                            proLength++;
+                                    //                        }
+                                    if (i === columns.length - 1) {
                                         newOptionText += prop;
                                     }
                                     else {
-                                        newOptionText += prop + distanceColumns;
+                                        newOptionText += uk.text.padRight(prop, fillCharacter, proLength) + distanceColumns;
                                     }
                                     // Set item template.
                                     itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
-                                    i++;
                                 });
                                 itemTempalate += '</div>';
                             }
@@ -1095,17 +1094,16 @@ var nts;
                             }
                         });
                         // Set width for multi columns.
-                        if (columns && columns.length > 0) {
-                            var i = 0;
+                        if (haveColumn) {
                             var totalWidth = 0;
-                            columns.forEach(function (item) {
-                                var length = item.length;
-                                $('.nts-combo-column-' + i).width(length * maxWidthCharacter + 10);
+                            columns.forEach(function (item, i) {
+                                var charLength = item.length;
+                                var width = charLength * maxWidthCharacter + 10;
+                                $('.nts-combo-column-' + i).width(width);
                                 if (i != columns.length - 1) {
                                     $('.nts-combo-column-' + i).css({ 'float': 'left' });
                                 }
-                                totalWidth += length * maxWidthCharacter + 10;
-                                i++;
+                                totalWidth += width;
                             });
                             $('.nts-combo-item').css({ 'min-width': totalWidth });
                             container.css({ 'min-width': totalWidth });
@@ -1431,16 +1429,13 @@ var nts;
                             throw new Error('the element NtsGridList must have id attribute.');
                         }
                         var data = valueAccessor();
-                        var optionsValue = data.optionsValue;
+                        var optionsValue = data.primaryKey === undefined ? data.primaryKey : data.optionsValue;
                         var options = ko.unwrap(data.options);
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
-                            return {
-                                headerText: c.headerText,
-                                key: c.prop,
-                                width: c.width,
-                                dataType: 'string'
-                            };
+                            c["key"] = c.key === undefined ? c.prop : c.key;
+                            c["dataType"] = 'string';
+                            return c;
                         });
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
