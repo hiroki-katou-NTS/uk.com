@@ -7,6 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -28,16 +29,16 @@
 							<button>&#9654;</button>
 						</div>
 						<div class="cell">
-							<span data-bind="with: texteditor1"> <input id="inp-1"
-								data-bind="ntsTextEditor1: {
+							<span data-bind="with: texteditor1"> 
+								<input id="inp-1" data-bind="ntsTextEditor1: {
 									value: value,
 									constraint: constraint,
 									option: option,
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-							</span> <span
-								style="margin-left: -20px; font-size: 20px; color: #c5c5c5;">&#8629;</span>
+							</span>
+						<span id="symbol">&#8629;</span>
 						</div>
 						<span></span>
 					</div>
@@ -53,18 +54,35 @@
 								<table id="table-1">
 									<thead>
 										<tr>
-											<th><span>入社年月日</span></th>
-											<th><span>退職年月日</span></th>
-											<th><span>試用期間</span></th>
-											<th><span>除外年数</span></th>
+											<th>入社年月日</th>
+											<th>退職年月日</th>
+											<th>試用期間</th>
+											<th>除外年数</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
-											<th><span>B</span></th>
-											<th><span>C</span></th>
-											<th><span>D</span></th>
+											<th id="label-12"></th>
+											<th id="label-13"></th>
+											<th>
+												<div id="combo-box1" data-bind="ntsComboBox: {
+													options: selectList1,
+													optionsValue: 'code',
+													value: selectCode1,
+													optionsText: 'code',
+													editable: false,
+													enable: true,
+													columns: [{ prop: 'code', length: 5}]}"></div>	
+											</th>
+											<th>
+												<input id="inp-2" data-bind="ntsTextEditor2: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
 										</tr>
 									</tbody>
 								</table>
@@ -75,16 +93,32 @@
 								<table id="table-2">
 									<thead>
 										<tr>
-											<th><span>兼任年数</span></th>
-											<th><span>役員年数</span></th>
-											<th><span>雇用区分</span></th>
+											<th>兼任年数</th>
+											<th>役員年数</th>
+											<th>雇用区分</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
-											<th><span>B</span></th>
-											<th><span>C</span></th>
+											<th>
+												<input id="inp-3" data-bind="ntsTextEditor3: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
+											<th>
+												<input id="inp-4" data-bind="ntsTextEditor4: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
+											<th id="label-14"></th>
 										</tr>
 									</tbody>
 								</table>
@@ -96,18 +130,36 @@
 							<table id="table-3">
 								<thead>
 									<tr>
-										<th><span>退職区分</span></th>
-										<th><span>退職理由区分</span></th>
-										<th><span>退職事由区分</span></th>
-										<th><span>退職理由区分</span></th>
+										<th>退職区分</th>
+										<th>退職理由区分</th>
+										<th>退職事由区分</th>
+										<th>退職理由区分</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<th><span>A</span></th>
-										<th><span>B</span></th>
-										<th><span>C</span></th>
-										<th><span>D</span></th>
+										<th id="label-20"></th>
+										<th id="label-21"></th>
+										<th>
+											<div id="combo-box2" data-bind="ntsComboBox: {
+												options: selectList2,
+												optionsValue: 'code',
+												value: selectCode2,
+												optionsText: 'code',
+												editable: false,
+												enable: true,
+												columns: [{ prop: 'code', length: 5}]}"></div>	
+										</th>
+										<th>
+											<div id="combo-box3" data-bind="ntsComboBox: {
+												options: selectList3,
+												optionsValue: 'code',
+												value: selectCode3,
+												optionsText: 'code',
+												editable: false,
+												enable: true,
+												columns: [{ prop: 'code', length: 5}]}"></div>	
+										</th>
 									</tr>
 								</tbody>
 							</table>
@@ -119,12 +171,20 @@
 								<table id="table-4">
 									<thead>
 										<tr>
-											<th><span>退職金支給合計</span></th>
+											<th>退職金支給合計</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
+											<th>
+												<input id="inp-5" data-bind="ntsTextEditor5: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
 										</tr>
 									</tbody>
 								</table>
@@ -133,12 +193,12 @@
 								<table id="table-5">
 									<thead>
 										<tr>
-											<th><span>控除合計金額</span></th>
+											<th>控除合計金額</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
+											<th id="label-36"></th>
 										</tr>
 									</tbody>
 								</table>
@@ -147,12 +207,12 @@
 								<table id="table-6">
 									<thead>
 										<tr>
-											<th><span>退職金差引支給額</span></th>
+											<th>退職金差引支給額</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
+											<th id="label-39"></th>
 										</tr>
 									</tbody>
 								</table>
@@ -163,16 +223,40 @@
 								<table id="table-7">
 									<thead>
 										<tr>
-											<th><span>退職金控除1</span></th>
-											<th><span>退職金控除2</span></th>
-											<th><span>退職金控除3</span></th>
+											<th>退職金控除1</th>
+											<th>退職金控除2</th>
+											<th>退職金控除3</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
-											<th><span>B</span></th>
-											<th><span>C</span></th>
+											<th>
+												<input id="inp-6" data-bind="ntsTextEditor6: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
+											<th>
+												<input id="inp-7" data-bind="ntsTextEditor7: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
+											<th>
+												<input id="inp-8" data-bind="ntsTextEditor8: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
 										</tr>
 									</tbody>
 								</table>
@@ -181,30 +265,72 @@
 								<table id="table-8">
 									<thead>
 										<tr>
-											<th><span>退職所得の受給に関する申告書</span></th>
-											<th><span>税計算方法</span></th>
+											<th>退職所得の受給に関する申告書</th>
+											<th>税計算方法</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
-											<th><span>B</span></th>
+											<th>
+												<div id="combo-box4" data-bind="ntsComboBox: {
+													options: selectList4,
+													optionsValue: 'code',
+													value: selectCode4,
+													optionsText: 'code',
+													editable: false,
+													enable: true,
+													columns: [{ prop: 'code', length: 5}]}"></div>	
+											</th>
+											<th>
+												<div id="combo-box5" data-bind="ntsComboBox: {
+													options: selectList5,
+													optionsValue: 'code',
+													value: selectCode5,
+													optionsText: 'code',
+													editable: false,
+													enable: true,
+													columns: [{ prop: 'code', length: 5}]}"></div>	
+											</th>
 										</tr>
 									</tbody>
 								</table>
 								<table id="table-9">
 									<thead>
 										<tr>
-											<th><span>所得税金額</span></th>
-											<th><span>市区町村民税</span></th>
-											<th><span>都道府県民税</span></th>
+											<th>所得税金額</th>
+											<th>市区町村民税</th>
+											<th>都道府県民税</th>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<th><span>A</span></th>
-											<th><span>B</span></th>
-											<th><span>C</span></th>
+											<th>
+												<input id="inp-9" data-bind="ntsTextEditor9: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
+											<th>
+												<input id="inp-10" data-bind="ntsTextEditor10: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
+											<th>
+												<input id="inp-11" data-bind="ntsTextEditor11: {
+													value: value,
+													constraint: constraint,
+													option: option,
+													required: required,
+													enable: enable,
+													readonly: readonly}" />
+											</th>
 										</tr>
 									</tbody>
 								</table>
@@ -217,48 +343,48 @@
 							<table id="table-10">
 								<thead>
 									<tr>
-										<th><span>支給1～5</span></th>
-										<th><span>銀行</span></th>
-										<th><span>支店</span></th>
-										<th><span>口座番号</span></th>
-										<th><span>振込金額</span></th>
+										<th>支給1～5</th>
+										<th>銀行</th>
+										<th>支店</th>
+										<th>口座番号</th>
+										<th>振込金額</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<th><span>銀行名（選択）</span></th>
-										<th><span>B</span></th>
-										<th><span>支店名（選択）</span></th>
-										<th><span>D</span></th>
-										<th><span>E</span></th>
+										<th>銀行名（選択）</th>
+										<th></th>
+										<th>支店名（選択）</th>
+										<th></th>
+										<th></th>
 									</tr>
 									<tr>
-										<th><span>銀行名（選択）</span></th>
-										<th><span>B</span></th>
-										<th><span>支店名（選択）</span></th>
-										<th><span>D</span></th>
-										<th><span>E</span></th>
+										<th>銀行名（選択）</th>
+										<th></th>
+										<th>支店名（選択）</th>
+										<th></th>
+										<th></th>
 									</tr>
 									<tr>
-										<th><span>銀行名（選択）</span></th>
-										<th><span>B</span></th>
-										<th><span>支店名（選択）</span></th>
-										<th><span>D</span></th>
-										<th><span>E</span></th>
+										<th>銀行名（選択）</th>
+										<th></th>
+										<th>支店名（選択）</th>
+										<th></th>
+										<th></th>
 									</tr>
 									<tr>
-										<th><span>銀行名（選択）</span></th>
-										<th><span>B</span></th>
-										<th><span>支店名（選択）</span></th>
-										<th><span>D</span></th>
-										<th><span>E</span></th>
+										<th>銀行名（選択）</th>
+										<th></th>
+										<th>支店名（選択）</th>
+										<th></th>
+										<th></th>
 									</tr>
 									<tr>
-										<th><span>銀行名（選択）</span></th>
-										<th><span>B</span></th>
-										<th><span>支店名（選択）</span></th>
-										<th><span>D</span></th>
-										<th><span>E</span></th>
+										<th>銀行名（選択）</th>
+										<th></th>
+										<th>支店名（選択）</th>
+										<th></th>
+										<th></th>
 									</tr>
 								</tbody>
 							</table>

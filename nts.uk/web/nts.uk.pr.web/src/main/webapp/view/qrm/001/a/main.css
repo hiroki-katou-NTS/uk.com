@@ -3,30 +3,20 @@
 	margin-top: 5px;
 	width: 90px;
 }
+#functions-area button:NTH-CHILD(2) { margin-left: 180px; }
 
-#functions-area button:NTH-CHILD(2) {
-	margin-left: 180px;
+#symbol {
+	margin-left: -20px; 
+	font-size: 20px; 
+	color: #c5c5c5;
 }
 
-.column1 {
-	width: 140px;
-}
+.column1 { width: 140px; }
+.column2 { width: 280px; }
+.column3 { width: 500px; }
+.column4 { width: 465px; }
 
-.column2 {
-	width: 280px;
-}
-
-.column3 {
-	width: 500px;
-}
-
-.column4 {
-	width: 465px;
-}
-
-#contents-area button {
-	height: 24px;
-}
+#contents-area button { height: 24px; }
 
 #profile-div {
 	width: 500px;
@@ -41,23 +31,17 @@
 	border-right: 1px solid #c5c5c5;
 	width: 146px;
 }
-
 #find-group-btn button {
 	box-shadow: none;
 	margin-top: 3px;
 }
-
-#find-group-btn button:NTH-CHILD(1){
+#find-group-btn button:NTH-CHILD(1) {
 	width: 70px;
 	margin-left: 3px;
 	margin-right: 0px;
 } 
-
-#find-group-btn button:NTH-CHILD(2){
-	margin-right: 0px;
-} 
-
-#find-group-btn button:NTH-CHILD(3){
+#find-group-btn button:NTH-CHILD(2) { margin-right: 0px; } 
+#find-group-btn button:NTH-CHILD(3) {
 	margin-left: -3px;
 	margin-right: 3px;
 } 
@@ -69,14 +53,15 @@
 	margin-left: 5px;
 	margin-bottom: 3px;
 }
-
-#note-btn {
-	margin-left: 520px;
+#inp-2, #inp-3, #inp-4, #inp-5, #inp-6, #inp-7, #inp-8, #inp-9, #inp-10, #inp-11 {
+	padding-left: 2px;
+	padding-right: 2px;
+	border: none;
 }
 
-#division {
-	width: 690px;
-}
+#note-btn { margin-left: 520px; }
+
+#division { width: 690px; }
 
 thead, tr, th {
 	border: 1px solid black;
@@ -94,99 +79,101 @@ thead th {
 }
 
 tbody th {
-	height: 24px;
 	text-align: center;
 	padding-left: 2px;
 	padding-right: 2px;
 }
 
-.table-division {
-	border-color: black;
-}
+.table-division { border-color: black; margin-top: 0px; }
 
-table {
-	margin-top: -4px;
-}
+table { margin-top: -4px; }
 
-#table-1, #hr-1 {
-	width: 440px;
-}
+#hr-1 { width: 438px; }
+#table-1 { width: 440px; }
+#table-1 tbody th:NTH-CHILD(1) { width: 100px; }
+#table-1 tbody th:NTH-CHILD(3), #combo-box1 { width: 110px; height: 18px; }
+#table-1 tbody th:NTH-CHILD(4), #inp-2 { width: 90px; }
 
-#table-1 thead th {
-	width: 110px;
-}
 
-#table-2, #hr-2 {
-	width: 270px;
-}
+#hr-2 { width: 268px; }
+#table-2 { width: 270px; }
+#table-2 tbody th:NTH-CHILD(1), #inp-3 { width: 80px; }
+#table-2 tbody th:NTH-CHILD(2), #inp-4 { width: 80px; }
 
-#table-2 thead th{
-	width: 90px;
-}
+#hr-3 { width: 733px; }
+#table-3 { width: 735px; }
+#table-3 tbody th:NTH-CHILD(1) { width: 100px; }
+#table-3 tbody th:NTH-CHILD(3), #combo-box2 { width: 90px; height: 18px; }
+#table-3 tbody th:NTH-CHILD(4), #combo-box3 { width: 90px; height: 18px; }
 
-#table-3, #hr-3, #table-10, #hr-10 {
-	width: 735px;
-}
-
-#table-3 thead th {
-	width: 110px;
-}
-
-#table-3 thead th:NTH-CHILD(2) {
-	width: 405px;
-}
-
-#table-4, #table-5, #table-6, #hr-4, #hr-5, #hr-6 {
-	width: 165px;
-}
-
-#table-4 tbody th, #table-5 tbody th, #table-6 tbody th {
+#hr-4, #hr-5, #hr-6 { width: 163px; }
+#table-4, #table-5, #table-6 { width: 165px; }
+#table-4 tbody th, #table-5 tbody th, #table-6 tbody th { height: 40px; } 
+#inp-5 { 
+	width: 155px; 
 	height: 40px;
+	text-align: center; 
 }
 
-#table-7, #table-8, #table-9, #hr-7, #hr-8, #hr-9 {
-	width: 345px;
-}
+#hr-7, #hr-8, #hr-9 { width: 343px }
+#table-7, #table-8, #table-9 { width: 345px; }
+#inp-6, #inp-7, #inp-8 { width: 100px; height: 40px; }
+#table-8 tbody th:NTH-CHILD(2), #combo-box5 { width: 110px; height: 18px; }
+#combo-box4 { height: 18px; }
+#table-9 { margin-top: 5px; }
+#inp-9, #inp-10, #inp-11 {width: 100px; height: 18px; }
 
-#table-7 tbody th {
-	height: 40px;
-	width: 110px;
-}
+#btn-2 { margin-top: 10px; }
 
-#table-8 thead th:NTH-CHILD(2) {
-	width: 110px;
-}
+#hr-10 { width: 733px; }	
+#table-10  { width: 735px; }
 
-#table-9 thead th {
-	width: 110px;
-}
+#table-10 thead th:NTH-CHILD(1) { width: 100px; }
+#table-10 thead th:NTH-CHILD(4), #table-10 thead th:NTH-CHILD(5) { width: 100px; }
 
-#table-9 {
-	margin-top: 5px;
-}
+#hr-11 { width: 704px; }
 
-#btn-2 {
-	margin-top: 10px;
-}
-
-#hr-11 {
-	width: 700px;
-}
-
-#table-10 thead th {
-	width: 100px;
-}
-
-#table-10 thead th:NTH-CHILD(2), #table-10 thead th:NTH-CHILD(3) {
-	width: 200px;
-}
-
- textarea {
+textarea {
  	margin-top: -4px;
 	width: 700px;
 	height: 60px;
+	text-align: justify;
 }
 
 .title-label {
 	margin-top: 5px;
 }
+
+.ui-igcombo {
+	border: none;
+	margin-top: 2px;
+}
+
+.ui-igcombo-button {
+	background-color: white;
+	border: none;
+}
+
+.ui-igcombo-buttonicon {
+	position: relative;
+	top: 25%;
+}
+
+.ui-igcombo-field {
+	text-align: center;
+	background-color: white;
+}
+
+.ui-state-active {
+	background: #f6f6f6;
+	text-align: center;
+}
+
+.ui-state-default {
+	text-align: center;
+}
+
+#label-12, #label-13, #label-14, #label-20, #label-21, #label-36, #label-39 {
+	background-color: #c5c5c5;
+}
+
