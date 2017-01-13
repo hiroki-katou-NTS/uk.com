@@ -1686,6 +1686,18 @@ button.nts-switch-button[disabled]:hover {
   color: #000;
 }
 
+/* line 8, ../sass/components/_combobox.scss */
+.nts-combo-item {
+  height: 20px;
+}
+
+/* line 11, ../sass/components/_combobox.scss */
+.nts-column {
+  height: 20px;
+  overflow: hidden;
+  margin-right: 5px;
+}
+
 /* line 1, ../sass/components/_dialog.scss */
 .ui-dialog {
   padding: 0px;
