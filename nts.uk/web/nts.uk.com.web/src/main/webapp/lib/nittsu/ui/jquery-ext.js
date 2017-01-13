@@ -258,17 +258,74 @@ var nts;
                         });
                     }
                 })(ntsGridList || (ntsGridList = {}));
+                var ntsListBox;
+                (function (ntsListBox) {
+                    $.fn.ntsListBox = function (action) {
+                        var $grid = $(this);
+                        switch (action) {
+                            case 'deselectAll':
+                                deselectAll($grid);
+                                break;
+                            case 'selectAll':
+                                selectAll($grid);
+                                break;
+                            case 'validate':
+                                return validate($grid);
+                            default:
+                                break;
+                        }
+                    };
+                    function selectAll($list) {
+                        $list.find('.nts-list-box > li').addClass("ui-selected");
+                        $list.find("li").attr("clicked", "");
+                        $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
+                    }
+                    function deselectAll($list) {
+                        $list.data('value', '');
+                        $list.find('.nts-list-box > li').removeClass("ui-selected");
+                        $list.find('.nts-list-box > li > div').removeClass("ui-selected");
+                        $list.trigger("selectionChange");
+                    }
+                    function validate($list) {
+                        var required = $list.data('required');
+                        var $currentListBox = $list.find('.nts-list-box');
+                        if (required) {
+                            var itemsSelected = $list.data('value');
+                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                                $currentListBox.ntsError('set', 'at least 1 item selection required');
+                                return false;
+                            }
+                            else {
+                                $currentListBox.ntsError('clear');
+                                return true;
+                            }
+                        }
+                    }
+                })(ntsListBox || (ntsListBox = {}));
                 var userGuide;
                 (function (userGuide) {
                     $.fn.ntsUserGuide = function (action) {
                         var $controls = $(this);
-                        if (nts.uk.util.isNullOrUndefined(action)) {
+                        if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
                             return init($controls);
+                        }
+                        else if (action === "destroy") {
+                            return destroy($controls);
                         }
                         else if (action === "show") {
                             return show($controls);
                         }
+                        else if (action === "hide") {
+                            return hide($controls);
+                        }
+                        else if (action === "toggle") {
+                            return toggle($controls);
+                        }
+                        else if (action === "isShow") {
+                            return isShow($controls);
+                        }
                         else {
+                            return $controls;
                         }
                         ;
                     };
@@ -291,44 +348,92 @@ var nts;
                             // Userguide Overlay
                             var $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
-                                .on("click", function () {
-                                $control.hide();
-                            })
                                 .appendTo($control);
                             $control.hide();
+                        });
+                        return controls;
+                    }
+                    function destroy(controls) {
+                        controls.each(function () {
+                            $(this).remove();
                         });
                         return controls;
                     }
                     function show(controls) {
                         controls.each(function () {
                             var $control = $(this);
+                            $control.show();
                             var target = $control.data('target');
                             var direction = $control.data('direction');
-                            $control.show();
+                            $control.find(".userguide-overlay").each(function (index, elem) {
+                                calcOverlayPosition($(elem), target, direction);
+                            });
                             $control.children().each(function () {
                                 var $box = $(this);
                                 var boxTarget = $box.data("target");
-                                $box.position({
-                                    my: getReveseDirection(direction) + "+20",
-                                    at: "right center",
-                                    of: boxTarget
-                                });
+                                var boxDirection = $box.data("direction");
+                                var boxMargin = ($box.data("margin")) ? $box.data("margin") : "20";
+                                calcBoxPosition($box, boxTarget, boxDirection, boxMargin);
                             });
-                            var $overlay = $control.find(".userguide-overlay").css(getReveseDirection(direction), $(target).offset().left + $(target).outerWidth());
                         });
                         return controls;
                     }
+                    function hide(controls) {
+                        controls.each(function () {
+                            $(this).hide();
+                        });
+                        return controls;
+                    }
+                    function toggle(controls) {
+                        if (isShow(controls))
+                            hide(controls);
+                        else
+                            show(controls);
+                        return controls;
+                    }
+                    function isShow(controls) {
+                        var result = true;
+                        controls.each(function () {
+                            if (!$(this).is(":visible"))
+                                result = false;
+                        });
+                        return result;
+                    }
+                    function calcOverlayPosition(overlay, target, direction) {
+                        if (direction === "left")
+                            return overlay.css("right", "auto")
+                                .css("width", $(target).offset().left);
+                        else if (direction === "right")
+                            return overlay.css("left", $(target).offset().left + $(target).outerWidth());
+                        else if (direction === "top")
+                            return overlay.css("position", "absolute")
+                                .css("bottom", "auto")
+                                .css("height", $(target).offset().top);
+                        else if (direction === "bottom")
+                            return overlay.css("position", "absolute")
+                                .css("top", $(target).offset().top + $(target).outerHeight())
+                                .css("height", $("body").height() - $(target).offset().top);
+                    }
+                    function calcBoxPosition(box, target, direction, margin) {
+                        var operation = "+";
+                        if (direction === "left" || direction === "top")
+                            operation = "-";
+                        return box.position({
+                            my: getReveseDirection(direction) + operation + margin,
+                            at: direction,
+                            of: target,
+                            collision: "none"
+                        });
+                    }
                     function getReveseDirection(direction) {
-                        switch (direction) {
-                            case "left":
-                                return "right";
-                            case "right":
-                                return "left";
-                            case "top":
-                                return "bottom";
-                            case "bottom":
-                                return "top";
-                        }
+                        if (direction === "left")
+                            return "right";
+                        else if (direction === "right")
+                            return "left";
+                        else if (direction === "top")
+                            return "bottom";
+                        else if (direction === "bottom")
+                            return "top";
                     }
                 })(userGuide || (userGuide = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
