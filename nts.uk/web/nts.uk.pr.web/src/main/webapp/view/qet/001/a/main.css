@@ -7,9 +7,7 @@ td#contents-left {
 	width: 700px;
 	height: 70px;
 }
-#select-target-year *{
-	float: left;
-}
+
 div#target-year-label {
 	background-color: #E2F79F;
 	width: 100px;
