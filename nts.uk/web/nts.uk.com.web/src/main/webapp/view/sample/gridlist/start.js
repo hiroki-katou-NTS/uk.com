@@ -23,7 +23,7 @@ __viewContext.ready(function () {
             this.currentCodeList = ko.observableArray([]);
         }
         ScreenModel.prototype.selectSomeItems = function () {
-            this.currentCode('150');
+            this.currentCode('0010');
             this.currentCodeList.removeAll();
             this.currentCodeList.push('001');
             this.currentCodeList.push('002');
