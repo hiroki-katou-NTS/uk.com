@@ -16,20 +16,19 @@ module nts.uk.pr.view.qmm007.a {
             historyList: any;
             unitPriceDetailModel: KnockoutObservable<UnitPriceDetailModel>;
 
-            lbl_005: KnockoutObservable<string>;
+            code: any;
+            name: any;
+            startDate: any;
+            endDate: KnockoutObservable<string>;
+            money: any;
+            memo: KnockoutObservable<string>;
 
-            inp_002_code: any;
-            inp_003_name: any;
-            inp_004_date: any;
-            inp_005_money: any;
-            inp_006_memo: KnockoutObservable<string>;
-
-            sel_001_settingType: KnockoutObservable<SettingType>;
-            sel_002_payAtr: KnockoutObservable<ApplySetting>;
-            sel_003_payAtrMonthly: KnockoutObservable<ApplySetting>;
-            sel_004_payAtrDayMonth: KnockoutObservable<ApplySetting>;
-            sel_005_payAtrDaily: KnockoutObservable<ApplySetting>;
-            sel_006_payAtrHourly: KnockoutObservable<ApplySetting>;
+            settingType: KnockoutObservable<SettingType>;
+            payAtr: KnockoutObservable<ApplySetting>;
+            payAtrMonthly: KnockoutObservable<ApplySetting>;
+            payAtrDayMonth: KnockoutObservable<ApplySetting>;
+            payAtrDaily: KnockoutObservable<ApplySetting>;
+            payAtrHourly: KnockoutObservable<ApplySetting>;
 
             switchButtonDataSource: KnockoutObservableArray<any>;
 
@@ -44,9 +43,9 @@ module nts.uk.pr.view.qmm007.a {
                 self.singleSelectedCode = ko.observable(null);
                 self.selectedCodes = ko.observableArray([]);
 
-                self.lbl_005 = ko.observable('（平成29年01月） ~');
+                self.endDate = ko.observable('（平成29年01月） ~');
 
-                self.inp_002_code = {
+                self.code = {
                     value: ko.observable(self.unitPriceDetailModel().unitPriceCode),
                     constraint: 'UnitPriceCode',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -60,7 +59,7 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_003_name = {
+                self.name = {
                     value: ko.observable(self.unitPriceDetailModel().unitPriceName),
                     constraint: 'UnitPriceName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -74,7 +73,7 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_004_date = {
+                self.startDate = {
                     value: ko.observable(self.unitPriceDetailModel().startDate),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -88,7 +87,7 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_005_money = {
+                self.money = {
                     value: ko.observable(self.unitPriceDetailModel().budget),
                     constraint: 'Money',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -103,19 +102,19 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_006_memo = ko.observable('');
+                self.memo = ko.observable('');
 
                 self.switchButtonDataSource = ko.observableArray([
                     { code: '1', name: '対象' },
                     { code: '2', name: '対象外' }
                 ]);
 
-                self.sel_001_settingType = ko.observable(0);
-                self.sel_002_payAtr = ko.observable(0);
-                self.sel_003_payAtrMonthly = ko.observable(0);
-                self.sel_004_payAtrDayMonth = ko.observable(0);
-                self.sel_005_payAtrDaily = ko.observable(0);
-                self.sel_006_payAtrHourly = ko.observable(0);
+                self.settingType = ko.observable(0);
+                self.payAtr = ko.observable(0);
+                self.payAtrMonthly = ko.observable(0);
+                self.payAtrDayMonth = ko.observable(0);
+                self.payAtrDaily = ko.observable(0);
+                self.payAtrHourly = ko.observable(0);
 
             }
 
@@ -136,41 +135,39 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             test() {
-                //this.unitPriceDetailModel().unitPriceCode = this.inp_002_code.value();
-                //alert(this.unitPriceDetailModel().unitPriceCode);
                 var self = this;
-                self.inp_002_code.value(1);
-                self.inp_003_name.value('ガソリン単価')
-                self.inp_004_date.value('2015-04');
-                self.inp_005_money.value(120);
-                self.sel_001_settingType(2);
-                self.sel_002_payAtr(2);
-                self.sel_003_payAtrMonthly(2);
-                self.sel_004_payAtrDayMonth(2);
-                self.sel_005_payAtrDaily(2);
-                self.sel_006_payAtrHourly(2);
+                self.code.value(1);
+                self.name.value('ガソリン単価')
+                self.startDate.value('2015-04');
+                self.money.value(120);
+                self.settingType(2);
+                self.payAtr(2);
+                self.payAtrMonthly(2);
+                self.payAtrDayMonth(2);
+                self.payAtrDaily(2);
+                self.payAtrHourly(2);
             }
 
             collectData(): UnitPriceHistoryDto {
                 var self = this
                 var data = new UnitPriceHistoryDto();
-                data.unitPriceCode = self.inp_002_code.value();
+                data.unitPriceCode = self.code.value();
                 console.log(data);
                 return null;
             }
 
             clearUnitPriceDetail() {
                 var self = this;
-                self.inp_002_code.value(null);
-                self.inp_003_name.value('')
-                self.inp_004_date.value('');
-                self.inp_005_money.value(null);
-                self.sel_001_settingType(0);
-                self.sel_002_payAtr(0);
-                self.sel_003_payAtrMonthly(0);
-                self.sel_004_payAtrDayMonth(0);
-                self.sel_005_payAtrDaily(0);
-                self.sel_006_payAtrHourly(0);
+                self.code.value(null);
+                self.name.value('')
+                self.startDate.value('');
+                self.money.value(null);
+                self.settingType(0);
+                self.payAtr(0);
+                self.payAtrMonthly(0);
+                self.payAtrDayMonth(0);
+                self.payAtrDaily(0);
+                self.payAtrHourly(0);
             }
             loadUnitPriceDetail(unitPricecode: number, startDate: DateTimeDto) {
             }

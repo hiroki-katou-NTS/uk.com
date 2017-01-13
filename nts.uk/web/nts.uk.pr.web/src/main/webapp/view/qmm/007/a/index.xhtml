@@ -83,7 +83,7 @@
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
 							<td colspan="2"><span class=""
-								data-bind="with: inp_002_code"> <input id="inp_002"
+								data-bind="with: code"> <input id="inp_002"
 									class="inp-default"
 									data-bind="ntsTextEditor: {
 									value: value,
@@ -92,7 +92,7 @@
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-							</span> <span data-bind="with: inp_003_name"> <input id="inp_003"
+							</span> <span data-bind="with: name"> <input id="inp_003"
 									class="inp-default"
 									data-bind="ntsTextEditor: {
 									value: value,
@@ -106,7 +106,7 @@
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span data-bind="with: inp_004_date"> <input
+							<td><span data-bind="with: startDate"> <input
 									id="inp_004" class="inp-default"
 									data-bind="ntsTextEditor: {
 									value: value,
@@ -115,12 +115,12 @@
 									required: required,
 									enable: enable,
 									readonly: readonly}" />
-							</span> <label id="lbl_005" data-bind="text: lbl_005()">lbl_005</label></td>
+							</span> <label id="lbl_005" data-bind="text: endDate()"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><div data-bind="with: inp_005_money">
+							<td><div data-bind="with: money">
 									<input class="inp-default"
 										data-bind="ntsNumberEditor: {
 									value: value,
@@ -135,13 +135,13 @@
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 1, checked: sel_001_settingType" /> <span
+									data-bind="checkedValue: 1, checked: settingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 2, checked: sel_001_settingType" /> <span
+									data-bind="checkedValue: 2, checked: settingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
@@ -153,8 +153,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_settingType()==1),
-						value: sel_002_payAtr}"></div></td>
+						enable: (settingType()==1),
+						value: payAtr}"></div></td>
 							<td><label id="lbl_009">月給者</label></td>
 							<td class="">
 								<div id="sel_003"
@@ -162,8 +162,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_settingType()==2),
-						value: sel_003_payAtrMonthly}"></div>
+						enable: (settingType()==2),
+						value: payAtrMonthly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -175,8 +175,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_settingType()==2),
-						value: sel_004_payAtrDayMonth}"></div>
+						enable: (settingType()==2),
+						value: payAtrDayMonth}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -188,8 +188,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_settingType()==2),
-						value: sel_005_payAtrDaily}"></div>
+						enable: (settingType()==2),
+						value: payAtrDaily}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -201,8 +201,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (sel_001_settingType()==2),
-						value: sel_006_payAtrHourly}"></div>
+						enable: (settingType()==2),
+						value: payAtrHourly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -215,7 +215,7 @@
 							<td class="valign-top"><div id="lbl_008"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inp_006">
-									<TEXTAREA placeholder="" data-bind="value: inp_006_memo"
+									<TEXTAREA placeholder="" data-bind="value: memo"
 										class="inp-default"></TEXTAREA>
 								</div></td>
 						</tr>

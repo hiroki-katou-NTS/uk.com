@@ -2,25 +2,25 @@ module nts.uk.pr.view.qmm007.b {
     export module viewmodel {
 
         export class ScreenModel {
-            lbl_003: KnockoutObservable<string>;
-            lbl_004: KnockoutObservable<string>;
-            lbl_006: KnockoutObservable<string>;
-            lbl_007: KnockoutObservable<string>;
+            code: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            jpnDate: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
 
-            sel_001_radio: KnockoutObservable<string>;
+            historyTakeOver: KnockoutObservable<string>;
 
-            inp_001: any;
+            startDate: any;
 
             constructor() {
                 var self = this;
-                self.lbl_003 = ko.observable('001');
-                self.lbl_004 = ko.observable('ガソリン単価');
-                self.lbl_006 = ko.observable('（平成29年01月）');
-                self.lbl_007 = ko.observable('~ 9999/12');
+                self.code = ko.observable('001');
+                self.name = ko.observable('ガソリン単価');
+                self.jpnDate = ko.observable('（平成29年01月）');
+                self.endDate = ko.observable('~ 9999/12');
 
-                self.sel_001_radio = ko.observable('1');
+                self.historyTakeOver = ko.observable('1');
 
-                self.inp_001 = {
+                self.startDate = {
                     value: ko.observable('2017/01'),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -36,10 +36,10 @@ module nts.uk.pr.view.qmm007.b {
 
             }
 
-            btn_001_clicked() {
+            btnApplyClicked() {
                 nts.uk.ui.windows.close()
             }
-            btn_002_clicked() {
+            btnCancelClicked() {
                 nts.uk.ui.windows.close()
             }
 
