@@ -21,12 +21,21 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 
 	private static final String FIND_ALL;
 
+	private static final String FIND_SINGLE;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtClass e");
 		builderString.append(" WHERE e.cmnmtClassPK.companyCode =: companyCode");
 		FIND_ALL = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtClass e");
+		builderString.append(" WHERE e.cmnmtClassPK.companyCode =: companyCode");
+		builderString.append(" AND e.cmnmtClassPK.classificationCode =: classificationCode");
+		FIND_SINGLE = builderString.toString();
 	}
 
 	@Override
@@ -51,10 +60,11 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 	@Override
 	public Optional<Classification> findSingleClassification(String companyCode,
 			ClassificationCode classificationCode) {
-		CmnmtClassPK cmnmtClassPK = new CmnmtClassPK(companyCode, classificationCode.toString());
-		return this.queryProxy().find(cmnmtClassPK, CmnmtClass.class).map(e -> {
-			return Optional.of(convertToDomain(e));
-		}).orElse(Optional.empty());
+		return this.queryProxy().query(FIND_SINGLE, CmnmtClass.class)
+				.setParameter("companyCode", "'" + companyCode + "'")
+				.setParameter("classificationCode", "'" + classificationCode.toString() + "'").getSingle().map(e -> {
+					return Optional.of(convertToDomain(e));
+				}).orElse(Optional.empty());
 	}
 
 	@Override
