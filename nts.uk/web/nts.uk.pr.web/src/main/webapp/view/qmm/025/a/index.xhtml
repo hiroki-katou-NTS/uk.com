@@ -84,7 +84,8 @@
 		                features: [
 		                    {
 		                        name: "ColumnFixing",
-		                        fixingDirection: "left",
+		                        showFixButtons: false,
+		                        syncRowHeights: true,
 		                        columnSettings: [
 		                            {
 		                                columnKey: "ID",
@@ -109,17 +110,7 @@
 		                            {
 		                                columnKey: "AnnualTaxAmount",
 		                                isFixed: true,
-		                                allowFixing: false
-		                            },
-		                            {
-		                                columnKey: "TotalMonth",
-		                                isFixed: false,
-		                                allowFixing: true
-		                            },
-		                            {
-		                                columnKey: "Jun",
-		                                isFixed: true,
-		                                allowFixing: false
+		                                allowFixing: false,
 		                            },
 		                        ]
 		                    },
@@ -146,19 +137,28 @@
 		                    {
 		                        name: 'Selection',
 		                        multipleSelection: true,
-		                        activation: true,
-		                        persist: true // click vao row, sau khi chuyen sang trang khac roi quay lai van click tai row do
+		                        activation: false,
+		                        
+		                        persist: true, // click vao row, sau khi chuyen sang trang khac roi quay lai van click tai row do
 		                     },
 		                     {
 		                         name: 'RowSelectors',
 		                         enableCheckBoxes: true,
 		                         enableSelectAllForPaging: true,
-		                         multipleSelection: true 
+		                         enableRowNumbering: true,
+		                         checkBoxStateChanging: "gridcheckboxStateChanging",
+		                         requireSelection: true,
+		                         showCheckBoxesOnFocus: false
 		                     }
 		                     
 		                ]
 		            });
 		        });
+		                
+		        function gridcheckboxStateChanging (evt, ui) {
+		           if (conditionNotMet)
+		              return false;
+		         };   
 				// ]]>
 		    </script>
 				</div>
