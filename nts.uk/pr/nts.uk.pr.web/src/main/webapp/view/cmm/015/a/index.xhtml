@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.proto.dom.layout.LayoutName
+			</com:ValidatorScript>
+			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
+			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+			<script>var dialogSize = { width: 1100, height: 670 };</script>
+			<script>
+					__viewContext.primitiveValueConstraints = {
+						range: {
+							valueType: "String",
+							charType: "Numeric",
+							maxLength: 7
+						}
+					};
+				</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+
+				<div class="bottomStype" style="margin-left: 20px">
+					<button class="large proceed" id="BTN_001"
+						data-bind="click: chooseItem">決定</button>
+					<button class="large" id="BTN_002" value="cancel"
+						data-bind="click: closeDialog">キャンセル</button>
+					<button class="large " id="BTN_003">キャンセル</button>
+					<button class="large " id="BTN_003">キャンセル</button>
+
+				</div>
+				<hr />
+				<div class="form-label" style="margin-top: 5px;">
+					<div style="display: flex">
+						<div>
+							<label id="LBL_003">コード/名称</label>
+						</div>
+						<div>
+							<input id="INP_001" style="margin-left: 20px; margin-top: 5px"
+								type="text" maxlength="20" />
+						</div>
+						<div>
+							<button id="SCH_001" style="width: 68px; margin-left: 5px"
+								data-bind="click: searchItem">検索</button>
+						</div>
+					</div>
+				</div>
+
+				<div data-bind="with: listBox" style="margin-top: 15px;">
+					<div id="list-box"
+						data-bind="ntsListBox: {options: itemList,
+											   optionsValue: 'id',
+											   optionsText: 'name',
+											   multiple: false,
+											   value: selectedCode,
+											   test: itemDtoSelected,
+											   enable: true,
+											   rows: 15,
+											   columns: [
+													{ prop: 'id', length: 3 },
+													{ prop: 'name', length: 12 }
+											   ]}"
+						class="cf"></div>
+						<div class="form-label" data-bind="with: listBox">
+					<label id="LBL_004">コード/名称</label> <a
+						data-bind="text: selectedCode">コード</a><a
+						data-bind="text: selectedName">名称</a>
+				</div>
+				</div>
+				
+			<div style="margin-top: 15px;" class="right-content">
+				
+				<br />
+
+
+
+
+
+			</div>
+			</div>
+
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
