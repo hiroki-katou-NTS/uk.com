@@ -15,7 +15,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.code = ko.observable('001');
+                                    self.code = ko.observable(nts.uk.ui.windows.getShared('code'));
                                     self.name = ko.observable('ガソリン単価');
                                     self.endDate = ko.observable('~ 9999/12');
                                     self.edittingMethod = ko.observable('2');

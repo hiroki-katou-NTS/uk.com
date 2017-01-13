@@ -50,7 +50,7 @@
 						<button id="sch_001" class="caret-bottom caret-background">検索</button>
 					</div>
 					<div class="hidden"
-						data-bind="ntsSearchBox: {items: historyList, selected: selectedCodes, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}"></div>
+						data-bind="ntsSearchBox: {items: historyList, selected: selectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code', 'monthRange']}"></div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: true">履歴追加</button>
@@ -63,7 +63,7 @@
 										width: 310,
 										height: 350,
 										options: historyList,
-										selectedValues: selectedCodes,
+										value: selectedCode,
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
