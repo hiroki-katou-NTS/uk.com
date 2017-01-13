@@ -1810,7 +1810,7 @@ module nts.uk.ui.koExtentions {
 
                     return true;
                 }
-            });
+            }).data("length", options.length);
 
             // Add default class
             container.addClass(cssClass);
@@ -1837,14 +1837,6 @@ module nts.uk.ui.koExtentions {
             // Add Header
             container.children('.steps').prepend(header);
             container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-
-            $.fn.begin = function() {
-                $(this).setStep(0);
-            }
-
-            $.fn.end = function() {
-                $(this).setStep(options.length - 1);
-            }
         }
 
         /**

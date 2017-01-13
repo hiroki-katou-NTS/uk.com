@@ -1753,7 +1753,7 @@ var nts;
                                 container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                                 return true;
                             }
-                        });
+                        }).data("length", options.length);
                         // Add default class
                         container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
@@ -1775,12 +1775,6 @@ var nts;
                         // Add Header
                         container.children('.steps').prepend(header);
                         container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-                        $.fn.begin = function () {
-                            $(this).setStep(0);
-                        };
-                        $.fn.end = function () {
-                            $(this).setStep(options.length - 1);
-                        };
                     };
                     /**
                      * Update
