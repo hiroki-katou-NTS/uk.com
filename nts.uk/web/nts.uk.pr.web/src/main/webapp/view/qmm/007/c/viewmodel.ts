@@ -1,20 +1,20 @@
 module nts.uk.pr.view.qmm007.c {
     export module viewmodel {
         export class ScreenModel {
-            lbl_003: KnockoutObservable<string>;
-            lbl_004: KnockoutObservable<string>;
-            lbl_008: KnockoutObservable<string>;
-            inp_001: any;
-            sel_001_radio: KnockoutObservable<string>;
+            code: KnockoutObservable<string>;
+            name: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
+            startDate: any;
+            edittingMethod: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
-                self.lbl_003 = ko.observable('001');
-                self.lbl_004 = ko.observable('ガソリン単価');
-                self.lbl_008 = ko.observable('~ 9999/12');
-                self.sel_001_radio = ko.observable('2');
+                self.code = ko.observable(nts.uk.ui.windows.getShared('code'));
+                self.name = ko.observable('ガソリン単価');
+                self.endDate = ko.observable('~ 9999/12');
+                self.edittingMethod = ko.observable('2');
 
-                self.inp_001 = {
+                self.startDate = {
                     value: ko.observable('2016/04'),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -28,10 +28,10 @@ module nts.uk.pr.view.qmm007.c {
                     readonly: ko.observable(false)
                 };
             }
-            btn_001_clicked() {
+            btnApplyClicked() {
                 nts.uk.ui.windows.close()
             }
-            btn_002_clicked() {
+            btnCancelClicked() {
                 nts.uk.ui.windows.close()
             }
         }

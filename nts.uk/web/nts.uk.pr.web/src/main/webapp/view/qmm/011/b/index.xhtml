@@ -9,13 +9,13 @@
 					</div>
 					<div id="list-box"
 						data-bind="ntsListBox: {
-						options: blst001,
+						options: lstHistoryUnemployeeInsuranceRate,
 						optionsValue: 'code',
 						optionsText: 'name',
 						multiple: true,
-						value: blstsel001,
+						value: selectionHistoryUnemployeeInsuranceRate,
 						enable: true,
-						rows: 4,
+						rows: 10,
 						required: true,
 						columns: [
 							{ prop: 'name', length: 10 }
@@ -24,19 +24,18 @@
 				<td id="contents-right">
 					<table id="tableRight">
 						<tr>
-							<td class="contentsRL">
+							<td class="trFull5B">
 								<div id="B_LBL_001" data-bind="ntsFormLabel: {required: true}">
 									<label>期間<br /></label>
 								</div>
 							</td>
-							<td class="contentsRR"><input id="inp_historystart"
-								class="trFull15" data-name="code"
-								data-bind="ntsTextEditor: {value: historystart, 
-									constraint: 'Historystart', 
+							<td class="contentsRR"><input id="historyUnemployeeInsuranceRateStart"
+								data-name="code" class="trFull45"
+								data-bind="ntsTextEditor: {value: historyUnemployeeInsuranceRateStart, 
 									option: textEditorOption, 
 									enable: true}" />
-								<label id="B_LBL_002"> ~ </label> <label id="B_LBL_003">
-									終了年月 </label></td>
+								<label id="B_LBL_002"> ~ </label> <label id="B_LBL_003"
+								data-bind="text: historyUnemployeeInsuranceRateEnd"> </label></td>
 						</tr>
 						<tr>
 							<td colspan="2"><hr /></td>
@@ -44,6 +43,7 @@
 						<tr>
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
+									data-bind="with:unemployeeInsuranceRateItemMode"
 									class="table_border_black">
 									<tbody>
 										<tr class="bg-green">
@@ -53,21 +53,23 @@
 											<th class="text_center" width="170">事業主負担率</th>
 											<th class="text_center">端数処理</th>
 										</tr>
-										<tr>
+										<tr
+											data-bind="with:unemployeeInsuranceRateItemAgroforestryModel">
 											<td class="bg-green">一般の事業</td>
-											<td><input class="health-input"
-												data-name="rateGeneralBusinessPerson"
-												data-bind="ntsTextEditor: {value: rateGeneralBusinessPerson, 
-													constraint: 'RateGeneralBusinessPerson', 
-													option: textEditorOption, 
+											<td><div>
+													<input class="health-input"
+														data-name="rateGeneralBusinessPerson"
+														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
+													option: rateInputOptions, 
 													enable: true}">
-											</input>/1000</td>
+													</input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: bsel001,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: bsel001Code,
+													value: personalSetting.roundAtr,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -75,18 +77,19 @@
 														{ prop: 'name', length: 10 },
 													]}"></div>
 											</td>
-											<td><input class="health-input" data-name="code"
-												data-bind="ntsTextEditor: {value: binp003, 
-													constraint: 'B_INP_003', 
-													option: textEditorOption, 
+											<td><div>
+													<input class="health-input" data-name="code"
+														data-bind="ntsNumberEditor: {value: companySetting.rate, 
+													option: rateInputOptions, 
 													enable: true}">
-											</input>/1000</td>
+													</input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: bsel002,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: bsel002Code,
+													value: companySetting.roundAtr,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -96,35 +99,43 @@
 												</div>
 											</td>
 										</tr>
-										<tr>
+										<tr
+											data-bind="with:unemployeeInsuranceRateItemContructionModel">
 											<td class="bg-green">農林水産清酒製造の事業</td>
-											<td><input class="health-input" value="40.900"></input>/1000</td>
+											<td><div>
+													<input class="health-input"
+														data-name="rateGeneralBusinessPerson"
+														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
+													option: rateInputOptions, 
+													enable: true}">
+													</input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: bsel003,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: bsel003Code,
+													value: personalSetting.roundAtr,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
-											<td><input class="health-input" data-name="code"
-												data-bind="ntsTextEditor: {value: binp004, 
-														constraint: 'B_INP_004', 
-														option: textEditorOption, 
-														enable: true}">
-											</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="code"
+														data-bind="ntsNumberEditor: {value: companySetting.rate, 
+													option: rateInputOptions, 
+													enable: true}">
+													</input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: bsel004,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: bsel004Code,
+													value: companySetting.roundAtr,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -134,40 +145,42 @@
 												</div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with:unemployeeInsuranceRateItemOtherModel">
 											<td class="bg-green">建設の事業</td>
-											<td><input class="health-input" data-name="code"
-												data-bind="ntsTextEditor: {value: binp005, 
-													constraint: 'B_INP_005', 
-													option: textEditorOption, 
+											<td><div>
+													<input class="health-input"
+														data-name="rateGeneralBusinessPerson"
+														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
+													option: rateInputOptions, 
 													enable: true}">
-											</input>/1000</td>
+													</input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: bsel005,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: bsel005Code,
+													value: personalSetting.roundAtr,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
-											<td><input class="health-input" data-name="code"
-												data-bind="ntsTextEditor: {value: binp006, 
-													constraint: 'B_INP_006', 
-													option: textEditorOption, 
+											<td><div>
+													<input class="health-input" data-name="code"
+														data-bind="ntsNumberEditor: {value: companySetting.rate, 
+													option: rateInputOptions, 
 													enable: true}">
-											</input>/1000</td>
+													</input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: bsel006,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: bsel006Code,
+													value: companySetting.roundAtr,
 													optionsText: 'name',
 													editable: true,
 													enable: true,

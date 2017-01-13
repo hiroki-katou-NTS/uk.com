@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm010.b {
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "コード・名称で検索・・・",
-                        width: "75%",
+                        width: "340",
                         textalign: "left"
                     }))
                 }

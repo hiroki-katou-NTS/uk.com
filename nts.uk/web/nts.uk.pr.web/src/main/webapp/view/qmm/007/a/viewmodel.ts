@@ -10,55 +10,51 @@ module nts.uk.pr.view.qmm007.a {
 
         export class ScreenModel {
             filteredData: any;
-            singleSelectedCode: any;
-            selectedCodes: any;
+            selectedCode: any;
 
             historyList: any;
             unitPriceDetailModel: KnockoutObservable<UnitPriceDetailModel>;
 
-            lbl_005: KnockoutObservable<string>;
+            code: any;
+            name: any;
+            startDate: any;
+            endDate: KnockoutObservable<string>;
+            money: any;
+            memo: KnockoutObservable<string>;
 
-            inp_002_code: any;
-            inp_003_name: any;
-            inp_004_date: any;
-            inp_005_money: any;
-            inp_006_memo: KnockoutObservable<string>;
-
-            sel_001_settingType: KnockoutObservable<SettingType>;
-            sel_002_payAtr: KnockoutObservable<ApplySetting>;
-            sel_003_payAtrMonthly: KnockoutObservable<ApplySetting>;
-            sel_004_payAtrDayMonth: KnockoutObservable<ApplySetting>;
-            sel_005_payAtrDaily: KnockoutObservable<ApplySetting>;
-            sel_006_payAtrHourly: KnockoutObservable<ApplySetting>;
+            settingType: KnockoutObservable<SettingType>;
+            payAtr: KnockoutObservable<ApplySetting>;
+            payAtrMonthly: KnockoutObservable<ApplySetting>;
+            payAtrDayMonth: KnockoutObservable<ApplySetting>;
+            payAtrDaily: KnockoutObservable<ApplySetting>;
+            payAtrHourly: KnockoutObservable<ApplySetting>;
 
             switchButtonDataSource: KnockoutObservableArray<any>;
+            mockData = [new Node('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new Node('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new Node('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
+                            new Node('002', '宿直単価', '2016/04 ~ 9999/12', false, [new Node('0021', '宿直単価', '2016/04 ~ 9999/12', true), new Node('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
 
             constructor() {
                 var self = this;
                 self.unitPriceDetailModel = ko.observable(new UnitPriceDetailModel());
-                self.historyList = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                    new Node('0003', 'Bangkok Thailand', []),
-                    new Node('0004', 'Tokyo Japan', []),
-                    new Node('0005', 'Jakarta Indonesia', []),
-                    new Node('0002', 'Seoul Korea', []),
-                    new Node('0006', 'Paris France', []),
-                    new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                    new Node('0010', 'Beijing China', []),
-                    new Node('0011', 'London United Kingdom', []),
-                    new Node('0012', 'USA', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])])]);
+                self.historyList = ko.observableArray(self.mockData);
 
                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
-                self.singleSelectedCode = ko.observable(null);
-                self.selectedCodes = ko.observableArray([]);
+                self.selectedCode = ko.observable();
+                self.selectedCode.subscribe(val => {
+                    if (val != null || val != undefined) {
+                        self.code.value(val);
+                        console.log(val);
+                    }
+                });
 
-                self.lbl_005 = ko.observable('（平成29年01月） ~');
+                self.endDate = ko.observable('（平成29年01月） ~');
 
-                self.inp_002_code = {
+                self.code = {
                     value: ko.observable(self.unitPriceDetailModel().unitPriceCode),
                     constraint: 'UnitPriceCode',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
-                        placeholder: "",
+                        placeholder: " ",
                         width: "50px",
                         textalign: "left"
                     })),
@@ -67,7 +63,7 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_003_name = {
+                self.name = {
                     value: ko.observable(self.unitPriceDetailModel().unitPriceName),
                     constraint: 'UnitPriceName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -81,7 +77,7 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_004_date = {
+                self.startDate = {
                     value: ko.observable(self.unitPriceDetailModel().startDate),
                     constraint: '',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -95,7 +91,7 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_005_money = {
+                self.money = {
                     value: ko.observable(self.unitPriceDetailModel().budget),
                     constraint: 'Money',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
@@ -110,19 +106,19 @@ module nts.uk.pr.view.qmm007.a {
                     readonly: ko.observable(false)
                 };
 
-                self.inp_006_memo = ko.observable('');
+                self.memo = ko.observable('');
 
                 self.switchButtonDataSource = ko.observableArray([
                     { code: '1', name: '対象' },
                     { code: '2', name: '対象外' }
                 ]);
 
-                self.sel_001_settingType = ko.observable(0);
-                self.sel_002_payAtr = ko.observable(0);
-                self.sel_003_payAtrMonthly = ko.observable(0);
-                self.sel_004_payAtrDayMonth = ko.observable(0);
-                self.sel_005_payAtrDaily = ko.observable(0);
-                self.sel_006_payAtrHourly = ko.observable(0);
+                self.settingType = ko.observable(0);
+                self.payAtr = ko.observable(0);
+                self.payAtrMonthly = ko.observable(0);
+                self.payAtrDayMonth = ko.observable(0);
+                self.payAtrDaily = ko.observable(0);
+                self.payAtrHourly = ko.observable(0);
 
             }
 
@@ -135,38 +131,62 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             goToB() {
+                nts.uk.ui.windows.setShared('code', this.code.value());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 450 });
             }
 
             goToC() {
+                nts.uk.ui.windows.setShared('code', this.code.value());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 560 });
             }
 
             test() {
-                //this.unitPriceDetailModel().unitPriceCode = this.inp_002_code.value();
-                //alert(this.unitPriceDetailModel().unitPriceCode);
                 var self = this;
-                self.inp_002_code.value(1);
-                self.inp_003_name.value('ガソリン単価')
-                self.inp_004_date.value('2015-04');
-                self.inp_005_money.value(120);
-                self.sel_001_settingType(2);
-                self.sel_002_payAtr(2);
-                self.sel_003_payAtrMonthly(2);
-                self.sel_004_payAtrDayMonth(2);
-                self.sel_005_payAtrDaily(2);
-                self.sel_006_payAtrHourly(2);
+                self.code.value(1);
+                self.name.value('ガソリン単価')
+                self.startDate.value('2015-04');
+                self.money.value(120);
+                self.settingType(2);
+                self.payAtr(2);
+                self.payAtrMonthly(2);
+                self.payAtrDayMonth(2);
+                self.payAtrDaily(2);
+                self.payAtrHourly(2);
             }
 
             collectData(): UnitPriceHistoryDto {
                 var self = this
                 var data = new UnitPriceHistoryDto();
-                data.unitPriceCode = self.inp_002_code.value();
+                data.unitPriceCode = self.code.value();
                 console.log(data);
                 return null;
             }
 
-            loadUnitPriceDetail(unitPricecode: number, startDate: DateTimeDto) {
+            clearUnitPriceDetail() {
+                var self = this;
+                self.code.value(null);
+                self.name.value('')
+                self.startDate.value('');
+                self.money.value(null);
+                self.settingType(0);
+                self.payAtr(0);
+                self.payAtrMonthly(0);
+                self.payAtrDayMonth(0);
+                self.payAtrDaily(0);
+                self.payAtrHourly(0);
+            }
+            loadUnitPriceDetail(model: UnitPriceDetailModel) {
+                var self = this;
+                self.code.value(model.unitPriceCode);
+                self.name.value(model.unitPriceName)
+                self.startDate.value(model.startDate);
+                self.money.value(model.budget);
+                self.settingType(model.fixPaySettingType);
+                self.payAtr(model.fixPayAtr);
+                self.payAtrMonthly(model.fixPayAtrMonthly);
+                self.payAtrDayMonth(model.fixPayAtrDayMonth);
+                self.payAtrDaily(model.fixPayAtrDaily);
+                self.payAtrHourly(model.fixPayAtrHourly);
             }
 
         }
@@ -174,16 +194,21 @@ module nts.uk.pr.view.qmm007.a {
         export class Node {
             code: string;
             name: string;
+            monthRange: string;
             nodeText: string;
-            custom: string;
+            isChild: boolean;
             childs: any;
-            constructor(code: string, name: string, childs: Array<Node>) {
+            constructor(code: string, name: string, monthRange: string, isChild: boolean, childs?: Array<Node>) {
                 var self = this;
                 self.code = code;
                 self.name = name;
+                self.monthRange = monthRange;
                 self.nodeText = self.code + ' ' + self.name;
+                self.isChild = isChild;
                 self.childs = childs;
-                self.custom = 'Random' + new Date().getTime();
+                if (self.isChild == true) {
+                    self.nodeText = self.monthRange;
+                }
             }
         }
         /*

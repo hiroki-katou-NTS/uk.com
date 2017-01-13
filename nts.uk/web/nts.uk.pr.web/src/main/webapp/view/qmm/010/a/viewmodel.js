@@ -22,14 +22,12 @@ var nts;
                                     self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo));
                                     self.lstlaborInsuranceOffice = ko.observableArray([new LaborInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
                                         new LaborInsuranceOfficeInDTO('companyCode002', '000000000002', 'B事業所'), new LaborInsuranceOfficeInDTO('companyCode003', '000000000003', 'C事業所')]);
-                                    self.ainp001 = ko.observable("");
-                                    self.employmentName = ko.observable("");
                                     self.textSearch = {
                                         valueSearch: ko.observable(""),
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                             textmode: "text",
                                             placeholder: "コード・名称で検索・・・",
-                                            width: "75%",
+                                            width: "270",
                                             textalign: "left"
                                         }))
                                     };

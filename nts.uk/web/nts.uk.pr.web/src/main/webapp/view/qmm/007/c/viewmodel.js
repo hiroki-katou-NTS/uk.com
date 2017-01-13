@@ -15,11 +15,11 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.lbl_003 = ko.observable('001');
-                                    self.lbl_004 = ko.observable('ガソリン単価');
-                                    self.lbl_008 = ko.observable('~ 9999/12');
-                                    self.sel_001_radio = ko.observable('2');
-                                    self.inp_001 = {
+                                    self.code = ko.observable(nts.uk.ui.windows.getShared('code'));
+                                    self.name = ko.observable('ガソリン単価');
+                                    self.endDate = ko.observable('~ 9999/12');
+                                    self.edittingMethod = ko.observable('2');
+                                    self.startDate = {
                                         value: ko.observable('2016/04'),
                                         constraint: '',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -33,10 +33,10 @@ var nts;
                                         readonly: ko.observable(false)
                                     };
                                 }
-                                ScreenModel.prototype.btn_001_clicked = function () {
+                                ScreenModel.prototype.btnApplyClicked = function () {
                                     nts.uk.ui.windows.close();
                                 };
-                                ScreenModel.prototype.btn_002_clicked = function () {
+                                ScreenModel.prototype.btnCancelClicked = function () {
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
