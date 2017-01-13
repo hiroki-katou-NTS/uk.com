@@ -35,6 +35,12 @@ var qmm018;
                         dfd.resolve();
                     }).fail(function (res) {
                     });
+                    qmm018.b.service.getItemList().done(function (data) {
+                        self.items(data);
+                        console.log(data);
+                        dfd.resolve();
+                    }).fail(function (res) {
+                    });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.saveData = function () {

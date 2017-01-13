@@ -7,7 +7,7 @@
 .halign-center { text-align: center; }
 
 #contents-area {
-	width: 450px;
+	width: 430px;
 }
 
 #center-top {
@@ -22,11 +22,17 @@
 	margin-bottom: 20px;
 }
 
-input.ntsSearchBox {
-	width: 324px;
+.icon.icon-searchbox {
+	margin-top: 58px;
+	margin-left: 30px;
 }
 
-#search-box {
+input.ntsSearchBox {
+	margin-left: 40px;
+	width: 285px;
+}
+
+.table {
 	margin-bottom: 10px;
 }
 

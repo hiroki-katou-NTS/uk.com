@@ -24,11 +24,6 @@
 	width: 200px;
 	padding-left: 30px;
 }
-
-.ui-igcombo-fieldholder, .ui-igcombo-field, .ui-igcombo-button {
-	background-color: #c5c5c5;
-	border-color: #c5c5c5;
-}
  
  .sub {
  	margin-left: 50px;
@@ -39,6 +34,15 @@ button.nts-switch-button selected, button.nts-switch-button  {
 	width: 165px;
 	margin-left: 0px;
 	margin-right: 0px;
+}
+
+.ui-igcombo-fieldholder, .ui-igcombo-field, .ui-igcombo-button {
+	background-color: #c5c5c5;
+	border-color: #c5c5c5;
+}
+
+.ui-igcombo-list .ui-igcombo-listitemholder .ui-igcombo-listitem .nts-combo-item .nts-column {
+	width: 50px;
 }
 
 #combo-box {

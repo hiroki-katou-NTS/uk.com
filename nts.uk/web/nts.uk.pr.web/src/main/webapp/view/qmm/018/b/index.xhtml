@@ -21,12 +21,19 @@
 						<span>対象労働日数項目を選択してください。</span>
 					</div>
 					<div id="center-middle">
-						<div id="search-box" data-bind="ntsSearchBox: {
-														comId: 'multiple-list',
-														items: items, 
-														selected: currentCodeList, 
-														selectedKey: 'code',	 
-														fields: ['name', 'code']}" />
+						<div class="table">
+							<div class="cell">
+								<i class="icon icon-searchbox"></i>
+							</div>
+							<div class="cell">
+								<div id="search-box" data-bind="ntsSearchBox: {
+															comId: 'multiple-list',
+															items: items, 
+															selected: currentCodeList, 
+															selectedKey: 'code',	 
+															fields: ['name', 'code']}" />
+							</div>
+						</div>
 						<table id="multiple-list" data-bind="ntsGridList: {
 														width: 400,
 														height: 250,
