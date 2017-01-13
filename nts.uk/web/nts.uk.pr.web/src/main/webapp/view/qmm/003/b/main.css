@@ -5,9 +5,11 @@
 #header {
 	color: #ccc;
 }
-
-#contents-area {
-	width: 1300px;
+#area{
+	width: 330px;
+	height: 500px; 
+	margin-top: 2px;
+	margin-left:50px;
 }
 #treegrid2_container{
 	margin-top: 20px;
@@ -42,13 +44,13 @@ button.ntsSearchBox{
 }
 #B_LBL_001{
 	margin-top: 10px;
-	margin-left: 40px;
+	margin-left: 130px;
 }
 #B_BTN_001{
     width: 90px;
     height: 50px;
     margin-top: 10px;
-    margin-left: 60px;
+    margin-left: 100px;
 	
 }
 #B_BTN_002{

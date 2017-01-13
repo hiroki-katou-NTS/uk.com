@@ -2,9 +2,11 @@ module nts.uk.pr.view.qmm003.a {
     export class ScreenModel {
         // data of items list - tree grid
         items: any;
+        item1s: any;
         singleSelectedCode: KnockoutObservable<any>;
         headers: any;
         curentNode: any;
+        currentNode: any;
         nameBySelectedCode: any;
         arrayAfterFilter: any;
         labelSubsub: any; // show label sub sub of root
@@ -12,7 +14,6 @@ module nts.uk.pr.view.qmm003.a {
         
         // data of itemList - combox
         itemList: KnockoutObservableArray<Node>;
-        itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
@@ -22,24 +23,27 @@ module nts.uk.pr.view.qmm003.a {
         filteredData1: any;
         filteredData2: any;
         selectedCodes: any;
+        Value: KnockoutObservable<string>;
 
         constructor() {
-            var self = this;
-            self.Init();
+            let self = this;
+            self.currentNode = ko.observable(new Node("", "", []));
+            self.init();
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-            self.RemoveData(self.filteredData());
-            console.log(self.filteredData());
-            console.log(self.filteredData1());
+            self.removeData(self.filteredData());
             self.selectedCodes = ko.observableArray([]);
             self.singleSelectedCode.subscribe(function(newValue) {
+                self.Value(newValue);
+
                 if (self.editMode) {
-                    let count = 0;
+                    let count = 0;  
                     self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
-                    self.nameBySelectedCode(self.findByName(self.itemList()));
+                    self.nameBySelectedCode(self.findByName(self.itemList()));             
                     if (count == 1) {
                         self.selectedCode(self.nameBySelectedCode().code);
+                        
                     }
                     let co = 0, co1 = 0;
                     _.each(self.filteredData(), function(obj: Node) {
@@ -63,8 +67,12 @@ module nts.uk.pr.view.qmm003.a {
                 } else {
                     self.editMode = true;
                 }
+                
 
-            }); 
+            });
+            
+
+
         }
         
         findByCode(items: Array<Node>, newValue: string, count: number): Node{
@@ -75,7 +83,6 @@ module nts.uk.pr.view.qmm003.a {
                     if(obj.code == newValue){
                         node = obj;
                         count = count + 1;
-                        console.log(count);
                     }
                     }
                 });
@@ -94,7 +101,40 @@ module nts.uk.pr.view.qmm003.a {
                 });
             return node;
         };
+        removeNodeByCode(items: Array<Node>): any{
+            let self = this;
+            _.remove(items,function(obj: Node){
+                if(obj.code == self.Value()){
+                    console.log(self.Value());
+                    return obj.code == self.Value();
+                }else{
+                    return self.removeNodeByCode(obj.childs);
+                   
+                }
+                })
             
+            };
+        // remove data: return array of subsub tree
+        removeData(items: Array<Node>): any {
+             _.remove(items, function(obj: Node) {
+                  return _.size(obj.code) < 3;
+                });
+            }
+        deleteData():any{
+            let self = this;
+            self.removeNodeByCode(self.items());
+            self.item1s(self.items());
+            self.items([]);
+            self.items(self.item1s());
+            }
+        alerDelete():void{
+            let self= this;
+            if(confirm("do you wanna delete")=== true){
+                self.deleteData();
+            }else{
+                    alert("you didnt delete!");
+            }
+            }           
         resetData(): void {
             let self = this;
             self.editMode = false;
@@ -102,8 +142,10 @@ module nts.uk.pr.view.qmm003.a {
             self.singleSelectedCode("");
             self.selectedCode("");
             self.labelSubsub("");
+            self.items([]);
+            self.items(self.item1s());
         }
-        Init(): void {
+        init(): void {
             let self = this;
             //青森市  itemList == RemoveData()
             self.itemList = ko.observableArray([
@@ -117,6 +159,7 @@ module nts.uk.pr.view.qmm003.a {
                 new Node('8', '熊谷市', []),
                 new Node('9', '浦和市', [])
             ]);
+            // data of treegrid
             self.items = ko.observableArray(
                 [
                     new Node('1', '東北', [
@@ -147,31 +190,39 @@ module nts.uk.pr.view.qmm003.a {
                         ])
                     ]),
                     new Node('5', '東海', [])
-                ]);           
-            self.itemName = ko.observable('');
+                ]);   
             self.currentCode = ko.observable(null);
+            self.item1s = ko.observable(new Node('','',[]));
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.nameBySelectedCode = ko.observable(null);
-            self.inter= ko.observable(null);
-            self.singleSelectedCode = ko.observable("062019");
-            self.curentNode = ko.observable(new Node('062019', '川越市', []));
-            self.labelSubsub = ko.observable(new Node('062020', '熊谷市', []));
-            self.selectedCode = ko.observable("7");
+            self.Value =  ko.observable(null);
+            
+            self.singleSelectedCode = ko.observable("022012");
+            self.curentNode = ko.observable(new Node('022012', '青森市', []));
+            self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
+            self.selectedCode = ko.observable("1");
 
-            }        
-            // remove data: return array of subsub tree
-        RemoveData(items1: Array<Node>): any {
-            let self = this;
-            self.inter = _.remove(items1, function(obj: Node) {
-                  return _.size(obj.code) < 3;
-                });
-            }
+            }  
         openBDialog() {
-            var self = this;
-            nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml").onClosed(function() {
+                //self.singleSelectedCode(nts.uk.ui.windows.setShared("singleSelectedCode"));
+                nts.uk.ui.windows.setShared("singleSelectedCode", self.singleSelectedCode());
             });
         }
+        openCDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("/view/qmm/003/c/index.xhtml");
+        }  
+        openDDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("/view/qmm/003/d/index.xhtml");
+        }   
+        openEDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal("/view/qmm/003/e/index.xhtml");
+        }   
     }
     export class Node {
         code: string;
@@ -194,26 +245,26 @@ module nts.uk.pr.view.qmm003.a {
 //        //              
 //        //           } );
 //    }
-    function OpenModalSubWindowc(option?: any) {
-        let self = this;
-        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-        //           nts.uk.ui.windows.sub.modal("/view/qmm/003/c/test.xhtml", option).onClosed(() => {
-        //
-        //           } );
-    }
-    function OpenModalSubWindowd(option?: any) {
-        let self = this;
-        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-        //           nts.uk.ui.windows.sub.modal("/view/qmm/003/d/test.xhtml", option).onClosed(() => {
-        //                
-        //               
-        //           } );
-    };
-    function OpenModalSubWindowe(option?: any) {
-        let self = this;
-        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-        //           nts.uk.ui.windows.sub.modal("/view/qmm/003/e/test.xhtml", option).onClosed(() => {
-        //             
-        //           } );
-    };
+//    function OpenModalSubWindowc(option?: any) {
+//        let self = this;
+//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
+//                   nts.uk.ui.windows.sub.modal("/view/qmm/003/c/test.xhtml", option).onClosed(() => {
+//        
+//                   } );
+//    }
+//    function OpenModalSubWindowd(option?: any) {
+//        let self = this;
+//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
+//                   nts.uk.ui.windows.sub.modal("/view/qmm/003/d/test.xhtml", option).onClosed(() => {
+//                        
+//                       
+//                   } );
+//    };
+//    function OpenModalSubWindowe(option?: any) {
+//        let self = this;
+//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
+//                   nts.uk.ui.windows.sub.modal("/view/qmm/003/e/test.xhtml", option).onClosed(() => {
+//                     
+//                   } );
+//    };
 };

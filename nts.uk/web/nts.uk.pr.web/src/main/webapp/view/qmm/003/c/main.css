@@ -2,12 +2,9 @@
 .outer {outline:1px solid #FF6138;}
 .fixed-height {height: 45px;}
 .control-group.valign-center > * { vertical-align: middle; }
-#header {
-	color: #ccc;
-}
-
-#contents-area {
-	width: 1300px;
+#area{
+	margin-top: 2px;
+	margin-left:80px;
 }
 #treegrid2_container{
 	margin-top: 20px;
@@ -40,14 +37,14 @@ button.ntsSearchBox{
 	margin-left: 10px;
 	margin-right: 10px;
 }
-#B_BTN_001{
+#C_BTN_001{
     width: 90px;
     height: 50px;
     margin-top: 10px;
-    margin-left: 45px;
+    margin-left: 100px;
 	
 }
-#B_BTN_002{
+#C_BTN_002{
 	width: 80px;
 	margin-top: 30px;
 	margin-left: 20px;	

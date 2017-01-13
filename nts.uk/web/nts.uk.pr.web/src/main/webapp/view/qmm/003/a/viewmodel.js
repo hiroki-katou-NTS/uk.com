@@ -14,15 +14,15 @@ var nts;
                             function ScreenModel() {
                                 this.editMode = true; // true là mode thêm mới, false là mode sửa 
                                 var self = this;
-                                self.Init();
+                                self.currentNode = ko.observable(new Node("", "", []));
+                                self.init();
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                                self.RemoveData(self.filteredData());
-                                console.log(self.filteredData());
-                                console.log(self.filteredData1());
+                                self.removeData(self.filteredData());
                                 self.selectedCodes = ko.observableArray([]);
                                 self.singleSelectedCode.subscribe(function (newValue) {
+                                    self.Value(newValue);
                                     if (self.editMode) {
                                         var count = 0;
                                         self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
@@ -62,7 +62,6 @@ var nts;
                                         if (obj.code == newValue) {
                                             node = obj;
                                             count = count + 1;
-                                            console.log(count);
                                         }
                                     }
                                 });
@@ -82,6 +81,41 @@ var nts;
                                 return node;
                             };
                             ;
+                            ScreenModel.prototype.removeNodeByCode = function (items) {
+                                var self = this;
+                                _.remove(items, function (obj) {
+                                    if (obj.code == self.Value()) {
+                                        console.log(self.Value());
+                                        return obj.code == self.Value();
+                                    }
+                                    else {
+                                        return self.removeNodeByCode(obj.childs);
+                                    }
+                                });
+                            };
+                            ;
+                            // remove data: return array of subsub tree
+                            ScreenModel.prototype.removeData = function (items) {
+                                _.remove(items, function (obj) {
+                                    return _.size(obj.code) < 3;
+                                });
+                            };
+                            ScreenModel.prototype.deleteData = function () {
+                                var self = this;
+                                self.removeNodeByCode(self.items());
+                                self.item1s(self.items());
+                                self.items([]);
+                                self.items(self.item1s());
+                            };
+                            ScreenModel.prototype.alerDelete = function () {
+                                var self = this;
+                                if (confirm("do you wanna delete") === true) {
+                                    self.deleteData();
+                                }
+                                else {
+                                    alert("you didnt delete!");
+                                }
+                            };
                             ScreenModel.prototype.resetData = function () {
                                 var self = this;
                                 self.editMode = false;
@@ -89,8 +123,10 @@ var nts;
                                 self.singleSelectedCode("");
                                 self.selectedCode("");
                                 self.labelSubsub("");
+                                self.items([]);
+                                self.items(self.item1s());
                             };
-                            ScreenModel.prototype.Init = function () {
+                            ScreenModel.prototype.init = function () {
                                 var self = this;
                                 //青森市  itemList == RemoveData()
                                 self.itemList = ko.observableArray([
@@ -104,6 +140,7 @@ var nts;
                                     new Node('8', '熊谷市', []),
                                     new Node('9', '浦和市', [])
                                 ]);
+                                // data of treegrid
                                 self.items = ko.observableArray([
                                     new Node('1', '東北', [
                                         new Node('11', '青森県', [
@@ -134,28 +171,35 @@ var nts;
                                     ]),
                                     new Node('5', '東海', [])
                                 ]);
-                                self.itemName = ko.observable('');
                                 self.currentCode = ko.observable(null);
+                                self.item1s = ko.observable(new Node('', '', []));
                                 self.isEnable = ko.observable(true);
                                 self.isEditable = ko.observable(true);
                                 self.nameBySelectedCode = ko.observable(null);
-                                self.inter = ko.observable(null);
-                                self.singleSelectedCode = ko.observable("062019");
-                                self.curentNode = ko.observable(new Node('062019', '川越市', []));
-                                self.labelSubsub = ko.observable(new Node('062020', '熊谷市', []));
-                                self.selectedCode = ko.observable("7");
-                            };
-                            // remove data: return array of subsub tree
-                            ScreenModel.prototype.RemoveData = function (items1) {
-                                var self = this;
-                                self.inter = _.remove(items1, function (obj) {
-                                    return _.size(obj.code) < 3;
-                                });
+                                self.Value = ko.observable(null);
+                                self.singleSelectedCode = ko.observable("022012");
+                                self.curentNode = ko.observable(new Node('022012', '青森市', []));
+                                self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
+                                self.selectedCode = ko.observable("1");
                             };
                             ScreenModel.prototype.openBDialog = function () {
                                 var self = this;
-                                nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function () {
+                                nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml").onClosed(function () {
+                                    //self.singleSelectedCode(nts.uk.ui.windows.setShared("singleSelectedCode"));
+                                    nts.uk.ui.windows.setShared("singleSelectedCode", self.singleSelectedCode());
                                 });
+                            };
+                            ScreenModel.prototype.openCDialog = function () {
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal("/view/qmm/003/c/index.xhtml");
+                            };
+                            ScreenModel.prototype.openDDialog = function () {
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal("/view/qmm/003/d/index.xhtml");
+                            };
+                            ScreenModel.prototype.openEDialog = function () {
+                                var self = this;
+                                nts.uk.ui.windows.sub.modal("/view/qmm/003/e/index.xhtml");
                             };
                             return ScreenModel;
                         }());
@@ -171,37 +215,6 @@ var nts;
                             return Node;
                         }());
                         a.Node = Node;
-                        //    function OpenModalSubWindow(option?: any) {
-                        //        let self = this;
-                        //        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-                        //        //           nts.uk.ui.windows.sub.modal("/view/qmm/003/b/test.xhtml", option).onClosed(() => {
-                        //        //              
-                        //        //           } );
-                        //    }
-                        function OpenModalSubWindowc(option) {
-                            var self = this;
-                            nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-                            //           nts.uk.ui.windows.sub.modal("/view/qmm/003/c/test.xhtml", option).onClosed(() => {
-                            //
-                            //           } );
-                        }
-                        function OpenModalSubWindowd(option) {
-                            var self = this;
-                            nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-                            //           nts.uk.ui.windows.sub.modal("/view/qmm/003/d/test.xhtml", option).onClosed(() => {
-                            //                
-                            //               
-                            //           } );
-                        }
-                        ;
-                        function OpenModalSubWindowe(option) {
-                            var self = this;
-                            nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-                            //           nts.uk.ui.windows.sub.modal("/view/qmm/003/e/test.xhtml", option).onClosed(() => {
-                            //             
-                            //           } );
-                        }
-                        ;
                     })(a = qmm003.a || (qmm003.a = {}));
                 })(qmm003 = view.qmm003 || (view.qmm003 = {}));
             })(view = pr.view || (pr.view = {}));

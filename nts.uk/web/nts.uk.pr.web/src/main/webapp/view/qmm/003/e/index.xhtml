@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.layout.LayoutName
@@ -17,7 +17,7 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:stylefile path="main.css" />
-
+			<script>var dialogSize = { height: 700, width: 850 };</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -31,15 +31,16 @@
 					<div>
 						<label id="E_LBL_002">【統合元情報】</label>
 					</div>
-					<div class="caret-right caret-background">
+					<div class="caret-right caret-background" style="width:330px; height: 500px; margin-top: 2px; margin-left:30px;">
+					
 
 						<div style="width: 350px"
 							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid21"
 								data-bind="ntsTreeGridView:{
-								   	width: 350,
-									height: 450,
+								   	width: 300,
+									height: 400,
 									options: items,
 									value: singleSelectedCode,
 									optionsValue: 'code',
@@ -62,8 +63,8 @@
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
-								   	width: 350,
-									height: 450,
+								   	width: 300,
+									height: 400,
 									options: items,
 									value: singleSelectedCode,
 									optionsValue: 'code',

@@ -18,7 +18,10 @@
 	margin-top: 2px;
 	margin-left: 10px;
 }
-
+.th{
+	width: 200px;
+	border: none;
+}
 
 #A_BTN_005 {
 	margin-left: 150px;
@@ -30,19 +33,14 @@
 	height: 30px;
 	background-color: #fed3c6;
 }
-
-#A_LBL_001 {
-	margin-top: 5px;
-	margin-left: 500px;
-	width: 100px;
-	height: 30px;
-}
 .nts-left-content {
 	margin-top: 10px;
 	width: 700px;'
 	
 }
-
+.form-label {
+	margin-bottom: 10px;
+}
 .nts-right-content {
 	float: left;
 	padding: 20px;
@@ -52,24 +50,6 @@
 #A_LBL_002{
 	width: 200px;
 }
-
-/* #A_INP_002 {
-	background: #ccc;
-	border-radius: 5px;
-	margin-left: 100px;
-	
-}
-
-#A_INP_003 {
-	width: 300px;
-	margin-left: 10px;
-}
-#A_BTN_007{
-	margin-left: 5px;
-}
-#A_INP_003{
-}
- */
 #A_INP_002 {
 	background: #ccc;
 	border-radius: 5px;
@@ -82,11 +62,7 @@
     width: 200px;
     margin-left: 5px;
 }
-.form-label {
-	margin-bottom: 5px;
-	vertical-align: baseline;
-}
-#A_LBL_003{
+/* #A_LBL_003{
 	vertical-align: baseline;
 	width: 200px;
 }
@@ -113,7 +89,7 @@
 #A_LBL_008{
 	vertical-align: baseline;
 	width: 200px;
-}
+} */
 #A_BTN_010 {
 	width: 40px;
 	height: 25px;
@@ -124,13 +100,17 @@
 	height: 25px;
 	margin-left: 15px;
 }
+#A_LBL_011 {
+	margin-left: 70px;
+	margin-top: -5px;
+}
 #A_LBL_010 {
 	margin-top: 5px;
 }
 #A_INP_009 {
 	margin-top: 5px;
-	width: 300px;
-	height: 200px;
+	width: 400px;
+	height: 150px;
 }
 #treegrid2_container{
 	margin-top: auto;
