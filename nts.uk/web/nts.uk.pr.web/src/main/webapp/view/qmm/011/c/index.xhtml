@@ -9,13 +9,13 @@
 					</div>
 					<div id="list-box"
 						data-bind="ntsListBox: {
-						options: clst001,
+						options: lstHistoryAccidentInsuranceRate,
 						optionsValue: 'code',
 						optionsText: 'name',
 						multiple: true,
-						value: clstsel001,
+						value: selectionHistoryAccidentInsuranceRate,
 						enable: true,
-						rows: 4,
+						rows: 10,
 						required: true,
 						columns: [
 							{ prop: 'name', length: 10 }
@@ -24,20 +24,19 @@
 				<td id="contents-right">
 					<table id="tableRight">
 						<tr>
-							<td class="contentsRL">
+							<td class="trFull5C">
 								<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true}">
 									<label>期間<br /></label>
 								</div>
 							</td>
-							<td class="contentsRR">
-								<input id="C_INP_001"
-									class="trFull15" data-name="code"
-									data-bind="ntsTextEditor: {value: cinp001, 
-									constraint: 'C_INP_001', 
+							<td class="contentsRR"><input
+								id="inp_historyAccidentInsuranceRateStart" class="trFull45"
+								data-name="historyAccidentInsuranceRateStart"
+								data-bind="ntsTextEditor: {value: historyAccidentInsuranceRateStart, 
 									option: textEditorOption, 
-									enable: true}"/> 
-								<label id="C_LBL_002"> ~ </label> <label
-								id="C_LBL_003"> 終了年月 </label></td>
+									enable: true}" />
+								<label id="C_LBL_002"> ~ </label> <label id="C_LBL_003"
+								data-bind="text: historyAccidentInsuranceRateEnd"></label></td>
 						</tr>
 						<tr>
 							<td colspan="2"><hr /></td>
@@ -45,30 +44,30 @@
 						<tr>
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
-									class="table_border_black">
+									class="table_border_black"
+									data-bind="with: accidentInsuranceRateModel">
 									<tbody>
 										<tr class="bg-green">
 											<th></th>
-											<th></th>
-											<th class="text_center">A</th>
-											<th class="text_center">B</th>
+											<th with="370" class="text_center"></th>
+											<th class="text_center">事業主負担率</th>
+											<th class="text_center">端数処理</th>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz1StModel">
 											<td class="bg-green text_center">1</td>
 											<td class="bg-green text_center">事業種類名1</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
-												<input class="health-input"
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp002, 
-													constraint: 'C_INP_002', 
-													option: textEditorOption, 
-													enable: true}"></input>/1000</td>
-											<td>
-												<div 
+												<div
 													data-bind="ntsComboBox: {
-													options: csel001,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel001Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
@@ -77,238 +76,211 @@
 													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz2NdModel">
 											<td class="bg-green text_center">2</td>
 											<td class="bg-green text_center">事業種類名2</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp003, 
-													constraint: 'C_INP_003', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0011,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0011Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz3RdModel">
 											<td class="bg-green text_center">3</td>
 											<td class="bg-green text_center">事業種類名3</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp004, 
-													constraint: 'C_INP_004', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0012,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0012Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz4ThModel">
 											<td class="bg-green text_center">4</td>
 											<td class="bg-green text_center">事業種類名4</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp005, 
-													constraint: 'C_INP_005', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0013,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0013Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz5ThModel">
 											<td class="bg-green text_center">5</td>
 											<td class="bg-green text_center">事業種類名5</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp006, 
-													constraint: 'C_INP_006', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0014,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0014Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz6ThModel">
 											<td class="bg-green text_center">6</td>
 											<td class="bg-green text_center">事業種類名6</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp007, 
-													constraint: 'C_INP_007', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0015,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0015Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz7ThModel">
 											<td class="bg-green text_center">7</td>
 											<td class="bg-green text_center">事業種類名7</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp008, 
-													constraint: 'C_INP_008', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0016,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0016Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz8ThModel">
 											<td class="bg-green text_center">8</td>
 											<td class="bg-green text_center">事業種類名8</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp009, 
-													constraint: 'C_INP_009', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0017,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0017Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz9ThModel">
 											<td class="bg-green text_center">9</td>
 											<td class="bg-green text_center">事業種類名9</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp010, 
-													constraint: 'C_INP_010', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0018,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0018Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
-										<tr>
+										<tr data-bind="with: accidentInsuranceRateBiz10ThModel">
 											<td class="bg-green text_center">10</td>
 											<td class="bg-green text_center">事業種類名10</td>
-											<td>
-												<input class="health-input" 
-													data-name="code"
-													data-bind="ntsTextEditor: {value: cinp011, 
-													constraint: 'C_INP_011', 
-													option: textEditorOption, 
-													enable: true}">
-												</input>/1000</td>
+											<td><div>
+													<input class="health-input" data-name="insuRate"
+														data-bind="ntsNumberEditor: {value: insuRate, 
+													option: rateInputOptions, 
+													enable: true}"></input>/1000
+												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: csel0019,
+													options: selectionRoundingMethod,
 													optionsValue: 'code',
-													value: csel0019Code,
+													value: insuRound,
 													optionsText: 'name',
 													editable: true,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
-													]}">
-												</div>
+													]}"></div>
 											</td>
 										</tr>
 									</tbody>

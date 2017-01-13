@@ -7,8 +7,13 @@
 	margin-right: 5px;
 }
 
-.trFull5 {
+.trFull5B {
 	width: 5%;
+	padding-bottom: 5px;
+}
+
+.trFull5C {
+	width: 10%;
 	padding-bottom: 5px;
 }
 

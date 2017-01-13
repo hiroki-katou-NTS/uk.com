@@ -66,7 +66,19 @@ module nts.uk.pr.view.qmm011.a {
                     this.monthRage = monthRage;
                 }
             }
-            
+            export class InsuBizRateItem {
+                /** The insu biz type. */
+                insuBizType: number;
+                /** The insu rate. */
+                insuRate: number;
+                /** The insu round. */
+                insuRound: number;
+                constructor(insuBizType: number, insuRate: number, insuRound: number) {
+                    this.insuBizType = insuBizType;
+                    this.insuRate = insuRate;
+                    this.insuRound = insuRound;
+                }
+            }
             export enum CareerGroup {
                 /** The Agroforestry. */
                 Agroforestry = 0,
@@ -74,6 +86,29 @@ module nts.uk.pr.view.qmm011.a {
                 Contruction = 1,
                 /** The Other. */
                 Other = 2
+            }
+            export enum BusinessTypeEnum {
+                /** The Biz 1 st. */
+                Biz1St = 1,
+                /** The Biz 2 nd. */
+                Biz2Nd = 2,
+                /** The Biz 3 rd. */
+                Biz3Rd = 3,
+                /** The Biz 4 th. */
+                Biz4Th = 4,
+                /** The Biz 5 th. */
+                Biz5Th = 5,
+                /** The Biz 6 th. */
+                Biz6Th = 6,
+                /** The Biz 7 th. */
+                Biz7Th = 7,
+                /** The Biz 8 th. */
+                Biz8Th = 8,
+                /** The Biz 9 th. */
+                Biz9Th = 9,
+                /** The Biz 10 th. */
+                Biz10Th = 10
+
             }
         }
     }
