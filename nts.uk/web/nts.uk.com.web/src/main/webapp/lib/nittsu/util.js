@@ -209,6 +209,43 @@ var nts;
                 }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
+            var Range = (function () {
+                function Range(start, end) {
+                    if (start > end) {
+                        throw new Error('start is larger than end');
+                    }
+                    this.start = start;
+                    this.end = end;
+                }
+                Range.prototype.contains = function (value) {
+                    return this.start <= value && value <= this.end;
+                };
+                Range.prototype.greaterThan = function (value) {
+                    return value < this.start;
+                };
+                Range.prototype.greaterThanOrEqualTo = function (value) {
+                    return value <= this.start;
+                };
+                Range.prototype.lessThan = function (value) {
+                    return this.end < value;
+                };
+                Range.prototype.lessThanOrEqualTo = function (value) {
+                    return this.end <= value;
+                };
+                Range.prototype.distanceFrom = function (value) {
+                    if (this.greaterThan(value)) {
+                        return value - this.start;
+                    }
+                    else if (this.lessThan(value)) {
+                        return value - this.end;
+                    }
+                    else {
+                        return 0;
+                    }
+                };
+                return Range;
+            }());
+            util.Range = Range;
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
