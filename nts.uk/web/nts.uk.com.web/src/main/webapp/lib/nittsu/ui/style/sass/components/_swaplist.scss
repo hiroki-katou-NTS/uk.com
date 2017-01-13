@@ -1,0 +1,13 @@
+.ntsSwapArea{
+	display: table-row;
+}
+.ntsSwapList-container{
+	display: table;
+	table-layout: fixed;
+}
+.ntsSwapList{
+	overflow: auto;
+}
+.ntsSearchButton{
+	margin-left: 10px;
+}
