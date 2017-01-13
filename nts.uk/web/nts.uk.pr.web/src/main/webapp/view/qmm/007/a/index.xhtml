@@ -7,10 +7,17 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+			__viewContext.primitiveValueConstraints.Money = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 10,
+				};
+			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName
-				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money
+				<!-- nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money  -->
 				nts.uk.shr.com.primitive.Memo
   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
