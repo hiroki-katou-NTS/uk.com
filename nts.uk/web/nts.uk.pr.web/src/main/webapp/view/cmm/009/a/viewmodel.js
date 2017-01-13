@@ -1,5 +1,5 @@
-var cmm014;
-(function (cmm014) {
+var cmm009;
+(function (cmm009) {
     var a;
     (function (a) {
         var viewmodel;
@@ -7,11 +7,12 @@ var cmm014;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.classificationCode = ko.observable("");
-                    self.classificationName = ko.observable("");
-                    self.classificationMemo = ko.observable("");
-                    self.classificationList = ko.observableArray([]);
-                    self.selectedClassificationCode = ko.observable(null);
+                    self.departmentCode = ko.observable("");
+                    self.departmentName = ko.observable("");
+                    self.shortName = ko.observable("");
+                    self.genericName = ko.observable("");
+                    self.fullGenericName = ko.observable("");
+                    self.externalCode = ko.observable("");
                     self.texteditorcode = {
                         value: ko.observable(''),
                         constraint: 'ResidenceCode',
@@ -25,6 +26,42 @@ var cmm014;
                         enable: ko.observable(true)
                     };
                     self.texteditorname = {
+                        value: ko.observable(''),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            width: "100px",
+                            textalign: "left"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(true)
+                    };
+                    self.texteditorshortname = {
+                        value: ko.observable(''),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            width: "100px",
+                            textalign: "left"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(true)
+                    };
+                    self.texteditorgenericname = {
+                        value: ko.observable(''),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            width: "100px",
+                            textalign: "left"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(true)
+                    };
+                    self.texteditorexternalcode = {
                         value: ko.observable(''),
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -59,13 +96,6 @@ var cmm014;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var Classification = (function () {
-                function Classification(classificationCode, classificationName) {
-                    this.classificationCode = classificationCode;
-                    this.classificationName = classificationName;
-                }
-                return Classification;
-            }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
-    })(a = cmm014.a || (cmm014.a = {}));
-})(cmm014 || (cmm014 = {}));
+    })(a = cmm009.a || (cmm009.a = {}));
+})(cmm009 || (cmm009 = {}));
