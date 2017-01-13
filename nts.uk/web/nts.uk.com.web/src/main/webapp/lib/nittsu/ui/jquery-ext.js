@@ -329,8 +329,59 @@ var nts;
                         }
                     }
                 })(ntsListBox || (ntsListBox = {}));
-                var userGuide;
-                (function (userGuide) {
+                var ntsWizard;
+                (function (ntsWizard) {
+                    $.fn.ntsWizard = function (action, index) {
+                        var $wizard = $(this);
+                        if (action === "begin") {
+                            return begin($wizard);
+                        }
+                        else if (action === "end") {
+                            return end($wizard);
+                        }
+                        else if (action === "goto") {
+                            return goto($wizard, index);
+                        }
+                        else if (action === "prev") {
+                            return prev($wizard);
+                        }
+                        else if (action === "next") {
+                            return next($wizard);
+                        }
+                        else if (action === "getCurrentStep") {
+                            return getCurrentStep($wizard);
+                        }
+                        else {
+                            return $wizard;
+                        }
+                        ;
+                    };
+                    function begin(wizard) {
+                        wizard.setStep(0);
+                        return wizard;
+                    }
+                    function end(wizard) {
+                        wizard.setStep(wizard.data("length") - 1);
+                        return wizard;
+                    }
+                    function goto(wizard, index) {
+                        wizard.setStep(index);
+                        return wizard;
+                    }
+                    function prev(wizard) {
+                        wizard.steps("previous");
+                        return wizard;
+                    }
+                    function next(wizard) {
+                        wizard.steps("next");
+                        return wizard;
+                    }
+                    function getCurrentStep(wizard) {
+                        return wizard.steps("getCurrentIndex");
+                    }
+                })(ntsWizard || (ntsWizard = {}));
+                var ntsUserGuide;
+                (function (ntsUserGuide) {
                     $.fn.ntsUserGuide = function (action) {
                         var $controls = $(this);
                         if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
@@ -462,7 +513,7 @@ var nts;
                         else if (direction === "bottom")
                             return "top";
                     }
-                })(userGuide || (userGuide = {}));
+                })(ntsUserGuide || (ntsUserGuide = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
