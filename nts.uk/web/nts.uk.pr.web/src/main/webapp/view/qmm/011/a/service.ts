@@ -1,15 +1,6 @@
 module nts.uk.pr.view.qmm011.a {
     export module service {
         export module model {
-            export function convertdata(yearmonth: YearMonth): string {
-                var viewmonth = '';
-                if (yearmonth.month < 0) {
-                    viewmonth = '0' + yearmonth.month;
-                } else {
-                    viewmonth = '' + yearmonth.month;
-                }
-                return '' + yearmonth.year + '/' + viewmonth;
-            }
             export class YearMonth {
                 year: number;
                 month: number;
@@ -34,6 +25,55 @@ module nts.uk.pr.view.qmm011.a {
                     this.code = code;
                     this.name = name;
                 }
+            }
+            export class UnemployeeInsuranceRateItemSetting {
+                roundAtr: number;
+                rate: number;
+                constructor(roundAtr: number, rate: number) {
+                    this.roundAtr = roundAtr;
+                    this.rate = rate;
+                }
+            }
+            export class UnemployeeInsuranceRateItem {
+                careerGroup: number;
+                companySetting: UnemployeeInsuranceRateItemSetting;
+                personalSetting: UnemployeeInsuranceRateItemSetting;
+                constructor(careerGroup: number, companySetting: UnemployeeInsuranceRateItemSetting, personalSetting: UnemployeeInsuranceRateItemSetting) {
+                    this.careerGroup = careerGroup;
+                    this.companySetting = companySetting;
+                    this.personalSetting = personalSetting;
+                }
+            }
+            export class HistoryUnemployeeInsuranceRate {
+                historyId: string;
+                companyCode: string;
+                monthRage: MonthRange;
+                constructor(historyId: string, companyCode: string, monthRage: MonthRange) {
+                    this.historyId = historyId;
+                    this.companyCode = companyCode;
+                    this.monthRage = monthRage;
+
+                }
+            }
+
+            export class HistoryAccidentInsuranceRate {
+                historyId: string;
+                companyCode: string;
+                monthRage: MonthRange;
+                constructor(historyId: string, companyCode: string, monthRage: MonthRange) {
+                    this.historyId = historyId;
+                    this.companyCode = companyCode;
+                    this.monthRage = monthRage;
+                }
+            }
+            
+            export enum CareerGroup {
+                /** The Agroforestry. */
+                Agroforestry = 0,
+                /** The Contruction. */
+                Contruction = 1,
+                /** The Other. */
+                Other = 2
             }
         }
     }

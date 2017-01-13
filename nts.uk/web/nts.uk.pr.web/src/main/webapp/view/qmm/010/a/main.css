@@ -8,15 +8,15 @@
 }
 
 .trFull5 {
-	width: 5%;
+	width: 50px;
 }
 
 .trFull10 {
-	width: 10%;
+	width: 50px;
 }
 
 .trFull15 {
-	width: 15%;
+	width: 100px;
 }
 
 .trFull25 {
@@ -32,7 +32,7 @@
 }
 
 .trFull45 {
-	width: 45%;
+	width: 180px;
 }
 
 .left20 {
@@ -42,10 +42,6 @@
 .labelRed {
 	font-weight: bold;
 	color: red;
-}
-
-.trFull15 {
-	width: 15%;
 }
 
 #btn_delete {
