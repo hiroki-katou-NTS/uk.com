@@ -8,7 +8,10 @@ var products = [
     { "ProductID": 317, "Name": "LL Crankarm", "ProductNumber": "CA-5965" },
     { "ProductID": 318, "Name": "ML Crankarm", "ProductNumber": "CA-6738" },
     { "ProductID": 319, "Name": "HL Crankarm", "ProductNumber": "CA-7457" },
-    { "ProductID": 320, "Name": "Chainring Bolts", "ProductNumber": "CB-2903" }
+    { "ProductID": 320, "Name": "Chainring Bolts", "ProductNumber": "CB-2903" },
+    { "ProductID": 5, "Name": "Adustable Race", "ProductNumber": "AR-5383" },
+    { "ProductID": 6, "Name": "Adjusable Race", "ProductNumber": "AR-5389" },
+    { "ProductID": 7, "Name": "djustable Race", "ProductNumber": "AR-5387" }
 ];
 __viewContext.ready(function () {
     var ScreenModel = (function () {
@@ -51,16 +54,19 @@ __viewContext.ready(function () {
             });
             $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
             $("#grid").on("selectionChanged", function () {
-                var selectedRows = $('#grid').ntsGridList("getSelected");
+                var selectedRows = $('#grid').igGrid("selectedRows");
                 var arr = [];
                 for (var i = 0; i < selectedRows.length; i++) {
                     arr.push("" + selectedRows[i].id);
+                }
+                if (arr.length == 1) {
+                    $("#grid_scrollContainer").scrollTop(selectedRows[0].element.position().top);
                 }
                 self.selectedList(arr);
             });
         }
         ScreenModel.prototype.selectionChanged = function (evt, ui) {
-            console.log(evt.type);
+            //console.log(evt.type);
             var selectedRows = ui.selectedRows;
             var arr = [];
             for (var i = 0; i < selectedRows.length; i++) {
