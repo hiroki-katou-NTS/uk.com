@@ -11,6 +11,12 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
 public class AccidentInsuranceRate extends AggregateRoot {
 
@@ -25,6 +31,6 @@ public class AccidentInsuranceRate extends AggregateRoot {
 	private MonthRange applyRange;
 
 	/** The short name. */
-	private Set<UnemployeeInsuranceRateItem> rateItems;
+	private Set<InsuBizRateItem> rateItems;
 
 }

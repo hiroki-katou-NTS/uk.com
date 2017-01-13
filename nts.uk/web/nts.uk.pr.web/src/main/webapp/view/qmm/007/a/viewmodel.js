@@ -20,14 +20,19 @@ var nts;
                             var UnitPriceHistoryDto = a.service.model.UnitPriceHistoryDto;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
+                                    this.mockData = [new Node('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new Node('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new Node('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
+                                        new Node('002', '宿直単価', '2016/04 ~ 9999/12', false, [new Node('0021', '宿直単価', '2016/04 ~ 9999/12', true), new Node('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
                                     var self = this;
                                     self.unitPriceDetailModel = ko.observable(new UnitPriceDetailModel());
-                                    self.historyList = ko.observableArray([
-                                        new Node('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new Node('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new Node('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
-                                        new Node('002', '宿直単価', '2016/04 ~ 9999/12', false, [new Node('0021', '宿直単価', '2016/04 ~ 9999/12', true), new Node('0022', '宿直単価', '2015/04 ~ 2016/03', true)])]);
+                                    self.historyList = ko.observableArray(self.mockData);
                                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
-                                    self.singleSelectedCode = ko.observable(null);
-                                    self.selectedCodes = ko.observableArray([]);
+                                    self.selectedCode = ko.observable();
+                                    self.selectedCode.subscribe(function (val) {
+                                        if (val != null || val != undefined) {
+                                            self.code.value(val);
+                                            console.log(val);
+                                        }
+                                    });
                                     self.endDate = ko.observable('（平成29年01月） ~');
                                     self.code = {
                                         value: ko.observable(self.unitPriceDetailModel().unitPriceCode),
@@ -101,9 +106,11 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.goToB = function () {
+                                    nts.uk.ui.windows.setShared('code', this.code.value());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 450 });
                                 };
                                 ScreenModel.prototype.goToC = function () {
+                                    nts.uk.ui.windows.setShared('code', this.code.value());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 560 });
                                 };
                                 ScreenModel.prototype.test = function () {
@@ -139,7 +146,18 @@ var nts;
                                     self.payAtrDaily(0);
                                     self.payAtrHourly(0);
                                 };
-                                ScreenModel.prototype.loadUnitPriceDetail = function (unitPricecode, startDate) {
+                                ScreenModel.prototype.loadUnitPriceDetail = function (model) {
+                                    var self = this;
+                                    self.code.value(model.unitPriceCode);
+                                    self.name.value(model.unitPriceName);
+                                    self.startDate.value(model.startDate);
+                                    self.money.value(model.budget);
+                                    self.settingType(model.fixPaySettingType);
+                                    self.payAtr(model.fixPayAtr);
+                                    self.payAtrMonthly(model.fixPayAtrMonthly);
+                                    self.payAtrDayMonth(model.fixPayAtrDayMonth);
+                                    self.payAtrDaily(model.fixPayAtrDaily);
+                                    self.payAtrHourly(model.fixPayAtrHourly);
                                 };
                                 return ScreenModel;
                             }());
