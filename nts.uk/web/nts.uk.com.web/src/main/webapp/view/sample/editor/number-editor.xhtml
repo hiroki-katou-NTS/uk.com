@@ -45,7 +45,11 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: numbereditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode'}" />
+
+<!-- Full Options -->
+<div data-bind="with: numbereditor">
 	<input data-bind="ntsNumberEditor: {
 		value: value,
 		constraint: constraint,
@@ -227,7 +231,11 @@
 								</ol>
 								<div id="tabs-currency-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: currencyeditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode' }" />
+
+<!-- Full Options -->
+<div data-bind="with: currencyeditor">
 	<input data-bind="ntsNumberEditor: {
 		value: value,
 		constraint: constraint,
