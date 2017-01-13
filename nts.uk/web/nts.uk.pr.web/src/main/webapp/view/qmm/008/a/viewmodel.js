@@ -12,24 +12,31 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var InsuranceOfficeItem = a.service.model.finder.InsuranceOfficeItemDto;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                                        new Node('0003', 'Bangkok Thailand', []),
-                                        new Node('0004', 'Tokyo Japan', []),
-                                        new Node('0005', 'Jakarta Indonesia', []),
-                                        new Node('0002', 'Seoul Korea', []),
-                                        new Node('0006', 'Paris France', []),
-                                        new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                                        new Node('0010', 'Beijing China', []),
-                                        new Node('0011', 'London United Kingdom', []),
-                                        new Node('0012', '', [])]);
-                                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "childs"));
+                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel("code", "name", true, null, null);
+                                    self.InsuranceOfficeList = ko.observableArray([
+                                        new InsuranceOfficeItem('id01', 'A 事業所', 'code1', [
+                                            new InsuranceOfficeItem('child01', '~ 9999/12', '2016/04', []),
+                                            new InsuranceOfficeItem('child02', '~ 9999/12', '2016/04', [])
+                                        ]),
+                                        new InsuranceOfficeItem('id02', 'B 事業所', 'code2', [])]);
+                                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.InsuranceOfficeList(), "childs"));
                                     self.singleSelectedCode = ko.observable(null);
                                     self.selectedCodes = ko.observableArray([]);
                                     self.index = 0;
                                     self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
+                                    self.roundingList = ko.observableArray([
+                                        new RoundingItemModel('001', 'op1change'),
+                                        new RoundingItemModel('002', 'op2'),
+                                        new RoundingItemModel('003', 'op3')
+                                    ]);
+                                    self.healthInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3,
+                                        decimallength: 2
+                                    }));
                                     self.enable = ko.observable(true);
                                     self.roundingRules = ko.observableArray([
                                         { code: '1', name: 'する' },
@@ -58,7 +65,7 @@ var nts;
                                     }
                                     self.value = ko.observable("Hello world!");
                                     self.isTransistReturnData = ko.observable(false);
-                                    self.health_inp_002 = {
+                                    self.healthTimeInput = {
                                         value: ko.observable('2016/04'),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -68,7 +75,7 @@ var nts;
                                         })),
                                         required: ko.observable(false),
                                     };
-                                    self.pension_inp_002 = {
+                                    self.pensionTimeInput = {
                                         value: ko.observable('2016/04'),
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -78,227 +85,39 @@ var nts;
                                         })),
                                         required: ko.observable(false),
                                     };
-                                    self.health_inp_003 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_004 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_005 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_006 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_007 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_008 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_009 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_010 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_011 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_012 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_013 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_014 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_015 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_016 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_017 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.health_inp_018 = {
-                                        value: ko.observable('40.900'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "90",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.comboBox1 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.healthSalaryPersonalGeneral = ko.observable(100000);
+                                    self.healthSalaryCompanyGeneral = ko.observable(100000);
+                                    self.healthBonusPersonalGeneral = ko.observable(100000);
+                                    self.healthBonusCompanyGeneral = ko.observable(100000);
+                                    self.comboBox1 = ko.observableArray(self.roundingList());
                                     self.comboBox1ItemName = ko.observable('');
                                     self.comboBox1CurrentCode = ko.observable(3);
                                     self.comboBox1SelectedCode = ko.observable('002');
-                                    self.comboBox2 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox2 = ko.observableArray(self.roundingList());
                                     self.comboBox2ItemName = ko.observable('');
                                     self.comboBox2CurrentCode = ko.observable(3);
                                     self.comboBox2SelectedCode = ko.observable('002');
-                                    self.comboBox3 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox3 = ko.observableArray(self.roundingList());
                                     self.comboBox3ItemName = ko.observable('');
                                     self.comboBox3CurrentCode = ko.observable(3);
                                     self.comboBox3SelectedCode = ko.observable('002');
-                                    self.comboBox4 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox4 = ko.observableArray(self.roundingList());
                                     self.comboBox4ItemName = ko.observable('');
                                     self.comboBox4CurrentCode = ko.observable(3);
                                     self.comboBox4SelectedCode = ko.observable('002');
-                                    self.comboBox5 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2k'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox5 = ko.observableArray(self.roundingList());
                                     self.comboBox5ItemName = ko.observable('');
                                     self.comboBox5CurrentCode = ko.observable(3);
                                     self.comboBox5SelectedCode = ko.observable('002');
-                                    self.comboBox6 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox6 = ko.observableArray(self.roundingList());
                                     self.comboBox6ItemName = ko.observable('');
                                     self.comboBox6CurrentCode = ko.observable(3);
                                     self.comboBox6SelectedCode = ko.observable('002');
-                                    self.comboBox7 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox7 = ko.observableArray(self.roundingList());
                                     self.comboBox7ItemName = ko.observable('');
                                     self.comboBox7CurrentCode = ko.observable(3);
                                     self.comboBox7SelectedCode = ko.observable('002');
-                                    self.comboBox8 = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.comboBox8 = ko.observableArray(self.roundingList());
                                     self.comboBox8ItemName = ko.observable('');
                                     self.comboBox8CurrentCode = ko.observable(3);
                                     self.comboBox8SelectedCode = ko.observable('002');
@@ -331,12 +150,50 @@ var nts;
                                         constraint: '',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                             grouplength: 3,
-                                            decimallength: 2 })),
+                                            decimallength: 2
+                                        })),
                                         required: ko.observable(false),
                                         enable: ko.observable(true),
                                         readonly: ko.observable(false)
                                     };
                                 }
+                                ScreenModel.prototype.testObservable = function () {
+                                    this.healthSalaryPersonalGeneral(this.healthTimeInput.value());
+                                };
+                                ScreenModel.prototype.start = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    self.loadAllInsuranceOffice().done(function () {
+                                        if (self.InsuranceOfficeList().length > 0) {
+                                            self.selectedInsuranceOfficeId(_self.InsuranceOfficeList()[0].id);
+                                        }
+                                        else {
+                                        }
+                                        dfd.resolve(null);
+                                    });
+                                    self.getAllRounding().done(function () {
+                                        dfd.resolve(null);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadAllInsuranceOffice = function () {
+                                    var _self = this;
+                                    var dfd = $.Deferred();
+                                    a.service.findInsuranceOffice(_self.searchKey()).done(function (data) {
+                                        _self.InsuranceOfficeList(data);
+                                        dfd.resolve(null);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.getAllRounding = function () {
+                                    var _self = this;
+                                    var dfd = $.Deferred();
+                                    a.service.findAllRounding().done(function (data) {
+                                        _self.roundingList(data);
+                                        dfd.resolve(null);
+                                    });
+                                    return dfd.promise();
+                                };
                                 ScreenModel.prototype.resetSelection = function () {
                                     var self = this;
                                     self.filteredData(self.dataSource());
@@ -364,6 +221,8 @@ var nts;
                                         $("#tabs-complex").width(700);
                                     else
                                         $("#tabs-complex").width("auto");
+                                };
+                                ScreenModel.prototype.convertListToParentChilds = function () {
                                 };
                                 ScreenModel.prototype.OpenModalSubWindow = function () {
                                     nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
@@ -423,7 +282,37 @@ var nts;
                                 return RoundingItemModel;
                             }());
                             viewmodel.RoundingItemModel = RoundingItemModel;
+                            var HealthInsuranceRateModel = (function () {
+                                function HealthInsuranceRateModel(companyCode, officeCode, autoCaculate, rateItems, roundingMethods) {
+                                }
+                                return HealthInsuranceRateModel;
+                            }());
+                            viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
+                            var HealthInsuranceRateItemModel = (function () {
+                                function HealthInsuranceRateItemModel() {
+                                }
+                                return HealthInsuranceRateItemModel;
+                            }());
+                            viewmodel.HealthInsuranceRateItemModel = HealthInsuranceRateItemModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
+                        var HealthInsuranceAvgearn = (function () {
+                            function HealthInsuranceAvgearn() {
+                            }
+                            return HealthInsuranceAvgearn;
+                        }());
+                        a.HealthInsuranceAvgearn = HealthInsuranceAvgearn;
+                        var HealthInsuranceRounding = (function () {
+                            function HealthInsuranceRounding() {
+                            }
+                            return HealthInsuranceRounding;
+                        }());
+                        a.HealthInsuranceRounding = HealthInsuranceRounding;
+                        var ChargeRateItem = (function () {
+                            function ChargeRateItem() {
+                            }
+                            return ChargeRateItem;
+                        }());
+                        a.ChargeRateItem = ChargeRateItem;
                     })(a = qmm008.a || (qmm008.a = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));

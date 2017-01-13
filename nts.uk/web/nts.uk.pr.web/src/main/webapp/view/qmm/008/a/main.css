@@ -74,6 +74,7 @@ th, td {
 
 .float_left {
 	float: left;
+	width:100px;
 }
 
 .rounding_width {
@@ -86,4 +87,7 @@ th, td {
 
 .padding_top_20 {
 	padding-top: 20px;
+}
+.nts-input{
+	width: 100px;
 }
