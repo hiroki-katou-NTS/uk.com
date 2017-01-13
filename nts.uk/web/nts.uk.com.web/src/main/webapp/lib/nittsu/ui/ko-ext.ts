@@ -1570,9 +1570,9 @@ module nts.uk.ui.koExtentions {
                 $grid.igGrid("dataBind");
             }
             
-            var x = $grid.ntsGridList('getSelected');
-            var isEqual = _.isEqualWith(x, data.value(), function(current, newVal){
-                if((current === undefined && newVal === undefined) || (current.id === newVal)){
+            var currentSelectedItems = $grid.ntsGridList('getSelected');
+            var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function(current, newVal){
+                if((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)){
                     return true;
                 }
             })
