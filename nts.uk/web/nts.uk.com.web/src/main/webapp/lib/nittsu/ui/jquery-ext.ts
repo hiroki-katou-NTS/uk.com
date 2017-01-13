@@ -236,11 +236,14 @@ module nts.uk.ui.jqueryExtentions {
                     return;
                 }
 
-                // http://jp.igniteui.com/help/api/2016.2/ui.iggrid#methods:getElementInfo
-                var trInfo = $grid.igGrid('getElementInfo', $(e.target).closest('tr'));
-
                 // ドラッグ開始位置を設定する
-                dragSelectRange.push(trInfo.rowIndex);
+                var rowIndex = nts.uk.ui.ig.grid.getRowIndexFrom($(e.target));
+                dragSelectRange.push(rowIndex);
+                
+                $(window).one('mouseup', function(e) {
+                // ドラッグを終了する
+                    dragSelectRange = [];
+                });
             });
 
             $grid.on('mousemove', function(e) {
@@ -249,13 +252,9 @@ module nts.uk.ui.jqueryExtentions {
                     return;
                 }
 
-                var $tr = $(e.target).closest('tr'),
-                    // http://jp.igniteui.com/help/api/2016.2/ui.iggrid#methods:getElementInfo
-                    trInfo = $grid.igGrid('getElementInfo', $tr);
-
-
                 // 無駄な処理をさせないためにドラッグ終了位置が同じかどうかをチェックする
-                if (trInfo.rowIndex === dragSelectRange[dragSelectRange.length - 1]) {
+                var rowIndex = nts.uk.ui.ig.grid.getRowIndexFrom($(e.target));
+                if (rowIndex === dragSelectRange[dragSelectRange.length - 1]) {
                     return;
                 }
 
@@ -272,25 +271,20 @@ module nts.uk.ui.jqueryExtentions {
 
                 var newDragSelectRange = [];
 
-                if (dragSelectRange[0] <= trInfo.rowIndex) {
-                    for (var j = dragSelectRange[0]; j <= trInfo.rowIndex; j++) {
+                if (dragSelectRange[0] <= rowIndex) {
+                    for (var j = dragSelectRange[0]; j <= rowIndex; j++) {
                         // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
                         $grid.igGridSelection('selectRow', j);
                         newDragSelectRange.push(j);
                     }
-                } else if (dragSelectRange[0] > trInfo.rowIndex) {
-                    for (var j = dragSelectRange[0]; j >= trInfo.rowIndex; j--) {
+                } else if (dragSelectRange[0] > rowIndex) {
+                    for (var j = dragSelectRange[0]; j >= rowIndex; j--) {
                         $grid.igGridSelection('selectRow', j);
                         newDragSelectRange.push(j);
                     }
                 }
 
                 dragSelectRange = newDragSelectRange;
-            });
-
-            $grid.on('mouseup', function(e) {
-                // ドラッグを終了する
-                dragSelectRange = [];
             });
         }
 
@@ -354,8 +348,65 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
     }
+    
+    module ntsWizard {
+        $.fn.ntsWizard = function (action: string, index?: number): any {
+            var $wizard = $(this);
+            if (action === "begin") {
+                return begin($wizard);
+            }
+            else if (action === "end") {
+                return end($wizard);
+            }
+            else if (action === "goto") {
+                return goto($wizard, index);
+            }
+            else if (action === "prev") {
+                return prev($wizard);
+            }
+            else if (action === "next") {
+                return next($wizard);
+            }
+            else if (action === "getCurrentStep") {
+                return getCurrentStep($wizard);
+            }
+            else {
+                return $wizard;
+            };
+        }
+        
+        function begin (wizard: JQuery): JQuery {
+            wizard.setStep(0);
+            return wizard;
+        }
+        
+        function end (wizard: JQuery): JQuery {
+            wizard.setStep(wizard.data("length") - 1);
+            return wizard;
+        }
+        
+        function goto (wizard: JQuery, index: number): JQuery {
+            wizard.setStep(index);
+            return wizard;
+        }
+        
+        function prev (wizard: JQuery): JQuery {
+            wizard.steps("previous");
+            return wizard;
+        }
+        
+        function next (wizard: JQuery): JQuery {
+            wizard.steps("next");
+            return wizard;
+        }
+        
+        function getCurrentStep (wizard: JQuery): number {
+            return wizard.steps("getCurrentIndex");
+        }
+        
+    }
 
-    module userGuide {
+    module ntsUserGuide {
         
         $.fn.ntsUserGuide = function (action?: string): any {
             var $controls = $(this);

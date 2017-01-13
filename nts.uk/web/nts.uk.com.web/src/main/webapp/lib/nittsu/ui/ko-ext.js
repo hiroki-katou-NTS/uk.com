@@ -1521,9 +1521,9 @@ var nts;
                             $grid.igGrid('option', 'dataSource', data.options().slice());
                             $grid.igGrid("dataBind");
                         }
-                        var x = $grid.ntsGridList('getSelected');
-                        var isEqual = _.isEqualWith(x.sort(), data.value().sort(), function (current, newVal) {
-                            if ((current === undefined && newVal === undefined) || (current !== undefined && (current.id === newVal))) {
+                        var currentSelectedItems = $grid.ntsGridList('getSelected');
+                        var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
+                            if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
                                 return true;
                             }
                         });
@@ -1740,7 +1740,7 @@ var nts;
                                 container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
                                 return true;
                             }
-                        });
+                        }).data("length", options.length);
                         // Add default class
                         container.addClass(cssClass);
                         container.children('.steps').children('ul').children('li').children('a').before('<div class="nts-steps"></div>');
@@ -1762,12 +1762,6 @@ var nts;
                         // Add Header
                         container.children('.steps').prepend(header);
                         container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-                        $.fn.begin = function () {
-                            $(this).setStep(0);
-                        };
-                        $.fn.end = function () {
-                            $(this).setStep(options.length - 1);
-                        };
                     };
                     /**
                      * Update
