@@ -26,15 +26,7 @@ var qmm018;
                     new ItemModel('006', 'name6')
                 ]);
                 ;
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise(items);
+                return items;
             }
             service.getItemList = getItemList;
         })(service = b.service || (b.service = {}));

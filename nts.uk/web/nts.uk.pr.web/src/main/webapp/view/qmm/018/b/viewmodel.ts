@@ -11,11 +11,6 @@ module qmm018.b.viewmodel {
             var self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
-            self.items = ko.observableArray([
-                new ItemModel('001', 'name1'),
-                new ItemModel('002', 'name2'),
-                new ItemModel('003', 'name3')
-            ]);
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 40 },
                 { headerText: '名称', prop: 'name', width: 130 },
@@ -40,13 +35,7 @@ module qmm018.b.viewmodel {
             }).fail(function(res) {
 
             });
-            qmm018.b.service.getItemList().done(function(data) {
-                self.items(data);
-                console.log(data);
-                dfd.resolve();
-            }).fail(function(res) {
-
-            });
+            self.items = qmm018.b.service.getItemList();
             
             return dfd.promise();
         }

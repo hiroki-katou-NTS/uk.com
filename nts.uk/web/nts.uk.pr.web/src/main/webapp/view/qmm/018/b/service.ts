@@ -15,23 +15,13 @@ module qmm018.b.service {
         return dfd.promise();
     }
     
-    export function getItemList(): JQueryPromise<Array<ItemModel>> {
+    export function getItemList(): KnockoutObservableArray<ItemModel> {
         var items = ko.observableArray([
                         new ItemModel('004', 'name4'),
                         new ItemModel('005', 'name5'),
                         new ItemModel('006', 'name6')
                     ]);;
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-            .done(function(res: Array<any>) {
-                
-                dfd.resolve(res);
-                
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise(items);
+        return items;
     }
 }
 
