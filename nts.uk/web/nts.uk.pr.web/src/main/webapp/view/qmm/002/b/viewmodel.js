@@ -20,6 +20,7 @@ var nts;
                                     self.selectedCodes.subscribe(function (val) {
                                         console.log(val);
                                     });
+                                    console.log(nts.uk.ui.windows.getShared('listItem'));
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;

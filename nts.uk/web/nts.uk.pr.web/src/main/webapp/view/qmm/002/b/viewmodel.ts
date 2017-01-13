@@ -11,6 +11,7 @@ module nts.uk.pr.view.qmm002.b {
                 self.selectedCodes.subscribe(function(val){
                     console.log(val);
                 });
+                console.log(nts.uk.ui.windows.getShared('listItem'));
             }
             
             startPage() {
