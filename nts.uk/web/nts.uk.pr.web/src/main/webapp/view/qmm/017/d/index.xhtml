@@ -9,17 +9,34 @@
 	<ui:composition>
 		<div class="wrap-sel-006">
 			<div class="ib d-col-1">
-				<div id="d_lst_001" class="ib va-middle" data-bind="with: d_lst_001">
+				<div id="d_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: d_lst_001">
 				<div id="list-box" data-bind="ntsListBox: {
 				options: itemList,
 				optionsValue: 'code',
 				optionsText: 'name',
-				multiple: true,
+				multiple: false,
 				value: selectedCodes,
 				enable: isEnable(),
-				rows: 6}"></div>
+				rows: 5}"></div>
+				</div>
 			</div>
-			<span class="caret-right outline" style="vertical-align: -webkit-baseline-middle; font-size: 3rem"></span>
+			<div style="margin-left: 20px" class="ib d-col-1">
+				<div id="d_lst_002" class="ib va-middle" data-bind="with: d_lst_002">
+					<div style="width: 307px" data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCodes, selectedKey: 'code', fields: ['name', 'code']}" />
+					<div id="list-box" data-bind="ntsListBox: {
+					options: itemList,
+					optionsValue: 'code',
+					optionsText: 'name',
+					multiple: true,
+					value: selectedCodes,
+					enable: isEnable(),
+					columns: [
+						{ prop: 'code', length: 4 },
+						{ prop: 'name', length: 10 }
+					],
+					rows: 5}"></div>
+					<button id="d_btn_001" class="caret-bottom">計算式挿入ボタン</button>
+				</div>
 			</div>
 		</div>
 	</ui:composition>

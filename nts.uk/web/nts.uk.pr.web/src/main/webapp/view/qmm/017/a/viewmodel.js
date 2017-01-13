@@ -113,7 +113,6 @@ var nts;
                                     this.col = ko.observable(1);
                                     this.error = ko.observable("");
                                     this.autoSelected.subscribe(function (value) {
-                                        //                $("#auto-complete-containner").show()
                                         if (value !== undefined) {
                                             var currentString = $("#input-text").val();
                                             var index = this.getIndex(currentString, this.row(), this.col()) + 1;
@@ -131,9 +130,6 @@ var nts;
                                     this.textArea = ko.observable("");
                                     this.divValue = ko.observable("");
                                     $("#error-containner").hide();
-                                    //            $("#error-content").mouseout(function(event){
-                                    //                $("#error-containner").hide();
-                                    //            }
                                     $(document).on("keyup", "#input-text", function (event) {
                                         if (!event.shiftKey && event.keyCode === 16) {
                                             return;
@@ -142,11 +138,7 @@ var nts;
                                         var start = $("#input-text")[0].selectionStart;
                                         var end = $("#input-text")[0].selectionEnd;
                                         var maxWidthCharacter = 15;
-                                        //                if(event.keyCode === 8){
-                                        //                      
-                                        //                }else 
                                         if ((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) {
-                                            //                    $("#auto-complete-containner").css("top": start);
                                             var currentRow = self.getCurrentRows(end);
                                             var currentCol = self.getCurrentColumn(currentRow, end);
                                             self.row(currentRow);
@@ -257,15 +249,6 @@ var nts;
                                     return !speChar.test(char) || char === " " || char === undefined;
                                 };
                                 TextEditor.prototype.testGachChan = function (specialChar) {
-                                    //            var openSpecial = {
-                                    //                "&gt;": "&lt;",
-                                    //                "&lt;": "&gt;"
-                                    //            };
-                                    //            
-                                    //            var o= {
-                                    //                "\)": "\(",
-                                    //                "\(": "\)"
-                                    //            };
                                     var singleSpecial = {
                                         "+": "+",
                                         "-": "-",
@@ -343,15 +326,7 @@ var nts;
                                         var $data = $(specialChar[i]);
                                         var charCount = parseInt($data.attr("id").split("-")[1]);
                                         var char = $data.text();
-                                        //                var openComa = openSpecial[nts.uk.text.htmlEncode(char)];
                                         var single = singleSpecial[char];
-                                        //                if (openComa !== undefined) {
-                                        //                    var x2 = this.countPreviousElement(element, nts.uk.text.htmlEncode(char), i) + 1;
-                                        //                    var x = this.countPreviousElement(element, openComa, i);
-                                        //                    if (x2 > x) {
-                                        //                        $data.addClass("error-char").attr("message", "test 1");
-                                        //                    }
-                                        //                } else 
                                         if (single !== undefined) {
                                             var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
                                             if (neighborCount > 0) {
@@ -382,16 +357,10 @@ var nts;
                                     return previousCount + nextCount;
                                 };
                                 TextEditor.prototype.countPreviousElement = function (element, x, index) {
-                                    //        var count = 0;
                                     var x2 = element.slice(0, index);
                                     return _.filter(x2, function (d) {
                                         return d === x;
                                     }).length;
-                                    //        for(var i = index; i >= 0; i--){
-                                    //            if(element[i] === x){
-                                    //                count++;             
-                                    //            }                       
-                                    //        }     
                                 };
                                 TextEditor.prototype.toArrayChar = function (element) {
                                     return _.map(element, function (data) {
@@ -478,6 +447,12 @@ var nts;
                                         { code: 3, name: '勤怠項目（勤怠＠）' },
                                         { code: 4, name: '明細割増単価項目（割増し単価＠）' }
                                     ];
+                                    var d_lst_002 = [
+                                        { code: '1', name: 'child1' },
+                                        { code: '2', name: 'child2' },
+                                        { code: '3', name: 'child3' },
+                                        { code: '4', name: 'child4' }
+                                    ];
                                     self.a_lst_001 = ko.observable(new TreeGrid());
                                     self.b_sel_001 = ko.observable(new SwitchButton(b_sel_001));
                                     self.b_sel_002 = ko.observable(new SwitchButton(b_sel_002));
@@ -500,6 +475,7 @@ var nts;
                                     self.c_sel_007 = ko.observable(new ComboBox(c_sel_007, true, false));
                                     self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
                                     self.d_lst_001 = ko.observable(new ListBox(d_lst_001));
+                                    self.d_lst_002 = ko.observable(new ListBox(d_lst_002));
                                 }
                                 return ScreenModel;
                             }());
