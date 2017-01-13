@@ -2,6 +2,13 @@ module qpp008.c.viewmodel {
     export class ScreenModel {
         paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymentDate: KnockoutObservable<any>;
+        /*SwapList*/
+        itemsSwap: KnockoutObservableArray<ItemModel>;
+        columnsSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        currentCodeListSwap: KnockoutObservableArray<any>;
+        /*TabPanel*/
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        selectedTab: KnockoutObservable<string>;
         /*GridList*/
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
@@ -11,12 +18,34 @@ module qpp008.c.viewmodel {
         codeValue: KnockoutObservable<any>;
         /*TextEditer*/
         enableC_INP_002: KnockoutObservable<boolean>;
-        
+
         constructor() {
             var self = this;
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
+            /*SwapList*/
+            self.itemsSwap = ko.observableArray([]);
 
+            var array = [];
+            for (var i = 0; i < 10000; i++) {
+                array.push(new ItemModel("test" + i, '基本給', "description"));
+            }
+            self.itemsSwap(array);
+
+            self.columnsSwap = ko.observableArray([
+                { headerText: 'コード', prop: 'code', width: 100 },
+                { headerText: '名称', prop: 'name', width: 200 },
+                { headerText: '説明', prop: 'description', width: 200 }
+            ]);
+
+            this.currentCodeListSwap = ko.observableArray([]);
+            /*TabPanel*/
+            self.tabs = ko.observableArray([
+                { id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+            ]);
+            self.selectedTab = ko.observable('tab-2');
             /*gridList*/
             self.items = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];

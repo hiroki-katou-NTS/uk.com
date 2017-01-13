@@ -8,7 +8,7 @@
 }
 .nts-left-content {
 	float: left;
-	width: 380px;
+	width: 300px;
 	height: 650px;
 	padding: 20px 15px;
 }
@@ -28,7 +28,7 @@
 	margin-left: 10px;
 }
 #C_LST_001_container{
-	margin-left:20px !important;
+	margin-left:10px !important;
 	margin-top: 10px !important;;
 }
 .nts-left-content .caret-background.caret-right:after {
@@ -56,8 +56,40 @@
 	height: 400px;
 	float: left;
 }
+.divRBt1Up{
+	height: 50px;
+}
+.divRBt1down{
+	height: 350px;
+}
+#D_LBL_002{
+	margin-left: 70px;
+}
+.D_LBL_1_2{
+	width: 230px;
+	border-bottom: grey solid 1px !important;
+	padding-bottom: 20px;
+}
 .divRBt2{
 	width: 250px;
 	height: 400px;
 	float: left;
+}
+#helpButton{
+	margin-left: 10px;
+}.caret-right.outline:after{
+	    margin-left: 40.15em;
+    margin-top: 6.3em;
+    border-left: 1.7em solid;
+    border-top: 2.7em solid transparent;
+    border-bottom: 2.7em solid transparent;
+}
+.tabPanel{
+	width:670px;
+	height: 400px;
+}
+.divSearch .ntsSearchBox{
+	font-size: 9px !important;
+	background-position: 0px -5px !important;
+	padding: 3px 1px 7px 40px !important;
 }

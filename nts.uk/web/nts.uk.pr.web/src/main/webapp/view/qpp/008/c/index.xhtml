@@ -31,10 +31,10 @@
 			<div id="contents-area">
 				<div class="nts-left-content">
 					<div class="bg-green caret-right caret-background"
-						style=" width: 340px !important; height: 500px;">
+						style=" width: 260px !important; height: 500px;">
 						<i class="icon icon-searchbox"></i>
 						<div class="cf" style="float:left">
-							<div style="width: 355px" class="divSearch"
+							<div style="width: 355px" class="divSearch inputNtsSearchBox"
 								data-bind="ntsSearchBox: {
 											comId: 'C_LST_001', 
 											items: items, 
@@ -43,7 +43,7 @@
 											fields: ['name', 'code']}" />
 							<table id="C_LST_001"
 								data-bind="ntsGridList: {
-										width: 280,
+										width: 230,
 										height: 320,
 										options: items,
 										optionsValue: 'code',
@@ -65,10 +65,49 @@
 					</div>					
 				</div>
 				<div class="divRightBottom">
-					<div class="divRBt1"></div>
+					<div class="divRBt1">
+						<span class="caret-right outline"></span>
+						<div class="tabPanel">
+						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+							<div class="tab-content-1">
+							<div class="divRBt1Up">
+								<div id="D_LBL_001" class="D_LBL_1_2" data-bind="ntsFormLabel: {}">表に追加できる項目</div>
+								<div id="D_LBL_002" class="D_LBL_1_2" data-bind="ntsFormLabel: {}">表に追加した項目</div>
+							</div>
+							<div class="divRBt1Down">
+							</div>
+								<!-- <div id="swap-list" data-bind="ntsSwapList: {
+								showSearchBox: true,
+								width: 200,
+								height: 110,
+								options: itemsSwap,
+								optionsValue: 'code',
+								columns: columnsSwap,
+								value: currentCodeListSwap
+							}"
+							class=""></div> -->
+							</div>
+							<div class="tab-content-2">
+								<span>Tab Content 2</span><br/>
+							</div>
+							<div class="tab-content-3">
+								<span>Tab Content 3</span><br/>
+							</div>
+						</div>
+						</div>
+					</div>
 					<div class="divRBt2">
 						<div  id="C_LBL_002" data-bind="ntsFormLabel: { required: true }">レイアウトコード
 							<button id="helpButton" class="small">?</button>
+							<table id="C_LST_002" data-bind="ntsGridList: {
+																width: 200,
+																height: 300,
+																options: items,
+																optionsValue: 'code',
+																columns: columns,
+																multiple: false,
+																value: currentCode
+																					}"></table>
 						</div>
 					</div>
 				</div>
