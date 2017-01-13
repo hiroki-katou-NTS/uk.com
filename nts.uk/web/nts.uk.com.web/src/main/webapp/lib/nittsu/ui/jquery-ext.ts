@@ -235,7 +235,7 @@ module nts.uk.ui.jqueryExtentions {
             var dragSelectRange = [];
             
             // used to auto scrolling when dragged above/below grid)
-            var currentMousePosition: { x: number, y: number } = null;
+            var mousePos: { x: number, y: number, rowIndex: number } = null;
                 
             var $container = $grid.closest('.ui-iggrid-scrolldiv');
 
@@ -250,20 +250,20 @@ module nts.uk.ui.jqueryExtentions {
                     $container.offset().top,
                     $container.offset().top + $container.height());
                 
-                currentMousePosition = {
+                mousePos = {
                     x: e.pageX,
-                    y: e.pageY
+                    y: e.pageY,
+                    rowIndex: ig.grid.getRowIndexFrom($(e.target))
                 };
 
                 // set position to start dragging
-                var rowIndex = ig.grid.getRowIndexFrom($(e.target));
-                dragSelectRange.push(rowIndex);
+                dragSelectRange.push(mousePos.rowIndex);
                 
                 var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
                 
                 // auto scroll while mouse is outside grid
                 var timerAutoScroll = setInterval(() => {
-                    var distance = gridVerticalRange.distanceFrom(currentMousePosition.y);
+                    var distance = gridVerticalRange.distanceFrom(mousePos.y);
                     if (distance === 0) {
                         return;
                     }
@@ -276,60 +276,67 @@ module nts.uk.ui.jqueryExtentions {
                 // handle mousemove on window while dragging (unhandle when mouseup)
                 $(window).bind('mousemove.NtsGridListDragging', function(e) {
                     
-                    currentMousePosition = {
+                    var newPointedRowIndex = ig.grid.getRowIndexFrom($(e.target));
+                    
+                    // selected range is not changed
+                    if (mousePos.rowIndex === newPointedRowIndex) {
+                        return;
+                    }
+                    
+                    mousePos = {
                         x: e.pageX,
-                        y: e.pageY
+                        y: e.pageY,
+                        rowIndex: newPointedRowIndex
                     };
                     
-                    // get index of row that was pointed by mouse
-                    var rowIndex = ig.grid.getRowIndexFrom($(e.target));
-    
-                    // 無駄な処理をさせないためにドラッグ終了位置が同じかどうかをチェックする
-                    if (rowIndex === dragSelectRange[dragSelectRange.length - 1]) {
-                        return;
-                    }   
-    
-                    // 新たにドラッグ選択を開始する場合、Ctrlキー押下されていない場合は以前の選択行を全てクリアする
                     if (dragSelectRange.length === 1 && !e.ctrlKey) {
                         $grid.igGridSelection('clearSelection');
                     }
-    
-                    // 以前のドラッグ範囲の選択を一旦解除する
-                    // TODO: probably this code has problem of perfomance when select many rows
-                    // should process only "differences" instead of "all"
-                    for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
-                        // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
-                        $grid.igGridSelection('deselectRow', dragSelectRange[i]);
-                    }
-    
-                    var newDragSelectRange = [];
-    
-                    if (dragSelectRange[0] <= rowIndex) {
-                        for (var j = dragSelectRange[0]; j <= rowIndex; j++) {
-                            // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
-                            $grid.igGridSelection('selectRow', j);
-                            newDragSelectRange.push(j);
-                        }
-                    } else if (dragSelectRange[0] > rowIndex) {
-                        for (var j = dragSelectRange[0]; j >= rowIndex; j--) {
-                            $grid.igGridSelection('selectRow', j);
-                            newDragSelectRange.push(j);
-                        }
-                    }
-    
-                    dragSelectRange = newDragSelectRange;
+                    
+                    updateSelections();
                 });
                 
                 // stop dragging
                 $(window).one('mouseup', function(e) {
-                    currentMousePosition = null;
+                    mousePos = null;
                     dragSelectRange = [];
                      $(window).unbind('mousemove.NtsGridListDragging');
                     clearInterval(timerAutoScroll);
                 });
             });
 
-            
+            function updateSelections() {
+                
+                // rowIndex is NaN when mouse is outside grid
+                if (isNaN(mousePos.rowIndex)) {
+                    return;
+                }
+
+                // 以前のドラッグ範囲の選択を一旦解除する
+                // TODO: probably this code has problem of perfomance when select many rows
+                // should process only "differences" instead of "all"
+                for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
+                    // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
+                    $grid.igGridSelection('deselectRow', dragSelectRange[i]);
+                }
+
+                var newDragSelectRange = [];
+
+                if (dragSelectRange[0] <= mousePos.rowIndex) {
+                    for (var j = dragSelectRange[0]; j <= mousePos.rowIndex; j++) {
+                        // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
+                        $grid.igGridSelection('selectRow', j);
+                        newDragSelectRange.push(j);
+                    }
+                } else if (dragSelectRange[0] > mousePos.rowIndex) {
+                    for (var j = dragSelectRange[0]; j >= mousePos.rowIndex; j--) {
+                        $grid.igGridSelection('selectRow', j);
+                        newDragSelectRange.push(j);
+                    }
+                }
+
+                dragSelectRange = newDragSelectRange;
+            }
         }
 
         function setupSelectingEvents($grid: JQuery) {
