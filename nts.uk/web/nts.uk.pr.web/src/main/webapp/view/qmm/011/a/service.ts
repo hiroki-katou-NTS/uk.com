@@ -78,6 +78,18 @@ module nts.uk.pr.view.qmm011.a {
                     this.insuRate = insuRate;
                     this.insuRound = insuRound;
                 }
+
+            }
+
+            export class InsuranceBusinessType {
+                /** The biz order. */
+                bizOrder: number;
+                /** The biz name. */
+                bizName: string;
+                constructor(bizOrder: number, bizName: string) {
+                    this.bizOrder = bizOrder;
+                    this.bizName = bizName;
+                }
             }
             export enum CareerGroup {
                 /** The Agroforestry. */

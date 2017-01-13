@@ -82,6 +82,14 @@ var nts;
                                     return InsuBizRateItem;
                                 }());
                                 model.InsuBizRateItem = InsuBizRateItem;
+                                var InsuranceBusinessType = (function () {
+                                    function InsuranceBusinessType(bizOrder, bizName) {
+                                        this.bizOrder = bizOrder;
+                                        this.bizName = bizName;
+                                    }
+                                    return InsuranceBusinessType;
+                                }());
+                                model.InsuranceBusinessType = InsuranceBusinessType;
                                 (function (CareerGroup) {
                                     CareerGroup[CareerGroup["Agroforestry"] = 0] = "Agroforestry";
                                     CareerGroup[CareerGroup["Contruction"] = 1] = "Contruction";

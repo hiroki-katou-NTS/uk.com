@@ -21,6 +21,7 @@ var nts;
                         var HistoryAccidentInsuranceRate = a.service.model.HistoryAccidentInsuranceRate;
                         var InsuBizRateItem = a.service.model.InsuBizRateItem;
                         var BusinessTypeEnum = a.service.model.BusinessTypeEnum;
+                        var InsuranceBusinessType = a.service.model.InsuranceBusinessType;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -61,9 +62,15 @@ var nts;
                                     var insuBizRateItemBiz8Th = new InsuBizRateItem(BusinessTypeEnum.Biz8Th, 7, 3);
                                     var insuBizRateItemBiz9Th = new InsuBizRateItem(BusinessTypeEnum.Biz9Th, 2.5, 0);
                                     var insuBizRateItemBiz10Th = new InsuBizRateItem(BusinessTypeEnum.Biz10Th, 3, 0);
+                                    var insuranceBusinessTypeBiz1St = new InsuranceBusinessType(BusinessTypeEnum.Biz1St, "事業種類名1");
+                                    var insuranceBusinessTypeBiz2Nd = new InsuranceBusinessType(BusinessTypeEnum.Biz2Nd, "事業種類名2");
+                                    var insuranceBusinessTypeBiz3Rd = new InsuranceBusinessType(BusinessTypeEnum.Biz3Rd, "事業種類名3");
+                                    var insuranceBusinessTypeBiz4Th = new InsuranceBusinessType(BusinessTypeEnum.Biz4Th, "事業種類名4");
+                                    var insuranceBusinessTypeBiz5Th = new InsuranceBusinessType(BusinessTypeEnum.Biz5Th, "事業種類名5");
+                                    self.lstInsuranceBusinessType = [insuranceBusinessTypeBiz1St, insuranceBusinessTypeBiz2Nd, insuranceBusinessTypeBiz3Rd, insuranceBusinessTypeBiz4Th, insuranceBusinessTypeBiz5Th];
                                     self.lstInsuBizRateItem = [insuBizRateItemBiz1St, insuBizRateItemBiz2Nd, insuBizRateItemBiz3Rd, insuBizRateItemBiz4Th, insuBizRateItemBiz5Th,
                                         insuBizRateItemBiz6Th, insuBizRateItemBiz7Th, insuBizRateItemBiz8Th, insuBizRateItemBiz9Th, insuBizRateItemBiz10Th];
-                                    self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(self.lstInsuBizRateItem, self.rateInputOptions, selectionRoundingMethod));
+                                    self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(self.lstInsuBizRateItem, self.lstInsuranceBusinessType, self.rateInputOptions, selectionRoundingMethod));
                                     self.lstHistoryAccidentInsuranceRate = ko.observableArray([
                                         new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId006', 'companyCode001', new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)))),
                                         new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId005', 'companyCode001', new MonthRange(new YearMonth(2015, 10), new YearMonth(2016, 3)))),
@@ -164,185 +171,96 @@ var nts;
                                 return HistoryAccidentInsuranceRateModel;
                             }());
                             viewmodel.HistoryAccidentInsuranceRateModel = HistoryAccidentInsuranceRateModel;
-                            var UnemployeeInsuranceRateItemAgroforestryModel = (function () {
-                                function UnemployeeInsuranceRateItemAgroforestryModel(companySetting, personalSetting, rateInputOptions, selectionRoundingMethod) {
+                            var UnemployeeInsuranceRateItemModel = (function () {
+                                function UnemployeeInsuranceRateItemModel(companySetting, personalSetting, rateInputOptions, selectionRoundingMethod) {
                                     this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
                                     this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
                                     this.rateInputOptions = rateInputOptions;
                                     this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
                                 }
-                                return UnemployeeInsuranceRateItemAgroforestryModel;
+                                return UnemployeeInsuranceRateItemModel;
                             }());
-                            viewmodel.UnemployeeInsuranceRateItemAgroforestryModel = UnemployeeInsuranceRateItemAgroforestryModel;
-                            var UnemployeeInsuranceRateItemContructionModel = (function () {
-                                function UnemployeeInsuranceRateItemContructionModel(companySetting, personalSetting, rateInputOptions, selectionRoundingMethod) {
-                                    this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
-                                    this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return UnemployeeInsuranceRateItemContructionModel;
-                            }());
-                            viewmodel.UnemployeeInsuranceRateItemContructionModel = UnemployeeInsuranceRateItemContructionModel;
-                            var UnemployeeInsuranceRateItemOtherModel = (function () {
-                                function UnemployeeInsuranceRateItemOtherModel(companySetting, personalSetting, rateInputOptions, selectionRoundingMethod) {
-                                    this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
-                                    this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return UnemployeeInsuranceRateItemOtherModel;
-                            }());
-                            viewmodel.UnemployeeInsuranceRateItemOtherModel = UnemployeeInsuranceRateItemOtherModel;
+                            viewmodel.UnemployeeInsuranceRateItemModel = UnemployeeInsuranceRateItemModel;
                             var UnemployeeInsuranceRateItemMode = (function () {
                                 function UnemployeeInsuranceRateItemMode(lstUnemployeeInsuranceRateItem, rateInputOptions, selectionRoundingMethod) {
                                     for (var index = 0; index < lstUnemployeeInsuranceRateItem.length; index++) {
                                         if (lstUnemployeeInsuranceRateItem[index].careerGroup == CareerGroup.Agroforestry) {
-                                            this.unemployeeInsuranceRateItemAgroforestryModel = new UnemployeeInsuranceRateItemAgroforestryModel(lstUnemployeeInsuranceRateItem[index].companySetting, lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
+                                            this.unemployeeInsuranceRateItemAgroforestryModel = new UnemployeeInsuranceRateItemModel(lstUnemployeeInsuranceRateItem[index].companySetting, lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
                                         else if (lstUnemployeeInsuranceRateItem[index].careerGroup == CareerGroup.Contruction) {
-                                            this.unemployeeInsuranceRateItemContructionModel = new UnemployeeInsuranceRateItemContructionModel(lstUnemployeeInsuranceRateItem[index].companySetting, lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
+                                            this.unemployeeInsuranceRateItemContructionModel = new UnemployeeInsuranceRateItemModel(lstUnemployeeInsuranceRateItem[index].companySetting, lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
                                         else if (lstUnemployeeInsuranceRateItem[index].careerGroup == CareerGroup.Other) {
-                                            this.unemployeeInsuranceRateItemOtherModel = new UnemployeeInsuranceRateItemOtherModel(lstUnemployeeInsuranceRateItem[index].companySetting, lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
+                                            this.unemployeeInsuranceRateItemOtherModel = new UnemployeeInsuranceRateItemModel(lstUnemployeeInsuranceRateItem[index].companySetting, lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
                                     }
                                 }
                                 return UnemployeeInsuranceRateItemMode;
                             }());
                             viewmodel.UnemployeeInsuranceRateItemMode = UnemployeeInsuranceRateItemMode;
-                            var AccidentInsuranceRateBiz1StModel = (function () {
-                                function AccidentInsuranceRateBiz1StModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
+                            var AccidentInsuranceRateDetailModel = (function () {
+                                function AccidentInsuranceRateDetailModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
                                     this.insuRate = ko.observable(insuBizRateItem.insuRate);
                                     this.insuRound = ko.observable(insuBizRateItem.insuRound);
                                     this.rateInputOptions = rateInputOptions;
                                     this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
+                                    this.insuranceBusinessType = ko.observable('');
                                 }
-                                return AccidentInsuranceRateBiz1StModel;
+                                AccidentInsuranceRateDetailModel.prototype.setInsuranceBusinessType = function (insuranceBusinessType) {
+                                    this.insuranceBusinessType = ko.observable(insuranceBusinessType);
+                                };
+                                return AccidentInsuranceRateDetailModel;
                             }());
-                            viewmodel.AccidentInsuranceRateBiz1StModel = AccidentInsuranceRateBiz1StModel;
-                            var AccidentInsuranceRateBiz2NdModel = (function () {
-                                function AccidentInsuranceRateBiz2NdModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz2NdModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz2NdModel = AccidentInsuranceRateBiz2NdModel;
-                            var AccidentInsuranceRateBiz3RdModel = (function () {
-                                function AccidentInsuranceRateBiz3RdModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz3RdModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz3RdModel = AccidentInsuranceRateBiz3RdModel;
-                            var AccidentInsuranceRateBiz4ThModel = (function () {
-                                function AccidentInsuranceRateBiz4ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz4ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz4ThModel = AccidentInsuranceRateBiz4ThModel;
-                            var AccidentInsuranceRateBiz5ThModel = (function () {
-                                function AccidentInsuranceRateBiz5ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz5ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz5ThModel = AccidentInsuranceRateBiz5ThModel;
-                            var AccidentInsuranceRateBiz6ThModel = (function () {
-                                function AccidentInsuranceRateBiz6ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz6ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz6ThModel = AccidentInsuranceRateBiz6ThModel;
-                            var AccidentInsuranceRateBiz7ThModel = (function () {
-                                function AccidentInsuranceRateBiz7ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz7ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz7ThModel = AccidentInsuranceRateBiz7ThModel;
-                            var AccidentInsuranceRateBiz8ThModel = (function () {
-                                function AccidentInsuranceRateBiz8ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz8ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz8ThModel = AccidentInsuranceRateBiz8ThModel;
-                            var AccidentInsuranceRateBiz9ThModel = (function () {
-                                function AccidentInsuranceRateBiz9ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz9ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz9ThModel = AccidentInsuranceRateBiz9ThModel;
-                            var AccidentInsuranceRateBiz10ThModel = (function () {
-                                function AccidentInsuranceRateBiz10ThModel(insuBizRateItem, rateInputOptions, selectionRoundingMethod) {
-                                    this.insuRate = ko.observable(insuBizRateItem.insuRate);
-                                    this.insuRound = ko.observable(insuBizRateItem.insuRound);
-                                    this.rateInputOptions = rateInputOptions;
-                                    this.selectionRoundingMethod = ko.observableArray(selectionRoundingMethod);
-                                }
-                                return AccidentInsuranceRateBiz10ThModel;
-                            }());
-                            viewmodel.AccidentInsuranceRateBiz10ThModel = AccidentInsuranceRateBiz10ThModel;
+                            viewmodel.AccidentInsuranceRateDetailModel = AccidentInsuranceRateDetailModel;
                             var AccidentInsuranceRateModel = (function () {
-                                function AccidentInsuranceRateModel(lstInsuBizRateItem, rateInputOptions, selectionRoundingMethod) {
+                                function AccidentInsuranceRateModel(lstInsuBizRateItem, lstInsuranceBusinessType, rateInputOptions, selectionRoundingMethod) {
                                     for (var index = 0; index < lstInsuBizRateItem.length; index++) {
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz1St) {
-                                            this.accidentInsuranceRateBiz1StModel = new AccidentInsuranceRateBiz1StModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz1StModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz2Nd) {
-                                            this.accidentInsuranceRateBiz2NdModel = new AccidentInsuranceRateBiz2NdModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz2NdModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz3Rd) {
-                                            this.accidentInsuranceRateBiz3RdModel = new AccidentInsuranceRateBiz3RdModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz3RdModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz4Th) {
-                                            this.accidentInsuranceRateBiz4ThModel = new AccidentInsuranceRateBiz4ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz4ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz5Th) {
-                                            this.accidentInsuranceRateBiz5ThModel = new AccidentInsuranceRateBiz5ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz5ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz6Th) {
-                                            this.accidentInsuranceRateBiz6ThModel = new AccidentInsuranceRateBiz6ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz6ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz7Th) {
-                                            this.accidentInsuranceRateBiz7ThModel = new AccidentInsuranceRateBiz7ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz7ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz8Th) {
-                                            this.accidentInsuranceRateBiz8ThModel = new AccidentInsuranceRateBiz8ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz8ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz9Th) {
-                                            this.accidentInsuranceRateBiz9ThModel = new AccidentInsuranceRateBiz9ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz9ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
                                         }
                                         if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz10Th) {
-                                            this.accidentInsuranceRateBiz10ThModel = new AccidentInsuranceRateBiz10ThModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                            this.accidentInsuranceRateBiz10ThModel = new AccidentInsuranceRateDetailModel(lstInsuBizRateItem[index], rateInputOptions, selectionRoundingMethod);
+                                        }
+                                    }
+                                    for (var index = 0; index < lstInsuranceBusinessType.length; index++) {
+                                        if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz1St) {
+                                            this.accidentInsuranceRateBiz1StModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                                        }
+                                        if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz2Nd) {
+                                            this.accidentInsuranceRateBiz2NdModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                                        }
+                                        if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz3Rd) {
+                                            this.accidentInsuranceRateBiz3RdModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                                        }
+                                        if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz4Th) {
+                                            this.accidentInsuranceRateBiz4ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                                        }
+                                        if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz5Th) {
+                                            this.accidentInsuranceRateBiz4ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
                                         }
                                     }
                                 }
