@@ -108,7 +108,6 @@ var qpp008;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /* ItemModelCbb1 of combobox */
             var ItemModelCbb1 = (function () {
                 function ItemModelCbb1(codeCbb1, nameCbb1) {
                     this.codeCbb1 = codeCbb1;

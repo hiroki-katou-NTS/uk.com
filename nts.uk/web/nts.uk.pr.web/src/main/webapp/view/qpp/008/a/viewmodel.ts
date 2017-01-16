@@ -164,6 +164,9 @@ module qpp008.a.viewmodel {
             });
         }
     /* ItemModelCbb1 of combobox */
+    }
+    
+    
     class ItemModelCbb1 {
         codeCbb1: string;
         nameCbb1: string;
@@ -201,6 +204,5 @@ module qpp008.a.viewmodel {
             this.name = name;
         }
     }
+
 }
-
-

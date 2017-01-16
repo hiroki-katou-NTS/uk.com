@@ -18,6 +18,7 @@ var qpp008;
                     self.enableSel3 = ko.observable(true);
                     self.checkedSel4 = ko.observable(true);
                     self.enableSel4 = ko.observable(true);
+                    self.departmentDate = ko.observable('2017/01/13' + 'の部門構成で集計します。');
                     /*Switch*/
                     self.roundingRules = ko.observableArray([
                         { code: '1', name: '表示する' },

@@ -33,9 +33,8 @@ module qpp008.c.viewmodel {
             self.itemsSwap(array);
 
             self.columnsSwap = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '説明', prop: 'description', width: 200 }
+                { headerText: 'コード', prop: 'code', width: 80 },
+                { headerText: '名称', prop: 'name', width: 120 }
             ]);
 
             this.currentCodeListSwap = ko.observableArray([]);
@@ -56,8 +55,8 @@ module qpp008.c.viewmodel {
                 }
             }
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 230 },
+                { headerText: 'コード', prop: 'code', width: 30 },
+                { headerText: '名称', prop: 'name', width: 90 },
 
             ]);
             //get event when hover on table by subcribe

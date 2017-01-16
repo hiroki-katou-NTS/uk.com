@@ -16,6 +16,7 @@ module qpp008.b.viewmodel {
         selectedRuleCode: any;
         roundingRules1: KnockoutObservableArray<any>;
         selectedRuleCode1: any;
+        departmentDate: KnockoutObservable<string>;
 
         constructor() {
             var self = this;
@@ -31,6 +32,7 @@ module qpp008.b.viewmodel {
             self.enableSel3 = ko.observable(true);
             self.checkedSel4 = ko.observable(true);
             self.enableSel4 = ko.observable(true);
+            self.departmentDate = ko.observable('2017/01/13' + 'の部門構成で集計します。')
             /*Switch*/
             self.roundingRules = ko.observableArray([
                 { code: '1', name: '表示する' },
