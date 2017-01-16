@@ -6,14 +6,54 @@ module cmm014.a.viewmodel {
         classificationMemo: KnockoutObservable<string>;
         classificationList: KnockoutObservableArray<Classification>;
         selectedClassificationCode: any;
+        texteditorcode: any;
+        texteditorname: any;
+        multilineeditor: any;
 
         constructor() {
             var self = this;
-            this.classificationCode = ko.observable("");
-            this.classificationName = ko.observable("");
-            this.classificationMemo = ko.observable("");
-            this.classificationList = ko.observableArray([]);
-            this.selectedClassificationCode = ko.observable(null);
+            self.classificationCode = ko.observable("");
+            self.classificationName = ko.observable("");
+            self.classificationMemo = ko.observable("");
+            self.classificationList = ko.observableArray([]);
+            self.selectedClassificationCode = ko.observable(null);
+            self.texteditorcode = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    width: "100px",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true)
+            };
+            self.texteditorname = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    width: "100px",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true)
+            };
+            self.multilineeditor = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                    resizeable: true,
+                    placeholder: "",
+                    width: "",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
         }
 
         start(): JQueryPromise<any> {
@@ -21,7 +61,7 @@ module cmm014.a.viewmodel {
             var dfd = $.Deferred<any>();
             dfd.resolve();
             return dfd.promise();
-             }
+        }
     }
 
     class Classification {

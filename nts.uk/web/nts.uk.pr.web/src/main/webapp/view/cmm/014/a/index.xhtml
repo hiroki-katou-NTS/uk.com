@@ -13,17 +13,17 @@
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
 			<script type="text/javascript">
-// 					__viewContext.primitiveValueConstraints.EmployementCode = {
-// 							valueType: 'String',
-// 							charType: 'Numeric',
-// 							maxLength: 2,
-// 						};
+					__viewContext.primitiveValueConstraints.ClassificationCode = {
+							valueType: 'String',
+							charType: 'Numeric',
+							maxLength: 10,
+						};
 					
-// 					__viewContext.primitiveValueConstraints.EmployementName = {
-// 							valueType: 'String',
-// 							charType: 'String',
-// 							maxLength: 20,
-// 						};
+					__viewContext.primitiveValueConstraints.ClassificationName = {
+							valueType: 'String',
+							charType: 'String',
+							maxLength: 20,
+						};
 				</script>
 		</ui:define>
 
@@ -33,9 +33,45 @@
 				<button id="BTN_002" class="proceed btnStyle">登録</button>
 				<button id="BTN_003">マスタ修正ログ</button>
 				<button id="BTN_004" class="danger btnStyle" >削除</button>
-				<label id="LBL_001">雇用区分の登録</label>
+				<label id="LBL_001">分類情報の登録</label>
 			</div>
 			<div id="contents-area">
+				<div class="relative bg-green caret-right caret-background">
+    				<i class="icon icon-searchbox"></i>
+					<div class = "search-line">
+					
+					</div>
+				</div>
+				<div class = "right-area">
+					<div class = "code-name-area">
+						<div data-bind="ntsFormLabel: { constraint: 'ClassificationCode', required: true }">コード/名称</div>
+						<div data-bind="with: texteditorcode">
+							<input data-bind="ntsTextEditor: {
+							value: value,
+							constraint: ClassificationCode,
+							required: required,
+							enable: enable}" />
+						</div>
+						<div data-bind="with: texteditorname">
+							<input data-bind="ntsTextEditor: {
+							value: value,
+							constraint: constraint,
+							required: required,
+							enable: enable}" />
+						</div>
+					</div>
+					<div class = "memo-area">
+					<div data-bind="ntsFormLabel: {}">メモ</div>
+						<div data-bind="with: multilineeditor">
+							<textarea data-bind="ntsMultilineEditor: {
+							value: value,
+							constraint: constraint,
+							option: option,
+							enable: enable,
+							readonly: readonly}" />
+						</div>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
