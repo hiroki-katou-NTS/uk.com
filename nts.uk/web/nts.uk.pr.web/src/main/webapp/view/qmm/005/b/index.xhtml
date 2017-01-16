@@ -15,8 +15,137 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area"></div>
+			<div id="functions-area">
+				<div class="btn-group-left">
+					<button id="B_BTN_001">新規</button>
+					<button id="B_BTN_002">登録</button>
+					<button id="B_BTN_003">削除</button>
+					<button id="B_BTN_004">閉じる</button>
+				</div>
+				<div class="clear-fix"></div>
+			</div>
+			<div id="contents-area">
+				<div class="blst001-container caret-right caret-background">
+					<div>
+						<span class="divider"></span>
+						<div id="B_LST_001"
+							data-bind="ntsListBox: {
+										options: [{code: '1', name: 'Option 1'},{code: '2', name: 'Option 2'},{code: '3', name: 'Option 3'},{code: '4', name: 'Option 4'},{code: '5', name: 'Option 5'}],
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedCodes,
+										rows: 10,
+										columns: [{ prop: 'name' }]}"></div>
+					</div>
+				</div>
+				<div class="right-panel">
+					<div class="right-panel-top">
+						<div class="form-group">
+							<div data-bind="ntsFormLabel: {}">処理区分</div>
+							<label>25日払い</label>
+						</div>
+						<div class="form-group">
+							<div data-bind="ntsFormLabel: {}">処理年</div>
+							<input class="form-control" type="text" data-bind="value: '2016'" />
+							<label>（平成28年）</label>
+							<button>システム基準日の情報を反映する</button>
+						</div>
+					</div>
+					<div class="right-panel-bottom">
+						<table id="B_LST_002" class="table">
+							<thead>
+								<tr>
+									<th class="hide" colspan="5"></th>
+									<td class="text-left no-border"><button
+											class="btn-collapse" data-bind="click: toggleColumns">-</button></td>
+								</tr>
+								<tr>
+									<th></th>
+									<th></th>
+									<th>支払年月日</th>
+									<th>社員抽出基準日</th>
+									<th class="double-border">社会保険徴収月</th>
+									<th class="toggle">社会保険基準日</th>
+									<th class="toggle">雇用保険基準日</th>
+									<th class="toggle">住民税基準日</th>
+									<th class="toggle">所得税基準日</th>
+									<th class="toggle">経理締め日</th>
+									<th>明細書印字年月</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: [1, 2,3,4,5,6,7,8,9,10,11,12]">
+								<tr>
+									<th data-bind="text: ($index() + 1)"></th>
+									<th data-bind="text: ($index() + 1 + '月')"></th>
+									<td>
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td class="double-border">
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td class="toggle">
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td class="toggle">
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td class="toggle">
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td class="toggle">
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td class="toggle">
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<input type="text"
+												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
+											<button class="btn-calendar"></button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>
