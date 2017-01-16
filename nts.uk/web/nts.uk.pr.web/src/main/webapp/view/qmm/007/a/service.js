@@ -12,21 +12,31 @@ var nts;
                     (function (a) {
                         var service;
                         (function (service) {
-                            var paths = {
-                                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
-                            };
-                            function getPaymentDateProcessingList() {
+                            var UnitPriceHistoryNode = (function () {
+                                function UnitPriceHistoryNode(code, name, monthRange, isChild, childs) {
+                                    var self = this;
+                                    self.code = code;
+                                    self.name = name;
+                                    self.monthRange = monthRange;
+                                    self.nodeText = self.code + ' ' + self.name;
+                                    self.isChild = isChild;
+                                    self.childs = childs;
+                                    if (self.isChild == true) {
+                                        self.nodeText = self.monthRange;
+                                    }
+                                }
+                                return UnitPriceHistoryNode;
+                            }());
+                            service.UnitPriceHistoryNode = UnitPriceHistoryNode;
+                            var paths = {};
+                            var mockData = [new UnitPriceHistoryNode('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
+                                new UnitPriceHistoryNode('002', '宿直単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0021', '宿直単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
+                            function getUnitPriceHistoryList() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
+                                dfd.resolve(mockData);
                                 return dfd.promise();
                             }
-                            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+                            service.getUnitPriceHistoryList = getUnitPriceHistoryList;
                             /**
                             * Model namespace.
                             */

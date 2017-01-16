@@ -20,8 +20,27 @@
 	min-height: 600px;
 }
 
-#inp_001 {
+#inpSearch {
 	width: 150px;
+}
+
+#inpCode {
+	width: 50px !important;
+}
+
+#inpName {
+	width: 250px !important;
+}
+
+#inpStartDate {
+	width: 70px !important;
+}
+
+#inpMoney {
+	width: 100px !important;
+}
+.currencyRight {
+	width: 100px !important;
 }
 
 .nts-switch-button {

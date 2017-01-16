@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<script>
-			__viewContext.primitiveValueConstraints.Money = {
+				__viewContext.primitiveValueConstraints.Money = {
 					valueType : 'String',
 					charType : 'Numeric',
 					maxLength : 10,
@@ -33,10 +33,12 @@
 			<div id="functions-area">
 				<button id="btn_001" data-bind="enable: false"
 					class="large btn-default">新規</button>
-				<button id="btn_002" class="large proceed btn-default" data-bind="click: clearUnitPriceDetail">登録</button>
-				<button id="btn_003" class="large btn-default" data-bind="click: collectData">印刷
-					(PDF)</button>
-				<button id="btn_006" class="large btn-default" data-bind="click: test">マスタ修正ログ</button>
+				<button id="btn_002" class="large proceed btn-default"
+					data-bind="click: clearUnitPriceDetail">登録</button>
+				<button id="btn_003" class="large btn-default"
+					data-bind="click: collectData">印刷 (PDF)</button>
+				<button id="btn_006" class="large btn-default"
+					data-bind="click: test">マスタ修正ログ</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 
@@ -46,7 +48,7 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div>
 						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-						<input id="inp_001" class="inp-default" />
+						<input id="inpSearch" class="inp-default" />
 						<button id="sch_001" class="caret-bottom caret-background">検索</button>
 					</div>
 					<div class="hidden"
@@ -82,54 +84,40 @@
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
-							<td colspan="2"><span class=""
-								data-bind="with: code"> <input id="inp_002"
-									class="inp-default"
-									data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</span> <span data-bind="with: name"> <input id="inp_003"
-									class="inp-default"
-									data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</span></td>
+							<td colspan="2"><input id="inpCode" class="inp-default"
+								data-bind="ntsTextEditor: {
+									value: code,
+									constraint: 'UnitPriceCode',
+									option: textEditorOption,
+									required: true}" />
+								<input id="inpName" class="inp-default"
+								data-bind="ntsTextEditor: {
+									value: name,
+									constraint: 'UnitPriceName',
+									option: textEditorOption,
+									required: true}" />
+							</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span data-bind="with: startDate"> <input
-									id="inp_004" class="inp-default"
-									data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</span> <label id="lbl_005" data-bind="text: endDate()"></label></td>
+							<td><input id="inpStartDate" class="inp-default"
+								data-bind="ntsTextEditor: {
+									value: startDate,
+									option: textEditorOption,
+									required: true}" />
+								<label id="lbl_005" data-bind="text: endDate()"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><div data-bind="with: money">
-									<input class="inp-default"
-										data-bind="ntsNumberEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-								</div></td>
+							<td><input id="inpMoney" class="inp-default"
+								data-bind="ntsNumberEditor: {
+									value: money,
+									constraint: 'Money',
+									option: currencyEditorOption,
+									required: true}" />
+							</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>

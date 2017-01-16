@@ -28,91 +28,52 @@ module nts.uk.pr.view.qmm007.a {
             payAtrDayMonth: KnockoutObservable<ApplySetting>;
             payAtrDaily: KnockoutObservable<ApplySetting>;
             payAtrHourly: KnockoutObservable<ApplySetting>;
+            
+            textEditorOption: any;
+            currencyEditorOption: any;
 
             switchButtonDataSource: KnockoutObservableArray<any>;
-            mockData = [new Node('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new Node('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new Node('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
-                            new Node('002', '宿直単価', '2016/04 ~ 9999/12', false, [new Node('0021', '宿直単価', '2016/04 ~ 9999/12', true), new Node('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
 
             constructor() {
                 var self = this;
                 self.unitPriceDetailModel = ko.observable(new UnitPriceDetailModel());
-                self.historyList = ko.observableArray(self.mockData);
-
-                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
-                self.selectedCode = ko.observable();
-                self.selectedCode.subscribe(val => {
-                    if (val != null || val != undefined) {
-                        self.code.value(val);
-                        console.log(val);
-                    }
-                });
-
-                self.endDate = ko.observable('（平成29年01月） ~');
-
-                self.code = {
-                    value: ko.observable(self.unitPriceDetailModel().unitPriceCode),
-                    constraint: 'UnitPriceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: " ",
-                        width: "50px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-
-                self.name = {
-                    value: ko.observable(self.unitPriceDetailModel().unitPriceName),
-                    constraint: 'UnitPriceName',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "",
-                        width: "250px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-
-                self.startDate = {
-                    value: ko.observable(self.unitPriceDetailModel().startDate),
-                    constraint: '',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "",
-                        width: "70px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-
-                self.money = {
-                    value: ko.observable(self.unitPriceDetailModel().budget),
-                    constraint: 'Money',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                        grouplength: 3,
-                        decimallength: 2,
-                        currencyformat: "JPY",
-                        currencyposition: 'right',
-                        width: "100px",
-                    })),
-                    required: ko.observable(false),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
-
-                self.memo = ko.observable('');
-
+                self.historyList = ko.observableArray();
                 self.switchButtonDataSource = ko.observableArray([
                     { code: '1', name: '対象' },
                     { code: '2', name: '対象外' }
                 ]);
 
+                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
+                self.selectedCode = ko.observable();
+                self.selectedCode.subscribe(val => {
+                    if (val != null || val != undefined) {
+                        self.code(val);
+                        console.log(val);
+                    }
+                });
+
+                //options
+                self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                        textmode: "text",
+                        placeholder: "",
+                        textalign: "left"
+                    }));
+                self.currencyEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                        grouplength: 3,
+                        decimallength: 2,
+                        currencyformat: "JPY",
+                        currencyposition: 'right'
+                    }));
+
+                //input
+                self.code = ko.observable(self.unitPriceDetailModel().unitPriceCode);
+                self.name = ko.observable(self.unitPriceDetailModel().unitPriceName);
+                self.startDate = ko.observable(self.unitPriceDetailModel().startDate);
+                self.endDate = ko.observable('（平成29年01月） ~');
+                self.money = ko.observable(self.unitPriceDetailModel().budget);
+                self.memo = ko.observable('');
+
+                //setting
                 self.settingType = ko.observable(0);
                 self.payAtr = ko.observable(0);
                 self.payAtrMonthly = ko.observable(0);
@@ -126,26 +87,26 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
 
                 var dfd = $.Deferred();
-                dfd.resolve();
+                self.loadUnitPriceHistoryList().done(() => dfd.resolve(null));
                 return dfd.promise();
             }
 
             goToB() {
-                nts.uk.ui.windows.setShared('code', this.code.value());
+                nts.uk.ui.windows.setShared('code', this.code());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 450 });
             }
 
             goToC() {
-                nts.uk.ui.windows.setShared('code', this.code.value());
+                nts.uk.ui.windows.setShared('code', this.code());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 560 });
             }
 
             test() {
                 var self = this;
-                self.code.value(1);
-                self.name.value('ガソリン単価')
-                self.startDate.value('2015-04');
-                self.money.value(120);
+                self.code(1);
+                self.name('ガソリン単価')
+                self.startDate('2015-04');
+                self.money(120);
                 self.settingType(2);
                 self.payAtr(2);
                 self.payAtrMonthly(2);
@@ -164,10 +125,10 @@ module nts.uk.pr.view.qmm007.a {
 
             clearUnitPriceDetail() {
                 var self = this;
-                self.code.value(null);
-                self.name.value('')
-                self.startDate.value('');
-                self.money.value(null);
+                self.code(null);
+                self.name('')
+                self.startDate('');
+                self.money(null);
                 self.settingType(0);
                 self.payAtr(0);
                 self.payAtrMonthly(0);
@@ -189,28 +150,18 @@ module nts.uk.pr.view.qmm007.a {
                 self.payAtrHourly(model.fixPayAtrHourly);
             }
 
+            loadUnitPriceHistoryList(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.getUnitPriceHistoryList().done( data => {
+                    self.historyList(data);
+                    dfd.resolve(null);
+                });
+                return dfd.promise();
+            }
+
         }
 
-        export class Node {
-            code: string;
-            name: string;
-            monthRange: string;
-            nodeText: string;
-            isChild: boolean;
-            childs: any;
-            constructor(code: string, name: string, monthRange: string, isChild: boolean, childs?: Array<Node>) {
-                var self = this;
-                self.code = code;
-                self.name = name;
-                self.monthRange = monthRange;
-                self.nodeText = self.code + ' ' + self.name;
-                self.isChild = isChild;
-                self.childs = childs;
-                if (self.isChild == true) {
-                    self.nodeText = self.monthRange;
-                }
-            }
-        }
         /*
                 export class UnitPriceDetailModel {
                     unitPriceCode: KnockoutObservable<string>;
@@ -243,7 +194,6 @@ module nts.uk.pr.view.qmm007.a {
         }
 
         export class UnitPriceHistoryModel {
-
         }
 
     }
