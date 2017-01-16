@@ -614,6 +614,23 @@ var nts;
                 return DirtyChecker;
             }());
             ui_1.DirtyChecker = DirtyChecker;
+            /**
+             * Utilities for IgniteUI
+             */
+            var ig;
+            (function (ig) {
+                var grid;
+                (function (grid) {
+                    function getRowIdFrom($anyElementInRow) {
+                        return $anyElementInRow.closest('tr').attr('data-id');
+                    }
+                    grid.getRowIdFrom = getRowIdFrom;
+                    function getRowIndexFrom($anyElementInRow) {
+                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+                    }
+                    grid.getRowIndexFrom = getRowIndexFrom;
+                })(grid = ig.grid || (ig.grid = {}));
+            })(ig = ui_1.ig || (ui_1.ig = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

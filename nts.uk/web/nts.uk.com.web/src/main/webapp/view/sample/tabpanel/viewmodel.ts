@@ -1,7 +1,7 @@
-module sample.tabpanel.viewmodel {
+module nts.uk.ui.tabpanel.viewmodel {
     
     export class ScreenModel {
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        tabs: KnockoutObservableArray<NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
 
         constructor() {
