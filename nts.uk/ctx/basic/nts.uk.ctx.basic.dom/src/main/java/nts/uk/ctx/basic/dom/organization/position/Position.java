@@ -21,21 +21,26 @@ public class Position extends AggregateRoot {
 	private String historyID;
 
 	private String companyCode;
-	
+
 	private Memo memo;
-	
-	
-	public Position(GeneralDate endDate, JobName jobName, JobCode jobCode, JobCode jobOutCode,
-			GeneralDate startDate, String historyID, String companyCode, Memo memo) {
+
+	public Position(GeneralDate endDate, JobName jobName, JobCode jobCode, JobCode jobOutCode, GeneralDate startDate,
+			String historyID, String companyCode, Memo memo) {
 		super();
 		this.endDate = endDate;
 		this.jobName = jobName;
 		this.jobCode = jobCode;
 		this.jobOutCode = jobOutCode;
 		this.startDate = startDate;
-		this.historyID = historyID;
 		this.companyCode = companyCode;
 		this.memo = memo;
+	}
+
+	public static Position createFromJavaType(GeneralDate endDate, String jobName, String jobCode, String jobOutCode,
+			GeneralDate startDate, String historyID, String companyCode, String memo) {
+		return new Position(endDate, new JobName(jobName), new JobCode(jobCode), new JobCode(jobOutCode), startDate,
+				historyID, companyCode, new Memo(memo));
+
 	}
 
 }

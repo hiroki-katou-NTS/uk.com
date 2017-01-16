@@ -26,11 +26,5 @@ public class QmnmtPayClassPK implements Serializable{
 	@Column(name ="PAYCLASS_CD")
 	public String payClassCode;
 
-	@Basic(optional = false)
-	@Column(name ="STR_D")
-	public String startDate;
-	
-	@Basic(optional = false)
-	@Column(name ="HIST_ID")
-	public String historyID;
+
 }

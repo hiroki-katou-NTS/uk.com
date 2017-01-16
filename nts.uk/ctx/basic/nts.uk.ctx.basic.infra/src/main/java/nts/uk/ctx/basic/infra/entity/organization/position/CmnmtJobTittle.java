@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,18 +25,22 @@ public class CmnmtJobTittle implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name ="STR_YM")
-	public int strYm;
+	public GeneralDate strYm;
 
 	@Basic(optional = false)
 	@Column(name = "END_YM")
-	public int endYm;
-
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	public int exclusiveVersion;
+	public GeneralDate endYm;
 	
 	@Basic(optional = false)
 	@Column(name = "MEMO")
-	public int memo;
+	public String memo;
+	
+	@Basic(optional = false)
+	@Column(name ="JOBNAME")
+	public String jobName;
+
+	@Basic(optional = false)
+	@Column(name ="JOB_OUT_CODE")
+	public String jobOutCode;
 	
 }

@@ -22,19 +22,16 @@ public class QmnmtPayClass implements Serializable{
 	@EmbeddedId
 	public QmnmtPayClassPK qmnmtPayClassPK;
 	
-	@Basic(optional = false)
-	@Column(name ="STR_YM")
-	public int strYm;
 
 	@Basic(optional = false)
 	@Column(name = "MEMO")
-	public int memo;
+	public String memo;
 
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	public int exclusiveVersion;
 	
 	@Basic(optional = false)
 	@Column(name = "PAYCLASS_NAME")
-	public int payClassName;
+	public String payClassName;
+	
+
+	
 }
