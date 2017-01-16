@@ -681,4 +681,21 @@
 			return this.initialState !== this.getCurrentState();
 		}
 	}
+    
+    /**
+     * Utilities for IgniteUI
+     */
+    export module ig {
+        
+        export module grid {
+            
+            export function getRowIdFrom($anyElementInRow: JQuery): any {
+                return $anyElementInRow.closest('tr').attr('data-id');
+            }
+            
+            export function getRowIndexFrom($anyElementInRow: JQuery): number {
+                return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+        }
+    }
 }
