@@ -13,6 +13,35 @@ var nts;
                         var ScreenModel = (function () {
                             function ScreenModel() {
                                 var self = this;
+                                self.init();
+                                self.singleSelectedCode.subscribe(function (newValue) {
+                                    self.curentNode(self.findByCode(self.filteredData(), newValue));
+                                });
+                            }
+                            ScreenModel.prototype.findByCode = function (items, newValue) {
+                                var self = this;
+                                var _node;
+                                _.find(items, function (_obj) {
+                                    if (!_node) {
+                                        if (_obj.code == newValue) {
+                                            _node = _obj;
+                                        }
+                                    }
+                                });
+                                return _node;
+                            };
+                            ;
+                            ScreenModel.prototype.clickButton = function () {
+                                var self = this;
+                                nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
+                                nts.uk.ui.windows.setShared('curentNode', self.curentNode(), true);
+                                nts.uk.ui.windows.close();
+                            };
+                            ScreenModel.prototype.cancelButton = function () {
+                                nts.uk.ui.windows.close();
+                            };
+                            ScreenModel.prototype.init = function () {
+                                var self = this;
                                 self.items = ko.observableArray([
                                     new Node('1', '東北', [
                                         new Node('11', '青森県', [
@@ -41,42 +70,12 @@ var nts;
                                             new Node('062022', '浦和市', []),
                                         ])
                                     ]),
-                                    new Node('5', '東海', [])
+                                    new Node('5', '東海', []),
+                                    new Node('6', '東海', [])
                                 ]);
-                                self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
-                                console.log(self.singleSelectedCode());
+                                self.singleSelectedCode = ko.observable(null);
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                                self.selectedCodes = ko.observableArray([]);
-                                self.value = ko.observable(null);
-                                self.currentNode = ko.observable(new Node("", "", []));
-                                self.singleSelectedCode.subscribe(function (newValue) {
-                                    //self.value(newValue);
-                                    self.currentNode(self.findByCode(self.filteredData(), newValue));
-                                    nts.uk.ui.windows.setShared("currentNode", self.currentNode(), true);
-                                });
-                            }
-                            ScreenModel.prototype.findByCode = function (items, newValue) {
-                                var self = this;
-                                var _node;
-                                _.find(items, function (_obj) {
-                                    if (!_node) {
-                                        if (_obj.code == newValue) {
-                                            _node = _obj;
-                                        }
-                                    }
-                                });
-                                return _node;
-                            };
-                            ;
-                            ScreenModel.prototype.ClickButton = function () {
-                                //   nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
-                                var self = this;
-                                nts.uk.ui.windows.sub.modal('/view/qmm/003/b/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
-                                    // = nts.uk.ui.windows.getShared("singleSelectedCode");
-                                    // self.init1(singleSelectedCode);
-                                    nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
-                                });
-                                nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
+                                self.curentNode = ko.observable(new Node("", "", []));
                             };
                             return ScreenModel;
                         }());

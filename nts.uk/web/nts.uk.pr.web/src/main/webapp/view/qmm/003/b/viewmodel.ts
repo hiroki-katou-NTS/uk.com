@@ -2,13 +2,41 @@ module nts.uk.pr.view.qmm003.b {
     export class ScreenModel {
         items: any;
         singleSelectedCode: any;
-        header: any;
-        index: number;
         filteredData: any;
-        selectedCodes: any;
-        value: any;
-        currentNode: any;
+        curentNode: any;
         constructor(){
+            let self = this;
+            self.init();
+            self.singleSelectedCode.subscribe(function(newValue) {
+                self.curentNode(self.findByCode(self.filteredData(), newValue));
+                });     
+   
+            }
+          findByCode(items: Array<Node>, newValue: string): Node {
+              let self = this;
+              let _node: Node;
+              _.find(items, function(_obj: Node) {
+                   if (!_node) {
+                       if (_obj.code == newValue) {
+                           _node = _obj;
+                                              
+                       }
+                       }
+                        });
+                        
+                        return _node;
+                    };
+        clickButton():any{
+            let self = this;
+            nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(),true);
+            nts.uk.ui.windows.setShared('curentNode',self.curentNode(),true);
+            nts.uk.ui.windows.close();
+            
+        }
+        cancelButton():void{
+            nts.uk.ui.windows.close();
+            }
+        init(): void{
             let self = this;
             self.items = ko.observableArray(
                 [
@@ -39,53 +67,14 @@ module nts.uk.pr.view.qmm003.b {
                         new Node('062022', '浦和市', []),
                     ])
                 ]),
-                new Node('5', '東海', [])
+                new Node('5', '東海', []),
+                new Node('6', '東海', [])
             ]);
 
-            self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
-            console.log(self.singleSelectedCode());   
+            self.singleSelectedCode = ko.observable(null);
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
-            self.selectedCodes = ko.observableArray([]);
-            self.value = ko.observable(null);
-            self.currentNode = ko.observable(new Node("","",[]));
-            self.singleSelectedCode.subscribe(function(newValue) {
-                //self.value(newValue);
-                self.currentNode(self.findByCode(self.filteredData(), newValue));
-        
-                nts.uk.ui.windows.setShared("currentNode", self.currentNode(), true);
-                });     
-   
+            self.curentNode = ko.observable(new Node("","",[]));            
             }
-          findByCode(items: Array<Node>, newValue: string): Node {
-              let self = this;
-              let _node: Node;
-              _.find(items, function(_obj: Node) {
-                   if (!_node) {
-                       if (_obj.code == newValue) {
-                           _node = _obj;
-                                              
-                       }
-                       }
-                        });
-                        
-                        return _node;
-                    };
-        ClickButton():any{
-         //   nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
-            let self = this;
-            nts.uk.ui.windows.sub.modal('/view/qmm/003/b/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(function(): any {
-                // = nts.uk.ui.windows.getShared("singleSelectedCode");
-               // self.init1(singleSelectedCode);
-                nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
-                
-            });
-            nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
-            
-        }
-    
-
-
-
     }
      export class Node {
         code: string;

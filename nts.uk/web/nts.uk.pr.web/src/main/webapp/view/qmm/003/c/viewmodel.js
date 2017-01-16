@@ -12,7 +12,26 @@ var nts;
                     (function (c) {
                         var ScreenModel = (function () {
                             function ScreenModel() {
-                                this.editMode = true; // true là mode thêm mới, false là mode sửa 
+                                var self = this;
+                                self.init();
+                                self.singleSelectedCode.subscribe(function (newValue) {
+                                    self.labelSubsub(self.findByCode(self.filteredData(), newValue));
+                                    console.log(self.labelSubsub());
+                                });
+                            }
+                            ScreenModel.prototype.findByCode = function (items, newValue) {
+                                var self = this;
+                                var _node;
+                                _.find(items, function (_obj) {
+                                    if (!_node) {
+                                        if (_obj.code == newValue) {
+                                            _node = _obj;
+                                        }
+                                    }
+                                });
+                                return _node;
+                            };
+                            ScreenModel.prototype.init = function () {
                                 var self = this;
                                 self.items = ko.observableArray([
                                     new Node('1', '東北', [
@@ -42,37 +61,22 @@ var nts;
                                             new Node('062022', '浦和市', []),
                                         ])
                                     ]),
-                                    new Node('5', '東海', [])
+                                    new Node('5', '東海', []),
+                                    new Node('6', '東海', [])
                                 ]);
                                 self.singleSelectedCode = ko.observable("11");
-                                self.test = ko.observable(null);
-                                self.curentNode = ko.observable(new Node("", "", []));
-                                self.index = 0;
+                                self.labelSubsub = ko.observable(new Node("", "", []));
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                                self.selectedCodes = ko.observableArray([]);
-                                //Init();
-                                self.singleSelectedCode.subscribe(function (newValue) {
-                                    self.curentNode(findObjByCode(self.items, newValue));
-                                });
-                                function findObjByCode(items, newValue) {
-                                    var _node;
-                                    _.find(items, function (_obj) {
-                                        if (!_node) {
-                                            if (_obj.code == newValue) {
-                                                _node = _obj;
-                                            }
-                                            else {
-                                                _node = findObjByCode(_obj.childs, newValue);
-                                            }
-                                        }
-                                    });
-                                    return _node;
-                                }
-                                ;
-                                function Init() {
-                                    self.singleSelectedCode("11");
-                                }
-                            }
+                            };
+                            ScreenModel.prototype.clickButton = function () {
+                                var self = this;
+                                nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
+                                nts.uk.ui.windows.setShared('labelSubsub', self.labelSubsub(), true);
+                                nts.uk.ui.windows.close();
+                            };
+                            ScreenModel.prototype.cancelButton = function () {
+                                nts.uk.ui.windows.close();
+                            };
                             return ScreenModel;
                         }());
                         c.ScreenModel = ScreenModel;

@@ -68,34 +68,6 @@
     width: 200px;
     margin-left: 5px;
 }
-/* #A_LBL_003{
-	vertical-align: baseline;
-	width: 200px;
-}
-#A_LBL_003{
-	vertical-align: baseline;
-	width: 200px;
-}
-#A_LBL_004{
-	vertical-align: baseline;
-	width: 200px;
-}
-#A_LBL_005{
-	vertical-align: baseline;
-	width: 200px;
-}
-#A_LBL_006{
-	vertical-align: baseline;
-	width: 200px;
-}
-#A_LBL_007{
-	vertical-align: baseline;
-	width: 200px;
-}
-#A_LBL_008{
-	vertical-align: baseline;
-	width: 200px;
-} */
 #A_BTN_010 {
 	width: 40px;
 	height: 25px;
@@ -133,14 +105,16 @@
 	border-bottom: 1px solid gray;
 	padding: 5px;
 }
-input.ntsSearchBox{
-	width: 150px;
-	margin-top: 15px;
-	margin-left: 10px;
-	margin-right: 10px;
+.ntsSearchBox{
+	margin-bottom: 10px;
 }
-div.ui-widget-header{
-	margin-top: 30px;
+input.ntsSearchBox{
+	width: 260px;
+	margin-top: 15px;
+	margin-left: 25px;
+}
+button.search-btn{
+	width: 80px;
 }
 .pseudo {}
 .pseudo:before {

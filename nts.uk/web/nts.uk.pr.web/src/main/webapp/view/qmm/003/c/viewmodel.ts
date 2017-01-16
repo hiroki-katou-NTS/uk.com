@@ -1,16 +1,32 @@
 module nts.uk.pr.view.qmm003.c {
     export class ScreenModel {
-        index: number;
         items: any;
         singleSelectedCode: KnockoutObservable<any>;
-        headers: any;
-        test: any;
-        curentNode: any;
-        editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
+        labelSubsub: any;
         filteredData: any;
-        selectedCodes: any;
         constructor(){
          let self = this;
+            self.init();
+            self.singleSelectedCode.subscribe(function(newValue){
+                self.labelSubsub(self.findByCode(self.filteredData(),newValue));
+                console.log(self.labelSubsub());
+                });
+            }
+        
+        findByCode(items: Array<Node>, newValue: string): Node {
+            let self = this;
+            let _node: Node;
+            _.find(items, function(_obj: Node) {
+                 if (!_node) {
+                    if (_obj.code == newValue) {
+                         _node = _obj;                      
+                     }
+                     }
+                      });
+                      return _node;
+         }
+         init(): void{
+            let self = this;
             self.items = ko.observableArray(
                 [
                 new Node('1', '東北', [
@@ -40,41 +56,22 @@ module nts.uk.pr.view.qmm003.c {
                         new Node('062022', '浦和市', []),
                     ])
                 ]),
-                new Node('5', '東海', [])
+                new Node('5', '東海', []),
+                new Node('6', '東海', [])
             ]);
-
             self.singleSelectedCode = ko.observable("11");
-            self.test = ko.observable(null);
-            self.curentNode = ko.observable(new Node("", "", []));
-            self.index = 0;
+            self.labelSubsub = ko.observable(new Node("", "", []));
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
-            self.selectedCodes = ko.observableArray([]);
-            //Init();
-            self.singleSelectedCode.subscribe(function(newValue){
-                self.curentNode(findObjByCode(self.items,newValue));
-                });
-                  
-            function findObjByCode(items: Array<Node>, newValue: string): Node {
-                        let _node: Node;
-                        _.find(items, function(_obj: Node) {
-                            if (!_node) {
-                                if (_obj.code == newValue) {
-                                    _node = _obj;
-                                              
-                                } else {
-                                    
-                                    _node = findObjByCode(_obj.childs, newValue);
-                                }
-                            }
-                        });
-                        
-                        return _node;
-                    };
-                 function Init(): void{
-                 self.singleSelectedCode("11");
-                }
+              }
+        clickButton(): void{
+            let self = this;
+            nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(),true);
+            nts.uk.ui.windows.setShared('labelSubsub',self.labelSubsub(),true);
+            nts.uk.ui.windows.close();
             }
-        
+        cancelButton(): void{
+            nts.uk.ui.windows.close(); 
+        }
         }
       export class Node {
         code: string;

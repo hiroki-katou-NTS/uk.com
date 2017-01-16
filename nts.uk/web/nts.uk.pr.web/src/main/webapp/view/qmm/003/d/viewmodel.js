@@ -14,6 +14,72 @@ var nts;
                             function ScreenModel() {
                                 this.editMode = true; // true là mode thêm mới, false là mode sửa 
                                 var self = this;
+                                self.init();
+                                self.singleSelectedCode.subscribe(function (newValue) {
+                                });
+                                self.selectedCode.subscribe(function (newValue) {
+                                    console.log(self.selectedCode());
+                                });
+                                // console.log(self.selectedCode());
+                            }
+                            ScreenModel.prototype.findByCode = function (items, newValue) {
+                                var self = this;
+                                var _node;
+                                _.find(items, function (_obj) {
+                                    if (!_node) {
+                                        if (_obj.code == newValue) {
+                                            _node = _obj;
+                                        }
+                                    }
+                                });
+                                return _node;
+                            };
+                            ;
+                            ScreenModel.prototype.clickButton = function () {
+                                var self = this;
+                                nts.uk.ui.windows.setShared('items', self.items(), true);
+                                nts.uk.ui.windows.close();
+                            };
+                            ScreenModel.prototype.cancelButton = function () {
+                                nts.uk.ui.windows.close();
+                            };
+                            //        removeNodeByCode(items: Array<Node>): any{
+                            //            let self = this;
+                            //            _.remove(items,function(obj: Node){
+                            //                if(obj.code == self.Value()){
+                            //                    return obj.code == self.Value();
+                            //                }else{
+                            //                    return self.removeNodeByCode(obj.childs);
+                            //                   
+                            //                }
+                            //                })
+                            //            
+                            //            };
+                            ScreenModel.prototype.removeData1 = function (items) {
+                                _.remove(items, function (obj) {
+                                    return _.size(obj.code) == 1;
+                                });
+                            };
+                            ScreenModel.prototype.removeData2 = function (items) {
+                                _.remove(items, function (obj) {
+                                    return _.size(obj.code) == 2;
+                                });
+                            };
+                            ScreenModel.prototype.removeData3 = function (items) {
+                                _.remove(items, function (obj) {
+                                    return _.size(obj.code) > 3;
+                                });
+                            };
+                            ScreenModel.prototype.delete = function (items) {
+                                var self = this;
+                                _.each(self.filteredData(), function (obj) {
+                                    if (_.size(obj.code) == 1) {
+                                        self.removeData1(self.filteredData());
+                                    }
+                                });
+                            };
+                            ScreenModel.prototype.init = function () {
+                                var self = this;
                                 self.items = ko.observableArray([
                                     new Node('1', '東北', [
                                         new Node('11', '青森県', [
@@ -45,34 +111,39 @@ var nts;
                                     new Node('5', '東海', [])
                                 ]);
                                 self.singleSelectedCode = ko.observable("11");
-                                self.test = ko.observable(null);
                                 self.curentNode = ko.observable(new Node("", "", []));
                                 self.index = 0;
+                                self.selectedCode = ko.observableArray([]);
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                                self.selectedCodes = ko.observableArray([]);
-                                //Init();
-                                self.singleSelectedCode.subscribe(function (newValue) {
-                                    self.curentNode(findObjByCode(self.items, newValue));
-                                });
-                                function findObjByCode(items, newValue) {
-                                    var _node;
-                                    _.find(items, function (_obj) {
-                                        if (!_node) {
-                                            if (_obj.code == newValue) {
-                                                _node = _obj;
-                                            }
-                                            else {
-                                                _node = findObjByCode(_obj.childs, newValue);
-                                            }
+                            };
+                            ;
+                            //       findByCode(items: Array<Node>, newValue: string, count: number): Node{
+                            //            let self = this;
+                            //            let node : Node;
+                            //            _.find(items, function(obj: Node){
+                            //                if(!node){
+                            //                    if(obj.code == newValue){
+                            //                        node = obj;
+                            //                        count = count + 1;
+                            //                    }
+                            //                    }
+                            //                });
+                            //            return node;
+                            //        };
+                            //        
+                            ScreenModel.prototype.findByName = function (items) {
+                                var self = this;
+                                var node;
+                                _.find(items, function (obj) {
+                                    if (!node) {
+                                        if (obj.name == self.curentNode().name) {
+                                            node = obj;
                                         }
-                                    });
-                                    return _node;
-                                }
-                                ;
-                                function Init() {
-                                    self.singleSelectedCode("11");
-                                }
-                            }
+                                    }
+                                });
+                                return node;
+                            };
+                            ;
                             return ScreenModel;
                         }());
                         d.ScreenModel = ScreenModel;

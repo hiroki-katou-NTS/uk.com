@@ -1,55 +1,43 @@
 @CHARSET "UTF-8";
-.outer {outline:1px solid #FF6138;}
-.fixed-height {height: 45px;}
-.control-group.valign-center > * { vertical-align: middle; }
-#area{
-	margin-top: 2px;
-	margin-left:80px;
+/* .icon.icon-searchbox {
+	position: relative;
+    top: 37px;
+    left: 45px;
+} */
+.icon.icon-searchbox {
+	position: relative;
+	top: 37px;
+    left: 45px;
 }
 #treegrid2_container{
-	margin-top: 20px;
-    margin-left: 40px;
+	margin-top: 15px;
+    margin-left: 20px;
     margin-right: 40px;
 }
-#treegrid2_nodeText{
-	margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;	
-}
-#treegrid2_headers > thead > tr > th.ui-iggrid-rowselector-header.ui-iggrid-header.ui-widget-header{
-	margin-top: auto;
-    margin-left: 100px;
-    margin-right: auto;		
-}
-.form-label {
-	margin-bottom: 5px;
-	vertical-align: baseline;
-}
 input.ntsSearchBox{
-	width: 180px;
+	width: 250px;
 	margin-top: auto;
-	margin-left: 40px;
-	margin-right: 10px;
+	margin-left: 70px;
 }
-button.ntsSearchBox{
-	width: 90px;
-	margin-top: auto;
-	margin-left: 10px;
-	margin-right: 10px;
+#contents-area > div:nth-child(3) > button{
+	width:60px;
 }
+
 #C_BTN_001{
     width: 90px;
     height: 50px;
-    margin-top: 10px;
-    margin-left: 100px;
+    margin-top: 20px;
+    margin-left: 120px;
 	
+}
+#C_SCH_001{
+	width: 450px;
 }
 #C_BTN_002{
 	width: 80px;
-	margin-top: 30px;
+	margin-top: 25px;
 	margin-left: 20px;	
 	height: 40px;
 }
-/* ************************************************************************ */
 
 

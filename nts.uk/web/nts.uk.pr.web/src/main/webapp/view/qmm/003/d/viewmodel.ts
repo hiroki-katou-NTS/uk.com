@@ -1,15 +1,82 @@
 module nts.uk.pr.view.qmm003.d {
     export class ScreenModel {
-        index: number;
         items: any;
         singleSelectedCode: KnockoutObservable<any>;
-        headers: any;
-        test: any;
+        selectedCode: any;
+        index: number;
         curentNode: any;
         editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
         filteredData: any;
-        selectedCodes: any;
         constructor(){
+            let self = this;
+            self.init();
+            self.singleSelectedCode.subscribe(function(newValue){
+               
+                });
+             self.selectedCode.subscribe(function(newValue){
+                console.log(self.selectedCode());
+                });
+           // console.log(self.selectedCode());
+
+            }
+       findByCode(items: Array<Node>, newValue: string): Node {
+           let self = this;
+           let _node: Node;
+           _.find(items, function(_obj: Node) {
+              if (!_node) {
+                 if (_obj.code == newValue) {
+                      _node = _obj;                      
+                     }
+                  }
+                  });
+              return _node;
+         };        
+        clickButton():any{
+            let self = this;
+            nts.uk.ui.windows.setShared('items', self.items(),true);
+            nts.uk.ui.windows.close();
+            
+        }
+        cancelButton():void{
+            nts.uk.ui.windows.close();
+            }
+//        removeNodeByCode(items: Array<Node>): any{
+//            let self = this;
+//            _.remove(items,function(obj: Node){
+//                if(obj.code == self.Value()){
+//                    return obj.code == self.Value();
+//                }else{
+//                    return self.removeNodeByCode(obj.childs);
+//                   
+//                }
+//                })
+//            
+//            };
+        removeData1(items: Array<Node>): any {
+          _.remove(items, function(obj: Node){
+                return _.size(obj.code) == 1; 
+            });
+          }
+        removeData2(items: Array<Node>): any {
+          _.remove(items, function(obj: Node){
+                return _.size(obj.code) == 2; 
+            });
+          }  
+         removeData3(items: Array<Node>): any {
+          _.remove(items, function(obj: Node){
+                return _.size(obj.code) > 3; 
+            });
+          } 
+        delete(items: Array<Node>): any{
+            let self = this;
+           _.each(self.filteredData(),function(obj: Node){
+               if(_.size(obj.code)==1){
+                 self.removeData1(self.filteredData()); 
+               }
+           });    
+        
+        }              
+        init():void{
             let self = this;
             self.items = ko.observableArray(
                 [
@@ -44,36 +111,70 @@ module nts.uk.pr.view.qmm003.d {
             ]);
 
             self.singleSelectedCode = ko.observable("11");
-            self.test = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
-            self.selectedCodes = ko.observableArray([]);
-            //Init();
-            self.singleSelectedCode.subscribe(function(newValue){
-                self.curentNode(findObjByCode(self.items,newValue));
-                });
+            self.selectedCode = ko.observableArray([]);
+            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));  
             
-            function findObjByCode(items: Array<Node>, newValue: string): Node {
-                        let _node: Node;
-                        _.find(items, function(_obj: Node) {
-                            if (!_node) {
-                                if (_obj.code == newValue) {
-                                    _node = _obj;
-                                              
-                                } else {
-                                    
-                                    _node = findObjByCode(_obj.childs, newValue);
-                                }
-                            }
-                        });
-                        
-                        return _node;
-                    };
-                 function Init(): void{
-                 self.singleSelectedCode("11");
-                }
-            }
+        };
+//       findByCode(items: Array<Node>, newValue: string, count: number): Node{
+//            let self = this;
+//            let node : Node;
+//            _.find(items, function(obj: Node){
+//                if(!node){
+//                    if(obj.code == newValue){
+//                        node = obj;
+//                        count = count + 1;
+//                    }
+//                    }
+//                });
+//            return node;
+//        };
+//        
+        findByName(items: Array<Node>): Node{
+            let self = this;
+            let node : Node;
+            _.find(items, function(obj: Node){
+                if(!node){
+                    if(obj.name == self.curentNode().name){
+                        node = obj;
+                        }
+                    }
+                });
+            return node;
+        };
+//        removeNodeByCode(items: Array<Node>): any{
+//            let self = this;
+//            _.remove(items,function(obj: Node){
+//                if(obj.code == self.Value()){
+//                    return obj.code == self.Value();
+//                }else{
+//                    return self.removeNodeByCode(obj.childs);
+//                   
+//                }
+//                })
+//            
+//            };
+//        // remove data: return array of subsub tree
+
+//        deleteData():any{
+//            let self = this;
+//            self.removeNodeByCode(self.items());
+//            console.log(self.items());
+//            self.item1s(self.items());
+//            console.log(self.item1s());
+//            self.items([]);
+//            self.items(self.item1s());
+//            console.log(self.items());
+//            }
+//        alerDelete():void{
+//            let self= this;
+//            if(confirm("do you wanna delete")=== true){
+//                self.deleteData();
+//            }else{
+//                    alert("you didnt delete!");
+//            }
+//            }           
         }
     export class Node {
         code: string;
