@@ -314,11 +314,15 @@ var nts;
                 var result = amount.substring(leng);
                 var num = parseInt(amount.substring(0, leng));
                 var times = leng / 3;
-                for (var i = 0; i <= times + 1; i++) {
+                for (var i = 1; i < times; i++) {
                     var block = num % 1000;
-                    result = padLeft("" + block, "0", 3) + "," + result;
+                    if (i > 1)
+                        result = padLeft("" + block, "0", 3) + "," + result;
+                    else
+                        result = padLeft("" + block, "0", 3) + result;
                     num = Math.floor(num / 1000);
                 }
+                result = num % 1000 + "," + result;
                 return result;
             }
             function formatCurrency(amount, locale) {
