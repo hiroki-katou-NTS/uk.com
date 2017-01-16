@@ -2058,6 +2058,54 @@ button.nts-switch-button[disabled]:hover {
   text-align: right;
 }
 
+/* line 1, ../sass/components/_swaplist.scss */
+.ntsSwapArea {
+  display: table;
+}
+
+/* line 4, ../sass/components/_swaplist.scss */
+.ntsSwapList-container {
+  display: inline-block;
+}
+
+/* line 7, ../sass/components/_swaplist.scss */
+.ntsSwapList {
+  overflow: auto;
+}
+
+/* line 10, ../sass/components/_swaplist.scss */
+.ntsSearchButton {
+  margin-left: 10px;
+}
+
+/* line 13, ../sass/components/_swaplist.scss */
+.move-button {
+  width: 75px;
+}
+
+/* line 16, ../sass/components/_swaplist.scss */
+.move-forward {
+  margin-bottom: 5px;
+}
+
+/* line 19, ../sass/components/_swaplist.scss */
+.ntsSwapComponent {
+  display: table-cell;
+}
+
+/* line 22, ../sass/components/_swaplist.scss */
+.ntsMoveDataArea {
+  height: 100%;
+  vertical-align: middle;
+  width: 75px;
+  text-align: center;
+}
+
+/* line 28, ../sass/components/_swaplist.scss */
+.ntsSearchArea div {
+  display: inline-block;
+}
+
 /* line 1, ../sass/components/_searchbox.scss */
 input.ntsSearchBox {
   box-sizing: border-box;
@@ -2607,12 +2655,12 @@ body {
   line-height: 50px;
 }
 
-/* line 31, ../sass/base.scss */
+/* line 33, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 35, ../sass/base.scss */
+/* line 37, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

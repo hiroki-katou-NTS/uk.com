@@ -61,7 +61,11 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: timeeditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsTimeEditor: { value: value, constraint: 'ResidenceCode' }" />
+
+<!-- Full Options -->
+<div data-bind="with: timeeditor">
 	<input data-bind="ntsTimeEditor: {
 		value: value,
 		constraint: constraint,
