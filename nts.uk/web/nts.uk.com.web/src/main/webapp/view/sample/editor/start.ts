@@ -81,8 +81,7 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "JPY",
-                    currencyposition: 'left'
+                    currencyformat: "JPY"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
@@ -93,10 +92,9 @@ __viewContext.ready(function () {
                 value: ko.observable(200000),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 4,
+                    grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "USD",
-                    currencyposition: 'left'
+                    currencyformat: "USD"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
