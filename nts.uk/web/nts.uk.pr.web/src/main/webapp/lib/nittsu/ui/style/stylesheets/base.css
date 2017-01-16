@@ -1549,6 +1549,11 @@ button.nts-switch-button[disabled]:hover {
   color: #000;
 }
 
+/* line 8, ../sass/components/_combobox.scss */
+.nts-combo-item {
+  height: 20px;
+}
+
 /* line 1, ../sass/components/_dialog.scss */
 .ui-dialog {
   padding: 0px;
@@ -2051,6 +2056,50 @@ button.nts-switch-button[disabled]:hover {
   right: 0;
   top: 0;
   text-align: right;
+}
+
+/* line 1, ../sass/components/_swaplist.scss */
+.ntsSwapArea {
+  display: table-row;
+}
+
+/* line 4, ../sass/components/_swaplist.scss */
+.ntsSwapList-container {
+  display: table;
+  table-layout: fixed;
+}
+
+/* line 8, ../sass/components/_swaplist.scss */
+.ntsSwapList {
+  overflow: auto;
+}
+
+/* line 11, ../sass/components/_swaplist.scss */
+.ntsSearchButton {
+  margin-left: 10px;
+}
+
+/* line 14, ../sass/components/_swaplist.scss */
+.move-button {
+  width: 75px;
+}
+
+/* line 17, ../sass/components/_swaplist.scss */
+.move-forward {
+  margin-bottom: 5px;
+}
+
+/* line 20, ../sass/components/_swaplist.scss */
+.ntsSwapComponent {
+  display: table-cell;
+}
+
+/* line 23, ../sass/components/_swaplist.scss */
+.ntsMoveDataArea {
+  height: 100%;
+  vertical-align: middle;
+  width: 75px;
+  text-align: center;
 }
 
 /* line 1, ../sass/components/_searchbox.scss */
@@ -2602,12 +2651,12 @@ body {
   line-height: 50px;
 }
 
-/* line 31, ../sass/base.scss */
+/* line 33, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 35, ../sass/base.scss */
+/* line 37, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
