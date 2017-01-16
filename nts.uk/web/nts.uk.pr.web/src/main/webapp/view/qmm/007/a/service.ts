@@ -1,18 +1,34 @@
 module nts.uk.pr.view.qmm007.a {
     export module service {
-        var paths: any = {
-            getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        export class UnitPriceHistoryNode {
+            code: string;
+            name: string;
+            monthRange: string;
+            nodeText: string;
+            isChild: boolean;
+            childs: any;
+            constructor(code: string, name: string, monthRange: string, isChild: boolean, childs?: Array<UnitPriceHistoryNode>) {
+                var self = this;
+                self.code = code;
+                self.name = name;
+                self.monthRange = monthRange;
+                self.nodeText = self.code + ' ' + self.name;
+                self.isChild = isChild;
+                self.childs = childs;
+                if (self.isChild == true) {
+                    self.nodeText = self.monthRange;
+                }
+            }
         }
 
-        export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
+        var paths: any = {
+        }
+        var mockData = [new UnitPriceHistoryNode('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
+            new UnitPriceHistoryNode('002', '宿直単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0021', '宿直単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
+
+        export function getUnitPriceHistoryList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-                .done(function(res: Array<any>) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
+            dfd.resolve(mockData);
             return dfd.promise();
         }
 
