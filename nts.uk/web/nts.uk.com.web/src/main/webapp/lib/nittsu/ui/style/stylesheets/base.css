@@ -549,9 +549,49 @@ div.label {
   border-color: #999;
 }
 
-/* line 1, ../sass/components/_editor.scss */
-input[type="text"] {
+/* line 3, ../sass/components/_editor.scss */
+.ntsControl {
+  /* Extra Symbol */
+}
+/* line 5, ../sass/components/_editor.scss */
+.ntsControl .nts-input {
+  border: 1px solid #999999;
+  padding: 5px 10px;
   font-family: "DroidSansMono", "Meiryo";
+  border-radius: 5px;
+}
+/* line 10, ../sass/components/_editor.scss */
+.ntsControl .nts-input:focus {
+  outline: none;
+}
+/* line 14, ../sass/components/_editor.scss */
+.ntsControl.symbol {
+  position: relative;
+}
+/* line 17, ../sass/components/_editor.scss */
+.ntsControl.symbol:after {
+  position: absolute;
+  content: attr(data-content);
+  top: 0.4em;
+  color: #999;
+}
+/* line 25, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-left .nts-input {
+  padding-left: 15px;
+}
+/* line 27, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-left:after {
+  left: 5px;
+  text-align: left;
+}
+/* line 34, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-right .nts-input {
+  padding-right: 15px;
+}
+/* line 36, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-right:after {
+  right: 5px;
+  text-align: right;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
@@ -2165,39 +2205,6 @@ button.nts-switch-button[disabled]:hover {
   background: #ABEBF5;
 }
 
-/* line 1, ../sass/components/_currency.scss */
-.currency {
-  position: relative;
-}
-/* line 4, ../sass/components/_currency.scss */
-.currency.currencyLeft input[type="text"] {
-  padding-left: 10px;
-}
-/* line 8, ../sass/components/_currency.scss */
-.currency.currencyRight input[type="text"] {
-  padding-right: 10px;
-}
-/* line 13, ../sass/components/_currency.scss */
-.currency:after {
-  position: absolute;
-  content: ' ';
-  color: #999;
-}
-/* line 19, ../sass/components/_currency.scss */
-.currency.currencyLeft:after {
-  content: attr(data-content);
-  left: 0;
-  top: 0;
-  text-align: left;
-}
-/* line 26, ../sass/components/_currency.scss */
-.currency.currencyRight:after {
-  content: attr(data-content);
-  right: 0;
-  top: 0;
-  text-align: right;
-}
-
 /* line 1, ../sass/components/_swaplist.scss */
 .ntsSwapArea {
   display: table-row;
@@ -2217,6 +2224,29 @@ button.nts-switch-button[disabled]:hover {
 /* line 11, ../sass/components/_swaplist.scss */
 .ntsSearchButton {
   margin-left: 10px;
+}
+
+/* line 14, ../sass/components/_swaplist.scss */
+.move-button {
+  width: 75px;
+}
+
+/* line 17, ../sass/components/_swaplist.scss */
+.move-forward {
+  margin-bottom: 5px;
+}
+
+/* line 20, ../sass/components/_swaplist.scss */
+.ntsSwapComponent {
+  display: table-cell;
+}
+
+/* line 23, ../sass/components/_swaplist.scss */
+.ntsMoveDataArea {
+  height: 100%;
+  vertical-align: middle;
+  width: 75px;
+  text-align: center;
 }
 
 /* line 1, ../sass/components/_searchbox.scss */
@@ -2816,12 +2846,12 @@ button.search-btn {
   line-height: 50px;
 }
 
-/* line 33, ../sass/base.scss */
+/* line 32, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 37, ../sass/base.scss */
+/* line 36, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

@@ -142,6 +142,10 @@ var nts;
                 })(ntsPopup || (ntsPopup = {}));
                 var ntsGridList;
                 (function (ntsGridList) {
+                    var OUTSIDE_AUTO_SCROLL_SPEED = {
+                        RATIO: 0.2,
+                        MAX: 30
+                    };
                     $.fn.ntsGridList = function (action, param) {
                         var $grid = $(this);
                         switch (action) {
@@ -192,57 +196,89 @@ var nts;
                         setupSelectingEvents($grid);
                         return $grid;
                     }
-                    // this code was provided by Infragistics support
                     function setupDragging($grid) {
                         var dragSelectRange = [];
-                        $grid.on('mousedown', function (e) {
+                        // used to auto scrolling when dragged above/below grid)
+                        var mousePos = null;
+                        var $container = $grid.closest('.ui-iggrid-scrolldiv');
+                        $grid.bind('mousedown', function (e) {
                             // グリッド内がマウスダウンされていない場合は処理なしで終了
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
                             }
-                            // ドラッグ開始位置を設定する
-                            var rowIndex = nts.uk.ui.ig.grid.getRowIndexFrom($(e.target));
-                            dragSelectRange.push(rowIndex);
+                            // current grid size
+                            var gridVerticalRange = new uk.util.Range($container.offset().top, $container.offset().top + $container.height());
+                            mousePos = {
+                                x: e.pageX,
+                                y: e.pageY,
+                                rowIndex: ui.ig.grid.getRowIndexFrom($(e.target))
+                            };
+                            // set position to start dragging
+                            dragSelectRange.push(mousePos.rowIndex);
+                            var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
+                            // auto scroll while mouse is outside grid
+                            var timerAutoScroll = setInterval(function () {
+                                var distance = gridVerticalRange.distanceFrom(mousePos.y);
+                                if (distance === 0) {
+                                    return;
+                                }
+                                var delta = Math.min(distance * OUTSIDE_AUTO_SCROLL_SPEED.RATIO, OUTSIDE_AUTO_SCROLL_SPEED.MAX);
+                                var currentScrolls = $scroller.scrollTop();
+                                $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
+                            }, 20);
+                            // handle mousemove on window while dragging (unhandle when mouseup)
+                            $(window).bind('mousemove.NtsGridListDragging', function (e) {
+                                var newPointedRowIndex = ui.ig.grid.getRowIndexFrom($(e.target));
+                                // selected range is not changed
+                                if (mousePos.rowIndex === newPointedRowIndex) {
+                                    return;
+                                }
+                                mousePos = {
+                                    x: e.pageX,
+                                    y: e.pageY,
+                                    rowIndex: newPointedRowIndex
+                                };
+                                if (dragSelectRange.length === 1 && !e.ctrlKey) {
+                                    $grid.igGridSelection('clearSelection');
+                                }
+                                updateSelections();
+                            });
+                            // stop dragging
                             $(window).one('mouseup', function (e) {
-                                // ドラッグを終了する
+                                mousePos = null;
                                 dragSelectRange = [];
+                                $(window).unbind('mousemove.NtsGridListDragging');
+                                clearInterval(timerAutoScroll);
                             });
                         });
-                        $grid.on('mousemove', function (e) {
-                            // ドラッグ開始位置が設定されていない場合は処理なしで終了
-                            if (dragSelectRange.length === 0) {
+                        function updateSelections() {
+                            // rowIndex is NaN when mouse is outside grid
+                            if (isNaN(mousePos.rowIndex)) {
                                 return;
-                            }
-                            // 無駄な処理をさせないためにドラッグ終了位置が同じかどうかをチェックする
-                            var rowIndex = nts.uk.ui.ig.grid.getRowIndexFrom($(e.target));
-                            if (rowIndex === dragSelectRange[dragSelectRange.length - 1]) {
-                                return;
-                            }
-                            // 新たにドラッグ選択を開始する場合、Ctrlキー押下されていない場合は以前の選択行を全てクリアする
-                            if (dragSelectRange.length === 1 && !e.ctrlKey) {
-                                $grid.igGridSelection('clearSelection');
                             }
                             // 以前のドラッグ範囲の選択を一旦解除する
+                            // TODO: probably this code has problem of perfomance when select many rows
+                            // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
                                 // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
                                 $grid.igGridSelection('deselectRow', dragSelectRange[i]);
                             }
                             var newDragSelectRange = [];
-                            if (dragSelectRange[0] <= rowIndex) {
-                                for (var j = dragSelectRange[0]; j <= rowIndex; j++) {
+                            if (dragSelectRange[0] <= mousePos.rowIndex) {
+                                for (var j = dragSelectRange[0]; j <= mousePos.rowIndex; j++) {
                                     // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
                                     $grid.igGridSelection('selectRow', j);
                                     newDragSelectRange.push(j);
                                 }
                             }
-                            else if (dragSelectRange[0] > rowIndex) {
-                                for (var j = dragSelectRange[0]; j >= rowIndex; j--) {
+                            else if (dragSelectRange[0] > mousePos.rowIndex) {
+                                for (var j = dragSelectRange[0]; j >= mousePos.rowIndex; j--) {
                                     $grid.igGridSelection('selectRow', j);
                                     newDragSelectRange.push(j);
                                 }
                             }
                             dragSelectRange = newDragSelectRange;
-                        });
+                        }
                     }
                     function setupSelectingEvents($grid) {
                         $grid.bind('iggridselectioncellselectionchanging', function () {
