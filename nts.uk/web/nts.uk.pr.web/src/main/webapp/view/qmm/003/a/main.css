@@ -22,6 +22,12 @@
 	width: 200px;
 	border: none;
 }
+.input-table{
+	height: 25px;
+	border-radius: 3px;
+	border:1px solid #cdd0c9;
+	margin-top: 5px;
+}
 
 #A_BTN_005 {
 	margin-left: 150px;
