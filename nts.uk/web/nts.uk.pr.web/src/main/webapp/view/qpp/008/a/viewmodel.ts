@@ -5,6 +5,7 @@ module qpp008.a.viewmodel {
         singleSelectedCode: KnockoutObservable<string>;
         texteditor1: any;
         texteditor2: any;
+        textLbl006:KnockoutObservable<string>;
 
         /*Multiple selecting GridList*/
         items: KnockoutObservableArray<ItemModel>;
@@ -52,6 +53,7 @@ module qpp008.a.viewmodel {
 
         constructor() {
             let self = this;
+            self.textLbl006 = ko.observable('2017/11/01');
             self.paymentDateProcessingList = ko.observableArray([]);
             self.selectedPaymentDate = ko.observable(null);
 
@@ -76,7 +78,7 @@ module qpp008.a.viewmodel {
             ]);
 
             self.columns = ko.observableArray([
-                { headerText: '名称', prop: 'name', width: 150 }
+                { headerText: '印刷内容', prop: 'name', width: 150 }
 
             ]);
 

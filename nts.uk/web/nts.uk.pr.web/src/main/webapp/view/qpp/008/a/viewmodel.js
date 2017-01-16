@@ -7,6 +7,7 @@ var qpp008;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    self.textLbl006 = ko.observable('2017/11/01');
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
                     self.yearmontheditor = {
@@ -28,7 +29,7 @@ var qpp008;
                         new ItemModel('基本給1')
                     ]);
                     self.columns = ko.observableArray([
-                        { headerText: '名称', prop: 'name', width: 150 }
+                        { headerText: '印刷内容', prop: 'name', width: 150 }
                     ]);
                     self.currentCode = ko.observable();
                     self.currentCodeList = ko.observableArray([]);

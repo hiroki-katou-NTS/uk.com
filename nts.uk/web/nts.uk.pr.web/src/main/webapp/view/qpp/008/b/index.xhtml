@@ -29,7 +29,7 @@
 <!-- 					<span id="B_LBL_001" class="label" style="margin-bottom: 5px;">明細・合計出力設定 -->
 <!-- 					</span> -->
 <!-- 				</div> -->
-				<span id="B_LBL_001" class="label" style="margin-bottom: 5px;">明細・合計出力設定 </span>
+				<span id="B_LBL_001" class="label spanC">明細・合計出力設定 </span>
 				<hr/>
 				<div class="div2">
 					<div class="div2Left">
@@ -67,10 +67,13 @@
 						</span>
 					</div>
 				</div>
-				<div class="divLBL004">
+				<!-- <div class="divLBL004">
 					<span id="B_LBL_004" class="label" style="margin-bottom: 5px;">比較項目がない場合
 						項目の表示 </span>
-				</div>
+				</div> -->
+				<span id="B_LBL_004" class="label spanC" >比較項目がない場合
+						項目の表示 </span>
+				<hr/>
 				<div id="B_SEL_010" class="cf B_SEL_010"
 						data-bind="ntsSwitchButton: {
 												options: roundingRules,
@@ -79,10 +82,13 @@
 												value: selectedRuleCode,
 												 }">
 				</div>
-				<div class="div4">
+				<!-- <div class="div4">
 					<span id="B_LBL_005" class="label" style="margin-bottom: 5px;">差額がない場合
 					</span>
-				</div>
+				</div> -->
+				<span id="B_LBL_005" class="label spanC">差額がない場合
+					</span>
+					<hr/>
 				<div id="B_SEL_011" class="cf B_SEL_010"
 						data-bind="ntsSwitchButton: {
 												options: roundingRules1,
@@ -95,10 +101,15 @@
 					<span id="B_LBL_006" class="label" style="margin-bottom: 5px;">※差額がない項目は表示しません </span><br/>
 					<span id="B_LBL_007" class="label" style="margin-bottom: 5px;">※全項目の差額がない社員は、印刷対象になりません。</span>
 				</div>
-				<div class="divLBL008">
+				<!-- <div class="divLBL008">
 					<span id="B_LBL_008" class="label" style="margin-bottom: 5px;">差額の背景色
 					</span>
-				</div>
+				</div> -->
+				<span id="B_LBL_008" class="label spanC">差額の背景色
+					</span>
+					<hr/>
+					
+					<hr/>
 				<div class="divBottom">
 					<button id="B_BTN_001" class="proceed x-large" >設定</button>
 					<button id="B_BTN_002" data-bind="click: closeDialog">キャンセル</button>				

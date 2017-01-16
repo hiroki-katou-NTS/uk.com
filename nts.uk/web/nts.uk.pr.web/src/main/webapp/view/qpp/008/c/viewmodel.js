@@ -6,6 +6,8 @@ var qpp008;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.allowEditCode = ko.observable(false);
+                    this.isUpdate = ko.observable(true);
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
@@ -17,8 +19,8 @@ var qpp008;
                     }
                     self.itemsSwap(array);
                     self.columnsSwap = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 80 },
-                        { headerText: '名称', prop: 'name', width: 120 }
+                        { headerText: 'コード', prop: 'code', width: 60 },
+                        { headerText: '名称', prop: 'name', width: 116 }
                     ]);
                     this.currentCodeListSwap = ko.observableArray([]);
                     /*TabPanel*/
@@ -29,6 +31,7 @@ var qpp008;
                     ]);
                     self.selectedTab = ko.observable('tab-2');
                     /*gridList*/
+                    //gridList1
                     self.items = ko.observableArray([]);
                     var str = ['a0', 'b0', 'c0', 'd0'];
                     for (var j = 0; j < 4; j++) {
@@ -38,8 +41,8 @@ var qpp008;
                         }
                     }
                     self.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 30 },
-                        { headerText: '名称', prop: 'name', width: 90 },
+                        { headerText: 'コード', prop: 'code', width: 60 },
+                        { headerText: '名称', prop: 'name', width: 115 },
                     ]);
                     //get event when hover on table by subcribe
                     self.currentCode = ko.observable();
@@ -47,9 +50,30 @@ var qpp008;
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentItem(ko.mapping.fromJS(self.getItem(codeChanged)));
                     });
+                    //gridList2
+                    self.items2 = ko.observableArray([]);
+                    var str = ['a0', 'b0', 'c0', 'd0'];
+                    for (var j = 0; j < 4; j++) {
+                        for (var i = 1; i < 51; i++) {
+                            var code = i < 10 ? str[j] + '0' + i : str[j] + i;
+                            this.items2.push(new ItemModel(code, code, code, code));
+                        }
+                    }
+                    self.columns = ko.observableArray([
+                        { headerText: 'コード', prop: 'code', width: 60 },
+                        { headerText: '名称', prop: 'name', width: 120 },
+                    ]);
+                    this.currentCode2 = ko.observable();
                     /*TextEditer*/
                     self.enableC_INP_002 = ko.observable(false);
+                    self.cInp002Code = ko.observable(false);
                 }
+                //        refreshLayout(): void {
+                //            let self = this;
+                //            self.allowEditCode(true);
+                //            self.currentCode(ko.mapping.fromJS(new ItemModel('', '', '')));
+                //            self.isUpdate(false);
+                //        }
                 ScreenModel.prototype.getItem = function (codeNew) {
                     var self = this;
                     var currentItem = _.find(self.items(), function (item) {
@@ -59,6 +83,7 @@ var qpp008;
                 };
                 ScreenModel.prototype.addItem = function () {
                     this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
+                    this.items2.push(new ItemModel('999', '基本給', "description 1", "other1"));
                 };
                 ScreenModel.prototype.removeItem = function () {
                     this.items.shift();

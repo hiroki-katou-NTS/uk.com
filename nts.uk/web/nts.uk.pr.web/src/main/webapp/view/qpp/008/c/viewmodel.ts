@@ -2,6 +2,8 @@ module qpp008.c.viewmodel {
     export class ScreenModel {
         paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymentDate: KnockoutObservable<any>;
+        allowEditCode: KnockoutObservable<boolean> = ko.observable(false);
+        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
         /*SwapList*/
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columnsSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -10,14 +12,22 @@ module qpp008.c.viewmodel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         /*GridList*/
+        //gridList1
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
-        currentItem: KnockoutObservable<any>;
+//        currentItem: any;
         nameValue: KnockoutObservable<string>;
         codeValue: KnockoutObservable<any>;
+        //gridList2
+        items2: KnockoutObservableArray<ItemModel>;
+        //columns2: KnockoutObservableArray<any>;
+        currentCode2: KnockoutObservable<any>;
+        currentItem2: KnockoutObservable<any>;
         /*TextEditer*/
         enableC_INP_002: KnockoutObservable<boolean>;
+        cInp002Code: KnockoutObservable<boolean>;
+        currentItem: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -33,8 +43,8 @@ module qpp008.c.viewmodel {
             self.itemsSwap(array);
 
             self.columnsSwap = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 80 },
-                { headerText: '名称', prop: 'name', width: 120 }
+                { headerText: 'コード', prop: 'code', width: 60 },
+                { headerText: '名称', prop: 'name', width: 116 }
             ]);
 
             this.currentCodeListSwap = ko.observableArray([]);
@@ -46,6 +56,7 @@ module qpp008.c.viewmodel {
             ]);
             self.selectedTab = ko.observable('tab-2');
             /*gridList*/
+            //gridList1
             self.items = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];
             for (var j = 0; j < 4; j++) {
@@ -55,8 +66,8 @@ module qpp008.c.viewmodel {
                 }
             }
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 30 },
-                { headerText: '名称', prop: 'name', width: 90 },
+                { headerText: 'コード', prop: 'code', width: 60 },
+                { headerText: '名称', prop: 'name', width: 115 },
 
             ]);
             //get event when hover on table by subcribe
@@ -64,10 +75,33 @@ module qpp008.c.viewmodel {
             self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
             self.currentCode.subscribe(function(codeChanged) {
                 self.currentItem(ko.mapping.fromJS(self.getItem(codeChanged)));
+                
             });
+            //gridList2
+            self.items2 = ko.observableArray([]);
+            var str = ['a0', 'b0', 'c0', 'd0'];
+            for (var j = 0; j < 4; j++) {
+                for (var i = 1; i < 51; i++) {
+                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
+                    this.items2.push(new ItemModel(code, code, code, code));
+                }
+            }
+            self.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'code', width: 60 },
+                { headerText: '名称', prop: 'name', width: 120 },
+
+            ]);
+            this.currentCode2 = ko.observable();
             /*TextEditer*/
             self.enableC_INP_002 = ko.observable(false);
+            self.cInp002Code = ko.observable(false);
         }
+//        refreshLayout(): void {
+//            let self = this;
+//            self.allowEditCode(true);
+//            self.currentCode(ko.mapping.fromJS(new ItemModel('', '', '')));
+//            self.isUpdate(false);
+//        }
 
         getItem(codeNew): ItemModel {
             let self = this;
@@ -80,6 +114,7 @@ module qpp008.c.viewmodel {
 
         addItem() {
             this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
+            this.items2.push(new ItemModel('999', '基本給', "description 1", "other1"));
         }
 
         removeItem() {
