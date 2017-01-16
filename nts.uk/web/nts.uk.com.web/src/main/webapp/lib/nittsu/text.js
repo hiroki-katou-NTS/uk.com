@@ -313,10 +313,10 @@ var nts;
                     return amount;
                 var result = amount.substring(leng);
                 var num = parseInt(amount.substring(0, leng));
-                var times = leng / 3;
-                for (var i = 1; i < times; i++) {
+                var times = Math.floor(leng / 3);
+                for (var i = 0; i < times; i++) {
                     var block = num % 1000;
-                    if (i > 1)
+                    if (i > 0)
                         result = padLeft("" + block, "0", 3) + "," + result;
                     else
                         result = padLeft("" + block, "0", 3) + result;
