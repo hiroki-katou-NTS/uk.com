@@ -109,6 +109,11 @@ var nts;
                                     BusinessTypeEnum[BusinessTypeEnum["Biz10Th"] = 10] = "Biz10Th";
                                 })(model.BusinessTypeEnum || (model.BusinessTypeEnum = {}));
                                 var BusinessTypeEnum = model.BusinessTypeEnum;
+                                (function (TypeHistory) {
+                                    TypeHistory[TypeHistory["HistoryUnemployee"] = 1] = "HistoryUnemployee";
+                                    TypeHistory[TypeHistory["HistoryAccident"] = 2] = "HistoryAccident";
+                                })(model.TypeHistory || (model.TypeHistory = {}));
+                                var TypeHistory = model.TypeHistory;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm011.a || (qmm011.a = {}));

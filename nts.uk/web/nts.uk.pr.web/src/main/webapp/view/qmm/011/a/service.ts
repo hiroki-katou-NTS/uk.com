@@ -122,6 +122,10 @@ module nts.uk.pr.view.qmm011.a {
                 Biz10Th = 10
 
             }
+            export enum TypeHistory {
+                HistoryUnemployee = 1,
+                HistoryAccident = 2
+            }
         }
     }
 }

@@ -10,6 +10,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
+			<com:scriptfile path="../a/service.js" />
+			<com:scriptfile path="../a/viewmodel.js" />
 			<com:scriptfile path="viewmodel.js" />
 
 		</ui:define>
@@ -29,19 +31,17 @@
 						<td>
 							<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">期間</div>
 						</td>
-						<td>
-							<input id="D_INP_001" class="w80" 
-								data-name="code"
-								data-bind="ntsTextEditor: {value: dinp001, 
+						<td><input id="D_INP_001" class="w80" data-name="code"
+							data-bind="ntsTextEditor: {value: historyStart, 
 								constraint: 'D_INP_001', 
 								option: textEditorOption, 
 								enable: true}" />
-						<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006">終了年月</label>
-						</td>
+							<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006"
+							data-bind="text: historyEnd"></label></td>
 					</tr>
 					<tr>
 						<td>
-							<div  data-bind="ntsFormLabel: {required: true}">履歴の引継ぎ</div>
+							<div data-bind="ntsFormLabel: {required: true}">履歴の引継ぎ</div>
 						</td>
 						<td>
 							<div

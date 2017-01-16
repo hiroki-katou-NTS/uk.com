@@ -1,12 +1,20 @@
-module qmm011.d {
+module nts.uk.pr.view.qmm011.d {
     import option = nts.uk.ui.option;
+    import HistoryUnemployeeInsuranceRate = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceRate;
+    import BusinessTypeEnum = nts.uk.pr.view.qmm011.a.service.model.BusinessTypeEnum;
+    import InsuBizRateItem = nts.uk.pr.view.qmm011.a.service.model.InsuBizRateItem;
+    import RoundingMethod = nts.uk.pr.view.qmm011.a.service.model.RoundingMethod;
+    import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
+    import HistoryUnemployeeInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.HistoryUnemployeeInsuranceRateModel;
     export module viewmodel {
         export class ScreenModel {
             dsel001: KnockoutObservableArray<any>;
-            dinp001: KnockoutObservable<string>;
-            selectedId: KnockoutObservable<number>;
             enable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
+            historyId: KnockoutObservable<string>;
+            historyStart: KnockoutObservable<string>;
+            historyEnd: KnockoutObservable<string>;
+            selectedId: KnockoutObservable<number>;
 
             constructor() {
                 var self = this;
@@ -14,10 +22,11 @@ module qmm011.d {
                     new BoxModel(1, '最新の履歴（N）から引き継ぐ'),
                     new BoxModel(2, '初めから作成する')
                 ]);
-                self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                self.dinp001 = ko.observable('2017/01');
+                self.historyStart = ko.observable('');
+                self.historyEnd = ko.observable('9999/12');
+                self.selectedId = ko.observable(1);
             }
         }
 

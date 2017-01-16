@@ -10,6 +10,8 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
+			<com:scriptfile path="../a/service.js" />
+			<com:scriptfile path="../a/viewmodel.js" />
 			<com:scriptfile path="viewmodel.js" />
 
 		</ui:define>
@@ -43,9 +45,14 @@
 					<tr>
 						<td></td>
 						<td>
-							<div id="F_LBL_005" data-bind="ntsFormLabel: {}">期間</div>
-						<input id="D_INP_001" value="2017/01" class="w80" /> <labbel
-								id="D_LBL_005">～</labbel> <label id="D_LBL_006">終了年月</label></td>
+							<div id="F_LBL_005" data-bind="ntsFormLabel: {}">期間</div> <input
+							id="F_INP_001"
+							data-bind="value: historyStart, constraint: 'F_INP_001', 
+								option: textEditorOption, 
+								enable: true"
+							class="w80" /> <labbel id="D_LBL_005">～</labbel> <label
+							id="D_LBL_006" data-bind="text: historyEnd"></label>
+						</td>
 
 
 					</tr>

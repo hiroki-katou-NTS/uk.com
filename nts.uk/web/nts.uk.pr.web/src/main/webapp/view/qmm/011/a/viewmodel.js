@@ -22,6 +22,7 @@ var nts;
                         var InsuBizRateItem = a.service.model.InsuBizRateItem;
                         var BusinessTypeEnum = a.service.model.BusinessTypeEnum;
                         var InsuranceBusinessType = a.service.model.InsuranceBusinessType;
+                        var TypeHistory = a.service.model.TypeHistory;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -41,17 +42,31 @@ var nts;
                                         decimallength: 2
                                     }));
                                     self.unemployeeInsuranceRateItemMode = ko.observable(new UnemployeeInsuranceRateItemMode(self.lstUnemployeeInsuranceRateItem, self.rateInputOptions, selectionRoundingMethod));
+                                    var historyUnemployeeInsuranceRate006 = new HistoryUnemployeeInsuranceRate('historyId006', 'companyCode001', new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)));
+                                    var historyUnemployeeInsuranceRate005 = new HistoryUnemployeeInsuranceRate('historyId005', 'companyCode001', new MonthRange(new YearMonth(2015, 10), new YearMonth(2016, 3)));
+                                    var historyUnemployeeInsuranceRate004 = new HistoryUnemployeeInsuranceRate('historyId004', 'companyCode001', new MonthRange(new YearMonth(2015, 4), new YearMonth(2015, 9)));
+                                    var historyUnemployeeInsuranceRate003 = new HistoryUnemployeeInsuranceRate('historyId003', 'companyCode001', new MonthRange(new YearMonth(2014, 9), new YearMonth(2015, 3)));
+                                    var historyUnemployeeInsuranceRate002 = new HistoryUnemployeeInsuranceRate('historyId002', 'companyCode001', new MonthRange(new YearMonth(2014, 4), new YearMonth(2014, 8)));
+                                    var historyUnemployeeInsuranceRate001 = new HistoryUnemployeeInsuranceRate('historyId001', 'companyCode001', new MonthRange(new YearMonth(2013, 4), new YearMonth(2014, 3)));
+                                    self.lstHistoryUnemployeeInsurance = [
+                                        historyUnemployeeInsuranceRate006,
+                                        historyUnemployeeInsuranceRate005,
+                                        historyUnemployeeInsuranceRate004,
+                                        historyUnemployeeInsuranceRate003,
+                                        historyUnemployeeInsuranceRate002,
+                                        historyUnemployeeInsuranceRate001
+                                    ];
                                     self.lstHistoryUnemployeeInsuranceRate = ko.observableArray([
-                                        new HistoryUnemployeeInsuranceRateModel(new HistoryUnemployeeInsuranceRate('historyId006', 'companyCode001', new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)))),
-                                        new HistoryUnemployeeInsuranceRateModel(new HistoryUnemployeeInsuranceRate('historyId005', 'companyCode001', new MonthRange(new YearMonth(2015, 10), new YearMonth(2016, 3)))),
-                                        new HistoryUnemployeeInsuranceRateModel(new HistoryUnemployeeInsuranceRate('historyId004', 'companyCode001', new MonthRange(new YearMonth(2015, 4), new YearMonth(2015, 9)))),
-                                        new HistoryUnemployeeInsuranceRateModel(new HistoryUnemployeeInsuranceRate('historyId003', 'companyCode001', new MonthRange(new YearMonth(2014, 9), new YearMonth(2015, 3)))),
-                                        new HistoryUnemployeeInsuranceRateModel(new HistoryUnemployeeInsuranceRate('historyId002', 'companyCode001', new MonthRange(new YearMonth(2014, 4), new YearMonth(2014, 8)))),
-                                        new HistoryUnemployeeInsuranceRateModel(new HistoryUnemployeeInsuranceRate('historyId001', 'companyCode001', new MonthRange(new YearMonth(2013, 4), new YearMonth(2014, 3))))
+                                        new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate006),
+                                        new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate005),
+                                        new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate004),
+                                        new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate003),
+                                        new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate002),
+                                        new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate001)
                                     ]);
                                     self.historyUnemployeeInsuranceRateStart = ko.observable('2016/04');
                                     self.historyUnemployeeInsuranceRateEnd = ko.observable('9999/12 終了年月');
-                                    self.selectionHistoryUnemployeeInsuranceRate = ko.observable('');
+                                    self.selectionHistoryUnemployeeInsuranceRate = ko.observable(historyUnemployeeInsuranceRate006.historyId);
                                     var insuBizRateItemBiz1St = new InsuBizRateItem(BusinessTypeEnum.Biz1St, 60, 2);
                                     var insuBizRateItemBiz2Nd = new InsuBizRateItem(BusinessTypeEnum.Biz2Nd, 3, 3);
                                     var insuBizRateItemBiz3Rd = new InsuBizRateItem(BusinessTypeEnum.Biz3Rd, 15, 0);
@@ -77,68 +92,60 @@ var nts;
                                     self.lstInsuBizRateItem = [insuBizRateItemBiz1St, insuBizRateItemBiz2Nd, insuBizRateItemBiz3Rd, insuBizRateItemBiz4Th, insuBizRateItemBiz5Th,
                                         insuBizRateItemBiz6Th, insuBizRateItemBiz7Th, insuBizRateItemBiz8Th, insuBizRateItemBiz9Th, insuBizRateItemBiz10Th];
                                     self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(self.lstInsuBizRateItem, self.lstInsuranceBusinessType, self.rateInputOptions, selectionRoundingMethod));
+                                    var historyAccidentInsuranceRate006 = new HistoryAccidentInsuranceRate('historyId006', 'companyCode001', new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)));
+                                    var historyAccidentInsuranceRate005 = new HistoryAccidentInsuranceRate('historyId005', 'companyCode001', new MonthRange(new YearMonth(2015, 10), new YearMonth(2016, 3)));
+                                    var historyAccidentInsuranceRate004 = new HistoryAccidentInsuranceRate('historyId004', 'companyCode001', new MonthRange(new YearMonth(2015, 4), new YearMonth(2015, 9)));
+                                    var historyAccidentInsuranceRate003 = new HistoryAccidentInsuranceRate('historyId003', 'companyCode001', new MonthRange(new YearMonth(2014, 9), new YearMonth(2015, 3)));
+                                    var historyAccidentInsuranceRate002 = new HistoryAccidentInsuranceRate('historyId002', 'companyCode001', new MonthRange(new YearMonth(2014, 4), new YearMonth(2014, 8)));
+                                    var historyAccidentInsuranceRate001 = new HistoryAccidentInsuranceRate('historyId001', 'companyCode001', new MonthRange(new YearMonth(2013, 4), new YearMonth(2014, 3)));
+                                    self.lstHistoryAccidentInsurance = [
+                                        historyAccidentInsuranceRate006,
+                                        historyAccidentInsuranceRate005,
+                                        historyAccidentInsuranceRate004,
+                                        historyAccidentInsuranceRate003,
+                                        historyAccidentInsuranceRate002,
+                                        historyAccidentInsuranceRate001
+                                    ];
                                     self.lstHistoryAccidentInsuranceRate = ko.observableArray([
-                                        new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId006', 'companyCode001', new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)))),
-                                        new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId005', 'companyCode001', new MonthRange(new YearMonth(2015, 10), new YearMonth(2016, 3)))),
-                                        new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId004', 'companyCode001', new MonthRange(new YearMonth(2015, 4), new YearMonth(2015, 9)))),
-                                        new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId003', 'companyCode001', new MonthRange(new YearMonth(2014, 9), new YearMonth(2015, 3)))),
-                                        new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId002', 'companyCode001', new MonthRange(new YearMonth(2014, 4), new YearMonth(2014, 8)))),
-                                        new HistoryAccidentInsuranceRateModel(new HistoryAccidentInsuranceRate('historyId001', 'companyCode001', new MonthRange(new YearMonth(2013, 4), new YearMonth(2014, 3))))
+                                        new HistoryAccidentInsuranceRateModel(historyAccidentInsuranceRate006),
+                                        new HistoryAccidentInsuranceRateModel(historyAccidentInsuranceRate005),
+                                        new HistoryAccidentInsuranceRateModel(historyAccidentInsuranceRate004),
+                                        new HistoryAccidentInsuranceRateModel(historyAccidentInsuranceRate003),
+                                        new HistoryAccidentInsuranceRateModel(historyAccidentInsuranceRate002),
+                                        new HistoryAccidentInsuranceRateModel(historyAccidentInsuranceRate001)
                                     ]);
                                     self.historyAccidentInsuranceRateStart = ko.observable('2016/04');
                                     self.historyAccidentInsuranceRateEnd = ko.observable('9999/12 終了年月');
-                                    self.selectionHistoryAccidentInsuranceRate = ko.observable('');
-                                    var valueclst001 = ko.observableArray([
-                                        new CItemModelLST001("2016/01:9999/12", "2016/01 ~ 9999/12"),
-                                        new CItemModelLST001("2016/01:2015/12", "2016/01 ~ 2015/12"),
-                                        new CItemModelLST001("2016/01:2015/03", "2016/01 ~ 2015/03"),
-                                        new CItemModelLST001("2016/02:2015/11", "2016/02 ~ 2015/11")
-                                    ]);
-                                    var valuecsel001 = ko.observableArray([
-                                        new CItemModelSEL001("0", "切り捨て"),
-                                        new CItemModelSEL001("1", "切り上げ"),
-                                        new CItemModelSEL001("2", "四捨五入"),
-                                        new CItemModelSEL001("3", "五捨六入"),
-                                        new CItemModelSEL001("4", "五捨五超入")
-                                    ]);
-                                    self.clst001 = valueclst001;
-                                    self.csel001 = valuecsel001;
-                                    self.csel0011 = valuecsel001;
-                                    self.csel0012 = valuecsel001;
-                                    self.csel0013 = valuecsel001;
-                                    self.csel0014 = valuecsel001;
-                                    self.csel0015 = valuecsel001;
-                                    self.csel0016 = valuecsel001;
-                                    self.csel0017 = valuecsel001;
-                                    self.csel0018 = valuecsel001;
-                                    self.csel0019 = valuecsel001;
-                                    self.clstsel001 = ko.observableArray([]);
-                                    self.csel001Code = ko.observable(null);
-                                    self.csel0011Code = ko.observable(null);
-                                    self.csel0012Code = ko.observable(null);
-                                    self.csel0013Code = ko.observable(null);
-                                    self.csel0014Code = ko.observable(null);
-                                    self.csel0015Code = ko.observable(null);
-                                    self.csel0016Code = ko.observable(null);
-                                    self.csel0017Code = ko.observable(null);
-                                    self.csel0018Code = ko.observable(null);
-                                    self.csel0019Code = ko.observable(null);
-                                    self.cinp001 = ko.observable(null);
-                                    self.cinp002 = ko.observable('40.009');
-                                    self.cinp003 = ko.observable('40.009');
-                                    self.cinp004 = ko.observable('40.009');
-                                    self.cinp005 = ko.observable('40.009');
-                                    self.cinp006 = ko.observable('40.009');
-                                    self.cinp007 = ko.observable('40.009');
-                                    self.cinp008 = ko.observable('40.009');
-                                    self.cinp009 = ko.observable('40.009');
-                                    self.cinp010 = ko.observable('40.009');
-                                    self.cinp011 = ko.observable('40.009');
+                                    self.selectionHistoryAccidentInsuranceRate = ko.observable(historyAccidentInsuranceRate006.historyId);
                                     self.itemName = ko.observable('');
                                     self.currentCode = ko.observable(2);
                                     self.isEnable = ko.observable(true);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                 }
+                                ScreenModel.prototype.openEditHistoryUnemployeeInsuranceRate = function () {
+                                    var historyId = this.selectionHistoryUnemployeeInsuranceRate();
+                                    nts.uk.ui.windows.setShared("historyId", historyId);
+                                    nts.uk.ui.windows.setShared("lsthistoryValue", this.lstHistoryUnemployeeInsurance);
+                                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.openAddHistoryUnemployeeInsuranceRate = function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.openEditHistoryAccidentInsuranceRate = function () {
+                                    var historyId = this.selectionHistoryAccidentInsuranceRate();
+                                    nts.uk.ui.windows.setShared("historyId", historyId);
+                                    nts.uk.ui.windows.setShared("lsthistoryValue", this.lstHistoryAccidentInsurance);
+                                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.openAddHistoryAccidentInsuranceRate = function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    });
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
@@ -166,6 +173,12 @@ var nts;
                                     this.code = historyUnemployeeInsuranceRate.historyId;
                                     this.name = convertdata(historyUnemployeeInsuranceRate.monthRage.startMonth) + " ~ " + convertdata(historyUnemployeeInsuranceRate.monthRage.endMonth);
                                 }
+                                HistoryUnemployeeInsuranceRateModel.prototype.getViewStartMonth = function (historyUnemployeeInsuranceRate) {
+                                    return convertdata(historyUnemployeeInsuranceRate.monthRage.startMonth);
+                                };
+                                HistoryUnemployeeInsuranceRateModel.prototype.getViewEndMonth = function (historyUnemployeeInsuranceRate) {
+                                    return convertdata(historyUnemployeeInsuranceRate.monthRage.endMonth);
+                                };
                                 return HistoryUnemployeeInsuranceRateModel;
                             }());
                             viewmodel.HistoryUnemployeeInsuranceRateModel = HistoryUnemployeeInsuranceRateModel;
@@ -174,6 +187,12 @@ var nts;
                                     this.code = historyAccidentInsuranceRate.historyId;
                                     this.name = convertdata(historyAccidentInsuranceRate.monthRage.startMonth) + " ~ " + convertdata(historyAccidentInsuranceRate.monthRage.endMonth);
                                 }
+                                HistoryAccidentInsuranceRateModel.prototype.getViewStartMonth = function (historyAccidentInsuranceRate) {
+                                    return convertdata(historyAccidentInsuranceRate.monthRage.startMonth);
+                                };
+                                HistoryAccidentInsuranceRateModel.prototype.getViewEndMonth = function (historyAccidentInsuranceRate) {
+                                    return convertdata(historyAccidentInsuranceRate.monthRage.endMonth);
+                                };
                                 return HistoryAccidentInsuranceRateModel;
                             }());
                             viewmodel.HistoryAccidentInsuranceRateModel = HistoryAccidentInsuranceRateModel;
