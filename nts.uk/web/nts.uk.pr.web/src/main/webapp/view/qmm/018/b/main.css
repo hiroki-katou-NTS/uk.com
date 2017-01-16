@@ -32,6 +32,10 @@ input.ntsSearchBox {
 	width: 285px;
 }
 
+.search-btn {
+	width: 70px;
+}
+
 .table {
 	margin-bottom: 10px;
 }
