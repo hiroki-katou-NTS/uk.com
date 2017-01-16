@@ -1,5 +1,4 @@
-module sample.datepicker.viewmodel {
-    
+module sample.datepicker.viewmodel {  
     export class ScreenModel {
         date: KnockoutObservable<Date>;
         yearMonth: any;
