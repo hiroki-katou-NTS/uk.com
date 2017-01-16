@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="BTN_001">新規</button>
+				<button id="BTN_002" class="proceed">登録</button>
+				<button id="BTN_003">印刷 (PDF)</button>
+				<button id="BTN_007">マスタ修正ログ</button>
+				<button id="BTN_004" class="danger">削除</button>
+			</div>
+			<div id="contents-area">
+				<div class="left-content">
+					<div id="LST_001" class="caret-right caret-background bg-green">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+				width: 440,
+				height: 500,
+				options: items,
+				optionsValue: 'code',
+				columns: columns,
+				multiple: false,
+				value: currentCode
+			}"></table>
+					</div>
+				</div>
+				<div class="right-content">
+					<div class="right-content-left">
+						<div id="LBL_002"
+							data-bind="ntsFormLabel:{constraint: 'PersonId',required: true}">コード/名称</div>
+						<div id="LBL_003" data-bind="ntsFormLabel:{}">略名</div>
+						<br />
+						<div id="LBL_004" data-bind="ntsFormLabel:{}">統合コード</div>
+					</div>
+					<div class="right-content-right">
+						<div class="control-group">
+							<span id="INP_002" data-bind="with: texteditor1"> <input
+								class="text-editor1"
+								data-bind="ntsTextEditor: {
+									value: value,
+									option: option,
+									required: false,
+									enable: false,
+									readonly: true}" /></span>
+							<span id="INP_003" data-bind="with: texteditor2"> <input
+								class="text-editor2"
+								data-bind="ntsTextEditor: {
+									value: value,
+									option: option,
+									required: true,
+									enable: true,
+									readonly: true}" /></span>
+						</div>
+						<div class="control-group">
+							<span id="INP_004" data-bind="with: texteditor2"> <input
+								class="text-editor2"
+								data-bind="ntsTextEditor: {
+									value: value,
+									option: option,
+									required: true,
+									enable: true,
+									readonly: true}" /></span>
+						</div>
+						<div class="control-group">
+							<button id="BTN_006">参照</button>
+							<label id="LBL_012">002</label> <label id="LBL_013">支店名称</label>
+						</div>
+					</div>
+					<hr />
+					<div class="right-content-left">
+						<div id="LBL_004" data-bind="ntsFormLabel:{}">固定的賃金</div>		
+					</div>
+					<div class="right-content-right">
+						<div class="control-group">
+							<div id="SEL_003" class="SEL_003" data-bind="ntsRadioBoxGroup: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedId,
+								enable: enable}">
+							</div>
+						</div>
+						<div class="control-group-left" style="float:left ;width: 30%">
+							<div id="SEL_005" class="cf"
+								data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: SEL_005_check,
+								enable: enable }">
+							</div>
+						</div>		
+						<div class="control-group-right" style="float:left">
+						<div class="cf">
+						    <span id="LBL_008" style="float:left;margin: 8px 0px 0px 37px;width: 110px">月給者</span> 
+							<div id="SEL_006"  style="float:left"
+								data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: SEL_006_check,
+								enable: enable }">
+							</div>
+						</div>
+						<div class="cf">
+						    <span id="LBL_009" style="float:left;margin: 8px 0px 0px 37px;width: 110px">日給月給者</span> 
+							<div id="SEL_007" style="float:left"
+								data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: SEL_007_check,
+								enable: enable }">
+							</div>
+						</div>
+						<div class="cf">
+						    <span id="LBL_010" style="float:left;margin: 8px 0px 0px 37px;width: 110px">日給者</span> 
+							<div id="SEL_008" style="float:left"
+								data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: SEL_008_check,
+								enable: enable }">
+							</div>
+						</div>
+						<div class="cf">
+						    <span id="LBL_011" style="float:left;margin: 8px 0px 0px 37px;width: 110px">時給者</span> 
+							<div id="SEL_009" style="float:left"
+								data-bind="ntsSwitchButton: {
+								options: roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: SEL_009_check,
+								enable: enable }">
+							</div>
+						</div>
+						</div>
+					</div>
+					<div class="right-content-left">
+						<div id="LBL_006" data-bind="ntsFormLabel:{}">単価種類</div>		
+					</div>
+					<div class="right-content-right">
+					   <div class="cf" data-bind="ntsSwitchButton: {
+								options: SEL_004,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: SEL_004_check,
+								enable: enable }">
+					   </div>
+					</div>
+					<hr />
+					<div class="right-content-left">
+						<div id="LBL_007" data-bind="ntsFormLabel:{}">メモ</div>
+					</div>
+					<div class="right-content-right">
+						<div class="control-group">
+							<span id="INP_005" data-bind="with: multilineeditor"> <textarea
+									style="height: 130px; width: 450px" class="text-editor1"
+									data-bind="ntsMultilineEditor: {
+									value: value,
+									option: option,
+									enable: true,
+									readonly: false}" />
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
