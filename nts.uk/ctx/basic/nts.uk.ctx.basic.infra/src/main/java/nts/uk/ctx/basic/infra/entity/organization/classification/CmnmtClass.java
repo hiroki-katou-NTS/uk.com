@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -61,10 +60,6 @@ public class CmnmtClass implements Serializable {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 }

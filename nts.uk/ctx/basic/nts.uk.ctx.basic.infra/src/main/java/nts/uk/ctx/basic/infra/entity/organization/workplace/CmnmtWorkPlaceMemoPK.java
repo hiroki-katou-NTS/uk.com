@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.organization.classification;
+package nts.uk.ctx.basic.infra.entity.organization.workplace;
 
 import java.io.Serializable;
 
@@ -11,20 +11,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
-public class CmnmtClassPK implements Serializable {
+public class CmnmtWorkPlaceMemoPK implements Serializable {
 
-	private static final long serialVersionUID = 2057071023975099159L;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
-	@NotNull
 	@Column(name = "CCD")
+	@NotNull
 	private String companyCode;
 
+	@Column(name = "HIST_ID")
 	@NotNull
-	@Column(name = "CLSCD")
-	private String classificationCode;
+	private String historyId;
+
 }
