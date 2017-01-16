@@ -113,8 +113,14 @@ module nts.uk.pr.view.qmm011.a {
                 var insuranceBusinessTypeBiz3Rd = new InsuranceBusinessType(BusinessTypeEnum.Biz3Rd, "事業種類名3");
                 var insuranceBusinessTypeBiz4Th = new InsuranceBusinessType(BusinessTypeEnum.Biz4Th, "事業種類名4");
                 var insuranceBusinessTypeBiz5Th = new InsuranceBusinessType(BusinessTypeEnum.Biz5Th, "事業種類名5");
+                var insuranceBusinessTypeBiz6Th = new InsuranceBusinessType(BusinessTypeEnum.Biz6Th, "事業種類名6");
+                var insuranceBusinessTypeBiz7Th = new InsuranceBusinessType(BusinessTypeEnum.Biz7Th, "事業種類名7");
+                var insuranceBusinessTypeBiz8Th = new InsuranceBusinessType(BusinessTypeEnum.Biz8Th, "事業種類名8");
+                var insuranceBusinessTypeBiz9Th = new InsuranceBusinessType(BusinessTypeEnum.Biz9Th, "事業種類名9");
+                var insuranceBusinessTypeBiz10Th = new InsuranceBusinessType(BusinessTypeEnum.Biz10Th, "事業種類名11");
 
-                self.lstInsuranceBusinessType = [insuranceBusinessTypeBiz1St, insuranceBusinessTypeBiz2Nd, insuranceBusinessTypeBiz3Rd, insuranceBusinessTypeBiz4Th,insuranceBusinessTypeBiz5Th];
+                self.lstInsuranceBusinessType = [insuranceBusinessTypeBiz1St, insuranceBusinessTypeBiz2Nd, insuranceBusinessTypeBiz3Rd, insuranceBusinessTypeBiz4Th,
+                    insuranceBusinessTypeBiz5Th, insuranceBusinessTypeBiz6Th, insuranceBusinessTypeBiz7Th, insuranceBusinessTypeBiz8Th, insuranceBusinessTypeBiz9Th, insuranceBusinessTypeBiz10Th];
                 self.lstInsuBizRateItem = [insuBizRateItemBiz1St, insuBizRateItemBiz2Nd, insuBizRateItemBiz3Rd, insuBizRateItemBiz4Th, insuBizRateItemBiz5Th,
                     insuBizRateItemBiz6Th, insuBizRateItemBiz7Th, insuBizRateItemBiz8Th, insuBizRateItemBiz9Th, insuBizRateItemBiz10Th];
                 self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(self.lstInsuBizRateItem, self.lstInsuranceBusinessType, self.rateInputOptions, selectionRoundingMethod));
@@ -341,7 +347,31 @@ module nts.uk.pr.view.qmm011.a {
                     }
                     //Biz5Th
                     if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz5Th) {
-                        this.accidentInsuranceRateBiz4ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                        this.accidentInsuranceRateBiz5ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                    }
+                    //Biz6Th
+                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz6Th) {
+                        this.accidentInsuranceRateBiz6ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                    }
+                    //Biz7Th
+                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz7Th) {
+                        this.accidentInsuranceRateBiz7ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                    }
+                    //Biz8Th
+                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz8Th) {
+                        this.accidentInsuranceRateBiz8ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                    }
+                    //Biz9Th
+                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz9Th) {
+                        this.accidentInsuranceRateBiz9ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                    }
+                    //Biz9Th
+                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz9Th) {
+                        this.accidentInsuranceRateBiz9ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
+                    }
+                    //Biz10Th
+                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz10Th) {
+                        this.accidentInsuranceRateBiz10ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
                     }
                 }
             }

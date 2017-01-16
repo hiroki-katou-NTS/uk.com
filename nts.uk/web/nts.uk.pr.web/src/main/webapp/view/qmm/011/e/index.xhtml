@@ -10,52 +10,85 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
+			<com:scriptfile path="../a/service.js" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../a/viewmodel.js" />
 			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="E_LBL_001">ナビゲーションメッセージ</div>
 			<center>
-				<table>
+				<table data-bind="with: accidentInsuranceRateModel">
 					<tbody>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz1StModel">
 							<td class="bg-green">1</td>
-							<td><input class="health-input" value="事業種類名1"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz2NdModel">
 							<td class="bg-green">2</td>
-							<td><input class="health-input" value="事業種類名2"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz3RdModel">
 							<td class="bg-green ">3</td>
-							<td><input class="health-input" value="事業種類名3"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz4ThModel">
 							<td class="bg-green">4</td>
-							<td><input class="health-input" value="事業種類名4"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz5ThModel">
 							<td class="bg-green ">5</td>
-							<td><input class="health-input" value="事業種類名5"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz6ThModel">
 							<td class="bg-green ">6</td>
-							<td><input class="health-input" value="事業種類名6"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz7ThModel">
 							<td class="bg-green ">7</td>
-							<td><input class="health-input" value="事業種類名7"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz8ThModel">
 							<td class="bg-green ">8</td>
-							<td><input class="health-input" value="事業種類名8"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz9ThModel">
 							<td class="bg-green ">9</td>
-							<td><input class="health-input" value="事業種類名9"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
-						<tr>
+						<tr data-bind="with: accidentInsuranceRateBiz10ThModel">
 							<td class="bg-green">10</td>
-							<td><input class="health-input" value="事業種類名10"></input></td>
+							<td><input class="health-input"
+								data-bind="ntsTextEditor: {value: insuranceBusinessType, 
+									option: $root.textEditorOption, 
+									enable: true}"></input></td>
 						</tr>
 					</tbody>
 				</table>
