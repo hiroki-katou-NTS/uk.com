@@ -197,30 +197,10 @@ var nts;
                             $parent.css({ 'width': '100%' });
                         }
                         if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                            var marginLeft = 0;
-                            var marginRight = 0;
-                            if ($input.css('margin-left') !== "") {
-                                marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
-                                marginRight = parseFloat($input.css('margin-left').split("px")[0]);
-                            }
-                            $parent.addClass("currency").addClass(option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
-                            if (marginLeft !== 0) {
-                                $parent.css({ "marginLeft": marginLeft + "px" });
-                            }
-                            if (marginRight !== 0) {
-                                $parent.css({ "marginRight": marginRight + "px" });
-                            }
-                            var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
-                            var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
-                            $input.css({
-                                'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
-                                'width': width, "marginLeft": "0px", "marginRight": "0px"
-                            });
+                            $parent.addClass("symbol").addClass(option.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
+                            $input.width(width);
                             var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
-                        }
-                        else {
-                            $input.css({ 'paddingLeft': '12px', 'width': width });
                         }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
@@ -426,7 +406,7 @@ var nts;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
-                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "Search";
+                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -441,7 +421,7 @@ var nts;
                         searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
                         var $container = $(element);
                         $container.append("<input class='ntsSearchBox' type='text' />");
-                        $container.append("<button class='search-btn'>" + searchText + "</button>");
+                        $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
                         var $input = $container.find("input.ntsSearchBox");
                         var $button = $container.find("button.search-btn");
                         var nextSearch = function () {
