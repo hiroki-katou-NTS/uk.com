@@ -307,6 +307,27 @@ var nts;
                 return originalString;
             }
             text_1.splitOrPadRight = splitOrPadRight;
+            function addSeperation(amount) {
+                var leng = amount.indexOf(".") > -1 ? amount.indexOf(".") : amount.length;
+                if (leng < 4)
+                    return amount;
+                var result = amount.substring(leng);
+                var num = parseInt(amount.substring(0, leng));
+                var times = leng / 3;
+                for (var i = 0; i <= times + 1; i++) {
+                    var block = num % 1000;
+                    result = padLeft("" + block, "0", 3) + "," + result;
+                    num = Math.floor(num / 1000);
+                }
+                return result;
+            }
+            function formatCurrency(amount, locale) {
+                var result = addSeperation("" + amount);
+                if (locale == 'en' || locale == 'EN')
+                    return "￥" + result;
+                return result + "円";
+            }
+            text_1.formatCurrency = formatCurrency;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
