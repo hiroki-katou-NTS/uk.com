@@ -22,17 +22,20 @@ module qmm013.b.viewmodel {
 
         constructor() {
             var self = this;
+            
+            this.currentName = ko.observable();
+            this.currentCodeList = ko.observableArray([]);
             this.items = ko.observableArray([
-            new ItemModel('001', '基本給', "description 1"),
-            new ItemModel('150', '役職手当', "description 2"),
-            new ItemModel('ABC', '基本給', "description 3")
+            new ItemModel('001', '基本給', '<i class="icon icon-close"></i>'),
+            new ItemModel('150', '役職手当','<i class="icon icon-close"></i>'),
+            new ItemModel('ABC', '基本給','<i class="icon icon-close"></i>')
             ]);
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100 },
                 { headerText: '名称', prop: 'name', width: 150 },
                 { headerText: '廃止', prop: 'abolition', width: 50 }
             ]);
-            
+            this.currentCode = ko.observable();
             self.itemList = ko.observableArray([
             new BoxModel(1, '全員一律で指定する'),
             new BoxModel(2, '給与約束形態ごとに指定する')
@@ -59,9 +62,6 @@ module qmm013.b.viewmodel {
             self.SEL_009_check = ko.observable(1);
             self.SEL_004_check = ko.observable(1);
             
-            this.currentCode = ko.observable();
-            this.currentName = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
             
             self.texteditor1 = {
                 value: self.currentCode,
@@ -110,12 +110,12 @@ module qmm013.b.viewmodel {
     class ItemModel {
     code: string;
     name: string;
-    description: string;
+    abolition: string;
     
-    constructor(code: string, name: string, description: string) {
+    constructor(code: string, name: string, abolition: string) {
         this.code = code;
         this.name = name;
-        this.description = description;
+        this.abolition = abolition;
     }
    }
    

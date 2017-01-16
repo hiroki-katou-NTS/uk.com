@@ -27,18 +27,30 @@
 			</div>
 			<div id="contents-area">
 				<div class="left-content">
-					<div id="LST_001" class="caret-right caret-background bg-green">
+				  <div class="cf">
+				    <div style="float: left; width: 480px" class="caret-right caret-background bg-green">
+				    <div style="width: 515px;margin: 40px 0px -10px 14px"
+								data-bind="ntsSearchBox: {
+									comId: 'single-list',
+									items: items, 
+									selected: currentCode, 
+									selectedKey: 'code', 
+									fields: ['name', 'code']}" />
+					<br />
+					<div id="LST_001">
 						<table id="single-list"
 							data-bind="ntsGridList: {
-				width: 440,
-				height: 500,
-				options: items,
-				optionsValue: 'code',
-				columns: columns,
-				multiple: false,
-				value: currentCode
-			}"></table>
+										width: 440,
+										height: 500,
+										options: items,
+										optionsValue: 'code',
+										columns: columns,
+										multiple: false,
+										value: currentCode
+									}"></table>
 					</div>
+					 </div>
+				  </div>
 				</div>
 				<div class="right-content">
 					<div class="right-content-left">
@@ -66,6 +78,11 @@
 									required: true,
 									enable: true,
 									readonly: true}" /></span>
+									
+							<div class="bg-yellow" style="width: 200px; height: 25px;display: inline-block;margin-left: 46px">
+						      <div style="margin-left: 5px;" data-bind="ntsCheckBox: {text: 'この会社を廃止する' }" class="cf minimalist"></div>
+						      <button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
+						    </div>
 						</div>
 						<div class="control-group">
 							<span id="INP_004" data-bind="with: texteditor2"> <input

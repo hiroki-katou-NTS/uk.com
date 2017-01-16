@@ -7,16 +7,19 @@ var qmm013;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    this.currentName = ko.observable();
+                    this.currentCodeList = ko.observableArray([]);
                     this.items = ko.observableArray([
-                        new ItemModel('001', '基本給', "description 1"),
-                        new ItemModel('150', '役職手当', "description 2"),
-                        new ItemModel('ABC', '基本給', "description 3")
+                        new ItemModel('001', '基本給', '<i class="icon icon-close"></i>'),
+                        new ItemModel('150', '役職手当', '<i class="icon icon-close"></i>'),
+                        new ItemModel('ABC', '基本給', '<i class="icon icon-close"></i>')
                     ]);
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 100 },
                         { headerText: '名称', prop: 'name', width: 150 },
                         { headerText: '廃止', prop: 'abolition', width: 50 }
                     ]);
+                    this.currentCode = ko.observable();
                     self.itemList = ko.observableArray([
                         new BoxModel(1, '全員一律で指定する'),
                         new BoxModel(2, '給与約束形態ごとに指定する')
@@ -38,9 +41,6 @@ var qmm013;
                     self.SEL_008_check = ko.observable(1);
                     self.SEL_009_check = ko.observable(1);
                     self.SEL_004_check = ko.observable(1);
-                    this.currentCode = ko.observable();
-                    this.currentName = ko.observable();
-                    this.currentCodeList = ko.observableArray([]);
                     self.texteditor1 = {
                         value: self.currentCode,
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
