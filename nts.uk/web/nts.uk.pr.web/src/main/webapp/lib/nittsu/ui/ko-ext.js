@@ -2099,10 +2099,10 @@ var nts;
                                 }
                             };
                             var searchAreaId = elementId + "-search-area";
-                            $swap.append("<div class = 'ntsSwapArea ntsSearchArea' id = " + searchAreaId + "/>");
+                            $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
                             $swap.find(".ntsSearchArea")
-                                .append("<div class='ntsSwapComponent ntsSearchTextContainer'/>")
-                                .append("<div class='ntsSwapComponent ntsSearchButtonContainer'/>");
+                                .append("<div class='ntsSearchTextContainer'/>")
+                                .append("<div class='ntsSearchButtonContainer'/>");
                             $swap.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                             $swap.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
                             $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
@@ -2179,21 +2179,27 @@ var nts;
                                         }
                                     }
                                 }
+                                var length = value().length;
                                 var notExisted = _.filter(employeeList, function (list) {
                                     return _.filter(currentSource, function (data) {
                                         return data[key] === list[key];
                                     }).length <= 0;
                                 });
                                 if (notExisted.length > 0) {
+                                    $(id1).igGrid("virtualScrollTo", 0);
+                                    $(id2).igGrid("virtualScrollTo", 0);
                                     var newSource = _.filter(source, function (list) {
                                         var x = _.filter(notExisted, function (data) {
                                             return data[key] === list[key];
                                         });
                                         return (x.length <= 0);
                                     });
-                                    value(isForward ? currentSource.concat(notExisted) : newSource);
-                                    $(id1).igGrid("option", "dataSource", isForward ? newSource : currentSource.concat(notExisted));
+                                    var sources = currentSource.concat(notExisted);
+                                    value(isForward ? sources : newSource);
+                                    $(id1).igGrid("option", "dataSource", isForward ? newSource : sources);
                                     $(id1).igGrid("option", "dataBind");
+                                    $(id1).igGrid("virtualScrollTo", isForward ? selectedEmployees[0].index - 1 : sources.length - selectedEmployees.length);
+                                    $(id2).igGrid("virtualScrollTo", isForward ? length : length - selectedEmployees.length);
                                 }
                             }
                         };
