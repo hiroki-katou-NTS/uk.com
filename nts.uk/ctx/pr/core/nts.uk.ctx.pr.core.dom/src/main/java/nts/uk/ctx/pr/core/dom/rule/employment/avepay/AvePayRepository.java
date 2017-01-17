@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 
 import java.util.List;
 import java.util.Optional;

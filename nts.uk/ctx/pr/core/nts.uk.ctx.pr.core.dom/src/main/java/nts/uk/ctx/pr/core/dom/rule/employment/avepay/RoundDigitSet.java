@@ -1,7 +1,8 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 
 
 /**
+ * 端数桁設定
  * Round Digit Setting
  * @author Doan Duy Hung
  *

@@ -1,14 +1,11 @@
-package nts.uk.ctx.pr.core.infra.entity.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.infra.entity.rule.employment.avepay;
 
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 

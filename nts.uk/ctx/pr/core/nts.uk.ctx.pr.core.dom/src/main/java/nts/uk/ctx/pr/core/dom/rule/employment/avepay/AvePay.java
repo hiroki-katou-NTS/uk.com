@@ -1,12 +1,17 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 
-import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * 平均賃金計算設定マスタ
+ * Average wage calculation setting master
+ * @author Doan Duy Hung
+ *
+ */
 public class AvePay extends AggregateRoot {
 	@Getter
 	private AttendDayGettingSet attendDayGettingSet;

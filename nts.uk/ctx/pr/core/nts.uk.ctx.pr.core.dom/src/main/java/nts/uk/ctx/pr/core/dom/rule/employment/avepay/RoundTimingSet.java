@@ -1,6 +1,7 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 
 /**
+ * 日数端数処理区分
  * Round Timing Setting
  * @author Doan Duy Hung
  *

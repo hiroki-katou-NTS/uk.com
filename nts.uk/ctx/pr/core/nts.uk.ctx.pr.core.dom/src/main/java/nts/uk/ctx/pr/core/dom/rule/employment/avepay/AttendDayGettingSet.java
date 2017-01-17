@@ -1,6 +1,7 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 
 /**
+ * 出勤日数取得方法
  * Attend Day Getting Setting
  * @author Doan Duy Hung
  *

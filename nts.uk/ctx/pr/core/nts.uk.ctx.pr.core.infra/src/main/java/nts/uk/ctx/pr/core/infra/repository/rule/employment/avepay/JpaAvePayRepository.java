@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.rule.employment.averagepay;
+package nts.uk.ctx.pr.core.infra.repository.rule.employment.avepay;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.averagepay.AvePay;
-import nts.uk.ctx.pr.core.dom.rule.employment.averagepay.AvePayRepository;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.averagepay.QapmtAvePay;
+import nts.uk.ctx.pr.core.dom.rule.employment.avepay.AvePay;
+import nts.uk.ctx.pr.core.dom.rule.employment.avepay.AvePayRepository;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.avepay.QapmtAvePay;
 
 @RequestScoped
 public class JpaAvePayRepository extends JpaRepository implements AvePayRepository {
