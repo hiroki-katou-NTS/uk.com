@@ -1861,6 +1861,15 @@ var nts;
                             var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
                             container.attr("id", idString);
                         }
+                        var startDate = null;
+                        var endDate = null;
+                        if (data.startDate) {
+                            startDate = ko.unwrap(data.startDate);
+                        }
+                        if (data.endDate) {
+                            endDate = ko.unwrap(data.endDate);
+                        }
+                        var autoHide = data.autoHide == false ? false : true;
                         var idatr = container.attr("id");
                         container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
                         var $input = container.find('#' + idatr + "_input");
@@ -1868,8 +1877,9 @@ var nts;
                         if (data.button)
                             button = idatr + "_button";
                         $input.prop("readonly", true);
-                        var date = ko.unwrap(data.value);
+                        var value = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var containerFormat = 'yyyy/mm/dd';
                         var length = 10, atomWidth = 9;
                         if (dateFormat === "yyyy/MM/dd DDD") {
                             length = 16;
@@ -1877,26 +1887,43 @@ var nts;
                         else if (dateFormat === "yyyy/MM/dd D") {
                             length = 14;
                         }
-                        $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+                        else if (dateFormat === "yyyy/MM") {
+                            length = 7;
+                            containerFormat = 'yyyy/mm';
+                        }
+                        if (containerFormat != 'yyyy/mm')
+                            //datepicker case
+                            $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
+                        else
+                            $input.attr('value', value);
                         if (button) {
                             container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
                             $input.datepicker({
-                                format: 'yyyy/mm/dd',
+                                format: containerFormat,
                                 language: 'ja-JP',
-                                trigger: "#" + button
+                                trigger: "#" + button,
+                                autoHide: autoHide,
+                                startDate: startDate,
+                                endDate: endDate
                             });
                         }
                         else
                             $input.datepicker({
-                                format: 'yyyy/mm/dd',
-                                language: 'ja-JP'
+                                format: containerFormat,
+                                language: 'ja-JP',
+                                autoHide: autoHide,
+                                startDate: startDate,
+                                endDate: endDate
                             });
-                        container.on('change', function (event) {
-                            data.value(new Date(container.val().substring(0, 10)));
-                        });
-                        $input.on('change', function (event) {
-                            data.value(new Date($input.val().substring(0, 10)));
-                        });
+                        container.data("format", containerFormat);
+                        if (containerFormat !== 'yyyy/mm')
+                            $input.on('change', function (event) {
+                                data.value(new Date($input.val().substring(0, 10)));
+                            });
+                        else
+                            $input.on('change', function (event) {
+                                data.value($input.val());
+                            });
                         $input.width(atomWidth * length);
                     };
                     /**
@@ -1906,16 +1933,26 @@ var nts;
                         var data = valueAccessor();
                         var container = $(element);
                         var idatr = container.attr("id");
-                        var date = ko.unwrap(data.value);
+                        var newValue = ko.unwrap(data.value);
+                        //console.log(newValue);                       
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-                        container.val(nts.uk.time.formatDate(date, dateFormat));
                         var $input = container.find('#' + idatr + "_input");
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var formatOptions = container.data("format");
                         var oldDate = $input.datepicker("getDate");
-                        if (oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate())
-                            $input.datepicker("setDate", date);
-                        $input.val(nts.uk.time.formatDate(date, dateFormat));
+                        if (formatOptions != 'yyyy/mm') {
+                            var oldDate = $input.datepicker("getDate");
+                            if (oldDate.getFullYear() != newValue.getFullYear() || oldDate.getMonth() != newValue.getMonth() || oldDate.getDate() != newValue.getDate())
+                                $input.datepicker("setDate", newValue);
+                            $input.val(nts.uk.time.formatDate(newValue, dateFormat));
+                        }
+                        else {
+                            var newDate = new Date(newValue + "/01");
+                            var oldDate = $input.datepicker("getDate");
+                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
+                                $input.datepicker("setDate", newDate);
+                            $input.val(newValue);
+                        }
                     };
                     return DatePickerBindingHandler;
                 }());
@@ -2079,10 +2116,10 @@ var nts;
                                 }
                             };
                             var searchAreaId = elementId + "-search-area";
-                            $swap.append("<div class = 'ntsSwapArea ntsSearchArea' id = " + searchAreaId + "/>");
+                            $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
                             $swap.find(".ntsSearchArea")
-                                .append("<div class='ntsSwapComponent ntsSearchTextContainer'/>")
-                                .append("<div class='ntsSwapComponent ntsSearchButtonContainer'/>");
+                                .append("<div class='ntsSearchTextContainer'/>")
+                                .append("<div class='ntsSearchButtonContainer'/>");
                             $swap.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                             $swap.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
                             $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
@@ -2159,21 +2196,27 @@ var nts;
                                         }
                                     }
                                 }
+                                var length = value().length;
                                 var notExisted = _.filter(employeeList, function (list) {
                                     return _.filter(currentSource, function (data) {
                                         return data[key] === list[key];
                                     }).length <= 0;
                                 });
                                 if (notExisted.length > 0) {
+                                    $(id1).igGrid("virtualScrollTo", 0);
+                                    $(id2).igGrid("virtualScrollTo", 0);
                                     var newSource = _.filter(source, function (list) {
                                         var x = _.filter(notExisted, function (data) {
                                             return data[key] === list[key];
                                         });
                                         return (x.length <= 0);
                                     });
-                                    value(isForward ? currentSource.concat(notExisted) : newSource);
-                                    $(id1).igGrid("option", "dataSource", isForward ? newSource : currentSource.concat(notExisted));
+                                    var sources = currentSource.concat(notExisted);
+                                    value(isForward ? sources : newSource);
+                                    $(id1).igGrid("option", "dataSource", isForward ? newSource : sources);
                                     $(id1).igGrid("option", "dataBind");
+                                    $(id1).igGrid("virtualScrollTo", isForward ? selectedEmployees[0].index - 1 : sources.length - selectedEmployees.length);
+                                    $(id2).igGrid("virtualScrollTo", isForward ? length : length - selectedEmployees.length);
                                 }
                             }
                         };

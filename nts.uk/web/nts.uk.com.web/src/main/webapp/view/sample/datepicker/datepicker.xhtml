@@ -23,14 +23,26 @@
 					<div id="content" class="cf">
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
-						<h3>Datepicker with short day name</h3>
-						<div id="date-picker" data-bind="ntsDatePicker: {button: true, value: date, dateFormat: 'yyyy/MM/dd D'}"></div>
-						
-						<br/><br/>
-						<h3>Datepicker with full day name</h3>
-						<div id="date-picker1" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd DDD'}"></div>
-						<br/><br/>
-						<span data-bind="text: date"></span>
+						<div style="border: 1px solid green; margin: 5px">
+							<h3>Datepicker with short day name</h3>
+							<div id="date-picker" data-bind="ntsDatePicker: {button: true, value: date, dateFormat: 'yyyy/MM/dd D', startDate: '2016/12/01'}"></div>
+							
+							<br/><br/>
+							<h3>Datepicker with full day name</h3>
+							<div id="date-picker1" data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd DDD', startDate: '2016/12/01'}"></div>
+							<br/><br/>
+							<span data-bind="text: date"></span>
+						</div>
+						<hr/>
+						<div style="border: 1px solid green; margin: 5px">
+							<h3>Yearmonth picker</h3>
+							<div id="date-picker2" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM'}"></div>
+							<br/><br/>
+							<h3>Yearmonth picker</h3>
+							<div id="date-picker3" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM'}"></div>
+							<br/><br/>
+							<span data-bind="text: yearMonth"></span>
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

@@ -2207,46 +2207,50 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 1, ../sass/components/_swaplist.scss */
 .ntsSwapArea {
-  display: table-row;
+  display: table;
 }
 
 /* line 4, ../sass/components/_swaplist.scss */
 .ntsSwapList-container {
-  display: table;
-  table-layout: fixed;
+  display: inline-block;
 }
 
-/* line 8, ../sass/components/_swaplist.scss */
+/* line 7, ../sass/components/_swaplist.scss */
 .ntsSwapList {
   overflow: auto;
 }
 
-/* line 11, ../sass/components/_swaplist.scss */
+/* line 10, ../sass/components/_swaplist.scss */
 .ntsSearchButton {
   margin-left: 10px;
 }
 
-/* line 14, ../sass/components/_swaplist.scss */
+/* line 13, ../sass/components/_swaplist.scss */
 .move-button {
   width: 75px;
 }
 
-/* line 17, ../sass/components/_swaplist.scss */
+/* line 16, ../sass/components/_swaplist.scss */
 .move-forward {
   margin-bottom: 5px;
 }
 
-/* line 20, ../sass/components/_swaplist.scss */
+/* line 19, ../sass/components/_swaplist.scss */
 .ntsSwapComponent {
   display: table-cell;
 }
 
-/* line 23, ../sass/components/_swaplist.scss */
+/* line 22, ../sass/components/_swaplist.scss */
 .ntsMoveDataArea {
   height: 100%;
   vertical-align: middle;
   width: 75px;
   text-align: center;
+}
+
+/* line 28, ../sass/components/_swaplist.scss */
+.ntsSearchArea div {
+  display: inline-block;
 }
 
 /* line 1, ../sass/components/_searchbox.scss */

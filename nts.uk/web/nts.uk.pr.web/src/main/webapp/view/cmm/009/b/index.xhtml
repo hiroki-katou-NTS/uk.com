@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+			<script type="text/javascript">
+// 					__viewContext.primitiveValueConstraints.EmployementCode = {
+// 							valueType: 'String',
+// 							charType: 'Numeric',
+// 							maxLength: 2,
+// 						};
+					
+// 					__viewContext.primitiveValueConstraints.EmployementName = {
+// 							valueType: 'String',
+// 							charType: 'String',
+// 							maxLength: 20,
+// 						};
+				</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+<!-- 				<button id="BTN_001" class="btnStyle">新規</button> -->
+<!-- 				<button id="BTN_002" class="proceed btnStyle">登録</button> -->
+<!-- 				<button id="BTN_003">マスタ修正ログ</button> -->
+<!-- 				<button id="BTN_004" class="danger btnStyle" >削除</button> -->
+<!-- 				<label id="LBL_001">雇用区分の登録</label> -->
+			</div>
+			<div id="contents-area">
+				<div data-bind="ntsFormLabel: {}">メモ</div>
+				<div class = "memo-area">
+					<div data-bind="ntsFormLabel: {}">メモ</div>
+					<div data-bind="with: multilineeditor">
+						<textarea data-bind="ntsMultilineEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								enable: enable,
+								readonly: readonly}" />
+					</div>
+					<div class = "button-area">
+						<button id="BTN_001" class="btnStyle">confirm</button>
+						<button id="BTN_002">cancel</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

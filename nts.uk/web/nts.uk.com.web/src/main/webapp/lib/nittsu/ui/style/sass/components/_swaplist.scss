@@ -1,9 +1,8 @@
 .ntsSwapArea{
-	display: table-row;
+	display: table;
 }
 .ntsSwapList-container{
-	display: table;
-	table-layout: fixed;
+	display: inline-block;
 }
 .ntsSwapList{
 	overflow: auto;
@@ -25,4 +24,7 @@
 	vertical-align: middle;
 	width: 75px;
 	text-align: center;
+}
+.ntsSearchArea div{
+	display: inline-block;
 }
