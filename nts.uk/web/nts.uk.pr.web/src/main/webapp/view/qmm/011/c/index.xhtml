@@ -7,7 +7,7 @@
 						<button id="C_BTN_001">履歴追加</button>
 						<button id="C_BTN_002" class="danger">履歴編集</button>
 					</div>
-					<div id="list-box"
+					<div class="list-box" id="lstHistoryAccidentInsuranceRate"
 						data-bind="ntsListBox: {
 						options: lstHistoryAccidentInsuranceRate,
 						optionsValue: 'code',
@@ -22,22 +22,22 @@
 						]}"></div>
 				</td>
 				<td id="contents-right">
-					<table id="tableRight">
+					<table>
 						<tr>
-							<td class="trFull5C">
+							<td class="trFull60B">
 								<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true}">
-									<label>期間<br /></label>
+									<label>期間</label>
 								</div>
 							</td>
-							<td class="contentsRR"><input
-								id="inp_historyAccidentInsuranceRateStart" class="trFull45"
-								data-name="historyAccidentInsuranceRateStart"
-								data-bind="ntsTextEditor: {value: historyAccidentInsuranceRateStart, 
-									option: textEditorOption, 
-									enable: true}" />
-								<label id="C_LBL_002"> ~ </label> <label id="C_LBL_003"
-								data-bind="text: historyAccidentInsuranceRateEnd"></label></td>
+							<td class="contentsRR"><div
+									data-bind="ntsDatePicker: {value: historyAccidentInsuranceRateStart, dateFormat: 'yyyy/MM'} " />
+							</td>
+							<td><label id="C_LBL_002"> ~ </label></td>
+							<td><label id="C_LBL_003"
+								data-bind="text: historyAccidentInsuranceRateEnd"> </label></td>
 						</tr>
+					</table>
+					<table id="tableRight">
 						<tr>
 							<td colspan="2"><hr /></td>
 						</tr>
@@ -109,6 +109,7 @@
 													<input class="health-input" data-name="insuRate"
 														data-bind="ntsNumberEditor: {value: insuRate, 
 													option: rateInputOptions, 
+													constraints:'',
 													enable: true}"></input>/1000
 												</div></td>
 											<td>
@@ -298,7 +299,6 @@
 							</td>
 						</tr>
 					</table>
-
 				</td>
 			</tr>
 		</table>

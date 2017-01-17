@@ -138,11 +138,15 @@ var nts;
                                     nts.uk.ui.windows.setShared("historyId", historyId);
                                     nts.uk.ui.windows.setShared("lsthistoryValue", this.lstHistoryUnemployeeInsurance);
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
                                     });
                                 };
                                 ScreenModel.prototype.openAddHistoryUnemployeeInsuranceRate = function () {
                                     nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.openEditInsuranceBusinessType = function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(function () {
                                     });
                                 };
                                 ScreenModel.prototype.openEditHistoryAccidentInsuranceRate = function () {
@@ -150,7 +154,7 @@ var nts;
                                     nts.uk.ui.windows.setShared("historyId", historyId);
                                     nts.uk.ui.windows.setShared("lsthistoryValue", this.lstHistoryAccidentInsurance);
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
                                     });
                                 };
                                 ScreenModel.prototype.openAddHistoryAccidentInsuranceRate = function () {

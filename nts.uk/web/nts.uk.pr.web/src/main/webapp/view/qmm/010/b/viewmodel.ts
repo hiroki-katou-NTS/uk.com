@@ -13,7 +13,7 @@ module nts.uk.pr.view.qmm010.b {
             currentCodeList: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
-                self.lstSocialInsuranceOffice = ko.observableArray([new SocialInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
+                self.lstSocialInsuranceOffice = ko.observableArray<SocialInsuranceOfficeInDTO>([new SocialInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
                     new SocialInsuranceOfficeInDTO('companyCode001', '000000000002', 'B事業所'), new SocialInsuranceOfficeInDTO('companyCode001', '000000000003', 'C事業所')]);
 
                 self.employmentName = ko.observable("");

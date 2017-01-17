@@ -20,7 +20,7 @@ var nts;
                                     var self = this;
                                     var officeInfo001 = new LaborInsuranceOffice('companyCode001', '000000000001', 'A事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
                                     var officeInfo003 = new LaborInsuranceOffice('companyCode001', '000000000003', 'C事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
-                                    var officeInfo002 = new LaborInsuranceOffice('companyCode001', '000000000002', 'C事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                                    var officeInfo002 = new LaborInsuranceOffice('companyCode001', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
                                     self.lstlaborInsuranceOffice = [officeInfo001, officeInfo002, officeInfo003];
                                     self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo001));
                                     self.lstlaborInsuranceOfficeModel = ko.observableArray([new LaborInsuranceOfficeInDTO(officeInfo001),
@@ -40,9 +40,19 @@ var nts;
                                     ]);
                                     self.selectCodeLstlaborInsuranceOffice = ko.observable(officeInfo001.code);
                                     self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
-                                        alert("ABC " + self.selectCodeLstlaborInsuranceOffice());
+                                        self.showLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
                                     });
                                 }
+                                ScreenModel.prototype.showLaborInsuranceOffice = function (selectCodeLstlaborInsuranceOffice) {
+                                    var self = this;
+                                    if (selectCodeLstlaborInsuranceOffice != null && selectCodeLstlaborInsuranceOffice != undefined) {
+                                        for (var index = 0; index < self.lstlaborInsuranceOffice.length; index++) {
+                                            if (selectCodeLstlaborInsuranceOffice === self.lstlaborInsuranceOffice[index].code) {
+                                                self.laborInsuranceOffice(new LaborInsuranceOfficeModel(self.lstlaborInsuranceOffice[index]));
+                                            }
+                                        }
+                                    }
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
