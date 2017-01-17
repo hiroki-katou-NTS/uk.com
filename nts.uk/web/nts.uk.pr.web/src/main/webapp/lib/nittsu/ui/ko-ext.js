@@ -1423,7 +1423,7 @@ var nts;
                         }
                         var data = valueAccessor();
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
-                        var options = ko.unwrap(data.options);
+                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var observableColumns = data.columns;
                         var iggridColumns = _.map(observableColumns(), function (c) {
                             c["key"] = c.key === undefined ? c.prop : c.key;
@@ -1437,7 +1437,7 @@ var nts;
                         $grid.igGrid({
                             width: data.width,
                             height: (data.height - HEADER_HEIGHT) + "px",
-                            primaryKey: data.optionsValue,
+                            primaryKey: optionsValue,
                             columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
@@ -1497,8 +1497,9 @@ var nts;
                         var data = valueAccessor();
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var currentSource = $grid.igGrid('option', 'dataSource');
-                        if (!_.isEqual(currentSource, data.options())) {
-                            $grid.igGrid('option', 'dataSource', data.options().slice());
+                        var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        if (!_.isEqual(currentSource, sources)) {
+                            $grid.igGrid('option', 'dataSource', sources.slice());
                             $grid.igGrid("dataBind");
                         }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
@@ -1529,10 +1530,10 @@ var nts;
                     NtsTreeGridViewBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
-                        var options = ko.unwrap(data.options);
+                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
                         var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
-                        var optionsChild = ko.unwrap(data.optionsChild);
+                        var optionsChild = ko.unwrap(data.childDataKey !== undefined ? data.childDataKey : data.optionsChild);
                         var extColumns = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
                         // Default.
                         var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
@@ -1596,12 +1597,6 @@ var nts;
                             if (selectedRows && selectedRows.length > 0) {
                                 row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
                             }
-                            //                else {
-                            //                    var selectedRow = $treegrid.igTreeGrid("selectedRow");
-                            //                    if (selectedRow && selectedRow.id) {
-                            //                        row1 = $treegrid.igTreeGrid("selectedRow").id;
-                            //                    }
-                            //                }
                             if (row1 !== undefined) {
                                 var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
                                 var rowHeight = $('#' + treeGridId + "_" + row1).height();
@@ -1616,7 +1611,7 @@ var nts;
                     NtsTreeGridViewBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
-                        var options = ko.unwrap(data.options);
+                        var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         var selectedValues = ko.unwrap(data.selectedValues);
                         var singleValue = ko.unwrap(data.value);
                         // Update datasource.
@@ -2052,7 +2047,7 @@ var nts;
                             throw new Error('the element NtsSwapList must have id attribute.');
                         }
                         var data = valueAccessor();
-                        var originalSource = ko.unwrap(data.options);
+                        var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
                         //            var selectedValues = ko.unwrap(data.value);
                         var totalWidth = ko.unwrap(data.width);
                         var height = ko.unwrap(data.height);
@@ -2075,20 +2070,15 @@ var nts;
                         });
                         var gridHeight = (height - 20);
                         if (showSearchBox) {
-                            var search = function ($swap, grid2Id, grid1Id, tempOrigiSour, primaryKey) {
+                            var search = function ($swap, grid2Id, grid1Id, primaryKey) {
                                 var value = $swap.find(".ntsSearchInput").val();
-                                var source = $(grid2Id).igGrid("option", "dataSource");
+                                var source = $(grid1Id).igGrid("option", "dataSource").slice();
                                 var selected = $(grid1Id).ntsGridList("getSelected");
-                                var notExisted = _.filter(tempOrigiSour, function (list) {
-                                    return _.find(source, function (data) {
-                                        return data[primaryKey] === list[primaryKey];
-                                    }) === undefined;
-                                });
                                 if (selected.length > 0) {
-                                    var gotoEnd = notExisted.splice(0, selected[0].index + 1);
-                                    notExisted = notExisted.concat(gotoEnd);
+                                    var gotoEnd = source.splice(0, selected[0].index + 1);
+                                    source = source.concat(gotoEnd);
                                 }
-                                var searchedValues = _.find(notExisted, function (val) {
+                                var searchedValues = _.find(source, function (val) {
                                     return _.find(iggridColumns, function (x) {
                                         return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
                                     }) !== undefined;
@@ -2098,7 +2088,7 @@ var nts;
                                     selected[0].id !== searchedValues[primaryKey])) {
                                     var current = $(grid1Id).igGrid("selectedRows");
                                     if (current.length > 0 && $(grid1Id).igGrid("hasVerticalScrollbar")) {
-                                        $(grid1Id).igGrid("virtualScrollTo", current[0].index === tempOrigiSour.length - 1
+                                        $(grid1Id).igGrid("virtualScrollTo", current[0].index === source.length - 1
                                             ? current[0].index : current[0].index + 1);
                                     }
                                 }
@@ -2112,11 +2102,11 @@ var nts;
                             $swap.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
                             $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
                                 if (event.which === 13) {
-                                    search($swap, grid2Id, grid1Id, originalSource.slice(), primaryKey);
+                                    search($swap, grid2Id, grid1Id, primaryKey);
                                 }
                             });
                             $swap.find(".ntsSearchButton").text("Search").click(function (event, ui) {
-                                search($swap, grid2Id, grid1Id, originalSource.slice(), primaryKey);
+                                search($swap, grid2Id, grid1Id, primaryKey);
                             });
                             gridHeight -= SEARCH_AREA_HEIGHT;
                         }
@@ -2228,8 +2218,9 @@ var nts;
                         var $grid1 = $swap.find("#" + elementId + "-grid1");
                         var $grid2 = $swap.find("#" + elementId + "-grid2");
                         var currentSource = $grid1.igGrid('option', 'dataSource');
-                        if (!_.isEqual(currentSource, data.options())) {
-                            $grid1.igGrid('option', 'dataSource', data.options().slice());
+                        var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        if (!_.isEqual(currentSource, sources)) {
+                            $grid1.igGrid('option', 'dataSource', sources.slice());
                             $grid1.igGrid("dataBind");
                         }
                         var currentSelected = $grid2.igGrid('option', 'dataSource');
