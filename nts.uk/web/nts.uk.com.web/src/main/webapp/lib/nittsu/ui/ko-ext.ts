@@ -16,7 +16,7 @@ module nts.uk.ui.koExtentions {
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
-            $input.wrap("<span class= 'nts-editor-wrapped'/>");
+            $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             $input.change(() => {
                 var validator = this.getValidator(data);
                 var formatter = this.getFormatter(data);
@@ -175,38 +175,17 @@ module nts.uk.ui.koExtentions {
 
             $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
             var $parent = $input.parent();
-            var width = option.width ? option.width : '100%';
-            $parent.css({ "display": "inline-block" });
+            var width = option.width;// ? option.width : '100%';
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
-            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 $parent.css({ 'width': '100%' });
             }
             if (option.currencyformat !== undefined && option.currencyformat !== null) {
-                var marginLeft = 0;
-                var marginRight = 0;
-                if ($input.css('margin-left') !== "") {
-                    marginLeft = parseFloat($input.css('margin-left').split("px")[0]);
-                    marginRight = parseFloat($input.css('margin-left').split("px")[0]);
-                }
-                $parent.addClass("currency").addClass(
-                    option.currencyposition === 'left' ? 'currencyLeft' : 'currencyRight');
-
-                if (marginLeft !== 0) {
-                    $parent.css({ "marginLeft": marginLeft + "px" });
-                }
-                if (marginRight !== 0) {
-                    $parent.css({ "marginRight": marginRight + "px" });
-                }
-                var paddingLeft = (option.currencyposition === 'left' ? 11 : 0) + 'px';
-                var paddingRight = (option.currencyposition === 'right' ? 11 : 0) + 'px';
-                $input.css({
-                    'paddingLeft': paddingLeft, 'paddingRight': paddingRight,
-                    'width': width, "marginLeft": "0px", "marginRight": "0px"
-                });
+                $parent.addClass("symbol").addClass(
+                    option.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
+                $input.width(width);
                 var format = option.currencyformat === "JPY" ? "\u00A5" : '$'
                 $parent.attr("data-content", format);
-            } else {
-                $input.css({ 'paddingLeft': '12px', 'width': width });
             }
         }
 
@@ -237,10 +216,10 @@ module nts.uk.ui.koExtentions {
             var parent = $input.parent();
             parent.css({ "display": "inline-block" });
             var parentTag = parent.parent().prop("tagName").toLowerCase();
-            if (parentTag === "td" || parentTag === "th" || parentTag === "a") {
+            var width = option.width;// ? option.width : '100%';
+            if (parentTag === "td" || parentTag === "th" || parentTag === "a" || width === "100%") {
                 parent.css({ 'width': '100%' });
             }
-            var width = option.width ? option.width : '100%';
             $input.css({ 'paddingLeft': '12px', 'width': width });
         }
 
@@ -359,7 +338,7 @@ module nts.uk.ui.koExtentions {
             var i = fields.length;
             while (i--) {
                 var prop = fields[i];
-                var strProp = ko.unwrap(item[prop]).toLocaleLowerCase();
+                var strProp = ("" + item[prop]).toLocaleLowerCase();
                 if (strProp.indexOf(filter) !== -1) {
                     return true;
                 };
@@ -369,19 +348,24 @@ module nts.uk.ui.koExtentions {
         return filtered;
     };
     var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
+        //        console.log(selected + "," + selectedKey + "," + compareKey);
+        //        console.log(isArray);
         var current = null;
         if (isArray) {
             if (selected.length > 0) current = selected[0];
         } else if (selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
         }
+        //        console.log("current = "  + current);
         if (arr.length > 0) {
             if (current) {
+
                 for (var i = 0; i < arr.length - 1; i++) {
                     var item = arr[i];
                     if (selectedKey) {
-                        if (item[selectedKey] === current) return arr[i + 1][selectedKey];
-                    } else if (item[compareKey] === current[compareKey]) return arr[i + 1];
+                        //                        console.log(i);
+                        if (item[selectedKey] == current) return arr[i + 1][selectedKey];
+                    } else if (item[compareKey] == current[compareKey]) return arr[i + 1];
                 }
             }
             if (selectedKey) return arr[0][selectedKey];
@@ -398,6 +382,7 @@ module nts.uk.ui.koExtentions {
             var searchBox = $(element);
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
+            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -412,7 +397,7 @@ module nts.uk.ui.koExtentions {
             searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
             var $container = $(element);
             $container.append("<input class='ntsSearchBox' type='text' />");
-            $container.append("<button class='search-btn'>Search</button>");
+            $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
             var $input = $container.find("input.ntsSearchBox");
             var $button = $container.find("button.search-btn");
             var nextSearch = function() {
@@ -420,13 +405,20 @@ module nts.uk.ui.koExtentions {
                 var compareKey = fields[0];
                 var isArray = $.isArray(selected());
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
-                if (!isArray) selected(selectedItem);
-                else {
-                    selected([]);
-                    selected.push(selectedItem);
+                console.log(selectedItem);
+                if (data.mode) {
+                    var selectArr = []; selectArr.push("" + selectedItem);
+                    component.ntsGridList("setSelected", selectArr);
+                    component.trigger("selectionChanged");
+                } else {
+                    if (!isArray) selected(selectedItem);
+                    else {
+                        selected([]);
+                        selected.push(selectedItem);
+                    }
+                    component.trigger("selectChange");
+                    //console.log(selectedItem); 
                 }
-                component.trigger("selectChange");
-                //console.log(selectedItem); 
             }
             $input.keyup(function() {
                 $input.change();
@@ -448,7 +440,7 @@ module nts.uk.ui.koExtentions {
             var $input = searchBox.find("input.ntsSearchBox");
             var searchTerm = $input.val();
             var data = valueAccessor();
-            var arr = data.items();
+            var arr = ko.unwrap(data.items);
             var fields = ko.unwrap(data.fields);
             var childField = null;
             if (data.childField) {
@@ -1023,95 +1015,116 @@ module nts.uk.ui.koExtentions {
             var maxWidthCharacter = 15;
 
             // Check selected code.
-            if (options.filter(item => item[optionValue] === selectedValue).length == 0 && !editable) {
+            if (_.find(options, item => item[optionValue] === selectedValue) === undefined && !editable) {
                 selectedValue = options.length > 0 ? options[0][optionValue] : '';
                 data.value(selectedValue);
             }
 
-            // Delete igCombo.
-            if (container.data("igCombo") != null) {
-                container.igCombo('destroy');
-                container.removeClass('ui-state-disabled');
+            var haveColumn = columns && columns.length > 0;
+
+            var isChangeOptions = !_.isEqual(container.data("options"), options);
+            if (isChangeOptions) {
+                container.data("options", options.slice());
+                options = options.map((option) => {
+                    var newOptionText: string = '';
+
+                    // Check muti columns.
+                    if (haveColumn) {
+                        _.forEach(columns, function(item, i) {
+                            var prop: string = option[item.prop];
+                            var length: number = item.length;
+
+                            if (i === columns.length - 1) {
+                                newOptionText += prop;
+                            } else {
+                                newOptionText += text.padRight(prop, fillCharacter, length) + distanceColumns;
+                            }
+                        });
+
+                    } else {
+                        newOptionText = option[optionText];
+                    }
+                    // Add label attr.
+                    option['nts-combo-label'] = newOptionText;
+                    return option;
+                });
             }
 
-            // Set attribute for multi column.
-            var itemTempalate: string = undefined;
-            options = options.map((option) => {
-                var newOptionText: string = '';
+            var currentColumnSetting = container.data("columns");
+            var currentComboMode = container.data("comboMode");
+            var isInitCombo = !_.isEqual(currentColumnSetting, columns) || !_.isEqual(currentComboMode, comboMode);
+            if (isInitCombo) {
+                // Delete igCombo.
+                if (container.data("igCombo") != null) {
+                    container.igCombo('destroy');
+                    container.removeClass('ui-state-disabled');
+                }
 
-                // Check muti columns.
-                if (columns && columns.length > 0) {
-                    var i = 0;
-                    itemTempalate = '<div class="nts-combo-item">';
-                    columns.forEach(item => {
-                        var prop: string = option[item.prop];
-                        var length: number = item.length;
-
-                        var proLength: number = prop.length;
-                        while (proLength < length && i != columns.length - 1) {
-                            // Add space character to properties.
-                            prop += fillCharacter;
-
-                            proLength++;
-                        }
-                        if (i == columns.length - 1) {
-                            newOptionText += prop;
-                        } else {
-                            newOptionText += prop + distanceColumns;
-                        }
-
+                // Set attribute for multi column.
+                var itemTemplate: string = undefined;
+                if (haveColumn) {
+                    itemTemplate = '<div class="nts-combo-item">';
+                    _.forEach(columns, function(item, i) {
                         // Set item template.
-                        itemTempalate += '<div class="nts-combo-column-' + i + '">${' + item.prop + '}</div>';
-                        i++;
+                        itemTemplate += '<div class="nts-column nts-combo-column-' + i + '">${' + item.prop + '}</div>';
                     });
-                    itemTempalate += '</div>';
-                } else {
-                    newOptionText = option[optionText];
+                    itemTemplate += '</div>';
                 }
-                // Add label attr.
-                option['nts-combo-label'] = newOptionText;
-                return option;
-            });
 
-            // Create igCombo.
-            container.igCombo({
-                dataSource: options,
-                valueKey: data.optionsValue,
-                textKey: 'nts-combo-label',
-                mode: comboMode,
-                disabled: !enable,
-                placeHolder: '',
-                enableClearButton: false,
-                initialSelectedItems: [
-                    { value: selectedValue }
-                ],
-                itemTemplate: itemTempalate,
-                selectionChanged: function(evt: any, ui: any) {
-                    if (ui.items.length > 0) {
-                        data.value(ui.items[0].data[optionValue]);
+                // Create igCombo.
+                container.igCombo({
+                    dataSource: options,
+                    valueKey: data.optionsValue,
+                    textKey: 'nts-combo-label',
+                    mode: comboMode,
+                    disabled: !enable,
+                    placeHolder: '',
+                    enableClearButton: false,
+                    initialSelectedItems: [
+                        { value: selectedValue }
+                    ],
+                    itemTemplate: itemTemplate,
+                    selectionChanged: function(evt: any, ui: any) {
+                        if (ui.items.length > 0) {
+                            data.value(ui.items[0].data[optionValue]);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                container.igCombo("option", "disabled", !enable);
+            }
+            if (isChangeOptions && !isInitCombo) {
+                container.igCombo("option", "dataSource", options);
+                container.igCombo("dataBind");
+            }
 
             // Set width for multi columns.
-            if (columns && columns.length > 0) {
-                var i = 0;
+            if (haveColumn && (isChangeOptions || isInitCombo)) {
                 var totalWidth = 0;
-                columns.forEach(item => {
-                    var length: number = item.length;
-                    $('.nts-combo-column-' + i).width(length * maxWidthCharacter + 10);
+                _.forEach(columns, function(item, i) {
+                    var charLength: number = item.length;
+                    var width = charLength * maxWidthCharacter + 10;
+                    $('.nts-combo-column-' + i).width(width);
                     if (i != columns.length - 1) {
                         $('.nts-combo-column-' + i).css({ 'float': 'left' });
                     }
-                    totalWidth += length * maxWidthCharacter + 10;
-                    i++;
+                    totalWidth += width + 10;
                 });
                 $('.nts-combo-item').css({ 'min-width': totalWidth });
                 container.css({ 'min-width': totalWidth });
             }
+
+            container.data("columns", columns);
+            container.data("comboMode", comboMode);
         }
     }
-
+    function selectOnListBox(event) {
+        var container = $(event.delegateTarget);
+        container.find(".ui-selected").removeClass('ui-selected');
+        $(this).addClass('ui-selected');
+        container.data('value', $(this).data('value'));
+        document.getElementById(container.attr('id')).dispatchEvent(event.data.event);
+    }
     /**
      * ListBox binding handler
      */
@@ -1132,21 +1145,19 @@ module nts.uk.ui.koExtentions {
             // Get options
             var options: Array<any> = ko.unwrap(data.options);
             // Get options value
-            var optionValue = ko.unwrap(data.optionsValue);
-            var optionText = ko.unwrap(data.optionsText);
+            var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+            var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
             var selectedValue = ko.unwrap(data.value);
             var isMultiSelect = ko.unwrap(data.multiple);
             var enable: boolean = ko.unwrap(data.enable);
-            var columns: Array<any> = data.columns;
-            var rows = data.rows;
-            var required = data.required || false;
+            var required = ko.unwrap(data.required) || false;
             // Container
             var container = $(element);
             container.addClass('ntsListBox ntsControl').data('required', required);
-            // Default value
-            var selectSize = 6;
+
             container.data("options", options.slice());
             container.data("init", true);
+            container.data("enable", enable);
             // Create select
             container.append('<ol class="nts-list-box"></ol>');
             var selectListBoxContainer = container.find('.nts-list-box');
@@ -1155,101 +1166,89 @@ module nts.uk.ui.koExtentions {
             var changeEvent = new CustomEvent("selectionChange", {
                 detail: {},
             });
-
-            // Bind selectable.
-            selectListBoxContainer.selectable({
-                filter: 'li',
-                selected: function(event, ui) {
-                },
-                stop: function(event, ui) {
-
-                    // If not Multi Select.
-                    if (!isMultiSelect) {
-                        $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
-                        $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
-                    }
-
-                    // Add selected value.
-                    var data: any = isMultiSelect ? [] : '';
-                    $("li.ui-selected").each(function(index, opt) {
-                        var optValue = $(opt).data('value');
+            container.data("selectionChange", changeEvent);
+            if (isMultiSelect) {
+                // Bind selectable.
+                selectListBoxContainer.selectable({
+                    filter: 'li',
+                    selected: function(event, ui) {
+                    },
+                    stop: function(event, ui) {
+                        // If not Multi Select.
                         if (!isMultiSelect) {
-                            data = optValue;
-                            return;
+                            $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
+                            $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
                         }
-                        data[index] = optValue;
-                    });
-                    container.data('value', data);
+                        // Add selected value.
+                        var data: any = isMultiSelect ? [] : '';
+                        $("li.ui-selected", container).each(function(index, opt) {
+                            var optValue = $(opt).data('value');
+                            if (!isMultiSelect) {
+                                data = optValue;
+                                return;
+                            }
+                            data[index] = optValue;
+                        });
+                        container.data('value', data);
 
-                    // fire event change.
-                    document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
-                },
-                unselecting: function(event, ui) {
-                    //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
-                },
-                selecting: function(event, ui) {
-                    if (event.shiftKey) {
-                        if ($(ui.selecting).attr("clicked") !== "true") {
-                            var source = container.find("li");
-                            var clicked = _.find(source, function(row) {
-                                return $(row).attr("clicked") === "true";
-                            });
-                            if (clicked === undefined) {
-                                $(ui.selecting).attr("clicked", "true");
-                            } else {
+                        // fire event change.
+                        document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
+                    },
+                    unselecting: function(event, ui) {
+                        //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
+                    },
+                    selecting: function(event, ui) {
+                        if (isMultiSelect) {
+                            if ((<any>event).shiftKey) {
+                                if ($(ui.selecting).attr("clicked") !== "true") {
+                                    var source = container.find("li");
+                                    var clicked = _.find(source, function(row) {
+                                        return $(row).attr("clicked") === "true";
+                                    });
+                                    if (clicked === undefined) {
+                                        $(ui.selecting).attr("clicked", "true");
+                                    } else {
+                                        container.find("li").attr("clicked", "");
+                                        $(ui.selecting).attr("clicked", "true");
+                                        var start = parseInt($(clicked).attr("data-idx"));
+                                        var end = parseInt($(ui.selecting).attr("data-idx"));
+                                        var max = start > end ? start : end;
+                                        var min = start < end ? start : end;
+                                        var range = _.filter(source, function(row) {
+                                            var index = parseInt($(row).attr("data-idx"));
+                                            return index >= min && index <= max;
+                                        });
+                                        $(range).addClass("ui-selected");
+                                    }
+                                }
+                            } else if (!(<any>event).ctrlKey) {
                                 container.find("li").attr("clicked", "");
                                 $(ui.selecting).attr("clicked", "true");
-                                var start = parseInt($(clicked).attr("data-idx"));
-                                var end = parseInt($(ui.selecting).attr("data-idx"));
-                                var max = start > end ? start : end;
-                                var min = start < end ? start : end;
-                                var range = _.filter(source, function(row) {
-                                    var index = parseInt($(row).attr("data-idx"));
-                                    return index >= min && index <= max;
-                                });
-                                $(range).addClass("ui-selected");
                             }
                         }
-                    } else if (!event.ctrlKey) {
-                        container.find("li").attr("clicked", "");
-                        $(ui.selecting).attr("clicked", "true");
+
                     }
-                }
-            });
+                });
+            } else {
+                container.on("click", "li", { event: changeEvent }, selectOnListBox);
+            }
+
 
             // Fire event.
             container.on('selectionChange', (function(e: Event) {
                 // Check is multi-selection.
                 var itemsSelected: any = container.data('value');
 
-                // Create changing event.
-                var changingEvent = new CustomEvent("selectionChanging", {
-                    detail: itemsSelected,
-                });
-
-                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
-                document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
-
                 data.value(itemsSelected);
                 container.data("selected", typeof itemsSelected === "string" ? itemsSelected : itemsSelected.slice());
-
-                // Create event changed.
-                var changedEvent = new CustomEvent("selectionChanged", {
-                    detail: itemsSelected,
-                    bubbles: true,
-                    cancelable: false
-                });
-
-                // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
-                document.getElementById(container.attr('id')).dispatchEvent(changedEvent);
-
 
             }));
 
             container.on('validate', (function(e: Event) {
                 // Check empty value
                 var itemsSelected: any = container.data('value');
-                if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
+                if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0)
+                    && container.data("enable")) {
                     selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
                 } else {
                     selectListBoxContainer.ntsError('clear');
@@ -1263,13 +1262,12 @@ module nts.uk.ui.koExtentions {
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             // Get data.
             var data = valueAccessor();
-
             // Get options.
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
-            var optionValue = ko.unwrap(data.optionsValue);
-            var optionText = ko.unwrap(data.optionsText);
+            var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
+            var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
             var selectedValue = ko.unwrap(data.value);
             var isMultiSelect = ko.unwrap(data.multiple);
             var enable: boolean = ko.unwrap(data.enable);
@@ -1279,6 +1277,8 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var selectListBoxContainer = container.find('.nts-list-box');
             var maxWidthCharacter = 15;
+            var required = ko.unwrap(data.required) || false;
+            container.data('required', required);
 
             var getOptionValue = item => {
                 if (optionValue === undefined) {
@@ -1374,7 +1374,6 @@ module nts.uk.ui.koExtentions {
                 if (rows && rows > 0) {
                     container.css('height', rows * rowHeight);
                     container.find('.nts-list-box').css('height', rows * rowHeight);
-                    container.css({ 'overflowX': 'hidden', 'overflowY': 'auto' });
                 }
             }
             container.data("options", options.slice());
@@ -1386,14 +1385,29 @@ module nts.uk.ui.koExtentions {
                 container.trigger('selectionChange');
             }
 
-            // Check enable
-            if (!enable) {
-                selectListBoxContainer.selectable("disable");;
-                container.addClass('disabled');
+            if (isMultiSelect) {
+                // Check enable
+                if (!enable) {
+                    selectListBoxContainer.selectable("disable");;
+                    container.addClass('disabled');
+                } else {
+                    selectListBoxContainer.selectable("enable");
+                    container.removeClass('disabled');
+                }
             } else {
-                selectListBoxContainer.selectable("enable");
-                container.removeClass('disabled');
+                if (!enable) {
+                    //                    selectListBoxContainer.selectable("disable");;
+                    container.off("click", "li");
+                    container.addClass('disabled');
+                } else {
+                    //                    selectListBoxContainer.selectable("enable");
+                    if (container.hasClass("disabled")) {
+                        container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
+                        container.removeClass('disabled');
+                    }
+                }
             }
+            container.data("enable", enable);
 
             if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                 container.trigger('validate');
@@ -1433,16 +1447,13 @@ module nts.uk.ui.koExtentions {
             }
 
             var data = valueAccessor();
-            var optionsValue: string = data.optionsValue;
+            var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var options = ko.unwrap(data.options);
-            var observableColumns: KnockoutObservableArray<NtsGridListColumn> = data.columns;
+            var observableColumns: KnockoutObservableArray<any> = data.columns;
             var iggridColumns = _.map(observableColumns(), c => {
-                return {
-                    headerText: c.headerText,
-                    key: c.prop,
-                    width: c.width,
-                    dataType: 'string'
-                };
+                c["key"] = c.key === undefined ? c.prop : c.key;
+                c["dataType"] = 'string';
+                return c;
             });
 
             var features = [];
@@ -1464,21 +1475,23 @@ module nts.uk.ui.koExtentions {
 
             $grid.bind('selectionchanged', () => {
                 if (data.multiple) {
-                    let selecteds: Array<any> = $grid.ntsGridList('getSelected');
-                    if (selecteds) {
-                        let selectedIdSet = {};
-                        selecteds.forEach(s => { selectedIdSet[s.id] = true; });
-                        var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
-                        data.value(_.map(selectedOptions, o => o[optionsValue]));
+                    let selected: Array<any> = $grid.ntsGridList('getSelected');
+                    if (selected) {
+                        //                        let selectedIdSet = {};
+                        //                        selecteds.forEach(s => { selectedIdSet[s.id] = true; });
+                        //                        var selectedOptions = _.filter(data.options(), o => selectedIdSet[o[optionsValue]]);
+                        //                        data.value(_.map(selectedOptions, o => o[optionsValue]));
+                        data.value(_.map(selected, s => s.id));
                     } else {
                         data.value([]);
                     }
                 } else {
                     let selected = $grid.ntsGridList('getSelected');
                     if (selected) {
-                        let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
-                        if (selectedOption) data.value(selectedOption[optionsValue]);
-                        else data.value('');
+                        //                        let selectedOption = _.find(data.options(), o => o[optionsValue] === selected.id);
+                        //                        if (selectedOption) data.value(selectedOption[optionsValue]);
+                        //                        else data.value('');
+                        data.value(selected.id);
                     } else {
                         data.value('');
                     }
@@ -1493,9 +1506,9 @@ module nts.uk.ui.koExtentions {
                 if (selectedRows && selectedRows.length > 0)
                     row1 = $grid.igGrid("selectedRows")[0].id;
                 else {
-                    var selectedRow = $grid.igGrid("selectedRow");
+                    var selectedRow: any = $grid.igGrid("selectedRow");
                     if (selectedRow && selectedRow.id) {
-                        row1 = $grid.igGrid("selectedRow").id;
+                        row1 = (<any>$grid.igGrid("selectedRow")).id;
                     }
                 }
                 if (row1 && row1 !== 'undefined') {
@@ -1511,17 +1524,24 @@ module nts.uk.ui.koExtentions {
 
             var $grid = $(element);
             var data = valueAccessor();
+            var optionsValue: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
             var currentSource = $grid.igGrid('option', 'dataSource');
             if (!_.isEqual(currentSource, data.options())) {
                 $grid.igGrid('option', 'dataSource', data.options().slice());
                 $grid.igGrid("dataBind");
             }
 
-            $grid.ntsGridList('setSelected', data.value());
+            var currentSelectedItems = $grid.ntsGridList('getSelected');
+            var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function(current, newVal) {
+                if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
+                    return true;
+                }
+            })
+            if (!isEqual) {
+                $grid.ntsGridList('setSelected', data.value());
+            }
 
-            $grid.closest('.ui-iggrid')
-                .addClass('nts-gridlist')
-                .height(data.height);
+            $grid.closest('.ui-iggrid').addClass('nts-gridlist').height(data.height);
         }
     }
 
@@ -1544,36 +1564,29 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             var options: Array<any> = ko.unwrap(data.options);
-            var optionsValue = ko.unwrap(data.optionsValue);
-            var optionsText = ko.unwrap(data.optionsText);
-            var columns = null;
-            if (data.columns) columns = ko.unwrap(data.columns);
-            var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
-            var singleValue = ko.unwrap(data.value);
+            var optionsValue = ko.unwrap(data.primaryKey !== undefined ? data.primaryKey : data.optionsValue);
+            var optionsText = ko.unwrap(data.primaryText !== undefined ? data.primaryText : data.optionsText);
 
             var optionsChild = ko.unwrap(data.optionsChild);
-            var extColumns: Array<any> = ko.unwrap(data.extColumns);
+            var extColumns: Array<any> = ko.unwrap(data.columns !== undefined ? data.columns : data.extColumns);
 
             // Default.
-            var showCheckBox = ko.unwrap(data.showCheckBox);
-            showCheckBox = showCheckBox != undefined ? showCheckBox : true;
+            var showCheckBox = data.showCheckBox !== undefined ? ko.unwrap(data.showCheckBox) : true;
 
-            var enable = ko.unwrap(data.enable);
-            enable = enable != undefined ? enable : true;
+            var enable = data.enable !== undefined ? ko.unwrap(data.enable) : true;
 
             var height = ko.unwrap(data.height);
             height = height ? height : '100%';
 
             width = width ? width : '100%';
             var width = ko.unwrap(data.width);
-            var headers = ["コード", "コード／名称"];
-            if (data.headers) {
-                headers = ko.unwrap(data.headers);
-            }
-            var displayColumns: Array<any> = [{ headerText: headers[0], key: optionsValue, dataType: "string", hidden: true },
-                { headerText: headers[1], key: optionsText, width: "600px", dataType: "string" }];
             if (extColumns) {
-                displayColumns = displayColumns.concat(extColumns);
+                var displayColumns = extColumns;
+            } else {
+                var displayColumns: Array<any> = [
+                    { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
+                    { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                ];
             }
 
             // Init ig grid.
@@ -1616,24 +1629,24 @@ module nts.uk.ui.koExtentions {
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
             $treegrid.on("selectChange", function() {
                 var scrollContainer = $("#" + treeGridId + "_scroll");
-                var row1 = null;
+                var row1 = undefined;
                 var selectedRows = $treegrid.igTreeGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0)
+                if (selectedRows && selectedRows.length > 0) {
                     row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
-                else {
-                    var selectedRow = $treegrid.igTreeGrid("selectedRow");
-                    if (selectedRow && selectedRow.id) {
-                        row1 = $treegrid.igTreeGrid("selectedRow").id;
-                    }
                 }
-                if (row1 && row1 !== 'undefined') {
+                //                else {
+                //                    var selectedRow = $treegrid.igTreeGrid("selectedRow");
+                //                    if (selectedRow && selectedRow.id) {
+                //                        row1 = $treegrid.igTreeGrid("selectedRow").id;
+                //                    }
+                //                }
+                if (row1 !== undefined) {
                     var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
                     var rowHeight = $('#' + treeGridId + "_" + row1).height();
                     scrollContainer.scrollTop(rowHeight * index);
-                    //console.log(rowHeight * index);             
                 }
-                //console.log(row1);
             });
+            $(element).data("options", options);
         }
 
         /**
@@ -1646,48 +1659,51 @@ module nts.uk.ui.koExtentions {
             var selectedValues: Array<any> = ko.unwrap(data.selectedValues);
             var singleValue = ko.unwrap(data.value);
 
-            // Clear selection.
-            if (!selectedValues) {
-                $(element).igTreeGridSelection("clearSelection");
+            // Update datasource.
+            var originalSource = $(element).data("options");
+            if (!_.isEqual(originalSource, options)) {
+                $(element).igTreeGrid("option", "dataSource", options);
+                $(element).igTreeGrid("dataBind");
             }
 
-            // Update datasource.
-            $(element).igTreeGrid("option", "dataSource", options);
-
             // Set multiple data source.
-            var multiple = ko.unwrap(data.multiple);
-            multiple = multiple != undefined ? multiple : true;
-            $(element).igTreeGridSelection("option", "multipleSelection", multiple);
+            var multiple = data.multiple != undefined ? ko.unwrap(data.multiple) : true;
+            if ($(element).igTreeGridSelection("option", "multipleSelection") !== multiple) {
+                $(element).igTreeGridSelection("option", "multipleSelection", multiple);
+            }
 
             // Set show checkbox.
             var showCheckBox = ko.unwrap(data.showCheckBox);
             showCheckBox = showCheckBox != undefined ? showCheckBox : true;
             $(element).igTreeGridRowSelectors("option", "enableCheckBoxes", showCheckBox);
 
-            // Compare value.
-            var olds = _.map($(element).igTreeGridSelection("selectedRow"), function(row: any) {
-                return row.id;
-            });
-
-            // Not change, do nothing.
-            if (selectedValues) {
-                if (_.isEqual(selectedValues.sort(), olds.sort())) {
-                    return;
-                }
-                // Update.
+            // Clear selection.
+            if ((selectedValues === null || selectedValues === undefined) && (singleValue === null || singleValue === undefined)) {
                 $(element).igTreeGridSelection("clearSelection");
-                selectedValues.forEach(function(val) {
-                    $(element).igTreeGridSelection("selectRowById", val);
-                })
-            }
-
-            if (singleValue) {
-                if (olds.length > 0 && olds[0] == singleValue) {
-                    return;
+            } else {
+                // Compare value.
+                var olds = _.map($(element).igTreeGridSelection("selectedRow"), function(row: any) {
+                    return row.id;
+                });
+                // Not change, do nothing.
+                if (multiple) {
+                    if (_.isEqual(selectedValues.sort(), olds.sort())) {
+                        return;
+                    }
+                    // Update.
+                    $(element).igTreeGridSelection("clearSelection");
+                    selectedValues.forEach(function(val) {
+                        $(element).igTreeGridSelection("selectRowById", val);
+                    })
+                } else {
+                    if (olds.length > 0 && olds[0] === singleValue) {
+                        return;
+                    }
+                    $(element).igTreeGridSelection("clearSelection");
+                    $(element).igTreeGridSelection("selectRowById", singleValue);
                 }
-                $(element).igTreeGridSelection("clearSelection");
-                $(element).igTreeGridSelection("selectRowById", singleValue);
             }
+            $(element).data("options", options);
         }
     }
 
@@ -1751,7 +1767,7 @@ module nts.uk.ui.koExtentions {
 
                     return true;
                 }
-            });
+            }).data("length", options.length);
 
             // Add default class
             container.addClass(cssClass);
@@ -1778,14 +1794,6 @@ module nts.uk.ui.koExtentions {
             // Add Header
             container.children('.steps').prepend(header);
             container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
-
-            $.fn.begin = function() {
-                $(this).setStep(0);
-            }
-
-            $.fn.end = function() {
-                $(this).setStep(options.length - 1);
-            }
         }
 
         /**
@@ -1914,39 +1922,65 @@ module nts.uk.ui.koExtentions {
                 var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
                 container.attr("id", idString);
             }
+            var startDate = null;
+            var endDate = null;
+            if(data.startDate) {
+                startDate = ko.unwrap(data.startDate);
+            }
+            if(data.endDate) {
+                endDate = ko.unwrap(data.endDate);
+            }
+            var autoHide = data.autoHide == false ? false : true;
             var idatr = container.attr("id");
             container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
             var $input = container.find('#' + idatr + "_input");
             var button = null;
             if (data.button) button = idatr + "_button";
             $input.prop("readonly", true);
-            var date = ko.unwrap(data.value);
+            var value = ko.unwrap(data.value);
             var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var containerFormat = 'yyyy/mm/dd';
             var length = 10, atomWidth = 9;
             if (dateFormat === "yyyy/MM/dd DDD") {
                 length = 16;
             } else if (dateFormat === "yyyy/MM/dd D") {
                 length = 14;
+            } else if (dateFormat === "yyyy/MM") {
+                length = 7;
+                containerFormat = 'yyyy/mm';
             }
-            $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+            if(containerFormat != 'yyyy/mm')
+            //datepicker case
+                $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
+            else //yearmonth picker case 
+                $input.attr('value', value);
             if (button) {
                 container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
                 (<any>$input).datepicker({
-                    format: 'yyyy/mm/dd', // cast to avoid error
+                    format: containerFormat, // cast to avoid error
                     language: 'ja-JP',
-                    trigger: "#" + button
+                    trigger: "#" + button,
+                    autoHide: autoHide,
+                    startDate: startDate,
+                    endDate: endDate
                 });
             }
             else (<any>$input).datepicker({
-                format: 'yyyy/mm/dd', // cast to avoid error
-                language: 'ja-JP'
+                format: containerFormat, // cast to avoid error
+                language: 'ja-JP',
+                autoHide: autoHide,
+                startDate: startDate,
+                endDate: endDate
             });
-            container.on('change', (event: any) => {
-                data.value(new Date(container.val().substring(0, 10)));
-            });
-            $input.on('change', (event: any) => {
-                data.value(new Date($input.val().substring(0, 10)));
-            });
+            container.data("format" , containerFormat);
+            if(containerFormat !== 'yyyy/mm')    
+                $input.on('change', (event: any) => {           
+                    data.value(new Date($input.val().substring(0, 10)));             
+                });
+            else 
+                $input.on('change', (event: any) => {           
+                    data.value($input.val());             
+                });
             $input.width(atomWidth * length);
         }
 
@@ -1958,16 +1992,25 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var container = $(element);
             var idatr = container.attr("id");
-            var date = ko.unwrap(data.value);
-            var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-            //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-            container.val(nts.uk.time.formatDate(date, dateFormat));
+            var newValue = ko.unwrap(data.value);
+            //console.log(newValue);                       
+            var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";                      
             var $input = container.find('#' + idatr + "_input");
             var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var formatOptions = container.data("format");
             var oldDate = $input.datepicker("getDate");
-            if (oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate())
-                $input.datepicker("setDate", date);
-            $input.val(nts.uk.time.formatDate(date, dateFormat));
+            if(formatOptions != 'yyyy/mm') {
+                var oldDate = $input.datepicker("getDate");
+                if (oldDate.getFullYear() != newValue.getFullYear() || oldDate.getMonth() != newValue.getMonth() || oldDate.getDate() != newValue.getDate())
+                    $input.datepicker("setDate", newValue);
+                $input.val(nts.uk.time.formatDate(newValue, dateFormat));
+            } else {
+                var newDate = new Date(newValue + "/01");
+                var oldDate = $input.datepicker("getDate");
+                if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
+                    $input.datepicker("setDate", newDate);
+                $input.val(newValue);
+            }
         }
     }
     /**
@@ -2061,9 +2104,10 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            var self = this;
             var HEADER_HEIGHT = 27;
             var CHECKBOX_WIDTH = 70;
-            var MOVE_AREA_WIDTH = 100;
+            var SEARCH_AREA_HEIGHT = 40;
 
             var $swap = $(element);
             var elementId = $swap.attr('id');
@@ -2074,7 +2118,6 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var originalSource = ko.unwrap(data.options);
             var selectedValues = ko.unwrap(data.value);
-            var primaryKey: string = data.optionsValue;
             var totalwidth = ko.unwrap(data.width);
             var height = ko.unwrap(data.height);
             var showSearchBox = ko.unwrap(data.showSearchBox);
@@ -2082,13 +2125,12 @@ module nts.uk.ui.koExtentions {
             var gridWidth = _.sumBy(columns(), c => {
                 return c.width;
             });
-            var iggridColumns = _.map(columns(), c => {
-                return {
-                    headerText: c.headerText,
-                    key: c.prop,
-                    width: c.width,
-                    dataType: 'string'
-                };
+            var primaryKey: string = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
+            var observableColumns: KnockoutObservableArray<any> = data.columns;
+            var iggridColumns = _.map(observableColumns(), c => {
+                c["key"] = c.key === undefined ? c.prop : c.key;
+                c["dataType"] = 'string';
+                return c;
             });
 
             var features = [];
@@ -2097,19 +2139,15 @@ module nts.uk.ui.koExtentions {
             features.push({ name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true });
 
             $swap.wrap("<div class= 'ntsComponent ntsSwapList'/>");
-            $swap.parent().css({
-                width: totalwidth + 'px', height: height + 'px', overflowY: 'auto',
-                overflowX: 'auto', display: 'table'
-            });
-            $swap.css({ display: 'table', tableLayout: 'fixed' });
+            if (totalwidth !== undefined) {
+                $swap.parent().width(totalwidth);
+            }
+            $swap.parent().height(height);
+            $swap.addClass("ntsSwapList-container");
+
+            var gridHeight = (height - 20);
             if (showSearchBox) {
-                var searchAreaId = elementId + "-search-area";
-                $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
-                $swap.find(".ntsSearchArea").css({ display: "table-row" })
-                    .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput'/>")
-                    .append("<button class='ntsSearchButton'/>");
-                $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・");
-                $swap.find(".ntsSearchButton").css({ "marginLeft": '10px' }).text("Search").click(function() {
+                var search = function($swap, grid2Id, grid1Id, originalSource, primaryKey) {
                     var value = $swap.find(".ntsSearchInput").val();
                     var source = $(grid2Id).igGrid("option", "dataSource");
                     var selected = $(grid1Id).ntsGridList("getSelected");
@@ -2143,21 +2181,39 @@ module nts.uk.ui.koExtentions {
                             }
                         }
                     }
-                });
-            }
+                }
+                var searchAreaId = elementId + "-search-area";
+                $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
+                $swap.find(".ntsSearchArea")
+                    .append("<div class='ntsSearchTextContainer'/>")
+                    .append("<div class='ntsSearchButtonContainer'/>");
 
-            $swap.append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea1" + "/>");
-            $swap.append("<div class = 'ntsMoveDataArea ntsSwapComponent' id = " + elementId + "-move-data" + "/>");
-            $swap.append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea2" + "/>");
+                $swap.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
+                $swap.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
+                $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function(event, ui) {
+                    if (event.which === 13) {
+                        search($swap, grid2Id, grid1Id, originalSource, primaryKey);
+                    }
+                });
+                $swap.find(".ntsSearchButton").text("Search").click(function(event, ui) {
+                    search($swap, grid2Id, grid1Id, originalSource, primaryKey);
+                });
+                gridHeight -= SEARCH_AREA_HEIGHT;
+            }
+            $swap.append("<div class= 'ntsSwapArea ntsGridArea'/>");
+            $swap.find(".ntsGridArea").append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea1" + "/>")
+                .append("<div class = 'ntsMoveDataArea ntsSwapComponent' id = " + elementId + "-move-data" + "/>")
+                .append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea2" + "/>");
 
             $swap.find("#" + elementId + "-gridArea1").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid1" + "/>");
             $swap.find("#" + elementId + "-gridArea2").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid2" + "/>");
             var $grid1 = $swap.find("#" + elementId + "-grid1");
             var $grid2 = $swap.find("#" + elementId + "-grid2");
 
+            $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
             $grid1.igGrid({
                 width: gridWidth + CHECKBOX_WIDTH,
-                height: (height - HEADER_HEIGHT) + "px",
+                height: (gridHeight - HEADER_HEIGHT) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
                 virtualization: true,
@@ -2167,13 +2223,13 @@ module nts.uk.ui.koExtentions {
 
             $grid1.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(height);
+                .height(gridHeight);
 
             $grid1.ntsGridList('setupSelecting');
 
             $grid2.igGrid({
                 width: gridWidth + CHECKBOX_WIDTH,
-                height: (height - HEADER_HEIGHT) + "px",
+                height: (gridHeight - HEADER_HEIGHT) + "px",
                 primaryKey: primaryKey,
                 columns: iggridColumns,
                 virtualization: true,
@@ -2183,98 +2239,70 @@ module nts.uk.ui.koExtentions {
 
             $grid2.closest('.ui-iggrid')
                 .addClass('nts-gridlist')
-                .height(height);
+                .height(gridHeight);
 
             $grid2.ntsGridList('setupSelecting');
 
             var grid1Id = "#" + $grid1.attr('id');
             var grid2Id = "#" + $grid2.attr('id');
 
-            $swap.find(".ntsSwapComponent").css({ display: 'table-cell' });
             var $moveArea = $swap.find("#" + elementId + "-move-data");
-            $moveArea.css({ height: '100%', width: MOVE_AREA_WIDTH + 'px', display: 'table-cell', verticalAlign: 'middle' });
             $moveArea.append("<button class = 'move-button move-forward'/>");
             $moveArea.append("<button class = 'move-button move-back'/>");
             var $moveForward = $moveArea.find(".move-forward");
             $moveForward.text("forward");
             var $moveBack = $moveArea.find(".move-back");
             $moveBack.text("back");
-            $swap.find(".move-forward").css({ marginBottom: '5px' });
-            $moveForward.click(function() {
+            
+            var move = function(id1, id2, key, currentSource ,value, isForward){
                 var employeeList = [];
-                var selectedEmployees = $(grid1Id).igGrid("selectedRows");
+                var selectedEmployees = _.sortBy($(isForward ? id1 : id2).igGrid("selectedRows"), 'id');
                 if (selectedEmployees.length > 0) {
-                    $(grid1Id).igGridSelection("clearSelection");
-                    var source = $(grid1Id).igGrid("option", "dataSource");
+                    $(isForward ? id1 : id2).igGridSelection("clearSelection");
+                    var source = $(isForward ? id1 : id2).igGrid("option", "dataSource");
                     for (var i = 0; i < selectedEmployees.length; i++) {
                         var current = source[selectedEmployees[i].index];
-                        if (current[primaryKey] === selectedEmployees[i].id) {
+                        if (current[key] === selectedEmployees[i].id) {
                             employeeList.push(current);
                         } else {
                             var sameCodes = _.filter(source, function(subject) {
-                                return subject[primaryKey] === selectedEmployees[i].id;
+                                return subject[key] === selectedEmployees[i].id;
                             });
                             if (sameCodes.length > 0) {
                                 employeeList.push(sameCodes[0]);
                             }
                         }
                     }
-                    var currentSelected = data.value()//$(grid2Id).igGrid("option", "dataSource");
-                    var notExisted = _.filter(employeeList, function(list) {
-                        return _.filter(currentSelected, function(data) {
-                            return data[primaryKey] === list[primaryKey];
-                        }).length <= 0;
-                    });
-                    if (notExisted.length > 0) {
-                        data.value(currentSelected.concat(notExisted));
-                        var newSource = _.filter(source, function(list) {
-                            var x = _.filter(notExisted, function(data) {
-                                return data[primaryKey] === list[primaryKey];
-                            });
-                            return (x.length <= 0)
-                        });
-                        $(grid1Id).igGrid("option", "dataSource", newSource);
-                        $(grid1Id).igGrid("option", "dataBind");
-                    }
-                }
-            });
-            $moveBack.click(function() {
-                var employeeList = [];
-                var selectedEmployees = $(grid2Id).igGrid("selectedRows");
-                if (selectedEmployees.length > 0) {
-                    $(grid2Id).igGridSelection("clearSelection");
-                    var source = $(grid2Id).igGrid("option", "dataSource");
-                    for (var i = 0; i < selectedEmployees.length; i++) {
-                        var current = source[selectedEmployees[i].index];
-                        if (current[primaryKey] === selectedEmployees[i].id) {
-                            employeeList.push(current);
-                        } else {
-                            var sameCodes = _.filter(source, function(subject) {
-                                return subject[primaryKey] === selectedEmployees[i].id;
-                            });
-                            if (sameCodes.length > 0) {
-                                employeeList.push(sameCodes[0]);
-                            }
-                        }
-                    }
-                    var currentSource = $(grid1Id).igGrid("option", "dataSource");
+                    var length = value().length;
                     var notExisted = _.filter(employeeList, function(list) {
                         return _.filter(currentSource, function(data) {
-                            return data[primaryKey] === list[primaryKey];
+                            return data[key] === list[key];
                         }).length <= 0;
                     });
                     if (notExisted.length > 0) {
+                        $(id1).igGrid("virtualScrollTo", 0);
+                        $(id2).igGrid("virtualScrollTo", 0);
                         var newSource = _.filter(source, function(list) {
                             var x = _.filter(notExisted, function(data) {
-                                return data[primaryKey] === list[primaryKey];
+                                return data[key] === list[key];
                             });
                             return (x.length <= 0)
                         });
-                        data.value(newSource);
-                        $(grid1Id).igGrid("option", "dataSource", currentSource.concat(notExisted));
-                        $(grid1Id).igGrid("option", "dataBind");
+                        var sources = currentSource.concat(notExisted);
+                        value(isForward ? sources : newSource);
+                        $(id1).igGrid("option", "dataSource", isForward ? newSource : sources);
+                        $(id1).igGrid("option", "dataBind");
+                        $(id1).igGrid("virtualScrollTo", isForward ? selectedEmployees[0].index - 1 : sources.length - selectedEmployees.length);
+                        $(id2).igGrid("virtualScrollTo", isForward ? length : length - selectedEmployees.length);
                     }
                 }
+            }
+            
+            $moveForward.click(function() {
+                move(grid1Id, grid2Id, primaryKey, data.value(), data.value, true);
+            });
+            $moveBack.click(function() {
+                move(grid1Id, grid2Id, primaryKey, $(grid1Id).igGrid("option", "dataSource"), data.value, false);
             });
         }
 

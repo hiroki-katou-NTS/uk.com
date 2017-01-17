@@ -24,8 +24,7 @@
 						<h1>SwapList </h1>
 						<div id="swap-list" data-bind="ntsSwapList: {
 								showSearchBox: true,
-								width: 1000,
-								height: 110,
+								height: 300,
 								options: itemsSwap,
 								optionsValue: 'code',
 								columns: columns,
@@ -34,6 +33,78 @@
 							class=""></div>
 							<br/>
 							<hr/>
+							<h2>API</h2>
+									<table>
+										<colgroup>
+											<col width="200px" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><h4>Binding</h4></th>
+												<th><h4>Description</h4></th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>showSearchBox</td>
+												<td>
+													<b>Type:</b> boolean, is text box and search button showed.<br/>
+													<i>Default:</i> False.
+												</td>
+											</tr>
+											<tr>
+												<td>width</td>
+												<td>
+													<b>Type:</b> null | string | number<br/>
+													<b>Members:</b><br/>
+													<i>null:</i> Will stretch to fit the sum of the columns widths.<br/>
+													<i>number:</i> The widget width can be set in pixels as a number. Example values: 800, 700.<br/>
+													<i>string:</i> The widget width can be set in pixels (px) or percentage (%). Example values: "800px", "800" (defaults to pixels), "100%".
+												</td>
+											</tr>
+											<tr>
+												<td>height</td>
+												<td>
+													<b>Type:</b> null | string | number<br/>
+													<b>Members:</b><br/>
+													<i>null:</i> Will stretch vertically to fit data.<br/>
+													<i>string:</i> The widget height can be set in pixels (px) and percentage (%).<br/>
+													<i>number:</i> The height can be set as a number in pixels.
+												</td>
+											</tr>
+											<tr>
+												<td>options</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List data to generate original GridList at left
+												</td>
+											</tr>
+											<tr>
+												<td>optionsValue</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as primaryKey
+												</td>
+											</tr>
+											<tr>
+												<td>columns</td>
+												<td>
+													<b>Type:</b> array&lt;column&gt;<br/>
+													An array of column objects:<br/>
+													<i>headerText:</i> Text for header<br/>
+													<i>prop:</i> Property in data array for column<br/>
+													<i>width:</i> Width for column
+												</td>
+											</tr>
+											<tr>
+												<td>value</td>
+												<td>
+													<b>Type:</b> array&lt;any&gt;<br/>
+													List selected value from left grid and is showed in right grid.
+												</td>
+											</tr>
+										</tbody>
+									</table>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>

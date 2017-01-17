@@ -5,7 +5,10 @@ __viewContext.ready(function () {
         currentCode: KnockoutObservable<number>
         selectedCode: KnockoutObservable<string>;
         selectedCodes: KnockoutObservableArray<string>;
-        isEnable: KnockoutObservable<boolean>;
+        isEnable: KnockoutObservable<boolean>; 
+        isMulti: KnockoutObservable<boolean>;
+        isMulti2: KnockoutObservable<boolean>;
+        isValidate: KnockoutObservable<boolean>;
         
         constructor() {
             var self = this;
@@ -19,13 +22,9 @@ __viewContext.ready(function () {
             self.selectedCode = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
-            
-            $('#list-box').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#list-box').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
+            self.isMulti = ko.observable(true);
+            self.isMulti2 = ko.observable(true);
+            self.isValidate = ko.observable(true);
         }
 
         addOptions() {
