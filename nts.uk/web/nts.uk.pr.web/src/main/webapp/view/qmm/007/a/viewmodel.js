@@ -21,7 +21,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.unitPriceDetailModel = ko.observable(new UnitPriceDetailModel());
+                                    self.unitPriceDetailModel = ko.observable(null);
                                     self.historyList = ko.observableArray();
                                     self.switchButtonDataSource = ko.observableArray([
                                         { code: '1', name: '対象' },
@@ -48,11 +48,11 @@ var nts;
                                         currencyposition: 'right'
                                     }));
                                     //input
-                                    self.code = ko.observable(self.unitPriceDetailModel().unitPriceCode);
-                                    self.name = ko.observable(self.unitPriceDetailModel().unitPriceName);
-                                    self.startDate = ko.observable(self.unitPriceDetailModel().startDate);
+                                    self.code = ko.observable('');
+                                    self.name = ko.observable('');
+                                    self.startDate = ko.observable('');
                                     self.endDate = ko.observable('（平成29年01月） ~');
-                                    self.money = ko.observable(self.unitPriceDetailModel().budget);
+                                    self.money = ko.observable(null);
                                     self.memo = ko.observable('');
                                     //setting
                                     self.settingType = ko.observable(0);
@@ -70,17 +70,17 @@ var nts;
                                 };
                                 ScreenModel.prototype.goToB = function () {
                                     nts.uk.ui.windows.setShared('code', this.code());
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 450 });
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 580 });
                                 };
                                 ScreenModel.prototype.goToC = function () {
                                     nts.uk.ui.windows.setShared('code', this.code());
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 560 });
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 580 });
                                 };
                                 ScreenModel.prototype.test = function () {
                                     var self = this;
                                     self.code(1);
                                     self.name('ガソリン単価');
-                                    self.startDate('2015-04');
+                                    self.startDate('2015/04');
                                     self.money(120);
                                     self.settingType(2);
                                     self.payAtr(2);
@@ -90,7 +90,7 @@ var nts;
                                     self.payAtrHourly(2);
                                 };
                                 ScreenModel.prototype.collectData = function () {
-                                    var self = this;
+                                    /*var self = this
                                     var data = new UnitPriceDetailModel();
                                     data.unitPriceCode = self.code();
                                     data.unitPriceName = self.name();
@@ -102,12 +102,12 @@ var nts;
                                     data.fixPayAtrDayMonth = self.payAtrDayMonth();
                                     data.fixPayAtrDaily = self.payAtrDaily();
                                     data.fixPayAtrHourly = self.payAtrHourly();
-                                    console.log(data);
+                                    console.log(data);*/
                                     return null;
                                 };
                                 ScreenModel.prototype.clearUnitPriceDetail = function () {
                                     var self = this;
-                                    self.code(null);
+                                    self.code('');
                                     self.name('');
                                     self.startDate('');
                                     self.money(null);
@@ -119,23 +119,12 @@ var nts;
                                     self.payAtrHourly(0);
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (model) {
-                                    var self = this;
-                                    self.code.value(model.unitPriceCode);
-                                    self.name.value(model.unitPriceName);
-                                    self.startDate.value(model.startDate);
-                                    self.money.value(model.budget);
-                                    self.settingType(model.fixPaySettingType);
-                                    self.payAtr(model.fixPayAtr);
-                                    self.payAtrMonthly(model.fixPayAtrMonthly);
-                                    self.payAtrDayMonth(model.fixPayAtrDayMonth);
-                                    self.payAtrDaily(model.fixPayAtrDaily);
-                                    self.payAtrHourly(model.fixPayAtrHourly);
                                 };
                                 ScreenModel.prototype.loadUnitPriceHistoryList = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.getUnitPriceHistoryList().done(function (data) {
-                                        self.historyList(data);
+                                        //self.historyList(data);
                                         dfd.resolve(null);
                                     });
                                     return dfd.promise();

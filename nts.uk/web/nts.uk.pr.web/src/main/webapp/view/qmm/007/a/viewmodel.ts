@@ -1,9 +1,8 @@
 module nts.uk.pr.view.qmm007.a {
     export module viewmodel {
 
-        import UnitPriceDto = service.model.UnitPriceDto;
         import UnitPriceHistoryDto = service.model.UnitPriceHistoryDto;
-        import DateTimeDto = service.model.DateTimeDto;
+        import MonthRange = service.model.MonthRange;
 
         import SettingType = service.model.SettingType;
         import ApplySetting = service.model.ApplySetting;
@@ -36,7 +35,7 @@ module nts.uk.pr.view.qmm007.a {
 
             constructor() {
                 var self = this;
-                self.unitPriceDetailModel = ko.observable(new UnitPriceDetailModel());
+                self.unitPriceDetailModel = ko.observable(null);
                 self.historyList = ko.observableArray();
                 self.switchButtonDataSource = ko.observableArray([
                     { code: '1', name: '対象' },
@@ -66,11 +65,11 @@ module nts.uk.pr.view.qmm007.a {
                     }));
 
                 //input
-                self.code = ko.observable(self.unitPriceDetailModel().unitPriceCode);
-                self.name = ko.observable(self.unitPriceDetailModel().unitPriceName);
-                self.startDate = ko.observable(self.unitPriceDetailModel().startDate);
+                self.code = ko.observable('');
+                self.name = ko.observable('');
+                self.startDate = ko.observable('');
                 self.endDate = ko.observable('（平成29年01月） ~');
-                self.money = ko.observable(self.unitPriceDetailModel().budget);
+                self.money = ko.observable(null);
                 self.memo = ko.observable('');
 
                 //setting
@@ -93,19 +92,19 @@ module nts.uk.pr.view.qmm007.a {
 
             goToB() {
                 nts.uk.ui.windows.setShared('code', this.code());
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 450 });
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 580 });
             }
 
             goToC() {
                 nts.uk.ui.windows.setShared('code', this.code());
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 560 });
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 580 });
             }
 
             test() {
                 var self = this;
                 self.code(1);
                 self.name('ガソリン単価')
-                self.startDate('2015-04');
+                self.startDate('2015/04');
                 self.money(120);
                 self.settingType(2);
                 self.payAtr(2);
@@ -115,8 +114,8 @@ module nts.uk.pr.view.qmm007.a {
                 self.payAtrHourly(2);
             }
 
-            collectData(): UnitPriceHistoryDto {
-                var self = this
+            collectData(): void {
+                /*var self = this
                 var data = new UnitPriceDetailModel();
                 data.unitPriceCode = self.code();
                 data.unitPriceName = self.name();
@@ -128,13 +127,13 @@ module nts.uk.pr.view.qmm007.a {
                 data.fixPayAtrDayMonth = self.payAtrDayMonth();
                 data.fixPayAtrDaily = self.payAtrDaily();
                 data.fixPayAtrHourly = self.payAtrHourly();
-                console.log(data);
+                console.log(data);*/
                 return null;
             }
 
             clearUnitPriceDetail() {
                 var self = this;
-                self.code(null);
+                self.code('');
                 self.name('')
                 self.startDate('');
                 self.money(null);
@@ -146,24 +145,14 @@ module nts.uk.pr.view.qmm007.a {
                 self.payAtrHourly(0);
             }
             loadUnitPriceDetail(model: UnitPriceDetailModel) {
-                var self = this;
-                self.code.value(model.unitPriceCode);
-                self.name.value(model.unitPriceName)
-                self.startDate.value(model.startDate);
-                self.money.value(model.budget);
-                self.settingType(model.fixPaySettingType);
-                self.payAtr(model.fixPayAtr);
-                self.payAtrMonthly(model.fixPayAtrMonthly);
-                self.payAtrDayMonth(model.fixPayAtrDayMonth);
-                self.payAtrDaily(model.fixPayAtrDaily);
-                self.payAtrHourly(model.fixPayAtrHourly);
+
             }
 
             loadUnitPriceHistoryList(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.getUnitPriceHistoryList().done( data => {
-                    self.historyList(data);
+                    //self.historyList(data);
                     dfd.resolve(null);
                 });
                 return dfd.promise();
@@ -200,7 +189,6 @@ module nts.uk.pr.view.qmm007.a {
         */
 
         export class UnitPriceDetailModel extends UnitPriceHistoryDto {
-            date: string;
         }
 
         export class UnitPriceHistoryModel {
