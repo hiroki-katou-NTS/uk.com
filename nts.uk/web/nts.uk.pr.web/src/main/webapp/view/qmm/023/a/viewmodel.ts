@@ -122,7 +122,7 @@ module qmm023.a.viewmodel {
         }
         deleteData() {
             let self = this;
-            let newDel = self.getTax(self.currentTax().code());
+            let newDel = self.getTax(self.currentTax().code);
             self.items.splice(self.items().indexOf(newDel), 1);
         }
         alertDelete(){

@@ -106,7 +106,7 @@ var qmm023;
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
-                    var newDel = self.getTax(self.currentTax().code());
+                    var newDel = self.getTax(self.currentTax().code);
                     self.items.splice(self.items().indexOf(newDel), 1);
                 };
                 ScreenModel.prototype.alertDelete = function () {
