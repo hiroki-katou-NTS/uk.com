@@ -32,6 +32,20 @@ module nts.uk.pr.view.qmm007.a {
             return dfd.promise();
         }
 
+        export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
+            var data = { unitPriceHistory: unitPriceHistory };
+            return null;
+        }
+
+        export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
+            var data = { unitPriceHistory: unitPriceHistory };
+            return null;
+        }
+
+        export function remove(id: string): JQueryPromise<any> {
+            return null;
+        }
+
         /**
         * Model namespace.
         */

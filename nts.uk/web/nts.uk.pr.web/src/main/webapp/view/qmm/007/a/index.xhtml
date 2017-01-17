@@ -101,12 +101,9 @@
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><input id="inpStartDate" class="inp-default"
-								data-bind="ntsTextEditor: {
-									value: startDate,
-									option: textEditorOption,
-									required: true}" />
-								<label id="lbl_005" data-bind="text: endDate()"></label></td>
+							<td><span id="ipnStartDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'yyyy/MM'}"></span>
+								<label id="lbl_005" data-bind="text: endDate()"></label>
+								</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
