@@ -31,9 +31,10 @@ module nts.uk.pr.view.qmm003.a {
             //console.log(self.currentNode());
             self.init();
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            console.log(self.filteredData());
             self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-            self.removeData(self.filteredData());
+            self.removeData(self.filteredData2());
             self.selectedCodes = ko.observableArray([]);
             self.singleSelectedCode.subscribe(function(newValue) {
                 self.Value(newValue);
@@ -41,11 +42,9 @@ module nts.uk.pr.view.qmm003.a {
                 if (self.editMode) {
                     let count = 0;  
                     self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
-                    self.nameBySelectedCode(self.findByName(self.itemList()));             
-                    if (count == 1) {
-                        self.selectedCode(self.nameBySelectedCode().code);
-                        
-                    }
+                    self.nameBySelectedCode(self.findByName(self.itemList()));
+                    self.selectedCode(self.nameBySelectedCode().code);
+                    console.log(self.selectedCode());
                     let co = 0, co1 = 0;
                     _.each(self.filteredData(), function(obj: Node) {
 
@@ -84,6 +83,7 @@ module nts.uk.pr.view.qmm003.a {
                     if(obj.code == newValue){
                         node = obj;
                         count = count + 1;
+                        //console.log(count);
                     }
                     }
                 });
@@ -123,21 +123,17 @@ module nts.uk.pr.view.qmm003.a {
         deleteData():any{
             let self = this;
             self.removeNodeByCode(self.items());
-            console.log(self.items());
             self.item1s(self.items());
-            console.log(self.item1s());
             self.items([]);
             self.items(self.item1s());
-            console.log(self.items());
             }
-        alerDelete():void{
-            let self= this;
-            if(confirm("do you wanna delete")=== true){
+        Confirm(){
+            let self = this;
+            nts.uk.ui.dialog.confirm("Do you want to delete node \"?")
+            .ifYes(function(){
                 self.deleteData();
-            }else{
-                    alert("you didnt delete!");
-            }
-            }           
+                });
+            }         
         resetData(): void {
             let self = this;
             self.editMode = false;
@@ -211,15 +207,12 @@ module nts.uk.pr.view.qmm003.a {
             let self = this;
             let singleSelectedCode: any;
             let curentNode: any;
-            //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
             nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', {title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close"}).onClosed(function(): any {
                 singleSelectedCode = nts.uk.ui.windows.getShared("singleSelectedCode");
                 curentNode = nts.uk.ui.windows.getShared("curentNode");
                 self.editMode = false;
                 self.singleSelectedCode(singleSelectedCode);
                 self.curentNode(curentNode);
-                console.log(self.singleSelectedCode());
-                console.log(self.curentNode());
             });
         }
         openCDialog() {
@@ -234,12 +227,13 @@ module nts.uk.pr.view.qmm003.a {
         }  
         openDDialog() {
             let self = this;
-            let labelSubsub: any;
+            let items: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/d/index.xhtml",{title: '住民税納付先の登録　＞　一括削除', dialogClass: "no-close"}).onClosed(function():any{
-               labelSubsub= nts.uk.ui.windows.getShared('labelSubsub'); 
-//             self.editMode = false;
-               self.labelSubsub(labelSubsub); 
-               console.log(labelSubsub);
+               items= nts.uk.ui.windows.getShared('items');
+                self.items([]);
+                self.items(items);
+                console.log(items);
+                console.log(self.items());
             });
         }   
         openEDialog() {
@@ -247,8 +241,7 @@ module nts.uk.pr.view.qmm003.a {
             let self = this;
             let labelSubsub: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml",{title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close"}).onClosed(function():any{
-               labelSubsub= nts.uk.ui.windows.getShared('labelSubsub'); 
-//             self.editMode = false;
+               labelSubsub= nts.uk.ui.windows.getShared('labelSubsub');
                self.labelSubsub(labelSubsub); 
                console.log(labelSubsub);
             });
@@ -268,33 +261,4 @@ module nts.uk.pr.view.qmm003.a {
 
         }
     }
-//    function OpenModalSubWindow(option?: any) {
-//        let self = this;
-//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-//        //           nts.uk.ui.windows.sub.modal("/view/qmm/003/b/test.xhtml", option).onClosed(() => {
-//        //              
-//        //           } );
-//    }
-//    function OpenModalSubWindowc(option?: any) {
-//        let self = this;
-//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-//                   nts.uk.ui.windows.sub.modal("/view/qmm/003/c/test.xhtml", option).onClosed(() => {
-//        
-//                   } );
-//    }
-//    function OpenModalSubWindowd(option?: any) {
-//        let self = this;
-//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-//                   nts.uk.ui.windows.sub.modal("/view/qmm/003/d/test.xhtml", option).onClosed(() => {
-//                        
-//                       
-//                   } );
-//    };
-//    function OpenModalSubWindowe(option?: any) {
-//        let self = this;
-//        nts.uk.ui.windows.sub.modal("/view/qmm/003/b/index.xhtml", option);
-//                   nts.uk.ui.windows.sub.modal("/view/qmm/003/e/test.xhtml", option).onClosed(() => {
-//                     
-//                   } );
-//    };
 };

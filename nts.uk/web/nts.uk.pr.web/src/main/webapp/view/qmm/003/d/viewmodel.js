@@ -15,13 +15,24 @@ var nts;
                                 this.editMode = true; // true là mode thêm mới, false là mode sửa 
                                 var self = this;
                                 self.init();
-                                self.singleSelectedCode.subscribe(function (newValue) {
-                                });
+                                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.selectedCode.subscribe(function (newValue) {
-                                    console.log(self.selectedCode());
+                                    self.arrayCode(newValue);
                                 });
-                                // console.log(self.selectedCode());
                             }
+                            ScreenModel.prototype.findByName = function (items) {
+                                var self = this;
+                                var node;
+                                _.find(items, function (obj) {
+                                    if (!node) {
+                                        if (obj.name == self.curentNode().name) {
+                                            node = obj;
+                                        }
+                                    }
+                                });
+                                return node;
+                            };
+                            ;
                             ScreenModel.prototype.findByCode = function (items, newValue) {
                                 var self = this;
                                 var _node;
@@ -37,37 +48,43 @@ var nts;
                             ;
                             ScreenModel.prototype.clickButton = function () {
                                 var self = this;
-                                nts.uk.ui.windows.setShared('items', self.items(), true);
+                                for (var i = 0; i < _.size(self.arrayCode()); i++) {
+                                    self.removeNodeByCode(self.items(), self.arrayCode()[i]);
+                                    self.item1s(self.items());
+                                    self.items([]);
+                                    self.items(self.item1s());
+                                }
+                                nts.uk.ui.windows.setShared("items", self.items(), true);
                                 nts.uk.ui.windows.close();
                             };
                             ScreenModel.prototype.cancelButton = function () {
                                 nts.uk.ui.windows.close();
                             };
-                            //        removeNodeByCode(items: Array<Node>): any{
-                            //            let self = this;
-                            //            _.remove(items,function(obj: Node){
-                            //                if(obj.code == self.Value()){
-                            //                    return obj.code == self.Value();
-                            //                }else{
-                            //                    return self.removeNodeByCode(obj.childs);
-                            //                   
-                            //                }
-                            //                })
-                            //            
-                            //            };
-                            ScreenModel.prototype.removeData1 = function (items) {
+                            ScreenModel.prototype.removeNodeByCode = function (items, newValue) {
+                                var self = this;
                                 _.remove(items, function (obj) {
-                                    return _.size(obj.code) == 1;
+                                    if (obj.code == newValue) {
+                                        return obj.code == newValue;
+                                    }
+                                    else {
+                                        return self.removeNodeByCode(obj.childs, newValue);
+                                    }
+                                });
+                            };
+                            ;
+                            ScreenModel.prototype.removeData1 = function (items) {
+                                _.remove(items, function (value) {
+                                    return _.size(value) == 1;
                                 });
                             };
                             ScreenModel.prototype.removeData2 = function (items) {
-                                _.remove(items, function (obj) {
-                                    return _.size(obj.code) == 2;
+                                _.remove(items, function (value) {
+                                    return _.size(value) == 2;
                                 });
                             };
                             ScreenModel.prototype.removeData3 = function (items) {
-                                _.remove(items, function (obj) {
-                                    return _.size(obj.code) > 3;
+                                _.remove(items, function (value) {
+                                    return _.size(value) == 3;
                                 });
                             };
                             ScreenModel.prototype.delete = function (items) {
@@ -110,38 +127,12 @@ var nts;
                                     ]),
                                     new Node('5', '東海', [])
                                 ]);
+                                self.item1s = ko.observableArray([]);
                                 self.singleSelectedCode = ko.observable("11");
                                 self.curentNode = ko.observable(new Node("", "", []));
                                 self.index = 0;
                                 self.selectedCode = ko.observableArray([]);
-                                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                            };
-                            ;
-                            //       findByCode(items: Array<Node>, newValue: string, count: number): Node{
-                            //            let self = this;
-                            //            let node : Node;
-                            //            _.find(items, function(obj: Node){
-                            //                if(!node){
-                            //                    if(obj.code == newValue){
-                            //                        node = obj;
-                            //                        count = count + 1;
-                            //                    }
-                            //                    }
-                            //                });
-                            //            return node;
-                            //        };
-                            //        
-                            ScreenModel.prototype.findByName = function (items) {
-                                var self = this;
-                                var node;
-                                _.find(items, function (obj) {
-                                    if (!node) {
-                                        if (obj.name == self.curentNode().name) {
-                                            node = obj;
-                                        }
-                                    }
-                                });
-                                return node;
+                                self.arrayCode = ko.observableArray([]);
                             };
                             ;
                             return ScreenModel;

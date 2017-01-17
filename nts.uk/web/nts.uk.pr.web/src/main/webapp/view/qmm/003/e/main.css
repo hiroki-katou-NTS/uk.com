@@ -1,85 +1,74 @@
 @CHARSET "UTF-8";
-
-.outer {
-	outline: 1px solid #FF6138;
-}
-
-#header {
-	color: #ccc;
-}
-
-#contents-area {
-	width: 1300px;
-	height: 620px;
-	border-bottom: solid 1px #B1B1B1;
-}
-#contents-area > div.nts-left-content > div.caret-right.caret-background{
-	float: left;
-    width: 400px;
-    height: 550px;
-    margin-top: 30px;
-    font-size: 5rem;
-}
 .nts-left-content {
-	margin-top: 20px;
-	width: 500px; '
-	border-bottom: solid 1px #B1B1B1;
-}
-
-.nts-right-content {
 	float: left;
-	width: 700px;
+	width: 435px; '
+/* 	border-bottom: solid 1px #B1B1B1; */
+}
+.icon.icon-searchbox {
+	position: relative;
+    top: 37px;
+    left: 45px;
+}
+#contents-area > div.nts-left-content > div.caret-right.caret-background > i{
+	left: 40px;
+}
+#contents-area > div.nts-right-content > div:nth-child(2) > i{
+	left: 53px;
+}
+.nts-right-content {
+	width: 445px;
+	float: left;
 	border-left: solid 1px #B1B1B1;
 	border-botton: solid 1px #B1B1B1;
 }
-#contents-area > div.nts-right-content > div:nth-child(2) > div:nth-child(1) > input{
-	width: 200px;
-    margin-top: 35px;
-    margin-left: 40px;
-    margin-right: 10px;
-}
-#E_LBL_003{
-	margin-left:15px;
+#treegrid21_container{
+	margin-top: 15px;
+    margin-left: 20px;
 }
 #treegrid2_container {
 	margin-left: 40px;
+	margin-top: 15px;
 }
-input.ntsSearchBox {
-	width: 200px;
-	margin-top: 5px;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
-div.ui-widget-header {
-	margin-top: 30px;
-}
-
-/* 
-#E_LBL_002 {
-	margin-top: 5px;
-} */
-
 .caret-right:after {
-	border-width: 1.4em 0.5em;
-	margin-top: 100px;
+	border-width: 7em 2.0em;
+	margin-top: 90px;
 }
 
 .caret-right.outline {
-	width: 1em;
-	height: 2em;
+	width: 7em;
+	height: 2.0em;
 }
-
-#E_BTN_001 {
-    width: 90px;
+#E_LBL_001{
+	margin-left:35px;
+}
+#E_LBL_002{
+	margin-left:40px;
+}
+#E_LBL_003{
+	margin-left:40px;
+}
+#E_BTN_001{
+    width: 180px;
     height: 50px;
-    margin-left: -80px;
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-left: 300px;
+	
 }
-
-#E_BTN_002 {
-	width: 80px;
-	margin-left: 20px;
-	margin-top: 5px;
+#E_BTN_002{
+	width: 100px;
+	margin-top: 10px;
+	margin-left: 25px;	
 	height: 40px;
+}
+input.ntsSearchBox{
+	width: 260px;
+	margin-top: auto;
+	margin-left: 60px;
+}
+button.search-btn {
+	width: 60px;
+	margin-left: 10px;
+}
+#contents-area > div.nts-right-content > div:nth-child(2) > div:nth-child(2) > input{
+	margin-left: 75px;
 }

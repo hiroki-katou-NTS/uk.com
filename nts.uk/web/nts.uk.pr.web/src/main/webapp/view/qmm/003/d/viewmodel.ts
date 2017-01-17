@@ -1,24 +1,39 @@
 module nts.uk.pr.view.qmm003.d {
     export class ScreenModel {
         items: any;
+        item1s: any;
         singleSelectedCode: KnockoutObservable<any>;
         selectedCode: any;
         index: number;
         curentNode: any;
+        arrayCode:any;
         editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
         filteredData: any;
+        filteredData1: any;
+        filteredData2: any;
+        filteredData3: any;
+        editMode1 : boolean; //true al
         constructor(){
             let self = this;
-            self.init();
-            self.singleSelectedCode.subscribe(function(newValue){
-               
+            self.init();   
+            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
+            self.selectedCode.subscribe(function(newValue){
+                self.arrayCode(newValue);
                 });
-             self.selectedCode.subscribe(function(newValue){
-                console.log(self.selectedCode());
-                });
-           // console.log(self.selectedCode());
 
             }
+        findByName(items: Array<Node>): Node{
+            let self = this;
+            let node : Node;
+            _.find(items, function(obj: Node){
+                if(!node){
+                    if(obj.name == self.curentNode().name){
+                        node = obj;
+                        }
+                    }
+                });
+            return node;
+        };  
        findByCode(items: Array<Node>, newValue: string): Node {
            let self = this;
            let _node: Node;
@@ -33,38 +48,43 @@ module nts.uk.pr.view.qmm003.d {
          };        
         clickButton():any{
             let self = this;
-            nts.uk.ui.windows.setShared('items', self.items(),true);
+            for(let i = 0; i< _.size(self.arrayCode());i++){
+                self.removeNodeByCode(self.items(),self.arrayCode()[i]);
+                self.item1s(self.items());
+                self.items([]);
+                self.items(self.item1s());
+                    } 
+            nts.uk.ui.windows.setShared("items",self.items(),true);
             nts.uk.ui.windows.close();
             
         }
         cancelButton():void{
             nts.uk.ui.windows.close();
             }
-//        removeNodeByCode(items: Array<Node>): any{
-//            let self = this;
-//            _.remove(items,function(obj: Node){
-//                if(obj.code == self.Value()){
-//                    return obj.code == self.Value();
-//                }else{
-//                    return self.removeNodeByCode(obj.childs);
-//                   
-//                }
-//                })
-//            
-//            };
+        removeNodeByCode(items: Array<Node>, newValue: string): any{
+            let self = this;
+            _.remove(items,function(obj: Node){
+                if(obj.code == newValue){
+                    return obj.code == newValue;
+                }else{
+                    return self.removeNodeByCode(obj.childs, newValue);
+                   
+                }
+                })
+            };
         removeData1(items: Array<Node>): any {
-          _.remove(items, function(obj: Node){
-                return _.size(obj.code) == 1; 
+          _.remove(items, function(value:string){
+                return _.size(value) == 1; 
             });
           }
-        removeData2(items: Array<Node>): any {
-          _.remove(items, function(obj: Node){
-                return _.size(obj.code) == 2; 
+         removeData2(items: Array<Node>): any {
+          _.remove(items, function(value:string){
+                return _.size(value) == 2; 
             });
-          }  
+          }
          removeData3(items: Array<Node>): any {
-          _.remove(items, function(obj: Node){
-                return _.size(obj.code) > 3; 
+          _.remove(items, function(value: string){
+                return _.size(value) == 3; 
             });
           } 
         delete(items: Array<Node>): any{
@@ -109,72 +129,14 @@ module nts.uk.pr.view.qmm003.d {
                 ]),
                 new Node('5', '東海', [])
             ]);
-
+            self.item1s = ko.observableArray([]);
             self.singleSelectedCode = ko.observable("11");
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
             self.selectedCode = ko.observableArray([]);
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));  
-            
-        };
-//       findByCode(items: Array<Node>, newValue: string, count: number): Node{
-//            let self = this;
-//            let node : Node;
-//            _.find(items, function(obj: Node){
-//                if(!node){
-//                    if(obj.code == newValue){
-//                        node = obj;
-//                        count = count + 1;
-//                    }
-//                    }
-//                });
-//            return node;
-//        };
-//        
-        findByName(items: Array<Node>): Node{
-            let self = this;
-            let node : Node;
-            _.find(items, function(obj: Node){
-                if(!node){
-                    if(obj.name == self.curentNode().name){
-                        node = obj;
-                        }
-                    }
-                });
-            return node;
-        };
-//        removeNodeByCode(items: Array<Node>): any{
-//            let self = this;
-//            _.remove(items,function(obj: Node){
-//                if(obj.code == self.Value()){
-//                    return obj.code == self.Value();
-//                }else{
-//                    return self.removeNodeByCode(obj.childs);
-//                   
-//                }
-//                })
-//            
-//            };
-//        // remove data: return array of subsub tree
-
-//        deleteData():any{
-//            let self = this;
-//            self.removeNodeByCode(self.items());
-//            console.log(self.items());
-//            self.item1s(self.items());
-//            console.log(self.item1s());
-//            self.items([]);
-//            self.items(self.item1s());
-//            console.log(self.items());
-//            }
-//        alerDelete():void{
-//            let self= this;
-//            if(confirm("do you wanna delete")=== true){
-//                self.deleteData();
-//            }else{
-//                    alert("you didnt delete!");
-//            }
-//            }           
+            self.arrayCode= ko.observableArray([]);
+        };       
+  
         }
     export class Node {
         code: string;

@@ -45,34 +45,22 @@ var nts;
                                     new Node('5', '東海', [])
                                 ]);
                                 self.singleSelectedCode = ko.observable("11");
-                                self.test = ko.observable(null);
                                 self.curentNode = ko.observable(new Node("", "", []));
                                 self.index = 0;
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.selectedCodes = ko.observableArray([]);
                                 //Init();
                                 self.singleSelectedCode.subscribe(function (newValue) {
-                                    self.curentNode(findObjByCode(self.items, newValue));
                                 });
-                                function findObjByCode(items, newValue) {
-                                    var _node;
-                                    _.find(items, function (_obj) {
-                                        if (!_node) {
-                                            if (_obj.code == newValue) {
-                                                _node = _obj;
-                                            }
-                                            else {
-                                                _node = findObjByCode(_obj.childs, newValue);
-                                            }
-                                        }
-                                    });
-                                    return _node;
-                                }
-                                ;
-                                function Init() {
-                                    self.singleSelectedCode("11");
-                                }
                             }
+                            ScreenModel.prototype.clickButton = function () {
+                                nts.uk.ui.windows.close();
+                            };
+                            ;
+                            ScreenModel.prototype.cancelButton = function () {
+                                nts.uk.ui.windows.close();
+                            };
+                            ;
                             return ScreenModel;
                         }());
                         e.ScreenModel = ScreenModel;

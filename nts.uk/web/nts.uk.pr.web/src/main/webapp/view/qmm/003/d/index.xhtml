@@ -40,18 +40,11 @@
 												enable: true,
 												showCheckBox: true}"
 									class="cf"></table>
-							</div> 
-							<div >
-								<br/><br/>
-								<h4>Your multiple selected code:</h4>
-								<com:ko-foreach bind="selectedCode">
-									<div data-bind="text: $data"></div>
-								</com:ko-foreach>
-							</div>							
-							<div>
-								<button id="D_BTN_001" class="danger" data-bind="click: clickButton">決定</button>
-								<button id="D_BTN_002" data-bind="click: cancelButton">キャンセル</button>
-							</div>
+							</div> 						
+				<div>
+					<button id="D_BTN_001" class="danger" data-bind="click: clickButton">決定</button>
+					<button id="D_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+				</div>
 					</div>
             </ui:define>
     	</ui:composition>

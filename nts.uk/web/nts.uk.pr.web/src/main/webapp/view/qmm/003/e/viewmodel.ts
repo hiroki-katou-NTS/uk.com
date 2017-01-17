@@ -44,36 +44,23 @@ module nts.uk.pr.view.qmm003.e {
             ]);
 
             self.singleSelectedCode = ko.observable("11");
-            self.test = ko.observable(null);
             self.curentNode = ko.observable(new Node("", "", []));
             self.index = 0;
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(),"childs"));
             self.selectedCodes = ko.observableArray([]);
             //Init();
             self.singleSelectedCode.subscribe(function(newValue){
-                self.curentNode(findObjByCode(self.items,newValue));
                 });
-            
-            function findObjByCode(items: Array<Node>, newValue: string): Node {
-                        let _node: Node;
-                        _.find(items, function(_obj: Node) {
-                            if (!_node) {
-                                if (_obj.code == newValue) {
-                                    _node = _obj;
-                                              
-                                } else {
-                                    
-                                    _node = findObjByCode(_obj.childs, newValue);
-                                }
-                            }
-                        });
-                        
-                        return _node;
-                    };
-                 function Init(): void{
-                 self.singleSelectedCode("11");
-                }
+
             }
+        clickButton():any{
+            nts.uk.ui.windows.close();
+            
+        };
+        cancelButton():void{
+            nts.uk.ui.windows.close();
+            };          
+
         }
     export class Node {
         code: string;

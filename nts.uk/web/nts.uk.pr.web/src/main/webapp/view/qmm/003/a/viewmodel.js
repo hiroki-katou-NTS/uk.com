@@ -18,9 +18,10 @@ var nts;
                                 //console.log(self.currentNode());
                                 self.init();
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                                console.log(self.filteredData());
                                 self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                                self.removeData(self.filteredData());
+                                self.removeData(self.filteredData2());
                                 self.selectedCodes = ko.observableArray([]);
                                 self.singleSelectedCode.subscribe(function (newValue) {
                                     self.Value(newValue);
@@ -28,9 +29,8 @@ var nts;
                                         var count = 0;
                                         self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
                                         self.nameBySelectedCode(self.findByName(self.itemList()));
-                                        if (count == 1) {
-                                            self.selectedCode(self.nameBySelectedCode().code);
-                                        }
+                                        self.selectedCode(self.nameBySelectedCode().code);
+                                        console.log(self.selectedCode());
                                         var co_1 = 0, co1_1 = 0;
                                         _.each(self.filteredData(), function (obj) {
                                             if (obj.code != self.curentNode().code) {
@@ -103,21 +103,16 @@ var nts;
                             ScreenModel.prototype.deleteData = function () {
                                 var self = this;
                                 self.removeNodeByCode(self.items());
-                                console.log(self.items());
                                 self.item1s(self.items());
-                                console.log(self.item1s());
                                 self.items([]);
                                 self.items(self.item1s());
-                                console.log(self.items());
                             };
-                            ScreenModel.prototype.alerDelete = function () {
+                            ScreenModel.prototype.Confirm = function () {
                                 var self = this;
-                                if (confirm("do you wanna delete") === true) {
+                                nts.uk.ui.dialog.confirm("Do you want to delete node \"?")
+                                    .ifYes(function () {
                                     self.deleteData();
-                                }
-                                else {
-                                    alert("you didnt delete!");
-                                }
+                                });
                             };
                             ScreenModel.prototype.resetData = function () {
                                 var self = this;
@@ -189,15 +184,12 @@ var nts;
                                 var self = this;
                                 var singleSelectedCode;
                                 var curentNode;
-                                //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode());
                                 nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function () {
                                     singleSelectedCode = nts.uk.ui.windows.getShared("singleSelectedCode");
                                     curentNode = nts.uk.ui.windows.getShared("curentNode");
                                     self.editMode = false;
                                     self.singleSelectedCode(singleSelectedCode);
                                     self.curentNode(curentNode);
-                                    console.log(self.singleSelectedCode());
-                                    console.log(self.curentNode());
                                 });
                             };
                             ScreenModel.prototype.openCDialog = function () {
@@ -212,12 +204,13 @@ var nts;
                             };
                             ScreenModel.prototype.openDDialog = function () {
                                 var self = this;
-                                var labelSubsub;
+                                var items;
                                 nts.uk.ui.windows.sub.modeless("/view/qmm/003/d/index.xhtml", { title: '住民税納付先の登録　＞　一括削除', dialogClass: "no-close" }).onClosed(function () {
-                                    labelSubsub = nts.uk.ui.windows.getShared('labelSubsub');
-                                    //             self.editMode = false;
-                                    self.labelSubsub(labelSubsub);
-                                    console.log(labelSubsub);
+                                    items = nts.uk.ui.windows.getShared('items');
+                                    self.items([]);
+                                    self.items(items);
+                                    console.log(items);
+                                    console.log(self.items());
                                 });
                             };
                             ScreenModel.prototype.openEDialog = function () {
@@ -225,7 +218,6 @@ var nts;
                                 var labelSubsub;
                                 nts.uk.ui.windows.sub.modeless("/view/qmm/003/e/index.xhtml", { title: '住民税納付先の登録＞納付先の統合', dialogClass: "no-close" }).onClosed(function () {
                                     labelSubsub = nts.uk.ui.windows.getShared('labelSubsub');
-                                    //             self.editMode = false;
                                     self.labelSubsub(labelSubsub);
                                     console.log(labelSubsub);
                                 });
