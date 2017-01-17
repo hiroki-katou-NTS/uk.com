@@ -17,6 +17,9 @@ var qet002;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                ScreenModel.prototype.print = function () {
+                    alert('print report!');
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

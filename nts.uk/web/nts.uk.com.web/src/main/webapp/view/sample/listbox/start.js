@@ -3,24 +3,18 @@ __viewContext.ready(function () {
         function ScreenModel() {
             var self = this;
             var temp = [];
-            for (var i = 0; i < 1000; i++) {
+            for (var i = 0; i < 100; i++) {
                 temp.push(new ItemModel('基本給' + (i + 1), '基本給', "description " + (i + 1)));
             }
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable(null);
-            self.isEnable = ko.observable(true);
             self.selectedCodes = ko.observableArray([]);
-            $('#list-box').on('selectionChanging', function (event) {
-                console.log('Selecting value:' + event.originalEvent.detail);
-                //Cancel event.
-                //event.preventDefault();
-                //return false;
-            });
-            $('#list-box').on('selectionChanged', function (event) {
-                console.log('Selected value:' + event.originalEvent.detail);
-            });
+            self.isEnable = ko.observable(true);
+            self.isMulti = ko.observable(true);
+            self.isMulti2 = ko.observable(true);
+            self.isValidate = ko.observable(true);
         }
         ScreenModel.prototype.addOptions = function () {
             var self = this;
@@ -31,7 +25,7 @@ __viewContext.ready(function () {
                 itemCode = '0' + itemCode;
                 codeLength++;
             }
-            self.itemList.push(new ItemModel(itemCode, self.itemName(), "New Item"));
+            self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
             self.currentCode(newCode);
         };
         ScreenModel.prototype.deselectAll = function () {

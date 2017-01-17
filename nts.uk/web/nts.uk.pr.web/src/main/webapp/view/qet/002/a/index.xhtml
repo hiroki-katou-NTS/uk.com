@@ -35,7 +35,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty">選択社員印刷ボタン</button>
+					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: print">選択社員印刷ボタン</button>
 					<button id="print-excution-log-button">印刷実行ログボタン</button>
 					<label>累計支給額チェックリスト</label>
 				</div>

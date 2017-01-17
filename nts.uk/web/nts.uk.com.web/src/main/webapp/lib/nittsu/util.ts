@@ -200,6 +200,50 @@
                 }
             }
         }
+        
+        export class Range {
+            start: number;
+            end: number;
+            
+            constructor(start: number, end: number) {
+                if (start > end) {
+                    throw new Error('start is larger than end');
+                }
+                
+                this.start = start;
+                this.end = end;
+            }
+            
+            contains(value: number) {
+                return this.start <= value && value <= this.end;
+            }
+            
+            greaterThan(value: number) {
+                return value < this.start;
+            }
+            
+            greaterThanOrEqualTo(value: number) {
+                return value <= this.start;
+            }
+            
+            lessThan(value: number) {
+                return this.end < value;
+            }
+            
+            lessThanOrEqualTo(value: number) {
+                return this.end <= value;
+            }
+            
+            distanceFrom(value: number) {
+                if (this.greaterThan(value)) {
+                    return value - this.start;
+                } else if (this.lessThan(value)) {
+                    return value - this.end;
+                } else {
+                    return 0;
+                }
+            }
+        }
     }
     
     export class WebStorageWrapper {
