@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.organization.workPlace;
+package nts.uk.ctx.basic.dom.organization.workplace;
 
 import lombok.Getter;
 import nts.uk.shr.com.primitive.Memo;

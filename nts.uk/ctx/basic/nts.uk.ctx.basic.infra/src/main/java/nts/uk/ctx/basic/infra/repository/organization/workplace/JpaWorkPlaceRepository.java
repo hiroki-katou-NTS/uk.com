@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.basic.dom.organization.workPlace.WorkPlace;
-import nts.uk.ctx.basic.dom.organization.workPlace.WorkPlaceCode;
-import nts.uk.ctx.basic.dom.organization.workPlace.WorkPlaceRepository;
+import nts.uk.ctx.basic.dom.organization.workplace.WorkPlace;
+import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceCode;
+import nts.uk.ctx.basic.dom.organization.workplace.WorkPlaceRepository;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
