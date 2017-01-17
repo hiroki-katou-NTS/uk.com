@@ -41,10 +41,9 @@
 						<td id="contents-left"
 							class="bg-green caret-right caret-background">
 							<div data-bind="with: textSearch" class="leftTop">
-								<input id="INP_001"
+								<input id="INP_001" class="tr240"
 									data-bind="ntsTextEditor: {
 										value: valueSearch,
-										constraint: '',
 										option: option,
 										required: true,
 										enable: true}" />
@@ -76,7 +75,7 @@
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_code"
+									<td class="contentsRR"><input id="inp_code" class="tr110"
 										data-name="code"
 										data-bind="ntsTextEditor: {value: code,
 											constraint: 'OfficeCode', 
@@ -165,7 +164,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address1st"
-										data-name="address1st"
+										class="tr240" data-name="address1st"
 										data-bind="ntsTextEditor: {value: address1st, 
 										constraint: 'Address', 
 										option: textEditorOption, 
@@ -175,7 +174,7 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_008" class="left20"
+										<div id="A_LBL_008" class="left20 border_none"
 											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
 											<label>ｶﾅ1</label>
 										</div>
@@ -197,7 +196,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address2nd"
-										data-name="address2nd"
+										class="tr240" data-name="address2nd"
 										data-bind="ntsTextEditor: {value: address2nd, 
 										constraint: 'Address2ND', 
 										option: textEditorOption, 
@@ -207,13 +206,13 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_010" class="left20"
+										<div id="A_LBL_010" class="left20 border_none"
 											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
 											<label>ｶﾅ2</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress2nd"
-										class="trFull45" data-name="kanaAddress2nd,"
+										class="trFull45" data-name="kanaAddress2nd"
 										data-bind="ntsTextEditor: {value: kanaAddress2nd, 
 										constraint: 'KanaAddress', 
 										option: textEditorOption, 
