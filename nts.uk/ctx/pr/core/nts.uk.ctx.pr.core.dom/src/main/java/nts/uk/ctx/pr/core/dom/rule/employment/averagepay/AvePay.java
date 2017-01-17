@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 
-public class AveragePay extends AggregateRoot {
+public class AvePay extends AggregateRoot {
 	@Getter
 	private AttendDayGettingSet attendDayGettingSet;
 	
@@ -28,7 +28,7 @@ public class AveragePay extends AggregateRoot {
 		}
 	} 
 	
-	public AveragePay(AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
+	public AvePay(AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
 			RoundDigitSet roundDigitSet, RoundTimingSet roundTimingSet) {
 		super();
 		this.attendDayGettingSet = attendDayGettingSet;
@@ -37,8 +37,8 @@ public class AveragePay extends AggregateRoot {
 		this.roundTimingSet = roundTimingSet;
 	}
 
-	public static AveragePay createFromJavaType(int attendDayGettingSet, int exceptionPayRate, int roundTimingSet, int roundDigitSet) {
-		return new AveragePay(
+	public static AvePay createFromJavaType(int attendDayGettingSet, int exceptionPayRate, int roundTimingSet, int roundDigitSet) {
+		return new AvePay(
 				EnumAdaptor.valueOf(attendDayGettingSet, AttendDayGettingSet.class) ,
 				new ExceptionPayRate(exceptionPayRate), 
 				EnumAdaptor.valueOf(roundDigitSet, RoundDigitSet.class),
