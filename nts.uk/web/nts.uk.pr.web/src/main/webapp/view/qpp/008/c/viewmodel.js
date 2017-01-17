@@ -13,6 +13,8 @@ var qpp008;
                     self.selectedPaymentDate = ko.observable(null);
                     /*SwapList*/
                     self.itemsSwap = ko.observableArray([]);
+                    /*TextEditer*/
+                    self.cInp002Code = ko.observable(false);
                     var array = [];
                     for (var i = 0; i < 10000; i++) {
                         array.push(new ItemModel("test" + i, '基本給', "description"));
@@ -49,6 +51,7 @@ var qpp008;
                     self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentItem(ko.mapping.fromJS(self.getItem(codeChanged)));
+                        self.cInp002Code(false);
                     });
                     //gridList2
                     self.items2 = ko.observableArray([]);
@@ -64,19 +67,17 @@ var qpp008;
                         { headerText: '名称', prop: 'name', width: 120 },
                     ]);
                     this.currentCode2 = ko.observable();
-                    /*TextEditer*/
-                    self.cInp002Code = ko.observable(false);
                 }
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     //self.allowEditCode(true);
-                    self.cInp002Code = ko.observable(true);
+                    self.cInp002Code(true);
                     self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '', '', '')));
                     //self.currentCode() = ko.observable();
                     // self.currentItem=ko.observable(new ItemModel('', '', '','',''));
                     //            self.currentCode = ko.observable();
                     //            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-                    self.cInp002Code = ko.observable(false);
+                    //elf.cInp002Code = ko.observable(false);
                 };
                 ScreenModel.prototype.getItem = function (codeNew) {
                     var self = this;

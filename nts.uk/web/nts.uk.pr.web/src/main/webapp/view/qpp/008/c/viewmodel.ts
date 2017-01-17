@@ -34,7 +34,8 @@ module qpp008.c.viewmodel {
             self.selectedPaymentDate = ko.observable(null);
             /*SwapList*/
             self.itemsSwap = ko.observableArray([]);
-
+            /*TextEditer*/
+            self.cInp002Code = ko.observable(false);
             var array = [];
             for (var i = 0; i < 10000; i++) {
                 array.push(new ItemModel("test" + i, '基本給', "description"));
@@ -74,8 +75,10 @@ module qpp008.c.viewmodel {
             self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
             self.currentCode.subscribe(function(codeChanged) {
                 self.currentItem(ko.mapping.fromJS(self.getItem(codeChanged)));
-                
+                self.cInp002Code(false);
             });
+           
+            
             //gridList2
             self.items2 = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];
@@ -91,19 +94,18 @@ module qpp008.c.viewmodel {
 
             ]);
             this.currentCode2 = ko.observable();
-            /*TextEditer*/
-            self.cInp002Code = ko.observable(false);
+            
         }
         refreshLayout(): void {
             let self = this;
             //self.allowEditCode(true);
-            self.cInp002Code = ko.observable(true);
+            self.cInp002Code(true);
             self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '','','')));
             //self.currentCode() = ko.observable();
            // self.currentItem=ko.observable(new ItemModel('', '', '','',''));
 //            self.currentCode = ko.observable();
 //            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-            self.cInp002Code = ko.observable(false);
+            //elf.cInp002Code = ko.observable(false);
         }
 
         getItem(codeNew): ItemModel {
