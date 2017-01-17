@@ -14,11 +14,20 @@ module qet002.a.viewmodel {
             this.upperLimitValue = ko.observable(null);
         }
         
+        /**
+         * Start screen.
+         */
         public start(): JQueryPromise<any>{
             var dfd = $.Deferred<any>();
             dfd.resolve();
             return dfd.promise();
         }
         
+        /**
+         * Print report.
+         */
+        public print() {
+            alert('print report!');
+        }
     }
 }
