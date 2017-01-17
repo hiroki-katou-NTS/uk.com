@@ -22,7 +22,7 @@ public class CmnmtClassPK implements Serializable {
 
 	@NotNull
 	@Column(name = "CCD")
-	private int companyCode;
+	private String companyCode;
 
 	@NotNull
 	@Column(name = "CLSCD")
