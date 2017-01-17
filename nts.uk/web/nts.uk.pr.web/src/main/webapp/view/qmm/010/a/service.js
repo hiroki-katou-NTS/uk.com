@@ -40,10 +40,10 @@ var nts;
                                 }());
                                 model.LaborInsuranceOffice = LaborInsuranceOffice;
                                 var LaborInsuranceOfficeInDTO = (function () {
-                                    function LaborInsuranceOfficeInDTO(companyCode, code, name) {
-                                        this.companyCode = companyCode;
-                                        this.code = code;
-                                        this.name = name;
+                                    function LaborInsuranceOfficeInDTO(laborInsuranceOffice) {
+                                        this.companyCode = laborInsuranceOffice.companyCode;
+                                        this.code = laborInsuranceOffice.code;
+                                        this.name = laborInsuranceOffice.name;
                                     }
                                     return LaborInsuranceOfficeInDTO;
                                 }());

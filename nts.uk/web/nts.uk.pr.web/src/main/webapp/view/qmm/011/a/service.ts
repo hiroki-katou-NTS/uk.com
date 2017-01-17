@@ -52,7 +52,6 @@ module nts.uk.pr.view.qmm011.a {
                     this.historyId = historyId;
                     this.companyCode = companyCode;
                     this.monthRage = monthRage;
-
                 }
             }
 

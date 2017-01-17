@@ -77,10 +77,10 @@ module nts.uk.pr.view.qmm010.a {
                 name: string;
 
                 //New LaborInsuranceOfficeInDTO
-                constructor(companyCode: string, code: string, name: string) {
-                    this.companyCode = companyCode;
-                    this.code = code;
-                    this.name = name;
+                constructor(laborInsuranceOffice: LaborInsuranceOffice) {
+                    this.companyCode = laborInsuranceOffice.companyCode;
+                    this.code = laborInsuranceOffice.code;
+                    this.name = laborInsuranceOffice.name;
                 }
             }
 

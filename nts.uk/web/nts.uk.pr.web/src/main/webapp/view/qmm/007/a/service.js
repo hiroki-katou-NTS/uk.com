@@ -37,6 +37,20 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getUnitPriceHistoryList = getUnitPriceHistoryList;
+                            function create(unitPriceHistory) {
+                                var data = { unitPriceHistory: unitPriceHistory };
+                                return null;
+                            }
+                            service.create = create;
+                            function update(unitPriceHistory) {
+                                var data = { unitPriceHistory: unitPriceHistory };
+                                return null;
+                            }
+                            service.update = update;
+                            function remove(id) {
+                                return null;
+                            }
+                            service.remove = remove;
                             /**
                             * Model namespace.
                             */

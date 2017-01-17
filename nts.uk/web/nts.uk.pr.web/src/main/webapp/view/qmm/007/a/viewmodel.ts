@@ -117,8 +117,17 @@ module nts.uk.pr.view.qmm007.a {
 
             collectData(): UnitPriceHistoryDto {
                 var self = this
-                var data = new UnitPriceHistoryDto();
-                data.unitPriceCode = self.code.value();
+                var data = new UnitPriceDetailModel();
+                data.unitPriceCode = self.code();
+                data.unitPriceName = self.name();
+                data.date = self.startDate();
+                data.budget = self.money();
+                data.fixPaySettingType = self.settingType();
+                data.fixPayAtr = self.payAtr();
+                data.fixPayAtrMonthly = self.payAtrMonthly();
+                data.fixPayAtrDayMonth = self.payAtrDayMonth();
+                data.fixPayAtrDaily = self.payAtrDaily();
+                data.fixPayAtrHourly = self.payAtrHourly();
                 console.log(data);
                 return null;
             }
@@ -191,6 +200,7 @@ module nts.uk.pr.view.qmm007.a {
         */
 
         export class UnitPriceDetailModel extends UnitPriceHistoryDto {
+            date: string;
         }
 
         export class UnitPriceHistoryModel {

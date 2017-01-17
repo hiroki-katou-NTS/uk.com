@@ -6,16 +6,20 @@ module nts.uk.pr.view.qmm010.a {
         export class ScreenModel {
             //ojbect value binding
             laborInsuranceOffice: KnockoutObservable<LaborInsuranceOfficeModel>;
-            lstlaborInsuranceOffice: KnockoutObservableArray<LaborInsuranceOffice>;
+            lstlaborInsuranceOffice: LaborInsuranceOffice[];
+            lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeInDTO>
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
             textSearch: any;
             constructor() {
                 var self = this;
-                var officeInfo = new LaborInsuranceOffice('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
-                self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo));
-                self.lstlaborInsuranceOffice = ko.observableArray([new LaborInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
-                    new LaborInsuranceOfficeInDTO('companyCode002', '000000000002', 'B事業所'), new LaborInsuranceOfficeInDTO('companyCode003', '000000000003', 'C事業所')]);
+                var officeInfo001 = new LaborInsuranceOffice('companyCode001', '000000000001', 'A事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                var officeInfo003 = new LaborInsuranceOffice('companyCode001', '000000000003', 'C事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                var officeInfo002 = new LaborInsuranceOffice('companyCode001', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
+                self.lstlaborInsuranceOffice = [officeInfo001, officeInfo002, officeInfo003];
+                self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo001));
+                self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeInDTO>([new LaborInsuranceOfficeInDTO(officeInfo001),
+                    new LaborInsuranceOfficeInDTO(officeInfo002), new LaborInsuranceOfficeInDTO(officeInfo003)]);
                 self.textSearch = {
                     valueSearch: ko.observable(""),
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -29,7 +33,23 @@ module nts.uk.pr.view.qmm010.a {
                     { headerText: 'コード', prop: 'code', width: 120 },
                     { headerText: '名称', prop: 'name', width: 120 }
                 ]);
-                self.selectCodeLstlaborInsuranceOffice = ko.observable('');
+                self.selectCodeLstlaborInsuranceOffice = ko.observable(officeInfo001.code);
+                self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
+                    self.showLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                });
+
+            }
+            showLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice: string) {
+                var self = this;
+                if (selectCodeLstlaborInsuranceOffice != null && selectCodeLstlaborInsuranceOffice != undefined) {
+                    for (var index = 0; index < self.lstlaborInsuranceOffice.length; index++) {
+                        if (selectCodeLstlaborInsuranceOffice === self.lstlaborInsuranceOffice[index].code) {
+                            self.laborInsuranceOffice(new LaborInsuranceOfficeModel(self.lstlaborInsuranceOffice[index]));
+                        }
+                    }
+                }
+
+
             }
         }
 

@@ -88,7 +88,6 @@
 	width: 100%;
 }
 
-
 button.nts-switch-button {
 	min-width: 80px;
 }
@@ -100,4 +99,16 @@ button.nts-switch-button {
 
 #search_001 {
 	margin-top: 20px;
+}
+
+.border_none {
+	border: none !important;
+}
+
+.tr240 {
+	width: 240px !important;
+}
+
+.tr110 {
+	width: 110px !important;
 }
