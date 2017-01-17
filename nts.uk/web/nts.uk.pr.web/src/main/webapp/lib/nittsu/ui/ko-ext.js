@@ -1861,6 +1861,15 @@ var nts;
                             var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
                             container.attr("id", idString);
                         }
+                        var startDate = null;
+                        var endDate = null;
+                        if (data.startDate) {
+                            startDate = ko.unwrap(data.startDate);
+                        }
+                        if (data.endDate) {
+                            endDate = ko.unwrap(data.endDate);
+                        }
+                        var autoHide = data.autoHide == false ? false : true;
                         var idatr = container.attr("id");
                         container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
                         var $input = container.find('#' + idatr + "_input");
@@ -1868,8 +1877,9 @@ var nts;
                         if (data.button)
                             button = idatr + "_button";
                         $input.prop("readonly", true);
-                        var date = ko.unwrap(data.value);
+                        var value = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var containerFormat = 'yyyy/mm/dd';
                         var length = 10, atomWidth = 9;
                         if (dateFormat === "yyyy/MM/dd DDD") {
                             length = 16;
@@ -1877,26 +1887,43 @@ var nts;
                         else if (dateFormat === "yyyy/MM/dd D") {
                             length = 14;
                         }
-                        $input.attr('value', nts.uk.time.formatDate(date, dateFormat));
+                        else if (dateFormat === "yyyy/MM") {
+                            length = 7;
+                            containerFormat = 'yyyy/mm';
+                        }
+                        if (containerFormat != 'yyyy/mm')
+                            //datepicker case
+                            $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
+                        else
+                            $input.attr('value', value);
                         if (button) {
                             container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
                             $input.datepicker({
-                                format: 'yyyy/mm/dd',
+                                format: containerFormat,
                                 language: 'ja-JP',
-                                trigger: "#" + button
+                                trigger: "#" + button,
+                                autoHide: autoHide,
+                                startDate: startDate,
+                                endDate: endDate
                             });
                         }
                         else
                             $input.datepicker({
-                                format: 'yyyy/mm/dd',
-                                language: 'ja-JP'
+                                format: containerFormat,
+                                language: 'ja-JP',
+                                autoHide: autoHide,
+                                startDate: startDate,
+                                endDate: endDate
                             });
-                        container.on('change', function (event) {
-                            data.value(new Date(container.val().substring(0, 10)));
-                        });
-                        $input.on('change', function (event) {
-                            data.value(new Date($input.val().substring(0, 10)));
-                        });
+                        container.data("format", containerFormat);
+                        if (containerFormat !== 'yyyy/mm')
+                            $input.on('change', function (event) {
+                                data.value(new Date($input.val().substring(0, 10)));
+                            });
+                        else
+                            $input.on('change', function (event) {
+                                data.value($input.val());
+                            });
                         $input.width(atomWidth * length);
                     };
                     /**
@@ -1906,16 +1933,26 @@ var nts;
                         var data = valueAccessor();
                         var container = $(element);
                         var idatr = container.attr("id");
-                        var date = ko.unwrap(data.value);
+                        var newValue = ko.unwrap(data.value);
+                        //console.log(newValue);                       
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        //container.attr('value', nts.uk.time.formatDate(date, dateFormat));
-                        container.val(nts.uk.time.formatDate(date, dateFormat));
                         var $input = container.find('#' + idatr + "_input");
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var formatOptions = container.data("format");
                         var oldDate = $input.datepicker("getDate");
-                        if (oldDate.getFullYear() != date.getFullYear() || oldDate.getMonth() != date.getMonth() || oldDate.getDate() != date.getDate())
-                            $input.datepicker("setDate", date);
-                        $input.val(nts.uk.time.formatDate(date, dateFormat));
+                        if (formatOptions != 'yyyy/mm') {
+                            var oldDate = $input.datepicker("getDate");
+                            if (oldDate.getFullYear() != newValue.getFullYear() || oldDate.getMonth() != newValue.getMonth() || oldDate.getDate() != newValue.getDate())
+                                $input.datepicker("setDate", newValue);
+                            $input.val(nts.uk.time.formatDate(newValue, dateFormat));
+                        }
+                        else {
+                            var newDate = new Date(newValue + "/01");
+                            var oldDate = $input.datepicker("getDate");
+                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
+                                $input.datepicker("setDate", newDate);
+                            $input.val(newValue);
+                        }
                     };
                     return DatePickerBindingHandler;
                 }());
@@ -2042,15 +2079,15 @@ var nts;
                                 var value = $swap.find(".ntsSearchInput").val();
                                 var source = $(grid2Id).igGrid("option", "dataSource");
                                 var selected = $(grid1Id).ntsGridList("getSelected");
-                                if (selected.length > 0) {
-                                    var gotoEnd = tempOrigiSour.splice(0, selected[0].index + 1);
-                                    tempOrigiSour = tempOrigiSour.concat(gotoEnd);
-                                }
                                 var notExisted = _.filter(tempOrigiSour, function (list) {
                                     return _.find(source, function (data) {
                                         return data[primaryKey] === list[primaryKey];
                                     }) === undefined;
                                 });
+                                if (selected.length > 0) {
+                                    var gotoEnd = notExisted.splice(0, selected[0].index + 1);
+                                    notExisted = notExisted.concat(gotoEnd);
+                                }
                                 var searchedValues = _.find(notExisted, function (val) {
                                     return _.find(iggridColumns, function (x) {
                                         return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;

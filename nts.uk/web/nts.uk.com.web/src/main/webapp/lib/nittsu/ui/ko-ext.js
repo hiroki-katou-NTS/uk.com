@@ -2079,15 +2079,15 @@ var nts;
                                 var value = $swap.find(".ntsSearchInput").val();
                                 var source = $(grid2Id).igGrid("option", "dataSource");
                                 var selected = $(grid1Id).ntsGridList("getSelected");
-                                if (selected.length > 0) {
-                                    var gotoEnd = tempOrigiSour.splice(0, selected[0].index + 1);
-                                    tempOrigiSour = tempOrigiSour.concat(gotoEnd);
-                                }
                                 var notExisted = _.filter(tempOrigiSour, function (list) {
                                     return _.find(source, function (data) {
                                         return data[primaryKey] === list[primaryKey];
                                     }) === undefined;
                                 });
+                                if (selected.length > 0) {
+                                    var gotoEnd = notExisted.splice(0, selected[0].index + 1);
+                                    notExisted = notExisted.concat(gotoEnd);
+                                }
                                 var searchedValues = _.find(notExisted, function (val) {
                                     return _.find(iggridColumns, function (x) {
                                         return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
