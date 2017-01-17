@@ -65,15 +65,19 @@ var qpp008;
                     ]);
                     this.currentCode2 = ko.observable();
                     /*TextEditer*/
-                    self.enableC_INP_002 = ko.observable(false);
                     self.cInp002Code = ko.observable(false);
                 }
-                //        refreshLayout(): void {
-                //            let self = this;
-                //            self.allowEditCode(true);
-                //            self.currentCode(ko.mapping.fromJS(new ItemModel('', '', '')));
-                //            self.isUpdate(false);
-                //        }
+                ScreenModel.prototype.refreshLayout = function () {
+                    var self = this;
+                    //self.allowEditCode(true);
+                    self.cInp002Code = ko.observable(true);
+                    self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '', '', '')));
+                    //self.currentCode() = ko.observable();
+                    // self.currentItem=ko.observable(new ItemModel('', '', '','',''));
+                    //            self.currentCode = ko.observable();
+                    //            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
+                    self.cInp002Code = ko.observable(false);
+                };
                 ScreenModel.prototype.getItem = function (codeNew) {
                     var self = this;
                     var currentItem = _.find(self.items(), function (item) {

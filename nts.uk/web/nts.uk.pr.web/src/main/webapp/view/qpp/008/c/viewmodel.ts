@@ -25,7 +25,6 @@ module qpp008.c.viewmodel {
         currentCode2: KnockoutObservable<any>;
         currentItem2: KnockoutObservable<any>;
         /*TextEditer*/
-        enableC_INP_002: KnockoutObservable<boolean>;
         cInp002Code: KnockoutObservable<boolean>;
         currentItem: KnockoutObservable<any>;
 
@@ -93,15 +92,19 @@ module qpp008.c.viewmodel {
             ]);
             this.currentCode2 = ko.observable();
             /*TextEditer*/
-            self.enableC_INP_002 = ko.observable(false);
             self.cInp002Code = ko.observable(false);
         }
-//        refreshLayout(): void {
-//            let self = this;
-//            self.allowEditCode(true);
-//            self.currentCode(ko.mapping.fromJS(new ItemModel('', '', '')));
-//            self.isUpdate(false);
-//        }
+        refreshLayout(): void {
+            let self = this;
+            //self.allowEditCode(true);
+            self.cInp002Code = ko.observable(true);
+            self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '','','')));
+            //self.currentCode() = ko.observable();
+           // self.currentItem=ko.observable(new ItemModel('', '', '','',''));
+//            self.currentCode = ko.observable();
+//            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
+            self.cInp002Code = ko.observable(false);
+        }
 
         getItem(codeNew): ItemModel {
             let self = this;

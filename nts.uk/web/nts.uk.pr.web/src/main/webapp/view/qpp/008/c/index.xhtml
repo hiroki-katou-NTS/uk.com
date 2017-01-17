@@ -23,7 +23,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area" class="function-area">
-				<button id="C_BTN_001" >新規</button>
+				<button id="C_BTN_001" data-bind="click: refreshLayout" >新規</button>
 				<button id="C_BTN_002" class="proceed">登録</button>
 				<button id="C_BTN_003" class="danger">削除</button>
 				<button id="C_BTN_004">閉じる</button>
@@ -61,7 +61,7 @@
 							<div id="_LBL_001" data-bind="ntsFormLabel: {required: true }">レイアウトコード</div>
 							<div class="C_INP_23">
 							<div data-bind= "with: currentItem">
-								<input id="C_INP_002" data-bind="ntsTextEditor: {value: code, enable: $root.content.enableC_INP_002}"/>
+								<input id="C_INP_002" data-bind="ntsTextEditor: {value: code, enable: $root.content.cInp002Code}"/>
 								<input id="C_INP_003" data-bind="ntsTextEditor: { value: name }" />
 							</div>
 								<!-- <input id="C_INP_002" data-bind="ntsTextEditor: { currentItem().code, enable: enableC_INP_002}" /-->
