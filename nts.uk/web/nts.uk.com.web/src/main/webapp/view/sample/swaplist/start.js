@@ -8,8 +8,8 @@ __viewContext.ready(function () {
             }
             this.itemsSwap(array);
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 80 },
-                { headerText: '名称', prop: 'name', width: 120 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
             this.currentCodeListSwap = ko.observableArray([]);
         }
