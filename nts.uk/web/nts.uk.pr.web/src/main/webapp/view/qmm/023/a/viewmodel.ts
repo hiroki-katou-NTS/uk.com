@@ -14,7 +14,7 @@ module qmm023.a.viewmodel {
         taxLimitValue: KnockoutObservable<string>;
         isUpdate: KnockoutObservable<boolean> = ko.observable(true);
         allowEditCode: KnockoutObservable<boolean> = ko.observable(false);
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
+        //isUpdate: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
             //constructor of gridList

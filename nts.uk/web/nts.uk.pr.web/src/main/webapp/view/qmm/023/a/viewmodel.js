@@ -5,11 +5,11 @@ var qmm023;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
+                //isUpdate: KnockoutObservable<boolean> = ko.observable(true);
                 function ScreenModel() {
                     this.constraint = 'LayoutCode';
                     this.isUpdate = ko.observable(true);
                     this.allowEditCode = ko.observable(false);
-                    this.isUpdate = ko.observable(true);
                     var self = this;
                     //constructor of gridList
                     this.items = ko.observableArray([
