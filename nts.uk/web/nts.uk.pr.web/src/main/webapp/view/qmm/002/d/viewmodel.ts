@@ -20,10 +20,10 @@ module qmm002.d.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             self.items = ko.observableArray([
-            new ItemModel('001', '基本給', "description 1"),
-            new ItemModel('150', '役職手当', "description 2"),
-            new ItemModel('ABC', '基12本給', "description 3")
-        ]);
+                new ItemModel('001', '基本給', "description 1"),
+                new ItemModel('150', '役職手当', "description 2"),
+                new ItemModel('ABC', '基12本給', "description 3")
+            ]);
         this.columns = ko.observableArray([
             { headerText: 'コード', prop: 'code', width: 50 }
         ]);             
@@ -128,6 +128,21 @@ module qmm002.d.viewmodel {
                 readonly: ko.observable(false)
             };
             
+            self.btn_002 = function() {
+                var bankInfo = {
+                  bankCode: "001",//self.INP_001(),
+                  bankName: "Viettinbank",//self.INP_002(),
+                  bankNameKana: "a",//self.INP_003(),
+                  memo: "memo"//self.INP_004()   
+                };  
+                
+                qmm002.d.service.addBank(bankInfo).done(function() {
+                    //to do 
+                }).fail(function(error) {
+                   alert(error); 
+                });
+            }
+            
             var dfd = $.Deferred();
             qmm002.d.service.getPaymentDateProcessingList().done(function(data) {
                 self.paymentDateProcessingList(data);
@@ -139,14 +154,14 @@ module qmm002.d.viewmodel {
     }
     
    class ItemModel {
-    code: string;
-    name: string;
-    description: string;
+        code: string;
+        name: string;
+        description: string;
     
-    constructor(code: string, name: string, description: string) {
-        this.code = code;
-        this.name = name;
-        this.description = description;
+        constructor(code: string, name: string, description: string) {
+            this.code = code;
+            this.name = name;
+            this.description = description;
+        }
     }
-}
 }

@@ -113,6 +113,19 @@ var qmm002;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
+                    self.btn_002 = function () {
+                        var bankInfo = {
+                            bankCode: "001",
+                            bankName: "Viettinbank",
+                            bankNameKana: "a",
+                            memo: "memo" //self.INP_004()   
+                        };
+                        qmm002.d.service.addBank(bankInfo).done(function () {
+                            //to do 
+                        }).fail(function (error) {
+                            alert(error);
+                        });
+                    };
                     var dfd = $.Deferred();
                     qmm002.d.service.getPaymentDateProcessingList().done(function (data) {
                         self.paymentDateProcessingList(data);
