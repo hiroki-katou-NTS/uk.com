@@ -9,6 +9,7 @@ __viewContext.ready(function () {
         currencyeditor2: any;
         timeeditor: any;
         yearmontheditor: any;
+        option: any;
         file: any;
         
         constructor() {
@@ -22,6 +23,9 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.option = {
+                value: ko.observable("2")    
+            }
                       
             // TextEditor
             self.texteditor = {
