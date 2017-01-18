@@ -12,17 +12,32 @@ var nts;
                     (function (b) {
                         var service;
                         (function (service) {
+                            var paths = {
+                                findAllSocialInsuranceOffice: "pr/insurance/social/findall",
+                            };
+                            function findAllSocialInsuranceOffice() {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findAllSocialInsuranceOffice = findAllSocialInsuranceOffice;
                             var model;
                             (function (model) {
-                                var SocialInsuranceOfficeInDTO = (function () {
-                                    function SocialInsuranceOfficeInDTO(companyCode, code, name) {
+                                var SocialInsuranceOfficeInDto = (function () {
+                                    function SocialInsuranceOfficeInDto(companyCode, code, name) {
                                         this.companyCode = companyCode;
                                         this.code = code;
                                         this.name = name;
                                     }
-                                    return SocialInsuranceOfficeInDTO;
+                                    return SocialInsuranceOfficeInDto;
                                 }());
-                                model.SocialInsuranceOfficeInDTO = SocialInsuranceOfficeInDTO;
+                                model.SocialInsuranceOfficeInDto = SocialInsuranceOfficeInDto;
                             })(model = service.model || (service.model = {}));
                         })(service = b.service || (b.service = {}));
                     })(b = qmm010.b || (qmm010.b = {}));

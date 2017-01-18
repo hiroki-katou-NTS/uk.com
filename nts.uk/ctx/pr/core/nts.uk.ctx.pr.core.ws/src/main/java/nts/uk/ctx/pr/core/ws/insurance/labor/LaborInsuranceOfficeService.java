@@ -122,9 +122,10 @@ public class LaborInsuranceOfficeService extends WebService {
 	}
 
 	public LaborInsuranceOfficeInDto convertInsuranceOfficeOInDto(LaborInsuranceOffice laborInsuranceOffice) {
-		LaborInsuranceOfficeInDto laborInsuranceOfficeInDto = LaborInsuranceOfficeInDto.builder()
-				.name(laborInsuranceOffice.getName().toString()).code(laborInsuranceOffice.getCode().toString())
-				.companyCode(laborInsuranceOffice.getCompanyCode().toString()).build();
+		LaborInsuranceOfficeInDto laborInsuranceOfficeInDto = new LaborInsuranceOfficeInDto();
+		laborInsuranceOfficeInDto.setName(laborInsuranceOffice.getName().toString());
+		laborInsuranceOfficeInDto.setCode(laborInsuranceOffice.getCode().toString());
+		laborInsuranceOfficeInDto.setCompanyCode(laborInsuranceOffice.getCompanyCode().toString());
 		return laborInsuranceOfficeInDto;
 	}
 

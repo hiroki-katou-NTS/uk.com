@@ -1,10 +1,10 @@
 module nts.uk.pr.view.qmm010.b {
     import option = nts.uk.ui.option;
-    import SocialInsuranceOfficeInDTO = service.model.SocialInsuranceOfficeInDTO;
+    import SocialInsuranceOfficeInDto = service.model.SocialInsuranceOfficeInDto;
     export module viewmodel {
         export class ScreenModel {
             textSearch: any;
-            lstSocialInsuranceOffice: KnockoutObservableArray<SocialInsuranceOfficeInDTO>;
+            lstSocialInsuranceOffice: KnockoutObservableArray<SocialInsuranceOfficeInDto>;
             selectLstSocialInsuranceOffice: KnockoutObservable<string>;
             columnsLstSocialInsuranceOffice: KnockoutObservableArray<any>;
             multilineeditor: any;
@@ -13,9 +13,6 @@ module nts.uk.pr.view.qmm010.b {
             currentCodeList: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
-                self.lstSocialInsuranceOffice = ko.observableArray<SocialInsuranceOfficeInDTO>([new SocialInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
-                    new SocialInsuranceOfficeInDTO('companyCode001', '000000000002', 'B事業所'), new SocialInsuranceOfficeInDTO('companyCode001', '000000000003', 'C事業所')]);
-
                 self.employmentName = ko.observable("");
                 self.textSearch = {
                     valueSearch: ko.observable(""),
@@ -46,6 +43,24 @@ module nts.uk.pr.view.qmm010.b {
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
+            }
+            startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                self.findAllInsuranceOffice().done(data => {
+                    dfd.resolve(self);
+                });
+                return dfd.promise();
+            }
+            //Connection service find All InsuranceOffice
+            findAllInsuranceOffice(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findAllSocialInsuranceOffice().done(data => {
+                    self.lstSocialInsuranceOffice = ko.observableArray<SocialInsuranceOfficeInDto>(data);
+                    dfd.resolve(self);
+                });
+                return dfd.promise();
             }
         }
     }
