@@ -13,33 +13,33 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                getUnitPriceHistoryList: "pr/proto/unitprice/findall"
+                                getUnitPriceHistoryList: "pr/proto/unitprice/findall",
+                                getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
+                                createUnitPriceHistory: "pr/proto/unitprice/create",
+                                updateUnitPriceHistory: "pr/proto/unitprice/update",
+                                removeUnitPriceHistory: "pr/proto/unitprice/remove"
                             };
-                            function convertToTreeList() {
-                                var mockData = [];
-                                var parentNodes = [];
-                                mockData.map(function (item) {
-                                    var s = item.unitPriceCode;
-                                    if (s in parentNodes)
-                                        parentNodes[s] = item;
-                                    else
-                                        parentNodes[s] = item;
+                            function convertToTreeList(unitPriceHistoryList) {
+                                var groupByCode = {};
+                                unitPriceHistoryList.forEach(function (item) {
+                                    var c = item.unitPriceCode;
+                                    groupByCode[c] = item;
                                 });
-                                parentNodes.map(function (item) { new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, false); });
-                                var childNodes = mockData.map(function (item) { return new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, true); });
-                                console.log(mockData);
-                                console.log(parentNodes);
-                                console.log(childNodes);
-                                var merged = childNodes.concat(parentNodes);
-                                console.log(merged);
+                                var arr = Object.keys(groupByCode).map(function (key) { return groupByCode[key]; });
+                                var parentNodes = arr.map(function (item) { return new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, false, []); });
+                                var childNodes = unitPriceHistoryList.map(function (item) { return new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true); });
+                                var treeList = parentNodes.map(function (parent) {
+                                    childNodes.forEach(function (child) { return parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''); });
+                                    return parent;
+                                });
+                                return treeList;
                             }
                             function getUnitPriceHistoryList() {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.getUnitPriceHistoryList)
                                     .done(function (res) {
-                                    dfd.resolve(null);
                                     var unitPriceHistoryList = res;
-                                    console.log(unitPriceHistoryList);
+                                    dfd.resolve(convertToTreeList(unitPriceHistoryList));
                                 })
                                     .fail(function (res) {
                                     dfd.reject(res);
@@ -47,68 +47,51 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getUnitPriceHistoryList = getUnitPriceHistoryList;
-                            function create(unitPriceHistory) {
-                                var data = { unitPriceHistory: unitPriceHistory };
-                                return null;
+                            function getUnitPriceHistoryDetail(id) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
                             }
-                            service.create = create;
-                            function update(unitPriceHistory) {
+                            service.getUnitPriceHistoryDetail = getUnitPriceHistoryDetail;
+                            function save(unitPriceHistory) {
                                 var data = { unitPriceHistory: unitPriceHistory };
-                                return null;
+                                console.log(data);
                             }
-                            service.update = update;
+                            service.save = save;
                             function remove(id) {
+                                console.log(id);
                                 return null;
                             }
                             service.remove = remove;
-                            /**
-                            * Model namespace.
-                            */
                             var model;
                             (function (model) {
                                 var UnitPriceHistoryDto = (function () {
-                                    function UnitPriceHistoryDto(id, unitPriceCode, unitPriceName, startMonth, endMonth, budget, fixPaySettingType, fixPayAtr, fixPayAtrMonthly, fixPayAtrDayMonth, fixPayAtrDaily, fixPayAtrHourly, memo) {
-                                        this.id = id;
-                                        this.unitPriceCode = unitPriceCode;
-                                        this.unitPriceName = unitPriceName;
-                                        this.startMonth = startMonth;
-                                        this.endMonth = endMonth;
-                                        this.budget = budget;
-                                        this.fixPaySettingType = fixPaySettingType;
-                                        this.fixPayAtr = fixPayAtr;
-                                        this.fixPayAtrMonthly = fixPayAtrMonthly;
-                                        this.fixPayAtrDayMonth = fixPayAtrDayMonth;
-                                        this.fixPayAtrDaily = fixPayAtrDaily;
-                                        this.fixPayAtrHourly = fixPayAtrHourly;
+                                    function UnitPriceHistoryDto() {
                                     }
                                     return UnitPriceHistoryDto;
                                 }());
                                 model.UnitPriceHistoryDto = UnitPriceHistoryDto;
                                 var UnitPriceHistoryNode = (function () {
-                                    function UnitPriceHistoryNode(id, code, name, monthRange, isChild, childs) {
+                                    function UnitPriceHistoryNode(id, unitPriceCode, unitPriceName, startMonth, endMonth, isChild, childs) {
                                         var self = this;
-                                        self.id = id;
-                                        self.code = code;
-                                        self.name = name;
-                                        self.monthRange = monthRange;
                                         self.isChild = isChild;
-                                        self.nodeText = self.code + ' ' + self.name;
+                                        self.unitPriceCode = unitPriceCode;
+                                        self.unitPriceName = unitPriceName;
+                                        self.startMonth = startMonth;
+                                        self.endMonth = endMonth;
+                                        self.id = self.isChild == true ? id : id + id;
                                         self.childs = childs;
-                                        if (self.isChild == true) {
-                                            self.nodeText = self.monthRange.startMonth + self.monthRange.endMonth;
-                                        }
+                                        self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
                                     }
                                     return UnitPriceHistoryNode;
                                 }());
                                 model.UnitPriceHistoryNode = UnitPriceHistoryNode;
-                                var MonthRange = (function () {
-                                    function MonthRange(startMonth, endMonth) {
-                                        this.startMonth = startMonth;
-                                        this.endMonth = endMonth;
-                                    }
-                                    return MonthRange;
-                                }());
-                                model.MonthRange = MonthRange;
                                 (function (SettingType) {
                                     SettingType[SettingType["Company"] = 0] = "Company";
                                     SettingType[SettingType["Contract"] = 1] = "Contract";

@@ -34,9 +34,9 @@
 				<button id="btn_001" data-bind="enable: false"
 					class="large btn-default">新規</button>
 				<button id="btn_002" class="large proceed btn-default"
-					data-bind="click: clearUnitPriceDetail">登録</button>
+					data-bind="click: save">登録</button>
 				<button id="btn_003" class="large btn-default"
-					data-bind="click: collectData">印刷 (PDF)</button>
+					data-bind="click: clearUnitPriceDetail">印刷 (PDF)</button>
 				<button id="btn_006" class="large btn-default"
 					data-bind="click: test">マスタ修正ログ</button>
 			</div>
@@ -52,7 +52,7 @@
 						<button id="sch_001" class="caret-bottom caret-background">検索</button>
 					</div>
 					<div class="hidden"
-						data-bind="ntsSearchBox: {items: historyList, selected: selectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code', 'monthRange']}"></div>
+						data-bind="ntsSearchBox: {items: historyList, selected: selectedId, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code', 'monthRange']}"></div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: true">履歴追加</button>
@@ -65,8 +65,8 @@
 										width: 280,
 										height: 350,
 										options: historyList,
-										value: selectedCode,
-										optionsValue: 'code',
+										value: selectedId,
+										optionsValue: 'id',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
 										multiple: false,
@@ -86,13 +86,13 @@
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
 							<td colspan="2"><input id="inpCode" class="inp-default"
 								data-bind="ntsTextEditor: {
-									value: code,
+									value: unitPriceHistoryModel().unitPriceCode,
 									constraint: 'UnitPriceCode',
 									option: textEditorOption,
 									required: true}" />
 								<input id="inpName" class="inp-default"
 								data-bind="ntsTextEditor: {
-									value: name,
+									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
 									option: textEditorOption,
 									required: true}" />
@@ -101,16 +101,16 @@
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span id="ipnStartDate" data-bind="ntsDatePicker: {value: startDate, dateFormat: 'yyyy/MM'}"></span>
-								<label id="lbl_005" data-bind="text: endDate()"></label>
+							<td><span id="ipnStartMonth" data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
+								<label id="lblEndMonth" data-bind="text: unitPriceHistoryModel().endMonth()"></label>
 								</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><input id="inpMoney" class="inp-default"
+							<td><input id="inpBudget" class="inp-default"
 								data-bind="ntsNumberEditor: {
-									value: money,
+									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
 									option: currencyEditorOption,
 									required: true}" />
@@ -120,13 +120,13 @@
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 1, checked: settingType" /> <span
+									data-bind="checkedValue: 0, checked: unitPriceHistoryModel().fixPaySettingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 2, checked: settingType" /> <span
+									data-bind="checkedValue: 1, checked: unitPriceHistoryModel().fixPaySettingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
@@ -138,8 +138,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (settingType()==1),
-						value: payAtr}"></div></td>
+						enable: !isContractSettingEnabled(),
+						value: unitPriceHistoryModel().fixPayAtr}"></div></td>
 							<td><label id="lbl_009">月給者</label></td>
 							<td class="">
 								<div id="sel_003"
@@ -147,8 +147,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (settingType()==2),
-						value: payAtrMonthly}"></div>
+						enable: isContractSettingEnabled(),
+						value: unitPriceHistoryModel().fixPayAtrMonthly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -160,8 +160,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (settingType()==2),
-						value: payAtrDayMonth}"></div>
+						enable: isContractSettingEnabled,
+						value: unitPriceHistoryModel().fixPayAtrDayMonth}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -173,8 +173,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (settingType()==2),
-						value: payAtrDaily}"></div>
+						enable: isContractSettingEnabled,
+						value: unitPriceHistoryModel().fixPayAtrDaily}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -186,8 +186,8 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: (settingType()==2),
-						value: payAtrHourly}"></div>
+						enable: isContractSettingEnabled,
+						value: unitPriceHistoryModel().fixPayAtrHourly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -199,8 +199,8 @@
 						<tr>
 							<td class="valign-top"><div id="lbl_008"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
-							<td colspan="3"><div id="inp_006">
-									<TEXTAREA placeholder="" data-bind="value: memo"
+							<td colspan="3"><div id="inpMemo">
+									<TEXTAREA placeholder="" data-bind="value: unitPriceHistoryModel().memo"
 										class="inp-default"></TEXTAREA>
 								</div></td>
 						</tr>
