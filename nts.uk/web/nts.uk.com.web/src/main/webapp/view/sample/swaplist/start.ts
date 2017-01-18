@@ -16,9 +16,8 @@ __viewContext.ready(function() {
             this.itemsSwap(array);
 
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '説明', prop: 'description', width: 200 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
 
             this.currentCodeListSwap = ko.observableArray([]);
