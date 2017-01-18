@@ -2352,6 +2352,29 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
 }
 
+/* line 1, ../sass/components/_updown.scss */
+.ntsUpDown {
+  width: 70px;
+  height: 100%;
+  display: inline-block;
+}
+
+/* line 6, ../sass/components/_updown.scss */
+.upDown-container {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* line 10, ../sass/components/_updown.scss */
+.ntsUpDownButton {
+  width: 70px;
+}
+
+/* line 13, ../sass/components/_updown.scss */
+.ntsUpButton {
+  margin-bottom: 10px;
+}
+
 /* line 1, ../sass/components/_searchbox.scss */
 input.ntsSearchBox {
   box-sizing: border-box;
