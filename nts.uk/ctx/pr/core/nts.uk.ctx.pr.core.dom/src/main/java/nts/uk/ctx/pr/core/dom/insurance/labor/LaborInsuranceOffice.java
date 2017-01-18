@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
@@ -21,6 +22,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class LaborInsuranceOffice.
  */
 @Getter
+@Setter
 public class LaborInsuranceOffice extends AggregateRoot {
 
 	/** The company code. */

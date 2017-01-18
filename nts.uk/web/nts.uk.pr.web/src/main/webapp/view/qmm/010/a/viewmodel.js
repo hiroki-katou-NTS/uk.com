@@ -11,20 +11,11 @@ var nts;
                     var a;
                     (function (a) {
                         var option = nts.uk.ui.option;
-                        var LaborInsuranceOffice = a.service.model.LaborInsuranceOffice;
-                        var LaborInsuranceOfficeInDTO = a.service.model.LaborInsuranceOfficeInDTO;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    var officeInfo001 = new LaborInsuranceOffice('companyCode001', '000000000001', 'A事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
-                                    var officeInfo003 = new LaborInsuranceOffice('companyCode001', '000000000003', 'C事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
-                                    var officeInfo002 = new LaborInsuranceOffice('companyCode001', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
-                                    self.lstlaborInsuranceOffice = [officeInfo001, officeInfo002, officeInfo003];
-                                    self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo001));
-                                    self.lstlaborInsuranceOfficeModel = ko.observableArray([new LaborInsuranceOfficeInDTO(officeInfo001),
-                                        new LaborInsuranceOfficeInDTO(officeInfo002), new LaborInsuranceOfficeInDTO(officeInfo003)]);
                                     self.textSearch = {
                                         valueSearch: ko.observable(""),
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -38,22 +29,8 @@ var nts;
                                         { headerText: 'コード', prop: 'code', width: 120 },
                                         { headerText: '名称', prop: 'name', width: 120 }
                                     ]);
-                                    self.selectCodeLstlaborInsuranceOffice = ko.observable(officeInfo001.code);
-                                    self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
-                                        self.showLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
-                                    });
                                     self.enableButton = ko.observable(true);
                                 }
-                                ScreenModel.prototype.showLaborInsuranceOffice = function (selectCodeLstlaborInsuranceOffice) {
-                                    var self = this;
-                                    if (selectCodeLstlaborInsuranceOffice != null && selectCodeLstlaborInsuranceOffice != undefined) {
-                                        for (var index = 0; index < self.lstlaborInsuranceOffice.length; index++) {
-                                            if (selectCodeLstlaborInsuranceOffice === self.lstlaborInsuranceOffice[index].code) {
-                                                self.laborInsuranceOffice(new LaborInsuranceOfficeModel(self.lstlaborInsuranceOffice[index]));
-                                            }
-                                        }
-                                    }
-                                };
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
                                     self.laborInsuranceOffice().resetAllValue();
@@ -63,6 +40,42 @@ var nts;
                                     self.enableButton(false);
                                     nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(function () {
                                         self.enableButton(true);
+                                    });
+                                };
+                                ScreenModel.prototype.startPage = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    self.findAllInsuranceOffice().done(function (data) {
+                                        self.findInsuranceOffice(self.selectCodeLstlaborInsuranceOffice()).done(function (data) { dfd.resolve(self); });
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.findAllInsuranceOffice = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    a.service.findAllLaborInsuranceOffice().done(function (data) {
+                                        self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
+                                        self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
+                                        self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
+                                            self.showInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                                        });
+                                        dfd.resolve(self);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.findInsuranceOffice = function (code) {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    a.service.findLaborInsuranceOffice(code).done(function (data) {
+                                        self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(data));
+                                        dfd.resolve(null);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.showInsuranceOffice = function (code) {
+                                    var self = this;
+                                    a.service.findLaborInsuranceOffice(code).done(function (data) {
+                                        self.laborInsuranceOffice(new LaborInsuranceOfficeModel(data));
                                     });
                                 };
                                 return ScreenModel;

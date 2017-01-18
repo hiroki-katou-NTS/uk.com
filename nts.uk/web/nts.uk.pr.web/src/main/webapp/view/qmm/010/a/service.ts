@@ -1,7 +1,42 @@
 module nts.uk.pr.view.qmm010.a {
     export module service {
+
+        var paths: any = {
+            findAllLaborInsuranceOffice: "pr/insurance/labor/findall",
+            findLaborInsuranceOffice: "pr/insurance/labor/findLaborInsuranceOffice"
+        };
+
+        //Function connection service FindAll Labor Insurance Office
+        export function findAllLaborInsuranceOffice(): JQueryPromise<Array<any>> {
+            var dfd = $.Deferred<Array<any>>();
+            nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
+                .done(function(res: Array<any>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function connection service findLaborInsuranceOffice By Code
+        export function findLaborInsuranceOffice(code: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + code)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        /**
+       * Model namespace.
+       */
         export module model {
-            export class LaborInsuranceOffice {
+            export class LaborInsuranceOfficeDto {
                 /** The company code.*/
                 companyCode: string;
                 /** The code. officeCode*/
@@ -68,7 +103,7 @@ module nts.uk.pr.view.qmm010.a {
                     this.memo = memo;
                 }
             }
-            export class LaborInsuranceOfficeInDTO {
+            export class LaborInsuranceOfficeInDto {
                 /** The company code.*/
                 companyCode: string;
                 /** The code. officeCode*/
@@ -76,7 +111,7 @@ module nts.uk.pr.view.qmm010.a {
                 /** The name. officeName*/
                 name: string;
 
-                //New LaborInsuranceOfficeInDTO
+                //New LaborInsuranceOfficeInDto
                 constructor(laborInsuranceOffice: LaborInsuranceOffice) {
                     this.companyCode = laborInsuranceOffice.companyCode;
                     this.code = laborInsuranceOffice.code;
