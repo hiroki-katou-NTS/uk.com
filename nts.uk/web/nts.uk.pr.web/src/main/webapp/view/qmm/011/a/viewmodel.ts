@@ -177,7 +177,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             openAddHistoryUnemployeeInsuranceRate() {
-                nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 480, width: 380, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
                 });
             }

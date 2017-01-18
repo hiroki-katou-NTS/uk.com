@@ -11,6 +11,7 @@ module nts.uk.pr.view.qmm010.a {
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
             textSearch: any;
+            enableButton: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 var officeInfo001 = new LaborInsuranceOffice('companyCode001', '000000000001', 'A事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
@@ -37,7 +38,7 @@ module nts.uk.pr.view.qmm010.a {
                 self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
                     self.showLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
                 });
-
+                self.enableButton = ko.observable(true);
             }
             showLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice: string) {
                 var self = this;
@@ -48,8 +49,18 @@ module nts.uk.pr.view.qmm010.a {
                         }
                     }
                 }
-
-
+            }
+            resetValueLaborInsurance() {
+                var self = this;
+                self.laborInsuranceOffice().resetAllValue();
+            }
+            readFromSocialTnsuranceOffice(){
+                var self =this;
+                self.enableButton(false);
+                   nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(() => {
+                       self.enableButton(true);
+                    //OnClose => call
+                });    
             }
         }
 
@@ -72,7 +83,7 @@ module nts.uk.pr.view.qmm010.a {
             officeNoC: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
             textEditorOption: KnockoutObservable<any>;
-            multilineeditor: any;
+            multilineeditor: KnockoutObservable<any>;
             constructor(officeInfo: LaborInsuranceOffice) {
                 this.code = ko.observable(officeInfo.code);
                 this.name = ko.observable(officeInfo.name);
@@ -92,7 +103,7 @@ module nts.uk.pr.view.qmm010.a {
                 this.officeNoC = ko.observable(officeInfo.officeNoC);
                 this.memo = ko.observable(officeInfo.memo);
                 this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                this.multilineeditor = {
+                this.multilineeditor = ko.observable({
                     memo: ko.observable(officeInfo.memo),
                     readonly: false,
                     constraint: 'ResidenceCode',
@@ -102,9 +113,40 @@ module nts.uk.pr.view.qmm010.a {
                         width: "",
                         textalign: "left"
                     })),
-                }
+                });
 
-
+            }
+            //Reset value in view Model
+            resetAllValue() {
+                this.code('');
+                this.name('');
+                this.shortName('');
+                this.picName('');
+                this.picPosition('');
+                this.postalCode('');
+                this.address1st('');
+                this.kanaAddress1st('');
+                this.address2nd('');
+                this.kanaAddress2nd('');
+                this.phoneNumber('');
+                this.citySign('');
+                this.officeMark('');
+                this.officeNoA('');
+                this.officeNoB('');
+                this.officeNoC('');
+                this.memo('');
+                this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                this.multilineeditor({
+                    memo: ko.observable(''),
+                    readonly: false,
+                    constraint: 'ResidenceCode',
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                        resizeable: true,
+                        placeholder: "Placeholder for text editor",
+                        width: "",
+                        textalign: "left"
+                    })),
+                });
             }
         }
     }

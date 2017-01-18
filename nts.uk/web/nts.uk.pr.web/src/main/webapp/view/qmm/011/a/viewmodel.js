@@ -142,7 +142,7 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openAddHistoryUnemployeeInsuranceRate = function () {
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 480, width: 380, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
                                     });
                                 };
                                 ScreenModel.prototype.openEditInsuranceBusinessType = function () {
