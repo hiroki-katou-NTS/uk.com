@@ -45,10 +45,6 @@
 	padding-bottom: 8px
 }
 
-#inp_001 {
-	width: 150px;
-}
-
 .v-align-top {
 	vertical-align: top;
 }
@@ -68,4 +64,8 @@
 
 .tab-content {
 	width: 800px;
+}
+
+.tab-inline {
+	padding-left: 20px;
 }
