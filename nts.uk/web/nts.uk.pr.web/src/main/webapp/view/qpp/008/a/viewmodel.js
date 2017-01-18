@@ -106,6 +106,11 @@ var qpp008;
                     nts.uk.ui.windows.sub.modal('/view/qpp/008/b/index.xhtml', { title: '印刷設定', dialogClass: 'no-close' }).onClosed(function () {
                     });
                 };
+                ScreenModel.prototype.openCDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal('/view/qpp/008/c/index.xhtml', { title: '出力項目の設定（共通）', dialogClass: 'no-close' }).onClosed(function () {
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

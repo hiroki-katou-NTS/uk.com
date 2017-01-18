@@ -220,6 +220,9 @@ module qpp008.c.viewmodel {
             });
             return dfd.promise();
         }
+        closeDialog(): any{
+            nts.uk.ui.windows.close();   
+        }
     }
     class ItemModel {
         code: string;
