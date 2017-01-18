@@ -1148,6 +1148,105 @@ button.caret-right:after {
   margin-left: -10px;
 }
 
+/* line 227, ../sass/components/_caret.scss */
+.caret-helpbutton {
+  position: absolute;
+  font-size: 10px;
+}
+/* line 231, ../sass/components/_caret.scss */
+.caret-helpbutton:before {
+  content: '';
+  position: absolute;
+  border-width: 1.1em;
+  color: rgba(0, 0, 0, 0.15);
+}
+/* line 237, ../sass/components/_caret.scss */
+.caret-helpbutton:after {
+  position: absolute;
+  border-width: 2em;
+  color: #E0F59E;
+}
+/* line 243, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right {
+  right: 0;
+}
+/* line 245, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right:before {
+  top: 0.5em;
+  border-left: 2.1em solid;
+  border-top: 1.1em solid transparent;
+  border-bottom: 1.1em solid transparent;
+  margin-right: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 253, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right:after {
+  top: 0.5em;
+  border-left: 2em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 260, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left {
+  left: -2em;
+}
+/* line 262, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left:before {
+  top: 0.5em;
+  border-right: 2.1em solid;
+  border-top: 1.1em solid transparent;
+  border-bottom: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 270, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left:after {
+  top: 0.5em;
+  border-right: 2em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 277, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top {
+  top: -2em;
+}
+/* line 279, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top:before {
+  left: 0.5em;
+  border-bottom: 2.1em solid;
+  border-right: 1.1em solid transparent;
+  border-left: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 287, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top:after {
+  left: 0.5em;
+  border-bottom: 2em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 294, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom {
+  bottom: 0;
+}
+/* line 296, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom:before {
+  left: 0.5em;
+  border-top: 2.1em solid;
+  border-right: 1.1em solid transparent;
+  border-left: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-bottom: -0.1em;
+}
+/* line 304, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom:after {
+  left: 0.5em;
+  border-top: 2em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -2764,6 +2863,21 @@ button.search-btn {
   bottom: 0;
   right: 0;
   left: 0;
+}
+
+/* line 1, ../sass/components/_helpbutton.scss */
+.ntsHelpButton {
+  display: inline-block;
+  position: relative;
+}
+/* line 5, ../sass/components/_helpbutton.scss */
+.ntsHelpButton .nts-help-button-image {
+  background-color: #E0F59E;
+  padding: 18px 12px;
+  position: absolute;
+  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 990;
 }
 
 /* line 1, ../sass/frame/_header.scss */
