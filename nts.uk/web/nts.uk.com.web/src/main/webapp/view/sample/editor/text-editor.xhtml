@@ -44,9 +44,13 @@
 						<div data-bind="with: texteditor">
 							<h3>TextEditor</h3>
 							<input data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							
 							<br/>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
+						<div>
+							<input data-bind="ntsTextEditor: {value: option.value}" />
 						</div>
 						<br/>
 						<article class="cf">
