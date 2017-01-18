@@ -12,28 +12,38 @@ var nts;
                     (function (a) {
                         var service;
                         (function (service) {
-                            var UnitPriceHistoryNode = (function () {
-                                function UnitPriceHistoryNode(code, name, monthRange, isChild, childs) {
-                                    var self = this;
-                                    self.code = code;
-                                    self.name = name;
-                                    self.monthRange = monthRange;
-                                    self.nodeText = self.code + ' ' + self.name;
-                                    self.isChild = isChild;
-                                    self.childs = childs;
-                                    if (self.isChild == true) {
-                                        self.nodeText = self.monthRange;
-                                    }
-                                }
-                                return UnitPriceHistoryNode;
-                            }());
-                            service.UnitPriceHistoryNode = UnitPriceHistoryNode;
-                            var paths = {};
-                            var mockData = [new UnitPriceHistoryNode('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
-                                new UnitPriceHistoryNode('002', '宿直単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0021', '宿直単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
+                            var paths = {
+                                getUnitPriceHistoryList: "pr/proto/unitprice/findall"
+                            };
+                            function convertToTreeList() {
+                                var mockData = [];
+                                var parentNodes = [];
+                                mockData.map(function (item) {
+                                    var s = item.unitPriceCode;
+                                    if (s in parentNodes)
+                                        parentNodes[s] = item;
+                                    else
+                                        parentNodes[s] = item;
+                                });
+                                parentNodes.map(function (item) { new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, false); });
+                                var childNodes = mockData.map(function (item) { return new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, true); });
+                                console.log(mockData);
+                                console.log(parentNodes);
+                                console.log(childNodes);
+                                var merged = childNodes.concat(parentNodes);
+                                console.log(merged);
+                            }
                             function getUnitPriceHistoryList() {
                                 var dfd = $.Deferred();
-                                dfd.resolve(mockData);
+                                nts.uk.request.ajax(paths.getUnitPriceHistoryList)
+                                    .done(function (res) {
+                                    dfd.resolve(null);
+                                    var unitPriceHistoryList = res;
+                                    console.log(unitPriceHistoryList);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
                                 return dfd.promise();
                             }
                             service.getUnitPriceHistoryList = getUnitPriceHistoryList;
@@ -56,24 +66,49 @@ var nts;
                             */
                             var model;
                             (function (model) {
-                                var UnitPriceDto = (function () {
-                                    function UnitPriceDto() {
-                                    }
-                                    return UnitPriceDto;
-                                }());
-                                model.UnitPriceDto = UnitPriceDto;
                                 var UnitPriceHistoryDto = (function () {
-                                    function UnitPriceHistoryDto() {
+                                    function UnitPriceHistoryDto(id, unitPriceCode, unitPriceName, startMonth, endMonth, budget, fixPaySettingType, fixPayAtr, fixPayAtrMonthly, fixPayAtrDayMonth, fixPayAtrDaily, fixPayAtrHourly, memo) {
+                                        this.id = id;
+                                        this.unitPriceCode = unitPriceCode;
+                                        this.unitPriceName = unitPriceName;
+                                        this.startMonth = startMonth;
+                                        this.endMonth = endMonth;
+                                        this.budget = budget;
+                                        this.fixPaySettingType = fixPaySettingType;
+                                        this.fixPayAtr = fixPayAtr;
+                                        this.fixPayAtrMonthly = fixPayAtrMonthly;
+                                        this.fixPayAtrDayMonth = fixPayAtrDayMonth;
+                                        this.fixPayAtrDaily = fixPayAtrDaily;
+                                        this.fixPayAtrHourly = fixPayAtrHourly;
                                     }
                                     return UnitPriceHistoryDto;
                                 }());
                                 model.UnitPriceHistoryDto = UnitPriceHistoryDto;
-                                var DateTimeDto = (function () {
-                                    function DateTimeDto() {
+                                var UnitPriceHistoryNode = (function () {
+                                    function UnitPriceHistoryNode(id, code, name, monthRange, isChild, childs) {
+                                        var self = this;
+                                        self.id = id;
+                                        self.code = code;
+                                        self.name = name;
+                                        self.monthRange = monthRange;
+                                        self.isChild = isChild;
+                                        self.nodeText = self.code + ' ' + self.name;
+                                        self.childs = childs;
+                                        if (self.isChild == true) {
+                                            self.nodeText = self.monthRange.startMonth + self.monthRange.endMonth;
+                                        }
                                     }
-                                    return DateTimeDto;
+                                    return UnitPriceHistoryNode;
                                 }());
-                                model.DateTimeDto = DateTimeDto;
+                                model.UnitPriceHistoryNode = UnitPriceHistoryNode;
+                                var MonthRange = (function () {
+                                    function MonthRange(startMonth, endMonth) {
+                                        this.startMonth = startMonth;
+                                        this.endMonth = endMonth;
+                                    }
+                                    return MonthRange;
+                                }());
+                                model.MonthRange = MonthRange;
                                 (function (SettingType) {
                                     SettingType[SettingType["Company"] = 0] = "Company";
                                     SettingType[SettingType["Contract"] = 1] = "Contract";
