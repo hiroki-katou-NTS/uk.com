@@ -10,14 +10,11 @@ var nts;
                 (function (qmm010) {
                     var b;
                     (function (b) {
-                        var SocialInsuranceOfficeInDTO = b.service.model.SocialInsuranceOfficeInDTO;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.lstSocialInsuranceOffice = ko.observableArray([new SocialInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
-                                        new SocialInsuranceOfficeInDTO('companyCode001', '000000000002', 'B事業所'), new SocialInsuranceOfficeInDTO('companyCode001', '000000000003', 'C事業所')]);
                                     self.employmentName = ko.observable("");
                                     self.textSearch = {
                                         valueSearch: ko.observable(""),
@@ -49,6 +46,23 @@ var nts;
                                         readonly: ko.observable(false)
                                     };
                                 }
+                                ScreenModel.prototype.startPage = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    self.findAllInsuranceOffice().done(function (data) {
+                                        dfd.resolve(self);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.findAllInsuranceOffice = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    b.service.findAllSocialInsuranceOffice().done(function (data) {
+                                        self.lstSocialInsuranceOffice = ko.observableArray(data);
+                                        dfd.resolve(self);
+                                    });
+                                    return dfd.promise();
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
