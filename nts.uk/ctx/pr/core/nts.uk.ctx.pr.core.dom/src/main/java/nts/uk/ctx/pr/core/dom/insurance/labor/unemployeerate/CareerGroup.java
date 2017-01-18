@@ -3,7 +3,7 @@
  * All right reserved.                                            *
  *****************************************************************/
 
-package nts.uk.ctx.pr.core.dom.insurance.labor;
+package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 /**
  * The Enum CareerGroup.

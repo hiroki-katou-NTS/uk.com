@@ -2,28 +2,28 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.labor;
+package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import java.util.List;
 
 /**
- * The Interface AccidentInsuranceRateRepository.
+ * The Interface HealthInsuranceRateRepository.
  */
-public interface AccidentInsuranceRateRepository {
+public interface HealthInsuranceRateRepository {
 
 	/**
 	 * Adds the.
 	 *
 	 * @param rate the rate
 	 */
-    void add(AccidentInsuranceRate rate);
+    void add(HealthInsuranceRate rate);
 
 	/**
 	 * Update.
 	 *
 	 * @param rate the rate
 	 */
-    void update(AccidentInsuranceRate rate);
+    void update(HealthInsuranceRate rate);
 
 	/**
 	 * Removes the.
@@ -39,13 +39,13 @@ public interface AccidentInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AccidentInsuranceRate> findAll(int companyCode);
+	List<HealthInsuranceRate> findAll(int companyCode);
 
 	/**
 	 * Find by id.
 	 *
 	 * @param id the id
-	 * @return the accident insurance rate
+	 * @return the pension rate
 	 */
-	AccidentInsuranceRate findById(String id);
+	HealthInsuranceRate findById(String id);
 }

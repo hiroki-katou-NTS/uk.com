@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.labor;
+package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import java.util.Set;
 
@@ -11,8 +11,14 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
-public class UnemployeeInsuranceRate extends AggregateRoot {
+public class AccidentInsuranceRate extends AggregateRoot {
 
 	/** The history id. */
 	// historyId
@@ -25,6 +31,6 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 	private MonthRange applyRange;
 
 	/** The short name. */
-	private Set<UnemployeeInsuranceRateItem> rateItems;
+	private Set<InsuBizRateItem> rateItems;
 
 }

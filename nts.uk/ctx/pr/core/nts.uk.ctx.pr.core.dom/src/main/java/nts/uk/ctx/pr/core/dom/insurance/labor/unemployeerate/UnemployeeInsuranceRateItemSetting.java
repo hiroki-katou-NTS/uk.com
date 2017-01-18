@@ -2,23 +2,21 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.labor;
+package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 
 /**
- * The Class InsuBizRateItem.
+ * The Class LaborInsuranceOffice.
  */
 @Getter
-public class InsuBizRateItem {
+public class UnemployeeInsuranceRateItemSetting {
 
-	/** The insu biz type. */
-	private BusinessTypeEnum insuBizType;
+	/** The company code. */
+	private RoundingMethod roundAtr;
 
-	/** The insu rate. */
-	private Double insuRate;
+	/** The code. */
+	private Double rate;
 
-	/** The insu round. */
-	private RoundingMethod insuRound;
 }

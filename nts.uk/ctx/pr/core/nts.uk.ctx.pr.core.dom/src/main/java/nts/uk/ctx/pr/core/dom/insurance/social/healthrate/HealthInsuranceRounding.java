@@ -2,25 +2,23 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.social;
+package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 
 /**
- * The Class InsuranceRateItem.
+ * The Class HealthInsuranceRounding.
  */
 @Getter
-public class InsuranceRateItem extends AggregateRoot {
-
-	/** The charge rate. */
-	private ChargeRateItem chargeRate;
+public class HealthInsuranceRounding extends AggregateRoot {
 
 	/** The pay type. */
 	private PaymentType payType;
 
-	/** The insurance type. */
-	private HealthInsuranceType insuranceType;
+	/** The round atrs. */
+	private RoundingItem roundAtrs;
 
 }

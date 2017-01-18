@@ -2,28 +2,28 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.labor;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.List;
 
 /**
- * The Interface UnemployeeInsuranceRateRepository.
+ * The Interface PensionRateRepository.
  */
-public interface UnemployeeInsuranceRateRepository {
+public interface PensionRateRepository {
 
 	/**
 	 * Adds the.
 	 *
 	 * @param rate the rate
 	 */
-    void add(UnemployeeInsuranceRate rate);
+    void add(PensionRate rate);
 
 	/**
 	 * Update.
 	 *
 	 * @param rate the rate
 	 */
-    void update(UnemployeeInsuranceRate rate);
+    void update(PensionRate rate);
 
 	/**
 	 * Removes the.
@@ -39,13 +39,13 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnemployeeInsuranceRate> findAll(int companyCode);
+	List<PensionRate> findAll(int companyCode);
 
 	/**
 	 * Find by id.
 	 *
 	 * @param id the id
-	 * @return the unemployee insurance rate
+	 * @return the pension rate
 	 */
-	UnemployeeInsuranceRate findById(String id);
+	PensionRate findById(String id);
 }

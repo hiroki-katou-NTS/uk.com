@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.social;
+package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 /**
- * The Class PensionRate.
+ * The Class HealthInsuranceRate.
  */
 @Getter
-public class PensionRate extends AggregateRoot {
+public class HealthInsuranceRate extends AggregateRoot {
 
 	/** The history id. */
 	// historyId
@@ -31,19 +31,15 @@ public class PensionRate extends AggregateRoot {
 	/** The apply range. */
 	private MonthRange applyRange;
 
+	/** The auto calculate. */
+	private Boolean autoCalculate;
+
 	/** The max amount. */
 	private Long maxAmount;
 
-	/** The fund rate items. */
-	private List<FundRateItem> fundRateItems;
-
-	/** The premium rate items. */
-	private List<PensionPremiumRateItem> premiumRateItems;
-
-	/** The child contribution rate. */
-	private Double childContributionRate;
+	/** The rate items. */
+	private List<InsuranceRateItem> rateItems;
 
 	/** The rounding methods. */
-	private List<PensionRateRounding> roundingMethods;
-
+	private List<HealthInsuranceRounding> roundingMethods;
 }
