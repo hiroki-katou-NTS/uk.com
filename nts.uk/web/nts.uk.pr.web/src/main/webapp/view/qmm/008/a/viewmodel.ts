@@ -1,36 +1,44 @@
 module nts.uk.pr.view.qmm008.a {
     export module viewmodel {
         import InsuranceOfficeItem = service.model.finder.InsuranceOfficeItemDto
-
+        import RoundingItem = service.model.finder.RoundingItemDto
+        import HealthInsuranceRateDto = service.model.finder.HealthInsuranceRateDto;
+        import PensionRateDto = service.model.finder.PensionRateDto;
+        import PaymentType = service.model.PaymentType;
+        import HealthInsuranceType = service.model.HealthInsuranceType;
         export class ScreenModel {
             //Health insurance rate Model
-            healthInsuranceRateModel: KnockoutObservable<HealthInsuranceRateModel>;
+            healthModel: KnockoutObservable<HealthInsuranceRateModel>;
+            pensionModel: KnockoutObservable<PensionRateModel>
             InsuranceOfficeList: KnockoutObservableArray<InsuranceOfficeItem>;
-            selectedInsuranceOfficeId:KnockoutObservable<string>;
+            selectedInsuranceOfficeId: KnockoutObservable<string>;
             searchKey: KnockoutObservable<string>;
+
             //list rounding options
-            roundingList: KnockoutObservableArray<RoundingItemModel>
+            roundingList: KnockoutObservableArray<RoundingItem>;
             //health input options 
             healthInputOptions: any;
-            
+            //healthTimeInput options
+            timeInputOptions: any;
+            // moneyInputOptions
+            moneyInputOptions: any;
+            // numberInputOptions
+            numberInputOptions: any;
+
             index: number;
             dataSource: any;
             filteredData: any;
             singleSelectedCode: any;
-            selectedCodes: any;
+            officeSelectedCode: any;
             headers: any;
             //        for health auto calculate switch button
-            roundingRules: KnockoutObservableArray<any>;
-            selectedRuleCode: any;
-            enable: KnockoutObservable<boolean>;
+            healthAutoCalculateOptions: KnockoutObservableArray<any>;
+            selectedRuleCode: any;//
             //        for pension fund switch button
             pensionFundInputOptions: KnockoutObservableArray<any>;
-            pensionFundInputSelectedCode: any;
-            pensionFundInputEnable: KnockoutObservable<boolean>;
             //        for pension auto calculate switch button
             pensionCalculateOptions: KnockoutObservableArray<any>;
             pensionCalculateSelectedCode: any;
-            pensionCalculateEnable: KnockoutObservable<boolean>;
             //        for table
             itemList: KnockoutObservableArray<any>;
             date: KnockoutObservable<Date>;
@@ -40,125 +48,62 @@ module nts.uk.pr.view.qmm008.a {
             value: KnockoutObservable<string>;
             isTransistReturnData: KnockoutObservable<boolean>;
             //health history input
-            healthTimeInput: any;
+            healthDate : any;
             //pension history input
             pensionTimeInput: any;
-            //health inputs
-            healthSalaryPersonalGeneral: KnockoutObservable<number>;
-            healthSalaryPersonalNursing: any;
-            healthSalaryPersonalBasic: any;
-            healthSalaryPersonalSpecific: any;
-            healthSalaryCompanyGeneral: any;
-            healthSalaryCompanyNursing: KnockoutObservable<number>;
-            healthSalaryCompanyBasic: KnockoutObservable<number>;
-            healthSalaryCompanySpecific: KnockoutObservable<number>;
-
-            healthBonusPersonalGeneral: any;
-            healthBonusPersonalNursing: KnockoutObservable<number>;
-            healthBonusPersonalBasic: KnockoutObservable<number>;
-            healthBonusPersonalSpecific: KnockoutObservable<number>;
-            healthBonusCompanyGeneral: any;
-            healthBonusCompanyNursing: KnockoutObservable<number>;
-            healthBonusCompanyBasic: KnockoutObservable<number>;
-            healthBonusCompanySpecific: KnockoutObservable<number>;
-            
-            //pension inputs
-            pension_inp_003: any;
-            pension_inp_004: any;
-            pension_inp_005: any;
-            pension_inp_006: any;
-
-            //for health rounding combobox
-            comboBox1: KnockoutObservableArray<RoundingItemModel>;
-            comboBox1ItemName: KnockoutObservable<string>;
-            comboBox1CurrentCode: KnockoutObservable<number>
-            comboBox1SelectedCode: KnockoutObservable<string>;
-
-            comboBox2: KnockoutObservableArray<RoundingItemModel>;
-            comboBox2ItemName: KnockoutObservable<string>;
-            comboBox2CurrentCode: KnockoutObservable<number>
-            comboBox2SelectedCode: KnockoutObservable<string>;
-
-            comboBox3: KnockoutObservableArray<RoundingItemModel>;
-            comboBox3ItemName: KnockoutObservable<string>;
-            comboBox3CurrentCode: KnockoutObservable<number>
-            comboBox3SelectedCode: KnockoutObservable<string>;
-
-            comboBox4: KnockoutObservableArray<RoundingItemModel>;
-            comboBox4ItemName: KnockoutObservable<string>;
-            comboBox4CurrentCode: KnockoutObservable<number>
-            comboBox4SelectedCode: KnockoutObservable<string>;
-
-            //for pension rounding combobox
-            comboBox5: KnockoutObservableArray<RoundingItemModel>;
-            comboBox5ItemName: KnockoutObservable<string>;
-            comboBox5CurrentCode: KnockoutObservable<number>
-            comboBox5SelectedCode: KnockoutObservable<string>;
-
-            comboBox6: KnockoutObservableArray<RoundingItemModel>;
-            comboBox6ItemName: KnockoutObservable<string>;
-            comboBox6CurrentCode: KnockoutObservable<number>
-            comboBox6SelectedCode: KnockoutObservable<string>;
-
-            comboBox7: KnockoutObservableArray<RoundingItemModel>;
-            comboBox7ItemName: KnockoutObservable<string>;
-            comboBox7CurrentCode: KnockoutObservable<number>
-            comboBox7SelectedCode: KnockoutObservable<string>;
-
-            comboBox8: KnockoutObservableArray<RoundingItemModel>;
-            comboBox8ItemName: KnockoutObservable<string>;
-            comboBox8CurrentCode: KnockoutObservable<number>
-            comboBox8SelectedCode: KnockoutObservable<string>;
-
             //healthTotal
-            healthTotal: any;
+            healthTotal: KnockoutObservable<number>;
             //pensionCurrency
-            pensionCurrency: any;
-            pensionOwnerRate: any;
+            pensionCurrency: KnockoutObservable<number>;
+            pensionOwnerRate: KnockoutObservable<number>;
             constructor() {
                 var self = this;
-                self.healthInsuranceRateModel = new HealthInsuranceRateModel("code","name",true,null,null);
-                //nhan mang cac cong ty bao hiem
-                self.InsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([
-                    new InsuranceOfficeItem('id01', 'A 事業所', 'code1',[
-                        new InsuranceOfficeItem('child01', '~ 9999/12', '2016/04',[]),
-                        new InsuranceOfficeItem('child02', '~ 9999/12', '2016/04',[])
-                    ]),
-                    new InsuranceOfficeItem('id02', 'B 事業所', 'code2',[])]);
+                self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null,15000));
+                self.pensionModel = ko.observable(new PensionRateModel("code",1,2,null,null,null,35000,1.5));
+                // init insurance offices list
+                self.InsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
 
                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.InsuranceOfficeList(), "childs"));
                 self.singleSelectedCode = ko.observable(null);
-                self.selectedCodes = ko.observableArray([]);
+                self.officeSelectedCode = ko.observable('');
                 self.index = 0;
                 self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
-                //rounding list
-                self.roundingList=ko.observableArray<RoundingItemModel>([
-                    new RoundingItemModel('001', 'op1change'),
-                    new RoundingItemModel('002', 'op2'),
-                    new RoundingItemModel('003', 'op3')
-                ]);
+
+                self.searchKey = ko.observable('');
+                //init rounding list
+                self.roundingList = ko.observableArray<RoundingItem>([]);
                 //define input options
                 self.healthInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2
                 }));
-                
+                //healthTimeInput options
+                self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    width: "100",
+                    textalign: "center"
+                }));
+                self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                    grouplength: 3,
+                    currencyformat: "JPY",
+                    currencyposition: 'right'
+                }));
+                self.numberInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3,
+                    decimallength: 2
+                }));
                 //health calculate switch
-                self.enable = ko.observable(true);
-                self.roundingRules = ko.observableArray([
+                self.healthAutoCalculateOptions = ko.observableArray([
                     { code: '1', name: 'する' },
                     { code: '2', name: 'しない' }
                 ]);
-                self.selectedRuleCode = ko.observable(1);
+                self.selectedRuleCode = ko.observable(1);//
                 //pension fund switch 
-                self.pensionFundInputEnable = ko.observable(true);
                 self.pensionFundInputOptions = ko.observableArray([
                     { code: '1', name: '有' },
                     { code: '2', name: '無' }
                 ]);
-                self.pensionFundInputSelectedCode = ko.observable(1);
                 //pension calculate switch 
-                self.pensionCalculateEnable = ko.observable(true);
                 self.pensionCalculateOptions = ko.observableArray([
                     { code: '1', name: 'する' },
                     { code: '2', name: 'しない' }
@@ -176,126 +121,31 @@ module nts.uk.pr.view.qmm008.a {
                 // add history dialog
                 self.value = ko.observable("Hello world!");
                 self.isTransistReturnData = ko.observable(false);
-                //health history input
-                self.healthTimeInput = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
+                // health history input
+                self.healthDate= ko.observable('2016/04');
                 //pension history input
-                self.pensionTimeInput = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-
-                //health inputs
-                self.healthSalaryPersonalGeneral= ko.observable(100000);
-                self.healthSalaryCompanyGeneral= ko.observable(100000);
-                self.healthBonusPersonalGeneral= ko.observable(100000);
-                self.healthBonusCompanyGeneral= ko.observable(100000);
-//                self.healthSalaryPersonalGeneral = {
-//                    value: ko.observable(1),
-//                    constraint: '',
-//                    option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-//                        grouplength: 3,
-//                        decimallength: 2
-//                    })),
-//                };
+                self.pensionTimeInput = ko.observable("time");
                 
-                //for health rounding combobox
-                self.comboBox1 = ko.observableArray(self.roundingList());
-                self.comboBox1ItemName = ko.observable('');
-                self.comboBox1CurrentCode = ko.observable(3);
-                self.comboBox1SelectedCode = ko.observable('002');
-
-                self.comboBox2 = ko.observableArray(self.roundingList());
-                self.comboBox2ItemName = ko.observable('');
-                self.comboBox2CurrentCode = ko.observable(3);
-                self.comboBox2SelectedCode = ko.observable('002');
-
-                self.comboBox3 = ko.observableArray(self.roundingList());
-                self.comboBox3ItemName = ko.observable('');
-                self.comboBox3CurrentCode = ko.observable(3);
-                self.comboBox3SelectedCode = ko.observable('002');
-
-                self.comboBox4 = ko.observableArray(self.roundingList());
-                self.comboBox4ItemName = ko.observable('');
-                self.comboBox4CurrentCode = ko.observable(3);
-                self.comboBox4SelectedCode = ko.observable('002');
-
-                //for pension rounding combobox
-                self.comboBox5 = ko.observableArray(self.roundingList());
-                self.comboBox5ItemName = ko.observable('');
-                self.comboBox5CurrentCode = ko.observable(3);
-                self.comboBox5SelectedCode = ko.observable('002');
-
-                self.comboBox6 = ko.observableArray(self.roundingList());
-                self.comboBox6ItemName = ko.observable('');
-                self.comboBox6CurrentCode = ko.observable(3);
-                self.comboBox6SelectedCode = ko.observable('002');
-
-                self.comboBox7 = ko.observableArray(self.roundingList());
-                self.comboBox7ItemName = ko.observable('');
-                self.comboBox7CurrentCode = ko.observable(3);
-                self.comboBox7SelectedCode = ko.observable('002');
-
-                self.comboBox8 = ko.observableArray(self.roundingList());
-                self.comboBox8ItemName = ko.observable('');
-                self.comboBox8CurrentCode = ko.observable(3);
-                self.comboBox8SelectedCode = ko.observable('002');
                 // Health CurrencyEditor
-                self.healthTotal = {
-                    value: ko.observable(5400000),
-                    constraint: '',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                        grouplength: 3,
-                        currencyformat: "JPY",
-                        currencyposition: 'right'
-                    })),
-                    required: ko.observable(false),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                self.healthTotal = ko.observable(5400000);
                 //Pension CurrencyEditor
-                self.pensionCurrency = {
-                    value: ko.observable(1500000),
-                    constraint: '',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                        grouplength: 3,
-                        currencyformat: "JPY",
-                        currencyposition: 'right'
-                    })),
-                    required: ko.observable(false),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                self.pensionCurrency = ko.observable(1500000);
                 //pension owner rate
-                self.pensionOwnerRate = {
-                    value: ko.observable(1.5),
-                    constraint: '',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                        grouplength: 3,
-                        decimallength: 2
-                    })),
-                    required: ko.observable(false),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                self.pensionOwnerRate = ko.observable(1.5);
+
+                self.officeSelectedCode.subscribe(function(officeSelectedCode: string) {
+                    if (officeSelectedCode != null || officeSelectedCode != undefined) {
+//                        alert(officeSelectedCode);
+                        $.when(self.load(officeSelectedCode)).done(function() {
+                            //load data success
+                        }).fail(function(res) {
+                            //TODO when load data error
+                        });
+                    }
+                });
             } //end construct
-            
-            testObservable(){
-            this.healthSalaryPersonalGeneral(this.healthTimeInput.value());    
+
+            testObservable() {
             }
             // Start
             public start(): JQueryPromise<any> {
@@ -305,7 +155,7 @@ module nts.uk.pr.view.qmm008.a {
                 self.loadAllInsuranceOffice().done(function() {
                     // Load first result.
                     if (self.InsuranceOfficeList().length > 0) {
-                        self.selectedInsuranceOfficeId(_self.InsuranceOfficeList()[0].id);
+                        //                        self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
                     } else {
                         //TODO Open register new office screen
                     }
@@ -320,47 +170,103 @@ module nts.uk.pr.view.qmm008.a {
                 return dfd.promise();
             }
             public loadAllInsuranceOffice(): JQueryPromise<any> {
-                var _self = this;
+                var self = this;
                 var dfd = $.Deferred<any>();
                 // Invoked service method
-                service.findInsuranceOffice(_self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
+                service.findInsuranceOffice(self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
                     // Set list.
-                    _self.InsuranceOfficeList(data);
-                    dfd.resolve(null);
+                    self.InsuranceOfficeList(data);
+                    dfd.resolve(data);
                 });
                 // Return.
                 return dfd.promise();
             }
             public getAllRounding(): JQueryPromise<any> {
-                var _self = this;
+                var self = this;
                 var dfd = $.Deferred<any>();
                 // Invoked service method
-                service.findAllRounding().done(function(data: Array<RoundingItemModel>) {
+                service.findAllRounding().done(function(data: Array<RoundingItem>) {
                     // Set list.
-                    _self.roundingList(data);
-                    dfd.resolve(null);
+                    self.roundingList(data);
+                    dfd.resolve(data);
                 });
                 // Return.
+                return dfd.promise();
+            }
+            //load data of item by code
+            public load(code: string): JQueryPromise<any> {
+                var self = this;
+
+                var dfd = $.Deferred<any>();
+
+                // Block UI with processing in long time.
+                service.getHealthInsuranceItemDetail(code).done(function(data: HealthInsuranceRateDto) {
+                    if (data == null) {
+                        return;
+                    }
+                    // Set detail.
+                    self.healthModel().historyId = data.historyId;
+                    self.healthModel().companyCode = data.companyCode;
+                    self.healthModel().officeCode(data.officeCode);
+                    self.healthModel().autoCalculate(data.autoCalculate);
+                    self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].chargeRate);
+                    self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[1].chargeRate);
+                    self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[2].chargeRate);
+                    self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[3].chargeRate);
+                    self.healthModel().roundingMethods().healthSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
+                    self.healthModel().roundingMethods().healthSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
+                    self.healthModel().roundingMethods().healthBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
+                    self.healthModel().roundingMethods().healthBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
+                    self.healthModel().maxAmount(data.maxAmount);
+                    // Resolve
+                    dfd.resolve();
+                }).fail(function() {
+                }).always(function(res) {
+                });
+                
+                // Block UI with processing in long time.
+                service.getPensionItemDetail(code).done(function(data: PensionRateDto) {
+                    if (data == null) {
+                        return;
+                    }
+                    // Set detail.
+                    self.pensionModel().historyId = data.historyId;
+                    self.pensionModel().companyCode = data.companyCode;
+                    self.pensionModel().officeCode(data.officeCode);
+                    self.pensionModel().autoCalculate(data.autoCalculate);
+                    self.pensionModel().funInputOption(data.fundInputOption);
+                    
+                    self.pensionModel().rateItems().pensionSalaryPersonalSon(data.rateItems[0].chargeRate);
+                    self.pensionModel().rateItems().pensionSalaryCompanySon(data.rateItems[0].chargeRate);
+                    self.pensionModel().rateItems().pensionBonusPersonalSon(data.rateItems[0].chargeRate);
+                    self.pensionModel().rateItems().pensionBonusCompanySon(data.rateItems[0].chargeRate);
+                    
+                    self.pensionModel().fundRateItems().salaryPersonalSonExemption(data.fundRateItems[0].chargeRate);
+                    self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].chargeRate);
+                    self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].chargeRate);
+                    self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].chargeRate);
+                    
+                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
+                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
+                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
+                    self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
+                    
+                    self.pensionModel().maxAmount(data.maxAmount);
+                    self.pensionModel().officeRate(data.officeRate);
+                    // Resolve
+                    dfd.resolve();
+                }).fail(function() {
+                }).always(function(res) {
+                });
+                
+                // Ret promise.
                 return dfd.promise();
             }
             resetSelection(): void {
                 var self = this;
                 self.filteredData(self.dataSource());
                 self.singleSelectedCode('0002');
-                self.selectedCodes(['002']);
-            }
-
-            changeDataSource(): void {
-                var self = this;
-                var i = 0;
-                var newArrays = new Array();
-                while (i < 50) {
-                    self.index++;
-                    i++;
-                    newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
-                };
-                self.dataSource(newArrays);
-                self.filteredData(newArrays);
+                self.officeSelectedCode(['002']);
             }
             // toggle expand table
             toggle() {
@@ -374,8 +280,8 @@ module nts.uk.pr.view.qmm008.a {
                     $("#tabs-complex").width("auto");
             }
             //Chuyen tu data nhan ve chuyen thanh mang de hien thi ra list
-            convertListToParentChilds(){
-                
+            convertListToParentChilds() {
+
             }
             // open sub window 
             OpenModalSubWindow() {
@@ -427,52 +333,275 @@ module nts.uk.pr.view.qmm008.a {
             }
         }
 
-        export class Node {
-            code: string;
-            name: string;
-            nodeText: string;
-            custom: string;
-            childs: any;
-            constructor(code: string, name: string, childs: Array<Node>) {
-                var self = this;
-                self.code = code;
-                self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
-                self.childs = childs;
-                self.custom = 'Random' + new Date().getTime();
-            }
-        }
-
-        export class RoundingItemModel {
-            code: string;
-            name: string;
-            label: string;
-
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-
         export class HealthInsuranceRateModel {
+            healthDate: any;
             historyId: number;
-            companyCode: KnockoutObservable<string>;
+            companyCode: string;
             officeCode: KnockoutObservable<string>;
             applyRange: string;
-            autoCalculate: KnockoutObservable<boolean>;
-            rateItems: KnockoutObservableArray<HealthInsuranceRateItemModel>;
-            roundingMethods: KnockoutObservable<HealthInsuranceRounding>;
-            maxAmount;
-            constructor(companyCode : string,officeCode: string,autoCaculate: boolean,rateItems :Array<HealthInsuranceRateItemModel>,roundingMethods: Array<HealthInsuranceRounding> ){
-                }
+            autoCalculate: KnockoutObservable<number>;
+            rateItems: KnockoutObservable<HealthInsuranceRateItemModel>;
+            roundingMethods: KnockoutObservable<HealthInsuranceRoundingModel>;
+            maxAmount: KnockoutObservable<number>;
+            constructor(officeCode: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel,roundingMethods: HealthInsuranceRoundingModel, maxAmount:number) {
+                this.healthDate = ko.observable('2016/04');
+                this.officeCode= ko.observable('');
+                this.autoCalculate= ko.observable(autoCalculate);
+                this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
+                this.roundingMethods= ko.observable(new HealthInsuranceRoundingModel());
+                this.maxAmount= ko.observable(0);
+            }
 
         }
 
-        export class HealthInsuranceRateItemModel {
-            chargeRate: KnockoutObservable<ChargeRateItem>;//value of person or company
-            payType: KnockoutObservable<number>;//enum (salary,bonus)
-            HealthInsuranceType: KnockoutObservable<number>;//enum (basic,nursing,special,general)
-            //function get value from condition
+        export class PensionRateModel {
+            pensionDate: any;
+            historyId: number;
+            companyCode: string;
+            officeCode: KnockoutObservable<string>;
+            applyRange: string;
+            funInputOption: KnockoutObservable<number>;
+            autoCalculate: KnockoutObservable<number>;
+            rateItems: KnockoutObservable<PensionRateItemModel>;
+            fundRateItems: KnockoutObservable<FunRateItemModel>;
+            roundingMethods: KnockoutObservable<PensionRateRoundingModel>;
+            maxAmount: KnockoutObservable<number>;
+            officeRate: KnockoutObservable<number>;
+            constructor(officeCode: string, funInputOption:number,autoCalculate: number,rateItems: PensionRateItemModel, fundRateItems: FunRateItemModel, roundingMethods: PensionRateRoundingModel, maxAmount: number, officeRate: number) {
+                this.pensionDate = ko.observable('2016/04');
+                this.officeCode = ko.observable('');
+                this.funInputOption = ko.observable(funInputOption);
+                this.autoCalculate = ko.observable(autoCalculate);
+                this.rateItems = ko.observable(new PensionRateItemModel());
+                this.fundRateItems = ko.observable(new FunRateItemModel());
+                this.roundingMethods = ko.observable(new PensionRateRoundingModel());
+                this.maxAmount = ko.observable(0);
+                this.officeRate = ko.observable(0);
+            }
+
+        }
+        export class HealthInsuranceRateItemModel   {
+            healthSalaryPersonalGeneral: KnockoutObservable<number>;
+            healthSalaryPersonalNursing: KnockoutObservable<number>;
+            healthSalaryPersonalBasic: KnockoutObservable<number>;
+            healthSalaryPersonalSpecific: KnockoutObservable<number>;
+            healthSalaryCompanyGeneral: KnockoutObservable<number>;
+            healthSalaryCompanyNursing: KnockoutObservable<number>;
+            healthSalaryCompanyBasic: KnockoutObservable<number>;
+            healthSalaryCompanySpecific: KnockoutObservable<number>;
+
+            healthBonusPersonalGeneral:  KnockoutObservable<number>;
+            healthBonusPersonalNursing: KnockoutObservable<number>;
+            healthBonusPersonalBasic: KnockoutObservable<number>;
+            healthBonusPersonalSpecific: KnockoutObservable<number>;
+            healthBonusCompanyGeneral:  KnockoutObservable<number>;
+            healthBonusCompanyNursing: KnockoutObservable<number>;
+            healthBonusCompanyBasic: KnockoutObservable<number>;
+            healthBonusCompanySpecific: KnockoutObservable<number>;
+            constructor()
+            {
+                this.healthSalaryPersonalGeneral=ko.observable(0);
+                this.healthSalaryCompanyGeneral=ko.observable(0);
+                this.healthBonusPersonalGeneral=ko.observable(0);
+                this.healthBonusCompanyGeneral=ko.observable(0);
+                
+                this.healthSalaryPersonalNursing=ko.observable(40990);
+                this.healthSalaryCompanyNursing=ko.observable(40990);
+                this.healthBonusPersonalNursing=ko.observable(40990);
+                this.healthBonusCompanyNursing=ko.observable(40990);
+                
+                this.healthSalaryPersonalBasic=ko.observable(40990);
+                this.healthSalaryCompanyBasic=ko.observable(40990);
+                this.healthBonusPersonalBasic=ko.observable(40990);
+                this.healthBonusCompanyBasic=ko.observable(40990);
+                
+                this.healthSalaryPersonalSpecific=ko.observable(40990);
+                this.healthSalaryCompanySpecific=ko.observable(40990);
+                this.healthBonusPersonalSpecific=ko.observable(40990);
+                this.healthBonusCompanySpecific=ko.observable(40990);
+                
+            }
+        }
+        export class PensionRateItemModel{
+            pensionSalaryPersonalSon: KnockoutObservable<number>;
+            pensionSalaryCompanySon: KnockoutObservable<number>;
+            pensionBonusPersonalSon: KnockoutObservable<number>;
+            pensionBonusCompanySon: KnockoutObservable<number>;
+            
+            pensionSalaryPersonalDaughter: KnockoutObservable<number>;
+            pensionSalaryCompanyDaughter: KnockoutObservable<number>;
+            pensionBonusPersonalDaughter: KnockoutObservable<number>;
+            pensionBonusCompanyDaughter: KnockoutObservable<number>;
+            
+            pensionSalaryPersonalUnknown: KnockoutObservable<number>;
+            pensionSalaryCompanyUnknown: KnockoutObservable<number>;
+            pensionBonusPersonalUnknown: KnockoutObservable<number>;
+            pensionBonusCompanyUnknown: KnockoutObservable<number>;
+            constructor() {
+                this.pensionSalaryPersonalSon = ko.observable(0);
+                this.pensionSalaryCompanySon = ko.observable(0);
+                this.pensionBonusPersonalSon = ko.observable(0);
+                this.pensionBonusCompanySon = ko.observable(0);
+
+                this.pensionSalaryPersonalDaughter = ko.observable(0);
+                this.pensionSalaryCompanyDaughter = ko.observable(0);
+                this.pensionBonusPersonalDaughter = ko.observable(0);
+                this.pensionBonusCompanyDaughter = ko.observable(0);
+
+                this.pensionSalaryPersonalUnknown = ko.observable(0);
+                this.pensionSalaryCompanyUnknown = ko.observable(0);
+                this.pensionBonusPersonalUnknown = ko.observable(0);
+                this.pensionBonusCompanyUnknown = ko.observable(0);
+           }
+        }
+        
+        export class FunRateItemModel{
+            salaryPersonalSonExemption: KnockoutObservable<number>;
+            salaryCompanySonExemption: KnockoutObservable<number>;
+            bonusPersonalSonExemption: KnockoutObservable<number>;
+            bonusCompanySonExemption: KnockoutObservable<number>;
+            
+            salaryPersonalSonBurden: KnockoutObservable<number>;
+            salaryCompanySonBurden: KnockoutObservable<number>;
+            bonusPersonalSonBurden: KnockoutObservable<number>;
+            bonusCompanySonBurden: KnockoutObservable<number>;
+            
+            salaryPersonalDaughterExemption: KnockoutObservable<number>;
+            salaryCompanyDaughterExemption: KnockoutObservable<number>;
+            bonusPersonalDaughterExemption: KnockoutObservable<number>;
+            bonusCompanyDaughterExemption: KnockoutObservable<number>;
+            
+            salaryPersonalDaughterBurden: KnockoutObservable<number>;
+            salaryCompanyDaughterBurden: KnockoutObservable<number>;
+            bonusPersonalDaughterBurden: KnockoutObservable<number>;
+            bonusCompanyDaughterBurden: KnockoutObservable<number>;
+            
+            salaryPersonalUnknownExemption: KnockoutObservable<number>;
+            salaryCompanyUnknownExemption: KnockoutObservable<number>;
+            bonusPersonalUnknownExemption: KnockoutObservable<number>;
+            bonusCompanyUnknownExemption: KnockoutObservable<number>;
+            
+            salaryPersonalUnknownBurden: KnockoutObservable<number>;
+            salaryCompanyUnknownBurden: KnockoutObservable<number>;
+            bonusPersonalUnknownBurden: KnockoutObservable<number>;
+            bonusCompanyUnknownBurden: KnockoutObservable<number>;
+            
+            constructor (){
+                this.salaryPersonalSonExemption = ko.observable(0);
+                this.salaryCompanySonExemption = ko.observable(0);
+                this.bonusPersonalSonExemption = ko.observable(0);
+                this.bonusCompanySonExemption = ko.observable(0);
+                
+                
+                this.salaryPersonalSonBurden = ko.observable(0);
+                this.salaryCompanySonBurden = ko.observable(0);
+                this.bonusPersonalSonBurden = ko.observable(0);
+                this.bonusCompanySonBurden = ko.observable(0);
+                
+                this.salaryPersonalDaughterExemption = ko.observable(0);
+                this.salaryCompanyDaughterExemption = ko.observable(0);
+                this.bonusPersonalDaughterExemption = ko.observable(0);
+                this.bonusCompanyDaughterExemption = ko.observable(0);
+                
+                this.salaryPersonalDaughterBurden = ko.observable(0);
+                this.salaryCompanyDaughterBurden = ko.observable(0);
+                this.bonusPersonalDaughterBurden = ko.observable(0);
+                this.bonusCompanyDaughterBurden = ko.observable(0);
+                
+                this.salaryPersonalUnknownExemption = ko.observable(0);
+                this.salaryCompanyUnknownExemption = ko.observable(0);
+                this.bonusPersonalUnknownExemption = ko.observable(0);
+                this.bonusCompanyUnknownExemption = ko.observable(0);
+                
+                this.salaryPersonalUnknownBurden = ko.observable(0);
+                this.salaryCompanyUnknownBurden = ko.observable(0);
+                this.bonusPersonalUnknownBurden = ko.observable(0);
+                this.bonusCompanyUnknownBurden = ko.observable(0);
+            }
+        }
+        export class HealthInsuranceRoundingModel {
+            healthSalaryPersonalComboBox: KnockoutObservableArray<RoundingItem>;
+            healthSalaryPersonalComboBoxItemName: KnockoutObservable<string>;
+            healthSalaryPersonalComboBoxCurrentCode: KnockoutObservable<number>
+            healthSalaryPersonalComboBoxSelectedCode: KnockoutObservable<string>;
+
+            healthSalaryCompanyComboBox: KnockoutObservableArray<RoundingItem>;
+            healthSalaryCompanyComboBoxItemName: KnockoutObservable<string>;
+            healthSalaryCompanyComboBoxCurrentCode: KnockoutObservable<number>
+            healthSalaryCompanyComboBoxSelectedCode: KnockoutObservable<string>;
+
+            healthBonusPersonalComboBox: KnockoutObservableArray<RoundingItem>;
+            healthBonusPersonalComboBoxItemName: KnockoutObservable<string>;
+            healthBonusPersonalComboBoxCurrentCode: KnockoutObservable<number>
+            healthBonusPersonalComboBoxSelectedCode: KnockoutObservable<string>;
+
+            healthBonusCompanyComboBox: KnockoutObservableArray<RoundingItem>;
+            healthBonusCompanyComboBoxItemName: KnockoutObservable<string>;
+            healthBonusCompanyComboBoxCurrentCode: KnockoutObservable<number>
+            healthBonusCompanyComboBoxSelectedCode: KnockoutObservable<string>;
+            constructor() {
+                this.healthSalaryPersonalComboBox = ko.observableArray<RoundingItem>(null);
+                this.healthSalaryPersonalComboBoxItemName = ko.observable('');
+                this.healthSalaryPersonalComboBoxCurrentCode = ko.observable(1);
+                this.healthSalaryPersonalComboBoxSelectedCode = ko.observable('');
+
+                this.healthSalaryCompanyComboBox = ko.observableArray<RoundingItem>(null);
+                this.healthSalaryCompanyComboBoxItemName = ko.observable('');
+                this.healthSalaryCompanyComboBoxCurrentCode = ko.observable(3);
+                this.healthSalaryCompanyComboBoxSelectedCode = ko.observable('002');
+
+                this.healthBonusPersonalComboBox = ko.observableArray<RoundingItem>(null);
+                this.healthBonusPersonalComboBoxItemName = ko.observable('');
+                this.healthBonusPersonalComboBoxCurrentCode = ko.observable(3);
+                this.healthBonusPersonalComboBoxSelectedCode = ko.observable('002');
+
+                this.healthBonusCompanyComboBox = ko.observableArray<RoundingItem>(null);
+                this.healthBonusCompanyComboBoxItemName = ko.observable('');
+                this.healthBonusCompanyComboBoxCurrentCode = ko.observable(3);
+                this.healthBonusCompanyComboBoxSelectedCode = ko.observable('002');
+            }
+        }
+        export class PensionRateRoundingModel{
+            pensionSalaryPersonalComboBox: KnockoutObservableArray<RoundingItem>;
+            pensionSalaryPersonalComboBoxItemName: KnockoutObservable<string>;
+            pensionSalaryPersonalComboBoxCurrentCode: KnockoutObservable<number>
+            pensionSalaryPersonalComboBoxSelectedCode: KnockoutObservable<string>;
+
+            pensionSalaryCompanyComboBox: KnockoutObservableArray<RoundingItem>;
+            pensionSalaryCompanyComboBoxItemName: KnockoutObservable<string>;
+            pensionSalaryCompanyComboBoxCurrentCode: KnockoutObservable<number>
+            pensionSalaryCompanyComboBoxSelectedCode: KnockoutObservable<string>;
+
+            pensionBonusPersonalComboBox: KnockoutObservableArray<RoundingItem>;
+            pensionBonusPersonalComboBoxItemName: KnockoutObservable<string>;
+            pensionBonusPersonalComboBoxCurrentCode: KnockoutObservable<number>
+            pensionBonusPersonalComboBoxSelectedCode: KnockoutObservable<string>;
+
+            pensionBonusCompanyComboBox: KnockoutObservableArray<RoundingItem>;
+            pensionBonusCompanyComboBoxItemName: KnockoutObservable<string>;
+            pensionBonusCompanyComboBoxCurrentCode: KnockoutObservable<number>
+            pensionBonusCompanyComboBoxSelectedCode: KnockoutObservable<string>;
+            constructor() {
+                this.pensionSalaryPersonalComboBox = ko.observableArray<RoundingItem>(null);
+                this.pensionSalaryPersonalComboBoxItemName = ko.observable('');
+                this.pensionSalaryPersonalComboBoxCurrentCode = ko.observable(1);
+                this.pensionSalaryPersonalComboBoxSelectedCode = ko.observable('');
+
+                this.pensionSalaryCompanyComboBox = ko.observableArray<RoundingItem>(null);
+                this.pensionSalaryCompanyComboBoxItemName = ko.observable('');
+                this.pensionSalaryCompanyComboBoxCurrentCode = ko.observable(3);
+                this.pensionSalaryCompanyComboBoxSelectedCode = ko.observable('002');
+
+                this.pensionBonusPersonalComboBox = ko.observableArray<RoundingItem>(null);
+                this.pensionBonusPersonalComboBoxItemName = ko.observable('');
+                this.pensionBonusPersonalComboBoxCurrentCode = ko.observable(3);
+                this.pensionBonusPersonalComboBoxSelectedCode = ko.observable('002');
+
+                this.pensionBonusCompanyComboBox = ko.observableArray<RoundingItem>(null);
+                this.pensionBonusCompanyComboBoxItemName = ko.observable('');
+                this.pensionBonusCompanyComboBoxCurrentCode = ko.observable(3);
+                this.pensionBonusCompanyComboBoxSelectedCode = ko.observable('002');
+            }    
         }
     }
 
@@ -482,10 +611,6 @@ module nts.uk.pr.view.qmm008.a {
         companyAvg: KnockoutObservable<any>;
     }
 
-    export class HealthInsuranceRounding {
-        payType: KnockoutObservable<number>;
-        roundAtrs: KnockoutObservable<number>;
-    }
     export class ChargeRateItem {
         companyRate: KnockoutObservable<number>;
         personalRate: KnockoutObservable<number>;

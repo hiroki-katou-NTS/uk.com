@@ -12,44 +12,46 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var InsuranceOfficeItem = a.service.model.finder.InsuranceOfficeItemDto;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel("code", "name", true, null, null);
-                                    self.InsuranceOfficeList = ko.observableArray([
-                                        new InsuranceOfficeItem('id01', 'A 事業所', 'code1', [
-                                            new InsuranceOfficeItem('child01', '~ 9999/12', '2016/04', []),
-                                            new InsuranceOfficeItem('child02', '~ 9999/12', '2016/04', [])
-                                        ]),
-                                        new InsuranceOfficeItem('id02', 'B 事業所', 'code2', [])]);
+                                    self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
+                                    self.pensionModel = ko.observable(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
+                                    self.InsuranceOfficeList = ko.observableArray([]);
                                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.InsuranceOfficeList(), "childs"));
                                     self.singleSelectedCode = ko.observable(null);
-                                    self.selectedCodes = ko.observableArray([]);
+                                    self.officeSelectedCode = ko.observable('');
                                     self.index = 0;
                                     self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
-                                    self.roundingList = ko.observableArray([
-                                        new RoundingItemModel('001', 'op1change'),
-                                        new RoundingItemModel('002', 'op2'),
-                                        new RoundingItemModel('003', 'op3')
-                                    ]);
+                                    self.searchKey = ko.observable('');
+                                    self.roundingList = ko.observableArray([]);
                                     self.healthInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 2
                                     }));
-                                    self.enable = ko.observable(true);
-                                    self.roundingRules = ko.observableArray([
+                                    self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                                        textmode: "text",
+                                        width: "100",
+                                        textalign: "center"
+                                    }));
+                                    self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                                        grouplength: 3,
+                                        currencyformat: "JPY",
+                                        currencyposition: 'right'
+                                    }));
+                                    self.numberInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3,
+                                        decimallength: 2
+                                    }));
+                                    self.healthAutoCalculateOptions = ko.observableArray([
                                         { code: '1', name: 'する' },
                                         { code: '2', name: 'しない' }
                                     ]);
                                     self.selectedRuleCode = ko.observable(1);
-                                    self.pensionFundInputEnable = ko.observable(true);
                                     self.pensionFundInputOptions = ko.observableArray([
                                         { code: '1', name: '有' },
                                         { code: '2', name: '無' }
                                     ]);
-                                    self.pensionFundInputSelectedCode = ko.observable(1);
-                                    self.pensionCalculateEnable = ko.observable(true);
                                     self.pensionCalculateOptions = ko.observableArray([
                                         { code: '1', name: 'する' },
                                         { code: '2', name: 'しない' }
@@ -65,107 +67,26 @@ var nts;
                                     }
                                     self.value = ko.observable("Hello world!");
                                     self.isTransistReturnData = ko.observable(false);
-                                    self.healthTimeInput = {
-                                        value: ko.observable('2016/04'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "100",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.pensionTimeInput = {
-                                        value: ko.observable('2016/04'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "100",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
-                                    self.healthSalaryPersonalGeneral = ko.observable(100000);
-                                    self.healthSalaryCompanyGeneral = ko.observable(100000);
-                                    self.healthBonusPersonalGeneral = ko.observable(100000);
-                                    self.healthBonusCompanyGeneral = ko.observable(100000);
-                                    self.comboBox1 = ko.observableArray(self.roundingList());
-                                    self.comboBox1ItemName = ko.observable('');
-                                    self.comboBox1CurrentCode = ko.observable(3);
-                                    self.comboBox1SelectedCode = ko.observable('002');
-                                    self.comboBox2 = ko.observableArray(self.roundingList());
-                                    self.comboBox2ItemName = ko.observable('');
-                                    self.comboBox2CurrentCode = ko.observable(3);
-                                    self.comboBox2SelectedCode = ko.observable('002');
-                                    self.comboBox3 = ko.observableArray(self.roundingList());
-                                    self.comboBox3ItemName = ko.observable('');
-                                    self.comboBox3CurrentCode = ko.observable(3);
-                                    self.comboBox3SelectedCode = ko.observable('002');
-                                    self.comboBox4 = ko.observableArray(self.roundingList());
-                                    self.comboBox4ItemName = ko.observable('');
-                                    self.comboBox4CurrentCode = ko.observable(3);
-                                    self.comboBox4SelectedCode = ko.observable('002');
-                                    self.comboBox5 = ko.observableArray(self.roundingList());
-                                    self.comboBox5ItemName = ko.observable('');
-                                    self.comboBox5CurrentCode = ko.observable(3);
-                                    self.comboBox5SelectedCode = ko.observable('002');
-                                    self.comboBox6 = ko.observableArray(self.roundingList());
-                                    self.comboBox6ItemName = ko.observable('');
-                                    self.comboBox6CurrentCode = ko.observable(3);
-                                    self.comboBox6SelectedCode = ko.observable('002');
-                                    self.comboBox7 = ko.observableArray(self.roundingList());
-                                    self.comboBox7ItemName = ko.observable('');
-                                    self.comboBox7CurrentCode = ko.observable(3);
-                                    self.comboBox7SelectedCode = ko.observable('002');
-                                    self.comboBox8 = ko.observableArray(self.roundingList());
-                                    self.comboBox8ItemName = ko.observable('');
-                                    self.comboBox8CurrentCode = ko.observable(3);
-                                    self.comboBox8SelectedCode = ko.observable('002');
-                                    self.healthTotal = {
-                                        value: ko.observable(5400000),
-                                        constraint: '',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                                            grouplength: 3,
-                                            currencyformat: "JPY",
-                                            currencyposition: 'right'
-                                        })),
-                                        required: ko.observable(false),
-                                        enable: ko.observable(true),
-                                        readonly: ko.observable(false)
-                                    };
-                                    self.pensionCurrency = {
-                                        value: ko.observable(1500000),
-                                        constraint: '',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                                            grouplength: 3,
-                                            currencyformat: "JPY",
-                                            currencyposition: 'right'
-                                        })),
-                                        required: ko.observable(false),
-                                        enable: ko.observable(true),
-                                        readonly: ko.observable(false)
-                                    };
-                                    self.pensionOwnerRate = {
-                                        value: ko.observable(1.5),
-                                        constraint: '',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                                            grouplength: 3,
-                                            decimallength: 2
-                                        })),
-                                        required: ko.observable(false),
-                                        enable: ko.observable(true),
-                                        readonly: ko.observable(false)
-                                    };
+                                    self.healthDate = ko.observable('2016/04');
+                                    self.pensionTimeInput = ko.observable("time");
+                                    self.healthTotal = ko.observable(5400000);
+                                    self.pensionCurrency = ko.observable(1500000);
+                                    self.pensionOwnerRate = ko.observable(1.5);
+                                    self.officeSelectedCode.subscribe(function (officeSelectedCode) {
+                                        if (officeSelectedCode != null || officeSelectedCode != undefined) {
+                                            $.when(self.load(officeSelectedCode)).done(function () {
+                                            }).fail(function (res) {
+                                            });
+                                        }
+                                    });
                                 }
                                 ScreenModel.prototype.testObservable = function () {
-                                    this.healthSalaryPersonalGeneral(this.healthTimeInput.value());
                                 };
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.loadAllInsuranceOffice().done(function () {
                                         if (self.InsuranceOfficeList().length > 0) {
-                                            self.selectedInsuranceOfficeId(_self.InsuranceOfficeList()[0].id);
                                         }
                                         else {
                                         }
@@ -177,20 +98,73 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.loadAllInsuranceOffice = function () {
-                                    var _self = this;
+                                    var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findInsuranceOffice(_self.searchKey()).done(function (data) {
-                                        _self.InsuranceOfficeList(data);
-                                        dfd.resolve(null);
+                                    a.service.findInsuranceOffice(self.searchKey()).done(function (data) {
+                                        self.InsuranceOfficeList(data);
+                                        dfd.resolve(data);
                                     });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.getAllRounding = function () {
-                                    var _self = this;
+                                    var self = this;
                                     var dfd = $.Deferred();
                                     a.service.findAllRounding().done(function (data) {
-                                        _self.roundingList(data);
-                                        dfd.resolve(null);
+                                        self.roundingList(data);
+                                        dfd.resolve(data);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.load = function (code) {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    a.service.getHealthInsuranceItemDetail(code).done(function (data) {
+                                        if (data == null) {
+                                            return;
+                                        }
+                                        self.healthModel().historyId = data.historyId;
+                                        self.healthModel().companyCode = data.companyCode;
+                                        self.healthModel().officeCode(data.officeCode);
+                                        self.healthModel().autoCalculate(data.autoCalculate);
+                                        self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].chargeRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[1].chargeRate);
+                                        self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[2].chargeRate);
+                                        self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[3].chargeRate);
+                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
+                                        self.healthModel().roundingMethods().healthSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
+                                        self.healthModel().roundingMethods().healthBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
+                                        self.healthModel().roundingMethods().healthBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
+                                        self.healthModel().maxAmount(data.maxAmount);
+                                        dfd.resolve();
+                                    }).fail(function () {
+                                    }).always(function (res) {
+                                    });
+                                    a.service.getPensionItemDetail(code).done(function (data) {
+                                        if (data == null) {
+                                            return;
+                                        }
+                                        self.pensionModel().historyId = data.historyId;
+                                        self.pensionModel().companyCode = data.companyCode;
+                                        self.pensionModel().officeCode(data.officeCode);
+                                        self.pensionModel().autoCalculate(data.autoCalculate);
+                                        self.pensionModel().funInputOption(data.fundInputOption);
+                                        self.pensionModel().rateItems().pensionSalaryPersonalSon(data.rateItems[0].chargeRate);
+                                        self.pensionModel().rateItems().pensionSalaryCompanySon(data.rateItems[0].chargeRate);
+                                        self.pensionModel().rateItems().pensionBonusPersonalSon(data.rateItems[0].chargeRate);
+                                        self.pensionModel().rateItems().pensionBonusCompanySon(data.rateItems[0].chargeRate);
+                                        self.pensionModel().fundRateItems().salaryPersonalSonExemption(data.fundRateItems[0].chargeRate);
+                                        self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].chargeRate);
+                                        self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].chargeRate);
+                                        self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].chargeRate);
+                                        self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
+                                        self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
+                                        self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
+                                        self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
+                                        self.pensionModel().maxAmount(data.maxAmount);
+                                        self.pensionModel().officeRate(data.officeRate);
+                                        dfd.resolve();
+                                    }).fail(function () {
+                                    }).always(function (res) {
                                     });
                                     return dfd.promise();
                                 };
@@ -198,20 +172,7 @@ var nts;
                                     var self = this;
                                     self.filteredData(self.dataSource());
                                     self.singleSelectedCode('0002');
-                                    self.selectedCodes(['002']);
-                                };
-                                ScreenModel.prototype.changeDataSource = function () {
-                                    var self = this;
-                                    var i = 0;
-                                    var newArrays = new Array();
-                                    while (i < 50) {
-                                        self.index++;
-                                        i++;
-                                        newArrays.push(new Node(self.index.toString(), 'Name ' + self.index.toString(), []));
-                                    }
-                                    ;
-                                    self.dataSource(newArrays);
-                                    self.filteredData(newArrays);
+                                    self.officeSelectedCode(['002']);
                                 };
                                 ScreenModel.prototype.toggle = function () {
                                     this.show(!this.show());
@@ -262,38 +223,147 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var Node = (function () {
-                                function Node(code, name, childs) {
-                                    var self = this;
-                                    self.code = code;
-                                    self.name = name;
-                                    self.nodeText = self.code + ' ' + self.name;
-                                    self.childs = childs;
-                                    self.custom = 'Random' + new Date().getTime();
-                                }
-                                return Node;
-                            }());
-                            viewmodel.Node = Node;
-                            var RoundingItemModel = (function () {
-                                function RoundingItemModel(code, name) {
-                                    this.code = code;
-                                    this.name = name;
-                                }
-                                return RoundingItemModel;
-                            }());
-                            viewmodel.RoundingItemModel = RoundingItemModel;
                             var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel(companyCode, officeCode, autoCaculate, rateItems, roundingMethods) {
+                                function HealthInsuranceRateModel(officeCode, autoCalculate, rateItems, roundingMethods, maxAmount) {
+                                    this.healthDate = ko.observable('2016/04');
+                                    this.officeCode = ko.observable('');
+                                    this.autoCalculate = ko.observable(autoCalculate);
+                                    this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
+                                    this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
+                                    this.maxAmount = ko.observable(0);
                                 }
                                 return HealthInsuranceRateModel;
                             }());
                             viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
+                            var PensionRateModel = (function () {
+                                function PensionRateModel(officeCode, funInputOption, autoCalculate, rateItems, fundRateItems, roundingMethods, maxAmount, officeRate) {
+                                    this.pensionDate = ko.observable('2016/04');
+                                    this.officeCode = ko.observable('');
+                                    this.funInputOption = ko.observable(funInputOption);
+                                    this.autoCalculate = ko.observable(autoCalculate);
+                                    this.rateItems = ko.observable(new PensionRateItemModel());
+                                    this.fundRateItems = ko.observable(new FunRateItemModel());
+                                    this.roundingMethods = ko.observable(new PensionRateRoundingModel());
+                                    this.maxAmount = ko.observable(0);
+                                    this.officeRate = ko.observable(0);
+                                }
+                                return PensionRateModel;
+                            }());
+                            viewmodel.PensionRateModel = PensionRateModel;
                             var HealthInsuranceRateItemModel = (function () {
                                 function HealthInsuranceRateItemModel() {
+                                    this.healthSalaryPersonalGeneral = ko.observable(0);
+                                    this.healthSalaryCompanyGeneral = ko.observable(0);
+                                    this.healthBonusPersonalGeneral = ko.observable(0);
+                                    this.healthBonusCompanyGeneral = ko.observable(0);
+                                    this.healthSalaryPersonalNursing = ko.observable(40990);
+                                    this.healthSalaryCompanyNursing = ko.observable(40990);
+                                    this.healthBonusPersonalNursing = ko.observable(40990);
+                                    this.healthBonusCompanyNursing = ko.observable(40990);
+                                    this.healthSalaryPersonalBasic = ko.observable(40990);
+                                    this.healthSalaryCompanyBasic = ko.observable(40990);
+                                    this.healthBonusPersonalBasic = ko.observable(40990);
+                                    this.healthBonusCompanyBasic = ko.observable(40990);
+                                    this.healthSalaryPersonalSpecific = ko.observable(40990);
+                                    this.healthSalaryCompanySpecific = ko.observable(40990);
+                                    this.healthBonusPersonalSpecific = ko.observable(40990);
+                                    this.healthBonusCompanySpecific = ko.observable(40990);
                                 }
                                 return HealthInsuranceRateItemModel;
                             }());
                             viewmodel.HealthInsuranceRateItemModel = HealthInsuranceRateItemModel;
+                            var PensionRateItemModel = (function () {
+                                function PensionRateItemModel() {
+                                    this.pensionSalaryPersonalSon = ko.observable(0);
+                                    this.pensionSalaryCompanySon = ko.observable(0);
+                                    this.pensionBonusPersonalSon = ko.observable(0);
+                                    this.pensionBonusCompanySon = ko.observable(0);
+                                    this.pensionSalaryPersonalDaughter = ko.observable(0);
+                                    this.pensionSalaryCompanyDaughter = ko.observable(0);
+                                    this.pensionBonusPersonalDaughter = ko.observable(0);
+                                    this.pensionBonusCompanyDaughter = ko.observable(0);
+                                    this.pensionSalaryPersonalUnknown = ko.observable(0);
+                                    this.pensionSalaryCompanyUnknown = ko.observable(0);
+                                    this.pensionBonusPersonalUnknown = ko.observable(0);
+                                    this.pensionBonusCompanyUnknown = ko.observable(0);
+                                }
+                                return PensionRateItemModel;
+                            }());
+                            viewmodel.PensionRateItemModel = PensionRateItemModel;
+                            var FunRateItemModel = (function () {
+                                function FunRateItemModel() {
+                                    this.salaryPersonalSonExemption = ko.observable(0);
+                                    this.salaryCompanySonExemption = ko.observable(0);
+                                    this.bonusPersonalSonExemption = ko.observable(0);
+                                    this.bonusCompanySonExemption = ko.observable(0);
+                                    this.salaryPersonalSonBurden = ko.observable(0);
+                                    this.salaryCompanySonBurden = ko.observable(0);
+                                    this.bonusPersonalSonBurden = ko.observable(0);
+                                    this.bonusCompanySonBurden = ko.observable(0);
+                                    this.salaryPersonalDaughterExemption = ko.observable(0);
+                                    this.salaryCompanyDaughterExemption = ko.observable(0);
+                                    this.bonusPersonalDaughterExemption = ko.observable(0);
+                                    this.bonusCompanyDaughterExemption = ko.observable(0);
+                                    this.salaryPersonalDaughterBurden = ko.observable(0);
+                                    this.salaryCompanyDaughterBurden = ko.observable(0);
+                                    this.bonusPersonalDaughterBurden = ko.observable(0);
+                                    this.bonusCompanyDaughterBurden = ko.observable(0);
+                                    this.salaryPersonalUnknownExemption = ko.observable(0);
+                                    this.salaryCompanyUnknownExemption = ko.observable(0);
+                                    this.bonusPersonalUnknownExemption = ko.observable(0);
+                                    this.bonusCompanyUnknownExemption = ko.observable(0);
+                                    this.salaryPersonalUnknownBurden = ko.observable(0);
+                                    this.salaryCompanyUnknownBurden = ko.observable(0);
+                                    this.bonusPersonalUnknownBurden = ko.observable(0);
+                                    this.bonusCompanyUnknownBurden = ko.observable(0);
+                                }
+                                return FunRateItemModel;
+                            }());
+                            viewmodel.FunRateItemModel = FunRateItemModel;
+                            var HealthInsuranceRoundingModel = (function () {
+                                function HealthInsuranceRoundingModel() {
+                                    this.healthSalaryPersonalComboBox = ko.observableArray(null);
+                                    this.healthSalaryPersonalComboBoxItemName = ko.observable('');
+                                    this.healthSalaryPersonalComboBoxCurrentCode = ko.observable(1);
+                                    this.healthSalaryPersonalComboBoxSelectedCode = ko.observable('');
+                                    this.healthSalaryCompanyComboBox = ko.observableArray(null);
+                                    this.healthSalaryCompanyComboBoxItemName = ko.observable('');
+                                    this.healthSalaryCompanyComboBoxCurrentCode = ko.observable(3);
+                                    this.healthSalaryCompanyComboBoxSelectedCode = ko.observable('002');
+                                    this.healthBonusPersonalComboBox = ko.observableArray(null);
+                                    this.healthBonusPersonalComboBoxItemName = ko.observable('');
+                                    this.healthBonusPersonalComboBoxCurrentCode = ko.observable(3);
+                                    this.healthBonusPersonalComboBoxSelectedCode = ko.observable('002');
+                                    this.healthBonusCompanyComboBox = ko.observableArray(null);
+                                    this.healthBonusCompanyComboBoxItemName = ko.observable('');
+                                    this.healthBonusCompanyComboBoxCurrentCode = ko.observable(3);
+                                    this.healthBonusCompanyComboBoxSelectedCode = ko.observable('002');
+                                }
+                                return HealthInsuranceRoundingModel;
+                            }());
+                            viewmodel.HealthInsuranceRoundingModel = HealthInsuranceRoundingModel;
+                            var PensionRateRoundingModel = (function () {
+                                function PensionRateRoundingModel() {
+                                    this.pensionSalaryPersonalComboBox = ko.observableArray(null);
+                                    this.pensionSalaryPersonalComboBoxItemName = ko.observable('');
+                                    this.pensionSalaryPersonalComboBoxCurrentCode = ko.observable(1);
+                                    this.pensionSalaryPersonalComboBoxSelectedCode = ko.observable('');
+                                    this.pensionSalaryCompanyComboBox = ko.observableArray(null);
+                                    this.pensionSalaryCompanyComboBoxItemName = ko.observable('');
+                                    this.pensionSalaryCompanyComboBoxCurrentCode = ko.observable(3);
+                                    this.pensionSalaryCompanyComboBoxSelectedCode = ko.observable('002');
+                                    this.pensionBonusPersonalComboBox = ko.observableArray(null);
+                                    this.pensionBonusPersonalComboBoxItemName = ko.observable('');
+                                    this.pensionBonusPersonalComboBoxCurrentCode = ko.observable(3);
+                                    this.pensionBonusPersonalComboBoxSelectedCode = ko.observable('002');
+                                    this.pensionBonusCompanyComboBox = ko.observableArray(null);
+                                    this.pensionBonusCompanyComboBoxItemName = ko.observable('');
+                                    this.pensionBonusCompanyComboBoxCurrentCode = ko.observable(3);
+                                    this.pensionBonusCompanyComboBoxSelectedCode = ko.observable('002');
+                                }
+                                return PensionRateRoundingModel;
+                            }());
+                            viewmodel.PensionRateRoundingModel = PensionRateRoundingModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                         var HealthInsuranceAvgearn = (function () {
                             function HealthInsuranceAvgearn() {
@@ -301,12 +371,6 @@ var nts;
                             return HealthInsuranceAvgearn;
                         }());
                         a.HealthInsuranceAvgearn = HealthInsuranceAvgearn;
-                        var HealthInsuranceRounding = (function () {
-                            function HealthInsuranceRounding() {
-                            }
-                            return HealthInsuranceRounding;
-                        }());
-                        a.HealthInsuranceRounding = HealthInsuranceRounding;
                         var ChargeRateItem = (function () {
                             function ChargeRateItem() {
                             }
