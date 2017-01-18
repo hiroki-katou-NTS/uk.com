@@ -1856,6 +1856,7 @@ var nts;
                             var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
                             container.attr("id", idString);
                         }
+                        container.addClass("ntsControl");
                         var startDate = null;
                         var endDate = null;
                         if (data.startDate) {
@@ -1866,7 +1867,7 @@ var nts;
                         }
                         var autoHide = data.autoHide == false ? false : true;
                         var idatr = container.attr("id");
-                        container.append("<input id='" + idatr + "_input' class='ntsDatepicker' />");
+                        container.append("<input id='" + idatr + "_input' class='ntsDatepicker nts-input' />");
                         var $input = container.find('#' + idatr + "_input");
                         var button = null;
                         if (data.button)
