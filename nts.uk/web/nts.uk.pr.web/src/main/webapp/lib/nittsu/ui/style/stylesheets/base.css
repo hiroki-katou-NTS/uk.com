@@ -2025,39 +2025,6 @@ button.nts-switch-button[disabled]:hover {
   background: #ABEBF5;
 }
 
-/* line 1, ../sass/components/_currency.scss */
-.currency {
-  position: relative;
-}
-/* line 4, ../sass/components/_currency.scss */
-.currency.currencyLeft input[type="text"] {
-  padding-left: 10px;
-}
-/* line 8, ../sass/components/_currency.scss */
-.currency.currencyRight input[type="text"] {
-  padding-right: 10px;
-}
-/* line 13, ../sass/components/_currency.scss */
-.currency:after {
-  position: absolute;
-  content: ' ';
-  color: #999;
-}
-/* line 19, ../sass/components/_currency.scss */
-.currency.currencyLeft:after {
-  content: attr(data-content);
-  left: 0;
-  top: 0;
-  text-align: left;
-}
-/* line 26, ../sass/components/_currency.scss */
-.currency.currencyRight:after {
-  content: attr(data-content);
-  right: 0;
-  top: 0;
-  text-align: right;
-}
-
 /* line 1, ../sass/components/_swaplist.scss */
 .ntsSwapArea {
   display: table;
@@ -2104,6 +2071,29 @@ button.nts-switch-button[disabled]:hover {
 /* line 28, ../sass/components/_swaplist.scss */
 .ntsSearchArea div {
   display: inline-block;
+}
+
+/* line 1, ../sass/components/_updown.scss */
+.ntsUpDown {
+  width: 70px;
+  height: 100%;
+  display: inline-block;
+}
+
+/* line 6, ../sass/components/_updown.scss */
+.upDown-container {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* line 10, ../sass/components/_updown.scss */
+.ntsUpDownButton {
+  width: 70px;
+}
+
+/* line 13, ../sass/components/_updown.scss */
+.ntsUpButton {
+  margin-bottom: 10px;
 }
 
 /* line 1, ../sass/components/_searchbox.scss */

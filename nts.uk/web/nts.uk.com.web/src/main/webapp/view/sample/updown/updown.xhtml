@@ -21,7 +21,7 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>SwapList </h1>
+						<h1>Up down</h1>
 						<div><div style="display: inline-block;"><div id="swap-list" data-bind="ntsSwapList: {
 								showSearchBox: true,
 								height: 300,
@@ -31,8 +31,8 @@
 								value: currentCodeListSwap
 							}"
 							class=""></div></div>
-								<div id="up-down" data-bind="ntsUpDown: {
-									targetSource: currentCodeListSwap,
+								<div id="swap-up-down" data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
@@ -53,13 +53,44 @@
 									}"
 									class=""></table>
 								</div>
-								<div id="up-down" data-bind="ntsUpDown: {
+								<div id="grid-up-down" data-bind="ntsUpDown: {
 									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#grid-test',
 									type: 'grid'
 								}"
 								class=""></div>
+							</div>
+							<br/>
+							<hr/>
+							
+							<div>
+								<div style="display: inline-block;">
+									<table id="treegrid"
+										data-bind="ntsTreeGridView:{
+										width: 1000, 
+										height: 250,
+										options: items1,
+										selectedValues: selectedCode,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,
+										columns: columns2,
+										showCheckBox: true}"
+										class="cf">
+									</table>
+								</div>
+								<div id="tree-up-down"
+									data-bind="ntsUpDown: {
+									targetSource: items1,
+									primaryKey: 'code',
+									comId: '#treegrid',
+									type: 'tree', 
+									childDataKey: 'childs'
+								}"
+									class=""></div>
 							</div>
 							<BUTTON data-bind="click: remove">Remove</BUTTON>
 							<h2>API</h2>
@@ -75,62 +106,45 @@
 										</thead>
 										<tbody>
 											<tr>
-												<td>showSearchBox</td>
+												<td>targetSource</td>
 												<td>
-													<b>Type:</b> boolean, is text box and search button showed.<br/>
-													<i>Default:</i> False.
+													<b>Type:</b> Array. Sources of target grid (tree) for action.<br/>
+													<b>Required: True.</b>
 												</td>
 											</tr>
 											<tr>
-												<td>width</td>
+												<td>primaryKey</td>
 												<td>
-													<b>Type:</b> null | string | number<br/>
-													<b>Members:</b><br/>
-													<i>null:</i> Will stretch to fit the sum of the columns widths.<br/>
-													<i>number:</i> The widget width can be set in pixels as a number. Example values: 800, 700.<br/>
-													<i>string:</i> The widget width can be set in pixels (px) or percentage (%). Example values: "800px", "800" (defaults to pixels), "100%".
+													<b>Type:</b> string. Primary key of grid (tree).<br/>
+													<b>Required: True.</b>
 												</td>
 											</tr>
 											<tr>
-												<td>height</td>
+												<td>comId</td>
 												<td>
-													<b>Type:</b> null | string | number<br/>
-													<b>Members:</b><br/>
-													<i>null:</i> Will stretch vertically to fit data.<br/>
-													<i>string:</i> The widget height can be set in pixels (px) and percentage (%).<br/>
-													<i>number:</i> The height can be set as a number in pixels.
+													<b>Type:</b> string. Id of target element.<br/>
+													<b>Required: True.</b>
 												</td>
 											</tr>
 											<tr>
-												<td>options / dataSource</td>
+												<td>type</td>
 												<td>
-													<b>Type:</b> array&lt;any&gt;<br/>
-													List data to generate original GridList at left
+													<b>Type:</b> string. Type of target component. Currently, only support GridList, TreeList, SwapList<br/>
+													<b>Required: True.</b>
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue / primaryKey</td>
+												<td>childDataKey</td>
 												<td>
-													<b>Type:</b> string<br/>
-													Field in data will be set as primaryKey
+													<b>Type:</b> string. Children data in target sources for tree case<br/>
+													<b>Required: False (True in tree case).</b>
 												</td>
 											</tr>
 											<tr>
-												<td>columns</td>
+												<td>swapTarget</td>
 												<td>
-													<b>Type:</b> array&lt;column&gt;<br/>
-													An array of column objects:<br/>
-													<i>headerText:</i> Text for header<br/>
-													<i>prop/ key:</i> Property in data array for column<br/>
-													<i>width:</i> Width for column<br/>
-													<b><i>(*): Can use other properties of columns of iggrid</i></b>
-												</td>
-											</tr>
-											<tr>
-												<td>value</td>
-												<td>
-													<b>Type:</b> array&lt;any&gt;<br/>
-													List selected value from left grid and is showed in right grid.
+													<b>Type:</b> string. Because swap list have two grid. Needs to determine what grid for action.<br/>
+													<i>Default:</i> 'right'
 												</td>
 											</tr>
 										</tbody>

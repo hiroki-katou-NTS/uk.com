@@ -429,7 +429,7 @@ var nts;
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
                             var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
-                            console.log(selectedItem);
+                            //                console.log(selectedItem);
                             if (data.mode) {
                                 var selectArr = [];
                                 selectArr.push("" + selectedItem);
@@ -1488,7 +1488,6 @@ var nts;
                                 //console.log(row1);
                                 var topPos = calculateIndex(options, row1, optionsValue);
                                 $grid.igGrid('virtualScrollTo', topPos);
-                                console.log(topPos);
                             }
                         });
                     };
