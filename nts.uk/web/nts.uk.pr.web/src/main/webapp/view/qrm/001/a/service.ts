@@ -5,6 +5,7 @@ module qrm001.a.service {
     
     export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
+       
         nts.uk.request.ajax(paths.getPaymentDateProcessingList)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);

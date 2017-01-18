@@ -3,7 +3,7 @@
 	margin-top: 5px;
 	width: 90px;
 }
-#functions-area button:NTH-CHILD(2) { margin-left: 180px; }
+#functions-area button:NTH-CHILD(2) { margin-left: 155px; }
 
 #symbol {
 	margin-left: -20px; 
@@ -12,7 +12,7 @@
 }
 
 .column1 { width: 140px; }
-.column2 { width: 280px; }
+.column2 { width: 252px; }
 .column3 { width: 500px; }
 .column4 { width: 465px; }
 
@@ -53,7 +53,7 @@
 	margin-left: 5px;
 	margin-bottom: 3px;
 }
-#inp-2, #inp-3, #inp-4, #inp-5, #inp-6, #inp-7, #inp-8, #inp-9, #inp-10, #inp-11 {
+#inp-2, #inp-3, #inp-4, #inp-5, #inp-6, #inp-7, #inp-8, #inp-9, #inp-10, #inp-11, #inp-12a, #inp-12b, #inp-12c, #inp-12d, #inp-12e {
 	padding-left: 2px;
 	padding-right: 2px;
 	border: none;
@@ -64,7 +64,7 @@
 #division { width: 690px; }
 
 thead, tr, th {
-	border: 1px solid black;
+	border: 1px solid #999999;
 	text-align: center;
 	padding-left: 2px;
 	padding-right: 2px;
@@ -84,7 +84,7 @@ tbody th {
 	padding-right: 2px;
 }
 
-.table-division { border-color: black; margin-top: 0px; }
+.table-division { margin-top: 0px; }
 
 table { margin-top: -4px; }
 
@@ -103,8 +103,8 @@ table { margin-top: -4px; }
 #hr-3 { width: 733px; }
 #table-3 { width: 735px; }
 #table-3 tbody th:NTH-CHILD(1) { width: 100px; }
-#table-3 tbody th:NTH-CHILD(3), #combo-box2 { width: 90px; height: 18px; }
-#table-3 tbody th:NTH-CHILD(4), #combo-box3 { width: 90px; height: 18px; }
+#table-3 tbody th:NTH-CHILD(3), #combo-box2 { width: 100px; height: 18px; }
+#table-3 tbody th:NTH-CHILD(4), #combo-box3 { width: 130px; height: 18px; }
 
 #hr-4, #hr-5, #hr-6 { width: 163px; }
 #table-4, #table-5, #table-6 { width: 165px; }
@@ -115,21 +115,39 @@ table { margin-top: -4px; }
 	text-align: center; 
 }
 
-#hr-7, #hr-8, #hr-9 { width: 343px }
-#table-7, #table-8, #table-9 { width: 345px; }
-#inp-6, #inp-7, #inp-8 { width: 100px; height: 40px; }
+#hr-7, #hr-8 { width: 383px }
+#table-7, #table-8, #table-9 { width: 385px; }
+#inp-6, #inp-7, #inp-8 { width: 110px; height: 40px; }
+#table-8 tbody th:NTH-CHILD(1), #combo-box4 { width: 260px; height: 18px; }
 #table-8 tbody th:NTH-CHILD(2), #combo-box5 { width: 110px; height: 18px; }
-#combo-box4 { height: 18px; }
+
 #table-9 { margin-top: 5px; }
-#inp-9, #inp-10, #inp-11 {width: 100px; height: 18px; }
+#inp-9, #inp-10, #inp-11 {width: 110px; height: 18px; }
 
 #btn-2 { margin-top: 10px; }
 
 #hr-10 { width: 733px; }	
 #table-10  { width: 735px; }
 
-#table-10 thead th:NTH-CHILD(1) { width: 100px; }
-#table-10 thead th:NTH-CHILD(4), #table-10 thead th:NTH-CHILD(5) { width: 100px; }
+#table-10 tbody th:NTH-CHILD(1) { width: 105px; }
+#table-10 tbody th:NTH-CHILD(2), #table-10 tbody th:NTH-CHILD(3), #table-10 tbody th:NTH-CHILD(4) { background-color: #EBEBE4; }
+#table-10 tbody th:NTH-CHILD(4) { width: 110px; }
+#table-10 tbody th:NTH-CHILD(5) { 
+	width: 120px;
+	padding: 0px; 
+}
+
+#combo-box12a, #combo-box12b, #combo-box12c, #combo-box12d, #combo-box12e {
+	height: 18px;
+	width: 100px;
+} 
+
+#inp-12a, #inp-12b, #inp-12c, #inp-12d, #inp-12e {
+	border-radius: 0px;
+	padding-left: 2px;
+	padding-right: 2px;
+	width: 120px;
+}
 
 #hr-11 { width: 704px; }
 
@@ -140,23 +158,36 @@ textarea {
 	text-align: justify;
 }
 
+#arrow {
+	position: absolute;
+	margin-left: 165px;
+	margin-top: 5px;
+	height: 180px;
+}
+
 .title-label {
 	margin-top: 5px;
 }
 
 .ui-igcombo {
 	border: none;
-	margin-top: 2px;
 }
 
 .ui-igcombo-button {
 	background-color: white;
 	border: none;
 }
+.ui-igcombo-button .ui-state-default {
+	border: none;
+}
 
 .ui-igcombo-buttonicon {
 	position: relative;
 	top: 25%;
+}
+
+.ui-igcombo-fieldholder {
+	background-color: white;
 }
 
 .ui-igcombo-field {
@@ -174,6 +205,6 @@ textarea {
 }
 
 #label-12, #label-13, #label-14, #label-20, #label-21, #label-36, #label-39 {
-	background-color: #c5c5c5;
+	background-color: #EBEBE4;
 }
 

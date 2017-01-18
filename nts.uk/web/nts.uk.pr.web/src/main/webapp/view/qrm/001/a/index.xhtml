@@ -30,7 +30,7 @@
 						</div>
 						<div class="cell">
 							<span data-bind="with: texteditor1"> 
-								<input id="inp-1" data-bind="ntsTextEditor1: {
+								<input id="inp-1" data-bind="ntsTextEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,
@@ -72,16 +72,18 @@
 													optionsText: 'code',
 													editable: false,
 													enable: true,
-													columns: [{ prop: 'code', length: 5}]}"></div>	
+													columns: [{ prop: 'code', length: 2}]}"></div>	
 											</th>
 											<th>
-												<input id="inp-2" data-bind="ntsTextEditor2: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor2">
+													<input id="inp-2" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 										</tr>
 									</tbody>
@@ -101,22 +103,26 @@
 									<tbody>
 										<tr>
 											<th>
-												<input id="inp-3" data-bind="ntsTextEditor3: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor3">
+													<input id="inp-3" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 											<th>
-												<input id="inp-4" data-bind="ntsTextEditor4: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor4">
+													<input id="inp-4" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 											<th id="label-14"></th>
 										</tr>
@@ -148,7 +154,7 @@
 												optionsText: 'code',
 												editable: false,
 												enable: true,
-												columns: [{ prop: 'code', length: 5}]}"></div>	
+												columns: [{ prop: 'code', length: 4}]}"></div>	
 										</th>
 										<th>
 											<div id="combo-box3" data-bind="ntsComboBox: {
@@ -158,7 +164,7 @@
 												optionsText: 'code',
 												editable: false,
 												enable: true,
-												columns: [{ prop: 'code', length: 5}]}"></div>	
+												columns: [{ prop: 'code', length: 6}]}"></div>	
 										</th>
 									</tr>
 								</tbody>
@@ -166,6 +172,7 @@
 						</div>
 						<div>
 							<div class="cell column2">
+								<img id="arrow" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAADCCAIAAACkI1kCAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOLSURBVHhe7dw/S1tRGIDxfkQT7TUVEatDcBB00BoQZxUcBVERhIB+CQdrI+4udoggCA4iHQxS/8W+cINo+5ROt/eIzzMEkjPk9ee5OXG4fngyShdOF04XThdOF04XThcuCZdOp/Mjscp36Xa76+vrk5OTU8kUwyThsri4WKlUPiZTtVpNwmV5eTmm+ZRMWZYl5xIz9ZddX19fWi6Bsrq62m63v5fayclJci67u7u9hVJLyyUed3Z2egulpgunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwuXhMvS0lLukmVZs9mMV25LLaYq3+Xh4WF2djZEwqVWq9Xr9bm5uS+lFlOV73J/fz81NTU4OBguOU0YlVtMlYTL9PT0s0sUNOUWU6XoUnoxVVousYcbjUar1fpaajFVWi5xKq2srPQWSi0tl4GBAV166cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cLpwunC6cK9SZdut3t9ff34+Nh7XkBvz+X8/LzZbE5MTARN76UCejMusUcuLy+3trZCpFKpDA8Pdzqd3loBvQ2Xs7Oz7e3tsbGxGDHLslqtNjIy8q5dLi4uNjY26vV6tVoNjpgyyl2urq7u7u5+FtDt7W2gP9/Hl5bL6enp5ubm6OhovkdykZfF0uciGxoayt8oIZe1tbXx8fH+/v7nPfJnsVRovbdJyqXRaAQKbpP/X0IuNzc3+/v7MzMzQRNjvfzt/f+Su48vDoXQmZ+fj8+//Nb3vGCKc3pvb6/Van0rvoODg3a7nY9Ubq/O6Tga4uePKyt08r0TFX1Op9nv31+i2DuHh4cLCwuBEjq6vCo+d46OjuLKiuuo0L8D0uyvLnnxde74+Dj/Fxfvqn+4vNt04XThdOF04XThdOF04XThdOF04XShnp5+AUJlfju/eMtyAAAAAElFTkSuQmCC" />
 								<p class="title-label">退職金 支給額</p>
 								<hr id="hr-4" class="table-division" align="left" />
 								<table id="table-4">
@@ -177,13 +184,15 @@
 									<tbody>
 										<tr>
 											<th>
-												<input id="inp-5" data-bind="ntsTextEditor5: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor5">
+													<input id="inp-5" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 										</tr>
 									</tbody>
@@ -231,31 +240,37 @@
 									<tbody>
 										<tr>
 											<th>
-												<input id="inp-6" data-bind="ntsTextEditor6: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor6">
+													<input id="inp-6" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 											<th>
-												<input id="inp-7" data-bind="ntsTextEditor7: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor7">
+													<input id="inp-7" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 											<th>
-												<input id="inp-8" data-bind="ntsTextEditor8: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor8">
+													<input id="inp-8" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 										</tr>
 									</tbody>
@@ -272,14 +287,14 @@
 									<tbody>
 										<tr>
 											<th>
-												<div id="combo-box4" data-bind="ntsComboBox: {
+												<span id="combo-box4" data-bind="ntsComboBox: {
 													options: selectList4,
 													optionsValue: 'code',
 													value: selectCode4,
 													optionsText: 'code',
 													editable: false,
 													enable: true,
-													columns: [{ prop: 'code', length: 5}]}"></div>	
+													columns: [{ prop: 'code', length: 16}]}"></span>	
 											</th>
 											<th>
 												<div id="combo-box5" data-bind="ntsComboBox: {
@@ -289,7 +304,7 @@
 													optionsText: 'code',
 													editable: false,
 													enable: true,
-													columns: [{ prop: 'code', length: 5}]}"></div>	
+													columns: [{ prop: 'code', length: 3}]}"></div>	
 											</th>
 										</tr>
 									</tbody>
@@ -305,31 +320,37 @@
 									<tbody>
 										<tr>
 											<th>
-												<input id="inp-9" data-bind="ntsTextEditor9: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor9">
+													<input id="inp-9" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 											<th>
-												<input id="inp-10" data-bind="ntsTextEditor10: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor10">
+													<input id="inp-10" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 											<th>
-												<input id="inp-11" data-bind="ntsTextEditor11: {
-													value: value,
-													constraint: constraint,
-													option: option,
-													required: required,
-													enable: enable,
-													readonly: readonly}" />
+												<div data-bind="with: texteditor11">
+													<input id="inp-11" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+												</div>
 											</th>
 										</tr>
 									</tbody>
@@ -343,7 +364,7 @@
 							<table id="table-10">
 								<thead>
 									<tr>
-										<th>支給1～5</th>
+										<th>支払選択</th>
 										<th>銀行</th>
 										<th>支店</th>
 										<th>口座番号</th>
@@ -352,39 +373,144 @@
 								</thead>
 								<tbody>
 									<tr>
-										<th>銀行名（選択）</th>
+										<th>
+											<div id="combo-box12a" data-bind="ntsComboBox: {
+														options: selectList12a,
+														optionsValue: 'code',
+														value: selectCode12a,
+														optionsText: 'code',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'code', length: 4 }
+														]}"></div>
+										</th>
 										<th></th>
-										<th>支店名（選択）</th>
 										<th></th>
-										<th></th>
+										<th>123456789</th>
+										<th>
+											<div data-bind="with: texteditor12a">
+												<input id="inp-12a" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+											</div>
+										</th>
 									</tr>
 									<tr>
-										<th>銀行名（選択）</th>
+										<th>
+											<div id="combo-box12b" data-bind="ntsComboBox: {
+														options: selectList12b,
+														optionsValue: 'code',
+														value: selectCode12b,
+														optionsText: 'code',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'code', length: 5 }
+														]}"></div>
+										</th>
 										<th></th>
-										<th>支店名（選択）</th>
 										<th></th>
 										<th></th>
+										<th>
+											<div data-bind="with: texteditor12b">
+												<input id="inp-12b" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+											</div>
+										</th>
 									</tr>
 									<tr>
-										<th>銀行名（選択）</th>
+										<th>
+											<div id="combo-box12c" data-bind="ntsComboBox: {
+														options: selectList12c,
+														optionsValue: 'code',
+														value: selectCode12c,
+														optionsText: 'code',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'code', length: 5 }
+														]}"></div>
+										</th>
 										<th></th>
-										<th>支店名（選択）</th>
 										<th></th>
 										<th></th>
+										<th>
+											<div data-bind="with: texteditor12c">
+												<input id="inp-12c" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+											</div>
+										</th>
 									</tr>
 									<tr>
-										<th>銀行名（選択）</th>
+										<th>
+											<div id="combo-box12d" data-bind="ntsComboBox: {
+														options: selectList12d,
+														optionsValue: 'code',
+														value: selectCode12d,
+														optionsText: 'code',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'code', length: 5 }
+														]}"></div>
+										</th>
 										<th></th>
-										<th>支店名（選択）</th>
 										<th></th>
 										<th></th>
+										<th>
+											<div data-bind="with: texteditor12d">
+												<input id="inp-12d" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+											</div>
+										</th>
 									</tr>
 									<tr>
-										<th>銀行名（選択）</th>
+										<th>
+											<div id="combo-box12e" data-bind="ntsComboBox: {
+														options: selectList12e,
+														optionsValue: 'code',
+														value: selectCode12e,
+														optionsText: 'code',
+														editable: false,
+														enable: true,
+														columns: [
+															{ prop: 'code', length: 5 }
+														]}"></div>
+										</th>
 										<th></th>
-										<th>支店名（選択）</th>
 										<th></th>
 										<th></th>
+										<th>
+											<div data-bind="with: texteditor12e">
+												<input id="inp-12e" data-bind="ntsTextEditor: {
+														value: value,
+														constraint: constraint,
+														option: option,
+														required: required,
+														enable: enable,
+														readonly: readonly}" />
+											</div>
+										</th>
 									</tr>
 								</tbody>
 							</table>
