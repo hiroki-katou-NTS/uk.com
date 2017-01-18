@@ -1,5 +1,8 @@
 @CHARSET "UTF-8";
 
+#contents-area {
+	width: 1101px;
+}
 #functions-area {
 	padding-top: 10px;
     padding-bottom: 10px;
@@ -12,6 +15,7 @@
 	padding: 20px;
 	float: left;
 	min-height: 400px;
+	width: 280px;
 }
 
 #right-content {
@@ -21,7 +25,7 @@
 }
 
 #inpSearch {
-	width: 150px;
+	width: 118px;
 }
 
 #inpCode {

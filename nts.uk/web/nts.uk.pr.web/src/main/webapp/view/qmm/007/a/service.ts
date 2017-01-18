@@ -1,34 +1,38 @@
 module nts.uk.pr.view.qmm007.a {
     export module service {
-        export class UnitPriceHistoryNode {
-            code: string;
-            name: string;
-            monthRange: string;
-            nodeText: string;
-            isChild: boolean;
-            childs: any;
-            constructor(code: string, name: string, monthRange: string, isChild: boolean, childs?: Array<UnitPriceHistoryNode>) {
-                var self = this;
-                self.code = code;
-                self.name = name;
-                self.monthRange = monthRange;
-                self.nodeText = self.code + ' ' + self.name;
-                self.isChild = isChild;
-                self.childs = childs;
-                if (self.isChild == true) {
-                    self.nodeText = self.monthRange;
-                }
-            }
-        }
 
         var paths: any = {
+            getUnitPriceHistoryList: "pr/proto/unitprice/findall"
+        };
+
+        function convertToTreeList(): void{
+            var mockData = [];
+            var parentNodes = [];
+            mockData.map( item => {
+                var s = item.unitPriceCode ;
+                if (s in parentNodes) parentNodes[s] = item; 
+                else parentNodes[s] = item;
+            });
+            parentNodes.map(item => {new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, false)});
+            var childNodes = mockData.map( item => new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, true));
+            console.log(mockData);
+            console.log(parentNodes);
+            console.log(childNodes);
+            var merged = childNodes.concat(parentNodes); 
+            console.log(merged);
         }
-        var mockData = [new UnitPriceHistoryNode('001', 'ガソリン単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0011', 'ガソリン単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0012', 'ガソリン単価', '2015/04 ~ 2016/03', true)]),
-            new UnitPriceHistoryNode('002', '宿直単価', '2016/04 ~ 9999/12', false, [new UnitPriceHistoryNode('0021', '宿直単価', '2016/04 ~ 9999/12', true), new UnitPriceHistoryNode('0022', '宿直単価', '2015/04 ~ 2016/03', true)])];
 
         export function getUnitPriceHistoryList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
-            dfd.resolve(mockData);
+            nts.uk.request.ajax(paths.getUnitPriceHistoryList)
+                .done(function(res: Array<any>) {
+                    dfd.resolve(null);
+                    var unitPriceHistoryList: Array<model.UnitPriceHistoryDto> = res;
+                    console.log(unitPriceHistoryList);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
             return dfd.promise();
         }
 
@@ -50,15 +54,12 @@ module nts.uk.pr.view.qmm007.a {
         * Model namespace.
         */
         export module model {
-            export class UnitPriceDto {
-                code: string;
-                name: string;
-            }
-
             export class UnitPriceHistoryDto {
-                unitPriceCode: number;
+                id: string;
+                unitPriceCode: string;
                 unitPriceName: string;
-                startDate: DateTimeDto;
+                startMonth: string;
+                endMonth: string;
                 budget: number;
                 fixPaySettingType: SettingType;
                 fixPayAtr: ApplySetting;
@@ -68,8 +69,12 @@ module nts.uk.pr.view.qmm007.a {
                 fixPayAtrHourly: ApplySetting;
                 memo: string;
 
-                /*constructor(unitPriceCode: number,
-                    startDate: DateTimeDto,
+                constructor(
+                    id: string,
+                    unitPriceCode: string,
+                    unitPriceName: string,
+                    startMonth: string,
+                    endMonth: string,
                     budget: number,
                     fixPaySettingType: SettingType,
                     fixPayAtr: ApplySetting,
@@ -78,8 +83,11 @@ module nts.uk.pr.view.qmm007.a {
                     fixPayAtrDaily: ApplySetting,
                     fixPayAtrHourly: ApplySetting,
                     memo: string) {
+                    this.id = id;
                     this.unitPriceCode = unitPriceCode;
-                    this.startDate = startDate;
+                    this.unitPriceName = unitPriceName;
+                    this.startMonth = startMonth;
+                    this.endMonth = endMonth;
                     this.budget = budget;
                     this.fixPaySettingType = fixPaySettingType;
                     this.fixPayAtr = fixPayAtr;
@@ -87,23 +95,39 @@ module nts.uk.pr.view.qmm007.a {
                     this.fixPayAtrDayMonth = fixPayAtrDayMonth;
                     this.fixPayAtrDaily = fixPayAtrDaily;
                     this.fixPayAtrHourly = fixPayAtrHourly;
-                }*/
+                }
             }
 
-            export class DateTimeDto {
-                year: number;
-                month: number;
-                day: number;
-                hour: number;
-                minute: number;
+            export class UnitPriceHistoryNode{
+            id: string;
+            code: string;
+            name: string;
+            monthRange: MonthRange;
+            nodeText: string;
+            isChild: boolean;
+            childs: any;
+            constructor(id: string, code: string, name: string, monthRange: MonthRange, isChild: boolean, childs?: Array<UnitPriceHistoryNode>) {
+                var self = this;
+                self.id = id;
+                self.code = code;
+                self.name = name;
+                self.monthRange = monthRange;
+                self.isChild = isChild;
+                self.nodeText = self.code + ' ' + self.name;
+                self.childs = childs;
+                if (self.isChild == true) {
+                    self.nodeText = self.monthRange.startMonth+self.monthRange.endMonth;
+                }
+            }
+            }
 
-                /*constructor(date: Date) {
-                    this.year = date.getFullYear();
-                    this.month = date.getMonth();
-                    this.day = date.getDate();
-                    this.hour = date.getHours();
-                    this.minute = date.getMinutes();
-                }*/
+            export class MonthRange {
+                startMonth: string;
+                endMonth: string;
+                constructor(startMonth: string, endMonth: string) {
+                    this.startMonth = startMonth;
+                    this.endMonth = endMonth;
+                }
             }
 
             export enum SettingType {

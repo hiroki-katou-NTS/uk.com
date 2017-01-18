@@ -1,21 +1,18 @@
 module nts.uk.pr.view.qmm010.a {
     import option = nts.uk.ui.option;
-    import LaborInsuranceOffice = service.model.LaborInsuranceOffice;
-    import LaborInsuranceOfficeInDTO = service.model.LaborInsuranceOfficeInDTO;
+    import LaborInsuranceOfficeDto = service.model.LaborInsuranceOfficeDto;
+    import LaborInsuranceOfficeInDto = service.model.LaborInsuranceOfficeInDto;
     export module viewmodel {
         export class ScreenModel {
             //ojbect value binding
             laborInsuranceOffice: KnockoutObservable<LaborInsuranceOfficeModel>;
-            lstlaborInsuranceOffice: KnockoutObservableArray<LaborInsuranceOffice>;
+            lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeInDto>
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
             textSearch: any;
+            enableButton: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
-                var officeInfo = new LaborInsuranceOffice('companyCode002', '000000000002', 'B事業所', 'shortName', 'picName', 'picPosition', 'potalCode', 'prefecture', 'address1st', 'address2nd', 'kanaAddress1st', 'kanaAddress2nd', 'phoneNumber', '01', 'officeMark', '1234', '567890', '1', 'memo');
-                self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(officeInfo));
-                self.lstlaborInsuranceOffice = ko.observableArray([new LaborInsuranceOfficeInDTO('companyCode001', '000000000001', 'A事業所'),
-                    new LaborInsuranceOfficeInDTO('companyCode002', '000000000002', 'B事業所'), new LaborInsuranceOfficeInDTO('companyCode003', '000000000003', 'C事業所')]);
                 self.textSearch = {
                     valueSearch: ko.observable(""),
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -29,7 +26,60 @@ module nts.uk.pr.view.qmm010.a {
                     { headerText: 'コード', prop: 'code', width: 120 },
                     { headerText: '名称', prop: 'name', width: 120 }
                 ]);
-                self.selectCodeLstlaborInsuranceOffice = ko.observable('');
+                self.enableButton = ko.observable(true);
+            }
+            resetValueLaborInsurance() {
+                var self = this;
+                self.laborInsuranceOffice().resetAllValue();
+            }
+            readFromSocialTnsuranceOffice() {
+                var self = this;
+                self.enableButton(false);
+                nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(() => {
+                    self.enableButton(true);
+                    //OnClose => call
+                });
+            }
+            startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                self.findAllInsuranceOffice().done(data => {
+                    self.findInsuranceOffice(self.selectCodeLstlaborInsuranceOffice()).done(
+                        data => { dfd.resolve(self); }
+                    );
+                });
+                return dfd.promise();
+            }
+            //Connection service find All InsuranceOffice
+            findAllInsuranceOffice(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findAllLaborInsuranceOffice().done(data => {
+                    self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeInDto>(data);
+                    self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
+                    self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
+                        self.showInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                    });
+                    dfd.resolve(self);
+                });
+                return dfd.promise();
+            }
+            //Connection service find All InsuranceOffice
+            findInsuranceOffice(code: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findLaborInsuranceOffice(code).done(data => {
+                    self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(data));
+                    dfd.resolve(null);
+                });
+                return dfd.promise();
+            }
+            //show InsuranceOffice
+            showInsuranceOffice(code: string) {
+                var self = this;
+                service.findLaborInsuranceOffice(code).done(data => {
+                    self.laborInsuranceOffice(new LaborInsuranceOfficeModel(data));
+                });
             }
         }
 
@@ -52,8 +102,8 @@ module nts.uk.pr.view.qmm010.a {
             officeNoC: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
             textEditorOption: KnockoutObservable<any>;
-            multilineeditor: any;
-            constructor(officeInfo: LaborInsuranceOffice) {
+            multilineeditor: KnockoutObservable<any>;
+            constructor(officeInfo: LaborInsuranceOfficeDto) {
                 this.code = ko.observable(officeInfo.code);
                 this.name = ko.observable(officeInfo.name);
                 this.shortName = ko.observable(officeInfo.shortName);
@@ -72,7 +122,7 @@ module nts.uk.pr.view.qmm010.a {
                 this.officeNoC = ko.observable(officeInfo.officeNoC);
                 this.memo = ko.observable(officeInfo.memo);
                 this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                this.multilineeditor = {
+                this.multilineeditor = ko.observable({
                     memo: ko.observable(officeInfo.memo),
                     readonly: false,
                     constraint: 'ResidenceCode',
@@ -82,9 +132,40 @@ module nts.uk.pr.view.qmm010.a {
                         width: "",
                         textalign: "left"
                     })),
-                }
+                });
 
-
+            }
+            //Reset value in view Model
+            resetAllValue() {
+                this.code('');
+                this.name('');
+                this.shortName('');
+                this.picName('');
+                this.picPosition('');
+                this.postalCode('');
+                this.address1st('');
+                this.kanaAddress1st('');
+                this.address2nd('');
+                this.kanaAddress2nd('');
+                this.phoneNumber('');
+                this.citySign('');
+                this.officeMark('');
+                this.officeNoA('');
+                this.officeNoB('');
+                this.officeNoC('');
+                this.memo('');
+                this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                this.multilineeditor({
+                    memo: ko.observable(''),
+                    readonly: false,
+                    constraint: 'ResidenceCode',
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                        resizeable: true,
+                        placeholder: "Placeholder for text editor",
+                        width: "",
+                        textalign: "left"
+                    })),
+                });
             }
         }
     }

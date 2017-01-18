@@ -12,7 +12,9 @@ var nts;
                     (function (a) {
                         __viewContext.ready(function () {
                             var screenModel = new nts.uk.pr.view.qmm010.a.viewmodel.ScreenModel();
-                            this.bind(screenModel);
+                            screenModel.startPage().done(function (res) {
+                                __viewContext.bind(res);
+                            });
                         });
                     })(a = qmm010.a || (qmm010.a = {}));
                 })(qmm010 = view.qmm010 || (view.qmm010 = {}));
