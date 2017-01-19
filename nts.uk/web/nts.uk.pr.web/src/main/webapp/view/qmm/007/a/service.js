@@ -59,11 +59,16 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getUnitPriceHistoryDetail = getUnitPriceHistoryDetail;
-                            function save(unitPriceHistory) {
+                            function create(unitPriceHistory) {
                                 var data = { unitPriceHistory: unitPriceHistory };
                                 console.log(data);
                             }
-                            service.save = save;
+                            service.create = create;
+                            function update(unitPriceHistory) {
+                                var data = { unitPriceHistory: unitPriceHistory };
+                                console.log(data);
+                            }
+                            service.update = update;
                             function remove(id) {
                                 console.log(id);
                                 return null;
@@ -92,16 +97,6 @@ var nts;
                                     return UnitPriceHistoryNode;
                                 }());
                                 model.UnitPriceHistoryNode = UnitPriceHistoryNode;
-                                (function (SettingType) {
-                                    SettingType[SettingType["Company"] = 0] = "Company";
-                                    SettingType[SettingType["Contract"] = 1] = "Contract";
-                                })(model.SettingType || (model.SettingType = {}));
-                                var SettingType = model.SettingType;
-                                (function (ApplySetting) {
-                                    ApplySetting[ApplySetting["Apply"] = 1] = "Apply";
-                                    ApplySetting[ApplySetting["NotApply"] = 0] = "NotApply";
-                                })(model.ApplySetting || (model.ApplySetting = {}));
-                                var ApplySetting = model.ApplySetting;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm007.a || (qmm007.a = {}));

@@ -53,21 +53,21 @@ public class UnitPriceHistoryWebService extends WebService {
 	private List<UnitPriceHistoryDto> getMockData() {
 		List<UnitPriceHistoryDto> mock = new ArrayList<UnitPriceHistoryDto>();
 		mock.add(UnitPriceHistoryDto.builder().id("1").unitPriceCode("001").unitPriceName("ガソリン単価")
-				.startMonth("2015/04").endMonth("9999/04").budget(120).fixPaySettingType(SettingType.Contract)
-				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
+				.startMonth("2015/04").endMonth("9999/04").budget(120).fixPaySettingType(SettingType.Company)
+				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.NotApply)
 				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
 		mock.add(UnitPriceHistoryDto.builder().id("2").unitPriceCode("001").unitPriceName("ガソリン単価")
 				.startMonth("2015/04").endMonth("9999/04").budget(230).fixPaySettingType(SettingType.Contract)
 				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
-				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
+				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.NotApply).memo("abc").build());
 		mock.add(UnitPriceHistoryDto.builder().id("3").unitPriceCode("002").unitPriceName("宿直単価").startMonth("2015/04")
-				.endMonth("9999/04").budget(340).fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
-				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
-				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
+				.endMonth("9999/04").budget(340).fixPaySettingType(SettingType.Company).fixPayAtr(ApplySetting.Apply)
+				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.NotApply)
+				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.NotApply).memo("abc").build());
 		mock.add(UnitPriceHistoryDto.builder().id("4").unitPriceCode("002").unitPriceName("宿直単価").startMonth("2015/04")
 				.endMonth("9999/04").budget(450).fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
-				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
-				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
+				.fixPayAtrDaily(ApplySetting.NotApply).fixPayAtrDayMonth(ApplySetting.Apply)
+				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
 		return mock;
 	}
 }

@@ -31,14 +31,14 @@
 		<ui:define name="content">
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
-				<button id="btn_001" data-bind="enable: false"
+				<button id="btn_001" data-bind="click: enableNewMode"
 					class="large btn-default">新規</button>
 				<button id="btn_002" class="large proceed btn-default"
 					data-bind="click: save">登録</button>
 				<button id="btn_003" class="large btn-default"
-					data-bind="click: clearUnitPriceDetail">印刷 (PDF)</button>
+					data-bind="">印刷 (PDF)</button>
 				<button id="btn_006" class="large btn-default"
-					data-bind="click: test">マスタ修正ログ</button>
+					data-bind="">マスタ修正ログ</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 
@@ -57,7 +57,7 @@
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: true">履歴追加</button>
 						<button class="pull-right" id="btn_005"
-							data-bind="click: goToC, enable: true">履歴編集</button>
+							data-bind="click: goToC, enable: !isNewMode()">履歴編集</button>
 					</div>
 					<div class="padding-top-10 pull-left cf">
 						<table id="lst_001"
@@ -89,7 +89,8 @@
 									value: unitPriceHistoryModel().unitPriceCode,
 									constraint: 'UnitPriceCode',
 									option: textEditorOption,
-									required: true}" />
+									required: true,
+									enable: isNewMode()}" />
 								<input id="inpName" class="inp-default"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceName,
@@ -120,13 +121,13 @@
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 0, checked: unitPriceHistoryModel().fixPaySettingType" /> <span
+									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 1, checked: unitPriceHistoryModel().fixPaySettingType" /> <span
+									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType" /> <span
 									class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
