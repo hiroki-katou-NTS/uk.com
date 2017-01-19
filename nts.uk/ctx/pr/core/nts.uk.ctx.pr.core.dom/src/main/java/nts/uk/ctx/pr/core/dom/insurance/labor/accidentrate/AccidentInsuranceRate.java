@@ -6,18 +6,15 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import java.util.Set;
 
-import lombok.Getter;
+import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
-// TODO: Auto-generated Javadoc
 /**
- * Gets the rate items.
- *
- * @return the rate items
+ * The Class AccidentInsuranceRate.
  */
-@Getter
+@Data
 public class AccidentInsuranceRate extends AggregateRoot {
 
 	/** The history id. */
@@ -32,5 +29,35 @@ public class AccidentInsuranceRate extends AggregateRoot {
 
 	/** The short name. */
 	private Set<InsuBizRateItem> rateItems;
+
+	// =================== Memento State Support Method ===================
+
+	/**
+	 * Instantiates a new labor insurance office.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public AccidentInsuranceRate(AccidentInsuranceRateMemento memento) {
+		this.historyId = memento.getHistoryId();
+		this.companyCode = memento.getCompanyCode();
+		this.applyRange = memento.getApplyRange();
+		this.rateItems = memento.getRateItems();
+		this.setVersion(memento.getVersion());
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(AccidentInsuranceRateMemento memento) {
+		memento.setHistoryId(this.historyId);
+		memento.setCompanyCode(this.companyCode);
+		memento.setApplyRange(this.applyRange);
+		memento.setRateItems(this.rateItems);
+		memento.setVersion(this.getVersion());
+	}
 
 }

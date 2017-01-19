@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * The Class AvgEarnLevelMasterSetting.
  */
-@Getter
+@Data
 public class AvgEarnLevelMasterSetting {
 
 	/** The code. */
