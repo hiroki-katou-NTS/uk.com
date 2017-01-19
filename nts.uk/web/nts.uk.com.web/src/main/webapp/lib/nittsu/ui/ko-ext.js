@@ -431,10 +431,23 @@ var nts;
                             var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
                             //                console.log(selectedItem);
                             if (data.mode) {
-                                var selectArr = [];
-                                selectArr.push("" + selectedItem);
-                                component.ntsGridList("setSelected", selectArr);
-                                component.trigger("selectionChanged");
+                                if (data.mode == 'igGrid') {
+                                    var selectArr = [];
+                                    selectArr.push("" + selectedItem);
+                                    component.ntsGridList("setSelected", selectArr);
+                                    component.trigger("selectionChanged");
+                                }
+                                else if (data.mode == 'igTree') {
+                                    var liItem = $("li[data-value='" + selectedItem + "']");
+                                    var ulParent = liItem.parent();
+                                    if (!ulParent.is(":visible")) {
+                                        ulParent.css("display", "block");
+                                        var spanSibling = ulParent.siblings("span[data-role='expander']");
+                                        spanSibling.removeClass("ui-icon-triangle-1-e");
+                                        spanSibling.addClass("ui-icon-triangle-1-s");
+                                    }
+                                    component.igTree("select", liItem);
+                                }
                             }
                             else {
                                 if (!isArray)
@@ -2406,8 +2419,9 @@ var nts;
                                 });
                                 if (moved) {
                                     $targetElement.igGrid("virtualScrollTo", 0);
-                                    $targetElement.igGrid("option", "dataSource", source);
-                                    $targetElement.igGrid("dataBind");
+                                    data.targetSource(source);
+                                    //                        $targetElement.igGrid("option", "dataSource", source);
+                                    //                        $targetElement.igGrid("dataBind");
                                     var index = upDown + grouped["group1"][0].index;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                                     $targetElement.igGrid("virtualScrollTo", index);
@@ -2430,8 +2444,9 @@ var nts;
                             var changed = result.changed;
                             source = result.source;
                             if (moved && changed) {
-                                $targetElement.igTreeGrid("option", "dataSource", source);
-                                $targetElement.igTreeGrid("dataBind");
+                                data.targetSource(source);
+                                //                    $targetElement.igTreeGrid("option", "dataSource", source);
+                                //                    $targetElement.igTreeGrid("dataBind");
                                 //                    data.targetSource(source);
                                 var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                                 if (index !== selected["index"]) {
