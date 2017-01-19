@@ -44,7 +44,7 @@
 						<tr>
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
-									data-bind="with:unemployeeInsuranceRateItemMode"
+									data-bind="with: unemployeeInsuranceRateModel"
 									class="table_border_black">
 									<tbody>
 										<tr class="bg-green">
@@ -55,20 +55,20 @@
 											<th class="text_center">端数処理</th>
 										</tr>
 										<tr
-											data-bind="with:unemployeeInsuranceRateItemAgroforestryModel">
+											data-bind="with: unemployeeInsuranceRateItemAgroforestryModel">
 											<td class="bg-green">一般の事業</td>
 											<td><div>
 													<input class="health-input"
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
-													option: rateInputOptions, 
+													option: $root.rateInputOptions, 
 													enable: true}">
 													</input>/1000
 												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
+													options: $root.selectionRoundingMethod,
 													optionsValue: 'code',
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
@@ -81,14 +81,14 @@
 											<td><div>
 													<input class="health-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
-													option: rateInputOptions, 
+													option: $root.rateInputOptions, 
 													enable: true}">
 													</input>/1000
 												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
+													options: $root.selectionRoundingMethod,
 													optionsValue: 'code',
 													value: companySetting.roundAtr,
 													optionsText: 'name',
@@ -101,20 +101,20 @@
 											</td>
 										</tr>
 										<tr
-											data-bind="with:unemployeeInsuranceRateItemContructionModel">
+											data-bind="with: unemployeeInsuranceRateItemContructionModel">
 											<td class="bg-green">農林水産清酒製造の事業</td>
 											<td><div>
 													<input class="health-input"
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
-													option: rateInputOptions, 
+													option: $root.rateInputOptions, 
 													enable: true}">
 													</input>/1000
 												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
+													options: $root.selectionRoundingMethod,
 													optionsValue: 'code',
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
@@ -127,14 +127,14 @@
 											<td><div>
 													<input class="health-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
-													option: rateInputOptions, 
+													option: $root.rateInputOptions, 
 													enable: true}">
 													</input>/1000
 												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
+													options: $root.selectionRoundingMethod,
 													optionsValue: 'code',
 													value: companySetting.roundAtr,
 													optionsText: 'name',
@@ -152,14 +152,14 @@
 													<input class="health-input"
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
-													option: rateInputOptions, 
+													option: $root.rateInputOptions, 
 													enable: true}">
 													</input>/1000
 												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
+													options: $root.selectionRoundingMethod,
 													optionsValue: 'code',
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
@@ -172,14 +172,14 @@
 											<td><div>
 													<input class="health-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
-													option: rateInputOptions, 
+													option: $root.rateInputOptions, 
 													enable: true}">
 													</input>/1000
 												</div></td>
 											<td>
 												<div
 													data-bind="ntsComboBox: {
-													options: selectionRoundingMethod,
+													options: $root.selectionRoundingMethod,
 													optionsValue: 'code',
 													value: companySetting.roundAtr,
 													optionsText: 'name',

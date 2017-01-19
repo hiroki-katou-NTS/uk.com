@@ -12,11 +12,13 @@ module nts.uk.pr.view.qmm011.a {
     import BusinessTypeEnum = service.model.BusinessTypeEnum;
     import InsuranceBusinessType = service.model.InsuranceBusinessType;
     import TypeHistory = service.model.TypeHistory;
+    import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
     export module viewmodel {
         export class ScreenModel {
+            selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>;
             //雇用保険 detail B
             lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryUnemployeeInsuranceRateDto>;
-            unemployeeInsuranceRateItemMode: KnockoutObservable<UnemployeeInsuranceRateItemMode>;
+            unemployeeInsuranceRateModel: KnockoutObservable<UnemployeeInsuranceRateModel>;
             lstUnemployeeInsuranceRateItem: UnemployeeInsuranceRateItem[];
             rateInputOptions: any;
             historyUnemployeeInsuranceRateStart: KnockoutObservable<string>;
@@ -39,13 +41,13 @@ module nts.uk.pr.view.qmm011.a {
 
             constructor() {
                 var self = this;
-                var selectionRoundingMethod = [new RoundingMethod(0, "切り捨て"),
-                    new RoundingMethod(1, "切り上げ"),
-                    new RoundingMethod(2, "四捨五入"),
-                    new RoundingMethod(3, "五捨六入"),
-                    new RoundingMethod(4, "五捨五超入")];
+                self.selectionRoundingMethod = ko.observableArray<RoundingMethod>([new RoundingMethod("RoundUp", "切り捨て"),
+                    new RoundingMethod("Truncation", "切り上げ"),
+                    new RoundingMethod("RoundDown", "四捨五入"),
+                    new RoundingMethod("Down5_Up6", "五捨六入"),
+                    new RoundingMethod("Down4_Up5", "五捨五超入")]);
 
-                var unemployeeInsuranceRateItemAgroforestry = new UnemployeeInsuranceRateItem(CareerGroup.Agroforestry,
+                /*var unemployeeInsuranceRateItemAgroforestry = new UnemployeeInsuranceRateItem(CareerGroup.Agroforestry,
                     new UnemployeeInsuranceRateItemSetting(3, 55.59), new UnemployeeInsuranceRateItemSetting(1, 55.5));
                 var unemployeeInsuranceRateItemContruction = new UnemployeeInsuranceRateItem(CareerGroup.Contruction,
                     new UnemployeeInsuranceRateItemSetting(3, 8.59), new UnemployeeInsuranceRateItemSetting(1, 55.6));
@@ -53,44 +55,14 @@ module nts.uk.pr.view.qmm011.a {
                     new UnemployeeInsuranceRateItemSetting(3, 8.59), new UnemployeeInsuranceRateItemSetting(1, 65.5));
                 self.lstUnemployeeInsuranceRateItem = [unemployeeInsuranceRateItemAgroforestry, unemployeeInsuranceRateItemContruction,
                     unemployeeInsuranceRateItemOther];
+                */
                 self.rateInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2
                 }));
-                self.unemployeeInsuranceRateItemMode = ko.observable(new UnemployeeInsuranceRateItemMode(self.lstUnemployeeInsuranceRateItem,
-                    self.rateInputOptions, selectionRoundingMethod));
-                /*var historyUnemployeeInsuranceRate006 = new HistoryUnemployeeInsuranceRate('historyId006', 'companyCode001',
-                    new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)));
-                var historyUnemployeeInsuranceRate005 = new HistoryUnemployeeInsuranceRate('historyId005', 'companyCode001',
-                    new MonthRange(new YearMonth(2015, 10), new YearMonth(2016, 3)));
-                var historyUnemployeeInsuranceRate004 = new HistoryUnemployeeInsuranceRate('historyId004', 'companyCode001',
-                    new MonthRange(new YearMonth(2015, 4), new YearMonth(2015, 9)));
-                var historyUnemployeeInsuranceRate003 = new HistoryUnemployeeInsuranceRate('historyId003', 'companyCode001',
-                    new MonthRange(new YearMonth(2014, 9), new YearMonth(2015, 3)));
-                var historyUnemployeeInsuranceRate002 = new HistoryUnemployeeInsuranceRate('historyId002', 'companyCode001',
-                    new MonthRange(new YearMonth(2014, 4), new YearMonth(2014, 8)));
-                var historyUnemployeeInsuranceRate001 = new HistoryUnemployeeInsuranceRate('historyId001', 'companyCode001',
-                    new MonthRange(new YearMonth(2013, 4), new YearMonth(2014, 3)));
-                self.lstHistoryUnemployeeInsurance = [
-                    historyUnemployeeInsuranceRate006,
-                    historyUnemployeeInsuranceRate005,
-                    historyUnemployeeInsuranceRate004,
-                    historyUnemployeeInsuranceRate003,
-                    historyUnemployeeInsuranceRate002,
-                    historyUnemployeeInsuranceRate001
-                ];
-                */
-                /*self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateModel>([
-                    new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate006),
-                    new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate005),
-                    new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate004),
-                    new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate003),
-                    new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate002),
-                    new HistoryUnemployeeInsuranceRateModel(historyUnemployeeInsuranceRate001)
-                ]);
-                
-                self.selectionHistoryUnemployeeInsuranceRate = ko.observable(historyUnemployeeInsuranceRate006.historyId);
-                */
+                /* self.unemployeeInsuranceRateMode = ko.observable(new UnemployeeInsuranceRateItemMode(self.lstUnemployeeInsuranceRateItem,
+                     self.rateInputOptions, selectionRoundingMethod));
+                 */
                 self.historyUnemployeeInsuranceRateStart = ko.observable('');
                 self.historyUnemployeeInsuranceRateEnd = ko.observable('');
                 var insuBizRateItemBiz1St = new InsuBizRateItem(BusinessTypeEnum.Biz1St, 60, 2);
@@ -122,7 +94,7 @@ module nts.uk.pr.view.qmm011.a {
                     insuBizRateItemBiz5Th, insuBizRateItemBiz6Th, insuBizRateItemBiz7Th, insuBizRateItemBiz8Th, insuBizRateItemBiz9Th,
                     insuBizRateItemBiz10Th];
                 self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(self.lstInsuBizRateItem, self.lstInsuranceBusinessType,
-                    self.rateInputOptions, selectionRoundingMethod));
+                    self.rateInputOptions, self.selectionRoundingMethod));
                 var historyAccidentInsuranceRate006 = new HistoryAccidentInsuranceRate('historyId006', 'companyCode001',
                     new MonthRange(new YearMonth(2016, 4), new YearMonth(9999, 12)));
                 var historyAccidentInsuranceRate005 = new HistoryAccidentInsuranceRate('historyId005', 'companyCode001',
@@ -203,24 +175,9 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate: string) {
-                /* var self = this;
-                 if (selectionHistoryUnemployeeInsuranceRate != null && selectionHistoryUnemployeeInsuranceRate != undefined) {
-                     for (var index = 0; index < self.lstHistoryUnemployeeInsurance.length; index++) {
-                         if (self.lstHistoryUnemployeeInsurance[index].historyId === selectionHistoryUnemployeeInsuranceRate) {
-                             self.historyUnemployeeInsuranceRateStart(
-                                 new HistoryUnemployeeInsuranceRateModel(
-                                     self.lstHistoryUnemployeeInsurance[index]
-                                 ).getViewStartMonth(self.lstHistoryUnemployeeInsurance[index])
-                             );
-                             self.historyUnemployeeInsuranceRateEnd(
-                                 new HistoryUnemployeeInsuranceRateModel(
-                                     self.lstHistoryUnemployeeInsurance[index]
-                                 ).getViewEndMonth(self.lstHistoryUnemployeeInsurance[index])
-                             );
-                         }
-                     }
-                 }
-                 */
+                var self = this;
+                self.findHisotryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
+                self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
             }
             showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate: string) {
                 var self = this;
@@ -249,14 +206,39 @@ module nts.uk.pr.view.qmm011.a {
                 var dfd = $.Deferred<any>();
                 service.findAllHisotryUnemployeeInsuranceRate().done(data => {
                     self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateDto>(data);
-                    self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].code);
+                    self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
+                    self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
+                    self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
                     self.selectionHistoryUnemployeeInsuranceRate.subscribe(function(selectionHistoryUnemployeeInsuranceRate: string) {
                         self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
                     });
-                    dfd.resolve(self);
+                    self.detailHistoryUnemployeeInsuranceRate(data[0].historyId).done(data => {
+                        dfd.resolve(self);
+                    });
+
                 });
                 return dfd.promise();
             }
+            findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findHisotryUnemployeeInsuranceRate(historyId).done(data => {
+                    self.historyUnemployeeInsuranceRateStart(data.startMonthRage);
+                    self.historyUnemployeeInsuranceRateEnd(data.endMonthRage);
+                    dfd.resolve(null);
+                });
+                return dfd.promise();
+            }
+            detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.detailHistoryUnemployeeInsuranceRate(historyId).done(data => {
+                    self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(data));
+                    dfd.resolve(null);
+                });
+                return dfd.promise();
+            }
+
         }
 
         export function convertdata(yearmonth: YearMonth): string {
@@ -270,26 +252,11 @@ module nts.uk.pr.view.qmm011.a {
         }
 
         export class UnemployeeInsuranceRateItemSettingModel {
-            roundAtr: KnockoutObservable<number>;
+            roundAtr: KnockoutObservable<string>;
             rate: KnockoutObservable<number>;
             constructor(unemployeeInsuranceRateItemSetting: UnemployeeInsuranceRateItemSetting) {
                 this.roundAtr = ko.observable(unemployeeInsuranceRateItemSetting.roundAtr);
                 this.rate = ko.observable(unemployeeInsuranceRateItemSetting.rate);
-            }
-        }
-        export class HistoryUnemployeeInsuranceRateModel {
-            code: string;//historyId
-            name: string;//monthRange
-            constructor(historyUnemployeeInsuranceRate: HistoryUnemployeeInsuranceRate) {
-                this.code = historyUnemployeeInsuranceRate.historyId;
-                this.name = convertdata(historyUnemployeeInsuranceRate.monthRage.startMonth)
-                    + " ~ " + convertdata(historyUnemployeeInsuranceRate.monthRage.endMonth);
-            }
-            getViewStartMonth(historyUnemployeeInsuranceRate: HistoryUnemployeeInsuranceRate): string {
-                return convertdata(historyUnemployeeInsuranceRate.monthRage.startMonth);
-            }
-            getViewEndMonth(historyUnemployeeInsuranceRate: HistoryUnemployeeInsuranceRate): string {
-                return convertdata(historyUnemployeeInsuranceRate.monthRage.endMonth);
             }
         }
 
@@ -312,39 +279,34 @@ module nts.uk.pr.view.qmm011.a {
         export class UnemployeeInsuranceRateItemModel {
             companySetting: UnemployeeInsuranceRateItemSettingModel;
             personalSetting: UnemployeeInsuranceRateItemSettingModel;
-            rateInputOptions: any;
-            selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>;
-            constructor(companySetting: UnemployeeInsuranceRateItemSetting, personalSetting: UnemployeeInsuranceRateItemSetting,
-                rateInputOptions: any, selectionRoundingMethod: RoundingMethod[]) {
+            constructor(companySetting: UnemployeeInsuranceRateItemSetting, personalSetting: UnemployeeInsuranceRateItemSetting) {
                 this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
                 this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
-                this.rateInputOptions = rateInputOptions;
-                this.selectionRoundingMethod = ko.observableArray<RoundingMethod>(selectionRoundingMethod);
             }
         }
-        export class UnemployeeInsuranceRateItemMode {
+        export class UnemployeeInsuranceRateModel {
             unemployeeInsuranceRateItemAgroforestryModel: UnemployeeInsuranceRateItemModel;
             unemployeeInsuranceRateItemContructionModel: UnemployeeInsuranceRateItemModel;
             unemployeeInsuranceRateItemOtherModel: UnemployeeInsuranceRateItemModel;
-            constructor(lstUnemployeeInsuranceRateItem: UnemployeeInsuranceRateItem[], rateInputOptions: any, selectionRoundingMethod: RoundingMethod[]) {
-                for (var index = 0; index < lstUnemployeeInsuranceRateItem.length; index++) {
+            constructor(unemployeeInsuranceRate: UnemployeeInsuranceRateDto) {
+                for (var index = 0; index < unemployeeInsuranceRate.rateItems.length; index++) {
                     //Agroforestry
-                    if (lstUnemployeeInsuranceRateItem[index].careerGroup == CareerGroup.Agroforestry) {
+                    if (unemployeeInsuranceRate.rateItems[index].careerGroup === CareerGroup.Agroforestry) {
                         this.unemployeeInsuranceRateItemAgroforestryModel =
-                            new UnemployeeInsuranceRateItemModel(lstUnemployeeInsuranceRateItem[index].companySetting,
-                                lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
+                            new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting,
+                                unemployeeInsuranceRate.rateItems[index].personalSetting);
                     }
                     //Contruction
-                    else if (lstUnemployeeInsuranceRateItem[index].careerGroup == CareerGroup.Contruction) {
+                    else if (unemployeeInsuranceRate.rateItems[index].careerGroup === CareerGroup.Contruction) {
                         this.unemployeeInsuranceRateItemContructionModel =
-                            new UnemployeeInsuranceRateItemModel(lstUnemployeeInsuranceRateItem[index].companySetting,
-                                lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
+                            new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting,
+                                unemployeeInsuranceRate.rateItems[index].personalSetting);
                     }
                     //Other
-                    else if (lstUnemployeeInsuranceRateItem[index].careerGroup == CareerGroup.Other) {
+                    else if (unemployeeInsuranceRate.rateItems[index].careerGroup === CareerGroup.Other) {
                         this.unemployeeInsuranceRateItemOtherModel =
-                            new UnemployeeInsuranceRateItemModel(lstUnemployeeInsuranceRateItem[index].companySetting,
-                                lstUnemployeeInsuranceRateItem[index].personalSetting, rateInputOptions, selectionRoundingMethod);
+                            new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting,
+                                unemployeeInsuranceRate.rateItems[index].personalSetting);
                     }
                 }
             }
@@ -355,11 +317,11 @@ module nts.uk.pr.view.qmm011.a {
             insuranceBusinessType: KnockoutObservable<string>;
             rateInputOptions: any;
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>;
-            constructor(insuBizRateItem: InsuBizRateItem, rateInputOptions: any, selectionRoundingMethod: RoundingMethod[]) {
+            constructor(insuBizRateItem: InsuBizRateItem, rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>) {
                 this.insuRate = ko.observable(insuBizRateItem.insuRate);
                 this.insuRound = ko.observable(insuBizRateItem.insuRound);
                 this.rateInputOptions = rateInputOptions;
-                this.selectionRoundingMethod = ko.observableArray<RoundingMethod>(selectionRoundingMethod);
+                this.selectionRoundingMethod = selectionRoundingMethod;
                 this.insuranceBusinessType = ko.observable('');
             }
             setInsuranceBusinessType(insuranceBusinessType: string) {
@@ -378,7 +340,7 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateBiz9ThModel: AccidentInsuranceRateDetailModel;
             accidentInsuranceRateBiz10ThModel: AccidentInsuranceRateDetailModel;
             constructor(lstInsuBizRateItem: InsuBizRateItem[], lstInsuranceBusinessType: InsuranceBusinessType[],
-                rateInputOptions: any, selectionRoundingMethod: RoundingMethod[]) {
+                rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>) {
                 for (var index = 0; index < lstInsuBizRateItem.length; index++) {
                     //Biz1St
                     if (lstInsuBizRateItem[index].insuBizType == BusinessTypeEnum.Biz1St) {

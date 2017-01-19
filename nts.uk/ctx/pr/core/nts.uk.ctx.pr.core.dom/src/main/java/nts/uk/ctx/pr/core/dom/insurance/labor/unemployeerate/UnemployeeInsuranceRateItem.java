@@ -5,11 +5,13 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class UnemployeeInsuranceRateItem.
  */
 @Getter
+@Setter
 public class UnemployeeInsuranceRateItem {
 
 	/** The career group. */
