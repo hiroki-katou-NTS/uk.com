@@ -431,10 +431,23 @@ var nts;
                             var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
                             //                console.log(selectedItem);
                             if (data.mode) {
-                                var selectArr = [];
-                                selectArr.push("" + selectedItem);
-                                component.ntsGridList("setSelected", selectArr);
-                                component.trigger("selectionChanged");
+                                if (data.mode == 'igGrid') {
+                                    var selectArr = [];
+                                    selectArr.push("" + selectedItem);
+                                    component.ntsGridList("setSelected", selectArr);
+                                    component.trigger("selectionChanged");
+                                }
+                                else if (data.mode == 'igTree') {
+                                    var liItem = $("li[data-value='" + selectedItem + "']");
+                                    var ulParent = liItem.parent();
+                                    if (!ulParent.is(":visible")) {
+                                        ulParent.css("display", "block");
+                                        var spanSibling = ulParent.siblings("span[data-role='expander']");
+                                        spanSibling.removeClass("ui-icon-triangle-1-e");
+                                        spanSibling.addClass("ui-icon-triangle-1-s");
+                                    }
+                                    component.igTree("select", liItem);
+                                }
                             }
                             else {
                                 if (!isArray)
@@ -1941,7 +1954,7 @@ var nts;
                         var value = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var containerFormat = 'yyyy/mm/dd';
-                        var length = 10, atomWidth = 9;
+                        var length = 10, atomWidth = 9.5;
                         if (dateFormat === "yyyy/MM/dd DDD") {
                             length = 16;
                         }
@@ -1985,7 +1998,13 @@ var nts;
                             $input.on('change', function (event) {
                                 data.value($input.val());
                             });
-                        $input.width(atomWidth * length);
+                        $input.width(Math.floor(atomWidth * length));
+                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                            $input.prop("disabled", true);
+                            if (button) {
+                                container.find('.datepicker-btn').prop("disabled", true);
+                            }
+                        }
                     };
                     /**
                      * Update
@@ -2013,6 +2032,12 @@ var nts;
                             if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
                                 $input.datepicker("setDate", newDate);
                             $input.val(newValue);
+                        }
+                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                            $input.prop("disabled", true);
+                            if (data.button) {
+                                container.find('.datepicker-btn').prop("disabled", true);
+                            }
                         }
                     };
                     return DatePickerBindingHandler;
@@ -2396,7 +2421,6 @@ var nts;
                                     $targetElement.igGrid("virtualScrollTo", 0);
                                     $targetElement.igGrid("option", "dataSource", source);
                                     $targetElement.igGrid("dataBind");
-                                    //                        data.targetSource(source);
                                     var index = upDown + grouped["group1"][0].index;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                                     $targetElement.igGrid("virtualScrollTo", index);
@@ -2414,8 +2438,6 @@ var nts;
                             }
                             //                var targetSource = ko.unwrap(data.targetSource);
                             var source = _.cloneDeep($targetElement.igTreeGrid("option", "dataSource"));
-                            //                var targetSource = ko.unwrap(data.targetSource);
-                            //                var source = _.cloneDeep(targetSource);
                             var result = findChild(upDown, selected["id"], source, false, false);
                             var moved = result.moved;
                             var changed = result.changed;
