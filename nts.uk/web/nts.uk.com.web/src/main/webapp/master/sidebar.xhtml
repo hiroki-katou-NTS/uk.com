@@ -41,12 +41,12 @@
     					Header!
     				</td>
    				</tr>
-   				<tr>
+   				<tr data-bind="with: content">
    					<td id="sidebar-area">
 			        	<ui:insert name="sidebar" />
    					</td>
    					<td>
-				        <div data-bind="with: content">
+				        <div>
 				        	<ui:insert name="content" />
 				        </div>
    					</td>
