@@ -2008,7 +2008,7 @@ module nts.uk.ui.koExtentions {
             var value = ko.unwrap(data.value);
             var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             var containerFormat = 'yyyy/mm/dd';
-            var length = 10, atomWidth = 9;
+            var length = 10, atomWidth = 9.5;
             if (dateFormat === "yyyy/MM/dd DDD") {
                 length = 16;
             } else if (dateFormat === "yyyy/MM/dd D") {
@@ -2049,7 +2049,7 @@ module nts.uk.ui.koExtentions {
                 $input.on('change', (event: any) => {
                     data.value($input.val());
                 });
-            $input.width(atomWidth * length);
+            $input.width(Math.floor(atomWidth * length));
         }
 
         /**
@@ -2496,9 +2496,9 @@ module nts.uk.ui.koExtentions {
                     });
                     if (moved) {
                         $targetElement.igGrid("virtualScrollTo", 0);
-                        $targetElement.igGrid("option", "dataSource", source);
-                        $targetElement.igGrid("dataBind");
-//                        data.targetSource(source);
+                        data.targetSource(source);
+//                        $targetElement.igGrid("option", "dataSource", source);
+//                        $targetElement.igGrid("dataBind");
                         var index = upDown + grouped["group1"][0].index;
 //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                         $targetElement.igGrid("virtualScrollTo", index);
@@ -2517,8 +2517,6 @@ module nts.uk.ui.koExtentions {
                 }
 //                var targetSource = ko.unwrap(data.targetSource);
                 var source = _.cloneDeep($targetElement.igTreeGrid("option", "dataSource"));
-//                var targetSource = ko.unwrap(data.targetSource);
-//                var source = _.cloneDeep(targetSource);
                 
                 var result = findChild(upDown, selected["id"], source, false, false);
                 var moved = result.moved;
@@ -2526,8 +2524,9 @@ module nts.uk.ui.koExtentions {
                 source = result.source;
                 
                 if (moved && changed) {
-                    $targetElement.igTreeGrid("option", "dataSource", source);
-                    $targetElement.igTreeGrid("dataBind");
+                    data.targetSource(source);
+//                    $targetElement.igTreeGrid("option", "dataSource", source);
+//                    $targetElement.igTreeGrid("dataBind");
 //                    data.targetSource(source);
                     var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                     if(index !== selected["index"]){
