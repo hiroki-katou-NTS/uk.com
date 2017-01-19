@@ -24,10 +24,9 @@
 						<h1>SwapList </h1>
 						<div id="swap-list" data-bind="ntsSwapList: {
 								showSearchBox: true,
-								width: 1000,
-								height: 110,
-								options: itemsSwap,
-								optionsValue: 'code',
+								height: 300,
+								dataSource: itemsSwap,
+								primaryKey: 'code',
 								columns: columns,
 								value: currentCodeListSwap
 							}"
@@ -74,14 +73,14 @@
 												</td>
 											</tr>
 											<tr>
-												<td>options</td>
+												<td>options / dataSource</td>
 												<td>
 													<b>Type:</b> array&lt;any&gt;<br/>
 													List data to generate original GridList at left
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue</td>
+												<td>optionsValue / primaryKey</td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as primaryKey
@@ -93,8 +92,9 @@
 													<b>Type:</b> array&lt;column&gt;<br/>
 													An array of column objects:<br/>
 													<i>headerText:</i> Text for header<br/>
-													<i>prop:</i> Property in data array for column<br/>
+													<i>prop/ key:</i> Property in data array for column<br/>
 													<i>width:</i> Width for column
+													<b><i>(*): Can use other properties of columns of iggrid</i></b>
 												</td>
 											</tr>
 											<tr>

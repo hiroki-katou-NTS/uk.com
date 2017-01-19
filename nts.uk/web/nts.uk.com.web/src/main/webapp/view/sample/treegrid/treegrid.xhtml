@@ -30,17 +30,16 @@
 								<h3>Single Selection</h3>
 								<table id="treegrid2"
 									data-bind="ntsTreeGridView:{
-										
+										width: 1000,
 										height: 250,
-										options: items2,
+										dataSource: items2,
 										value: singleSelectedCode,
 										columns: columns,
-										optionsValue: 'code',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
+										primaryKey: 'code',
+										childDataKey: 'childs',
+										primaryText: 'nodeText',
 										multiple: false,
 										enable: true,
-										
 										showCheckBox: false}"
 									class="cf">
 								</table>
@@ -56,7 +55,7 @@
 								<h3>Multi Selection</h3>
 								<table id="treegrid"
 									data-bind="ntsTreeGridView:{
-										
+										width: 1000, 
 										height: 250,
 										options: items1,
 										selectedValues: selectedCode,
@@ -95,12 +94,12 @@
 	data-bind="ntsTreeGridView:{
 		width: 700,
 		height: 250,
-		options: items2,
+		dataSource: items2,
 		value: singleSelectedCode,
 		headers: headers,
-		optionsValue: 'code',
-		optionsChild: 'childs',
-		optionsText: 'nodeText',
+		primaryKey: 'code',
+		childDataKey: 'childs',
+		primaryText: 'nodeText',
 		multiple: false,
 		enable: true,
 		extColumns: [{headerText: headers()[2], key: 'custom', width: '150px', dataType: 'string'}],
@@ -145,6 +144,14 @@
 												</td>
 											</tr>
 											<tr>
+												<td>optionsChild / childDataKey<br/></td>
+												<td>
+													<b>Type:</b>string<br/>
+													<b>Default:</b> "childDataKey"<br/>
+													<i>The property to determine data sources for children.</i>
+												</td>
+											</tr>
+											<tr>
 												<td>height</td>
 												<td>
 													<b>Type:</b> null | string | number<br/>
@@ -155,17 +162,24 @@
 												</td>
 											</tr>
 											<tr>
-												<td>options</td>
+												<td>options / dataSource</td>
 												<td>
 													<b>Type:</b> array&lt;any&gt;<br/>
 													List data to generate GridList
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue</td>
+												<td>optionsValue / primaryKey</td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as primaryKey
+												</td>
+											</tr>
+											<tr>
+												<td>optionsText / primaryText</td>
+												<td>
+													<b>Type:</b> string<br/>
+													Field in data will be set as primary text (for not determine columns).
 												</td>
 											</tr>
 											<tr>
