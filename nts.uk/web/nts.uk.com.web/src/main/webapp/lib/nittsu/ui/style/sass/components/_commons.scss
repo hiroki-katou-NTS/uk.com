@@ -1,4 +1,15 @@
 /*****************************
+  Overwrite JQueryUI
+*****************************/
+.ui-widget,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+	font-family: $font_family;
+}
+
+/*****************************
   Helper Class
 *****************************/
 .hidden {display: none !important;}

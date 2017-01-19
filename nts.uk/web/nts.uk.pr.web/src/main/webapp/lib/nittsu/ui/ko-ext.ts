@@ -2439,8 +2439,17 @@ module nts.uk.ui.koExtentions {
                 $upDown.height(height);
                 $upDown.find(".upDown-container").height(height);
             } else {
-                $upDown.height($(comId + "_container").height());
-                $upDown.find(".upDown-container").height($(comId + "_container").height());
+                var targetHeight = $(comId + "_container").height();
+                if(targetHeight === undefined){
+                    var h = _.find($(comId).attr("data-bind").split(","), function(attr){
+                        return attr.indexOf("height") >= 0;        
+                    });
+                    if(h !== undefined){
+                        targetHeight = parseFloat(h.split(":")[1]);        
+                    }
+                }
+                $upDown.height(targetHeight);
+                $upDown.find(".upDown-container").height(targetHeight);
             }
 
             var $up = $upDown.find(".ntsUpButton");
@@ -2451,8 +2460,8 @@ module nts.uk.ui.koExtentions {
 
             var move = function(upDown, $targetElement) {
                 var selectedRaw = $targetElement.igGrid("selectedRows");
-                var targetSource = ko.unwrap(data.targetSource);
-                var source = _.cloneDeep(targetSource);
+//                var targetSource = ko.unwrap(data.targetSource);
+                var source = _.cloneDeep($targetElement.igGrid("option", "dataSource"));
                 var selected = _.filter(selectedRaw, function(item) {
                     return item["index"] >= 0;
                 });
@@ -2487,7 +2496,9 @@ module nts.uk.ui.koExtentions {
                     });
                     if (moved) {
                         $targetElement.igGrid("virtualScrollTo", 0);
-                        data.targetSource(source);
+                        $targetElement.igGrid("option", "dataSource", source);
+                        $targetElement.igGrid("dataBind");
+//                        data.targetSource(source);
                         var index = upDown + grouped["group1"][0].index;
 //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                         $targetElement.igGrid("virtualScrollTo", index);
@@ -2504,8 +2515,10 @@ module nts.uk.ui.koExtentions {
                 if (selected["index"] < 0) {
                     return;
                 }
-                var targetSource = ko.unwrap(data.targetSource);
-                var source = _.cloneDeep(targetSource);
+//                var targetSource = ko.unwrap(data.targetSource);
+                var source = _.cloneDeep($targetElement.igTreeGrid("option", "dataSource"));
+//                var targetSource = ko.unwrap(data.targetSource);
+//                var source = _.cloneDeep(targetSource);
                 
                 var result = findChild(upDown, selected["id"], source, false, false);
                 var moved = result.moved;
@@ -2513,7 +2526,9 @@ module nts.uk.ui.koExtentions {
                 source = result.source;
                 
                 if (moved && changed) {
-                    data.targetSource(source);
+                    $targetElement.igTreeGrid("option", "dataSource", source);
+                    $targetElement.igTreeGrid("dataBind");
+//                    data.targetSource(source);
                     var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                     if(index !== selected["index"]){
                         var scrollTo = _.sumBy(_.filter($target.igTreeGrid("allRows"), function(row){
