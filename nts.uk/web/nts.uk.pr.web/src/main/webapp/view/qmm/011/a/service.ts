@@ -1,5 +1,25 @@
 module nts.uk.pr.view.qmm011.a {
     export module service {
+
+        var paths: any = {
+            findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findallHistory",
+        };
+
+        //Function connection service FindAll Labor Insurance Office
+        export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<any>> {
+            var dfd = $.Deferred<Array<any>>();
+            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
+                .done(function(res: Array<any>) {
+                    console.log(res);
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
         export module model {
             export class YearMonth {
                 year: number;
@@ -38,21 +58,31 @@ module nts.uk.pr.view.qmm011.a {
                 careerGroup: number;
                 companySetting: UnemployeeInsuranceRateItemSetting;
                 personalSetting: UnemployeeInsuranceRateItemSetting;
-                constructor(careerGroup: number, companySetting: UnemployeeInsuranceRateItemSetting, personalSetting: UnemployeeInsuranceRateItemSetting) {
+                constructor(careerGroup: number, companySetting: UnemployeeInsuranceRateItemSetting,
+                    personalSetting: UnemployeeInsuranceRateItemSetting) {
                     this.careerGroup = careerGroup;
                     this.companySetting = companySetting;
                     this.personalSetting = personalSetting;
                 }
             }
-            export class HistoryUnemployeeInsuranceRate {
+            export class HistoryInsuranceRateDto {
                 historyId: string;
                 companyCode: string;
                 monthRage: MonthRange;
-                constructor(historyId: string, companyCode: string, monthRage: MonthRange) {
+                startMonthRage: string;
+                endMonthRage: string;
+                inforMonthRage: string;
+                constructor(historyId: string, companyCode: string, monthRage: MonthRange, startMonthRage: string,
+                    endMonthRage: string) {
                     this.historyId = historyId;
                     this.companyCode = companyCode;
                     this.monthRage = monthRage;
+                    this.startMonthRage = startMonthRage;
+                    this.endMonthRage = endMonthRage;
                 }
+            }
+            export class HistoryUnemployeeInsuranceRateDto extends HistoryInsuranceRateDto {
+
             }
 
             export class HistoryAccidentInsuranceRate {
