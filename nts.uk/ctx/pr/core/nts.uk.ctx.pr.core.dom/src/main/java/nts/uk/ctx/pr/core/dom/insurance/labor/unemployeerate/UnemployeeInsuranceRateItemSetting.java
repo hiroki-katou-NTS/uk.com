@@ -5,12 +5,14 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 
 /**
  * The Class LaborInsuranceOffice.
  */
 @Getter
+@Setter
 public class UnemployeeInsuranceRateItemSetting {
 
 	/** The company code. */
@@ -18,5 +20,12 @@ public class UnemployeeInsuranceRateItemSetting {
 
 	/** The code. */
 	private Double rate;
+
+	/**
+	 * Instantiates a new unemployee insurance rate item setting.
+	 */
+	public UnemployeeInsuranceRateItemSetting() {
+		super();
+	}
 
 }

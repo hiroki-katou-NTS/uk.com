@@ -22,4 +22,12 @@ public class InsuBizRateItem {
 
 	/** The insu round. */
 	private RoundingMethod insuRound;
+
+	/**
+	 * Instantiates a new insu biz rate item.
+	 */
+	public InsuBizRateItem() {
+		super();
+	}
+
 }

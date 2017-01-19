@@ -3,6 +3,8 @@ module nts.uk.pr.view.qmm011.a {
 
         var paths: any = {
             findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findallHistory",
+            findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findHistory",
+            detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory"
         };
 
         //Function connection service FindAll Labor Insurance Office
@@ -10,6 +12,30 @@ module nts.uk.pr.view.qmm011.a {
             var dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
                 .done(function(res: Array<any>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
+                .done(function(res: any) {
                     console.log(res);
                     dfd.resolve(res);
                     //xyz
@@ -18,6 +44,7 @@ module nts.uk.pr.view.qmm011.a {
                     dfd.reject(res);
                 })
             return dfd.promise();
+
         }
 
         export module model {
@@ -39,26 +66,26 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
             export class RoundingMethod {
-                code: number;
+                code: string;
                 name: string;
-                constructor(code: number, name: string) {
+                constructor(code: string, name: string) {
                     this.code = code;
                     this.name = name;
                 }
             }
             export class UnemployeeInsuranceRateItemSetting {
-                roundAtr: number;
+                roundAtr: string;
                 rate: number;
-                constructor(roundAtr: number, rate: number) {
+                constructor(roundAtr: string, rate: number) {
                     this.roundAtr = roundAtr;
                     this.rate = rate;
                 }
             }
             export class UnemployeeInsuranceRateItem {
-                careerGroup: number;
+                careerGroup: string;
                 companySetting: UnemployeeInsuranceRateItemSetting;
                 personalSetting: UnemployeeInsuranceRateItemSetting;
-                constructor(careerGroup: number, companySetting: UnemployeeInsuranceRateItemSetting,
+                constructor(careerGroup: string, companySetting: UnemployeeInsuranceRateItemSetting,
                     personalSetting: UnemployeeInsuranceRateItemSetting) {
                     this.careerGroup = careerGroup;
                     this.companySetting = companySetting;
@@ -84,7 +111,11 @@ module nts.uk.pr.view.qmm011.a {
             export class HistoryUnemployeeInsuranceRateDto extends HistoryInsuranceRateDto {
 
             }
-
+            export class UnemployeeInsuranceRateDto {
+                historyId: string;
+                companyCode: string;
+                rateItems: UnemployeeInsuranceRateItem[];
+            }
             export class HistoryAccidentInsuranceRate {
                 historyId: string;
                 companyCode: string;
@@ -101,8 +132,8 @@ module nts.uk.pr.view.qmm011.a {
                 /** The insu rate. */
                 insuRate: number;
                 /** The insu round. */
-                insuRound: number;
-                constructor(insuBizType: number, insuRate: number, insuRound: number) {
+                insuRound: string;
+                constructor(insuBizType: number, insuRate: number, insuRound: string) {
                     this.insuBizType = insuBizType;
                     this.insuRate = insuRate;
                     this.insuRound = insuRound;
@@ -121,12 +152,9 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
             export enum CareerGroup {
-                /** The Agroforestry. */
-                Agroforestry = 0,
-                /** The Contruction. */
-                Contruction = 1,
-                /** The Other. */
-                Other = 2
+                Agroforestry = "Agroforestry",
+                Contruction = "Contruction",
+                Other = "Other"
             }
             export enum BusinessTypeEnum {
                 /** The Biz 1 st. */

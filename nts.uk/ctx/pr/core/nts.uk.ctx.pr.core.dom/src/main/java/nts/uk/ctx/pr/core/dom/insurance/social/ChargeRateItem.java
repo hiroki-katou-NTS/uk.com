@@ -18,4 +18,11 @@ public class ChargeRateItem {
 	/** The personal rate. */
 	private Double personalRate;
 
+	/**
+	 * Instantiates a new charge rate item.
+	 */
+	public ChargeRateItem() {
+		super();
+	}
+
 }

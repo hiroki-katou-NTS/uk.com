@@ -57,14 +57,18 @@ module nts.uk.pr.view.qmm007.a {
             return dfd.promise();
         }
 
-        export function save(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            console.log(data);
+        export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
+        }
+
+        export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
         }
 
         export function remove(id: string): JQueryPromise<any> {
-            console.log(id);
-            return null;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, id);
         }
 
         /**
@@ -78,12 +82,12 @@ module nts.uk.pr.view.qmm007.a {
                 startMonth: string;
                 endMonth: string;
                 budget: number;
-                fixPaySettingType: SettingType;
-                fixPayAtr: ApplySetting;
-                fixPayAtrMonthly: ApplySetting;
-                fixPayAtrDayMonth: ApplySetting;
-                fixPayAtrDaily: ApplySetting;
-                fixPayAtrHourly: ApplySetting;
+                fixPaySettingType: string;
+                fixPayAtr: string;
+                fixPayAtrMonthly: string;
+                fixPayAtrDayMonth: string;
+                fixPayAtrDaily: string;
+                fixPayAtrHourly: string;
                 memo: string;
 
                 /*constructor(
@@ -141,16 +145,6 @@ module nts.uk.pr.view.qmm007.a {
                     self.childs = childs;
                     self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
                 }
-            }
-
-            export enum SettingType {
-                Company = 0,
-                Contract = 1
-            }
-
-            export enum ApplySetting {
-                Apply = 1,
-                NotApply = 0
             }
 
         }

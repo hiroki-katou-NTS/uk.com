@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * The Class PensionAvgearn.
  */
-@Getter
+@Data
 public class PensionAvgearn {
 
 	/** The history id. */
@@ -36,5 +36,12 @@ public class PensionAvgearn {
 
 	/** The personal pension. */
 	private PensionAvgearnValue personalPension;
+
+	/**
+	 * Instantiates a new pension avgearn.
+	 */
+	public PensionAvgearn() {
+		super();
+	}
 
 }

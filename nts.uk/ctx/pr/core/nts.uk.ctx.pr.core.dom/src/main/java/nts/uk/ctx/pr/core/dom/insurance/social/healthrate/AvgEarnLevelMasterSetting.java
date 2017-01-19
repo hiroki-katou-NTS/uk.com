@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * The Class AvgEarnLevelMasterSetting.
  */
-@Getter
+@Data
 public class AvgEarnLevelMasterSetting {
 
 	/** The code. */
@@ -17,7 +17,7 @@ public class AvgEarnLevelMasterSetting {
 
 	/** The health level. */
 	private Integer healthLevel;
-	
+
 	/** The pension level. */
 	private Integer pensionLevel;
 
@@ -26,5 +26,12 @@ public class AvgEarnLevelMasterSetting {
 
 	/** The sal limit. */
 	private Long salLimit;
+
+	/**
+	 * Instantiates a new avg earn level master setting.
+	 */
+	public AvgEarnLevelMasterSetting() {
+		super();
+	}
 
 }

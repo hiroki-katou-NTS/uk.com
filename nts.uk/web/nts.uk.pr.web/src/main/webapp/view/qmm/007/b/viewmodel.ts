@@ -4,35 +4,20 @@ module nts.uk.pr.view.qmm007.b {
         export class ScreenModel {
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
-            jpnDate: KnockoutObservable<string>;
-            endDate: KnockoutObservable<string>;
+            endMonth: KnockoutObservable<string>;
+            startMonth: KnockoutObservable<string>;
 
             historyTakeOver: KnockoutObservable<string>;
 
-            startDate: any;
-
             constructor() {
                 var self = this;
-                self.code = ko.observable(nts.uk.ui.windows.getShared('code'));
-                self.name = ko.observable('ガソリン単価');
-                self.jpnDate = ko.observable('（平成29年01月）');
-                self.endDate = ko.observable('~ 9999/12');
+                var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
+                self.code = ko.observable(unitPriceHistoryModel.unitPriceCode());
+                self.name = ko.observable(unitPriceHistoryModel.unitPriceName());
+                self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
+                self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
 
                 self.historyTakeOver = ko.observable('1');
-
-                self.startDate = {
-                    value: ko.observable('2017/01'),
-                    constraint: '',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "",
-                        width: "",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
 
             }
 

@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import lombok.Getter;
+import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 /**
  * The Class HealthInsuranceRounding.
  */
-@Getter
+@Data
 public class HealthInsuranceRounding extends AggregateRoot {
 
 	/** The pay type. */
@@ -20,5 +20,12 @@ public class HealthInsuranceRounding extends AggregateRoot {
 
 	/** The round atrs. */
 	private RoundingItem roundAtrs;
+
+	/**
+	 * Instantiates a new health insurance rounding.
+	 */
+	public HealthInsuranceRounding() {
+		super();
+	}
 
 }
