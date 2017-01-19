@@ -44,9 +44,13 @@
 						<div data-bind="with: texteditor">
 							<h3>TextEditor</h3>
 							<input data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							
 							<br/>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
+						<div>
+							<input data-bind="ntsTextEditor: {value: option.value}" />
 						</div>
 						<br/>
 						<article class="cf">
@@ -57,7 +61,11 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: texteditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsTextEditor: { value: value, constraint: 'ResidenceCode' }" />
+
+<!-- Full Options -->
+<div data-bind="with: texteditor">
 	<input data-bind="ntsTextEditor: {
 		value: value,
 		constraint: constraint,
@@ -225,7 +233,11 @@
 								</ol>
 								<div id="tabs-employeecode-html" class="cf">
 <h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: employeeeditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: 'EmployeeCode'}" />
+
+<!-- Full Options -->
+<div data-bind="with: employeeeditor">
 	<input data-bind="ntsTextEditor: {
 	value: value,
 	constraint: 'EmployeeCode',

@@ -56,7 +56,11 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: multilineeditor">
+<pre><![CDATA[<!-- Simple -->
+<textarea data-bind="ntsMultilineEditor: { value: value, constraint: constraint }" />
+
+<!-- Full Options -->
+<div data-bind="with: multilineeditor">
 	<textarea data-bind="ntsMultilineEditor: {
 		value: value,
 		constraint: constraint,

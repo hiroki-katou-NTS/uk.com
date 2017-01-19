@@ -6,7 +6,7 @@ import nts.uk.shr.com.primitive.Memo;
 @Getter
 public class Classification {
 
-	private final int companyCode;
+	private final String companyCode;
 
 	private final ClassificationCode classificationCode;
 
@@ -16,7 +16,7 @@ public class Classification {
 
 	private Memo classificationMemo;
 
-	public Classification(int companyCode, ClassificationCode classificationCode, ClassificationName classificationName,
+	public Classification(String companyCode, ClassificationCode classificationCode, ClassificationName classificationName,
 			ClassificationCode classificationOutCode, Memo classificationMemo) {
 		this.companyCode = companyCode;
 		this.classificationCode = classificationCode;

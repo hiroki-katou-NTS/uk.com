@@ -1,10 +1,4 @@
-module nts.uk.ui {
-    export interface NtsGridListColumn {
-        headerText: string;
-        prop: string;
-        width: number;
-    }
-    
+declare module nts.uk.ui {
     export interface NtsTabPanelModel {
         id: string;
         title: string;
