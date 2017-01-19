@@ -27,27 +27,27 @@ module nts.uk.pr.view.qmm007.a {
                 self.selectedId.subscribe(id => {
                     if (id != null || id != undefined) {
                         self.isNewMode(false);
-                        self.loadUnitPriceDetail();
+                        self.loadUnitPriceDetail(id);
                     }
                 });
 
-                self.isContractSettingEnabled = ko.observable(true);
-                self.isNewMode= ko.observable(true);
-                self.unitPriceHistoryModel().fixPaySettingType.subscribe( val => {
+                self.isContractSettingEnabled = ko.observable(false);
+                self.isNewMode = ko.observable(true);
+                self.unitPriceHistoryModel().fixPaySettingType.subscribe(val => {
                     val == 'Contract' ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
                 });
                 // nts editor options
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "",
-                        textalign: "left"
-                    }));
+                    textmode: "text",
+                    placeholder: "",
+                    textalign: "left"
+                }));
                 self.currencyEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                        grouplength: 3,
-                        decimallength: 2,
-                        currencyformat: "JPY",
-                        currencyposition: 'right'
-                    }));
+                    grouplength: 3,
+                    decimallength: 2,
+                    currencyformat: "JPY",
+                    currencyposition: 'right'
+                }));
 
             }
 
@@ -70,21 +70,23 @@ module nts.uk.pr.view.qmm007.a {
 
             // collect data from model
             collectData(): UnitPriceHistoryDto {
-                var self = this
-                var data = new UnitPriceHistoryDto();
-                data.unitPriceCode = self.unitPriceHistoryModel().unitPriceCode();
-                data.unitPriceName = self.unitPriceHistoryModel().unitPriceName();
-                data.startMonth = self.unitPriceHistoryModel().startMonth();
-                data.endMonth = self.unitPriceHistoryModel().endMonth();
-                data.budget = self.unitPriceHistoryModel().budget();
-                data.fixPaySettingType = self.unitPriceHistoryModel().fixPaySettingType();
-                data.fixPayAtr = self.unitPriceHistoryModel().fixPayAtr();
-                data.fixPayAtrMonthly = self.unitPriceHistoryModel().fixPayAtrMonthly();
-                data.fixPayAtrDayMonth = self.unitPriceHistoryModel().fixPayAtrDayMonth();
-                data.fixPayAtrDaily = self.unitPriceHistoryModel().fixPayAtrDaily();
-                data.fixPayAtrHourly = self.unitPriceHistoryModel().fixPayAtrHourly();
-                data.memo = self.unitPriceHistoryModel().memo();
-                return data;
+                var self = this;
+                var dto = new UnitPriceHistoryDto();
+                var model = self.unitPriceHistoryModel();
+                dto.id = model.id;
+                dto.unitPriceCode = model.unitPriceCode();
+                dto.unitPriceName = model.unitPriceName();
+                dto.startMonth = model.startMonth();
+                dto.endMonth = model.endMonth();
+                dto.budget = model.budget();
+                dto.fixPaySettingType = model.fixPaySettingType();
+                dto.fixPayAtr = model.fixPayAtr();
+                dto.fixPayAtrMonthly = model.fixPayAtrMonthly();
+                dto.fixPayAtrDayMonth = model.fixPayAtrDayMonth();
+                dto.fixPayAtrDaily = model.fixPayAtrDaily();
+                dto.fixPayAtrHourly = model.fixPayAtrHourly();
+                dto.memo = model.memo();
+                return dto;
             }
 
             save() {
@@ -103,33 +105,50 @@ module nts.uk.pr.view.qmm007.a {
 
             enableNewMode() {
                 var self = this;
+                self.clearUnitPriceDetail();
                 self.isNewMode(true);
-                self.unitPriceHistoryModel(new UnitPriceHistoryModel());
             }
 
-            loadUnitPriceDetail() {
+            clearUnitPriceDetail() {
+                var model = this.unitPriceHistoryModel()
+                model.id = '';
+                model.unitPriceCode('');
+                model.unitPriceName('');
+                model.startMonth('2017/01');
+                //model.endMonth('');
+                model.budget(0);
+                model.fixPaySettingType('Company');
+                model.fixPayAtr('NotApply');
+                model.fixPayAtrMonthly('NotApply');
+                model.fixPayAtrDayMonth('NotApply');
+                model.fixPayAtrDaily('NotApply');
+                model.fixPayAtrHourly('NotApply');
+            }
+
+            loadUnitPriceDetail(id: string) {
                 var self = this;
-                service.getUnitPriceHistoryDetail(self.selectedId()).done(data => {
+                service.getUnitPriceHistoryDetail(id).done(data => {
                     console.log(data);
-                    self.unitPriceHistoryModel().id = data.id;
-                    self.unitPriceHistoryModel().unitPriceCode(data.unitPriceCode);
-                    self.unitPriceHistoryModel().unitPriceName(data.unitPriceName);
-                    self.unitPriceHistoryModel().startMonth(data.startMonth);
-                    //self.unitPriceHistoryModel().endMonth(data.endMonth);
-                    self.unitPriceHistoryModel().budget(data.budget);
-                    self.unitPriceHistoryModel().fixPaySettingType(data.fixPaySettingType);
-                    self.unitPriceHistoryModel().fixPayAtr(data.fixPayAtr);
-                    self.unitPriceHistoryModel().fixPayAtrMonthly(data.fixPayAtrMonthly);
-                    self.unitPriceHistoryModel().fixPayAtrDayMonth(data.fixPayAtrDayMonth);
-                    self.unitPriceHistoryModel().fixPayAtrDaily(data.fixPayAtrDaily);
-                    self.unitPriceHistoryModel().fixPayAtrHourly(data.fixPayAtrHourly);
+                    var model = self.unitPriceHistoryModel()
+                    model.id = data.id;
+                    model.unitPriceCode(data.unitPriceCode);
+                    model.unitPriceName(data.unitPriceName);
+                    model.startMonth(data.startMonth);
+                    //model.endMonth(data.endMonth);
+                    model.budget(data.budget);
+                    model.fixPaySettingType(data.fixPaySettingType);
+                    model.fixPayAtr(data.fixPayAtr);
+                    model.fixPayAtrMonthly(data.fixPayAtrMonthly);
+                    model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
+                    model.fixPayAtrDaily(data.fixPayAtrDaily);
+                    model.fixPayAtrHourly(data.fixPayAtrHourly);
                 });
             }
 
             loadUnitPriceHistoryList(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.getUnitPriceHistoryList().done( data => {
+                service.getUnitPriceHistoryList().done(data => {
                     self.historyList(data);
                     dfd.resolve(null);
                 });
@@ -154,9 +173,10 @@ module nts.uk.pr.view.qmm007.a {
             memo: KnockoutObservable<string>;
 
             constructor() {
+                this.id = '';
                 this.unitPriceCode = ko.observable('');
                 this.unitPriceName = ko.observable('');
-                this.startMonth = ko.observable('');
+                this.startMonth = ko.observable('2017/01');
                 this.endMonth = ko.observable('（平成29年01月） ~');
                 this.budget = ko.observable(0);
                 this.fixPaySettingType = ko.observable('Company');

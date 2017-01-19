@@ -60,18 +60,17 @@ var nts;
                             }
                             service.getUnitPriceHistoryDetail = getUnitPriceHistoryDetail;
                             function create(unitPriceHistory) {
-                                var data = { unitPriceHistory: unitPriceHistory };
-                                console.log(data);
+                                var data = unitPriceHistory;
+                                return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
                             }
                             service.create = create;
                             function update(unitPriceHistory) {
-                                var data = { unitPriceHistory: unitPriceHistory };
-                                console.log(data);
+                                var data = unitPriceHistory;
+                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
                             }
                             service.update = update;
                             function remove(id) {
-                                console.log(id);
-                                return null;
+                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, id);
                             }
                             service.remove = remove;
                             var model;

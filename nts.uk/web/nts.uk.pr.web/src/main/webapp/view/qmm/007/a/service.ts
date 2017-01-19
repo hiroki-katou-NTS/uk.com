@@ -58,18 +58,17 @@ module nts.uk.pr.view.qmm007.a {
         }
 
         export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            console.log(data);
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
         }
 
         export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            console.log(data);
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
         }
 
         export function remove(id: string): JQueryPromise<any> {
-            console.log(id);
-            return null;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, id);
         }
 
         /**
