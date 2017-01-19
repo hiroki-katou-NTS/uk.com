@@ -1,9 +1,11 @@
 module nts.uk.pr.view.qmm008.c {
     export module viewmodel {
         export class ScreenModel {
-
+            // for left list
+            items: KnockoutObservableArray<ItemModel>;
+            currentCode: KnockoutObservable<any>;
+            columns2: KnockoutObservableArray<NtsGridListColumn>;
             index: number;
-            dataSource: any;
             filteredData: any;
             singleSelectedCode: any;
             selectedCodes: any;
@@ -19,37 +21,59 @@ module nts.uk.pr.view.qmm008.c {
             listOptions: KnockoutObservableArray<any>;
             selectedValue: KnockoutObservable<any>;
             //basic info input
-            basicInfo_inp_001: any; basicInfo_inp_002: any; basicInfo_inp_003: any;
-            basicInfo_inp_004: any; basicInfo_inp_005: any; basicInfo_inp_006: any;
-            basicInfo_inp_007: any; basicInfo_inp_008: any; basicInfo_inp_009: any;
-            basicInfo_inp_010: any; basicInfo_inp_011: any; basicInfo_inp_012: any;
-            //insurance info input   
-            insuranceInfo_inp_001: any; insuranceInfo_inp_002: any; insuranceInfo_inp_003: any;
-            insuranceInfo_inp_004: any; insuranceInfo_inp_005: any; insuranceInfo_inp_006: any;
-            insuranceInfo_inp_007: any; insuranceInfo_inp_008: any; insuranceInfo_inp_009: any;
-            insuranceInfo_inp_010: any; insuranceInfo_inp_011: any; insuranceInfo_inp_012: any;
+            officeCode: KnockoutObservable<string>;
+            officeName: KnockoutObservable<string>;
+            shortName: KnockoutObservable<string>;
+            PicName: KnockoutObservable<string>;
+            PicPosition : KnockoutObservable<string>;
+            
+            portCode: KnockoutObservable<number>;
+            prefecture: KnockoutObservable<string>;
+            address1st :KnockoutObservable<string>;
+            kanaAddress1st:KnockoutObservable<string>;
+            address2nd :KnockoutObservable<string>;
+            kanaAddress2nd:KnockoutObservable<string>;
+            phoneNumber:KnockoutObservable<string>;
+            
+            //insurance info input 
+            healthInsuOfficeRefCode1st: KnockoutObservable<string>;
+            healthInsuOfficeRefCode2nd: KnockoutObservable<string>;
+            pensionOfficeRefCode1st: KnockoutObservable<string>;
+            pensionOfficeRefCode2nd: KnockoutObservable<string>;
+            welfarePensionFundCode: KnockoutObservable<string>;
+            officePensionFundCode: KnockoutObservable<string>;
+
+            healthInsuCityCode: KnockoutObservable<string>;
+            healthInsuOfficeSign: KnockoutObservable<string>;
+            pensionCityCode: KnockoutObservable<string>;
+            pensionOfficeSign: KnockoutObservable<string>;
+            healthInsuOfficeCode: KnockoutObservable<string>;
+            healthInsuAssoCode: KnockoutObservable<string>;
+            memo: KnockoutObservable<string>;
             //text area
             textArea: any;
+            textInputOption: KnockoutObservable<any>;          
             constructor() {
                 var self = this;
+                
+                this.currentCode = ko.observable();
+                this.items = ko.observableArray([]);
+                for(let i = 1; i < 100; i++) {
+                    this.items.push(new ItemModel('00' + i, 'name'+i));
+                }
+                this.columns2 = ko.observableArray([
+                    { headerText: 'コード', key: 'code', width: 100 },
+                    { headerText: '名称', key: 'name', width: 150 }
+                ]);
+                
                 self.listOptions = ko.observableArray([new optionsModel(1, "基本情報"), new optionsModel(2, "保険料マスタの情報")]);
                 self.selectedValue = ko.observable(new optionsModel(1, ""));
 
                 self.modalValue = ko.observable("Goodbye world!");
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
-                // Reset child value 
-                self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                    new Node('0003', 'Bangkok Thailand', []),
-                    new Node('0004', 'Tokyo Japan', []),
-                    new Node('0005', 'Jakarta Indonesia', []),
-                    new Node('0002', 'Seoul Korea', []),
-                    new Node('0006', 'Paris France', []),
-                    new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                    new Node('0010', 'Beijing China', []),
-                    new Node('0011', 'London United Kingdom', []),
-                    new Node('0012', '', [])]);
-
-                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "childs"));
+                
+                //
+                
                 self.singleSelectedCode = ko.observable(null);
                 self.selectedCodes = ko.observableArray([]);
                 self.index = 0;
@@ -61,249 +85,43 @@ module nts.uk.pr.view.qmm008.c {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
                 //basic info input
-                self.basicInfo_inp_001 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "200",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_002 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "300",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_003 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_004 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_005 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_006 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_007 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_008 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_009 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_010 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_011 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.basicInfo_inp_012 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                //insurance info inputs
-                self.insuranceInfo_inp_001 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_002 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_003 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_004 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_005 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_006 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_007 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_008 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_009 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_010 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_011 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
-                self.insuranceInfo_inp_012 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
+                self.officeCode = ko.observable('');
+                self.officeName = ko.observable('');
+                self.shortName = ko.observable('');
+                self.PicName = ko.observable('');
+                self.PicPosition = ko.observable('');
+
+                self.portCode = ko.observable(1);
+                self.prefecture = ko.observable('');
+                self.address1st = ko.observable('');
+                self.kanaAddress1st = ko.observable('');
+                self.address2nd = ko.observable('');
+                self.kanaAddress2nd = ko.observable('');
+                self.phoneNumber = ko.observable('');
+
+                //insurance info input 
+                self.healthInsuOfficeRefCode1st = ko.observable('');
+                self.healthInsuOfficeRefCode2nd = ko.observable('');
+                self.pensionOfficeRefCode1st = ko.observable('');
+                self.pensionOfficeRefCode2nd = ko.observable('');
+                self.welfarePensionFundCode = ko.observable('');
+                self.officePensionFundCode = ko.observable('');
+
+                self.healthInsuCityCode = ko.observable('');
+                self.healthInsuOfficeSign = ko.observable('');
+                self.pensionCityCode = ko.observable('');
+                self.pensionOfficeSign = ko.observable('');
+                self.healthInsuOfficeCode = ko.observable('');
+                self.healthInsuAssoCode = ko.observable('');
+                self.memo = ko.observable('');
                 //text area
                 self.textArea = ko.observable("");
+                //text input options
+                this.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    width: "100",
+                    textalign: "center"
+                }));
             }
 
             CloseModalSubWindow() {
@@ -312,6 +130,15 @@ module nts.uk.pr.view.qmm008.c {
                 nts.uk.ui.windows.close();
             }
         }
+        export class ItemModel {
+            code: string;
+            name: string;
+            constructor(code: string, name: string) {
+                this.code = code;
+                this.name = name;       
+            }
+        }
+        
         export class optionsModel {
             id: number;
             name: string;

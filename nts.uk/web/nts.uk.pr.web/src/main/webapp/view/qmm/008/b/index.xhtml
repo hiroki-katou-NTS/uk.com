@@ -18,6 +18,7 @@
 <!-- 			<com:stylefile path="../catalog/catalog.css" /> -->
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 <!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
@@ -32,7 +33,7 @@
 						</tr>
 						<tr>
 							<td class="border_none"><div data-bind="ntsFormLabel: {}">コード/名称</div></td>
-							<td class="border_none">code- name</td>
+							<td class="border_none"><span data-bind="text: officeCodeName"></span></td>
 						</tr>
 						<tr>
 							<td class="border_none"><div data-bind="ntsFormLabel: {required: true}">期間</div></td>

@@ -34,7 +34,7 @@
 							<td>
 								<div data-bind="ntsFormLabel: {}">コード/名称</div>
 							</td>
-							<td colspan="3" >name -code</td>
+							<td colspan="3" ><span data-bind="text: officeCodeName"></span></td>
 						</tr>
 						<tr>
 							<td>
@@ -53,11 +53,12 @@
 							<td>
 								<div style="margin-top: 20px;" data-bind="ntsFormLabel: {}">期間：</div>
 							</td>
-							<td><div data-bind="with: inp_001">
-									<input
-										data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+							<td><div id="date-picker"
+									data-bind="ntsDatePicker: {
+									value: datePicker, 
+									dateFormat: 'yyyy/MM'}">
 								</div></td>
-								<td>~ 9999/12</td>
+							<td>~ 9999/12</td>
 						</tr>
 					</table>
 					<br />

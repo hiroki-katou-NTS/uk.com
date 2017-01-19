@@ -1,5 +1,7 @@
 module nts.uk.pr.view.qmm007.c {
     export module viewmodel {
+        import service = nts.uk.pr.view.qmm007.a.service;
+
         export class ScreenModel {
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
@@ -24,6 +26,12 @@ module nts.uk.pr.view.qmm007.c {
 
             }
             btnApplyClicked() {
+                var self = this;
+                if (self.isEditMode()) {
+                    service.update(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
+                } else {
+                    service.remove(nts.uk.ui.windows.getShared('unitPriceHistoryModel').id);
+                }
                 nts.uk.ui.windows.close()
             }
             btnCancelClicked() {

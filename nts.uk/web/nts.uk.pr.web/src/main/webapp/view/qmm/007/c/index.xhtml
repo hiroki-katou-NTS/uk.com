@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../common.css" />
+			<com:scriptfile path="../a/service.js" />
 			<com:stylefile path="thispage.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -51,7 +52,7 @@
 						<td> </td>
 						<td><div id="lbl_007" data-bind="ntsFormLabel: {}">期間</div> <span
 							id="inpStartMonth" class="inp-default"
-							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM', enable: isEditMode()}"></span><label
+							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM', enable: isEditMode(), startDate: '2017/01/01'}"></span><label
 							data-bind="text: endMonth"></label></td>
 					</tr>
 					<tr>

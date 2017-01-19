@@ -24,8 +24,8 @@ var nts;
                                 var data = null;
                                 var OfficeItemList = [
                                     new model.finder.InsuranceOfficeItemDto('id01', 'A 事業所', 'code1', [
-                                        new model.finder.InsuranceOfficeItemDto('child01', '~ 9999/12', 'chil1', []),
-                                        new model.finder.InsuranceOfficeItemDto('child02', '~ 9999/12', 'chil2', [])
+                                        new model.finder.InsuranceOfficeItemDto('child01', '2017/04 ~ 9999/12', 'chilcode1', []),
+                                        new model.finder.InsuranceOfficeItemDto('child02', '2016/04 ~ 2017/03', 'chilcode2', [])
                                     ]),
                                     new model.finder.InsuranceOfficeItemDto('id02', 'B 事業所', 'code2', [])];
                                 dfd.resolve(OfficeItemList);
@@ -221,7 +221,12 @@ var nts;
                                             this.name = name;
                                             this.code = code;
                                             this.childs = childs;
-                                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
+                                            if (childs.length == 0) {
+                                                this.codeName = name;
+                                            }
+                                            else {
+                                                this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
+                                            }
                                         }
                                         return InsuranceOfficeItemDto;
                                     }());

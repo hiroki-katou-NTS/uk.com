@@ -9,6 +9,25 @@ module nts.uk.pr.view.qmm007.a {
             removeUnitPriceHistory: "pr/proto/unitprice/remove"
         };
 
+        // collect data from model
+        export function collectData(unitPriceHistoryModel: model.UnitPriceHistoryModel) {
+            var dto = new model.UnitPriceHistoryDto();
+            dto.id = unitPriceHistoryModel.id;
+            dto.unitPriceCode = unitPriceHistoryModel.unitPriceCode();
+            dto.unitPriceName = unitPriceHistoryModel.unitPriceName();
+            dto.startMonth = unitPriceHistoryModel.startMonth();
+            dto.endMonth = unitPriceHistoryModel.endMonth();
+            dto.budget = unitPriceHistoryModel.budget();
+            dto.fixPaySettingType = unitPriceHistoryModel.fixPaySettingType();
+            dto.fixPayAtr = unitPriceHistoryModel.fixPayAtr();
+            dto.fixPayAtrMonthly = unitPriceHistoryModel.fixPayAtrMonthly();
+            dto.fixPayAtrDayMonth = unitPriceHistoryModel.fixPayAtrDayMonth();
+            dto.fixPayAtrDaily = unitPriceHistoryModel.fixPayAtrDaily();
+            dto.fixPayAtrHourly = unitPriceHistoryModel.fixPayAtrHourly();
+            dto.memo = unitPriceHistoryModel.memo();
+            return dto;
+        }
+
         function convertToTreeList(unitPriceHistoryList: Array<UnitPriceHistoryDto>): Array<UnitPriceHistoryNode> {
             var groupByCode = {};
 
@@ -30,7 +49,6 @@ module nts.uk.pr.view.qmm007.a {
             });
             return treeList;
         }
-
 
         export function getUnitPriceHistoryList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
@@ -58,18 +76,18 @@ module nts.uk.pr.view.qmm007.a {
         }
 
         export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            console.log(data);
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
         }
 
         export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            console.log(data);
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
         }
 
         export function remove(id: string): JQueryPromise<any> {
-            console.log(id);
-            return null;
+            var request = {id: id};
+            return nts.uk.request.ajax(paths.removeUnitPriceHistory, request);
         }
 
         /**
@@ -91,33 +109,39 @@ module nts.uk.pr.view.qmm007.a {
                 fixPayAtrHourly: string;
                 memo: string;
 
-                /*constructor(
-                    id: string,
-                    unitPriceCode: string,
-                    unitPriceName: string,
-                    startMonth: string,
-                    endMonth: string,
-                    budget: number,
-                    fixPaySettingType: SettingType,
-                    fixPayAtr: ApplySetting,
-                    fixPayAtrMonthly: ApplySetting,
-                    fixPayAtrDayMonth: ApplySetting,
-                    fixPayAtrDaily: ApplySetting,
-                    fixPayAtrHourly: ApplySetting,
-                    memo: string) {
-                    this.id = id;
-                    this.unitPriceCode = unitPriceCode;
-                    this.unitPriceName = unitPriceName;
-                    this.startMonth = startMonth;
-                    this.endMonth = endMonth;
-                    this.budget = budget;
-                    this.fixPaySettingType = fixPaySettingType;
-                    this.fixPayAtr = fixPayAtr;
-                    this.fixPayAtrMonthly = fixPayAtrMonthly;
-                    this.fixPayAtrDayMonth = fixPayAtrDayMonth;
-                    this.fixPayAtrDaily = fixPayAtrDaily;
-                    this.fixPayAtrHourly = fixPayAtrHourly;
-                }*/
+                constructor() { }
+            }
+
+            export class UnitPriceHistoryModel {
+                id: string;
+                unitPriceCode: KnockoutObservable<string>;
+                unitPriceName: KnockoutObservable<string>;
+                startMonth: KnockoutObservable<string>;
+                endMonth: KnockoutObservable<string>;
+                budget: KnockoutObservable<number>;
+                fixPaySettingType: KnockoutObservable<string>;
+                fixPayAtr: KnockoutObservable<string>;
+                fixPayAtrMonthly: KnockoutObservable<string>;
+                fixPayAtrDayMonth: KnockoutObservable<string>;
+                fixPayAtrDaily: KnockoutObservable<string>;
+                fixPayAtrHourly: KnockoutObservable<string>;
+                memo: KnockoutObservable<string>;
+
+                constructor() {
+                    this.id = '';
+                    this.unitPriceCode = ko.observable('');
+                    this.unitPriceName = ko.observable('');
+                    this.startMonth = ko.observable('2017/01');
+                    this.endMonth = ko.observable('（平成29年01月） ~');
+                    this.budget = ko.observable(0);
+                    this.fixPaySettingType = ko.observable('Company');
+                    this.fixPayAtr = ko.observable('NotApply');
+                    this.fixPayAtrMonthly = ko.observable('NotApply');
+                    this.fixPayAtrDayMonth = ko.observable('NotApply');
+                    this.fixPayAtrDaily = ko.observable('NotApply');
+                    this.fixPayAtrHourly = ko.observable('NotApply');
+                    this.memo = ko.observable('');
+                }
             }
 
             export class UnitPriceHistoryNode {

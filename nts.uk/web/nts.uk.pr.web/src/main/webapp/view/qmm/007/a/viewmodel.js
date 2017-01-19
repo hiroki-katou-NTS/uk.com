@@ -12,7 +12,7 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var UnitPriceHistoryDto = a.service.model.UnitPriceHistoryDto;
+                            var UnitPriceHistoryModel = a.service.model.UnitPriceHistoryModel;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -27,10 +27,10 @@ var nts;
                                     self.selectedId.subscribe(function (id) {
                                         if (id != null || id != undefined) {
                                             self.isNewMode(false);
-                                            self.loadUnitPriceDetail();
+                                            self.loadUnitPriceDetail(id);
                                         }
                                     });
-                                    self.isContractSettingEnabled = ko.observable(true);
+                                    self.isContractSettingEnabled = ko.observable(false);
                                     self.isNewMode = ko.observable(true);
                                     self.unitPriceHistoryModel().fixPaySettingType.subscribe(function (val) {
                                         val == 'Contract' ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
@@ -61,56 +61,54 @@ var nts;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
                                 };
-                                ScreenModel.prototype.collectData = function () {
-                                    var self = this;
-                                    var data = new UnitPriceHistoryDto();
-                                    data.unitPriceCode = self.unitPriceHistoryModel().unitPriceCode();
-                                    data.unitPriceName = self.unitPriceHistoryModel().unitPriceName();
-                                    data.startMonth = self.unitPriceHistoryModel().startMonth();
-                                    data.endMonth = self.unitPriceHistoryModel().endMonth();
-                                    data.budget = self.unitPriceHistoryModel().budget();
-                                    data.fixPaySettingType = self.unitPriceHistoryModel().fixPaySettingType();
-                                    data.fixPayAtr = self.unitPriceHistoryModel().fixPayAtr();
-                                    data.fixPayAtrMonthly = self.unitPriceHistoryModel().fixPayAtrMonthly();
-                                    data.fixPayAtrDayMonth = self.unitPriceHistoryModel().fixPayAtrDayMonth();
-                                    data.fixPayAtrDaily = self.unitPriceHistoryModel().fixPayAtrDaily();
-                                    data.fixPayAtrHourly = self.unitPriceHistoryModel().fixPayAtrHourly();
-                                    data.memo = self.unitPriceHistoryModel().memo();
-                                    return data;
-                                };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                     if (self.isNewMode()) {
-                                        a.service.create(self.collectData());
+                                        a.service.create(a.service.collectData(self.unitPriceHistoryModel()));
                                     }
                                     else {
-                                        a.service.update(self.collectData());
+                                        a.service.update(a.service.collectData(self.unitPriceHistoryModel()));
                                     }
                                 };
                                 ScreenModel.prototype.remove = function () {
                                     var self = this;
-                                    a.service.remove(self.collectData().id);
+                                    a.service.remove(self.unitPriceHistoryModel().id);
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
+                                    self.clearUnitPriceDetail();
                                     self.isNewMode(true);
-                                    self.unitPriceHistoryModel(new UnitPriceHistoryModel());
                                 };
-                                ScreenModel.prototype.loadUnitPriceDetail = function () {
+                                ScreenModel.prototype.clearUnitPriceDetail = function () {
+                                    var model = this.unitPriceHistoryModel();
+                                    model.id = '';
+                                    model.unitPriceCode('');
+                                    model.unitPriceName('');
+                                    model.startMonth('2017/01');
+                                    model.budget(0);
+                                    model.fixPaySettingType('Company');
+                                    model.fixPayAtr('NotApply');
+                                    model.fixPayAtrMonthly('NotApply');
+                                    model.fixPayAtrDayMonth('NotApply');
+                                    model.fixPayAtrDaily('NotApply');
+                                    model.fixPayAtrHourly('NotApply');
+                                };
+                                ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;
-                                    a.service.getUnitPriceHistoryDetail(self.selectedId()).done(function (data) {
+                                    a.service.getUnitPriceHistoryDetail(id).done(function (data) {
                                         console.log(data);
-                                        self.unitPriceHistoryModel().id = data.id;
-                                        self.unitPriceHistoryModel().unitPriceCode(data.unitPriceCode);
-                                        self.unitPriceHistoryModel().unitPriceName(data.unitPriceName);
-                                        self.unitPriceHistoryModel().startMonth(data.startMonth);
-                                        self.unitPriceHistoryModel().budget(data.budget);
-                                        self.unitPriceHistoryModel().fixPaySettingType(data.fixPaySettingType);
-                                        self.unitPriceHistoryModel().fixPayAtr(data.fixPayAtr);
-                                        self.unitPriceHistoryModel().fixPayAtrMonthly(data.fixPayAtrMonthly);
-                                        self.unitPriceHistoryModel().fixPayAtrDayMonth(data.fixPayAtrDayMonth);
-                                        self.unitPriceHistoryModel().fixPayAtrDaily(data.fixPayAtrDaily);
-                                        self.unitPriceHistoryModel().fixPayAtrHourly(data.fixPayAtrHourly);
+                                        var model = self.unitPriceHistoryModel();
+                                        model.id = data.id;
+                                        model.unitPriceCode(data.unitPriceCode);
+                                        model.unitPriceName(data.unitPriceName);
+                                        model.startMonth(data.startMonth);
+                                        model.budget(data.budget);
+                                        model.fixPaySettingType(data.fixPaySettingType);
+                                        model.fixPayAtr(data.fixPayAtr);
+                                        model.fixPayAtrMonthly(data.fixPayAtrMonthly);
+                                        model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
+                                        model.fixPayAtrDaily(data.fixPayAtrDaily);
+                                        model.fixPayAtrHourly(data.fixPayAtrHourly);
                                     });
                                 };
                                 ScreenModel.prototype.loadUnitPriceHistoryList = function () {
@@ -125,24 +123,6 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var UnitPriceHistoryModel = (function () {
-                                function UnitPriceHistoryModel() {
-                                    this.unitPriceCode = ko.observable('');
-                                    this.unitPriceName = ko.observable('');
-                                    this.startMonth = ko.observable('');
-                                    this.endMonth = ko.observable('（平成29年01月） ~');
-                                    this.budget = ko.observable(0);
-                                    this.fixPaySettingType = ko.observable('Company');
-                                    this.fixPayAtr = ko.observable('NotApply');
-                                    this.fixPayAtrMonthly = ko.observable('NotApply');
-                                    this.fixPayAtrDayMonth = ko.observable('NotApply');
-                                    this.fixPayAtrDaily = ko.observable('NotApply');
-                                    this.fixPayAtrHourly = ko.observable('NotApply');
-                                    this.memo = ko.observable('');
-                                }
-                                return UnitPriceHistoryModel;
-                            }());
-                            viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));

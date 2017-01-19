@@ -39,7 +39,19 @@ var nts;
                                         { id: 'tab-2', title: 'ä¿�é™ºãƒžã‚¹ã‚¿ã�®æƒ…å ±', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                                     ]);
                                     self.selectedTab = ko.observable('tab-1');
+                                    self.leftShow = ko.observable(true);
+                                    self.rightShow = ko.observable(true);
+                                    self.leftBtnText = ko.computed(function () { if (self.leftShow())
+                                        return "-"; return "+"; });
+                                    self.rightBtnText = ko.computed(function () { if (self.rightShow())
+                                        return "-"; return "+"; });
                                 }
+                                ScreenModel.prototype.leftToggle = function () {
+                                    this.leftShow(!this.leftShow());
+                                };
+                                ScreenModel.prototype.rightToggle = function () {
+                                    this.rightShow(!this.rightShow());
+                                };
                                 ScreenModel.prototype.CloseModalSubWindow = function () {
                                     nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();

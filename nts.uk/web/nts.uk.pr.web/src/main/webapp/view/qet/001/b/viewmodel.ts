@@ -1,6 +1,7 @@
 module qet001.b.viewmodel {
     import NtsGridColumn = nts.uk.ui.NtsGridListColumn;
     import NtsTabModel = nts.uk.ui.NtsTabPanelModel;
+    import WageLedgerOutputSetting = qet001.a.service.model.WageLedgerOutputSetting;
     
     export class ScreenModel {
         outputSettings: KnockoutObservable<OutputSettings>;
@@ -26,11 +27,9 @@ module qet001.b.viewmodel {
             this.reportItemSelected = ko.observable(null);
             
             var self = this;
-//            self.outputSettingDetail.subscribe((newVal: OutputSettingDetail) => {
-//                //newVal.
-//            });
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
                 if (newVal== undefined || newVal == null) {
+                    self.outputSettingDetail(new OutputSettingDetail());
                     return;
                 }
                 // load detail output setting.
@@ -41,34 +40,15 @@ module qet001.b.viewmodel {
         public start(): JQueryPromise<any>{
             var dfd = $.Deferred<any>();
             var self = this;
-            // Load all output setting.
-            this.loadAllOutputSetting().done(() => {
-                // If not found output setting.
-                if (self.outputSettings().outputSettingList().length == 0) {
-                    dfd.resolve();
-                    return;
-                }
-                // Load output setting detail.
-                self.loadOutputSettingDetail(self.outputSettings().outputSettingList()[0].code).done(() => {
-                    dfd.resolve();
-                });
-            })
-            return dfd.promise();
-        }
-        
-        /**
-         * Load all output setting.
-         */
-        public loadAllOutputSetting(): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
-            var self = this;
-            service.findOutputSettings().done(function(data: service.model.WageLedgerOutputSetting[]) {
-                self.outputSettings().outputSettingList(data);
-                dfd.resolve();
-            }).fail(function(res) {
-                //TODO: wait to show error message.
-                dfd.reject();
-            })
+            var outputSettings: WageLedgerOutputSetting[] = nts.uk.ui.windows.getShared('outputSettings');
+            var selectedSettingCode: string = nts.uk.ui.windows.getShared('selectedCode');
+            // Check output setting is empty.
+            if (outputSettings != undefined) {
+                self.outputSettings().outputSettingList(outputSettings);
+            }
+            self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
+            self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
+            dfd.resolve();
             return dfd.promise();
         }
         
@@ -78,14 +58,21 @@ module qet001.b.viewmodel {
         public loadOutputSettingDetail(selectedCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var self = this;
-            service.findOutputSettingDetail(selectedCode).done(function(data: service.model.WageLedgerOutputSetting){
+            service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
                 self.outputSettingDetail(new OutputSettingDetail(data));
                 dfd.resolve();
             }).fail(function(res) {
-                //TODO: wait to show error message.
+                nts.uk.ui.dialog.alert(res.message);
                 dfd.reject();
             })
             return dfd.promise();
+        }
+        
+        /**
+         * Switch to create mode.
+         */
+        public switchToCreateMode() {
+            this.outputSettingDetail(new OutputSettingDetail());
         }
     }
     
@@ -94,7 +81,7 @@ module qet001.b.viewmodel {
      */
     export class OutputSettings {
         searchText: KnockoutObservable<string>;
-        outputSettingList: KnockoutObservableArray<service.model.WageLedgerOutputSetting>;
+        outputSettingList: KnockoutObservableArray<WageLedgerOutputSetting>;
         outputSettingSelectedCode: KnockoutObservable<string>;
         outputSettingColumns: KnockoutObservableArray<NtsGridColumn>;
         
@@ -114,11 +101,12 @@ module qet001.b.viewmodel {
         isPrintOnePageEachPer: KnockoutObservable<boolean>;
         categorySettingTabs: KnockoutObservableArray<NtsTabModel>;
         selectedCategory: KnockoutObservable<string>;
+        isCreateMode: KnockoutObservable<boolean>;
         
-        constructor(outputSetting?: service.model.WageLedgerOutputSetting) {
+        constructor(outputSetting?: WageLedgerOutputSetting) {
             this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
             this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
-            this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : true);
+            this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : false);
             this.categorySettingTabs = ko.observableArray([
                 { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', enable: ko.observable(true), visible: ko.observable(true) },
@@ -128,6 +116,7 @@ module qet001.b.viewmodel {
                 { id: 'tab-bonus-attendance', title: '賞与勤怠', content: '#bonus-attendance', enable: ko.observable(true), visible: ko.observable(true) },
             ]);
             this.selectedCategory = ko.observable('tab-salary-payment');
+            this.isCreateMode = ko.observable(outputSetting == undefined);
         }
     }
     

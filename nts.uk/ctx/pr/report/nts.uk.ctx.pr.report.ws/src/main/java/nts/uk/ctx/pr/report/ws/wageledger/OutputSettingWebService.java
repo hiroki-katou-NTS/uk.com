@@ -35,7 +35,7 @@ public class OutputSettingWebService extends WebService{
 		for (int i = 0; i <= 10; i++) {
 			dtos.add(OutputSettingDto.builder()
 					.code("00" + i)
-					.name("Output setting name " + i)
+					.name("Output setting " + i)
 					.isOnceSheetPerPerson(true)
 					.build());
 		}
@@ -54,7 +54,7 @@ public class OutputSettingWebService extends WebService{
 		int codeInt = Integer.parseInt(code.substring(code.length() - 1, code.length()));
 		return OutputSettingDto.builder()
 				.code(code)
-				.name("Output setting name " + codeInt)
+				.name("Output setting " + codeInt)
 				.isOnceSheetPerPerson(false)
 				.categorySettings(new ArrayList<>())
 				.build();

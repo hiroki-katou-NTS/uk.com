@@ -12,6 +12,7 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var service = nts.uk.pr.view.qmm007.a.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -27,6 +28,13 @@ var nts;
                                     });
                                 }
                                 ScreenModel.prototype.btnApplyClicked = function () {
+                                    var self = this;
+                                    if (self.isEditMode()) {
+                                        service.update(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
+                                    }
+                                    else {
+                                        service.remove(nts.uk.ui.windows.getShared('unitPriceHistoryModel').id);
+                                    }
                                     nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.btnCancelClicked = function () {
