@@ -9,6 +9,7 @@ __viewContext.ready(function () {
         currencyeditor2: any;
         timeeditor: any;
         yearmontheditor: any;
+        option: any;
         file: any;
         
         constructor() {
@@ -22,6 +23,9 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.option = {
+                value: ko.observable("2")    
+            }
                       
             // TextEditor
             self.texteditor = {
@@ -81,8 +85,7 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "JPY",
-                    currencyposition: 'right'
+                    currencyformat: "JPY"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
@@ -93,10 +96,9 @@ __viewContext.ready(function () {
                 value: ko.observable(200000),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 4,
+                    grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "USD",
-                    currencyposition: 'left'
+                    currencyformat: "USD"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),

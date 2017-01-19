@@ -25,12 +25,14 @@
 						<br />
 						<button data-bind="click: selectSomeItems">Select some items</button>
 						<button data-bind="click: deselectAll">Deselect all</button>
+						<button data-bind="click: addItem">Add</button>
+						<button data-bind="click: removeItem">Remove</button>
 						<hr />
 						Single selecting mode
 						<table id="single-list" data-bind="ntsGridList: {								
-								height: 110,
-								options: items,
-								optionsValue: 'code',
+								height: 350,
+								dataSource: items,
+								primaryKey: 'code',
 								columns: columns2,
 								multiple: false,
 								value: currentCode
@@ -41,7 +43,7 @@
 						<hr />
 						Multiple selectng mode
 						<table id="multi-list" data-bind="ntsGridList: {
-								height: 110,
+								height: 350,
 								options: items,
 								optionsValue: 'code',
 								columns: columns,
@@ -64,15 +66,29 @@
 <pre><![CDATA[<ui:define name="htmlHead">
 	<com:scriptfile set="IGNITE" />
 </ui:define>]]></pre>
-<pre><![CDATA[<table id="single-list" data-bind="ntsGridList: {
+<pre><![CDATA[<!--SINGLE SELECTION EXAMPLE-->
+<table id="single-list" data-bind="ntsGridList: {
 	width: 550,
 	height: 110,
-	options: items,
-	optionsValue: 'code',
+	dataSource: items,
+	primaryKey: 'code',
 	columns: columns,
 	multiple: false,
 	value: currentCode
-}"></table>]]></pre>
+}"></table>
+<!--MULTI SELECTION EXAMPLE-->
+Multiple selectng mode
+<table id="multi-list" data-bind="ntsGridList: {
+		height: 350,
+		options: items,
+		optionsValue: 'code',
+		columns: columns,
+		multiple: true,
+		value: currentCodeList
+	}"
+	class="cf"></table>
+<br />
+currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -106,7 +122,7 @@
 												</td>
 											</tr>
 											<tr>
-												<td>options</td>
+												<td>options / data.dataSource</td>
 												<td>
 													<b>Type:</b> array&lt;any&gt;<br/>
 													List data to generate GridList

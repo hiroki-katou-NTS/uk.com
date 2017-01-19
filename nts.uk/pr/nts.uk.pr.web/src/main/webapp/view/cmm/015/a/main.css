@@ -1,0 +1,41 @@
+.form-label input{
+	width:120px !important;
+}
+
+.form-label a{
+	margin-left:50px;
+}
+
+.left-content{
+	float: left;
+	width: 30%;
+}
+
+.right-content{
+	float: right;
+	width: 60%;
+}
+.clsLbl_010{
+	width: 100px;
+}
+.clsSel{
+	width: 17%;
+}
+.clsInp{
+	width: 100%;
+	display: inline;
+}
+.clsDivRange{
+	display: flex;
+	width: 100%;
+}
+.clsCheckbox{
+	width: 75px;
+}
+.clsDivRangeSlow{
+	float: left;
+	margin-left: 100px;
+}
+button.nts-switch-button{
+	min-width: 120px;
+}

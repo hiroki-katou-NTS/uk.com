@@ -1,4 +1,4 @@
-// TreeGrid Node
+var screenQmm019;
 var qmm019;
 (function (qmm019) {
     var a;
@@ -20,12 +20,13 @@ var qmm019;
                 this.allowClick = ko.observable(true);
                 this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
                 var self = this;
+                screenQmm019 = ko.observable(self);
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
                 self.layoutMaster = ko.observable(new a.service.model.LayoutMasterDto());
-                self.categories = ko.observableArray([new a.service.model.Category([], 0, self)]);
+                self.categories = ko.observableArray([new a.service.model.Category([], 0)]);
                 self.singleSelectedCode.subscribe(function (codeChanged) {
                     var layoutFind = _.find(self.layouts(), function (layout) {
                         return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
@@ -34,7 +35,7 @@ var qmm019;
                         self.layoutMaster(layoutFind);
                         self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                         self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
+                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
                             .done(function (listResult) {
                             self.categories(listResult);
                             self.calculateLine();
@@ -171,7 +172,7 @@ var qmm019;
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
                 a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
                         .done(function (listResult) {
                         self.categories(listResult);
                         self.checkKintaiKiji();
@@ -183,14 +184,14 @@ var qmm019;
             };
             ScreenModel.prototype.addKintaiCategory = function () {
                 var self = this;
-                var category = new a.service.model.Category([], 2, self);
+                var category = new a.service.model.Category([], 2);
                 self.categories.push(category);
                 self.notHasKintai(false);
                 self.bindSortable();
             };
             ScreenModel.prototype.addKijiCategory = function () {
                 var self = this;
-                var category = new a.service.model.Category([], 3, self);
+                var category = new a.service.model.Category([], 3);
                 self.categories.push(category);
                 self.notHasKiji(false);
                 self.bindSortable();

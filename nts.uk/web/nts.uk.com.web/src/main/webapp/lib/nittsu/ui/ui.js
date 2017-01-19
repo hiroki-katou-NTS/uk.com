@@ -3,7 +3,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
+        (function (ui_1) {
             var windows;
             (function (windows) {
                 var MAIN_WINDOW_ID = 'MAIN_WINDOW';
@@ -160,7 +160,7 @@ var nts;
                         return subWindow;
                     };
                     ScreenWindowContainer.prototype.getShared = function (key) {
-                        return this.shared[key] !== undefined ? this.shared[key] : this.localShared[key];
+                        return this.localShared[key] !== undefined ? this.localShared[key] : this.shared[key];
                     };
                     ScreenWindowContainer.prototype.setShared = function (key, data, isRoot, persist) {
                         if (persist || isRoot) {
@@ -222,11 +222,11 @@ var nts;
                     }
                     sub.open = open;
                 })(sub = windows.sub || (windows.sub = {}));
-            })(windows = ui.windows || (ui.windows = {}));
+            })(windows = ui_1.windows || (ui_1.windows = {}));
             function localize(textId) {
                 return textId;
             }
-            ui.localize = localize;
+            ui_1.localize = localize;
             var dialog;
             (function (dialog) {
                 function createNoticeDialog(text, buttons) {
@@ -258,7 +258,7 @@ var nts;
                  * Show information dialog.
                  *
                  * @param {String}
-                 *            text information text
+                 *			text information text
                  * @returns handler
                  */
                 function info(text) {
@@ -291,7 +291,7 @@ var nts;
                  * Show alert dialog.
                  *
                  * @param {String}
-                 *            text information text
+                 *			text information text
                  * @returns handler
                  */
                 function alert(text) {
@@ -303,7 +303,7 @@ var nts;
                  * Show confirm dialog.
                  *
                  * @param {String}
-                 *            text information text
+                 *			text information text
                  * @returns handler
                  */
                 function confirm(text) {
@@ -371,8 +371,181 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
-            })(dialog = ui.dialog || (ui.dialog = {}));
-            ui.confirmSave = function (dirtyChecker) {
+            })(dialog = ui_1.dialog || (ui_1.dialog = {}));
+            var contextmenu;
+            (function (contextmenu) {
+                var ContextMenu = (function () {
+                    /**
+                     * Create an instance of ContextMenu. Auto call init() method
+                     *
+                     * @constructor
+                     * @param {selector} Jquery selector for elements need to show ContextMenu
+                     * @param {items} List ContextMenuItem for ContextMenu
+                     * @param {enable} (Optinal) Set enable/disable for ContextMenu
+                     */
+                    function ContextMenu(selector, items, enable) {
+                        this.selector = selector;
+                        this.items = items;
+                        this.enable = (enable !== undefined) ? enable : true;
+                        this.init();
+                    }
+                    /**
+                     * Create ContextMenu and bind event in DOM
+                     */
+                    ContextMenu.prototype.init = function () {
+                        var self = this;
+                        // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
+                        $('body .ntsContextMenu').each(function () {
+                            if ($(this).data("selector") === self.selector) {
+                                $("body").off("contextmenu", self.selector);
+                                $(this).remove();
+                            }
+                        });
+                        // Initial
+                        self.guid = nts.uk.util.randomId();
+                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                        self.createMenuItems($contextMenu);
+                        $('body').append($contextMenu);
+                        // Binding contextmenu event
+                        $("body").on("contextmenu", self.selector, function (event) {
+                            if (self.enable === true) {
+                                event.preventDefault();
+                                self.target = event.target;
+                                $contextMenu.show().position({
+                                    my: "left+2 top+2",
+                                    of: event,
+                                    collision: "fit"
+                                });
+                            }
+                        });
+                        // Hiding when click outside
+                        $("body").on("mousedown", function (event) {
+                            if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
+                                $contextMenu.hide();
+                            }
+                        });
+                    };
+                    /**
+                     * Remove and unbind ContextMenu event
+                     */
+                    ContextMenu.prototype.destroy = function () {
+                        // Unbind contextmenu event
+                        $("body").off("contextmenu", this.selector);
+                        $("#" + this.guid).remove();
+                    };
+                    /**
+                     * Re-create ContextMenu. Useful when you change various things in ContextMenu.items
+                     */
+                    ContextMenu.prototype.refresh = function () {
+                        this.destroy();
+                        this.init();
+                    };
+                    /**
+                     * Get a ContextMenuItem instance
+                     *
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     * @return {any} Return ContextMenuItem if found or undefiend
+                     */
+                    ContextMenu.prototype.getItem = function (target) {
+                        if (typeof target === "number") {
+                            return this.items[target];
+                        }
+                        else if (typeof target === "string") {
+                            return _.find(this.items, ["key", target]);
+                        }
+                        else {
+                            return undefined;
+                        }
+                    };
+                    /**
+                     * Add an ContextMenuItem instance to ContextMenu
+                     *
+                     * @param {item} An ContextMenuItem instance
+                     */
+                    ContextMenu.prototype.addItem = function (item) {
+                        this.items.push(item);
+                        this.refresh();
+                    };
+                    /**
+                     * Remove item with given "key" or index
+                     *
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     */
+                    ContextMenu.prototype.removeItem = function (target) {
+                        var item = this.getItem(target);
+                        if (item !== undefined) {
+                            _.remove(this.items, item);
+                            this.refresh();
+                        }
+                    };
+                    /**
+                     * Enable/Disable ContextMenu. If disable right-click will have default behavior
+                     *
+                     * @param {enable} A boolean value set enable/disable
+                     */
+                    ContextMenu.prototype.setEnable = function (enable) {
+                        this.enable = enable;
+                    };
+                    /**
+                     * Enable/Disable item with given "key" or index
+                     *
+                     * @param {enable} A boolean value set enable/disable
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     */
+                    ContextMenu.prototype.setEnableItem = function (enable, target) {
+                        var item = this.getItem(target);
+                        item.enable = enable;
+                        this.refresh();
+                    };
+                    /**
+                     * Show/Hide item with given "key" or index
+                     *
+                     * @param {enable} A boolean value set visible/hidden
+                     * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+                     */
+                    ContextMenu.prototype.setVisibleItem = function (visible, target) {
+                        var item = this.getItem(target);
+                        item.visible = visible;
+                        this.refresh();
+                    };
+                    ContextMenu.prototype.createMenuItems = function (container) {
+                        var self = this;
+                        _.forEach(self.items, function (item) {
+                            if (item.key !== "divider") {
+                                var menuClasses = "menu-item ";
+                                menuClasses += (item.enable === true) ? "" : "disabled ";
+                                menuClasses += (item.visible === true) ? "" : "hidden ";
+                                var menuItem = $("<li class='" + menuClasses + "'><span class='menu-icon " + item.icon + "'></span>" + item.text + "</li>")
+                                    .data("key", item.key)
+                                    .on("click", function () {
+                                    if (!$(this).hasClass("disabled")) {
+                                        item.handler(self.target);
+                                        container.hide();
+                                    }
+                                }).appendTo(container);
+                            }
+                            else {
+                                var menuItem = $("<li class='menu-item divider'></li>").appendTo(container);
+                            }
+                        });
+                    };
+                    return ContextMenu;
+                }());
+                contextmenu.ContextMenu = ContextMenu;
+                var ContextMenuItem = (function () {
+                    function ContextMenuItem(key, text, handler, icon, visible, enable) {
+                        this.key = key;
+                        this.text = text;
+                        this.handler = (handler !== undefined) ? handler : $.noop;
+                        this.icon = (icon) ? icon : "";
+                        this.visible = (visible !== undefined) ? visible : true;
+                        this.enable = (enable !== undefined) ? enable : true;
+                    }
+                    return ContextMenuItem;
+                }());
+                contextmenu.ContextMenuItem = ContextMenuItem;
+            })(contextmenu = ui_1.contextmenu || (ui_1.contextmenu = {}));
+            ui_1.confirmSave = function (dirtyChecker) {
                 var frame = windows.getSelf();
                 if (frame.$dialog === undefined || frame.$dialog === null) {
                     confirmSaveWindow(dirtyChecker);
@@ -390,7 +563,7 @@ var nts;
                 confirmSaveEnable(beforeunloadHandler);
             }
             function confirmSaveDialog(dirtyChecker, dialog) {
-                //        dialog* any;
+                //dialog* any;
                 var beforeunloadHandler = function (e) {
                     if (dirtyChecker.isDirty()) {
                         e.preventDefault();
@@ -407,22 +580,22 @@ var nts;
             function confirmSaveEnableDialog(beforeunloadHandler, dialog) {
                 dialog.on("dialogbeforeclose", beforeunloadHandler);
             }
-            ui.confirmSaveEnableDialog = confirmSaveEnableDialog;
+            ui_1.confirmSaveEnableDialog = confirmSaveEnableDialog;
             ;
             function confirmSaveDisableDialog(dialog) {
                 dialog.on("dialogbeforeclose", function () { });
             }
-            ui.confirmSaveDisableDialog = confirmSaveDisableDialog;
+            ui_1.confirmSaveDisableDialog = confirmSaveDisableDialog;
             ;
             function confirmSaveEnable(beforeunloadHandler) {
                 $(window).bind('beforeunload', beforeunloadHandler);
             }
-            ui.confirmSaveEnable = confirmSaveEnable;
+            ui_1.confirmSaveEnable = confirmSaveEnable;
             ;
             function confirmSaveDisable() {
                 $(window).unbind('beforeunload');
             }
-            ui.confirmSaveDisable = confirmSaveDisable;
+            ui_1.confirmSaveDisable = confirmSaveDisable;
             ;
             var DirtyChecker = (function () {
                 function DirtyChecker(targetViewModelObservable) {
@@ -440,7 +613,24 @@ var nts;
                 };
                 return DirtyChecker;
             }());
-            ui.DirtyChecker = DirtyChecker;
+            ui_1.DirtyChecker = DirtyChecker;
+            /**
+             * Utilities for IgniteUI
+             */
+            var ig;
+            (function (ig) {
+                var grid;
+                (function (grid) {
+                    function getRowIdFrom($anyElementInRow) {
+                        return $anyElementInRow.closest('tr').attr('data-id');
+                    }
+                    grid.getRowIdFrom = getRowIdFrom;
+                    function getRowIndexFrom($anyElementInRow) {
+                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+                    }
+                    grid.getRowIndexFrom = getRowIndexFrom;
+                })(grid = ig.grid || (ig.grid = {}));
+            })(ig = ui_1.ig || (ui_1.ig = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -22,7 +22,12 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>Helper Classes</h1>
-						<article>
+						<article id="container">
+							<h2>Container</h2>
+							<p class="container">Create a fixed width container. Use this to wrap around your layout</p>
+							<pre><![CDATA[<div class="container"></div>]]></pre>
+						</article>
+						<article id="quickfloat">
 							<h2>Quick Float</h2>
 							<p>Float element to left or right with class</p>
 <pre><![CDATA[<div class="pull-left"></div>
@@ -79,14 +84,20 @@
 	cursor: pointer;
 }]]></pre>
 						</article>
-						<article>
+						<article id="icon">
 							<h2>Icon</h2>
-							<div style="background:#eee; padding: 10px;">
+							<div class="relative" style="background:#eee; padding: 10px;">
 								<i class="icon icon-close"></i>
 								<i class="icon icon-dot"></i>
+								<i class="icon icon-search"></i>
 							</div>
+							<span class="relative label bg-green" style="height: 75px; width: 150px; margin: 25px 25px 0;">
+								<i class="icon icon-searchbox"></i>
+							</span>
 <pre><![CDATA[<i class="icon icon-close"></i>
-<i class="icon icon-dot"></i>]]></pre>
+<i class="icon icon-dot"></i>
+<i class="icon icon-search"></i>
+<i class="icon icon-searchbox"></i>]]></pre>
 						</article>
 						<article>
 							<h2>Quick horizontal align</h2>
