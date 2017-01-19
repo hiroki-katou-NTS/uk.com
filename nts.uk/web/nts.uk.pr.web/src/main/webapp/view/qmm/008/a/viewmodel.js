@@ -185,11 +185,31 @@ var nts;
                                 };
                                 ScreenModel.prototype.convertListToParentChilds = function () {
                                 };
+                                ScreenModel.prototype.getDataOfSelectedOffice = function () {
+                                    var self = this;
+                                    var saveVal = null;
+                                    this.InsuranceOfficeList().forEach(function (item, index) {
+                                        if (self.officeSelectedCode() == item.code) {
+                                            saveVal = item;
+                                        }
+                                    });
+                                    return saveVal;
+                                };
                                 ScreenModel.prototype.OpenModalSubWindow = function () {
-                                    nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
+                                    var self = this;
+                                    var saveVal = self.getDataOfSelectedOffice();
+                                    nts.uk.ui.windows.setShared("addHistoryParentValue", saveVal);
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
+                                        var currentInsuranceOfficeList = self.InsuranceOfficeList();
+                                        currentInsuranceOfficeList.forEach(function (item, index) {
+                                            if (item.code == returnValue.code) {
+                                                currentInsuranceOfficeList[index] = returnValue;
+                                            }
+                                        });
+                                        self.InsuranceOfficeList([]);
+                                        self.InsuranceOfficeList(currentInsuranceOfficeList);
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
@@ -214,7 +234,9 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalConfigHistory = function () {
-                                    nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
+                                    var getVal = null;
+                                    getVal = this.getDataOfSelectedOffice();
+                                    nts.uk.ui.windows.setShared("updateHistoryParentValue", getVal);
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");

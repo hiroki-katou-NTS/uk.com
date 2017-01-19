@@ -13,25 +13,19 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(getFromParent) {
                                     var self = this;
                                     self.listOptions = ko.observableArray([new optionsModel(1, "履歴を削除する"), new optionsModel(2, "履歴を修正する")]);
                                     self.selectedValue = ko.observable(new optionsModel(1, ""));
                                     self.modalValue = ko.observable("Goodbye world!");
                                     self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
-                                    self.inp_001 = {
-                                        value: ko.observable('2016/04'),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            width: "100",
-                                            textalign: "center"
-                                        })),
-                                        required: ko.observable(false),
-                                    };
+                                    if (getFromParent != null) {
+                                        this.officeCodeName = ko.observable(getFromParent.code + " " + getFromParent.name);
+                                    }
+                                    this.datePicker = ko.observable(getFromParent.name);
                                 }
                                 ScreenModel.prototype.CloseModalSubWindow = function () {
-                                    nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
+                                    nts.uk.ui.windows.setShared("updateHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;

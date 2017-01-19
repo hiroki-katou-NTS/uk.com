@@ -283,15 +283,36 @@ module nts.uk.pr.view.qmm008.a {
             convertListToParentChilds() {
 
             }
+            getDataOfSelectedOffice(){
+                var self= this;
+                var saveVal=null;
+                // Set parent value
+                this.InsuranceOfficeList().forEach(function(item, index) {
+                    if (self.officeSelectedCode() == item.code) {
+                        saveVal = item;
+                    }
+                });
+                return saveVal;
+            }
+            
             // open sub window 
             OpenModalSubWindow() {
-                // Set parent value
-
-                nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
+                var self= this;
+                var saveVal = self.getDataOfSelectedOffice();
+                nts.uk.ui.windows.setShared("addHistoryParentValue", saveVal);
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(() => {
-                    // Get child value
+                    // Get child value return office Item
                     var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
+                    var currentInsuranceOfficeList = self.InsuranceOfficeList();
+                    currentInsuranceOfficeList.forEach(function(item, index){
+                        if(item.code==returnValue.code)
+                        {
+                            currentInsuranceOfficeList[index] = returnValue;
+                            }    
+                    });
+                    self.InsuranceOfficeList([]);
+                    self.InsuranceOfficeList(currentInsuranceOfficeList);
                 });
             }
 
@@ -323,8 +344,10 @@ module nts.uk.pr.view.qmm008.a {
                 });
             }
             OpenModalConfigHistory() {
+                var getVal= null;
+                getVal= this.getDataOfSelectedOffice();
                 // Set parent value
-                nts.uk.ui.windows.setShared("addHistoryParentValue", this.value());
+                nts.uk.ui.windows.setShared("updateHistoryParentValue", getVal);
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(() => {
                     // Get child value

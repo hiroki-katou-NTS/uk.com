@@ -18,7 +18,10 @@ module nts.uk.pr.view.qmm008.e {
             // for group radio button
             listOptions: KnockoutObservableArray<any>;
             selectedValue: KnockoutObservable<any>;
-
+            leftShow : KnockoutObservable<boolean>;
+            rightShow : KnockoutObservable<boolean>;
+            leftBtnText: any;
+            rightBtnText: any;
             constructor() {
                 var self = this;
                 self.listOptions = ko.observableArray([new optionsModel(1, "Ã¦Å“â‚¬Ã¦â€“Â°Ã£ï¿½Â®Ã¥Â±Â¥Ã¦Â­Â´(2016/04)Ã£ï¿½â€¹Ã£â€šâ€°Ã¥Â¼â€¢Ã£ï¿½ï¿½Ã§Â¶â„¢Ã£ï¿½ï¿½"), new optionsModel(2, "Ã¥Ë†ï¿½Ã£â€šï¿½Ã£ï¿½â€¹Ã£â€šâ€°Ã¤Â½Å“Ã¦Ë†ï¿½Ã£ï¿½â„¢Ã£â€šâ€¹")]);
@@ -49,9 +52,18 @@ module nts.uk.pr.view.qmm008.e {
                     { id: 'tab-2', title: 'ä¿�é™ºãƒžã‚¹ã‚¿ã�®æƒ…å ±', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
-
+                self.leftShow = ko.observable(true);
+                self.rightShow = ko.observable(true);
+                self.leftBtnText = ko.computed(function() {if(self.leftShow()) return "-"; return "+";});
+                self.rightBtnText = ko.computed(function() {if(self.rightShow()) return "-"; return "+";});
             }
-
+            
+            leftToggle() {
+                this.leftShow(!this.leftShow());
+            }
+            rightToggle() {
+                this.rightShow(!this.rightShow());
+            }
 
             CloseModalSubWindow() {
                 // Set child value

@@ -1,5 +1,6 @@
 module nts.uk.pr.view.qmm008.f {
     export module viewmodel {
+        import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
         export class ScreenModel {
             modalValue: KnockoutObservable<string>;
             isTransistReturnData: KnockoutObservable<boolean>;
@@ -7,9 +8,9 @@ module nts.uk.pr.view.qmm008.f {
             // for group radio button
             listOptions: KnockoutObservableArray<any>;
             selectedValue: KnockoutObservable<any>;
-            //for input 
-            inp_001: any;
-            constructor() {
+            officeCodeName: KnockoutObservable<string>;
+            datePicker : any
+            constructor(getFromParent: InsuranceOfficeItemDto) {
                 var self = this;
                 self.listOptions = ko.observableArray([new optionsModel(1, "履歴を削除する"), new optionsModel(2, "履歴を修正する")]);
                 self.selectedValue = ko.observable(new optionsModel(1, ""));
@@ -17,23 +18,15 @@ module nts.uk.pr.view.qmm008.f {
                 self.modalValue = ko.observable("Goodbye world!");
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
                 // Reset child value
-                //            nts.uk.ui.windows.setShared("childValue", null);
-                self.inp_001 = {
-                    value: ko.observable('2016/04'),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        width: "100",
-                        textalign: "center"
-                    })),
-                    required: ko.observable(false),
-                };
+                if (getFromParent != null) {
+                    this.officeCodeName = ko.observable(getFromParent.code + " " + getFromParent.name);
+                }
+                this.datePicker = ko.observable(getFromParent.name);
             }
-
 
             CloseModalSubWindow() {
                 // Set child value
-                nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
+                nts.uk.ui.windows.setShared("updateHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                 nts.uk.ui.windows.close();
             }
         }
