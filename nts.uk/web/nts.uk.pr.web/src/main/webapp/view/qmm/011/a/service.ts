@@ -132,8 +132,8 @@ module nts.uk.pr.view.qmm011.a {
                 /** The insu rate. */
                 insuRate: number;
                 /** The insu round. */
-                insuRound: number;
-                constructor(insuBizType: number, insuRate: number, insuRound: number) {
+                insuRound: string;
+                constructor(insuBizType: number, insuRate: number, insuRound: string) {
                     this.insuBizType = insuBizType;
                     this.insuRate = insuRate;
                     this.insuRound = insuRound;
@@ -152,11 +152,8 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
             export enum CareerGroup {
-                /** The Agroforestry. */
                 Agroforestry = "Agroforestry",
-                /** The Contruction. */
                 Contruction = "Contruction",
-                /** The Other. */
                 Other = "Other"
             }
             export enum BusinessTypeEnum {

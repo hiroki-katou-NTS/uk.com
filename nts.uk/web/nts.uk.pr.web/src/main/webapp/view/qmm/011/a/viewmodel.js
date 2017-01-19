@@ -36,16 +36,16 @@ var nts;
                                     }));
                                     self.historyUnemployeeInsuranceRateStart = ko.observable('');
                                     self.historyUnemployeeInsuranceRateEnd = ko.observable('');
-                                    var insuBizRateItemBiz1St = new InsuBizRateItem(BusinessTypeEnum.Biz1St, 60, 2);
-                                    var insuBizRateItemBiz2Nd = new InsuBizRateItem(BusinessTypeEnum.Biz2Nd, 3, 3);
-                                    var insuBizRateItemBiz3Rd = new InsuBizRateItem(BusinessTypeEnum.Biz3Rd, 15, 0);
-                                    var insuBizRateItemBiz4Th = new InsuBizRateItem(BusinessTypeEnum.Biz4Th, 6.5, 2);
-                                    var insuBizRateItemBiz5Th = new InsuBizRateItem(BusinessTypeEnum.Biz5Th, 13, 3);
-                                    var insuBizRateItemBiz6Th = new InsuBizRateItem(BusinessTypeEnum.Biz6Th, 49, 0);
-                                    var insuBizRateItemBiz7Th = new InsuBizRateItem(BusinessTypeEnum.Biz7Th, 3, 2);
-                                    var insuBizRateItemBiz8Th = new InsuBizRateItem(BusinessTypeEnum.Biz8Th, 7, 3);
-                                    var insuBizRateItemBiz9Th = new InsuBizRateItem(BusinessTypeEnum.Biz9Th, 2.5, 0);
-                                    var insuBizRateItemBiz10Th = new InsuBizRateItem(BusinessTypeEnum.Biz10Th, 3, 0);
+                                    var insuBizRateItemBiz1St = new InsuBizRateItem(BusinessTypeEnum.Biz1St, 60, "RoundDown");
+                                    var insuBizRateItemBiz2Nd = new InsuBizRateItem(BusinessTypeEnum.Biz2Nd, 3, "Down5_Up6");
+                                    var insuBizRateItemBiz3Rd = new InsuBizRateItem(BusinessTypeEnum.Biz3Rd, 15, "RoundUp");
+                                    var insuBizRateItemBiz4Th = new InsuBizRateItem(BusinessTypeEnum.Biz4Th, 6.5, "RoundDown");
+                                    var insuBizRateItemBiz5Th = new InsuBizRateItem(BusinessTypeEnum.Biz5Th, 13, "Down5_Up6");
+                                    var insuBizRateItemBiz6Th = new InsuBizRateItem(BusinessTypeEnum.Biz6Th, 49, "RoundUp");
+                                    var insuBizRateItemBiz7Th = new InsuBizRateItem(BusinessTypeEnum.Biz7Th, 3, "RoundDown");
+                                    var insuBizRateItemBiz8Th = new InsuBizRateItem(BusinessTypeEnum.Biz8Th, 7, "Down5_Up6");
+                                    var insuBizRateItemBiz9Th = new InsuBizRateItem(BusinessTypeEnum.Biz9Th, 2.5, "RoundUp");
+                                    var insuBizRateItemBiz10Th = new InsuBizRateItem(BusinessTypeEnum.Biz10Th, 3, "RoundUp");
                                     var insuranceBusinessTypeBiz1St = new InsuranceBusinessType(BusinessTypeEnum.Biz1St, "事業種類名1");
                                     var insuranceBusinessTypeBiz2Nd = new InsuranceBusinessType(BusinessTypeEnum.Biz2Nd, "事業種類名2");
                                     var insuranceBusinessTypeBiz3Rd = new InsuranceBusinessType(BusinessTypeEnum.Biz3Rd, "事業種類名3");
@@ -181,7 +181,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.detailHistoryUnemployeeInsuranceRate(historyId).done(function (data) {
-                                        self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(data));
+                                        self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(data, self.rateInputOptions, self.selectionRoundingMethod));
                                         dfd.resolve(null);
                                     });
                                     return dfd.promise();
@@ -202,7 +202,7 @@ var nts;
                             viewmodel.convertdata = convertdata;
                             var UnemployeeInsuranceRateItemSettingModel = (function () {
                                 function UnemployeeInsuranceRateItemSettingModel(unemployeeInsuranceRateItemSetting) {
-                                    this.roundAtr = ko.observable(unemployeeInsuranceRateItemSetting.roundAtr);
+                                    this.roundAtr = ko.observable("RoundUp");
                                     this.rate = ko.observable(unemployeeInsuranceRateItemSetting.rate);
                                 }
                                 return UnemployeeInsuranceRateItemSettingModel;
@@ -224,27 +224,29 @@ var nts;
                             }());
                             viewmodel.HistoryAccidentInsuranceRateModel = HistoryAccidentInsuranceRateModel;
                             var UnemployeeInsuranceRateItemModel = (function () {
-                                function UnemployeeInsuranceRateItemModel(companySetting, personalSetting) {
+                                function UnemployeeInsuranceRateItemModel(companySetting, personalSetting, rateInputOptions, selectionRoundingMethod) {
                                     this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
                                     this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
+                                    this.rateInputOptions = rateInputOptions;
+                                    this.selectionRoundingMethod = selectionRoundingMethod;
                                 }
                                 return UnemployeeInsuranceRateItemModel;
                             }());
                             viewmodel.UnemployeeInsuranceRateItemModel = UnemployeeInsuranceRateItemModel;
                             var UnemployeeInsuranceRateModel = (function () {
-                                function UnemployeeInsuranceRateModel(unemployeeInsuranceRate) {
+                                function UnemployeeInsuranceRateModel(unemployeeInsuranceRate, rateInputOptions, selectionRoundingMethod) {
                                     for (var index = 0; index < unemployeeInsuranceRate.rateItems.length; index++) {
                                         if (unemployeeInsuranceRate.rateItems[index].careerGroup === CareerGroup.Agroforestry) {
                                             this.unemployeeInsuranceRateItemAgroforestryModel =
-                                                new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting, unemployeeInsuranceRate.rateItems[index].personalSetting);
+                                                new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting, unemployeeInsuranceRate.rateItems[index].personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
                                         else if (unemployeeInsuranceRate.rateItems[index].careerGroup === CareerGroup.Contruction) {
                                             this.unemployeeInsuranceRateItemContructionModel =
-                                                new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting, unemployeeInsuranceRate.rateItems[index].personalSetting);
+                                                new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting, unemployeeInsuranceRate.rateItems[index].personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
                                         else if (unemployeeInsuranceRate.rateItems[index].careerGroup === CareerGroup.Other) {
                                             this.unemployeeInsuranceRateItemOtherModel =
-                                                new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting, unemployeeInsuranceRate.rateItems[index].personalSetting);
+                                                new UnemployeeInsuranceRateItemModel(unemployeeInsuranceRate.rateItems[index].companySetting, unemployeeInsuranceRate.rateItems[index].personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
                                     }
                                 }

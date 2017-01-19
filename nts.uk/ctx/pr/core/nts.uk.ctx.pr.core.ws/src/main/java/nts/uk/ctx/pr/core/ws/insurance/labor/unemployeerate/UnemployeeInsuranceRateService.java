@@ -150,9 +150,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		personalSettingOther.setRoundAtr(RoundingMethod.RoundUp);
 		umInsuranceRateItemOther.setPersonalSetting(personalSettingOther);
 		UnemployeeInsuranceRateItemSetting companySettingOther = new UnemployeeInsuranceRateItemSetting();
-		companySettingOther.setRate(55.59);
+		companySettingOther.setRate(56.0);
 		companySettingOther.setRoundAtr(RoundingMethod.RoundUp);
-		umInsuranceRateItemContruction.setCompanySetting(companySettingOther);
+		umInsuranceRateItemOther.setCompanySetting(companySettingOther);
 		rateItems.add(umInsuranceRateItemOther);
 		unemployeeInsuranceRate.setRateItems(rateItems);
 		return unemployeeInsuranceRate;
