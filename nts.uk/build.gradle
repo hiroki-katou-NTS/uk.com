@@ -345,6 +345,9 @@ project (':web:nts.uk.pr.web') {
 		
 		runtime project (':file:pr:nts.uk.file.pr.ws')
 		runtime project (':file:pr:nts.uk.file.pr.infra')
+		
+		// to provide PrimitiveValue
+		runtime project (':ctx:basic:nts.uk.ctx.basic.dom')
 	}
 }
 

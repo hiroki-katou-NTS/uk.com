@@ -407,9 +407,21 @@ module nts.uk.ui.koExtentions {
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
                 //                console.log(selectedItem);
                 if (data.mode) {
-                    var selectArr = []; selectArr.push("" + selectedItem);
-                    component.ntsGridList("setSelected", selectArr);
-                    component.trigger("selectionChanged");
+                    if(data.mode == 'igGrid') {
+                        var selectArr = []; selectArr.push("" + selectedItem);
+                        component.ntsGridList("setSelected", selectArr);
+                        component.trigger("selectionChanged");
+                    } else if(data.mode == 'igTree') {
+                        var liItem = $("li[data-value='" + selectedItem + "']");
+                        var ulParent = liItem.parent();
+                        if(!ulParent.is(":visible")) {
+                            ulParent.css("display", "block");
+                            var spanSibling = ulParent.siblings("span[data-role='expander']");
+                            spanSibling.removeClass("ui-icon-triangle-1-e");
+                            spanSibling.addClass("ui-icon-triangle-1-s");
+                        }
+                        component.igTree("select", liItem); 
+                    }
                 } else {
                     if (!isArray) selected(selectedItem);
                     else {
@@ -2005,6 +2017,7 @@ module nts.uk.ui.koExtentions {
             var button = null;
             if (data.button) button = idatr + "_button";
             $input.prop("readonly", true);
+            
             var value = ko.unwrap(data.value);
             var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             var containerFormat = 'yyyy/mm/dd';
@@ -2050,6 +2063,12 @@ module nts.uk.ui.koExtentions {
                     data.value($input.val());
                 });
             $input.width(Math.floor(atomWidth * length));
+            if(data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                $input.prop("disabled", true);
+                if(button) {
+                    container.find('.datepicker-btn').prop("disabled", true);
+                }
+            }
         }
 
         /**
@@ -2078,6 +2097,12 @@ module nts.uk.ui.koExtentions {
                 if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
                     $input.datepicker("setDate", newDate);
                 $input.val(newValue);
+            }
+            if(data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                $input.prop("disabled", true);
+                if(data.button) {
+                    container.find('.datepicker-btn').prop("disabled", true);
+                }
             }
         }
     }
