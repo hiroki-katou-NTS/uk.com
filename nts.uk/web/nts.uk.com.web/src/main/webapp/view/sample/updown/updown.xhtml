@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 300,
+					height : 200
+				};
+			</script>
+			<com:stylefile path="../catalog/catalog.css" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="../catalog/catalog.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<h1>Up down</h1>
+					<div>
+						<div id="swap-up-down"
+							data-bind="ntsUpDown: {
+									primaryKey: 'code',
+									comId: '#swap-list',
+									type: 'swap',
+									swapTarget: 'left'
+								}"
+							class=""></div>
+						<div style="display: inline-block;">
+							<div id="swap-list"
+								data-bind="ntsSwapList: {
+											showSearchBox: true,
+											height: 300,
+											dataSource: itemsSwap,
+											primaryKey: 'code',
+											columns: columns,
+											value: currentCodeListSwap
+										}"
+								class=""></div>
+						</div>
+						<div id="swap-up-down"
+							data-bind="ntsUpDown: {
+									primaryKey: 'code',
+									comId: '#swap-list',
+									type: 'swap',
+									swapTarget: 'right'
+								}"
+							class=""></div>
+					</div>
+					<br />
+					<hr />
+					<div>
+						<div style="display: inline-block;">
+							<table id="grid-test"
+								data-bind="ntsGridList: {
+										height: 300,
+										dataSource: itemsSwap,
+										primaryKey: 'code',
+										columns: columns,
+										value: test,
+										multiple: true
+									}"
+								class=""></table>
+						</div>
+						<div id="grid-up-down"
+							data-bind="ntsUpDown: {
+									primaryKey: 'code',
+									comId: '#grid-test',
+									type: 'grid'
+								}"
+							class=""></div>
+					</div>
+					<br />
+					<hr />
+
+					<div>
+						<div style="display: inline-block;">
+							<table id="treegrid"
+								data-bind="ntsTreeGridView:{
+										width: 1000, 
+										height: 250,
+										options: items1,
+										selectedValues: selectedCode,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true,
+										enable: true,
+										columns: columns2,
+										showCheckBox: true}"
+								class="cf">
+							</table>
+						</div>
+						<div id="tree-up-down"
+							data-bind="ntsUpDown: {
+									primaryKey: 'code',
+									comId: '#treegrid',
+									type: 'tree', 
+									childDataKey: 'childs'
+								}"
+							class=""></div>
+					</div>
+					<BUTTON data-bind="click: remove">Remove</BUTTON>
+					<h2>API</h2>
+					<table>
+						<colgroup>
+							<col width="200px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th><h4>Binding</h4></th>
+								<th><h4>Description</h4></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>primaryKey</td>
+								<td><b>Type:</b> string. Primary key of grid (tree).<br />
+									<b>Required: True.</b></td>
+							</tr>
+							<tr>
+								<td>comId</td>
+								<td><b>Type:</b> string. Id of target element.<br /> <b>Required:
+										True.</b></td>
+							</tr>
+							<tr>
+								<td>type</td>
+								<td><b>Type:</b> string. Type of target component.
+									Currently, only support GridList, TreeList, SwapList<br /> <b>Required:
+										True.</b></td>
+							</tr>
+							<tr>
+								<td>childDataKey</td>
+								<td><b>Type:</b> string. Children data in target sources
+									for tree case<br /> <b>Required: False (True in tree
+										case).</b></td>
+							</tr>
+							<tr>
+								<td>swapTarget</td>
+								<td><b>Type:</b> string. Because swap list have two grid.
+									Needs to determine what grid for action.<br /> <i>Default:</i>
+									'right'</td>
+							</tr>
+							<tr>
+								<td>height</td>
+								<td><b>Type:</b> number.<br/> 
+								<i>Default:</i> Height of target.</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="footer cf">
+						<button class="previous large">Previous</button>
+						<button class="next proceed large">Next</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
