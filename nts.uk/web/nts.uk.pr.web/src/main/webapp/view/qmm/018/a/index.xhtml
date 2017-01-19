@@ -16,7 +16,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button">登録</button>
+					<button class="proceed short-button" data-bind="click :saveData">登録</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
@@ -26,7 +26,7 @@
 							<div data-bind="ntsFormLabel: { required: true } ">平均賃金の端数処理</div>
 						</div>
 						<div class="cell">
-							<div id="checkbox" data-bind="ntsCheckBox: {}">平均賃金の小数第3位以下を切り捨てる</div>
+							<div id="checkbox" data-bind="ntsCheckBox: { checked: checked }">平均賃金の小数第3位以下を切り捨てる</div>
 						</div>
 					</div>
 					<hr class="division"/>

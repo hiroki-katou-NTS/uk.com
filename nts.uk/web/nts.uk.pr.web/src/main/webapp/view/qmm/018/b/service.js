@@ -5,12 +5,14 @@ var qmm018;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                getItemList: //"pr/proto/item/findall/bycategory/0"
+                "pr/core/avepay/findAll"
             };
-            function getPaymentDateProcessingList() {
+            function getItemList() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+                nts.uk.request.ajax(paths.getItemList)
                     .done(function (res) {
+                    console.log(res);
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -18,24 +20,7 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
-            function getItemList() {
-                var items = ko.observableArray([
-                    new ItemModel('004', 'name4'),
-                    new ItemModel('005', 'name5'),
-                    new ItemModel('006', 'name6')
-                ]);
-                ;
-                return items;
-            }
             service.getItemList = getItemList;
         })(service = b.service || (b.service = {}));
     })(b = qmm018.b || (qmm018.b = {}));
 })(qmm018 || (qmm018 = {}));
-var ItemModel = (function () {
-    function ItemModel(code, name) {
-        this.code = code;
-        this.name = name;
-    }
-    return ItemModel;
-}());

@@ -7,8 +7,9 @@ var qmm018;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.paymentDateProcessingList = ko.observableArray([]);
-                    self.selectedPaymentDate = ko.observable(null);
+                    //self.paymentDateProcessingList = ko.observableArray([]);
+                    //self.selectedPaymentDate = ko.observable(null);
+                    self.checked = ko.observable(true);
                     self.roundingRules = ko.observableArray([
                         { code: '1', name: '就業からの連携' },
                         { code: '2', name: '明細書項目から選択' }
@@ -58,11 +59,30 @@ var qmm018;
                         readonly: ko.observable(false)
                     };
                 }
-                ScreenModel.prototype.startPage = function () {
+                /*
+                startPage(): JQueryPromise<any> {
+                    var self = this;
+        
+                    var dfd = $.Deferred();
+                    qmm018.a.service.getPaymentDateProcessingList().done(function(data) {
+                        self.paymentDateProcessingList(data);
+                        dfd.resolve();
+                    }).fail(function(res) {
+        
+                    });
+                    return dfd.promise();
+                }
+                */
+                ScreenModel.prototype.saveData = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm018.a.service.getPaymentDateProcessingList().done(function (data) {
-                        self.paymentDateProcessingList(data);
+                    var command = {
+                        attendDayGettingSet: self.selectedRuleCode(),
+                        exceptionPayRate: parseInt(self.texteditor2.value()),
+                        roundDigitSet: self.currentCode(),
+                        roundTimingSet: self.checked() ? 1 : 0
+                    };
+                    qmm018.a.service.saveData(command).done(function (data) {
                         dfd.resolve();
                     }).fail(function (res) {
                     });

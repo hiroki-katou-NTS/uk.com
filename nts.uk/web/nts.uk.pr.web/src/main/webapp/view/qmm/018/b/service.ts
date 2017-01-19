@@ -1,12 +1,14 @@
 module qmm018.b.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        getItemList: //"pr/proto/item/findall/bycategory/0"
+                     "pr/core/avepay/findAll"
     }
     
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
+    export function getItemList(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+        nts.uk.request.ajax(paths.getItemList)
             .done(function(res: Array<any>) {
+                console.log(res);
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -14,23 +16,4 @@ module qmm018.b.service {
             })
         return dfd.promise();
     }
-    
-    export function getItemList(): KnockoutObservableArray<ItemModel> {
-        var items = ko.observableArray([
-                        new ItemModel('004', 'name4'),
-                        new ItemModel('005', 'name5'),
-                        new ItemModel('006', 'name6')
-                    ]);;
-        return items;
-    }
 }
-
- class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }

@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.avepay;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -25,7 +27,7 @@ public class AvePayFinder {
 	 * 
 	 * @return
 	 */
-	public AvePayDto find() {
+	/*public AvePayDto find() {
 		String companyCode = AppContexts.user().companyCode();
 		
 		Optional<AvePay> domain = avePayRepository.find(companyCode);
@@ -41,6 +43,19 @@ public class AvePayFinder {
 				avePay.getExceptionPayRate().v(), 
 				avePay.getRoundDigitSet().value, 
 				avePay.getRoundTimingSet().value); 
-	}
+	}*/
 	
+	public List<AvePayDto> findAll() {
+		
+		return this.avePayRepository.findAll()
+									.stream()
+									.map(x -> new AvePayDto(
+											x.getAttendDayGettingSet().value, 
+											x.getExceptionPayRate().v(), 
+											x.getRoundTimingSet().value, 
+											x.getRoundDigitSet().value))
+									.collect(Collectors.toList());
+		
+	}
+		
 }

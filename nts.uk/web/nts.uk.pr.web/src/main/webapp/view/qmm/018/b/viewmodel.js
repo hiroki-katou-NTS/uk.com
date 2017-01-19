@@ -7,8 +7,8 @@ var qmm018;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
+                    self.items = ko.observableArray([]);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 40 },
                         { headerText: '名称', prop: 'name', width: 130 },
@@ -25,12 +25,13 @@ var qmm018;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm018.b.service.getPaymentDateProcessingList().done(function (data) {
-                        self.paymentDateProcessingList(data);
+                    qmm018.b.service.getItemList().done(function (data) {
+                        data.forEach(function (dataItem) {
+                            self.items().push(new ItemModel(dataItem.itemCode, dataItem.itemAbName));
+                        });
                         dfd.resolve();
                     }).fail(function (res) {
                     });
-                    self.items = qmm018.b.service.getItemList();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.saveData = function () {

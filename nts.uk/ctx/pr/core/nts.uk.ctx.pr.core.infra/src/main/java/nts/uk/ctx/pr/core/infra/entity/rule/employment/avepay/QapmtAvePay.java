@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.entity.rule.employment.avepay;
 
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name="QAPMT_AVE_PAY")
 public class QapmtAvePay {
 	@Id

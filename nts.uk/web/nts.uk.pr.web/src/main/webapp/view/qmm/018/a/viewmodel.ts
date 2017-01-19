@@ -1,7 +1,8 @@
 module qmm018.a.viewmodel {
     export class ScreenModel {
-        paymentDateProcessingList: KnockoutObservableArray<any>;
-        selectedPaymentDate: KnockoutObservable<any>;
+        //paymentDateProcessingList: KnockoutObservableArray<any>;
+        //selectedPaymentDate: KnockoutObservable<any>
+        checked: KnockoutObservable<boolean>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         itemList: KnockoutObservableArray<any>;
@@ -13,8 +14,9 @@ module qmm018.a.viewmodel {
         percentage: any;
         constructor() {
             var self = this;
-            self.paymentDateProcessingList = ko.observableArray([]);
-            self.selectedPaymentDate = ko.observable(null);
+            //self.paymentDateProcessingList = ko.observableArray([]);
+            //self.selectedPaymentDate = ko.observable(null);
+            self.checked = ko.observable(true);
             self.roundingRules = ko.observableArray([
                 { code: '1', name: '就業からの連携' },
                 { code: '2', name: '明細書項目から選択' }
@@ -60,7 +62,8 @@ module qmm018.a.viewmodel {
             };
             
         }
-
+        
+        /*
         startPage(): JQueryPromise<any> {
             var self = this;
 
@@ -73,8 +76,23 @@ module qmm018.a.viewmodel {
             });
             return dfd.promise();
         }
+        */
         
-        
+        saveData(){
+            var self = this;
+            var dfd = $.Deferred();
+            var command = {
+                attendDayGettingSet: self.selectedRuleCode(),
+                exceptionPayRate: parseInt(self.texteditor2.value()),
+                roundDigitSet: self.currentCode(),
+                roundTimingSet: self.checked() ? 1 : 0
+            };
+            qmm018.a.service.saveData(command).done(function(data) {
+                dfd.resolve();
+            }).fail(function(res) {
+            });
+            return dfd.promise();    
+        }
         
         openSubWindow() {
             var self = this;

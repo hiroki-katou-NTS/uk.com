@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AddAvePayCommand {
+public class RemoveAvePayCommand {
 	private int attendDayGettingSet;
 	private int exceptionPayRate;
 	private int roundDigitSet;

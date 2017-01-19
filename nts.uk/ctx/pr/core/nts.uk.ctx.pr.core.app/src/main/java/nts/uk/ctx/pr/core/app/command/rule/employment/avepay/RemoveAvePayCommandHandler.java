@@ -15,24 +15,23 @@ import nts.uk.ctx.pr.core.dom.rule.employment.avepay.RoundTimingSet;
 import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
-public class AddAvePayCommandHandler extends CommandHandler<AddAvePayCommand> {
-
+public class RemoveAvePayCommandHandler extends CommandHandler<RemoveAvePayCommand>{
 	@Inject
-	private AvePayRepository avePayRepository;
+	private AvePayRepository avePayRepository; 
 	
 	@Override
-	protected void handle(CommandHandlerContext<AddAvePayCommand> context) {
-		AddAvePayCommand command = context.getCommand();
-	
+	protected void handle(CommandHandlerContext<RemoveAvePayCommand> context) {
+		RemoveAvePayCommand command = context.getCommand();
+		
 		String companyCode = AppContexts.user().companyCode();
 		
-		AvePay domain = new AvePay(
+		AvePay avePay = new AvePay(
 				EnumAdaptor.valueOf(command.getAttendDayGettingSet(), AttendDayGettingSet.class), 
 				new ExceptionPayRate(command.getExceptionPayRate()), 
 				EnumAdaptor.valueOf(command.getRoundDigitSet(), RoundDigitSet.class),
 				EnumAdaptor.valueOf(command.getRoundTimingSet(), RoundTimingSet.class));	
 		 
-		avePayRepository.add(companyCode, domain);
+		avePayRepository.remove(companyCode, avePay);
+		
 	}
-
 }
