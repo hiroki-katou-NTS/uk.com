@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -12,6 +17,48 @@ var nts;
                     (function (a) {
                         var service;
                         (function (service) {
+                            var paths = {
+                                findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findallHistory",
+                                findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findHistory",
+                                detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory"
+                            };
+                            function findAllHisotryUnemployeeInsuranceRate() {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findAllHisotryUnemployeeInsuranceRate = findAllHisotryUnemployeeInsuranceRate;
+                            function findHisotryUnemployeeInsuranceRate(historyId) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findHisotryUnemployeeInsuranceRate = findHisotryUnemployeeInsuranceRate;
+                            function detailHistoryUnemployeeInsuranceRate(historyId) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
+                                    .done(function (res) {
+                                    console.log(res);
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.detailHistoryUnemployeeInsuranceRate = detailHistoryUnemployeeInsuranceRate;
                             var model;
                             (function (model) {
                                 var YearMonth = (function () {
@@ -55,15 +102,31 @@ var nts;
                                     return UnemployeeInsuranceRateItem;
                                 }());
                                 model.UnemployeeInsuranceRateItem = UnemployeeInsuranceRateItem;
-                                var HistoryUnemployeeInsuranceRate = (function () {
-                                    function HistoryUnemployeeInsuranceRate(historyId, companyCode, monthRage) {
+                                var HistoryInsuranceRateDto = (function () {
+                                    function HistoryInsuranceRateDto(historyId, companyCode, monthRage, startMonthRage, endMonthRage) {
                                         this.historyId = historyId;
                                         this.companyCode = companyCode;
                                         this.monthRage = monthRage;
+                                        this.startMonthRage = startMonthRage;
+                                        this.endMonthRage = endMonthRage;
                                     }
-                                    return HistoryUnemployeeInsuranceRate;
+                                    return HistoryInsuranceRateDto;
                                 }());
-                                model.HistoryUnemployeeInsuranceRate = HistoryUnemployeeInsuranceRate;
+                                model.HistoryInsuranceRateDto = HistoryInsuranceRateDto;
+                                var HistoryUnemployeeInsuranceRateDto = (function (_super) {
+                                    __extends(HistoryUnemployeeInsuranceRateDto, _super);
+                                    function HistoryUnemployeeInsuranceRateDto() {
+                                        _super.apply(this, arguments);
+                                    }
+                                    return HistoryUnemployeeInsuranceRateDto;
+                                }(HistoryInsuranceRateDto));
+                                model.HistoryUnemployeeInsuranceRateDto = HistoryUnemployeeInsuranceRateDto;
+                                var UnemployeeInsuranceRateDto = (function () {
+                                    function UnemployeeInsuranceRateDto() {
+                                    }
+                                    return UnemployeeInsuranceRateDto;
+                                }());
+                                model.UnemployeeInsuranceRateDto = UnemployeeInsuranceRateDto;
                                 var HistoryAccidentInsuranceRate = (function () {
                                     function HistoryAccidentInsuranceRate(historyId, companyCode, monthRage) {
                                         this.historyId = historyId;
@@ -91,9 +154,9 @@ var nts;
                                 }());
                                 model.InsuranceBusinessType = InsuranceBusinessType;
                                 (function (CareerGroup) {
-                                    CareerGroup[CareerGroup["Agroforestry"] = 0] = "Agroforestry";
-                                    CareerGroup[CareerGroup["Contruction"] = 1] = "Contruction";
-                                    CareerGroup[CareerGroup["Other"] = 2] = "Other";
+                                    CareerGroup[CareerGroup["Agroforestry"] = "Agroforestry"] = "Agroforestry";
+                                    CareerGroup[CareerGroup["Contruction"] = "Contruction"] = "Contruction";
+                                    CareerGroup[CareerGroup["Other"] = "Other"] = "Other";
                                 })(model.CareerGroup || (model.CareerGroup = {}));
                                 var CareerGroup = model.CareerGroup;
                                 (function (BusinessTypeEnum) {

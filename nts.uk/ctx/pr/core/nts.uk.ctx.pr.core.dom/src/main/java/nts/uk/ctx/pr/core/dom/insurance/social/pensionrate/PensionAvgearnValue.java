@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * The Class PensionAvgearnValue.
  */
-@Getter
+@Data
 public class PensionAvgearnValue {
 
 	/** The male amount. */
@@ -20,5 +20,12 @@ public class PensionAvgearnValue {
 
 	/** The unknown amount. */
 	private Long unknownAmount;
+
+	/**
+	 * Instantiates a new pension avgearn value.
+	 */
+	public PensionAvgearnValue() {
+		super();
+	}
 
 }

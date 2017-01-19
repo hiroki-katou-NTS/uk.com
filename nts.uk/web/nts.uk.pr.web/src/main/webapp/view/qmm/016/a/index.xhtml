@@ -52,10 +52,10 @@
 							data-bind="ntsTreeGridView:{
 										width: 298,
 										height: 550,
-										options: dataSource,
-										selectedValues: selectedCodes,
+										options: wageTableList,
+										selectedValues: selectedCode,
 										optionsValue: 'code',
-										optionsChild: 'childs',
+										optionsChild: 'histories',
 										optionsText: 'nodeText',
 										multiple: false,
 										enable: true,
@@ -74,22 +74,23 @@
 						<div id="tab-content-1" class="tab-content">
 							<table>
 								<tr class="control-group">
-									<td colspan="3"><div id="lbl_001">賃金テーブルを新規で～</div></td>
+									<td colspan="3"><div id="lbl_001" class="label warning">賃金
+											テーブル を 新規 で 作成 する 場合 、 基本情報 を 入力後一度登録 ボタン を 押し て ください。</div></td>
 								</tr>
 								<tr class="control-group">
 									<td><div id="lbl_002"
 											data-bind="ntsFormLabel: { constraint: ['WageTableCode', 'WageTableName'], required: true }">コード/名称*</div></td>
 									<td colspan="2"><input id="inp_001"
-										data-bind="ntsTextEditor: {value: ko.observable('') }" /> <input
-										id="inp_002"
-										data-bind="ntsTextEditor: {value: ko.observable('') }" /></td>
+										data-bind="ntsTextEditor: {value: code,  constraint: 'WageTableCode'}" />
+										<input id="inp_002"
+										data-bind="ntsTextEditor: {value: name,  constraint: 'WageTableName' }" /></td>
 								</tr>
 								<tr class="control-group">
 									<td><div id="lbl_003"
 											data-bind="ntsFormLabel: { required: true }">開始年月*</div></td>
-									<td><input id="inp_003"
-										data-bind="ntsTextEditor: {value: ko.observable('') }" /> <label
-										id="lbl_010">lbl_010</label></td>
+									<td><span id="ipnStartDate"
+										data-bind="ntsDatePicker: {value: startMonth, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
+										<label id="lbl_010">（平成29年01月） ~</label></td>
 								</tr>
 								<tr class="control-group">
 									<td><div id="lbl_004"
@@ -102,10 +103,10 @@
 									<td></td>
 									<td><div id="sel_002"
 											data-bind="ntsSwitchButton: {
-						options: sel_002,
+						options: generalTableTypes,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: enabled}"></div></td>
+						value: selectedDimensionType}"></div></td>
 									<td></td>
 								</tr>
 								<tr class="control-group">
@@ -124,10 +125,10 @@
 									<td>
 										<div id="sel_003"
 											data-bind="ntsSwitchButton: {
-						options: sel_002,
+						options: specialTableTypes,
 						optionsValue: 'code',
 						optionsText: 'name',
-						value: selected}"></div>
+						value: selectedDimensionType}"></div>
 									</td>
 									<td></td>
 								</tr>
@@ -147,22 +148,22 @@
 							<table>
 								<tr class="control-group">
 									<td><div data-bind="ntsFormLabel: { }">コード/名称</div></td>
-									<td>004</td>
-									<td>LBL_003</td>
+									<td colspan="2"><span data-bind="text: code"></span> <span
+										class="tab-inline" data-bind="text: name"></span></td>
 									<td><div data-bind="ntsFormLabel: { required: true }">有効期間</div></td>
-									<td>2015/04 ~ 2016/03</td>
+									<td data-bind="text: monthRange"></td>
 								</tr>
 								<tr class="control-group">
 									<td class="v-align-top"><div
 											data-bind="ntsFormLabel: { required: true }">要素指定*</div></td>
-									<td class="v-align-top">demension type name</td>
+									<td class="v-align-top" data-bind="text: selectedDimensionName"></td>
 									<td colspan="3"><table id="lst_001"
 											data-bind="ntsTreeGridView:{
 										width: 550,
 										options: dataSource,
-										selectedValues: selectedCodes,
+										selectedValues: selectedCode,
 										optionsValue: 'code',
-										optionsChild: 'childs',
+										optionsChild: 'histories',
 										optionsText: 'nodeText',
 										multiple: false,
 										enable: true,
@@ -195,7 +196,7 @@
 										options: dataSource,
 										selectedValues: selectedCodes,
 										optionsValue: 'code',
-										optionsChild: 'childs',
+										optionsChild: 'histories',
 										optionsText: 'nodeText',
 										multiple: false,
 										enable: true,

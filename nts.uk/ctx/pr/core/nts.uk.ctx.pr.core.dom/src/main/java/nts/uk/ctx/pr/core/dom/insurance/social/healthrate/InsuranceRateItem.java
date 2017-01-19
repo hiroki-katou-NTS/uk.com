@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import lombok.Getter;
+import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.social.ChargeRateItem;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.ChargeRateItem;
 /**
  * The Class InsuranceRateItem.
  */
-@Getter
+@Data
 public class InsuranceRateItem extends AggregateRoot {
 
 	/** The charge rate. */
@@ -24,4 +24,10 @@ public class InsuranceRateItem extends AggregateRoot {
 	/** The insurance type. */
 	private HealthInsuranceType insuranceType;
 
+	/**
+	 * Instantiates a new insurance rate item.
+	 */
+	public InsuranceRateItem() {
+		super();
+	}
 }

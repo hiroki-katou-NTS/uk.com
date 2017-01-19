@@ -10,15 +10,15 @@
 					<div class="list-box" id="lstHistoryUnemployeeInsuranceRate"
 						data-bind="ntsListBox: {
 						options: lstHistoryUnemployeeInsuranceRate,
-						optionsValue: 'code',
-						optionsText: 'name',
+						optionsValue: 'historyId',
+						optionsText: 'inforMonthRage',
 						multiple: false,
 						value: selectionHistoryUnemployeeInsuranceRate,
 						enable: true,
 						rows: 10,
 						required: true,
 						columns: [
-							{ prop: 'name', length: 10 }
+							{ prop: 'inforMonthRage', length: 10 }
 						]}"></div>
 				</td>
 				<td id="contents-right">
@@ -44,7 +44,7 @@
 						<tr>
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
-									data-bind="with:unemployeeInsuranceRateItemMode"
+									data-bind="with: unemployeeInsuranceRateModel"
 									class="table_border_black">
 									<tbody>
 										<tr class="bg-green">
@@ -55,7 +55,7 @@
 											<th class="text_center">端数処理</th>
 										</tr>
 										<tr
-											data-bind="with:unemployeeInsuranceRateItemAgroforestryModel">
+											data-bind="with: unemployeeInsuranceRateItemAgroforestryModel">
 											<td class="bg-green">一般の事業</td>
 											<td><div>
 													<input class="health-input"
@@ -101,7 +101,7 @@
 											</td>
 										</tr>
 										<tr
-											data-bind="with:unemployeeInsuranceRateItemContructionModel">
+											data-bind="with: unemployeeInsuranceRateItemContructionModel">
 											<td class="bg-green">農林水産清酒製造の事業</td>
 											<td><div>
 													<input class="health-input"

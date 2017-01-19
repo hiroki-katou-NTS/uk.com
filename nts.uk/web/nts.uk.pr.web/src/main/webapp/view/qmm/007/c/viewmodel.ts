@@ -3,30 +3,25 @@ module nts.uk.pr.view.qmm007.c {
         export class ScreenModel {
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
-            endDate: KnockoutObservable<string>;
-            startDate: any;
+            startMonth: KnockoutObservable<string>;
+            endMonth: KnockoutObservable<string>;
             edittingMethod: KnockoutObservable<string>;
+            isEditMode: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
-                self.code = ko.observable(nts.uk.ui.windows.getShared('code'));
-                self.name = ko.observable('ガソリン単価');
-                self.endDate = ko.observable('~ 9999/12');
-                self.edittingMethod = ko.observable('2');
+                var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
+                self.code = ko.observable(unitPriceHistoryModel.unitPriceCode());
+                self.name = ko.observable(unitPriceHistoryModel.unitPriceName());
+                self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
+                self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
+                self.edittingMethod = ko.observable('Edit');
+                self.isEditMode = ko.observable(true);
 
-                self.startDate = {
-                    value: ko.observable('2016/04'),
-                    constraint: '',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "",
-                        width: "",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(false),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                self.edittingMethod.subscribe(val => {
+                    val == 'Edit' ? self.isEditMode(true) : self.isEditMode(false);
+                });
+
             }
             btnApplyClicked() {
                 nts.uk.ui.windows.close()

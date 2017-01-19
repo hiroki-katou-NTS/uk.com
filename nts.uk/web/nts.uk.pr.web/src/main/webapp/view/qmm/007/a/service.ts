@@ -2,33 +2,54 @@ module nts.uk.pr.view.qmm007.a {
     export module service {
 
         var paths: any = {
-            getUnitPriceHistoryList: "pr/proto/unitprice/findall"
+            getUnitPriceHistoryList: "pr/proto/unitprice/findall",
+            getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
+            createUnitPriceHistory: "pr/proto/unitprice/create",
+            updateUnitPriceHistory: "pr/proto/unitprice/update",
+            removeUnitPriceHistory: "pr/proto/unitprice/remove"
         };
 
-        function convertToTreeList(): void{
-            var mockData = [];
-            var parentNodes = [];
-            mockData.map( item => {
-                var s = item.unitPriceCode ;
-                if (s in parentNodes) parentNodes[s] = item; 
-                else parentNodes[s] = item;
+        function convertToTreeList(unitPriceHistoryList: Array<UnitPriceHistoryDto>): Array<UnitPriceHistoryNode> {
+            var groupByCode = {};
+
+            // group by unit price code
+            unitPriceHistoryList.forEach(item => {
+                var c = item.unitPriceCode;
+                groupByCode[c] = item;
             });
-            parentNodes.map(item => {new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, false)});
-            var childNodes = mockData.map( item => new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.monthRange, true));
-            console.log(mockData);
-            console.log(parentNodes);
-            console.log(childNodes);
-            var merged = childNodes.concat(parentNodes); 
-            console.log(merged);
+            // convert to array
+            var arr = Object.keys(groupByCode).map(key => groupByCode[key]);
+
+            // convert to tree node
+            var parentNodes = arr.map(item => new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, false, []));
+            var childNodes = unitPriceHistoryList.map(item => new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true));
+
+            var treeList: Array<UnitPriceHistoryNode> = parentNodes.map(parent => {
+                childNodes.forEach(child => parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''));
+                return parent;
+            });
+            return treeList;
         }
+
 
         export function getUnitPriceHistoryList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.getUnitPriceHistoryList)
-                .done(function(res: Array<any>) {
-                    dfd.resolve(null);
+                .done(res => {
                     var unitPriceHistoryList: Array<model.UnitPriceHistoryDto> = res;
-                    console.log(unitPriceHistoryList);
+                    dfd.resolve(convertToTreeList(unitPriceHistoryList));
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        export function getUnitPriceHistoryDetail(id: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id)
+                .done(res => {
+                    dfd.resolve(res);
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -37,17 +58,17 @@ module nts.uk.pr.view.qmm007.a {
         }
 
         export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            return null;
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
         }
 
         export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = { unitPriceHistory: unitPriceHistory };
-            return null;
+            var data = unitPriceHistory;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
         }
 
         export function remove(id: string): JQueryPromise<any> {
-            return null;
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, id);
         }
 
         /**
@@ -61,15 +82,15 @@ module nts.uk.pr.view.qmm007.a {
                 startMonth: string;
                 endMonth: string;
                 budget: number;
-                fixPaySettingType: SettingType;
-                fixPayAtr: ApplySetting;
-                fixPayAtrMonthly: ApplySetting;
-                fixPayAtrDayMonth: ApplySetting;
-                fixPayAtrDaily: ApplySetting;
-                fixPayAtrHourly: ApplySetting;
+                fixPaySettingType: string;
+                fixPayAtr: string;
+                fixPayAtrMonthly: string;
+                fixPayAtrDayMonth: string;
+                fixPayAtrDaily: string;
+                fixPayAtrHourly: string;
                 memo: string;
 
-                constructor(
+                /*constructor(
                     id: string,
                     unitPriceCode: string,
                     unitPriceName: string,
@@ -95,49 +116,35 @@ module nts.uk.pr.view.qmm007.a {
                     this.fixPayAtrDayMonth = fixPayAtrDayMonth;
                     this.fixPayAtrDaily = fixPayAtrDaily;
                     this.fixPayAtrHourly = fixPayAtrHourly;
-                }
+                }*/
             }
 
-            export class UnitPriceHistoryNode{
-            id: string;
-            code: string;
-            name: string;
-            monthRange: MonthRange;
-            nodeText: string;
-            isChild: boolean;
-            childs: any;
-            constructor(id: string, code: string, name: string, monthRange: MonthRange, isChild: boolean, childs?: Array<UnitPriceHistoryNode>) {
-                var self = this;
-                self.id = id;
-                self.code = code;
-                self.name = name;
-                self.monthRange = monthRange;
-                self.isChild = isChild;
-                self.nodeText = self.code + ' ' + self.name;
-                self.childs = childs;
-                if (self.isChild == true) {
-                    self.nodeText = self.monthRange.startMonth+self.monthRange.endMonth;
-                }
-            }
-            }
-
-            export class MonthRange {
+            export class UnitPriceHistoryNode {
+                id: string
+                unitPriceCode: string;
+                unitPriceName: string;
                 startMonth: string;
                 endMonth: string;
-                constructor(startMonth: string, endMonth: string) {
-                    this.startMonth = startMonth;
-                    this.endMonth = endMonth;
+                nodeText: string;
+                isChild: boolean;
+                childs: Array<UnitPriceHistoryNode>;
+                constructor(id: string,
+                    unitPriceCode: string,
+                    unitPriceName: string,
+                    startMonth: string,
+                    endMonth: string,
+                    isChild: boolean,
+                    childs?: Array<UnitPriceHistoryNode>) {
+                    var self = this;
+                    self.isChild = isChild;
+                    self.unitPriceCode = unitPriceCode;
+                    self.unitPriceName = unitPriceName;
+                    self.startMonth = startMonth;
+                    self.endMonth = endMonth;
+                    self.id = self.isChild == true ? id : id + id;
+                    self.childs = childs;
+                    self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
                 }
-            }
-
-            export enum SettingType {
-                Company = 0,
-                Contract = 1
-            }
-
-            export enum ApplySetting {
-                Apply = 1,
-                NotApply = 0
             }
 
         }
