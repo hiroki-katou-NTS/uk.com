@@ -56,11 +56,15 @@ div.form-label>i {
 	margin: 0;
 }
 
-input {
+input, div.form-group>.form-control {
 	line-height: 30px;
 	max-height: 30px;
 	padding: 0 5px;
 	border: 1px solid #999999;
+}
+
+div.form-group>select.form-control {
+	height: 30px;
 }
 
 div.form-group {
@@ -72,16 +76,56 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	border-radius: 3px;
 }
 
+.no-margin {
+	margin: 0 !important;
+}
+
+.no-margin-top {
+	margin-top: 0 !important;
+}
+
+.no-margin-right {
+	margin-right: 0 !important;
+}
+
+.no-margin-bottom {
+	margin-bottom: 0 !important;
+}
+
+.no-margin-left {
+	margin-left: 0 !important;
+}
+
+.no-padding {
+	padding: 0 !important;
+}
+
+.no-padding-top {
+	padding-top: 0 !important;
+}
+
+.no-padding-right {
+	padding-right: 0 !important;
+}
+
+.no-padding-bottom {
+	padding-bottom: 0 !important;
+}
+
+.no-padding-left {
+	padding-left: 0 !important;
+}
+
 .text-left {
-	text-align: left;
+	text-align: left !important;
 }
 
 .text-center {
-	text-align: center;
+	text-align: center !important;
 }
 
 .text-right {
-	text-align: right;
+	text-align: right !important;
 }
 
 #functions-area, #contents-area {
@@ -109,6 +153,10 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-position-x: 5px;
 	background-position-y: 5px;
 	padding-left: 30px;
+}
+
+#contents-area{
+	padding-bottom: 30px;
 }
 
 #contents-area table.table {
@@ -165,10 +213,10 @@ a, input, select, .form-control, div.form-group>input.form-control {
 }
 
 #contents-area table.table .caret:after {
-    margin-top: 2px;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-left: 6px solid rgb(174, 238, 96);
+	margin-top: 2px;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	border-left: 6px solid rgb(174, 238, 96);
 	width: 10px;
 	position: absolute;
 }
