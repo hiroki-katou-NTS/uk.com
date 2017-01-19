@@ -8,7 +8,6 @@
 
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-	
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -61,7 +60,7 @@
 					   <div style="width: 176px;" data-bind="ntsFormLabel: { required: true }">
 							<label id="A_LBL_003">会社コード</label>
 						</div>
-						<input id="A_INP_002" data-bind="value:currentCode()"  class="input-table"/>
+						<input id="A_INP_002" data-bind="enable: false, value:currentCode()"  class="input-table"/>
 						<div class="bg-yellow">
 						<div data-bind="ntsCheckBox: {checked: checked2, text: 'この会社を廃止する' }" class="cf minimalist ntsCheckBox-right"></div>
 						<button style="width: 25px; height: 25px; margin-left: 20px;" data-bind="click: ClickSel001">?</button>
@@ -71,25 +70,6 @@
 					<div class="table fixed-height">
 					<table id="expand-example1">
 						<tbody>
-							<!--  1  -->
-<!-- 						<tr style="margin-top: 10px;">
-								<th colspan="1" class="th-col1">
-									<div class="form-label"	data-bind="ntsFormLabel:{required: true}">
-										<label id="A_LBL_002">会社コード</label>
-									</div>
-								</th>
-
-								<th colspan="2" class="th-col2">
-								<input id="A_INP_002" data-bind="value:currentCode()"  class="input-table"/>
-								</th>
-								<th colspan="1" >
-									<div class="bg-yellow" style="height: 30px; width: 250px;">
-									<div style="margin-left: 5px;" data-bind="ntsCheckBox: {text: 'この会社を廃止する' }" class="cf minimalist"></div>
-									     <button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
-								    </div>
-								</th>
-								
-							</tr>  -->
 							<tr style="margin-top: 10px;">
 								<th colspan="1" class="th-col1">
 									<div class="form-label"
@@ -103,11 +83,11 @@
 								<input id="A_INP_004" type="text" data-bind="value: currentNode().name" class="input-table"/>
 								</th>
 							</tr>
-							<!--  2  -->
-							<tr style="margin-top: 10px;">
+	                        <tr style="margin-top: 10px;">
 								<th colspan="1" class="th-col1">
-									<div  style="margin-left: 25px;" >
-										<label id="A_LBL_005">半角ｶﾅ</label>
+									<div class="form-label"
+										data-bind="ntsFormLabel:{required: true}" >
+										<label id="A_LBL_006">半角ｶﾅ</label>
 									</div>
 								</th>
 
@@ -119,7 +99,8 @@
 							
 							<tr style="margin-top: 20px;">
 								<th colspan="1" class="th-col1">
-									<div style="margin-left: 20px;">
+									<div class="form-label"
+										data-bind="ntsFormLabel:{required: true}">
 										<label id="A_LBL_006">　略名</label>
 									</div>
 								</th>
@@ -128,6 +109,32 @@
 								<input id="A_INP_006" value="UKシステム（株）" class="input-table" />
 								</th>
 							</tr>	
+																			
+							<!--  2  -->
+							<!-- <tr style="margin-top: 10px;">
+								<th colspan="1" class="th-col1">
+									<div  style="margin-left: 25px;" >
+										<label id="A_LBL_005">半角ｶﾅ</label>
+									</div>
+								</th>
+
+								<th colspan="2" class="th-col2">
+								<input id="A_INP_005" value="ﾕｰｹｰｼｽﾃﾑｶﾌﾞｼｷｶﾞｲｼｬ" class="input-table"/>
+								</th>
+							</tr>
+							 3 
+							
+							<tr style="margin-top: 20px;">
+								<th colspan="1" class="th-col1">
+									<div style="margin-left: 20px;">
+										<label id="A_LBL_006">　略名</label>
+									</div>
+								</th>
+
+								<th colspan="2" class="th-col2">
+								<input id="A_INP_006" value="UKシステム（株）" class="input-table" />
+								</th>
+							</tr>	 -->
 												
 						</tbody>
 					</table>

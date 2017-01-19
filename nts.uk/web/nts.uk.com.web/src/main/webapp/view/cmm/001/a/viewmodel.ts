@@ -40,7 +40,7 @@ module nts.uk.pr.view.cmm001.a {
                   self.editMode= true;
                     }
                 });
-            self.checked1.subscribe(function(newValue){
+            self.checked2.subscribe(function(newValue){
                 // chu y khi code chinh phai lay lai datasource khong se bi thay doi source
                self.item1s = ko.observableArray([
                 new Company('01', '日通システム株式会社', ''),
@@ -70,7 +70,7 @@ module nts.uk.pr.view.cmm001.a {
                     }
                 
                 });
-             self.checked2.subscribe(function(newValue){
+             self.checked1.subscribe(function(newValue){
                self.item1s = ko.observableArray([
                 new Company('01', '日通システム株式会社', ''),
                 new Company('02', '有限会社日通ベトナム', ''),

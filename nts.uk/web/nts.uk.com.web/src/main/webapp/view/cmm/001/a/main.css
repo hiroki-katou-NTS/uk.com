@@ -73,10 +73,12 @@
 .th-col2{
 	width: 400px;
 	border: none;
+	height: 30px;
 }
 .th-col1{
 	width: 200px;
 	border: none;
+	height: 30px;
 }
 .th-col-sub{
 	width: 150px;
@@ -113,10 +115,9 @@ button.search-btn{
 	width: 250px;
 }
 .input-table{
-	height: 25px;
+	height: 30px;
 	border-radius: 3px;
 	border:1px solid #cdd0c9;
-	margin-top: 5px;
 }
 #C_INP_001{
 	width: 100px;
