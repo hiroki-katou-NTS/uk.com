@@ -4,7 +4,10 @@ module nts.uk.pr.view.qmm011.a {
         var paths: any = {
             findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findallHistory",
             findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findHistory",
-            detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory"
+            detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
+            findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findallHistory",
+            findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findHistory",
+            detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/detailHistory"
         };
 
         //Function connection service FindAll Labor Insurance Office
@@ -36,7 +39,6 @@ module nts.uk.pr.view.qmm011.a {
             var dfd = $.Deferred<any>();
             nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
                 .done(function(res: any) {
-                    console.log(res);
                     dfd.resolve(res);
                     //xyz
                 })
@@ -46,6 +48,46 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
 
         }
+
+        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<any>> {
+            var dfd = $.Deferred<Array<any>>();
+            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
+                .done(function(res: Array<any>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        export function findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function detailHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.detailHistoryAccidentInsuranceRate + "/" + historyId)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+
+        }
+
 
         export module model {
             export class YearMonth {
@@ -116,15 +158,14 @@ module nts.uk.pr.view.qmm011.a {
                 companyCode: string;
                 rateItems: UnemployeeInsuranceRateItem[];
             }
-            export class HistoryAccidentInsuranceRate {
+
+            export class HistoryAccidentInsuranceRateDto extends HistoryInsuranceRateDto {
+
+            }
+            export class AccidentInsuranceRateDto {
                 historyId: string;
                 companyCode: string;
-                monthRage: MonthRange;
-                constructor(historyId: string, companyCode: string, monthRage: MonthRange) {
-                    this.historyId = historyId;
-                    this.companyCode = companyCode;
-                    this.monthRage = monthRage;
-                }
+                rateItems: InsuBizRateItem[];
             }
             export class InsuBizRateItem {
                 /** The insu biz type. */
@@ -158,25 +199,25 @@ module nts.uk.pr.view.qmm011.a {
             }
             export enum BusinessTypeEnum {
                 /** The Biz 1 st. */
-                Biz1St = 1,
+                Biz1St = "Biz1St",
                 /** The Biz 2 nd. */
-                Biz2Nd = 2,
+                Biz2Nd = "Biz2Nd",
                 /** The Biz 3 rd. */
-                Biz3Rd = 3,
+                Biz3Rd = "Biz3Rd",
                 /** The Biz 4 th. */
-                Biz4Th = 4,
+                Biz4Th = "Biz4Th",
                 /** The Biz 5 th. */
-                Biz5Th = 5,
+                Biz5Th = "Biz5Th",
                 /** The Biz 6 th. */
-                Biz6Th = 6,
+                Biz6Th = "Biz6Th",
                 /** The Biz 7 th. */
-                Biz7Th = 7,
+                Biz7Th = "Biz7Th",
                 /** The Biz 8 th. */
-                Biz8Th = 8,
+                Biz8Th = "Biz8Th",
                 /** The Biz 9 th. */
-                Biz9Th = 9,
+                Biz9Th = "Biz9Th",
                 /** The Biz 10 th. */
-                Biz10Th = 10
+                Biz10Th = "Biz10Th"
 
             }
             export enum TypeHistory {

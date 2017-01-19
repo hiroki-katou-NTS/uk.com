@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
+import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
 
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")
@@ -33,8 +34,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		monthRange006.setEndMonth(new YearMonth(9999 * 100 + 12));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
 		historyUnemployeeInsuranceRate006.setHistoryId("historyId006");
-		historyUnemployeeInsuranceRate006.setStartMonthRage(convertMonth(monthRange006.getStartMonth()));
-		historyUnemployeeInsuranceRate006.setEndMonthRage(convertMonth(monthRange006.getEndMonth()));
+		historyUnemployeeInsuranceRate006
+				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange006.getStartMonth()));
+		historyUnemployeeInsuranceRate006.setEndMonthRage(HistoryInsurance.convertMonth(monthRange006.getEndMonth()));
 		historyUnemployeeInsuranceRate006.setInforMonthRage(historyUnemployeeInsuranceRate006.getStartMonthRage()
 				+ " ~ " + historyUnemployeeInsuranceRate006.getEndMonthRage());
 		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate006);
@@ -45,8 +47,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		monthRange005.setEndMonth(new YearMonth(2016 * 100 + 3));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
 		historyUnemployeeInsuranceRate005.setHistoryId("historyId005");
-		historyUnemployeeInsuranceRate005.setStartMonthRage(convertMonth(monthRange005.getStartMonth()));
-		historyUnemployeeInsuranceRate005.setEndMonthRage(convertMonth(monthRange005.getEndMonth()));
+		historyUnemployeeInsuranceRate005
+				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange005.getStartMonth()));
+		historyUnemployeeInsuranceRate005.setEndMonthRage(HistoryInsurance.convertMonth(monthRange005.getEndMonth()));
 		historyUnemployeeInsuranceRate005.setInforMonthRage(historyUnemployeeInsuranceRate005.getStartMonthRage()
 				+ " ~ " + historyUnemployeeInsuranceRate005.getEndMonthRage());
 		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate005);
@@ -57,8 +60,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		monthRange004.setEndMonth(new YearMonth(2015 * 100 + 9));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
 		historyUnemployeeInsuranceRate004.setHistoryId("historyId004");
-		historyUnemployeeInsuranceRate004.setStartMonthRage(convertMonth(monthRange004.getStartMonth()));
-		historyUnemployeeInsuranceRate004.setEndMonthRage(convertMonth(monthRange004.getEndMonth()));
+		historyUnemployeeInsuranceRate004
+				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange004.getStartMonth()));
+		historyUnemployeeInsuranceRate004.setEndMonthRage(HistoryInsurance.convertMonth(monthRange004.getEndMonth()));
 		historyUnemployeeInsuranceRate004.setInforMonthRage(historyUnemployeeInsuranceRate004.getStartMonthRage()
 				+ " ~ " + historyUnemployeeInsuranceRate004.getEndMonthRage());
 		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate004);
@@ -69,8 +73,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		monthRange003.setEndMonth(new YearMonth(2015 * 100 + 3));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
 		historyUnemployeeInsuranceRate003.setHistoryId("historyId003");
-		historyUnemployeeInsuranceRate003.setStartMonthRage(convertMonth(monthRange003.getStartMonth()));
-		historyUnemployeeInsuranceRate003.setEndMonthRage(convertMonth(monthRange003.getEndMonth()));
+		historyUnemployeeInsuranceRate003
+				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange003.getStartMonth()));
+		historyUnemployeeInsuranceRate003.setEndMonthRage(HistoryInsurance.convertMonth(monthRange003.getEndMonth()));
 		historyUnemployeeInsuranceRate003.setInforMonthRage(historyUnemployeeInsuranceRate003.getStartMonthRage()
 				+ " ~ " + historyUnemployeeInsuranceRate003.getEndMonthRage());
 		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate003);
@@ -81,8 +86,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		monthRange002.setEndMonth(new YearMonth(2014 * 100 + 8));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
 		historyUnemployeeInsuranceRate002.setHistoryId("historyId002");
-		historyUnemployeeInsuranceRate002.setStartMonthRage(convertMonth(monthRange002.getStartMonth()));
-		historyUnemployeeInsuranceRate002.setEndMonthRage(convertMonth(monthRange002.getEndMonth()));
+		historyUnemployeeInsuranceRate002
+				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange002.getStartMonth()));
+		historyUnemployeeInsuranceRate002.setEndMonthRage(HistoryInsurance.convertMonth(monthRange002.getEndMonth()));
 		historyUnemployeeInsuranceRate002.setInforMonthRage(historyUnemployeeInsuranceRate002.getStartMonthRage()
 				+ " ~ " + historyUnemployeeInsuranceRate002.getEndMonthRage());
 		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate002);
@@ -93,8 +99,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 		monthRange001.setEndMonth(new YearMonth(2014 * 100 + 3));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
 		historyUnemployeeInsuranceRate001.setHistoryId("historyId002");
-		historyUnemployeeInsuranceRate001.setStartMonthRage(convertMonth(monthRange001.getStartMonth()));
-		historyUnemployeeInsuranceRate001.setEndMonthRage(convertMonth(monthRange001.getEndMonth()));
+		historyUnemployeeInsuranceRate001
+				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange001.getStartMonth()));
+		historyUnemployeeInsuranceRate001.setEndMonthRage(HistoryInsurance.convertMonth(monthRange001.getEndMonth()));
 		historyUnemployeeInsuranceRate001.setInforMonthRage(historyUnemployeeInsuranceRate001.getStartMonthRage()
 				+ " ~ " + historyUnemployeeInsuranceRate001.getEndMonthRage());
 		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate001);
@@ -143,7 +150,7 @@ public class UnemployeeInsuranceRateService extends WebService {
 		companySettingContruction.setRoundAtr(RoundingMethod.RoundUp);
 		umInsuranceRateItemContruction.setCompanySetting(companySettingContruction);
 		rateItems.add(umInsuranceRateItemContruction);
-		UnemployeeInsuranceRateItem umInsuranceRateItemOther= new UnemployeeInsuranceRateItem();
+		UnemployeeInsuranceRateItem umInsuranceRateItemOther = new UnemployeeInsuranceRateItem();
 		umInsuranceRateItemOther.setCareerGroup(CareerGroup.Other);
 		UnemployeeInsuranceRateItemSetting personalSettingOther = new UnemployeeInsuranceRateItemSetting();
 		personalSettingOther.setRate(55.5);
@@ -158,14 +165,4 @@ public class UnemployeeInsuranceRateService extends WebService {
 		return unemployeeInsuranceRate;
 	}
 
-	public String convertMonth(YearMonth yearMonth) {
-		String convert = "";
-		String mounth = "";
-		if (yearMonth.month() < 10) {
-			mounth = "0" + yearMonth.month();
-		} else
-			mounth = String.valueOf(yearMonth.month());
-		convert = yearMonth.year() + "/" + mounth;
-		return convert;
-	}
 }

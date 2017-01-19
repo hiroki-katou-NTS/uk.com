@@ -1,12 +1,10 @@
 module nts.uk.pr.view.qmm011.f {
     import option = nts.uk.ui.option;
-    import HistoryUnemployeeInsuranceRate = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceRate;
     import BusinessTypeEnum = nts.uk.pr.view.qmm011.a.service.model.BusinessTypeEnum;
     import InsuBizRateItem = nts.uk.pr.view.qmm011.a.service.model.InsuBizRateItem;
     import RoundingMethod = nts.uk.pr.view.qmm011.a.service.model.RoundingMethod;
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
     import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
-    import HistoryUnemployeeInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.HistoryUnemployeeInsuranceRateModel;
     import HistoryAccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.HistoryAccidentInsuranceRateModel;
     export module viewmodel {
         export class ScreenModel {
@@ -29,23 +27,11 @@ module nts.uk.pr.view.qmm011.f {
                 self.enable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                 var historyId = nts.uk.ui.windows.getShared("historyId");
-                var lsthistoryValue = nts.uk.ui.windows.getShared("lsthistoryValue");
+                var historyStart = nts.uk.ui.windows.getShared("historyStart");
+                var historyEnd = nts.uk.ui.windows.getShared("historyEnd");
                 self.typeHistory = nts.uk.ui.windows.getShared("type");
-                if (self.typeHistory == TypeHistory.HistoryUnemployee) {
-                    for (var index = 0; index < lsthistoryValue.length; index++) {
-                        if (lsthistoryValue[index].historyId === historyId) {
-                            self.historyStart = ko.observable(new HistoryUnemployeeInsuranceRateModel(lsthistoryValue[index]).getViewStartMonth(lsthistoryValue[index]));
-                            self.historyEnd = ko.observable(new HistoryUnemployeeInsuranceRateModel(lsthistoryValue[index]).getViewEndMonth(lsthistoryValue[index]));
-                        }
-                    }
-                } else {
-                    for (var index = 0; index < lsthistoryValue.length; index++) {
-                        if (lsthistoryValue[index].historyId === historyId) {
-                            self.historyStart = ko.observable(new HistoryAccidentInsuranceRateModel(lsthistoryValue[index]).getViewStartMonth(lsthistoryValue[index]));
-                            self.historyEnd = ko.observable(new HistoryAccidentInsuranceRateModel(lsthistoryValue[index]).getViewEndMonth(lsthistoryValue[index]));
-                        }
-                    }
-                }
+                self.historyStart = ko.observable(historyStart);
+                self.historyEnd = ko.observable(historyEnd);
             }
         }
 

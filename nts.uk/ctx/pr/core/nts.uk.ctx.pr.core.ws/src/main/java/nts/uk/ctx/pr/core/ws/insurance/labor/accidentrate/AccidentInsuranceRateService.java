@@ -1,0 +1,176 @@
+package nts.uk.ctx.pr.core.ws.insurance.labor.accidentrate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
+import nts.arc.layer.ws.WebService;
+import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
+import nts.uk.ctx.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
+import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
+import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
+
+@Path("pr/insurance/labor/accidentrate")
+@Produces("application/json")
+public class AccidentInsuranceRateService extends WebService {
+	@POST
+	@Path("findallHistory")
+	public List<HistoryAccidentInsuranceRateDto> findAllHistory() {
+		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRate = new ArrayList<HistoryAccidentInsuranceRateDto>();
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate006 = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate006.setCompanyCode("companyCode001");
+		MonthRange monthRange006 = new MonthRange();
+		monthRange006.setStartMonth(new YearMonth(2016 * 100 + 4));
+		monthRange006.setEndMonth(new YearMonth(9999 * 100 + 12));
+		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
+		historyAccidentInsuranceRate006.setHistoryId("historyId006");
+		historyAccidentInsuranceRate006.setStartMonthRage(HistoryInsurance.convertMonth(monthRange006.getStartMonth()));
+		historyAccidentInsuranceRate006.setEndMonthRage(HistoryInsurance.convertMonth(monthRange006.getEndMonth()));
+		historyAccidentInsuranceRate006.setInforMonthRage(historyAccidentInsuranceRate006.getStartMonthRage() + " ~ "
+				+ historyAccidentInsuranceRate006.getEndMonthRage());
+		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate006);
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate005 = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate005.setCompanyCode("companyCode001");
+		MonthRange monthRange005 = new MonthRange();
+		monthRange005.setStartMonth(new YearMonth(2015 * 100 + 10));
+		monthRange005.setEndMonth(new YearMonth(2016 * 100 + 3));
+		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
+		historyAccidentInsuranceRate005.setHistoryId("historyId005");
+		historyAccidentInsuranceRate005.setStartMonthRage(HistoryInsurance.convertMonth(monthRange005.getStartMonth()));
+		historyAccidentInsuranceRate005.setEndMonthRage(HistoryInsurance.convertMonth(monthRange005.getEndMonth()));
+		historyAccidentInsuranceRate005.setInforMonthRage(historyAccidentInsuranceRate005.getStartMonthRage() + " ~ "
+				+ historyAccidentInsuranceRate005.getEndMonthRage());
+		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate005);
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate004 = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate004.setCompanyCode("companyCode001");
+		MonthRange monthRange004 = new MonthRange();
+		monthRange004.setStartMonth(new YearMonth(2015 * 100 + 4));
+		monthRange004.setEndMonth(new YearMonth(2015 * 100 + 9));
+		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
+		historyAccidentInsuranceRate004.setHistoryId("historyId004");
+		historyAccidentInsuranceRate004.setStartMonthRage(HistoryInsurance.convertMonth(monthRange004.getStartMonth()));
+		historyAccidentInsuranceRate004.setEndMonthRage(HistoryInsurance.convertMonth(monthRange004.getEndMonth()));
+		historyAccidentInsuranceRate004.setInforMonthRage(historyAccidentInsuranceRate004.getStartMonthRage() + " ~ "
+				+ historyAccidentInsuranceRate004.getEndMonthRage());
+		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate004);
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate003 = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate003.setCompanyCode("companyCode001");
+		MonthRange monthRange003 = new MonthRange();
+		monthRange003.setStartMonth(new YearMonth(2014 * 100 + 9));
+		monthRange003.setEndMonth(new YearMonth(2015 * 100 + 3));
+		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
+		historyAccidentInsuranceRate003.setHistoryId("historyId003");
+		historyAccidentInsuranceRate003.setStartMonthRage(HistoryInsurance.convertMonth(monthRange003.getStartMonth()));
+		historyAccidentInsuranceRate003.setEndMonthRage(HistoryInsurance.convertMonth(monthRange003.getEndMonth()));
+		historyAccidentInsuranceRate003.setInforMonthRage(historyAccidentInsuranceRate003.getStartMonthRage() + " ~ "
+				+ historyAccidentInsuranceRate003.getEndMonthRage());
+		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate003);
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate002 = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate002.setCompanyCode("companyCode001");
+		MonthRange monthRange002 = new MonthRange();
+		monthRange002.setStartMonth(new YearMonth(2014 * 100 + 4));
+		monthRange002.setEndMonth(new YearMonth(2014 * 100 + 8));
+		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
+		historyAccidentInsuranceRate002.setHistoryId("historyId002");
+		historyAccidentInsuranceRate002.setStartMonthRage(HistoryInsurance.convertMonth(monthRange002.getStartMonth()));
+		historyAccidentInsuranceRate002.setEndMonthRage(HistoryInsurance.convertMonth(monthRange002.getEndMonth()));
+		historyAccidentInsuranceRate002.setInforMonthRage(historyAccidentInsuranceRate002.getStartMonthRage() + " ~ "
+				+ historyAccidentInsuranceRate002.getEndMonthRage());
+		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate002);
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate001 = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate001.setCompanyCode("companyCode001");
+		MonthRange monthRange001 = new MonthRange();
+		monthRange001.setStartMonth(new YearMonth(2013 * 100 + 4));
+		monthRange001.setEndMonth(new YearMonth(2014 * 100 + 3));
+		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
+		historyAccidentInsuranceRate001.setHistoryId("historyId002");
+		historyAccidentInsuranceRate001.setStartMonthRage(HistoryInsurance.convertMonth(monthRange001.getStartMonth()));
+		historyAccidentInsuranceRate001.setEndMonthRage(HistoryInsurance.convertMonth(monthRange001.getEndMonth()));
+		historyAccidentInsuranceRate001.setInforMonthRage(historyAccidentInsuranceRate001.getStartMonthRage() + " ~ "
+				+ historyAccidentInsuranceRate001.getEndMonthRage());
+		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate001);
+		return lstHistoryAccidentInsuranceRate;
+	}
+
+	@POST
+	@Path("findHistory/{historyId}")
+	public HistoryAccidentInsuranceRateDto findHistory(@PathParam("historyId") String historyId) {
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate = new HistoryAccidentInsuranceRateDto();
+		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRate = findAllHistory();
+		for (HistoryAccidentInsuranceRateDto history : lstHistoryAccidentInsuranceRate) {
+			if (history.getHistoryId().equals(historyId)) {
+				historyAccidentInsuranceRate = history;
+			}
+		}
+		return historyAccidentInsuranceRate;
+	}
+
+	@POST
+	@Path("detailHistory/{historyId}")
+	public AccidentInsuranceRateDto detailHitory(@PathParam("historyId") String historyId) {
+		AccidentInsuranceRateDto accidentInsuranceRate = new AccidentInsuranceRateDto();
+		accidentInsuranceRate.setHistoryId(historyId);
+		accidentInsuranceRate.setCompanyCode("companyCode001");
+		List<InsuBizRateItem> rateItems = new ArrayList<>();
+		InsuBizRateItem insuBizRateItemBiz1St = new InsuBizRateItem();
+		insuBizRateItemBiz1St.setInsuBizType(BusinessTypeEnum.Biz1St);
+		insuBizRateItemBiz1St.setInsuRate(50.5);
+		insuBizRateItemBiz1St.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz1St);
+		InsuBizRateItem insuBizRateItemBiz2Nd = new InsuBizRateItem();
+		insuBizRateItemBiz2Nd.setInsuBizType(BusinessTypeEnum.Biz2Nd);
+		insuBizRateItemBiz2Nd.setInsuRate(50.9);
+		insuBizRateItemBiz2Nd.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz2Nd);
+		InsuBizRateItem insuBizRateItemBiz3Rd = new InsuBizRateItem();
+		insuBizRateItemBiz3Rd.setInsuBizType(BusinessTypeEnum.Biz3Rd);
+		insuBizRateItemBiz3Rd.setInsuRate(50.9);
+		insuBizRateItemBiz3Rd.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz3Rd);
+		InsuBizRateItem insuBizRateItemBiz4Th = new InsuBizRateItem();
+		insuBizRateItemBiz4Th.setInsuBizType(BusinessTypeEnum.Biz4Th);
+		insuBizRateItemBiz4Th.setInsuRate(50.9);
+		insuBizRateItemBiz4Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz4Th);
+		InsuBizRateItem insuBizRateItemBiz5Th = new InsuBizRateItem();
+		insuBizRateItemBiz5Th.setInsuBizType(BusinessTypeEnum.Biz5Th);
+		insuBizRateItemBiz5Th.setInsuRate(50.9);
+		insuBizRateItemBiz5Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz5Th);
+		InsuBizRateItem insuBizRateItemBiz6Th = new InsuBizRateItem();
+		insuBizRateItemBiz6Th.setInsuBizType(BusinessTypeEnum.Biz6Th);
+		insuBizRateItemBiz6Th.setInsuRate(50.9);
+		insuBizRateItemBiz6Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz6Th);
+		InsuBizRateItem insuBizRateItemBiz7Th = new InsuBizRateItem();
+		insuBizRateItemBiz7Th.setInsuBizType(BusinessTypeEnum.Biz7Th);
+		insuBizRateItemBiz7Th.setInsuRate(50.9);
+		insuBizRateItemBiz7Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz7Th);
+		InsuBizRateItem insuBizRateItemBiz8Th = new InsuBizRateItem();
+		insuBizRateItemBiz8Th.setInsuBizType(BusinessTypeEnum.Biz8Th);
+		insuBizRateItemBiz8Th.setInsuRate(50.9);
+		insuBizRateItemBiz8Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz8Th);
+		InsuBizRateItem insuBizRateItemBiz9Th = new InsuBizRateItem();
+		insuBizRateItemBiz9Th.setInsuBizType(BusinessTypeEnum.Biz9Th);
+		insuBizRateItemBiz9Th.setInsuRate(50.9);
+		insuBizRateItemBiz9Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz9Th);
+		InsuBizRateItem insuBizRateItemBiz10Th = new InsuBizRateItem();
+		insuBizRateItemBiz10Th.setInsuBizType(BusinessTypeEnum.Biz10Th);
+		insuBizRateItemBiz10Th.setInsuRate(50.9);
+		insuBizRateItemBiz10Th.setInsuRound(RoundingMethod.RoundDown);
+		rateItems.add(insuBizRateItemBiz10Th);
+		accidentInsuranceRate.setRateItems(rateItems);
+		return accidentInsuranceRate;
+	}
+}
