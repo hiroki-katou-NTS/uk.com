@@ -25,4 +25,11 @@ public class HealthInsuranceAvgearn {
 	/** The personal avg. */
 	private HealthInsuranceAvgearnValue personalAvg;
 
+	/**
+	 * Instantiates a new health insurance avgearn.
+	 */
+	public HealthInsuranceAvgearn() {
+		super();
+	}
+
 }

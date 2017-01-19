@@ -21,12 +21,20 @@ public class UnemployeeInsuranceRateItem {
 	/** The personal setting. */
 	private UnemployeeInsuranceRateItemSetting personalSetting;
 
+	/**
+	 * Instantiates a new unemployee insurance rate item.
+	 */
+	public UnemployeeInsuranceRateItem() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 
 	/**
 	 * Instantiates a new unemployee insurance rate item.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public UnemployeeInsuranceRateItem(UnemployeeInsuranceRateItemMemento memento) {
 		this.careerGroup = memento.getCareerGroup();
@@ -37,7 +45,8 @@ public class UnemployeeInsuranceRateItem {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(UnemployeeInsuranceRateItemMemento memento) {
 		memento.setCareerGroup(this.careerGroup);

@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.Set;
 
-import lombok.Getter;
+import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.social.ChargeRateItem;
@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 /**
  * The Class PensionPremiumRateItem.
  */
-@Getter
+@Data
 public class PensionPremiumRateItem extends AggregateRoot {
 
 	/** The charge rates. */
@@ -27,4 +27,10 @@ public class PensionPremiumRateItem extends AggregateRoot {
 	/** The gender type. */
 	private InsuranceGender genderType;
 
+	/**
+	 * Instantiates a new pension premium rate item.
+	 */
+	public PensionPremiumRateItem() {
+		super();
+	}
 }

@@ -30,6 +30,13 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 	/** The rate items. */
 	private Set<UnemployeeInsuranceRateItem> rateItems;
 
+	/**
+	 * Instantiates a new unemployee insurance rate.
+	 */
+	public UnemployeeInsuranceRate() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 
 	/**

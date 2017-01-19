@@ -43,9 +43,16 @@ public class HealthInsuranceRate extends AggregateRoot {
 	/** The rounding methods. */
 	private List<HealthInsuranceRounding> roundingMethods;
 
+	/**
+	 * Instantiates a new health insurance rate.
+	 */
+	public HealthInsuranceRate() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new labor insurance office.
+	 * Instantiates a new health insurance rate.
 	 *
 	 * @param memento
 	 *            the memento

@@ -21,4 +21,11 @@ public class UnemployeeInsuranceRateItemSetting {
 	/** The code. */
 	private Double rate;
 
+	/**
+	 * Instantiates a new unemployee insurance rate item setting.
+	 */
+	public UnemployeeInsuranceRateItemSetting() {
+		super();
+	}
+
 }

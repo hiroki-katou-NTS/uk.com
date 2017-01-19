@@ -4,14 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
-import lombok.Getter;
+import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 
 /**
  * The Class PensionRateRounding.
- */	
-@Getter
+ */
+@Data
 public class PensionRateRounding {
 
 	/** The pay type. */
@@ -19,5 +19,12 @@ public class PensionRateRounding {
 
 	/** The round atrs. */
 	private RoundingItem roundAtrs;
+
+	/**
+	 * Instantiates a new pension rate rounding.
+	 */
+	public PensionRateRounding() {
+		super();
+	}
 
 }

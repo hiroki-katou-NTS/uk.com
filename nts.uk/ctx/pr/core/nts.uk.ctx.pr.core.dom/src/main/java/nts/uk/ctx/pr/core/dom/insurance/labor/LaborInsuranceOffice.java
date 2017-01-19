@@ -81,6 +81,13 @@ public class LaborInsuranceOffice extends AggregateRoot {
 	/** The memo. */
 	private Memo memo;
 
+	/**
+	 * Instantiates a new labor insurance office.
+	 */
+	public LaborInsuranceOffice() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 
 	/**

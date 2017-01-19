@@ -30,6 +30,13 @@ public class AccidentInsuranceRate extends AggregateRoot {
 	/** The short name. */
 	private Set<InsuBizRateItem> rateItems;
 
+	/**
+	 * Instantiates a new accident insurance rate.
+	 */
+	public AccidentInsuranceRate() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 
 	/**

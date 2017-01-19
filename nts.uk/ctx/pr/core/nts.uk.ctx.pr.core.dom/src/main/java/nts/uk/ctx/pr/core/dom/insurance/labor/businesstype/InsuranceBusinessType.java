@@ -23,6 +23,13 @@ public class InsuranceBusinessType extends AggregateRoot {
 
 	/** The biz name. */
 	private BusinessName bizName;
+	
+	/**
+	 * Instantiates a new insurance business type.
+	 */
+	public InsuranceBusinessType() {
+		super();
+	}
 
 	// =================== Memento State Support Method ===================
 	/**
@@ -50,5 +57,7 @@ public class InsuranceBusinessType extends AggregateRoot {
 		memento.setBizName(this.bizName);
 		memento.setVersion(this.getVersion());
 	}
+
+	
 
 }

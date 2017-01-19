@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.List;
 
-import lombok.Getter;
+import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 /**
  * The Class PensionRate.
  */
-@Getter
+@Data
 public class PensionRate extends AggregateRoot {
 
 	/** The history id. */
@@ -45,6 +45,13 @@ public class PensionRate extends AggregateRoot {
 
 	/** The rounding methods. */
 	private List<PensionRateRounding> roundingMethods;
+
+	/**
+	 * Instantiates a new pension rate.
+	 */
+	public PensionRate() {
+		super();
+	}
 
 	// =================== Memento State Support Method ===================
 

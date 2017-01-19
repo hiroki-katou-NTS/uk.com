@@ -24,4 +24,12 @@ public class HealthInsuranceAvgearnValue {
 
 	/** The health specific mny. */
 	private Long healthSpecificMny;
+
+	/**
+	 * Instantiates a new health insurance avgearn value.
+	 */
+	public HealthInsuranceAvgearnValue() {
+		super();
+	}
+	
 }

@@ -23,6 +23,13 @@ public class UnitPrice extends AggregateRoot {
 	/** The name. */
 	private UnitPriceName name;
 
+	/**
+	 * Instantiates a new unit price.
+	 */
+	public UnitPrice() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new labor insurance office.

@@ -53,6 +53,13 @@ public class UnitPriceHistory extends AggregateRoot {
 	/** The memo. */
 	private Memo memo;
 
+	/**
+	 * Instantiates a new unit price history.
+	 */
+	public UnitPriceHistory() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new unit price history.

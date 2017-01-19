@@ -102,6 +102,13 @@ public class SocialInsuranceOffice extends AggregateRoot {
 	/** The memo. */
 	private Memo memo;
 
+	/**
+	 * Instantiates a new social insurance office.
+	 */
+	public SocialInsuranceOffice() {
+		super();
+	}
+
 	// =================== Memento State Support Method ===================
 
 	/**
