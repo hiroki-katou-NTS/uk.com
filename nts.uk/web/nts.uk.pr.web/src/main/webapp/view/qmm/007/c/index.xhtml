@@ -21,15 +21,16 @@
 				<table class="margin-top-bot-20 form-default">
 					<tr>
 						<td><div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div></td>
-						<td><label id="lbl_003" data-bind="text: code()"></label>
-							<label id="lbl_004" data-bind="text: name()"></label></td>
+						<td><label id="lbl_003" data-bind="text: code()"></label> <label
+							id="lbl_004" data-bind="text: name()"></label></td>
 					</tr>
 					<tr>
 						<td><div id="lbl_005"
 								data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
-								name="textRadio" data-bind="checkedValue: '1', checked: edittingMethod" /> <span
-								class="box"></span><span class="label"
+								name="textRadio"
+								data-bind="checkedValue: 'Remove', checked: edittingMethod" />
+								<span class="box"></span><span class="label"
 								data-bind="text: '最新の履歴（2016/04）から引き継ぐ'"></span>
 						</label></td>
 					</tr>
@@ -40,23 +41,21 @@
 					<tr>
 						<td><div class="invisible" data-bind="ntsFormLabel: {}"> </div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
-								name="textRadio" data-bind="checkedValue: '2', checked: edittingMethod" /> <span
+								name="textRadio"
+								data-bind="checkedValue: 'Edit', checked: edittingMethod" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '初めから作成する'"></span>
 						</label></td>
 					</tr>
 					<tr>
 						<td> </td>
-						<td><div id="lbl_007" data-bind="ntsFormLabel: {}">期間</div> <span data-bind="with: startDate">
-								<input id="inp_001" class="inp-default"
-									data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" />
-							</span> <label data-bind="text: endDate"></label></td>
+						<td><div id="lbl_007" data-bind="ntsFormLabel: {}">期間</div> <span
+							id="inpStartMonth" class="inp-default"
+							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM', enable: isEditMode()}"></span><label
+							data-bind="text: endMonth"></label></td>
+					</tr>
+					<tr>
+						<td></td>
 					</tr>
 				</table>
 			</div>
@@ -64,7 +63,8 @@
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="this-functions-area" class="halign-center">
-				<button class="proceed x-large" id="btn_001" data-bind="click: btnApplyClicked">決定</button>
+				<button class="proceed x-large" id="btn_001"
+					data-bind="click: btnApplyClicked">決定</button>
 				<button id="btn_002" data-bind="click: btnCancelClicked">キャンセル</button>
 			</div>
 			<!-- END FUNCTION AREA-->

@@ -59,13 +59,13 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             goToB() {
-                nts.uk.ui.windows.setShared('code', this.unitPriceHistoryModel().unitPriceCode());
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 580 });
+                nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 360, width: 580 });
             }
 
             goToC() {
-                nts.uk.ui.windows.setShared('code', this.unitPriceHistoryModel().unitPriceCode());
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 580 });
+                nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
             }
 
             // collect data from model
