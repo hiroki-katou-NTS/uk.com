@@ -1,7 +1,9 @@
 package nts.uk.ctx.basic.infra.repository.organization.department;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -23,21 +25,40 @@ import nts.uk.shr.com.primitive.Memo;
 @Stateless
 public class JpaDepartmentRepository extends JpaRepository implements DepartmentRepository {
 
+	private static final String FIND_ALL;
+
+	private static final String FIND_SINGLE;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtDep e");
+		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
+		FIND_ALL = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtDep e");
+		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtDepPK.departmentCode = :departmentCode");
+		FIND_SINGLE = builderString.toString();
+	}
+
 	@Override
 	public void add(Department department) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insert(convertToDbType(department));
 
 	}
 
 	@Override
 	public void update(Department department) {
-		// TODO Auto-generated method stub
+		this.commandProxy().update(convertToDbType(department));
 
 	}
 
 	@Override
 	public void remove(String companyCode, DepartmentCode departmentCode, String historyId) {
-		// TODO Auto-generated method stub
+		this.commandProxy().remove(CmnmtDep.class, new CmnmtDepPK(companyCode, historyId, departmentCode.toString()));
 
 	}
 
@@ -56,8 +77,11 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 
 	@Override
 	public List<Department> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
+		List<CmnmtDep> resultList = this.queryProxy().query(FIND_ALL, CmnmtDep.class)
+				.setParameter("companyCode", "'" + companyCode + "'").getList();
+		return !resultList.isEmpty() ? resultList.stream().map(item -> {
+			return convertToDomain(item);
+		}).collect(Collectors.toList()) : new ArrayList<>();
 	}
 
 	private Department convertToDomain(CmnmtDep cmnmtDep) {
