@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 
 #contents-area {
-	width: 1300px;
+	width: 1040px;
 	margin-top: 10px;
 }
 
@@ -14,12 +14,12 @@
 
 .left-content {
 	float: left;
-	width: 25%;
+	width: 32%;
 }
 
 .right-content {
 	float: left;
-	width: 75%;
+	width: 68%;
 }
 
 .right-content-left {
