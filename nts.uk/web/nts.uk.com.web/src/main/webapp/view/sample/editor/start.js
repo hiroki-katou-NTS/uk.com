@@ -11,6 +11,9 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.option = {
+                value: ko.observable("2")
+            };
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),

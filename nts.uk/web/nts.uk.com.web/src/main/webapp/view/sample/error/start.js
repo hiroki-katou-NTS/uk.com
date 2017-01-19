@@ -19,6 +19,15 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             };
         }
+        ScreenModel.prototype.setErrorToResidenceCode = function () {
+            $('#residence-code').ntsError('set', 'えらーです');
+        };
+        ScreenModel.prototype.clearErrorToResidenceCode = function () {
+            $('#residence-code').ntsError('clear');
+        };
+        ScreenModel.prototype.clearSaveErrors = function () {
+            $('.save-error').ntsError('clear');
+        };
         return ScreenModel;
     }());
     this.bind(new ScreenModel());
