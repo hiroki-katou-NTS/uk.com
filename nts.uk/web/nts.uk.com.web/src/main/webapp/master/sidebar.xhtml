@@ -21,10 +21,12 @@
 				$("div[role=tabpanel]").hide();
 				$("#sidebar-area .navigator a").click(function(e){
 					e.preventDefault();
-					$("#sidebar-area .navigator a").removeClass("active");
-					$(this).addClass("active");
-					$("div[role=tabpanel]").hide();
-					$($(this).attr("href")).show();
+					if (($(this).attr("disabled") !== true &amp;&amp; $(this).attr("disabled") !== "disabled")) {
+						$("#sidebar-area .navigator a").removeClass("active");
+						$(this).addClass("active");
+						$("div[role=tabpanel]").hide();
+						$($(this).attr("href")).show();
+					}
 				});
 				$("#sidebar-area .navigator a.active").trigger('click');
 			})

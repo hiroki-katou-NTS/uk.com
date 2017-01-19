@@ -2396,6 +2396,7 @@ var nts;
                                     $targetElement.igGrid("virtualScrollTo", 0);
                                     $targetElement.igGrid("option", "dataSource", source);
                                     $targetElement.igGrid("dataBind");
+                                    //                        data.targetSource(source);
                                     var index = upDown + grouped["group1"][0].index;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                                     $targetElement.igGrid("virtualScrollTo", index);
@@ -2413,6 +2414,8 @@ var nts;
                             }
                             //                var targetSource = ko.unwrap(data.targetSource);
                             var source = _.cloneDeep($targetElement.igTreeGrid("option", "dataSource"));
+                            //                var targetSource = ko.unwrap(data.targetSource);
+                            //                var source = _.cloneDeep(targetSource);
                             var result = findChild(upDown, selected["id"], source, false, false);
                             var moved = result.moved;
                             var changed = result.changed;

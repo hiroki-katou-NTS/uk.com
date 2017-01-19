@@ -1941,7 +1941,7 @@ var nts;
                         var value = ko.unwrap(data.value);
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var containerFormat = 'yyyy/mm/dd';
-                        var length = 10, atomWidth = 9;
+                        var length = 10, atomWidth = 9.5;
                         if (dateFormat === "yyyy/MM/dd DDD") {
                             length = 16;
                         }
@@ -1985,7 +1985,7 @@ var nts;
                             $input.on('change', function (event) {
                                 data.value($input.val());
                             });
-                        $input.width(atomWidth * length);
+                        $input.width(Math.floor(atomWidth * length));
                     };
                     /**
                      * Update
