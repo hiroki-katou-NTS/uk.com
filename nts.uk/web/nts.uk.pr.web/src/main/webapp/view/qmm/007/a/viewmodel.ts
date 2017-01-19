@@ -1,8 +1,6 @@
 module nts.uk.pr.view.qmm007.a {
     export module viewmodel {
         import UnitPriceHistoryDto = service.model.UnitPriceHistoryDto;
-        import SettingType = service.model.SettingType;
-        import ApplySetting = service.model.ApplySetting;
 
         export class ScreenModel {
             filteredData: any;
@@ -10,6 +8,7 @@ module nts.uk.pr.view.qmm007.a {
             selectedId: KnockoutObservable<string>;
             unitPriceHistoryModel: KnockoutObservable<UnitPriceHistoryModel>;
             isContractSettingEnabled: KnockoutObservable<boolean>;
+            isNewMode: KnockoutObservable<boolean>;
             textEditorOption: any;
             currencyEditorOption: any;
             switchButtonDataSource: KnockoutObservableArray<any>;
@@ -19,21 +18,23 @@ module nts.uk.pr.view.qmm007.a {
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel());
                 self.historyList = ko.observableArray();
                 self.switchButtonDataSource = ko.observableArray([
-                    { code: '0', name: '対象' },
-                    { code: '1', name: '対象外' }
+                    { code: 'Apply', name: '対象' },
+                    { code: 'NotApply', name: '対象外' }
                 ]);
 
                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
                 self.selectedId = ko.observable('');
                 self.selectedId.subscribe(id => {
                     if (id != null || id != undefined) {
+                        self.isNewMode(false);
                         self.loadUnitPriceDetail();
                     }
                 });
 
                 self.isContractSettingEnabled = ko.observable(true);
+                self.isNewMode= ko.observable(true);
                 self.unitPriceHistoryModel().fixPaySettingType.subscribe( val => {
-                    val == 1 ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
+                    val == 'Contract' ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
                 });
                 // nts editor options
                 self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -58,21 +59,13 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             goToB() {
-                nts.uk.ui.windows.setShared('code', this.unitPriceHistoryModel().unitPriceCode());
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 580 });
+                nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 360, width: 580 });
             }
 
             goToC() {
-                nts.uk.ui.windows.setShared('code', this.unitPriceHistoryModel().unitPriceCode());
-                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 580 });
-            }
-
-            test() {
-                var self = this;
-                self.unitPriceHistoryModel().unitPriceCode('1');
-                self.unitPriceHistoryModel().unitPriceName('ガソリン単価');
-                self.unitPriceHistoryModel().startMonth('2015/04');
-                self.unitPriceHistoryModel().budget(120);
+                nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
+                nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
             }
 
             // collect data from model
@@ -96,7 +89,11 @@ module nts.uk.pr.view.qmm007.a {
 
             save() {
                 var self = this;
-                service.save(self.collectData());
+                if (self.isNewMode()) {
+                    service.create(self.collectData());
+                } else {
+                    service.update(self.collectData());
+                }
             }
 
             remove() {
@@ -104,19 +101,10 @@ module nts.uk.pr.view.qmm007.a {
                 service.remove(self.collectData().id);
             }
 
-            clearUnitPriceDetail() {
+            enableNewMode() {
                 var self = this;
-                self.unitPriceHistoryModel().id = ''
-                self.unitPriceHistoryModel().unitPriceCode('');
-                self.unitPriceHistoryModel().unitPriceName('');
-                self.unitPriceHistoryModel().startMonth('');
-                self.unitPriceHistoryModel().budget(0);
-                self.unitPriceHistoryModel().fixPaySettingType(0);
-                self.unitPriceHistoryModel().fixPayAtr(0);
-                self.unitPriceHistoryModel().fixPayAtrMonthly(0);
-                self.unitPriceHistoryModel().fixPayAtrDayMonth(0);
-                self.unitPriceHistoryModel().fixPayAtrDaily(0);
-                self.unitPriceHistoryModel().fixPayAtrHourly(0);
+                self.isNewMode(true);
+                self.unitPriceHistoryModel(new UnitPriceHistoryModel());
             }
 
             loadUnitPriceDetail() {
@@ -157,12 +145,12 @@ module nts.uk.pr.view.qmm007.a {
             startMonth: KnockoutObservable<string>;
             endMonth: KnockoutObservable<string>;
             budget: KnockoutObservable<number>;
-            fixPaySettingType: KnockoutObservable<SettingType>;
-            fixPayAtr: KnockoutObservable<ApplySetting>;
-            fixPayAtrMonthly: KnockoutObservable<ApplySetting>;
-            fixPayAtrDayMonth: KnockoutObservable<ApplySetting>;
-            fixPayAtrDaily: KnockoutObservable<ApplySetting>;
-            fixPayAtrHourly: KnockoutObservable<ApplySetting>;
+            fixPaySettingType: KnockoutObservable<string>;
+            fixPayAtr: KnockoutObservable<string>;
+            fixPayAtrMonthly: KnockoutObservable<string>;
+            fixPayAtrDayMonth: KnockoutObservable<string>;
+            fixPayAtrDaily: KnockoutObservable<string>;
+            fixPayAtrHourly: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
 
             constructor() {
@@ -171,12 +159,12 @@ module nts.uk.pr.view.qmm007.a {
                 this.startMonth = ko.observable('');
                 this.endMonth = ko.observable('（平成29年01月） ~');
                 this.budget = ko.observable(0);
-                this.fixPaySettingType = ko.observable(1);
-                this.fixPayAtr = ko.observable(1);
-                this.fixPayAtrMonthly = ko.observable(1);
-                this.fixPayAtrDayMonth = ko.observable(1);
-                this.fixPayAtrDaily = ko.observable(1);
-                this.fixPayAtrHourly = ko.observable(1);
+                this.fixPaySettingType = ko.observable('Company');
+                this.fixPayAtr = ko.observable('NotApply');
+                this.fixPayAtrMonthly = ko.observable('NotApply');
+                this.fixPayAtrDayMonth = ko.observable('NotApply');
+                this.fixPayAtrDaily = ko.observable('NotApply');
+                this.fixPayAtrHourly = ko.observable('NotApply');
                 this.memo = ko.observable('');
             }
         }

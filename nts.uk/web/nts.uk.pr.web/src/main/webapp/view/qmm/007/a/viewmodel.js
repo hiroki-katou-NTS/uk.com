@@ -19,19 +19,21 @@ var nts;
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel());
                                     self.historyList = ko.observableArray();
                                     self.switchButtonDataSource = ko.observableArray([
-                                        { code: '0', name: '対象' },
-                                        { code: '1', name: '対象外' }
+                                        { code: 'Apply', name: '対象' },
+                                        { code: 'NotApply', name: '対象外' }
                                     ]);
                                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
                                     self.selectedId = ko.observable('');
                                     self.selectedId.subscribe(function (id) {
                                         if (id != null || id != undefined) {
+                                            self.isNewMode(false);
                                             self.loadUnitPriceDetail();
                                         }
                                     });
                                     self.isContractSettingEnabled = ko.observable(true);
+                                    self.isNewMode = ko.observable(true);
                                     self.unitPriceHistoryModel().fixPaySettingType.subscribe(function (val) {
-                                        val == 1 ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
+                                        val == 'Contract' ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
                                     });
                                     self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
@@ -52,19 +54,12 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.goToB = function () {
-                                    nts.uk.ui.windows.setShared('code', this.unitPriceHistoryModel().unitPriceCode());
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 350, width: 580 });
+                                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 360, width: 580 });
                                 };
                                 ScreenModel.prototype.goToC = function () {
-                                    nts.uk.ui.windows.setShared('code', this.unitPriceHistoryModel().unitPriceCode());
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 410, width: 580 });
-                                };
-                                ScreenModel.prototype.test = function () {
-                                    var self = this;
-                                    self.unitPriceHistoryModel().unitPriceCode('1');
-                                    self.unitPriceHistoryModel().unitPriceName('ガソリン単価');
-                                    self.unitPriceHistoryModel().startMonth('2015/04');
-                                    self.unitPriceHistoryModel().budget(120);
+                                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
@@ -85,25 +80,21 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    a.service.save(self.collectData());
+                                    if (self.isNewMode()) {
+                                        a.service.create(self.collectData());
+                                    }
+                                    else {
+                                        a.service.update(self.collectData());
+                                    }
                                 };
                                 ScreenModel.prototype.remove = function () {
                                     var self = this;
                                     a.service.remove(self.collectData().id);
                                 };
-                                ScreenModel.prototype.clearUnitPriceDetail = function () {
+                                ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
-                                    self.unitPriceHistoryModel().id = '';
-                                    self.unitPriceHistoryModel().unitPriceCode('');
-                                    self.unitPriceHistoryModel().unitPriceName('');
-                                    self.unitPriceHistoryModel().startMonth('');
-                                    self.unitPriceHistoryModel().budget(0);
-                                    self.unitPriceHistoryModel().fixPaySettingType(0);
-                                    self.unitPriceHistoryModel().fixPayAtr(0);
-                                    self.unitPriceHistoryModel().fixPayAtrMonthly(0);
-                                    self.unitPriceHistoryModel().fixPayAtrDayMonth(0);
-                                    self.unitPriceHistoryModel().fixPayAtrDaily(0);
-                                    self.unitPriceHistoryModel().fixPayAtrHourly(0);
+                                    self.isNewMode(true);
+                                    self.unitPriceHistoryModel(new UnitPriceHistoryModel());
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function () {
                                     var self = this;
@@ -141,12 +132,12 @@ var nts;
                                     this.startMonth = ko.observable('');
                                     this.endMonth = ko.observable('（平成29年01月） ~');
                                     this.budget = ko.observable(0);
-                                    this.fixPaySettingType = ko.observable(1);
-                                    this.fixPayAtr = ko.observable(1);
-                                    this.fixPayAtrMonthly = ko.observable(1);
-                                    this.fixPayAtrDayMonth = ko.observable(1);
-                                    this.fixPayAtrDaily = ko.observable(1);
-                                    this.fixPayAtrHourly = ko.observable(1);
+                                    this.fixPaySettingType = ko.observable('Company');
+                                    this.fixPayAtr = ko.observable('NotApply');
+                                    this.fixPayAtrMonthly = ko.observable('NotApply');
+                                    this.fixPayAtrDayMonth = ko.observable('NotApply');
+                                    this.fixPayAtrDaily = ko.observable('NotApply');
+                                    this.fixPayAtrHourly = ko.observable('NotApply');
                                     this.memo = ko.observable('');
                                 }
                                 return UnitPriceHistoryModel;
