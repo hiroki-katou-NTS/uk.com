@@ -4,19 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance;
 
-import lombok.Data;
+import java.io.Serializable;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.YearMonth;
 
 /**
  * The Class MonthRange.
  */
-@Data
-public class MonthRange {
+@Getter
+@Setter
+public class MonthRange implements Serializable {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 4492995458816732355L;
 
 	/** The start month. */
-	private YearMonth startMonth;
+	public YearMonth startMonth;
 
 	/** The end month. */
-	private YearMonth endMonth;
+	public YearMonth endMonth;
 
 }

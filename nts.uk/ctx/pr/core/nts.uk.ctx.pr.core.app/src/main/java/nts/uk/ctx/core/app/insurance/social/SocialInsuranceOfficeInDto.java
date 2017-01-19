@@ -1,8 +1,7 @@
 package nts.uk.ctx.core.app.insurance.social;
 
-import lombok.Builder;
-import nts.uk.ctx.core.app.insurance.info.InfoInsuranceOfficeInDto;
+import nts.uk.ctx.core.app.insurance.InsuranceOfficeInDto;
 
-public class SocialInsuranceOfficeInDto extends InfoInsuranceOfficeInDto {
+public class SocialInsuranceOfficeInDto extends InsuranceOfficeInDto {
 
 }

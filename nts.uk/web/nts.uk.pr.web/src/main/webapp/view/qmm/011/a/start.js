@@ -14,7 +14,9 @@ var nts;
                         (function (start) {
                             __viewContext.ready(function () {
                                 var screenModel = new nts.uk.pr.view.qmm011.a.viewmodel.ScreenModel();
-                                this.bind(screenModel);
+                                screenModel.startPage().done(function (res) {
+                                    __viewContext.bind(res);
+                                });
                             });
                         })(start = a.start || (a.start = {}));
                     })(a = qmm011.a || (qmm011.a = {}));
