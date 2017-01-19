@@ -520,6 +520,106 @@ div.label {
   background-color: #FFF;
   transform: rotate(-45deg);
 }
+/* line 295, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-left {
+  margin: 10px 0 10px 3px;
+  width: 40px;
+  height: 4px;
+  background-color: #00B050;
+}
+/* line 301, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-left:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-40deg);
+  left: -3px;
+  top: -4px;
+}
+/* line 309, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-left:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 2px 0 0 2px;
+  transform: rotate(-140deg);
+  left: -3px;
+  top: 4px;
+}
+/* line 318, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-right {
+  margin: 10px 3px 10px 0;
+  width: 40px;
+  height: 4px;
+  background-color: #00B050;
+}
+/* line 324, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-right:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 2px 0 0 2px;
+  transform: rotate(40deg);
+  right: -3px;
+  top: -4px;
+}
+/* line 332, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-right:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(140deg);
+  right: -3px;
+  top: 4px;
+}
+/* line 341, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-top {
+  margin: 8px 5px 0 5px;
+  width: 4px;
+  height: 30px;
+  background-color: #00B050;
+}
+/* line 347, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-top:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(50deg);
+  left: -2px;
+  top: 2px;
+}
+/* line 355, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-top:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(130deg);
+  left: -10px;
+  top: 2px;
+}
+/* line 364, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-bottom {
+  margin: 5px 5px 3px 5px;
+  width: 4px;
+  height: 30px;
+  background-color: #00B050;
+}
+/* line 370, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-bottom:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-50deg);
+  left: -2px;
+  bottom: 2px;
+}
+/* line 378, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-bottom:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-130deg);
+  left: -10px;
+  bottom: 2px;
+}
 
 /* line 2, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-header {
@@ -797,7 +897,7 @@ button.with-icon.x-large {
   padding-left: 38px;
 }
 
-/* line 96, ../sass/components/_button.scss */
+/* line 97, ../sass/components/_button.scss */
 button {
   color: #404040;
   font-size: 13px;
@@ -808,12 +908,12 @@ button {
   margin-bottom: 3px;
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
 }
-/* line 123, ../sass/components/_button.scss */
+/* line 124, ../sass/components/_button.scss */
 button:active {
   top: 3px;
   box-shadow: 0 0 #999;
 }
-/* line 128, ../sass/components/_button.scss */
+/* line 129, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
@@ -823,12 +923,12 @@ button.small {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 144, ../sass/components/_button.scss */
+/* line 145, ../sass/components/_button.scss */
 button.small:active {
   top: 3px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 151, ../sass/components/_button.scss */
+/* line 152, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
@@ -838,12 +938,12 @@ button.large {
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 167, ../sass/components/_button.scss */
+/* line 168, ../sass/components/_button.scss */
 button.large:active {
   top: 4px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 174, ../sass/components/_button.scss */
+/* line 175, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
@@ -853,10 +953,14 @@ button.x-large {
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 190, ../sass/components/_button.scss */
+/* line 191, ../sass/components/_button.scss */
 button.x-large:active {
   top: 5px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
+}
+/* line 198, ../sass/components/_button.scss */
+button.auto-height {
+  height: auto;
 }
 
 /*****************************
