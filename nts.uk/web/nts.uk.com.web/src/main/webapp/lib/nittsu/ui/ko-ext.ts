@@ -416,6 +416,9 @@ module nts.uk.ui.koExtentions {
                         var ulParent = liItem.parent();
                         if(!ulParent.is(":visible")) {
                             ulParent.css("display", "block");
+                            var spanSibling = ulParent.siblings("span[data-role='expander']");
+                            spanSibling.removeClass("ui-icon-triangle-1-e");
+                            spanSibling.addClass("ui-icon-triangle-1-s");
                         }
                         component.igTree("select", liItem); 
                     }
