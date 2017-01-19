@@ -12,17 +12,19 @@ var nts;
                     (function (b) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var service = nts.uk.pr.view.qmm007.a.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
                                     var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                                    self.code = ko.observable(unitPriceHistoryModel.unitPriceCode());
-                                    self.name = ko.observable(unitPriceHistoryModel.unitPriceName());
+                                    self.code = unitPriceHistoryModel.unitPriceCode();
+                                    self.name = unitPriceHistoryModel.unitPriceName();
                                     self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
                                     self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
                                     self.historyTakeOver = ko.observable('1');
                                 }
                                 ScreenModel.prototype.btnApplyClicked = function () {
+                                    service.create(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
                                     nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.btnCancelClicked = function () {

@@ -1,6 +1,6 @@
 module nts.uk.pr.view.qmm007.a {
     export module viewmodel {
-        import UnitPriceHistoryDto = service.model.UnitPriceHistoryDto;
+        import UnitPriceHistoryModel = service.model.UnitPriceHistoryModel;
 
         export class ScreenModel {
             filteredData: any;
@@ -68,39 +68,18 @@ module nts.uk.pr.view.qmm007.a {
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
             }
 
-            // collect data from model
-            collectData(): UnitPriceHistoryDto {
-                var self = this;
-                var dto = new UnitPriceHistoryDto();
-                var model = self.unitPriceHistoryModel();
-                dto.id = model.id;
-                dto.unitPriceCode = model.unitPriceCode();
-                dto.unitPriceName = model.unitPriceName();
-                dto.startMonth = model.startMonth();
-                dto.endMonth = model.endMonth();
-                dto.budget = model.budget();
-                dto.fixPaySettingType = model.fixPaySettingType();
-                dto.fixPayAtr = model.fixPayAtr();
-                dto.fixPayAtrMonthly = model.fixPayAtrMonthly();
-                dto.fixPayAtrDayMonth = model.fixPayAtrDayMonth();
-                dto.fixPayAtrDaily = model.fixPayAtrDaily();
-                dto.fixPayAtrHourly = model.fixPayAtrHourly();
-                dto.memo = model.memo();
-                return dto;
-            }
-
             save() {
                 var self = this;
                 if (self.isNewMode()) {
-                    service.create(self.collectData());
+                    service.create(service.collectData(self.unitPriceHistoryModel()));
                 } else {
-                    service.update(self.collectData());
+                    service.update(service.collectData(self.unitPriceHistoryModel()));
                 }
             }
 
             remove() {
                 var self = this;
-                service.remove(self.collectData().id);
+                service.remove(self.unitPriceHistoryModel().id);
             }
 
             enableNewMode() {
@@ -154,40 +133,6 @@ module nts.uk.pr.view.qmm007.a {
                 });
                 return dfd.promise();
             }
-
         }
-
-        export class UnitPriceHistoryModel {
-            id: string;
-            unitPriceCode: KnockoutObservable<string>;
-            unitPriceName: KnockoutObservable<string>;
-            startMonth: KnockoutObservable<string>;
-            endMonth: KnockoutObservable<string>;
-            budget: KnockoutObservable<number>;
-            fixPaySettingType: KnockoutObservable<string>;
-            fixPayAtr: KnockoutObservable<string>;
-            fixPayAtrMonthly: KnockoutObservable<string>;
-            fixPayAtrDayMonth: KnockoutObservable<string>;
-            fixPayAtrDaily: KnockoutObservable<string>;
-            fixPayAtrHourly: KnockoutObservable<string>;
-            memo: KnockoutObservable<string>;
-
-            constructor() {
-                this.id = '';
-                this.unitPriceCode = ko.observable('');
-                this.unitPriceName = ko.observable('');
-                this.startMonth = ko.observable('2017/01');
-                this.endMonth = ko.observable('（平成29年01月） ~');
-                this.budget = ko.observable(0);
-                this.fixPaySettingType = ko.observable('Company');
-                this.fixPayAtr = ko.observable('NotApply');
-                this.fixPayAtrMonthly = ko.observable('NotApply');
-                this.fixPayAtrDayMonth = ko.observable('NotApply');
-                this.fixPayAtrDaily = ko.observable('NotApply');
-                this.fixPayAtrHourly = ko.observable('NotApply');
-                this.memo = ko.observable('');
-            }
-        }
-
     }
 }

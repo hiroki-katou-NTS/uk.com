@@ -12,7 +12,7 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var UnitPriceHistoryDto = a.service.model.UnitPriceHistoryDto;
+                            var UnitPriceHistoryModel = a.service.model.UnitPriceHistoryModel;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -61,37 +61,18 @@ var nts;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
                                 };
-                                ScreenModel.prototype.collectData = function () {
-                                    var self = this;
-                                    var dto = new UnitPriceHistoryDto();
-                                    var model = self.unitPriceHistoryModel();
-                                    dto.id = model.id;
-                                    dto.unitPriceCode = model.unitPriceCode();
-                                    dto.unitPriceName = model.unitPriceName();
-                                    dto.startMonth = model.startMonth();
-                                    dto.endMonth = model.endMonth();
-                                    dto.budget = model.budget();
-                                    dto.fixPaySettingType = model.fixPaySettingType();
-                                    dto.fixPayAtr = model.fixPayAtr();
-                                    dto.fixPayAtrMonthly = model.fixPayAtrMonthly();
-                                    dto.fixPayAtrDayMonth = model.fixPayAtrDayMonth();
-                                    dto.fixPayAtrDaily = model.fixPayAtrDaily();
-                                    dto.fixPayAtrHourly = model.fixPayAtrHourly();
-                                    dto.memo = model.memo();
-                                    return dto;
-                                };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                     if (self.isNewMode()) {
-                                        a.service.create(self.collectData());
+                                        a.service.create(a.service.collectData(self.unitPriceHistoryModel()));
                                     }
                                     else {
-                                        a.service.update(self.collectData());
+                                        a.service.update(a.service.collectData(self.unitPriceHistoryModel()));
                                     }
                                 };
                                 ScreenModel.prototype.remove = function () {
                                     var self = this;
-                                    a.service.remove(self.collectData().id);
+                                    a.service.remove(self.unitPriceHistoryModel().id);
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
@@ -142,25 +123,6 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var UnitPriceHistoryModel = (function () {
-                                function UnitPriceHistoryModel() {
-                                    this.id = '';
-                                    this.unitPriceCode = ko.observable('');
-                                    this.unitPriceName = ko.observable('');
-                                    this.startMonth = ko.observable('2017/01');
-                                    this.endMonth = ko.observable('（平成29年01月） ~');
-                                    this.budget = ko.observable(0);
-                                    this.fixPaySettingType = ko.observable('Company');
-                                    this.fixPayAtr = ko.observable('NotApply');
-                                    this.fixPayAtrMonthly = ko.observable('NotApply');
-                                    this.fixPayAtrDayMonth = ko.observable('NotApply');
-                                    this.fixPayAtrDaily = ko.observable('NotApply');
-                                    this.fixPayAtrHourly = ko.observable('NotApply');
-                                    this.memo = ko.observable('');
-                                }
-                                return UnitPriceHistoryModel;
-                            }());
-                            viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));

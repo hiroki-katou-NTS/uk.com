@@ -19,6 +19,24 @@ var nts;
                                 updateUnitPriceHistory: "pr/proto/unitprice/update",
                                 removeUnitPriceHistory: "pr/proto/unitprice/remove"
                             };
+                            function collectData(unitPriceHistoryModel) {
+                                var dto = new model.UnitPriceHistoryDto();
+                                dto.id = unitPriceHistoryModel.id;
+                                dto.unitPriceCode = unitPriceHistoryModel.unitPriceCode();
+                                dto.unitPriceName = unitPriceHistoryModel.unitPriceName();
+                                dto.startMonth = unitPriceHistoryModel.startMonth();
+                                dto.endMonth = unitPriceHistoryModel.endMonth();
+                                dto.budget = unitPriceHistoryModel.budget();
+                                dto.fixPaySettingType = unitPriceHistoryModel.fixPaySettingType();
+                                dto.fixPayAtr = unitPriceHistoryModel.fixPayAtr();
+                                dto.fixPayAtrMonthly = unitPriceHistoryModel.fixPayAtrMonthly();
+                                dto.fixPayAtrDayMonth = unitPriceHistoryModel.fixPayAtrDayMonth();
+                                dto.fixPayAtrDaily = unitPriceHistoryModel.fixPayAtrDaily();
+                                dto.fixPayAtrHourly = unitPriceHistoryModel.fixPayAtrHourly();
+                                dto.memo = unitPriceHistoryModel.memo();
+                                return dto;
+                            }
+                            service.collectData = collectData;
                             function convertToTreeList(unitPriceHistoryList) {
                                 var groupByCode = {};
                                 unitPriceHistoryList.forEach(function (item) {
@@ -70,7 +88,8 @@ var nts;
                             }
                             service.update = update;
                             function remove(id) {
-                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, id);
+                                var request = { id: id };
+                                return nts.uk.request.ajax(paths.removeUnitPriceHistory, request);
                             }
                             service.remove = remove;
                             var model;
@@ -81,6 +100,25 @@ var nts;
                                     return UnitPriceHistoryDto;
                                 }());
                                 model.UnitPriceHistoryDto = UnitPriceHistoryDto;
+                                var UnitPriceHistoryModel = (function () {
+                                    function UnitPriceHistoryModel() {
+                                        this.id = '';
+                                        this.unitPriceCode = ko.observable('');
+                                        this.unitPriceName = ko.observable('');
+                                        this.startMonth = ko.observable('2017/01');
+                                        this.endMonth = ko.observable('（平成29年01月） ~');
+                                        this.budget = ko.observable(0);
+                                        this.fixPaySettingType = ko.observable('Company');
+                                        this.fixPayAtr = ko.observable('NotApply');
+                                        this.fixPayAtrMonthly = ko.observable('NotApply');
+                                        this.fixPayAtrDayMonth = ko.observable('NotApply');
+                                        this.fixPayAtrDaily = ko.observable('NotApply');
+                                        this.fixPayAtrHourly = ko.observable('NotApply');
+                                        this.memo = ko.observable('');
+                                    }
+                                    return UnitPriceHistoryModel;
+                                }());
+                                model.UnitPriceHistoryModel = UnitPriceHistoryModel;
                                 var UnitPriceHistoryNode = (function () {
                                     function UnitPriceHistoryNode(id, unitPriceCode, unitPriceName, startMonth, endMonth, isChild, childs) {
                                         var self = this;

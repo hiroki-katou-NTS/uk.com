@@ -1,9 +1,10 @@
 module nts.uk.pr.view.qmm007.b {
     export module viewmodel {
+        import service = nts.uk.pr.view.qmm007.a.service;
 
         export class ScreenModel {
-            code: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
+            code: string;
+            name: string;
             endMonth: KnockoutObservable<string>;
             startMonth: KnockoutObservable<string>;
 
@@ -12,8 +13,8 @@ module nts.uk.pr.view.qmm007.b {
             constructor() {
                 var self = this;
                 var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                self.code = ko.observable(unitPriceHistoryModel.unitPriceCode());
-                self.name = ko.observable(unitPriceHistoryModel.unitPriceName());
+                self.code = unitPriceHistoryModel.unitPriceCode();
+                self.name = unitPriceHistoryModel.unitPriceName();
                 self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
                 self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
 
@@ -22,6 +23,7 @@ module nts.uk.pr.view.qmm007.b {
             }
 
             btnApplyClicked() {
+                service.create(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
                 nts.uk.ui.windows.close()
             }
             btnCancelClicked() {
