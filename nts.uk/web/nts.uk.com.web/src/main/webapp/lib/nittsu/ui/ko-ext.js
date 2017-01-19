@@ -1986,6 +1986,12 @@ var nts;
                                 data.value($input.val());
                             });
                         $input.width(Math.floor(atomWidth * length));
+                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                            $input.prop("disabled", true);
+                            if (button) {
+                                container.find('.datepicker-btn').prop("disabled", true);
+                            }
+                        }
                     };
                     /**
                      * Update
@@ -2013,6 +2019,12 @@ var nts;
                             if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
                                 $input.datepicker("setDate", newDate);
                             $input.val(newValue);
+                        }
+                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                            $input.prop("disabled", true);
+                            if (data.button) {
+                                container.find('.datepicker-btn').prop("disabled", true);
+                            }
                         }
                     };
                     return DatePickerBindingHandler;
