@@ -407,9 +407,18 @@ module nts.uk.ui.koExtentions {
                 var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
                 //                console.log(selectedItem);
                 if (data.mode) {
-                    var selectArr = []; selectArr.push("" + selectedItem);
-                    component.ntsGridList("setSelected", selectArr);
-                    component.trigger("selectionChanged");
+                    if(data.mode == 'igGrid') {
+                        var selectArr = []; selectArr.push("" + selectedItem);
+                        component.ntsGridList("setSelected", selectArr);
+                        component.trigger("selectionChanged");
+                    } else if(data.mode == 'igTree') {
+                        var liItem = $("li[data-value='" + selectedItem + "']");
+                        var ulParent = liItem.parent();
+                        if(!ulParent.is(":visible")) {
+                            ulParent.css("display", "block");
+                        }
+                        component.igTree("select", liItem); 
+                    }
                 } else {
                     if (!isArray) selected(selectedItem);
                     else {
