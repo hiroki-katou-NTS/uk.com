@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
@@ -19,13 +19,17 @@
 				};
 				// TODO: Code validate.
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.OutputSettingCode
+				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.OutputSettingName
+  			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
 					<div>
-						<button id="new-button">新規</button>
+						<button id="new-button" data-bind="click: switchToCreateMode">新規</button>
 						<button id="register-button" class="proceed">登録</button>
 					</div>
 					<div class="function-middle">
@@ -39,8 +43,13 @@
 					<tr>
 						<td id="contents-left" data-bind="with: outputSettings">
 							<div id="search-grid">
-								<input id="search-input" class="ntsSearchBox" data-bind="ntsTextEditor: {value: searchText}" placeholder="コード・名称"></input>
-								<button id="search-button">検索</button>
+								<div id="search-input" class="ntsSearchBox"
+									data-bind="ntsSearchBox: {comId: 'output-settings', 
+										items: outputSettingList, 
+										selected: outputSettingSelectedCode, 
+										selectedKey: 'code', 
+										fields: ['name', 'code']}"
+									placeholder="コード・名称"></div>
 							</div>
 							<div id="output-setting-list">
 								<table id="output-settings" data-bind="ntsGridList: {
@@ -57,10 +66,15 @@
 						<td id="contents-center" data-bind="with: outputSettingDetail">
 							<div class="caret-right caret-background">
 							<div id="code-name-input">
-								<div>
-									<div id="code-name-label" data-bind="ntsFormLabel: {}">コード/名称</div>
-									<input id="code-input" data-bind="ntsTextEditor: {value: settingCode, enable: false}"></input>
-									<input id="name-input" data-bind="ntsTextEditor: {value: settingName}"></input>
+								<div class="flex valign-center">
+									<div id="code-name-label" data-bind="ntsFormLabel: {constraint: ['OutputSettingCode','OutputSettingName']}">コード/名称</div>
+									<input id="code-input" data-bind="ntsTextEditor: {value: settingCode, 
+													enable: isCreateMode(),
+													constraint: 'OutputSettingCode'}"></input>
+									<div class="name-input">
+										<input id="name-input" data-bind="ntsTextEditor: {value: settingName,
+														constraint: 'OutputSettingName'}"></input>
+									</div>
 								</div>
 								<div id="print-one-page-checkbox" data-bind="ntsCheckBox: { checked: isPrintOnePageEachPer }">一人当たりの印刷枚数を1枚にする</div>
 								<button class="help-button">?</button>

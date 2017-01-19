@@ -5,7 +5,7 @@ module qet001.a.viewmodel {
         layoutSelected: KnockoutObservable<LayoutOutput>;
         isPageBreakIndicator: KnockoutObservable<boolean>;
         outputTypeSelected : KnockoutObservable<OutputType>;
-        outputSettings: KnockoutObservableArray<OutputSetting>;
+        outputSettings: KnockoutObservableArray<service.model.WageLedgerOutputSetting>;
         outputSettingSelectedCode: KnockoutObservable<string>;
         
         constructor() {
@@ -14,14 +14,32 @@ module qet001.a.viewmodel {
             this.layoutSelected = ko.observable(LayoutOutput.WAGE_LEDGER);
             this.isPageBreakIndicator = ko.observable(false);
             this.outputTypeSelected = ko.observable(OutputType.DETAIL_ITEM);
-            this.outputSettings = ko.observableArray([new OutputSetting('SETTING1', 'setting 1'),
-                new OutputSetting('SETTING2', 'setting 2')]);
-            this.outputSettingSelectedCode = ko.observable('SETTING2');
+            this.outputSettings = ko.observableArray([]);
+            this.outputSettingSelectedCode = ko.observable('');
         }
         
         public start(): JQueryPromise<any>{
             var dfd = $.Deferred<any>();
-            dfd.resolve();
+            var self = this;
+            $.when(self.loadAllOutputSetting()).done(function() {
+                dfd.resolve();
+            })
+            return dfd.promise();
+        }
+        
+        /**
+         * Load all output setting.
+         */
+        public loadAllOutputSetting(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var self = this;
+            service.findOutputSettings().done(function(data: service.model.WageLedgerOutputSetting[]) {
+                self.outputSettings(data);
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            })
             return dfd.promise();
         }
         
@@ -29,6 +47,8 @@ module qet001.a.viewmodel {
          * Go To Output setting dialog.
          */
         public goToOutputSetting() {
+            nts.uk.ui.windows.setShared('selectedCode', this.outputSettingSelectedCode(), true);
+            nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
             nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
         }
     }

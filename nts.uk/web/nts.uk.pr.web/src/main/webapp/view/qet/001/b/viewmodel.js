@@ -23,6 +23,7 @@ var qet001;
                     var self = this;
                     self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
                         if (newVal == undefined || newVal == null) {
+                            self.outputSettingDetail(new OutputSettingDetail());
                             return;
                         }
                         self.loadOutputSettingDetail(newVal);
@@ -31,26 +32,14 @@ var qet001;
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    this.loadAllOutputSetting().done(function () {
-                        if (self.outputSettings().outputSettingList().length == 0) {
-                            dfd.resolve();
-                            return;
-                        }
-                        self.loadOutputSettingDetail(self.outputSettings().outputSettingList()[0].code).done(function () {
-                            dfd.resolve();
-                        });
-                    });
-                    return dfd.promise();
-                };
-                ScreenModel.prototype.loadAllOutputSetting = function () {
-                    var dfd = $.Deferred();
-                    var self = this;
-                    b.service.findOutputSettings().done(function (data) {
-                        self.outputSettings().outputSettingList(data);
-                        dfd.resolve();
-                    }).fail(function (res) {
-                        dfd.reject();
-                    });
+                    var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
+                    var selectedSettingCode = nts.uk.ui.windows.getShared('selectedCode');
+                    if (outputSettings != undefined) {
+                        self.outputSettings().outputSettingList(outputSettings);
+                    }
+                    self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
+                    self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
+                    dfd.resolve();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.loadOutputSettingDetail = function (selectedCode) {
@@ -60,9 +49,13 @@ var qet001;
                         self.outputSettingDetail(new OutputSettingDetail(data));
                         dfd.resolve();
                     }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
                         dfd.reject();
                     });
                     return dfd.promise();
+                };
+                ScreenModel.prototype.switchToCreateMode = function () {
+                    this.outputSettingDetail(new OutputSettingDetail());
                 };
                 return ScreenModel;
             }());
@@ -83,7 +76,7 @@ var qet001;
                 function OutputSettingDetail(outputSetting) {
                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
-                    this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : true);
+                    this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : false);
                     this.categorySettingTabs = ko.observableArray([
                         { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', enable: ko.observable(true), visible: ko.observable(true) },
                         { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', enable: ko.observable(true), visible: ko.observable(true) },
@@ -93,6 +86,7 @@ var qet001;
                         { id: 'tab-bonus-attendance', title: '賞与勤怠', content: '#bonus-attendance', enable: ko.observable(true), visible: ko.observable(true) },
                     ]);
                     this.selectedCategory = ko.observable('tab-salary-payment');
+                    this.isCreateMode = ko.observable(outputSetting == undefined);
                 }
                 return OutputSettingDetail;
             }());

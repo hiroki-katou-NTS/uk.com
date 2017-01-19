@@ -32,10 +32,6 @@ div#aggregate-category-tab > div {
     min-height: 400px;
 }
 
-input#code-input {
-    width: 50px;
-    margin-left: 20px;
-}
 div#print-one-page-checkbox {
     margin-left: 113px;
 }
@@ -59,4 +55,10 @@ div#report-item-list {
 }
 .caret-right.caret-background {
     margin-right: 15px;
+}
+#search-input > .ntsSearchBox {
+	width: 190px;
+}
+.name-input {
+	margin-left: 5px;
 }
