@@ -407,7 +407,7 @@ var nts;
                         self.createMenuItems($contextMenu);
                         $('body').append($contextMenu);
                         // Binding contextmenu event
-                        $("body").on("contextmenu", self.selector, function (event) {
+                        $("html").on("contextmenu", self.selector, function (event) {
                             if (self.enable === true) {
                                 event.preventDefault();
                                 self.target = event.target;
@@ -419,7 +419,7 @@ var nts;
                             }
                         });
                         // Hiding when click outside
-                        $("body").on("mousedown", function (event) {
+                        $("html").on("mousedown", function (event) {
                             if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                                 $contextMenu.hide();
                             }
@@ -430,7 +430,7 @@ var nts;
                      */
                     ContextMenu.prototype.destroy = function () {
                         // Unbind contextmenu event
-                        $("body").off("contextmenu", this.selector);
+                        $("html").off("contextmenu", this.selector);
                         $("#" + this.guid).remove();
                     };
                     /**

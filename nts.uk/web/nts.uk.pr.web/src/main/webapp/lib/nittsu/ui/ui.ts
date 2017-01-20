@@ -414,8 +414,16 @@
             selector: string;
             items: Array<ContextMenuItem>;
             enable: boolean;
-            private target: string;
+            private target: Element;
             
+            /**
+             * Create an instance of ContextMenu. Auto call init() method
+             * 
+             * @constructor
+             * @param {selector} Jquery selector for elements need to show ContextMenu
+             * @param {items} List ContextMenuItem for ContextMenu
+             * @param {enable} (Optinal) Set enable/disable for ContextMenu
+             */
             constructor(selector: string, items: Array<ContextMenuItem>, enable?: boolean) {
                 this.selector = selector;
                 this.items = items;
@@ -423,16 +431,27 @@
                 this.init();
             }
             
+            /**
+             * Create ContextMenu and bind event in DOM
+             */
             init() {
-                // Initial
                 var self = this;
+                // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
+                $('body .ntsContextMenu').each(function(){
+                    if ($(this).data("selector") === self.selector) {
+                        $("body").off("contextmenu", self.selector);
+                        $(this).remove();
+                    }
+                });
+                
+                // Initial
                 self.guid = nts.uk.util.randomId();
-                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").hide();
-                this.createMenuItems($contextMenu);
+                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                self.createMenuItems($contextMenu);
                 $('body').append($contextMenu);
                 
                 // Binding contextmenu event
-                $("body").on("contextmenu", self.selector, function(event) {
+                $("html").on("contextmenu", self.selector, function(event) {
                     if (self.enable === true) {
                         event.preventDefault();
                         self.target = event.target;
@@ -445,24 +464,36 @@
                 });
                 
                 // Hiding when click outside
-                $("body").on("mousedown", function() {
+                $("html").on("mousedown", function(event) {
                     if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                         $contextMenu.hide();
                     }
                 });
             }
             
+            /**
+             * Remove and unbind ContextMenu event
+             */
             destroy() {
                 // Unbind contextmenu event
-                $("body").off("contextmenu", this.selector);
+                $("html").off("contextmenu", this.selector);
                 $("#" + this.guid).remove();
             }
-            
+
+            /**
+             * Re-create ContextMenu. Useful when you change various things in ContextMenu.items
+             */
             refresh() {
                 this.destroy();
                 this.init();
             }
             
+            /**
+             * Get a ContextMenuItem instance
+             * 
+             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+             * @return {any} Return ContextMenuItem if found or undefiend
+             */
             getItem(target: any) {
                 if (typeof target === "number") {
                     return this.items[target];
@@ -475,11 +506,21 @@
                 }
             }
             
+            /**
+             * Add an ContextMenuItem instance to ContextMenu
+             * 
+             * @param {item} An ContextMenuItem instance
+             */
             addItem(item: ContextMenuItem) {
                 this.items.push(item);
                 this.refresh();
             }
             
+            /**
+             * Remove item with given "key" or index
+             * 
+             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+             */
             removeItem(target: any) {
                 var item = this.getItem(target);
                 if (item !== undefined) {
@@ -488,24 +529,40 @@
                 }
             }
             
+            /**
+             * Enable/Disable ContextMenu. If disable right-click will have default behavior
+             * 
+             * @param {enable} A boolean value set enable/disable
+             */
             setEnable(enable: boolean) {
                 this.enable = enable;
             }
             
+            /**
+             * Enable/Disable item with given "key" or index
+             * 
+             * @param {enable} A boolean value set enable/disable
+             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+             */
             setEnableItem(enable: boolean, target: any) {
                 var item = this.getItem(target);
                 item.enable = enable;
                 this.refresh();
             }
             
+            /**
+             * Show/Hide item with given "key" or index
+             * 
+             * @param {enable} A boolean value set visible/hidden
+             * @param {target} Can be string or number. String type will select item by "key", Number type will select item by index
+             */
             setVisibleItem(visible: boolean, target: any) {
                 var item = this.getItem(target);
                 item.visible = visible;
                 this.refresh();
             }
-
             
-            private createMenuItems (container: Jquery) {
+            private createMenuItems (container: JQuery) {
                 var self = this;
                 _.forEach(self.items, function(item) {
                     if (item.key !== "divider") {
@@ -624,4 +681,21 @@
 			return this.initialState !== this.getCurrentState();
 		}
 	}
+    
+    /**
+     * Utilities for IgniteUI
+     */
+    export module ig {
+        
+        export module grid {
+            
+            export function getRowIdFrom($anyElementInRow: JQuery): any {
+                return $anyElementInRow.closest('tr').attr('data-id');
+            }
+            
+            export function getRowIndexFrom($anyElementInRow: JQuery): number {
+                return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+        }
+    }
 }
