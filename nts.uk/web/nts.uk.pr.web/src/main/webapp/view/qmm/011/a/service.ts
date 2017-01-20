@@ -2,8 +2,8 @@ module nts.uk.pr.view.qmm011.a {
     export module service {
 
         var paths: any = {
-            findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findallHistory",
-            findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findHistory",
+            findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
+            findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
             detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
             findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findallHistory",
             findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findHistory",
@@ -107,28 +107,28 @@ module nts.uk.pr.view.qmm011.a {
                     this.endMonth = endMonth;
                 }
             }
-            export class RoundingMethod {
-                code: string;
+            export class RoundingMethodDto {
+                code: number;
                 name: string;
-                constructor(code: string, name: string) {
+                constructor(code: number, name: string) {
                     this.code = code;
                     this.name = name;
                 }
             }
-            export class UnemployeeInsuranceRateItemSetting {
-                roundAtr: string;
+            export class UnemployeeInsuranceRateItemSettingDto {
+                roundAtr: number;
                 rate: number;
-                constructor(roundAtr: string, rate: number) {
+                constructor(roundAtr: number, rate: number) {
                     this.roundAtr = roundAtr;
                     this.rate = rate;
                 }
             }
-            export class UnemployeeInsuranceRateItem {
-                careerGroup: string;
-                companySetting: UnemployeeInsuranceRateItemSetting;
-                personalSetting: UnemployeeInsuranceRateItemSetting;
-                constructor(careerGroup: string, companySetting: UnemployeeInsuranceRateItemSetting,
-                    personalSetting: UnemployeeInsuranceRateItemSetting) {
+            export class UnemployeeInsuranceRateItemDto {
+                careerGroup: number;
+                companySetting: UnemployeeInsuranceRateItemSettingDto;
+                personalSetting: UnemployeeInsuranceRateItemSettingDto;
+                constructor(careerGroup: number, companySetting: UnemployeeInsuranceRateItemSettingDto,
+                    personalSetting: UnemployeeInsuranceRateItemSettingDto) {
                     this.careerGroup = careerGroup;
                     this.companySetting = companySetting;
                     this.personalSetting = personalSetting;
@@ -156,7 +156,7 @@ module nts.uk.pr.view.qmm011.a {
             export class UnemployeeInsuranceRateDto {
                 historyId: string;
                 companyCode: string;
-                rateItems: UnemployeeInsuranceRateItem[];
+                rateItems: UnemployeeInsuranceRateItemDto[];
             }
 
             export class HistoryAccidentInsuranceRateDto extends HistoryInsuranceRateDto {
@@ -192,32 +192,32 @@ module nts.uk.pr.view.qmm011.a {
                     this.bizName = bizName;
                 }
             }
-            export enum CareerGroup {
-                Agroforestry = "Agroforestry",
-                Contruction = "Contruction",
-                Other = "Other"
+            export enum CareerGroupDto {
+                Agroforestry = 0,
+                Contruction = 1,
+                Other = 2
             }
-            export enum BusinessTypeEnum {
+            export enum BusinessTypeEnumDto {
                 /** The Biz 1 st. */
-                Biz1St = "Biz1St",
+                Biz1St = 1,
                 /** The Biz 2 nd. */
-                Biz2Nd = "Biz2Nd",
+                Biz2Nd = 2,
                 /** The Biz 3 rd. */
-                Biz3Rd = "Biz3Rd",
+                Biz3Rd = 3,
                 /** The Biz 4 th. */
-                Biz4Th = "Biz4Th",
+                Biz4Th = 4,
                 /** The Biz 5 th. */
-                Biz5Th = "Biz5Th",
+                Biz5Th = 5,
                 /** The Biz 6 th. */
-                Biz6Th = "Biz6Th",
+                Biz6Th = 6,
                 /** The Biz 7 th. */
-                Biz7Th = "Biz7Th",
+                Biz7Th = 7,
                 /** The Biz 8 th. */
-                Biz8Th = "Biz8Th",
+                Biz8Th = 8,
                 /** The Biz 9 th. */
-                Biz9Th = "Biz9Th",
+                Biz9Th = 9,
                 /** The Biz 10 th. */
-                Biz10Th = "Biz10Th"
+                Biz10Th = 10
 
             }
             export enum TypeHistory {

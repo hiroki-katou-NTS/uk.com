@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm010.a {
     export module viewmodel {
         export class ScreenModel {
             //ojbect value binding
-            laborInsuranceOffice: KnockoutObservable<LaborInsuranceOfficeModel>;
+            laborInsuranceOfficeModel: KnockoutObservable<LaborInsuranceOfficeModel>;
             lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeInDto>
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm010.a {
             }
             resetValueLaborInsurance() {
                 var self = this;
-                self.laborInsuranceOffice().resetAllValue();
+                self.laborInsuranceOfficeModel().resetAllValue();
             }
             readFromSocialTnsuranceOffice() {
                 var self = this;
@@ -69,7 +69,7 @@ module nts.uk.pr.view.qmm010.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findLaborInsuranceOffice(code).done(data => {
-                    self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(data));
+                    self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
                     dfd.resolve(null);
                 });
                 return dfd.promise();
@@ -78,9 +78,30 @@ module nts.uk.pr.view.qmm010.a {
             showInsuranceOffice(code: string) {
                 var self = this;
                 service.findLaborInsuranceOffice(code).done(data => {
-                    self.laborInsuranceOffice(new LaborInsuranceOfficeModel(data));
+                    self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
                 });
             }
+            addLaborInsuranceOffice() {
+                var self = this;
+                service.addLaborInsuranceOffice(self.collectData(), "000001");
+            }
+            deleteLaborInsuranceOffice() {
+                var self = this;
+                service.deleteLaborInsuranceOffice(self.laborInsuranceOfficeModel().code(), "00001");
+            }
+            //Convert Model => DTO
+            collectData(): service.model.LaborInsuranceOfficeDto {
+                var self = this;
+                return new service.model.LaborInsuranceOfficeDto(self.laborInsuranceOfficeModel().code(),
+                    self.laborInsuranceOfficeModel().name(), self.laborInsuranceOfficeModel().shortName(), self.laborInsuranceOfficeModel().picName(),
+                    self.laborInsuranceOfficeModel().picPosition(), self.laborInsuranceOfficeModel().postalCode(), "",
+                    self.laborInsuranceOfficeModel().address1st(), self.laborInsuranceOfficeModel().address2nd(),
+                    self.laborInsuranceOfficeModel().kanaAddress1st(), self.laborInsuranceOfficeModel().kanaAddress2nd(),
+                    self.laborInsuranceOfficeModel().phoneNumber(), self.laborInsuranceOfficeModel().citySign(), self.laborInsuranceOfficeModel().officeMark(),
+                    self.laborInsuranceOfficeModel().officeNoA(), self.laborInsuranceOfficeModel().officeNoB(), self.laborInsuranceOfficeModel().officeNoC(),
+                    self.laborInsuranceOfficeModel().memo());
+            }
+
         }
 
         export class LaborInsuranceOfficeModel {

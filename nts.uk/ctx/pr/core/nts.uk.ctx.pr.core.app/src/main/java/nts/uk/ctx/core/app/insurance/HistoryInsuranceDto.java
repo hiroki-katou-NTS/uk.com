@@ -1,10 +1,15 @@
 package nts.uk.ctx.core.app.insurance;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import lombok.NoArgsConstructor;
 
 @Data
-public class HistoryInsuranceRateDto{
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class HistoryInsuranceDto{
 	private String historyId;
 	private String companyCode;
 	//private MonthRange monthRage;

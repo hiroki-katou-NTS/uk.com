@@ -10,22 +10,13 @@ package nts.uk.ctx.pr.report.dom.wageledger;
 public enum WageLedgerCategory {
 	
 	/** The Salary payment. */
-	SalaryPayment(1, "salary payment"),
+	Payment(1, "支給"),
 	
 	/** The Salary deduction. */
-	SalaryDeduction(2, "salary deduction"),
+	Deduction(2, "控除"),
 	
 	/** The Salary attendance. */
-	SalaryAttendance(3, "salary attendance"),
-	
-	/** The Bonus payment. */
-	BonusPayment(4, "bonus payment"),
-	
-	/** The Bonus deduction. */
-	BonusDeduction(5, "bonus deduction"),
-	
-	/** The Bonus attendance. */
-	BonusAttendance(6, "bonus attendance");
+	Attendance(3, "勤怠");
 	
 	/** The value. */
 	public final Integer value;

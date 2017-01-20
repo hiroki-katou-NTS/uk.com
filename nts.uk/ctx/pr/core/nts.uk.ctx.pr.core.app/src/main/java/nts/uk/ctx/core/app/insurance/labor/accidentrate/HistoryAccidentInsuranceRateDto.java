@@ -1,7 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.core.app.insurance.labor.accidentrate;
 
-import nts.uk.ctx.core.app.insurance.HistoryInsuranceRateDto;
+import nts.uk.ctx.core.app.insurance.HistoryInsuranceDto;
 
-public class HistoryAccidentInsuranceRateDto extends HistoryInsuranceRateDto {
+/**
+ * The Class HistoryAccidentInsuranceRateDto.
+ */
+public class HistoryAccidentInsuranceRateDto extends HistoryInsuranceDto {
 
 }

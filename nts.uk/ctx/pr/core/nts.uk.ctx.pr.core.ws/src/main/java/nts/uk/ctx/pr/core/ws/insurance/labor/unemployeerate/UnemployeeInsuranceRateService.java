@@ -10,8 +10,10 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceRateDto;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemDto;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSettingDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
@@ -22,104 +24,7 @@ import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")
 public class UnemployeeInsuranceRateService extends WebService {
-	// get History UnemployeeInsuranceRate
-	@POST
-	@Path("findallHistory")
-	public List<HistoryUnemployeeInsuranceRateDto> findAllHistory() {
-		List<HistoryUnemployeeInsuranceRateDto> lstHistoryUnemployeeInsuranceRate = new ArrayList<HistoryUnemployeeInsuranceRateDto>();
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRate006 = new HistoryUnemployeeInsuranceRateDto();
-		historyUnemployeeInsuranceRate006.setCompanyCode("companyCode001");
-		MonthRange monthRange006 = new MonthRange();
-		monthRange006.setStartMonth(new YearMonth(2016 * 100 + 4));
-		monthRange006.setEndMonth(new YearMonth(9999 * 100 + 12));
-		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate006.setHistoryId("historyId006");
-		historyUnemployeeInsuranceRate006
-				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange006.getStartMonth()));
-		historyUnemployeeInsuranceRate006.setEndMonthRage(HistoryInsurance.convertMonth(monthRange006.getEndMonth()));
-		historyUnemployeeInsuranceRate006.setInforMonthRage(historyUnemployeeInsuranceRate006.getStartMonthRage()
-				+ " ~ " + historyUnemployeeInsuranceRate006.getEndMonthRage());
-		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate006);
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRate005 = new HistoryUnemployeeInsuranceRateDto();
-		historyUnemployeeInsuranceRate005.setCompanyCode("companyCode001");
-		MonthRange monthRange005 = new MonthRange();
-		monthRange005.setStartMonth(new YearMonth(2015 * 100 + 10));
-		monthRange005.setEndMonth(new YearMonth(2016 * 100 + 3));
-		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate005.setHistoryId("historyId005");
-		historyUnemployeeInsuranceRate005
-				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange005.getStartMonth()));
-		historyUnemployeeInsuranceRate005.setEndMonthRage(HistoryInsurance.convertMonth(monthRange005.getEndMonth()));
-		historyUnemployeeInsuranceRate005.setInforMonthRage(historyUnemployeeInsuranceRate005.getStartMonthRage()
-				+ " ~ " + historyUnemployeeInsuranceRate005.getEndMonthRage());
-		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate005);
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRate004 = new HistoryUnemployeeInsuranceRateDto();
-		historyUnemployeeInsuranceRate004.setCompanyCode("companyCode001");
-		MonthRange monthRange004 = new MonthRange();
-		monthRange004.setStartMonth(new YearMonth(2015 * 100 + 4));
-		monthRange004.setEndMonth(new YearMonth(2015 * 100 + 9));
-		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate004.setHistoryId("historyId004");
-		historyUnemployeeInsuranceRate004
-				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange004.getStartMonth()));
-		historyUnemployeeInsuranceRate004.setEndMonthRage(HistoryInsurance.convertMonth(monthRange004.getEndMonth()));
-		historyUnemployeeInsuranceRate004.setInforMonthRage(historyUnemployeeInsuranceRate004.getStartMonthRage()
-				+ " ~ " + historyUnemployeeInsuranceRate004.getEndMonthRage());
-		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate004);
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRate003 = new HistoryUnemployeeInsuranceRateDto();
-		historyUnemployeeInsuranceRate003.setCompanyCode("companyCode001");
-		MonthRange monthRange003 = new MonthRange();
-		monthRange003.setStartMonth(new YearMonth(2014 * 100 + 9));
-		monthRange003.setEndMonth(new YearMonth(2015 * 100 + 3));
-		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate003.setHistoryId("historyId003");
-		historyUnemployeeInsuranceRate003
-				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange003.getStartMonth()));
-		historyUnemployeeInsuranceRate003.setEndMonthRage(HistoryInsurance.convertMonth(monthRange003.getEndMonth()));
-		historyUnemployeeInsuranceRate003.setInforMonthRage(historyUnemployeeInsuranceRate003.getStartMonthRage()
-				+ " ~ " + historyUnemployeeInsuranceRate003.getEndMonthRage());
-		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate003);
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRate002 = new HistoryUnemployeeInsuranceRateDto();
-		historyUnemployeeInsuranceRate002.setCompanyCode("companyCode001");
-		MonthRange monthRange002 = new MonthRange();
-		monthRange002.setStartMonth(new YearMonth(2014 * 100 + 4));
-		monthRange002.setEndMonth(new YearMonth(2014 * 100 + 8));
-		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate002.setHistoryId("historyId002");
-		historyUnemployeeInsuranceRate002
-				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange002.getStartMonth()));
-		historyUnemployeeInsuranceRate002.setEndMonthRage(HistoryInsurance.convertMonth(monthRange002.getEndMonth()));
-		historyUnemployeeInsuranceRate002.setInforMonthRage(historyUnemployeeInsuranceRate002.getStartMonthRage()
-				+ " ~ " + historyUnemployeeInsuranceRate002.getEndMonthRage());
-		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate002);
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRate001 = new HistoryUnemployeeInsuranceRateDto();
-		historyUnemployeeInsuranceRate001.setCompanyCode("companyCode001");
-		MonthRange monthRange001 = new MonthRange();
-		monthRange001.setStartMonth(new YearMonth(2013 * 100 + 4));
-		monthRange001.setEndMonth(new YearMonth(2014 * 100 + 3));
-		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate001.setHistoryId("historyId002");
-		historyUnemployeeInsuranceRate001
-				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange001.getStartMonth()));
-		historyUnemployeeInsuranceRate001.setEndMonthRage(HistoryInsurance.convertMonth(monthRange001.getEndMonth()));
-		historyUnemployeeInsuranceRate001.setInforMonthRage(historyUnemployeeInsuranceRate001.getStartMonthRage()
-				+ " ~ " + historyUnemployeeInsuranceRate001.getEndMonthRage());
-		lstHistoryUnemployeeInsuranceRate.add(historyUnemployeeInsuranceRate001);
-		return lstHistoryUnemployeeInsuranceRate;
-	}
-
-	@POST
-	@Path("findHistory/{historyId}")
-	public HistoryUnemployeeInsuranceRateDto findHistory(@PathParam("historyId") String historyId) {
-		HistoryUnemployeeInsuranceRateDto historyUnemployeeInsuranceRateDto = new HistoryUnemployeeInsuranceRateDto();
-		List<HistoryUnemployeeInsuranceRateDto> lstHistoryUnemployeeInsuranceRate = findAllHistory();
-		for (HistoryUnemployeeInsuranceRateDto history : lstHistoryUnemployeeInsuranceRate) {
-			if (history.getHistoryId().equals(historyId)) {
-				historyUnemployeeInsuranceRateDto = history;
-			}
-		}
-		return historyUnemployeeInsuranceRateDto;
-	}
+	
 
 	@POST
 	@Path("detailHistory/{historyId}")
@@ -127,38 +32,38 @@ public class UnemployeeInsuranceRateService extends WebService {
 		UnemployeeInsuranceRateDto unemployeeInsuranceRate = new UnemployeeInsuranceRateDto();
 		unemployeeInsuranceRate.setCompanyCode("companyCode001");
 		unemployeeInsuranceRate.setHistoryId(historyId);
-		List<UnemployeeInsuranceRateItem> rateItems = new ArrayList<UnemployeeInsuranceRateItem>();
-		UnemployeeInsuranceRateItem umInsuranceRateItemAgroforestry = new UnemployeeInsuranceRateItem();
-		umInsuranceRateItemAgroforestry.setCareerGroup(CareerGroup.Agroforestry);
-		UnemployeeInsuranceRateItemSetting personalSettingAgroforestry = new UnemployeeInsuranceRateItemSetting();
+		List<UnemployeeInsuranceRateItemDto> rateItems = new ArrayList<UnemployeeInsuranceRateItemDto>();
+		UnemployeeInsuranceRateItemDto umInsuranceRateItemAgroforestry = new UnemployeeInsuranceRateItemDto();
+		umInsuranceRateItemAgroforestry.setCareerGroup(0);// CareerGroup.Agroforestry
+		UnemployeeInsuranceRateItemSettingDto personalSettingAgroforestry = new UnemployeeInsuranceRateItemSettingDto();
 		personalSettingAgroforestry.setRate(55.5);
-		personalSettingAgroforestry.setRoundAtr(RoundingMethod.RoundUp);
+		personalSettingAgroforestry.setRoundAtr(0);// RoundingMethod.RoundUp
 		umInsuranceRateItemAgroforestry.setPersonalSetting(personalSettingAgroforestry);
-		UnemployeeInsuranceRateItemSetting companySettingAgroforestry = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemSettingDto companySettingAgroforestry = new UnemployeeInsuranceRateItemSettingDto();
 		companySettingAgroforestry.setRate(55.59);
-		companySettingAgroforestry.setRoundAtr(RoundingMethod.RoundUp);
+		companySettingAgroforestry.setRoundAtr(0);// RoundingMethod.RoundUp
 		umInsuranceRateItemAgroforestry.setCompanySetting(companySettingAgroforestry);
 		rateItems.add(umInsuranceRateItemAgroforestry);
-		UnemployeeInsuranceRateItem umInsuranceRateItemContruction = new UnemployeeInsuranceRateItem();
-		umInsuranceRateItemContruction.setCareerGroup(CareerGroup.Contruction);
-		UnemployeeInsuranceRateItemSetting personalSettingContruction = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemDto umInsuranceRateItemContruction = new UnemployeeInsuranceRateItemDto();
+		umInsuranceRateItemContruction.setCareerGroup(1);// CareerGroup.Contruction
+		UnemployeeInsuranceRateItemSettingDto personalSettingContruction = new UnemployeeInsuranceRateItemSettingDto();
 		personalSettingContruction.setRate(55.5);
-		personalSettingContruction.setRoundAtr(RoundingMethod.RoundUp);
+		personalSettingContruction.setRoundAtr(0);// RoundingMethod.RoundUp
 		umInsuranceRateItemContruction.setPersonalSetting(personalSettingContruction);
-		UnemployeeInsuranceRateItemSetting companySettingContruction = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemSettingDto companySettingContruction = new UnemployeeInsuranceRateItemSettingDto();
 		companySettingContruction.setRate(55.59);
-		companySettingContruction.setRoundAtr(RoundingMethod.RoundUp);
+		companySettingContruction.setRoundAtr(0); // RoundingMethod.RoundUp
 		umInsuranceRateItemContruction.setCompanySetting(companySettingContruction);
 		rateItems.add(umInsuranceRateItemContruction);
-		UnemployeeInsuranceRateItem umInsuranceRateItemOther = new UnemployeeInsuranceRateItem();
-		umInsuranceRateItemOther.setCareerGroup(CareerGroup.Other);
-		UnemployeeInsuranceRateItemSetting personalSettingOther = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemDto umInsuranceRateItemOther = new UnemployeeInsuranceRateItemDto();
+		umInsuranceRateItemOther.setCareerGroup(2);// CareerGroup.Other
+		UnemployeeInsuranceRateItemSettingDto personalSettingOther = new UnemployeeInsuranceRateItemSettingDto();
 		personalSettingOther.setRate(55.5);
-		personalSettingOther.setRoundAtr(RoundingMethod.RoundUp);
+		personalSettingOther.setRoundAtr(0); // RoundingMethod.RoundUp
 		umInsuranceRateItemOther.setPersonalSetting(personalSettingOther);
-		UnemployeeInsuranceRateItemSetting companySettingOther = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemSettingDto companySettingOther = new UnemployeeInsuranceRateItemSettingDto();
 		companySettingOther.setRate(56.0);
-		companySettingOther.setRoundAtr(RoundingMethod.RoundUp);
+		companySettingOther.setRoundAtr(0);//RoundingMethod.RoundUp
 		umInsuranceRateItemOther.setCompanySetting(companySettingOther);
 		rateItems.add(umInsuranceRateItemOther);
 		unemployeeInsuranceRate.setRateItems(rateItems);

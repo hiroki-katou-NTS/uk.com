@@ -1,15 +1,15 @@
-package nts.uk.ctx.core.app.insurance.labor;
+package nts.uk.ctx.core.app.insurance.labor.find;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
 @Builder
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LaborInsuranceOfficeDto {
-	/** The company code. */
-	private String companyCode;
 	/** The code. officeCode */
 	private String code;
 	/** The name. officeName */
@@ -33,7 +33,6 @@ public class LaborInsuranceOfficeDto {
 	/** The kana address 2 nd. */
 	private String kanaAddress2nd;
 	/** The phone number. */
-	// TODO: TelephoneNo
 	private String phoneNumber;
 	/** The city sign. */
 	private String citySign;

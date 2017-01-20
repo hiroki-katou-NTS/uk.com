@@ -2,8 +2,11 @@ module nts.uk.pr.view.qmm010.a {
     export module service {
 
         var paths: any = {
-            findAllLaborInsuranceOffice: "pr/insurance/labor/findall",
-            findLaborInsuranceOffice: "pr/insurance/labor/findLaborInsuranceOffice"
+            findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
+            findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
+            addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
+            updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
+            deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
         };
 
         //Function connection service FindAll Labor Insurance Office
@@ -32,13 +35,39 @@ module nts.uk.pr.view.qmm010.a {
                 })
             return dfd.promise();
         }
+        export function addLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+            nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        export function deleteLaborInsuranceOffice(code: string, companyCode: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var data = { companyCode: companyCode, code: code };
+            nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
         /**
        * Model namespace.
        */
         export module model {
             export class LaborInsuranceOfficeDto {
-                /** The company code.*/
-                companyCode: string;
                 /** The code. officeCode*/
                 code: string;
                 /** The name. officeName*/
@@ -78,11 +107,10 @@ module nts.uk.pr.view.qmm010.a {
                 memo: string;
 
                 //New LaborInsuranceOffice
-                constructor(companyCode: string, code: string, name: string, shortName: string, picName: string, picPosition: string,
+                constructor(code: string, name: string, shortName: string, picName: string, picPosition: string,
                     potalCode: string, prefecture: string, address1st: string, address2nd: string, kanaAddress1st: string,
                     kanaAddress2nd: string, phoneNumber: string, citySign: string, officeMark: string,
                     officeNoA: string, officeNoB: string, officeNoC: string, memo: string) {
-                    this.companyCode = companyCode;
                     this.code = code;
                     this.name = name;
                     this.shortName = shortName;
@@ -104,8 +132,6 @@ module nts.uk.pr.view.qmm010.a {
                 }
             }
             export class LaborInsuranceOfficeInDto {
-                /** The company code.*/
-                companyCode: string;
                 /** The code. officeCode*/
                 code: string;
                 /** The name. officeName*/
@@ -113,7 +139,6 @@ module nts.uk.pr.view.qmm010.a {
 
                 //New LaborInsuranceOfficeInDto
                 constructor(laborInsuranceOffice: LaborInsuranceOfficeDto) {
-                    this.companyCode = laborInsuranceOffice.companyCode;
                     this.code = laborInsuranceOffice.code;
                     this.name = laborInsuranceOffice.name;
                 }

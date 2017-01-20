@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.report.ws.wageledger.dto;
 import java.util.List;
 
 import lombok.Builder;
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
-import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.PaymentType;
 
 /**
  * The Class CategorySettingDto.
