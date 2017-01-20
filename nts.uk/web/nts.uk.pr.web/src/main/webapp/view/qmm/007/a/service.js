@@ -65,7 +65,7 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getUnitPriceHistoryList = getUnitPriceHistoryList;
-                            function getUnitPriceHistoryDetail(id) {
+                            function find(id) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id)
                                     .done(function (res) {
@@ -76,7 +76,7 @@ var nts;
                                 });
                                 return dfd.promise();
                             }
-                            service.getUnitPriceHistoryDetail = getUnitPriceHistoryDetail;
+                            service.find = find;
                             function create(unitPriceHistory) {
                                 var data = unitPriceHistory;
                                 return nts.uk.request.ajax(paths.createUnitPriceHistory, data);

@@ -3,14 +3,26 @@ module nts.uk.pr.view.qmm007.a {
         import UnitPriceHistoryModel = service.model.UnitPriceHistoryModel;
 
         export class ScreenModel {
+            // UnitPriceHistory Model
+            unitPriceHistoryModel: KnockoutObservable<UnitPriceHistoryModel>;
+
+            // Selected ID of UnitPriceHistory
+            selectedId: KnockoutObservable<string>;
+
+            // Setting type
+            isContractSettingEnabled: KnockoutObservable<boolean>;
+
+            //Search box
             filteredData: any;
             historyList: any;
-            selectedId: KnockoutObservable<string>;
-            unitPriceHistoryModel: KnockoutObservable<UnitPriceHistoryModel>;
-            isContractSettingEnabled: KnockoutObservable<boolean>;
+
+            // New mode flag
             isNewMode: KnockoutObservable<boolean>;
+
+            // Nts editor options
             textEditorOption: any;
             currencyEditorOption: any;
+            // Switch button data source
             switchButtonDataSource: KnockoutObservableArray<any>;
 
             constructor() {
@@ -53,6 +65,9 @@ module nts.uk.pr.view.qmm007.a {
 
             }
 
+            /**
+             * Start page.
+             */
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
@@ -60,16 +75,25 @@ module nts.uk.pr.view.qmm007.a {
                 return dfd.promise();
             }
 
+            /**
+             * Go To Add UnitPriceHistory dialog.
+             */
             goToB() {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 360, width: 580 });
             }
 
+            /**
+             * Go To Edit UnitPriceHistory dialog.
+             */
             goToC() {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
             }
 
+            /**
+             * Create or Update UnitPriceHistory.
+             */
             save() {
                 var self = this;
                 if (self.isNewMode()) {
@@ -79,11 +103,9 @@ module nts.uk.pr.view.qmm007.a {
                 }
             }
 
-            remove() {
-                var self = this;
-                service.remove(self.unitPriceHistoryModel().id);
-            }
-
+            /**
+             * Clear all input and switch to new mode.
+             */
             enableNewMode() {
                 var self = this;
                 $('.save-error').ntsError('clear');
@@ -91,6 +113,9 @@ module nts.uk.pr.view.qmm007.a {
                 self.isNewMode(true);
             }
 
+            /**
+             * Clear all input.
+             */
             clearUnitPriceDetail() {
                 var model = this.unitPriceHistoryModel()
                 model.id = '';
@@ -107,10 +132,12 @@ module nts.uk.pr.view.qmm007.a {
                 model.fixPayAtrHourly('NotApply');
             }
 
+            /**
+             * Load UnitPriceHistory detail.
+             */
             loadUnitPriceDetail(id: string) {
                 var self = this;
-                service.getUnitPriceHistoryDetail(id).done(data => {
-                    console.log(data);
+                service.find(id).done(data => {
                     var model = self.unitPriceHistoryModel()
                     model.id = data.id;
                     model.unitPriceCode(data.unitPriceCode);
@@ -124,9 +151,13 @@ module nts.uk.pr.view.qmm007.a {
                     model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
                     model.fixPayAtrDaily(data.fixPayAtrDaily);
                     model.fixPayAtrHourly(data.fixPayAtrHourly);
+                    model.memo(data.memo);
                 });
             }
 
+            /**
+             * Load UnitPriceHistory tree list.
+             */
             loadUnitPriceHistoryList(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();

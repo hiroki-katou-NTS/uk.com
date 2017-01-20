@@ -72,10 +72,6 @@ var nts;
                                         a.service.update(a.service.collectData(self.unitPriceHistoryModel()));
                                     }
                                 };
-                                ScreenModel.prototype.remove = function () {
-                                    var self = this;
-                                    a.service.remove(self.unitPriceHistoryModel().id);
-                                };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
@@ -98,8 +94,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;
-                                    a.service.getUnitPriceHistoryDetail(id).done(function (data) {
-                                        console.log(data);
+                                    a.service.find(id).done(function (data) {
                                         var model = self.unitPriceHistoryModel();
                                         model.id = data.id;
                                         model.unitPriceCode(data.unitPriceCode);
@@ -112,6 +107,7 @@ var nts;
                                         model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
                                         model.fixPayAtrDaily(data.fixPayAtrDaily);
                                         model.fixPayAtrHourly(data.fixPayAtrHourly);
+                                        model.memo(data.memo);
                                     });
                                 };
                                 ScreenModel.prototype.loadUnitPriceHistoryList = function () {

@@ -1,10 +1,20 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.unitprice;
 
 import java.util.List;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+
+@Stateless
 public class UnitPriceHistoryFinder {
 
-	public UnitPriceHistoryDto find(String companyCode, String id) {
+	@Inject
+	private UnitPriceHistoryRepository repository;
+
+	public Optional<UnitPriceHistoryDto> find(String id) {
 		return null;
 	}
 
