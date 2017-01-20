@@ -67,7 +67,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.findLaborInsuranceOffice(code).done(function (data) {
-                                        self.laborInsuranceOffice = ko.observable(new LaborInsuranceOfficeModel(data));
+                                        self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
                                         dfd.resolve(null);
                                     });
                                     return dfd.promise();
@@ -75,8 +75,16 @@ var nts;
                                 ScreenModel.prototype.showInsuranceOffice = function (code) {
                                     var self = this;
                                     a.service.findLaborInsuranceOffice(code).done(function (data) {
-                                        self.laborInsuranceOffice(new LaborInsuranceOfficeModel(data));
+                                        self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
                                     });
+                                };
+                                ScreenModel.prototype.addLaborInsuranceOffice = function () {
+                                    var self = this;
+                                    a.service.addLaborInsuranceOffice(self.collectData(), "000001");
+                                };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    return new a.service.model.LaborInsuranceOfficeDto(self.laborInsuranceOfficeModel().code(), self.laborInsuranceOfficeModel().name(), self.laborInsuranceOfficeModel().shortName(), self.laborInsuranceOfficeModel().picName(), self.laborInsuranceOfficeModel().picPosition(), self.laborInsuranceOfficeModel().postalCode(), "", self.laborInsuranceOfficeModel().address1st(), self.laborInsuranceOfficeModel().address2nd(), self.laborInsuranceOfficeModel().kanaAddress1st(), self.laborInsuranceOfficeModel().kanaAddress2nd(), self.laborInsuranceOfficeModel().phoneNumber(), self.laborInsuranceOfficeModel().citySign(), self.laborInsuranceOfficeModel().officeMark(), self.laborInsuranceOfficeModel().officeNoA(), self.laborInsuranceOfficeModel().officeNoB(), self.laborInsuranceOfficeModel().officeNoC(), self.laborInsuranceOfficeModel().memo());
                                 };
                                 return ScreenModel;
                             }());

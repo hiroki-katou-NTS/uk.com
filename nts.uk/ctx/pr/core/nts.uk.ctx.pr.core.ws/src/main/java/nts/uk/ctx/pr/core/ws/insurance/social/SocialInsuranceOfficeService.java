@@ -20,17 +20,14 @@ public class SocialInsuranceOfficeService extends WebService {
 	public List<SocialInsuranceOfficeInDto> findAll() {
 		List<SocialInsuranceOfficeInDto> lstSocialInsuranceOfficeIn = new ArrayList<SocialInsuranceOfficeInDto>();
 		SocialInsuranceOfficeInDto socialInsuranceOffice001 = new SocialInsuranceOfficeInDto();
-		socialInsuranceOffice001.setCompanyCode("companyCode001");
 		socialInsuranceOffice001.setCode("000000000001");
 		socialInsuranceOffice001.setName("A事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice001);
 		SocialInsuranceOfficeInDto socialInsuranceOffice002 = new SocialInsuranceOfficeInDto();
-		socialInsuranceOffice002.setCompanyCode("companyCode001");
 		socialInsuranceOffice002.setCode("000000000002");
 		socialInsuranceOffice002.setName("B事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice002);
 		SocialInsuranceOfficeInDto socialInsuranceOffice003 = new SocialInsuranceOfficeInDto();
-		socialInsuranceOffice003.setCompanyCode("companyCode001");
 		socialInsuranceOffice003.setCode("000000000003");
 		socialInsuranceOffice003.setName("C事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice003);
