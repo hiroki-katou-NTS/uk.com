@@ -162,7 +162,7 @@ var qpp008;
                 };
                 ScreenModel.prototype.addItem = function () {
                     this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
-                    this.items2.push(new ItemModel('999', '基本給', "description 1", "other1"));
+                    //            this.items2().push(new ItemModel('999', '基本給', "description 1", "other1"));
                 };
                 ScreenModel.prototype.removeItem = function () {
                     this.items.shift();

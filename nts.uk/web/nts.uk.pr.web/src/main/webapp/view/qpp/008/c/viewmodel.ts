@@ -8,15 +8,15 @@ module qpp008.c.viewmodel {
         //swapList1
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columnsSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        currentCodeListSwap: KnockoutObservableArray<any>;
+        currentCodeListSwap: KnockoutObservableArray<ItemModel>;
         //swapList2
         itemsSwap2: KnockoutObservableArray<ItemModel>;
         columnsSwap2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>
-        currentCodeListSwap2: KnockoutObservableArray<any>;
+        currentCodeListSwap2: KnockoutObservableArray<ItemModel>;
         //swapList3
         itemsSwap3: KnockoutObservableArray<ItemModel>;
         columnsSwap3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>
-        currentCodeListSwap3: KnockoutObservableArray<any>;
+        currentCodeListSwap3: KnockoutObservableArray<ItemModel>;
         /*TabPanel*/
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -29,7 +29,7 @@ module qpp008.c.viewmodel {
         nameValue: KnockoutObservable<string>;
         codeValue: KnockoutObservable<any>;
         //gridList2
-        items2: KnockoutObservableArray<ItemModel>;
+        items2: KnockoutComputed<Array<ItemModel>>;
         columns2: KnockoutObservableArray<any>;
         currentCode2: KnockoutObservable<any>;
         currentItem2: KnockoutObservable<any>;
@@ -202,7 +202,7 @@ module qpp008.c.viewmodel {
         
         addItem() {
             this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
-            this.items2.push(new ItemModel('999', '基本給', "description 1", "other1"));
+//            this.items2().push(new ItemModel('999', '基本給', "description 1", "other1"));
         }
 
         removeItem() {

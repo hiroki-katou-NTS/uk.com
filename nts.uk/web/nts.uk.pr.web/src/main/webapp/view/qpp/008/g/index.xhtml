@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 300,
+					height : 200
+				};
+			</script>
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.PersonId
+   				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="function-area">
+				<button id="G_BTN_001" class="proceed">登録</button>
+				<button id="G_BTN_002">PDF出力</button>
+				<button id="G_BTN_003">閉じる</button>
+			</div>
+			<div id="contents-area">
+				<div class="divLbl1 valign-top control-group">
+					<div id="G_LBL_001" data-bind="ntsFormLabel: {}">比較年月</div>
+					<label id="G_LBL_002">「”比較年月1”と"比較年月2”を比較」</label>
+				</div>
+				<br />
+				<div class="divLbl2 valign-top control-group">
+					<div id="G_LBL_003" data-bind="ntsFormLabel: {}">対象者</div>
+					<label id="G_LBL_004">対象人数は呼び出し元画面から取得する</label>
+				</div>
+				<div class="divLbl3 valign-top control-group">
+					<div id="G_LBL_005" data-bind="ntsFormLabel: {}">確認する項目区分</div>
+					<div class="checkBox123">
+						<div id="G_SEL_001"
+							data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '支給' }"></div>
+						<div id="G_SEL_002"
+							data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '控除' }"></div>
+						<div id="G_SEL_003"
+							data-bind="ntsCheckBox: { checked: checked, enable: enable, text: '記事' }"></div>
+					</div><br/>
+					<div class="divLbl4 valign-top control-group">
+						<div id="G_LBL_006" data-bind="ntsFormLabel: {}">確認済みのしぼり込み</div>
+						<div id="G_SEL_004" class="cf switchButton" data-bind="ntsSwitchButton: {
+													options: roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedRuleCode,
+													enable: enable }"></div>
+					</div>
+				</div>
+				<div>
+					<table id="grid10"></table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

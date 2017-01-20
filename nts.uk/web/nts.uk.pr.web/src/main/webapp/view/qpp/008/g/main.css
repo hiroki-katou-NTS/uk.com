@@ -1,0 +1,52 @@
+.function-area button{
+	margin-left: 40px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+} 
+#G_BTN_003{
+	margin-left: 90px !important;
+}
+.divLbl1{
+	margin-top: 20px;
+	display: inline-block;
+}
+.divLbl1.valign-top.control-group>*{
+	display: inline-block;
+	vertical-align: middle;
+}
+#G_LBL_002{
+	margin-left: 101px;
+}
+.divLbl2{
+	display: inline-block;
+}
+.divLbl2.valign-top.control-group>*{
+	display: inline-block;
+	vertical-align: middle;
+}
+#G_LBL_004{
+	margin-left:117px;
+}
+.divLbl3.valign-top.control-group>*{
+	display: inline-block;
+	vertical-align: middle;
+}
+.divLbl3.ntsCheckBox>span{
+	margin-left: 20px;
+}
+.checkBox123{
+	margin-left: 53px;
+}
+.checkBox123 div {
+	padding-right: 40px;
+}
+.divLbl4.valign-top.control-group>*{
+	display: inline-block;
+	vertical-align: middle;
+}
+.divLbl4{
+	margin-top:5px;
+}
+.switchButton{
+	margin-left: 35px;
+}
