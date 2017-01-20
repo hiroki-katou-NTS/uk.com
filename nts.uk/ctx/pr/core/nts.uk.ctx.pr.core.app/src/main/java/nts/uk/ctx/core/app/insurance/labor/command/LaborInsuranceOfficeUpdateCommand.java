@@ -20,19 +20,19 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class AddLaborInsuranceOfficeCommand.
+ * The Class UpdateLaborInsuranceOfficeCommand.
  */
 // TODO: Auto-generated Javadoc
 
 @Getter
 @Setter
-public class AddLaborInsuranceOfficeCommand {
+public class LaborInsuranceOfficeUpdateCommand {
 
 	/** The labor insurance office. */
 	private LaborInsuranceOfficeDto laborInsuranceOffice;
 
-	/** The comany code. */
-	//private String comanyCode;
+	/** The commany code. */
+	private String companyCode;
 
 	/**
 	 * To domain.
@@ -41,7 +41,7 @@ public class AddLaborInsuranceOfficeCommand {
 	 */
 	public LaborInsuranceOffice toDomain() {
 		LaborInsuranceOffice laborInsuranceOffice = new LaborInsuranceOffice();
-		//laborInsuranceOffice.setCompanyCode(new CompanyCode(this.comanyCode));
+		laborInsuranceOffice.setCompanyCode(new CompanyCode(this.companyCode));
 		laborInsuranceOffice.setCode(new OfficeCode(this.laborInsuranceOffice.getCode()));
 		laborInsuranceOffice.setName(new OfficeName(this.laborInsuranceOffice.getName()));
 		laborInsuranceOffice.setShortName(new ShortName(this.laborInsuranceOffice.getShortName()));

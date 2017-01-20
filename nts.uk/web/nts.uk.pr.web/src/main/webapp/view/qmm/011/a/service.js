@@ -18,8 +18,8 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findallHistory",
-                                findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/findHistory",
+                                findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
+                                findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
                                 detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
                                 findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findallHistory",
                                 findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findHistory",
@@ -115,31 +115,31 @@ var nts;
                                     return MonthRange;
                                 }());
                                 model.MonthRange = MonthRange;
-                                var RoundingMethod = (function () {
-                                    function RoundingMethod(code, name) {
+                                var RoundingMethodDto = (function () {
+                                    function RoundingMethodDto(code, name) {
                                         this.code = code;
                                         this.name = name;
                                     }
-                                    return RoundingMethod;
+                                    return RoundingMethodDto;
                                 }());
-                                model.RoundingMethod = RoundingMethod;
-                                var UnemployeeInsuranceRateItemSetting = (function () {
-                                    function UnemployeeInsuranceRateItemSetting(roundAtr, rate) {
+                                model.RoundingMethodDto = RoundingMethodDto;
+                                var UnemployeeInsuranceRateItemSettingDto = (function () {
+                                    function UnemployeeInsuranceRateItemSettingDto(roundAtr, rate) {
                                         this.roundAtr = roundAtr;
                                         this.rate = rate;
                                     }
-                                    return UnemployeeInsuranceRateItemSetting;
+                                    return UnemployeeInsuranceRateItemSettingDto;
                                 }());
-                                model.UnemployeeInsuranceRateItemSetting = UnemployeeInsuranceRateItemSetting;
-                                var UnemployeeInsuranceRateItem = (function () {
-                                    function UnemployeeInsuranceRateItem(careerGroup, companySetting, personalSetting) {
+                                model.UnemployeeInsuranceRateItemSettingDto = UnemployeeInsuranceRateItemSettingDto;
+                                var UnemployeeInsuranceRateItemDto = (function () {
+                                    function UnemployeeInsuranceRateItemDto(careerGroup, companySetting, personalSetting) {
                                         this.careerGroup = careerGroup;
                                         this.companySetting = companySetting;
                                         this.personalSetting = personalSetting;
                                     }
-                                    return UnemployeeInsuranceRateItem;
+                                    return UnemployeeInsuranceRateItemDto;
                                 }());
-                                model.UnemployeeInsuranceRateItem = UnemployeeInsuranceRateItem;
+                                model.UnemployeeInsuranceRateItemDto = UnemployeeInsuranceRateItemDto;
                                 var HistoryInsuranceRateDto = (function () {
                                     function HistoryInsuranceRateDto(historyId, companyCode, monthRage, startMonthRage, endMonthRage) {
                                         this.historyId = historyId;
@@ -197,25 +197,25 @@ var nts;
                                     return InsuranceBusinessType;
                                 }());
                                 model.InsuranceBusinessType = InsuranceBusinessType;
-                                (function (CareerGroup) {
-                                    CareerGroup[CareerGroup["Agroforestry"] = "Agroforestry"] = "Agroforestry";
-                                    CareerGroup[CareerGroup["Contruction"] = "Contruction"] = "Contruction";
-                                    CareerGroup[CareerGroup["Other"] = "Other"] = "Other";
-                                })(model.CareerGroup || (model.CareerGroup = {}));
-                                var CareerGroup = model.CareerGroup;
-                                (function (BusinessTypeEnum) {
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz1St"] = "Biz1St"] = "Biz1St";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz2Nd"] = "Biz2Nd"] = "Biz2Nd";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz3Rd"] = "Biz3Rd"] = "Biz3Rd";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz4Th"] = "Biz4Th"] = "Biz4Th";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz5Th"] = "Biz5Th"] = "Biz5Th";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz6Th"] = "Biz6Th"] = "Biz6Th";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz7Th"] = "Biz7Th"] = "Biz7Th";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz8Th"] = "Biz8Th"] = "Biz8Th";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz9Th"] = "Biz9Th"] = "Biz9Th";
-                                    BusinessTypeEnum[BusinessTypeEnum["Biz10Th"] = "Biz10Th"] = "Biz10Th";
-                                })(model.BusinessTypeEnum || (model.BusinessTypeEnum = {}));
-                                var BusinessTypeEnum = model.BusinessTypeEnum;
+                                (function (CareerGroupDto) {
+                                    CareerGroupDto[CareerGroupDto["Agroforestry"] = 0] = "Agroforestry";
+                                    CareerGroupDto[CareerGroupDto["Contruction"] = 1] = "Contruction";
+                                    CareerGroupDto[CareerGroupDto["Other"] = 2] = "Other";
+                                })(model.CareerGroupDto || (model.CareerGroupDto = {}));
+                                var CareerGroupDto = model.CareerGroupDto;
+                                (function (BusinessTypeEnumDto) {
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz1St"] = 1] = "Biz1St";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz2Nd"] = 2] = "Biz2Nd";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz3Rd"] = 3] = "Biz3Rd";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz4Th"] = 4] = "Biz4Th";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz5Th"] = 5] = "Biz5Th";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz6Th"] = 6] = "Biz6Th";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz7Th"] = 7] = "Biz7Th";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz8Th"] = 8] = "Biz8Th";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz9Th"] = 9] = "Biz9Th";
+                                    BusinessTypeEnumDto[BusinessTypeEnumDto["Biz10Th"] = 10] = "Biz10Th";
+                                })(model.BusinessTypeEnumDto || (model.BusinessTypeEnumDto = {}));
+                                var BusinessTypeEnumDto = model.BusinessTypeEnumDto;
                                 (function (TypeHistory) {
                                     TypeHistory[TypeHistory["HistoryUnemployee"] = 1] = "HistoryUnemployee";
                                     TypeHistory[TypeHistory["HistoryAccident"] = 2] = "HistoryAccident";

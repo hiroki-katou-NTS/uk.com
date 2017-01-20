@@ -4,27 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.core.app.insurance.labor.unemployeerate;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UnemployeeInsuranceRateDto {
-	/** The history id. */
-	// historyId
-	private String historyId;
+public class UnemployeeInsuranceRateItemSettingDto {
+	
+	/** The round atr. */
+	private Integer roundAtr;
 
-	/** The company code. */
-	private String companyCode;
-
-	// private MonthRange applyRange;
-
-	/** The rate items. */
-	private List<UnemployeeInsuranceRateItemDto> rateItems;
+	/** The code. */
+	private Double rate;
 }

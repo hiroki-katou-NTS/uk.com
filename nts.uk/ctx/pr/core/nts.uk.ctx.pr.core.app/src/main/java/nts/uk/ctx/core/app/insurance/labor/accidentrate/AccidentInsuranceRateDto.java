@@ -7,14 +7,16 @@ package nts.uk.ctx.core.app.insurance.labor.accidentrate;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 // TODO: Auto-generated Javadoc
-@Getter
-@Setter	
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccidentInsuranceRateDto {
 	/** The history id. */
 	// historyId

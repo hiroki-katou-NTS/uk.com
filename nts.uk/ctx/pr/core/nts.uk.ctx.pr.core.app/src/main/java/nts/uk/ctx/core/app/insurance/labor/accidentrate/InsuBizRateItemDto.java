@@ -1,15 +1,30 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.core.app.insurance.labor.accidentrate;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Setter
-@Getter
-public class InsuBizRateItemDto extends InsuBizRateItem {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class InsuBizRateItemDto {
+
+	/** The insu biz type. */
+	private Integer insuBizType;
+
+	/** The insu rate. */
+	private Double insuRate;
+
+	/** The insu round. */
+	private Integer insuRound;
+
+	/** insuranceBusinessType. */
 	private String insuranceBusinessType;
 
-	public InsuBizRateItemDto() {
-		super();
-	}
 }

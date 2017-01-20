@@ -15,7 +15,9 @@ var nts;
                             var paths = {
                                 findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
                                 findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
-                                addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add"
+                                addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
+                                updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
+                                deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
                             function findAllLaborInsuranceOffice() {
                                 var dfd = $.Deferred();
@@ -41,9 +43,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findLaborInsuranceOffice = findLaborInsuranceOffice;
-                            function addLaborInsuranceOffice(laborInsuranceOffice, comanyCode) {
+                            function addLaborInsuranceOffice(laborInsuranceOffice, companyCode) {
                                 var dfd = $.Deferred();
-                                var data = { laborInsuranceOffice: laborInsuranceOffice, comanyCode: comanyCode };
+                                var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
                                 nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -54,6 +56,19 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addLaborInsuranceOffice = addLaborInsuranceOffice;
+                            function deleteLaborInsuranceOffice(code, companyCode) {
+                                var dfd = $.Deferred();
+                                var data = { companyCode: companyCode, code: code };
+                                nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.deleteLaborInsuranceOffice = deleteLaborInsuranceOffice;
                             var model;
                             (function (model) {
                                 var LaborInsuranceOfficeDto = (function () {

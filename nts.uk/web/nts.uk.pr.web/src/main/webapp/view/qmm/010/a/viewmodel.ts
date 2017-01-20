@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm010.a {
             }
             resetValueLaborInsurance() {
                 var self = this;
-                self.laborInsuranceOffice().resetAllValue();
+                self.laborInsuranceOfficeModel().resetAllValue();
             }
             readFromSocialTnsuranceOffice() {
                 var self = this;
@@ -83,7 +83,11 @@ module nts.uk.pr.view.qmm010.a {
             }
             addLaborInsuranceOffice() {
                 var self = this;
-                service.addLaborInsuranceOffice(self.collectData(),"000001");
+                service.addLaborInsuranceOffice(self.collectData(), "000001");
+            }
+            deleteLaborInsuranceOffice() {
+                var self = this;
+                service.deleteLaborInsuranceOffice(self.laborInsuranceOfficeModel().code(), "00001");
             }
             //Convert Model => DTO
             collectData(): service.model.LaborInsuranceOfficeDto {
@@ -94,7 +98,7 @@ module nts.uk.pr.view.qmm010.a {
                     self.laborInsuranceOfficeModel().address1st(), self.laborInsuranceOfficeModel().address2nd(),
                     self.laborInsuranceOfficeModel().kanaAddress1st(), self.laborInsuranceOfficeModel().kanaAddress2nd(),
                     self.laborInsuranceOfficeModel().phoneNumber(), self.laborInsuranceOfficeModel().citySign(), self.laborInsuranceOfficeModel().officeMark(),
-                    self.laborInsuranceOfficeModel().officeNoA(), self.laborInsuranceOfficeModel().officeNoB(),self.laborInsuranceOfficeModel().officeNoC(),
+                    self.laborInsuranceOfficeModel().officeNoA(), self.laborInsuranceOfficeModel().officeNoB(), self.laborInsuranceOfficeModel().officeNoC(),
                     self.laborInsuranceOfficeModel().memo());
             }
 

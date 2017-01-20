@@ -33,7 +33,7 @@ var nts;
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
-                                    self.laborInsuranceOffice().resetAllValue();
+                                    self.laborInsuranceOfficeModel().resetAllValue();
                                 };
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
@@ -81,6 +81,10 @@ var nts;
                                 ScreenModel.prototype.addLaborInsuranceOffice = function () {
                                     var self = this;
                                     a.service.addLaborInsuranceOffice(self.collectData(), "000001");
+                                };
+                                ScreenModel.prototype.deleteLaborInsuranceOffice = function () {
+                                    var self = this;
+                                    a.service.deleteLaborInsuranceOffice(self.laborInsuranceOfficeModel().code(), "00001");
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;

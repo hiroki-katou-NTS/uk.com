@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor;
 
 import java.util.ArrayList;
@@ -11,8 +15,12 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.core.app.insurance.labor.LaborInsuranceOfficeInDto;
-import nts.uk.ctx.core.app.insurance.labor.command.AddLaborInsuranceOfficeCommand;
-import nts.uk.ctx.core.app.insurance.labor.command.AddLaborInsuranceOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.labor.command.LaborInsuranceOfficeAddCommand;
+import nts.uk.ctx.core.app.insurance.labor.command.LaborInsuranceOfficeAddCommandHandler;
+import nts.uk.ctx.core.app.insurance.labor.command.LaborInsuranceOfficeDeleteCommand;
+import nts.uk.ctx.core.app.insurance.labor.command.LaborInsuranceOfficeDeleteCommandHandler;
+import nts.uk.ctx.core.app.insurance.labor.command.LaborInsuranceOfficeUpdateCommand;
+import nts.uk.ctx.core.app.insurance.labor.command.LaborInsuranceOfficeUpdateCommandHandler;
 import nts.uk.ctx.core.app.insurance.labor.find.LaborInsuranceOfficeDto;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
@@ -29,9 +37,19 @@ import nts.uk.shr.com.primitive.Memo;
 @Path("ctx/pr/core/insurance/labor")
 @Produces("application/json")
 public class LaborInsuranceOfficeService extends WebService {
+
+	/** The add. */
 	// Find all LaborInsuranceOffice conection data
 	@Inject
-	private AddLaborInsuranceOfficeCommandHandler add;
+	private LaborInsuranceOfficeAddCommandHandler add;
+
+	/** The update. */
+	@Inject
+	private LaborInsuranceOfficeUpdateCommandHandler update;
+
+	/** The delete. */
+	@Inject
+	private LaborInsuranceOfficeDeleteCommandHandler delete;
 
 	@POST
 	@Path("findall")
@@ -155,8 +173,19 @@ public class LaborInsuranceOfficeService extends WebService {
 
 	@POST
 	@Path("add")
-	public void add(AddLaborInsuranceOfficeCommand command) {
-		System.out.println(command.toString());
+	public void add(LaborInsuranceOfficeAddCommand command) {
 		this.add.handle(command);
+	}
+
+	@POST
+	@Path("update")
+	public void update(LaborInsuranceOfficeUpdateCommand command) {
+		this.update.handle(command);
+	}
+
+	@POST
+	@Path("delete")
+	public void delete(LaborInsuranceOfficeDeleteCommand command) {
+		this.delete.handle(command);
 	}
 }

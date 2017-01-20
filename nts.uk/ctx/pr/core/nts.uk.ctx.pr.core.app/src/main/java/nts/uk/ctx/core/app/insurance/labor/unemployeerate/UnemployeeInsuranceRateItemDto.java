@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.core.app.insurance.labor.unemployeerate;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,16 +13,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UnemployeeInsuranceRateDto {
-	/** The history id. */
-	// historyId
-	private String historyId;
 
-	/** The company code. */
-	private String companyCode;
+public class UnemployeeInsuranceRateItemDto {
+	/** The career group. */
+	private Integer careerGroup;
 
-	// private MonthRange applyRange;
+	/** The company setting. */
+	private UnemployeeInsuranceRateItemSettingDto companySetting;
 
-	/** The rate items. */
-	private List<UnemployeeInsuranceRateItemDto> rateItems;
+	/** The personal setting. */
+	private UnemployeeInsuranceRateItemSettingDto personalSetting;
 }

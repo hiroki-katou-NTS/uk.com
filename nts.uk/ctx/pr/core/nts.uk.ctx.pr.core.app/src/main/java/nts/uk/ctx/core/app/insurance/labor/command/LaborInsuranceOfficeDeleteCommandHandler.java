@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package nts.uk.ctx.core.app.insurance.labor.command;
 
 import javax.ejb.Stateless;
@@ -6,15 +9,12 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.app.company.command.AddCompanyCommand;
-import nts.uk.ctx.core.dom.company.Company;
-import nts.uk.ctx.core.dom.company.CompanyRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 
 @Stateless
 @Transactional
-public class AddLaborInsuranceOfficeCommandHandler extends CommandHandler<AddLaborInsuranceOfficeCommand> {
+public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<LaborInsuranceOfficeDeleteCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -27,10 +27,9 @@ public class AddLaborInsuranceOfficeCommandHandler extends CommandHandler<AddLab
 	 *            context
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<AddLaborInsuranceOfficeCommand> context) {
-		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain();
-		laborInsuranceOffice.validate();
-		this.laborInsuranceOfficeRepository.add(laborInsuranceOffice);
+	protected void handle(CommandHandlerContext<LaborInsuranceOfficeDeleteCommand> context) {
+		LaborInsuranceOfficeDeleteCommand laborInsuranceOffice = context.getCommand();
+		this.laborInsuranceOfficeRepository.remove(laborInsuranceOffice.getCode(), 1000L);
 	}
 
 }

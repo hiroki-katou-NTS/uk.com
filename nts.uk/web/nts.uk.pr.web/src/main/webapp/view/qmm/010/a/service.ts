@@ -4,7 +4,9 @@ module nts.uk.pr.view.qmm010.a {
         var paths: any = {
             findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
             findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
-            addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add"
+            addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
+            updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
+            deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
         };
 
         //Function connection service FindAll Labor Insurance Office
@@ -33,9 +35,9 @@ module nts.uk.pr.view.qmm010.a {
                 })
             return dfd.promise();
         }
-        export function addLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, comanyCode: string): JQueryPromise<any> {
+        export function addLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { laborInsuranceOffice: laborInsuranceOffice, comanyCode: comanyCode };
+            var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
             nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
@@ -46,6 +48,21 @@ module nts.uk.pr.view.qmm010.a {
                 })
             return dfd.promise();
         }
+
+        export function deleteLaborInsuranceOffice(code: string, companyCode: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var data = { companyCode: companyCode, code: code };
+            nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
         /**
        * Model namespace.
        */
