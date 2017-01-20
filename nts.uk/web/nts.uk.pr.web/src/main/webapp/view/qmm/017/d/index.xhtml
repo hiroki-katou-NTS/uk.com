@@ -20,10 +20,9 @@
 				rows: 5}"></div>
 				</div>
 			</div>
-			<div style="margin-left: 20px" class="ib d-col-1">
-				<div id="d_lst_002" class="ib va-middle" data-bind="with: d_lst_002">
-					<div style="width: 307px" data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCodes, selectedKey: 'code', fields: ['name', 'code']}" />
-					<div id="list-box" data-bind="ntsListBox: {
+			<div id="d_lst_002" class="ib va-middle" data-bind="with: d_lst_002">
+				<div style="width: 307px" data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
+				<div id="list-box" data-bind="ntsListBox: {
 					options: itemList,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -35,8 +34,7 @@
 						{ prop: 'name', length: 10 }
 					],
 					rows: 5}"></div>
-					<button id="d_btn_001" class="caret-bottom">計算式挿入ボタン</button>
-				</div>
+				<button id="d_btn_001" class="caret-bottom">計算式挿入ボタン</button>
 			</div>
 		</div>
 	</ui:composition>

@@ -191,10 +191,11 @@ textarea {
 	z-index: 1000;
 	/* width: 100px; */
 	/* height: 32px; */
-	color: red;
-	background-color: white;
-	border: 1px solid black;
-	padding: 5px;
+	color:	#595959;
+	background-color: #fcf1c8;
+	border: 1px solid gray;
+	padding: 2px;
+	border-radius: 3px;
 }
 /* screen d */
 .wrap-sel-006 {
@@ -206,6 +207,10 @@ textarea {
 }
 #d_lst_001{
 	margin-top: 39px;
+}
+#d_lst_002 {
+	width: 282px; 
+	margin-left: 20px;
 }
 #d_lst_001.caret-right:after {
     border-width: 37px 19px;

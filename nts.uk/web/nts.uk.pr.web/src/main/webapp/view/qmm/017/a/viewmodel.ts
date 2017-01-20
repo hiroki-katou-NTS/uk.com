@@ -81,18 +81,22 @@ module nts.uk.pr.view.qmm017.a {
                 }, this).extend({ deferred: true });
             }
         }
+
         function showError(event) {
+            var self = this;
             var currentString = $("#input-text").val();
-            var selectValue = $(this).attr("message");
-            $(this).tooltip({ content: selectValue });
-            $("#error-message").text(selectValue);
-            var position = $("#input-containner").position();
-            $("#error-containner").css({
-                "top": (event.data.pageY - position.top + 2) + "px",
-                "left": (event.data.pageX - position.left + 2) + "px"
-            });
-            $("#error-containner").show();
+            var selectValue = $(self).attr("messege");
+            if (selectValue !== undefined) {
+                $("#error-message").text(selectValue);
+                var position = $("#input-containner").position();
+                $("#error-containner").css({
+                    "top": (event.data.pageY - position.top + 2 - 95) + "px",
+                    "left": (event.data.pageX - position.left + 2 - 400) + "px"
+                });
+                $("#error-containner").show();
+            }
         }
+
         export class TextEditor {
             autoComplete: KnockoutObservableArray<any>;
             textArea: KnockoutObservable<any>;
@@ -101,12 +105,13 @@ module nts.uk.pr.view.qmm017.a {
             showAutoComplete: KnockoutObservable<boolean>;
             row: KnockoutObservable<number>;
             col: KnockoutObservable<number>;
+            index: KnockoutObservable<number>;
             error: KnockoutObservable<string>;
 
             constructor() {
-                //----------------------------------------------------------------------------
                 var self = this;
-                this.autoComplete = ko.observableArray([
+                //----------------------------------------------------------------------------
+                self.autoComplete = ko.observableArray([
                     new ItemModelTextEditor('001', '基本給', "description 1"),
                     new ItemModelTextEditor('150', '役職手当', "description 2"),
                     new ItemModelTextEditor('ABC', '基12本ghj給', "description 3"),
@@ -118,55 +123,54 @@ module nts.uk.pr.view.qmm017.a {
                     new ItemModelTextEditor('AB5', '基12本ghj給', "description 9")
                 ]);
 
-                this.showAutoComplete = ko.observable(false);
-                this.autoSelected = ko.observable("");
-                this.row = ko.observable(1);
-                this.col = ko.observable(1);
-                this.error = ko.observable("");
-                this.autoSelected.subscribe(function(value) {
+                self.showAutoComplete = ko.observable(false);
+                self.autoSelected = ko.observable("");
+                self.row = ko.observable(1);
+                self.col = ko.observable(1);
+                self.index = ko.observable(1);
+                self.error = ko.observable("");
+                self.autoSelected.subscribe(function(value) {
                     if (value !== undefined) {
                         var currentString = $("#input-text").val();
-                        var index = this.getIndex(currentString, this.row(), this.col()) + 1;
+                        var index = self.index() + 1;
                         var selectValue = value.name();
-                        var inserted = this.insertString(currentString, selectValue, index);
-                        this.textArea(inserted);
+                        var inserted = self.insertString(currentString, selectValue, index);
+                        self.textArea(inserted);
                         $("#input-text").focus();
                         $("#input-text")[0].selectionStart = index + selectValue.length;
                         $("#input-text")[0].selectionEnd = index + selectValue.length;
-                        this.testError();
+                        self.testError();
                         $("#auto-complete-containner").hide();
-                        this.autoSelected(undefined);
+                        self.autoSelected(undefined);
                     }
-                }, this);
-                this.textArea = ko.observable("");
-                this.divValue = ko.observable("");
+                }, self);
+                self.textArea = ko.observable("");
+                self.divValue = ko.observable("");
                 $("#error-containner").hide();
-                $(document).on("keyup", "#input-text", function(event) {
-                    if (!event.shiftKey && event.keyCode === 16) {
+                $(document).on("keyup", "#input-text", (event) => {
+                    if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
                         return;
                     }
                     $("#error-containner").hide();
                     var start = $("#input-text")[0].selectionStart;
                     var end = $("#input-text")[0].selectionEnd;
                     var maxWidthCharacter = 15;
-                    if ((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) {
-                        var currentRow = self.getCurrentRows(end);
-                        var currentCol = self.getCurrentColumn(currentRow, end);
-                        self.row(currentRow);
-                        self.col(currentCol);
+                    if (((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) && event.key === "@") {
+                        self.testError();
+                        var currentRow = self.getCurrentPosition(end);
+                        self.index(end);
                         $("#auto-complete-containner").show();
-                        $("#auto-complete-containner").css({ "top": (currentRow * 17) + "px", "left": (currentCol * maxWidthCharacter) + "px" });
+                        $("#auto-complete-containner").css({ "top": (currentRow.top + 17) + "px", "left": (currentRow.left + 15) + "px" });
                     } else {
                         $("#auto-complete-containner").hide();
                         self.testError();
                     }
-                })
-
-                $(document).on("mouseleave", "#error-containner", function(event) {
+                });
+                $(document).on("mouseleave", "#error-containner", (event) => {
                     $("#error-containner").hide();
                 });
 
-                $(document).on("click", "#input-area", function(event) {
+                $(document).on("click", "#input-area", (event) => {
                     $("#error-containner").hide();
                     var y = _.findLast($(".special-char"), function(d) {
                         var x = $(d).offset();
@@ -190,6 +194,7 @@ module nts.uk.pr.view.qmm017.a {
             }
 
             testError() {
+                var self = this;
                 var value = $("#input-text").val();
                 var count = 1;
                 var toChar = value.split('');
@@ -199,12 +204,25 @@ module nts.uk.pr.view.qmm017.a {
                         html += "</span>";
                         html += "<span class='editor-line'>";
                     } else {
-                        if (this.checkAlphaOrEmpty(toChar[i])) {
-                            if (toChar[i - 1] === undefined) {
+                        if (toChar[i] === "@") {
+                            html += "<span id='span-" + count + "' class='autocomplete-char'>" + toChar[i] + "</span>";
+                            count++;
+                        } else if (self.checkJapanese(toChar[i])) {
+                            if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
+                                html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                                count++;
+                            } else if (self.checkJapanese(toChar[i - 1])) {
+                                html = self.insertString(html, toChar[i], html.length - 7);
+                            } else {
+                                html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                                count++;
+                            }
+                        } else if (self.checkAlphaOrEmpty(toChar[i])) {
+                            if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
                                 html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                                 count++;
-                            } else if (this.checkAlphaOrEmpty(toChar[i - 1])) {
-                                html = this.insertString(html, toChar[i], html.length - 7);
+                            } else if (self.checkAlphaOrEmpty(toChar[i - 1]) && toChar[i - 1] !== "@") {
+                                html = self.insertString(html, toChar[i], html.length - 7);
                             } else {
                                 html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
                                 count++;
@@ -216,46 +234,28 @@ module nts.uk.pr.view.qmm017.a {
                     }
                 }
                 html += "</span>";
-                this.divValue(html);
-                this.testGachChan($(".special-char"));
-                this.divValue($("#input-content-area").html());
+                self.divValue(html);
+                self.testGachChan($(".special-char"));
+                self.divValue($("#input-content-area").html());
             }
 
-            getIndex(str, row, col) {
-                if (row === 1) {
-                    return col - 1;
-                }
-                var rowValues = str.split("\n");
+            getCurrentPosition(position) {
+                var uiPosition = {};
+                var $lines = $("#input-content-area").find(".editor-line");
                 var index = 0;
-                for (var i = 0; i < row - 1; i++) {
-                    index = rowValues[i].length + 1;
-                }
-                return index + col - 1;
-            }
-
-            getCurrentColumn(currentRow, position) {
-                if (currentRow === 1) {
-                    return position;
-                }
-                var rowValues = $("#input-text").val().split("\n");
-                var count = 1;
-                var x = position;
-                for (var i = 0; i < currentRow - 1; i++) {
-                    count = x - rowValues[i].length - 1;
-                    x = count;
-                }
-                return count + 1;
-            }
-
-            getCurrentRows(position) {
-                var currentText = $("#input-text").val();
-                var count = 1;
-                var start = currentText.indexOf("\n", 0);
-                while (start !== -1 && start < position) {
-                    count++;
-                    start = currentText.indexOf("\n", start + 1);
-                };
-                return count;
+                $lines.each(function(index, line) {
+                    var $line = $(line);
+                    var char = _.find($line.children(), function(text) {
+                        var current = index + $(text).text().length;
+                        index += $(text).text().length;
+                        return current === position;
+                    });
+                    if (char !== undefined) {
+                        uiPosition = $(char).position();
+                        return;
+                    }
+                });
+                return uiPosition;
             }
 
             checkAlphaOrEmpty(char) {
@@ -263,7 +263,12 @@ module nts.uk.pr.view.qmm017.a {
                 return !speChar.test(char) || char === " " || char === undefined;
             }
 
+            checkJapanese(char) {
+                return !nts.uk.text.allHalf(char);
+            }
+
             testGachChan(specialChar) {
+                var self = this;
                 var singleSpecial = {
                     "+": "+",
                     "-": "-",
@@ -293,10 +298,32 @@ module nts.uk.pr.view.qmm017.a {
                     return $(n).html() === "\)";
                 });
 
+                self.checkOpenClose(openTriangle, closeTriangle);
+
+                self.checkOpenClose(openRound, closeRound);
+
+                var element = self.toArrayChar(specialChar);
+                for (var i = 0; i < specialChar.length; i++) {
+                    var $data = $(specialChar[i]);
+                    var charCount = parseInt($data.attr("id").split("-")[1]);
+                    var char = $data.text();
+                    var single = singleSpecial[char];
+                    if (single !== undefined) {
+                        var neighborCount = self.countNeighbor(charCount, specialChar, true, true);
+                        if (neighborCount > 0) {
+                            $data.addClass("error-char").attr("messege", "test 2");
+                        }
+                    } else if (char !== "@") {
+                        $data.addClass("error-char").attr("messege", "test 4");
+                    }
+                }
+            }
+
+            checkOpenClose(openTriangle, closeTriangle) {
                 if (closeTriangle.length === 0) {
-                    $(openTriangle).addClass("error-char").attr("message", "test 1");
+                    $(openTriangle).addClass("error-char").attr("messege", "test 1");
                 } else if (openTriangle.length === 0) {
-                    $(closeTriangle).addClass("error-char").attr("message", "test 1");
+                    $(closeTriangle).addClass("error-char").attr("messege", "test 1");
                 } else {
                     var openError = [];
                     for (var i = openTriangle.length - 1; i >= 0; i--) {
@@ -311,50 +338,13 @@ module nts.uk.pr.view.qmm017.a {
                             closeTriangle.splice(closeTriangle.indexOf(currentClose), 1);
                         }
                     }
-                    $(openError).addClass("error-char").attr("message", "test 1");
-                    $(closeTriangle).addClass("error-char").attr("message", "test 1");
-                }
-
-                if (closeRound.length === 0) {
-                    $(openRound).addClass("error-char").attr("message", "test 1");
-                } else if (openRound.length === 0) {
-                    $(closeRound).addClass("error-char").attr("message", "test 1");
-                } else {
-                    var openError = [];
-                    for (var i = openRound.length - 1; i >= 0; i--) {
-                        var currentOpen = openRound[i];
-                        var id = parseInt($(currentOpen).attr("id").split("-")[1]);
-                        var currentClose = _.find(closeRound, function(a) {
-                            return parseInt($(a).attr("id").split("-")[1]) > id;
-                        });
-                        if (currentClose === undefined) {
-                            openError.unshift(currentOpen);
-                        } else {
-                            closeRound.splice(closeRound.indexOf(currentClose), 1);
-                        }
-                    }
-                    $(openError).addClass("error-char").attr("message", "test 3");
-                    $(closeRound).addClass("error-char").attr("message", "test 3");
-                }
-
-                var element = this.toArrayChar(specialChar);
-                for (var i = 0; i < specialChar.length; i++) {
-                    var $data = $(specialChar[i]);
-                    var charCount = parseInt($data.attr("id").split("-")[1]);
-                    var char = $data.text();
-                    var single = singleSpecial[char];
-                    if (single !== undefined) {
-                        var neighborCount = this.countNeighbor(charCount, specialChar, true, true);
-                        if (neighborCount > 0) {
-                            $data.addClass("error-char").attr("message", "test 2");
-                        }
-                    } else if (char !== "@") {
-                        $data.addClass("error-char").attr("message", "test 4");
-                    }
+                    $(openError).addClass("error-char").attr("messege", "test 1");
+                    $(closeTriangle).addClass("error-char").attr("messege", "test 1");
                 }
             }
 
             countNeighbor(index, array, countNext, countPrev) {
+                var self = this;
                 var previous = _.find(array, function(a) { return $(a).attr("id") === "span-" + (index - 1); });
                 var next = _.find(array, function(a) { return $(a).attr("id") === "span-" + (index + 1); });
                 if (previous === undefined && next === undefined) {
@@ -364,11 +354,11 @@ module nts.uk.pr.view.qmm017.a {
                 var nextCount = 0;
                 if (countNext && next !== undefined) {
                     nextCount++;
-                    nextCount += this.countNeighbor(index + 1, array, countNext, false);
+                    nextCount += self.countNeighbor(index + 1, array, countNext, false);
                 }
                 if (countPrev && previous !== undefined) {
                     previousCount++;
-                    previousCount += this.countNeighbor(index - 1, array, false, countPrev);
+                    previousCount += self.countNeighbor(index - 1, array, false, countPrev);
                 }
                 return previousCount + nextCount;
 
@@ -380,6 +370,7 @@ module nts.uk.pr.view.qmm017.a {
                     return d === x;
                 }).length;
             }
+            
             toArrayChar(element) {
                 return _.map(element, function(data) {
                     return $(data).html();
@@ -409,14 +400,6 @@ module nts.uk.pr.view.qmm017.a {
                 $('#list-box').on('selectionChanged', function(event: any) {
                     console.log('Selected value:' + (<any>event.originalEvent).detail)
                 })
-            }
-
-            deselectAll() {
-                $('#list-box').ntsListBox('deselectAll');
-            }
-
-            selectAll() {
-                $('#list-box').ntsListBox('selectAll');
             }
         }
         export class ScreenModel {
@@ -476,7 +459,7 @@ module nts.uk.pr.view.qmm017.a {
                     { code: 7, name: '五捨六入' },
                     { code: 8, name: '六捨七入' },
                     { code: 9, name: '七捨八入' },
-                    { code: 10, name: '八捨九入' },
+                    { code: 10, name: '八捨九入' }, 
                 ];
                 var d_lst_001 = [
                     { code: 1, name: '支給項目（支給＠）' },
@@ -513,6 +496,14 @@ module nts.uk.pr.view.qmm017.a {
                 self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
                 self.d_lst_001 = ko.observable(new ListBox(d_lst_001));
                 self.d_lst_002 = ko.observable(new ListBox(d_lst_002));
+            }
+
+            undo() {
+                document.execCommand("undo", false, null);
+            }
+            
+            redo() {
+                document.execCommand("redo", false, null);
             }
         }
     }
