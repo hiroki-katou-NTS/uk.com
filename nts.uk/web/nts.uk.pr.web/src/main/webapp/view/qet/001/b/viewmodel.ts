@@ -2,6 +2,7 @@ module qet001.b.viewmodel {
     import NtsGridColumn = nts.uk.ui.NtsGridListColumn;
     import NtsTabModel = nts.uk.ui.NtsTabPanelModel;
     import WageLedgerOutputSetting = qet001.a.service.model.WageLedgerOutputSetting;
+    import WageledgerCategorySetting = qet001.a.service.model.WageledgerCategorySetting;
     
     export class ScreenModel {
         outputSettings: KnockoutObservable<OutputSettings>;
@@ -13,14 +14,17 @@ module qet001.b.viewmodel {
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
             this.outputSettingDetail= ko.observable(new OutputSettingDetail());
-            this.reportItems = ko.observableArray([
-                    new ReportItem('CAT1', true, 'CODE1', 'Name 1'),
-                    new ReportItem('CAT2', false, 'CODE2', 'Name 2'),
-                    new ReportItem('CAT4', true, 'CODE5', 'Name 5'),
-                ]);
+            this.reportItems = ko.observableArray([]);
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryName', width: 50},
-                    {headerText: '集約', prop: 'isAggregate', width: 30},
+                    {headerText: '集約', prop: 'isAggregate', width: 30,
+                        formatter: function(data: string) {
+                            if (data == 'true') {
+                                return '<i class="icon icon-dot"></i>';
+                            }
+                            return '';
+                        }
+                    },
                     {headerText: 'コード', prop: 'itemCode', width: 100},
                     {headerText: '名称', prop: 'itemName', width: 100},
                 ]);
@@ -34,6 +38,20 @@ module qet001.b.viewmodel {
                 }
                 // load detail output setting.
                 self.loadOutputSettingDetail(newVal);
+            })
+            self.outputSettingDetail.subscribe((data: OutputSettingDetail) => {
+                if(data == undefined || data == null || data.categorySettings().length == 0) {
+                    return;
+                }
+                // Set data to report item list.
+                var reportItemList: ReportItem[] = [];
+                data.categorySettings().forEach((setting) => {
+                    var categoryName: string = setting.category;
+                    setting.outputItems.forEach((item) => {
+                        reportItemList.push(new ReportItem(categoryName, item.isAggregateItem, item.code, item.name));
+                    });
+                });
+                self.reportItems(reportItemList);
             })
         }
         
@@ -58,6 +76,7 @@ module qet001.b.viewmodel {
         public loadOutputSettingDetail(selectedCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var self = this;
+            
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
                 self.outputSettingDetail(new OutputSettingDetail(data));
                 dfd.resolve();
@@ -102,6 +121,7 @@ module qet001.b.viewmodel {
         categorySettingTabs: KnockoutObservableArray<NtsTabModel>;
         selectedCategory: KnockoutObservable<string>;
         isCreateMode: KnockoutObservable<boolean>;
+        categorySettings: KnockoutObservableArray<WageledgerCategorySetting>;
         
         constructor(outputSetting?: WageLedgerOutputSetting) {
             this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
@@ -117,8 +137,11 @@ module qet001.b.viewmodel {
             ]);
             this.selectedCategory = ko.observable('tab-salary-payment');
             this.isCreateMode = ko.observable(outputSetting == undefined);
+            this.categorySettings = ko.observableArray(outputSetting != undefined ? outputSetting.categorySettings : []);
         }
     }
+    
+    
     
     export class ReportItem {
         categoryName: string;

@@ -25,21 +25,15 @@ module qet001.a {
             }
             
             export class WageledgerCategorySetting {
-                category: Enum;
-                paymentType: Enum;
+                category: string;
+                paymentType: string;
                 outputItems: WageLedgerSettingItem[];
             }
             
             export class WageLedgerSettingItem {
-                itemCode: string;
-                itemName: string;
-                isAggregateItem: boolean
-            }
-            
-            export class Enum {
-                value : number;
-                ecName: string;
+                code: string;
                 name: string;
+                isAggregateItem: boolean
             }
         }
     }
