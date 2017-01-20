@@ -51,8 +51,6 @@ public class RetirementPayment extends AggregateRoot {
 	@Getter
 	private PaymentMoney totalPaymentMoney;
 	@Getter
-	private PaymentMoney transferAmount;
-	@Getter
 	private TrialPeriodSet trialPeriodSet;
 
 	public RetirementPayment(PaymentYear actualRecieveMoney, PaymentYear additionalBoardYears, PaymentYear boardYears,
@@ -60,8 +58,7 @@ public class RetirementPayment extends AggregateRoot {
 			PaymentMoney deduction2Money, PaymentMoney deduction3Money, PaymentYear exclusionYears,
 			PaymentMoney incomeTaxMoney, Memo memo, PersonId personId, PaymentMoney prefectureTaxMoney,
 			RetirementPayOption retirementPayOption, TaxCalculationMethod taxCalculationMethod,
-			PaymentMoney totalDeclarationMoney, PaymentMoney totalPaymentMoney, PaymentMoney transferAmount,
-			TrialPeriodSet trialPeriodSet) {
+			PaymentMoney totalDeclarationMoney, PaymentMoney totalPaymentMoney, TrialPeriodSet trialPeriodSet) {
 		super();
 		this.actualRecieveMoney = actualRecieveMoney;
 		this.additionalBoardYears = additionalBoardYears;
@@ -80,7 +77,6 @@ public class RetirementPayment extends AggregateRoot {
 		this.taxCalculationMethod = taxCalculationMethod;
 		this.totalDeclarationMoney = totalDeclarationMoney;
 		this.totalPaymentMoney = totalPaymentMoney;
-		this.transferAmount = transferAmount;
 		this.trialPeriodSet = trialPeriodSet;
 	}
 	
@@ -89,8 +85,7 @@ public class RetirementPayment extends AggregateRoot {
 			int deduction2Money, int deduction3Money, int exclusionYears,
 			int incomeTaxMoney, String memo, String personId, int prefectureTaxMoney,
 			int retirementPayOption, int taxCalculationMethod,
-			int totalDeclarationMoney, int totalPaymentMoney, int transferAmount,
-			int trialPeriodSet) {
+			int totalDeclarationMoney, int totalPaymentMoney, int trialPeriodSet) {
 		return new RetirementPayment(
 				new PaymentYear(actualRecieveMoney), 
 				new PaymentYear(additionalBoardYears), 
@@ -109,7 +104,6 @@ public class RetirementPayment extends AggregateRoot {
 				EnumAdaptor.valueOf(taxCalculationMethod, TaxCalculationMethod.class), 
 				new PaymentMoney(totalDeclarationMoney), 
 				new PaymentMoney(totalPaymentMoney), 
-				new PaymentMoney(transferAmount), 
 				EnumAdaptor.valueOf(trialPeriodSet, TrialPeriodSet.class));
 	}
 }
