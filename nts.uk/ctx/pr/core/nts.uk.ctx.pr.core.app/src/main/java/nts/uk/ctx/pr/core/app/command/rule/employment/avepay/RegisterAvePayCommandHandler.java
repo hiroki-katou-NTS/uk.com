@@ -13,7 +13,11 @@ import nts.uk.ctx.pr.core.dom.rule.employment.avepay.ExceptionPayRate;
 import nts.uk.ctx.pr.core.dom.rule.employment.avepay.RoundDigitSet;
 import nts.uk.ctx.pr.core.dom.rule.employment.avepay.RoundTimingSet;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @RequestScoped
 public class RegisterAvePayCommandHandler extends CommandHandler<RegisterAvePayCommand> {
 

@@ -10,7 +10,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.avepay.AvePay;
 import nts.uk.ctx.pr.core.dom.rule.employment.avepay.AvePayRepository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.avepay.QapmtAvePay;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @RequestScoped
 @Transactional
 public class JpaAvePayRepository extends JpaRepository implements AvePayRepository {

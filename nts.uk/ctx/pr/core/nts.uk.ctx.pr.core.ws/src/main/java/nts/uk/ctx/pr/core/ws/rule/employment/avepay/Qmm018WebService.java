@@ -16,7 +16,11 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.avepay.UpdateAvePayCommand
 import nts.uk.ctx.pr.core.app.command.rule.employment.avepay.UpdateAvePayCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employment.avepay.AvePayFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.avepay.dto.AvePayDto;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @Path("pr/core/avepay")
 @Produces("application/json")
 public class Qmm018WebService extends WebService {

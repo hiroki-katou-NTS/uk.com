@@ -1,7 +1,6 @@
 module qmm018.b.service {
     var paths: any = {
-        getItemList: //"pr/proto/item/findall/bycategory/0"
-                     "pr/core/avepay/findAll"
+        getItemList: "pr/proto/item/findall/bycategory/0"
     }
     
     export function getItemList(): JQueryPromise<Array<any>> {

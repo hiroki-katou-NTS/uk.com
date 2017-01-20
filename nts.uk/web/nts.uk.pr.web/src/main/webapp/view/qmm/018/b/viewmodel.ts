@@ -2,7 +2,7 @@ module qmm018.b.viewmodel {
     export class ScreenModel {
         selectedPaymentDate: KnockoutObservable<any>;
         items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
         currentCodeList: KnockoutObservableArray<any>;
         currentItemList: KnockoutObservableArray<ItemModel>;
         constructor() {

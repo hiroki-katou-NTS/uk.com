@@ -5,8 +5,7 @@ var qmm018;
         var service;
         (function (service) {
             var paths = {
-                getItemList: //"pr/proto/item/findall/bycategory/0"
-                "pr/core/avepay/findAll"
+                getItemList: "pr/proto/item/findall/bycategory/0"
             };
             function getItemList() {
                 var dfd = $.Deferred();

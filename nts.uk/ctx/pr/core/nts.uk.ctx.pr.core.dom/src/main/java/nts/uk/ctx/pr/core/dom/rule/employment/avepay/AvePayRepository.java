@@ -2,7 +2,11 @@ package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 public interface AvePayRepository {
 	/**
 	 * 

@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.avepay;
 
-import javax.ejb.Handle;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -14,7 +13,11 @@ import nts.uk.ctx.pr.core.dom.rule.employment.avepay.ExceptionPayRate;
 import nts.uk.ctx.pr.core.dom.rule.employment.avepay.RoundDigitSet;
 import nts.uk.ctx.pr.core.dom.rule.employment.avepay.RoundTimingSet;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
 @RequestScoped
 public class UpdateAvePayCommandHandler extends CommandHandler<UpdateAvePayCommand>{
 	 @Inject
