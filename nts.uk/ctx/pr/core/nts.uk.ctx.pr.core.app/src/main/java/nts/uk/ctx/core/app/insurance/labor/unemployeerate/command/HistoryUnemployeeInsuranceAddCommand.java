@@ -1,6 +1,11 @@
 package nts.uk.ctx.core.app.insurance.labor.unemployeerate.command;
 
-public class History {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class HistoryUnemployeeInsuranceAddCommand {
 
 	private Integer year;
 	private Integer month;
