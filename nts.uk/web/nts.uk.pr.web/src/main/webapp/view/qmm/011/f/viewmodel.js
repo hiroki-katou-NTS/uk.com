@@ -11,9 +11,6 @@ var nts;
                     var f;
                     (function (f) {
                         var option = nts.uk.ui.option;
-                        var TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
-                        var HistoryUnemployeeInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.HistoryUnemployeeInsuranceRateModel;
-                        var HistoryAccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.HistoryAccidentInsuranceRateModel;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -27,24 +24,11 @@ var nts;
                                     self.enable = ko.observable(true);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     var historyId = nts.uk.ui.windows.getShared("historyId");
-                                    var lsthistoryValue = nts.uk.ui.windows.getShared("lsthistoryValue");
+                                    var historyStart = nts.uk.ui.windows.getShared("historyStart");
+                                    var historyEnd = nts.uk.ui.windows.getShared("historyEnd");
                                     self.typeHistory = nts.uk.ui.windows.getShared("type");
-                                    if (self.typeHistory == TypeHistory.HistoryUnemployee) {
-                                        for (var index = 0; index < lsthistoryValue.length; index++) {
-                                            if (lsthistoryValue[index].historyId === historyId) {
-                                                self.historyStart = ko.observable(new HistoryUnemployeeInsuranceRateModel(lsthistoryValue[index]).getViewStartMonth(lsthistoryValue[index]));
-                                                self.historyEnd = ko.observable(new HistoryUnemployeeInsuranceRateModel(lsthistoryValue[index]).getViewEndMonth(lsthistoryValue[index]));
-                                            }
-                                        }
-                                    }
-                                    else {
-                                        for (var index = 0; index < lsthistoryValue.length; index++) {
-                                            if (lsthistoryValue[index].historyId === historyId) {
-                                                self.historyStart = ko.observable(new HistoryAccidentInsuranceRateModel(lsthistoryValue[index]).getViewStartMonth(lsthistoryValue[index]));
-                                                self.historyEnd = ko.observable(new HistoryAccidentInsuranceRateModel(lsthistoryValue[index]).getViewEndMonth(lsthistoryValue[index]));
-                                            }
-                                        }
-                                    }
+                                    self.historyStart = ko.observable(historyStart);
+                                    self.historyEnd = ko.observable(historyEnd);
                                 }
                                 return ScreenModel;
                             }());

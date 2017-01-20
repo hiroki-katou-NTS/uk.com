@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 
@@ -12,6 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
  * The Class InsuBizRateItem.
  */
 @Getter
+@Setter
 public class InsuBizRateItem {
 
 	/** The insu biz type. */
