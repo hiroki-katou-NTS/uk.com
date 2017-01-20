@@ -21,20 +21,13 @@ public class Position extends AggregateRoot {
 	private String historyID;
 
 	private String companyCode;
-<<<<<<< HEAD
 
 	private Memo memo;
 
-	public Position(GeneralDate endDate, JobName jobName, JobCode jobCode, JobCode jobOutCode, GeneralDate startDate,
-			String historyID, String companyCode, Memo memo) {
-=======
-	
-	private Memo memo;
-	
 	
 	public Position(GeneralDate endDate, JobName jobName, JobCode jobCode, JobCode jobOutCode,
 			GeneralDate startDate, String historyID, String companyCode, Memo memo) {
->>>>>>> basic/teamd/develop
+
 		super();
 		this.endDate = endDate;
 		this.jobName = jobName;

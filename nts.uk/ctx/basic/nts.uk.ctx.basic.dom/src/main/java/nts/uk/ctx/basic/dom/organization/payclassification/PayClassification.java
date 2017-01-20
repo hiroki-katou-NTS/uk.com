@@ -20,13 +20,11 @@ public class PayClassification extends AggregateRoot {
 
 	
 	
-<<<<<<< HEAD
-	public PayClassification(PayClassificationName payClassName, PayClassificationCode payClassCode ,String companyCode, Memo memo) {
-=======
-	public PayClassification(GeneralDate endDate, 
-			PayClassificationName payClassificationName, GeneralDate startDate, PayClassificationCode payClassCode,
-			String historyID ,String companyCode, Memo memo) {
->>>>>>> basic/teamd/develop
+
+	
+	public PayClassification( 
+			PayClassificationName payClassName, PayClassificationCode payClassCode,String companyCode, Memo memo) {
+
 		super();
 		this.payClassName = payClassName;
 		this.payClassCode = payClassCode;
