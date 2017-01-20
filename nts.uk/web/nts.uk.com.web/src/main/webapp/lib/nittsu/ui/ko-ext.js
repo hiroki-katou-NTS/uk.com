@@ -2419,8 +2419,9 @@ var nts;
                                 });
                                 if (moved) {
                                     $targetElement.igGrid("virtualScrollTo", 0);
-                                    $targetElement.igGrid("option", "dataSource", source);
-                                    $targetElement.igGrid("dataBind");
+                                    data.targetSource(source);
+                                    //                        $targetElement.igGrid("option", "dataSource", source);
+                                    //                        $targetElement.igGrid("dataBind");
                                     var index = upDown + grouped["group1"][0].index;
                                     //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                                     $targetElement.igGrid("virtualScrollTo", index);
@@ -2443,8 +2444,9 @@ var nts;
                             var changed = result.changed;
                             source = result.source;
                             if (moved && changed) {
-                                $targetElement.igTreeGrid("option", "dataSource", source);
-                                $targetElement.igTreeGrid("dataBind");
+                                data.targetSource(source);
+                                //                    $targetElement.igTreeGrid("option", "dataSource", source);
+                                //                    $targetElement.igTreeGrid("dataBind");
                                 //                    data.targetSource(source);
                                 var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                                 if (index !== selected["index"]) {
