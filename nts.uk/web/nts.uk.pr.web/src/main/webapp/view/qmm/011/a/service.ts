@@ -165,23 +165,23 @@ module nts.uk.pr.view.qmm011.a {
             export class AccidentInsuranceRateDto {
                 historyId: string;
                 companyCode: string;
-                rateItems: InsuBizRateItem[];
+                rateItems: InsuBizRateItemDto[];
             }
-            export class InsuBizRateItem {
+            export class InsuBizRateItemDto {
                 /** The insu biz type. */
                 insuBizType: number;
                 /** The insu rate. */
                 insuRate: number;
                 /** The insu round. */
                 insuRound: string;
-                constructor(insuBizType: number, insuRate: number, insuRound: string) {
+                insuranceBusinessType: string;
+                constructor(insuBizType: number, insuRate: number, insuRound: string, insuranceBusinessType: string) {
                     this.insuBizType = insuBizType;
                     this.insuRate = insuRate;
                     this.insuRound = insuRound;
+                    this.insuranceBusinessType = insuranceBusinessType;
                 }
-
             }
-
             export class InsuranceBusinessType {
                 /** The biz order. */
                 bizOrder: number;

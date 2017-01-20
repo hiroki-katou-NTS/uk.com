@@ -179,15 +179,16 @@ var nts;
                                     return AccidentInsuranceRateDto;
                                 }());
                                 model.AccidentInsuranceRateDto = AccidentInsuranceRateDto;
-                                var InsuBizRateItem = (function () {
-                                    function InsuBizRateItem(insuBizType, insuRate, insuRound) {
+                                var InsuBizRateItemDto = (function () {
+                                    function InsuBizRateItemDto(insuBizType, insuRate, insuRound, insuranceBusinessType) {
                                         this.insuBizType = insuBizType;
                                         this.insuRate = insuRate;
                                         this.insuRound = insuRound;
+                                        this.insuranceBusinessType = insuranceBusinessType;
                                     }
-                                    return InsuBizRateItem;
+                                    return InsuBizRateItemDto;
                                 }());
-                                model.InsuBizRateItem = InsuBizRateItem;
+                                model.InsuBizRateItemDto = InsuBizRateItemDto;
                                 var InsuranceBusinessType = (function () {
                                     function InsuranceBusinessType(bizOrder, bizName) {
                                         this.bizOrder = bizOrder;

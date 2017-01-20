@@ -8,12 +8,12 @@ module nts.uk.pr.view.qmm011.a {
     import UnemployeeInsuranceRateItem = service.model.UnemployeeInsuranceRateItem;
     import CareerGroup = service.model.CareerGroup;
     import AccidentInsuranceRateDto = service.model.AccidentInsuranceRateDto;
-    import InsuBizRateItem = service.model.InsuBizRateItem;
     import BusinessTypeEnum = service.model.BusinessTypeEnum;
     import InsuranceBusinessType = service.model.InsuranceBusinessType;
     import TypeHistory = service.model.TypeHistory;
     import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
     import HistoryAccidentInsuranceRateDto = service.model.HistoryAccidentInsuranceRateDto;
+    import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     export module viewmodel {
         export class ScreenModel {
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>;
@@ -29,9 +29,7 @@ module nts.uk.pr.view.qmm011.a {
             historyAccidentInsuranceRateStart: KnockoutObservable<string>;
             historyAccidentInsuranceRateEnd: KnockoutObservable<string>;
             selectionHistoryAccidentInsuranceRate: KnockoutObservable<string>;
-            lstInsuBizRateItem: InsuBizRateItem[];
             //detail D
-            lstInsuranceBusinessType: InsuranceBusinessType[];
             accidentInsuranceRateModel: KnockoutObservable<AccidentInsuranceRateModel>;
             itemName: KnockoutObservable<string>;
             currentCode: KnockoutObservable<number>
@@ -51,21 +49,6 @@ module nts.uk.pr.view.qmm011.a {
                 }));
                 self.historyUnemployeeInsuranceRateStart = ko.observable('');
                 self.historyUnemployeeInsuranceRateEnd = ko.observable('');
-
-                var insuranceBusinessTypeBiz1St = new InsuranceBusinessType(BusinessTypeEnum.Biz1St, "事業種類名1");
-                var insuranceBusinessTypeBiz2Nd = new InsuranceBusinessType(BusinessTypeEnum.Biz2Nd, "事業種類名2");
-                var insuranceBusinessTypeBiz3Rd = new InsuranceBusinessType(BusinessTypeEnum.Biz3Rd, "事業種類名3");
-                var insuranceBusinessTypeBiz4Th = new InsuranceBusinessType(BusinessTypeEnum.Biz4Th, "事業種類名4");
-                var insuranceBusinessTypeBiz5Th = new InsuranceBusinessType(BusinessTypeEnum.Biz5Th, "事業種類名5");
-                var insuranceBusinessTypeBiz6Th = new InsuranceBusinessType(BusinessTypeEnum.Biz6Th, "事業種類名6");
-                var insuranceBusinessTypeBiz7Th = new InsuranceBusinessType(BusinessTypeEnum.Biz7Th, "事業種類名7");
-                var insuranceBusinessTypeBiz8Th = new InsuranceBusinessType(BusinessTypeEnum.Biz8Th, "事業種類名8");
-                var insuranceBusinessTypeBiz9Th = new InsuranceBusinessType(BusinessTypeEnum.Biz9Th, "事業種類名9");
-                var insuranceBusinessTypeBiz10Th = new InsuranceBusinessType(BusinessTypeEnum.Biz10Th, "事業種類名11");
-
-                self.lstInsuranceBusinessType = [insuranceBusinessTypeBiz1St, insuranceBusinessTypeBiz2Nd,
-                    insuranceBusinessTypeBiz3Rd, insuranceBusinessTypeBiz4Th, insuranceBusinessTypeBiz5Th, insuranceBusinessTypeBiz6Th,
-                    insuranceBusinessTypeBiz7Th, insuranceBusinessTypeBiz8Th, insuranceBusinessTypeBiz9Th, insuranceBusinessTypeBiz10Th];
                 self.historyAccidentInsuranceRateStart = ko.observable('');
                 self.historyAccidentInsuranceRateEnd = ko.observable('');
                 self.itemName = ko.observable('');
@@ -92,6 +75,10 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             openEditInsuranceBusinessType() {
+                var self = this;
+                var historyId = self.selectionHistoryAccidentInsuranceRate();
+                nts.uk.ui.windows.setShared("historyId", historyId);
+                nts.uk.ui.windows.setShared("accidentInsuranceRateModel", self.accidentInsuranceRateModel);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
                     //OnClose => call
                 });
@@ -204,7 +191,7 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.detailHistoryAccidentInsuranceRate(historyId).done(data => {
-                    self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(data, self.lstInsuranceBusinessType, self.rateInputOptions, self.selectionRoundingMethod));
+                    self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(data, self.rateInputOptions, self.selectionRoundingMethod));
                     dfd.resolve(null);
                 });
                 return dfd.promise();
@@ -276,15 +263,12 @@ module nts.uk.pr.view.qmm011.a {
             insuranceBusinessType: KnockoutObservable<string>;
             rateInputOptions: any;
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>;
-            constructor(insuBizRateItem: InsuBizRateItem, rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>) {
+            constructor(insuBizRateItem: InsuBizRateItemDto, rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>) {
                 this.insuRate = ko.observable(insuBizRateItem.insuRate);
                 this.insuRound = ko.observable(insuBizRateItem.insuRound);
                 this.rateInputOptions = rateInputOptions;
                 this.selectionRoundingMethod = selectionRoundingMethod;
-                this.insuranceBusinessType = ko.observable('');
-            }
-            setInsuranceBusinessType(insuranceBusinessType: string) {
-                this.insuranceBusinessType = ko.observable(insuranceBusinessType);
+                this.insuranceBusinessType = ko.observable(insuBizRateItem.insuranceBusinessType);
             }
         }
         export class AccidentInsuranceRateModel {
@@ -298,7 +282,7 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateBiz8ThModel: AccidentInsuranceRateDetailModel;
             accidentInsuranceRateBiz9ThModel: AccidentInsuranceRateDetailModel;
             accidentInsuranceRateBiz10ThModel: AccidentInsuranceRateDetailModel;
-            constructor(accidentInsuranceRate: AccidentInsuranceRateDto, lstInsuranceBusinessType: InsuranceBusinessType[],
+            constructor(accidentInsuranceRate: AccidentInsuranceRateDto,
                 rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethod>) {
                 for (var index = 0; index < accidentInsuranceRate.rateItems.length; index++) {
                     //Biz1St
@@ -350,52 +334,6 @@ module nts.uk.pr.view.qmm011.a {
                     if (accidentInsuranceRate.rateItems[index].insuBizType === BusinessTypeEnum.Biz10Th) {
                         this.accidentInsuranceRateBiz10ThModel =
                             new AccidentInsuranceRateDetailModel(accidentInsuranceRate.rateItems[index], rateInputOptions, selectionRoundingMethod);
-                    }
-                }
-                for (var index = 0; index < lstInsuranceBusinessType.length; index++) {
-                    //Biz1St
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz1St) {
-                        this.accidentInsuranceRateBiz1StModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz2Nd
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz2Nd) {
-                        this.accidentInsuranceRateBiz2NdModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz3Rd
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz3Rd) {
-                        this.accidentInsuranceRateBiz3RdModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz4Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz4Th) {
-                        this.accidentInsuranceRateBiz4ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz5Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz5Th) {
-                        this.accidentInsuranceRateBiz5ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz6Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz6Th) {
-                        this.accidentInsuranceRateBiz6ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz7Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz7Th) {
-                        this.accidentInsuranceRateBiz7ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz8Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz8Th) {
-                        this.accidentInsuranceRateBiz8ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz9Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz9Th) {
-                        this.accidentInsuranceRateBiz9ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz9Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz9Th) {
-                        this.accidentInsuranceRateBiz9ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
-                    }
-                    //Biz10Th
-                    if (lstInsuranceBusinessType[index].bizOrder == BusinessTypeEnum.Biz10Th) {
-                        this.accidentInsuranceRateBiz10ThModel.setInsuranceBusinessType(lstInsuranceBusinessType[index].bizName);
                     }
                 }
             }
