@@ -24,6 +24,6 @@ public class AccidentInsuranceRateDto {
 	private String companyCode;
 
 	/** The short name. */
-	private List<InsuBizRateItem> rateItems;
+	private List<InsuBizRateItemDto> rateItems;
 
 }

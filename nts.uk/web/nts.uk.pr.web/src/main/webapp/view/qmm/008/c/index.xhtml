@@ -60,7 +60,7 @@
 							<div style="padding-right: 10px;">
 								<div id="tab-panel"
 									data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
-									<div class="tab-content-1">
+									<div data-bind= "with: officeModel" class="tab-content-1">
 										<table class="border_none">
 											<tr>
 												<td class="border_none"><div style="margin-top: 20px;"
@@ -69,13 +69,13 @@
 														<input
 															data-bind="ntsTextEditor: {
 														value: officeCode , 
-														option: textInputOption}" />
+														option: $parent.textInputOption}" />
 													</div></td>
 												<td colspan="2" class="border_none padding_top padding_left"><div>
 														<input
 															data-bind="ntsTextEditor: {
- 														value: officeCode ,  
-														option: textInputOption}" /> 
+ 														value: officeName ,  
+														option: $parent.textInputOption}" /> 
 													</div></td>
 											</tr>
 											<tr>
@@ -85,8 +85,8 @@
 													<div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: shortName , 
+														option: $parent.textInputOption}" />
 													</div>
 												</td>
 											</tr>
@@ -97,8 +97,8 @@
 													<div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: PicName , 
+														option: $parent.textInputOption}" />
 													</div>
 												</td>
 											</tr>
@@ -112,8 +112,8 @@
 													<div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: PicPosition , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -122,8 +122,8 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: portCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 												<td>
 													<button>検索</button>
@@ -135,8 +135,8 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: prefecture , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -145,8 +145,8 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: address1st , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -155,8 +155,8 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: kanaAddress1st , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -165,8 +165,8 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: address2nd , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -175,8 +175,8 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: kanaAddress2nd , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -185,14 +185,14 @@
 												<td class="border_none padding_top"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: phoneNumber , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 
 										</table>
 									</div>
-									<div class="tab-content-2">
+									<div data-bind= "with: officeModel" class="tab-content-2">
 										<table class="border_none">
 											<tr>
 												<td colspan="6" class="border_none">事業所整理番号</td>
@@ -203,14 +203,14 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: healthInsuOfficeRefCode1st , 
+														option: $parent.textInputOption}" />
 													</div></td>
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: healthInsuOfficeRefCode2nd , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -219,14 +219,14 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: pensionOfficeRefCode1st , 
+														option: $parent.textInputOption}" />
 													</div></td>
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: pensionOfficeRefCode2nd , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -238,8 +238,8 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: welfarePensionFundCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -248,8 +248,8 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: officePensionFundCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -262,15 +262,15 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: healthInsuCityCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 												<td>事業所記号:</td>
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: healthInsuOfficeSign , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -280,15 +280,15 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: pensionCityCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 												<td>事業所記号:</td>
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: pensionOfficeSign , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -297,8 +297,8 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: healthInsuOfficeCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
@@ -307,15 +307,15 @@
 												<td class="border_none"><div>
 														<input
 															data-bind="ntsTextEditor: {
-														value: officeCode , 
-														option: textInputOption}" />
+														value: healthInsuAssoCode , 
+														option: $parent.textInputOption}" />
 													</div></td>
 											</tr>
 											<tr>
 												<td colspan="2" class="border_none"><div
 														style="margin-top: 20px;" data-bind="ntsFormLabel: {}">メモ</div></td>
 												<td colspan="4" class="border_none">
-												<TEXTAREA id="input-text" rows="4" cols="60" data-bind="value: textArea"></TEXTAREA>
+												<TEXTAREA id="input-text" rows="4" cols="60" data-bind="value: memo"></TEXTAREA>
 												</td>
 											</tr>
 										</table>

@@ -34,11 +34,10 @@
 				<button id="btn_001" data-bind="click: enableNewMode"
 					class="large btn-default">新規</button>
 				<button id="btn_002" class="large proceed btn-default"
-					data-bind="click: save">登録</button>
-				<button id="btn_003" class="large btn-default"
-					data-bind="">印刷 (PDF)</button>
-				<button id="btn_006" class="large btn-default"
-					data-bind="">マスタ修正ログ</button>
+					data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
+				<button id="btn_003" class="large btn-default" data-bind="">印刷
+					(PDF)</button>
+				<button id="btn_006" class="large btn-default" data-bind="">マスタ修正ログ</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 
@@ -48,11 +47,9 @@
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div>
 						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-						<input id="inpSearch" class="inp-default" />
-						<button id="sch_001" class="caret-bottom caret-background">検索</button>
+						<span id="sch_001"
+							data-bind="ntsSearchBox: {comId:'lst_001' ,items: historyList, selected: selectedId, selectedKey: 'id', childField: 'childs', filteredItems: filteredData, fields: ['unitPriceName', 'unitPriceCode', 'startMonth', 'endMonth']}"></span>
 					</div>
-					<div class="hidden"
-						data-bind="ntsSearchBox: {items: historyList, selected: selectedId, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code', 'monthRange']}"></div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: true">履歴追加</button>
@@ -84,14 +81,15 @@
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
-							<td colspan="2"><input id="inpCode" class="inp-default"
+							<td colspan="2"><input id="inpCode"
+								class="inp-default save-error"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceCode,
 									constraint: 'UnitPriceCode',
 									option: textEditorOption,
 									required: true,
 									enable: isNewMode()}" />
-								<input id="inpName" class="inp-default"
+								<input id="inpName" class="inp-default save-error"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
@@ -102,14 +100,15 @@
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span id="ipnStartMonth" data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', startDate: '2017/01/01'}"></span>
-								<label id="lblEndMonth" data-bind="text: unitPriceHistoryModel().endMonth()"></label>
-								</td>
+							<td><span id="ipnStartMonth"
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', startDate: '2017/01/01'}"></span>
+								<label id="lblEndMonth"
+								data-bind="text: unitPriceHistoryModel().endMonth()"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><input id="inpBudget" class="inp-default"
+							<td><input id="inpBudget" class="inp-default save-error"
 								data-bind="ntsNumberEditor: {
 									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
@@ -121,14 +120,14 @@
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType" /> <span
-									class="box"></span><span class="label"
+									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType" />
+									<span class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType" /> <span
-									class="box"></span><span class="label"
+									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType" />
+									<span class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
 						<tr>
@@ -201,7 +200,8 @@
 							<td class="valign-top"><div id="lbl_008"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inpMemo">
-									<TEXTAREA placeholder="" data-bind="value: unitPriceHistoryModel().memo"
+									<TEXTAREA placeholder=""
+										data-bind="value: unitPriceHistoryModel().memo"
 										class="inp-default"></TEXTAREA>
 								</div></td>
 						</tr>

@@ -25,8 +25,8 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1">健康保険</a></li>
-				<li><a href="#tabpanel-2" class="active">厚生年金</a></li>
+				<li><a href="#tabpanel-1" class="active">健康保険</a></li>
+				<li><a href="#tabpanel-2" >厚生年金</a></li>
 			</ul>
 		</ui:define>
 
@@ -143,83 +143,71 @@
 												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyGeneral , option: $parent.healthInputOptions}" />
 										</div>/1000</td>
 								</tr>
-								<!-- 								<tr> -->
-								<!-- 									<td class="bg-green tbl_health_insurance_rate text_center" -->
-								<!-- 										colspan="2">健康保険率(介護ある)</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthSalaryPersonalNursing"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthSalaryCompanyNursing"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthBonusPersonalNursing"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthBonusCompanyNursing"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 								</tr> -->
-								<!-- 								<tr> -->
-								<!-- 									<td class="empty-col bg-green no_right_border no_bottom_border"></td> -->
-								<!-- 									<td class="bg-green text_center no_left_border no_right_border">健康保険の内訳</td> -->
-								<!-- 									<td colspan="4" class="bg-green no_left_border"></td> -->
-								<!-- 								</tr> -->
-								<!-- 								<tr> -->
-								<!-- 									<td class="empty-col bg-green no_top_border no_bottom_border "></td> -->
-								<!-- 									<td class="bg-green text_center">特定保険率</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthSalaryPersonalBasic"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthSalaryCompanyBasic"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthBonusPersonalBasic"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthBonusCompanyBasic"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 								</tr> -->
-								<!-- 								<tr> -->
-								<!-- 									<td class="empty-col bg-green no_top_border no_bottom_border"></td> -->
-								<!-- 									<td class="bg-green text_center">基本保険率</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthSalaryPersonalSpecific"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthSalaryCompanySpecific"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthBonusPersonalSpecific"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 									<td><div class="float_left" -->
-								<!-- 											data-bind="with: healthBonusCompanySpecific"> -->
-								<!-- 											<input -->
-								<!-- 												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" /> -->
-								<!-- 										</div>/1000</td> -->
-								<!-- 								</tr> -->
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center"
+										colspan="2">健康保険率(介護ある)</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalNursing, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyNursing, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalNursing, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyNursing, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+								</tr>
+								<tr>
+									<td class="empty-col bg-green no_right_border no_bottom_border"></td>
+									<td class="bg-green text_center no_left_border no_right_border">健康保険の内訳</td>
+									<td colspan="4" class="bg-green no_left_border"></td>
+								</tr>
+								<tr>
+									<td class="empty-col bg-green no_top_border no_bottom_border "></td>
+									<td class="bg-green text_center">特定保険率</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalBasic, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyBasic, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalBasic, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyBasic, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+								</tr>
+								<tr>
+									<td class="empty-col bg-green no_top_border no_bottom_border"></td>
+									<td class="bg-green text_center">基本保険率</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalSpecific, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanySpecific, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalSpecific, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanySpecific, option: $parent.healthInputOptions}" />
+										</div>/1000</td>
+								</tr>
 							</tbody>
 						</table>
 						<div class="pad_top_10">健康保険端数区分</div>

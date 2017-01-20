@@ -107,7 +107,7 @@ var nts;
                                         this.unitPriceName = ko.observable('');
                                         this.startMonth = ko.observable('2017/01');
                                         this.endMonth = ko.observable('（平成29年01月） ~');
-                                        this.budget = ko.observable(0);
+                                        this.budget = ko.observable(null);
                                         this.fixPaySettingType = ko.observable('Company');
                                         this.fixPayAtr = ko.observable('NotApply');
                                         this.fixPayAtrMonthly = ko.observable('NotApply');
