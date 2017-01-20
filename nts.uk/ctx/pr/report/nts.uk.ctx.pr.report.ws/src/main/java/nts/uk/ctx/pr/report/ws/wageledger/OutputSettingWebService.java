@@ -13,7 +13,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.PaymentType;
+import nts.uk.ctx.pr.report.ws.wageledger.dto.CategorySettingDto;
 import nts.uk.ctx.pr.report.ws.wageledger.dto.OutputSettingDto;
+import nts.uk.ctx.pr.report.ws.wageledger.dto.SettingItemDto;
 
 /**
  * The Class OutputSettingWebService.
@@ -52,11 +56,24 @@ public class OutputSettingWebService extends WebService{
 	@Path("find/{code}")
 	public OutputSettingDto findDetail(@PathParam("code") String code) {
 		int codeInt = Integer.parseInt(code.substring(code.length() - 1, code.length()));
+		List<SettingItemDto> settingItemDtos = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			settingItemDtos.add(SettingItemDto.builder()
+					.code("ITEM" + i)
+					.name("item " + i)
+					.isAggregateItem(i % 2 == 0).build());
+		}
+		List<CategorySettingDto> categories = new ArrayList<>();
+		categories.add(CategorySettingDto.builder()
+				.category(WageLedgerCategory.SalaryPayment)
+				.paymentType(PaymentType.Salary)
+				.outputItems(settingItemDtos)
+				.build());
 		return OutputSettingDto.builder()
 				.code(code)
 				.name("Output setting " + codeInt)
 				.isOnceSheetPerPerson(false)
-				.categorySettings(new ArrayList<>())
+				.categorySettings(categories)
 				.build();
 	}
 }

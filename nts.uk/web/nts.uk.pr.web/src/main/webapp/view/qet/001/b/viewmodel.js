@@ -8,14 +8,17 @@ var qet001;
                 function ScreenModel() {
                     this.outputSettings = ko.observable(new OutputSettings());
                     this.outputSettingDetail = ko.observable(new OutputSettingDetail());
-                    this.reportItems = ko.observableArray([
-                        new ReportItem('CAT1', true, 'CODE1', 'Name 1'),
-                        new ReportItem('CAT2', false, 'CODE2', 'Name 2'),
-                        new ReportItem('CAT4', true, 'CODE5', 'Name 5'),
-                    ]);
+                    this.reportItems = ko.observableArray([]);
                     this.reportItemColumns = ko.observableArray([
                         { headerText: '区分', prop: 'categoryName', width: 50 },
-                        { headerText: '集約', prop: 'isAggregate', width: 30 },
+                        { headerText: '集約', prop: 'isAggregate', width: 30,
+                            formatter: function (data) {
+                                if (data == 'true') {
+                                    return '<i class="icon icon-dot"></i>';
+                                }
+                                return '';
+                            }
+                        },
                         { headerText: 'コード', prop: 'itemCode', width: 100 },
                         { headerText: '名称', prop: 'itemName', width: 100 },
                     ]);
@@ -27,6 +30,19 @@ var qet001;
                             return;
                         }
                         self.loadOutputSettingDetail(newVal);
+                    });
+                    self.outputSettingDetail.subscribe(function (data) {
+                        if (data == undefined || data == null || data.categorySettings().length == 0) {
+                            return;
+                        }
+                        var reportItemList = [];
+                        data.categorySettings().forEach(function (setting) {
+                            var categoryName = setting.category;
+                            setting.outputItems.forEach(function (item) {
+                                reportItemList.push(new ReportItem(categoryName, item.isAggregateItem, item.code, item.name));
+                            });
+                        });
+                        self.reportItems(reportItemList);
                     });
                 }
                 ScreenModel.prototype.start = function () {
@@ -87,6 +103,7 @@ var qet001;
                     ]);
                     this.selectedCategory = ko.observable('tab-salary-payment');
                     this.isCreateMode = ko.observable(outputSetting == undefined);
+                    this.categorySettings = ko.observableArray(outputSetting != undefined ? outputSetting.categorySettings : []);
                 }
                 return OutputSettingDetail;
             }());

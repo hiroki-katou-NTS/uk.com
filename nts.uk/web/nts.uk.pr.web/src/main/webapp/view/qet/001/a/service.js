@@ -31,12 +31,6 @@ var qet001;
                     return WageLedgerSettingItem;
                 }());
                 model.WageLedgerSettingItem = WageLedgerSettingItem;
-                var Enum = (function () {
-                    function Enum() {
-                    }
-                    return Enum;
-                }());
-                model.Enum = Enum;
             })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = qet001.a || (qet001.a = {}));

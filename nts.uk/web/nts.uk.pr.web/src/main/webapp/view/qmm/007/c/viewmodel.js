@@ -29,7 +29,9 @@ var nts;
                                 }
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
+                                    var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
                                     if (self.isEditMode()) {
+                                        unitPriceHistoryModel.startMonth(self.startMonth());
                                         service.update(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
                                     }
                                     else {
