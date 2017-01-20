@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+		<script>var dialogSize = { width: 800, height: 500 };</script>
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+
+		</ui:define>
+
+		<ui:define name="content">			
+			<div id="contents-area">
+				<div id="detail-contents">
+					<div id="title-label">印刷の設定	</div>
+					<div class="end-title"></div>
+					<div id="details">
+						<div id="label-details">
+							<div class="label-show-setting">健康保険料の内訳表示選択</div>
+							<div class="label-show-setting">「健康保険内訳項目（一般健康料 介護保険料 特定保険料 基本情報）を」を表示する</div>
+							<div class="cf label-show-setting" data-bind="ntsSwitchButton: {
+																	options: showHealthInsuranceType,
+																	optionsValue: 'code',
+																	optionsText: 'name',
+																	value: selectedCode,
+																	enable: enable }">
+							</div>
+						</div>
+						<div style="float:left">
+							<div id="output-setting-label" data-bind="ntsFormLabel: {}">
+								<label>出力設定	</label>
+						</div>	
+						<button id="helpBtn">?</button>
+						</div>
+						<div id="output-setting">
+							<div class="check-output" data-bind="ntsCheckBox: { checked: isDetailed , text:'明細'}"></div>
+							<div class="check-output" data-bind="ntsCheckBox: { checked: isTotalMonthlyTotal , text:'事務所月計'}"></div>
+							<div class="check-output" data-bind="ntsCheckBox: { checked: isOfficeMonthlyTotal , text:'総合月計'}"></div>
+							<div class="check-output" data-bind="ntsCheckBox: { checked: isDeliveryNoticeAmount , text:'納入告知額'}"></div>
+						</div>
+					</div>
+					<div class="end-title"></div>
+					<div id="function-buttons">
+						<table id="tbl-function-buttons">
+							<tbody>
+								<tr>
+									<td>
+										<button id="setup-button" class="proceed" data-bind="click: setupPrintSetting">設定</button>
+									</td>
+									<td>
+										<button data-bind="click: closePrintSetting" id="cancel-button">キャンセル</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
