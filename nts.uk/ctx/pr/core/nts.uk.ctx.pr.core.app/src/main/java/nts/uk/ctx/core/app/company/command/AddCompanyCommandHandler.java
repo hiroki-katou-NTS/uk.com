@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.core.app.company.command;
 
 import javax.ejb.Stateless;
@@ -27,10 +31,8 @@ public class AddCompanyCommandHandler extends CommandHandler<AddCompanyCommand> 
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AddCompanyCommand> context) {
-		
 		Company company = context.getCommand().toDomain();
 		company.validate();
-		
 		this.companyRepository.add(company);
 	}
 

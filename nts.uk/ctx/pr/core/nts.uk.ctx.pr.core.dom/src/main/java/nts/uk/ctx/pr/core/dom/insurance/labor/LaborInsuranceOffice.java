@@ -2,6 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
+
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import lombok.Data;

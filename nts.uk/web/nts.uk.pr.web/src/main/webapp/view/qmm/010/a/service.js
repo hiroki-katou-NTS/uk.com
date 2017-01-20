@@ -13,8 +13,9 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findAllLaborInsuranceOffice: "pr/insurance/labor/findall",
-                                findLaborInsuranceOffice: "pr/insurance/labor/findLaborInsuranceOffice"
+                                findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
+                                findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
+                                addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add"
                             };
                             function findAllLaborInsuranceOffice() {
                                 var dfd = $.Deferred();
@@ -40,11 +41,23 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findLaborInsuranceOffice = findLaborInsuranceOffice;
+                            function addLaborInsuranceOffice(laborInsuranceOffice, comanyCode) {
+                                var dfd = $.Deferred();
+                                var data = { laborInsuranceOffice: laborInsuranceOffice, comanyCode: comanyCode };
+                                nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.addLaborInsuranceOffice = addLaborInsuranceOffice;
                             var model;
                             (function (model) {
                                 var LaborInsuranceOfficeDto = (function () {
-                                    function LaborInsuranceOfficeDto(companyCode, code, name, shortName, picName, picPosition, potalCode, prefecture, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, citySign, officeMark, officeNoA, officeNoB, officeNoC, memo) {
-                                        this.companyCode = companyCode;
+                                    function LaborInsuranceOfficeDto(code, name, shortName, picName, picPosition, potalCode, prefecture, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, citySign, officeMark, officeNoA, officeNoB, officeNoC, memo) {
                                         this.code = code;
                                         this.name = name;
                                         this.shortName = shortName;
@@ -69,7 +82,6 @@ var nts;
                                 model.LaborInsuranceOfficeDto = LaborInsuranceOfficeDto;
                                 var LaborInsuranceOfficeInDto = (function () {
                                     function LaborInsuranceOfficeInDto(laborInsuranceOffice) {
-                                        this.companyCode = laborInsuranceOffice.companyCode;
                                         this.code = laborInsuranceOffice.code;
                                         this.name = laborInsuranceOffice.name;
                                     }

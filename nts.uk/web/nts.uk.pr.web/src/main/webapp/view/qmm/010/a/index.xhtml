@@ -28,7 +28,7 @@
 			<div id="functions-area" class="divHeader">
 				<button id="btn_new" data-bind="click: resetValueLaborInsurance"
 					class="btnStyle">新規</button>
-				<button class="proceed btnStyle" id="btn_register">登録</button>
+				<button class="proceed btnStyle" id="btn_register" data-bind="click: addLaborInsuranceOffice">登録</button>
 				<button id="btn_printing">印刷 (PDF)</button>
 				<button id="btn_readFromSocialTnsuranceOffice"
 					data-bind="click: readFromSocialTnsuranceOffice,enable:enableButton">社会保険事業所から読み込み</button>
@@ -67,7 +67,7 @@
 							}"></table>
 							</div>
 						</td>
-						<td id="contents-right" data-bind="with: laborInsuranceOffice">
+						<td id="contents-right" data-bind="with: laborInsuranceOfficeModel">
 							<table id="tableRight">
 								<tr>
 									<td class="contentsRL">

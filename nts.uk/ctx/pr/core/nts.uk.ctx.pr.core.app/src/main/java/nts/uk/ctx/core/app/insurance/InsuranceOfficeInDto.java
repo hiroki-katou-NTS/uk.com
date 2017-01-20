@@ -7,8 +7,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class InsuranceOfficeInDto {
-	/** The company code. */
-	private String companyCode;
 	/** The code. officeCode */
 	private String code;
 	/** The name. officeName */
