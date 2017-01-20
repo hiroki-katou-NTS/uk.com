@@ -8,7 +8,7 @@ module qet001.b.viewmodel {
         outputSettings: KnockoutObservable<OutputSettings>;
         outputSettingDetail: KnockoutObservable<OutputSettingDetail>;
         reportItems: KnockoutObservableArray<ReportItem>;
-        reportItemColumns: KnockoutObservableArray<NtsGridColumn>;
+        reportItemColumns: KnockoutObservableArray<any>;
         reportItemSelected: KnockoutObservable<string>;
         
         constructor() {
@@ -17,10 +17,10 @@ module qet001.b.viewmodel {
             this.reportItems = ko.observableArray([]);
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryName', width: 50},
-                    {headerText: '集約', prop: 'isAggregate', width: 30,
+                    {headerText: '集約', prop: 'isAggregate', width: 40,
                         formatter: function(data: string) {
                             if (data == 'true') {
-                                return '<i class="icon icon-dot"></i>';
+                                return '<div class="center"><i class="icon icon-dot"></i></div>';
                             }
                             return '';
                         }
@@ -41,6 +41,7 @@ module qet001.b.viewmodel {
             })
             self.outputSettingDetail.subscribe((data: OutputSettingDetail) => {
                 if(data == undefined || data == null || data.categorySettings().length == 0) {
+                    self.reportItems([]);
                     return;
                 }
                 // Set data to report item list.
@@ -71,6 +72,41 @@ module qet001.b.viewmodel {
         }
         
         /**
+         * Close dialog.
+         */
+        public close() {
+            nts.uk.ui.windows.close();
+        }
+        
+        /**
+         * Save output setting.
+         */
+        public save() {
+            var self = this;
+            // Validate.
+            if(self.outputSettingDetail().settingCode() == '' || self.outputSettingDetail().settingName() == '') {
+                // TODO: Add error message '未入力エラー'.
+                nts.uk.ui.dialog.alert('未入力エラー');
+                return;
+            }
+            // TODO: Call service to save output setting.
+        }
+        
+        /**
+         * Remove Output setting.
+         */
+        public remove() {
+            var self = this;
+            // Check selected output setting.
+            if (self.outputSettings().outputSettingSelectedCode() == '') {
+                // TODO: Add error message '未選択エラー'.
+                nts.uk.ui.dialog.alert('未選択エラー');
+                return;
+            }
+            // TODO: Call service to remove output setting.
+        }
+        
+        /**
          * Load detail output setting.
          */
         public loadOutputSettingDetail(selectedCode: string): JQueryPromise<any> {
@@ -92,6 +128,7 @@ module qet001.b.viewmodel {
          */
         public switchToCreateMode() {
             this.outputSettingDetail(new OutputSettingDetail());
+            this.outputSettings().outputSettingSelectedCode('');
         }
     }
     
@@ -102,7 +139,7 @@ module qet001.b.viewmodel {
         searchText: KnockoutObservable<string>;
         outputSettingList: KnockoutObservableArray<WageLedgerOutputSetting>;
         outputSettingSelectedCode: KnockoutObservable<string>;
-        outputSettingColumns: KnockoutObservableArray<NtsGridColumn>;
+        outputSettingColumns: KnockoutObservableArray<any>;
         
         constructor() {
             this.searchText = ko.observable('');

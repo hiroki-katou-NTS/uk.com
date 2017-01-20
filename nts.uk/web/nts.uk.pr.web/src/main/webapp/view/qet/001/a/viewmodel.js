@@ -39,6 +39,13 @@ var qet001;
                     nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
                     nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
                 };
+                ScreenModel.prototype.print = function () {
+                    var self = this;
+                    if (self.targetYear() == null || self.targetYear().toString() == '') {
+                        nts.uk.ui.dialog.alert('未入力エラー');
+                        return;
+                    }
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

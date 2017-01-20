@@ -51,6 +51,19 @@ module qet001.a.viewmodel {
             nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
             nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
         }
+        
+        public print() {
+            // Validate.
+            var self = this;
+            if (self.targetYear() == null || self.targetYear().toString() == '') {
+                // TODO: Check employee list.
+                // TODO: Add error message '未入力エラー'.
+                nts.uk.ui.dialog.alert('未入力エラー');
+                return;
+            }
+            
+            // TODO: Call print service.
+        }
     }
     
     /**

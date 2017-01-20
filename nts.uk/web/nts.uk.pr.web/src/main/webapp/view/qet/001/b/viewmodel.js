@@ -11,10 +11,10 @@ var qet001;
                     this.reportItems = ko.observableArray([]);
                     this.reportItemColumns = ko.observableArray([
                         { headerText: '区分', prop: 'categoryName', width: 50 },
-                        { headerText: '集約', prop: 'isAggregate', width: 30,
+                        { headerText: '集約', prop: 'isAggregate', width: 40,
                             formatter: function (data) {
                                 if (data == 'true') {
-                                    return '<i class="icon icon-dot"></i>';
+                                    return '<div class="center"><i class="icon icon-dot"></i></div>';
                                 }
                                 return '';
                             }
@@ -33,6 +33,7 @@ var qet001;
                     });
                     self.outputSettingDetail.subscribe(function (data) {
                         if (data == undefined || data == null || data.categorySettings().length == 0) {
+                            self.reportItems([]);
                             return;
                         }
                         var reportItemList = [];
@@ -58,6 +59,23 @@ var qet001;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                ScreenModel.prototype.close = function () {
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.save = function () {
+                    var self = this;
+                    if (self.outputSettingDetail().settingCode() == '' || self.outputSettingDetail().settingName() == '') {
+                        nts.uk.ui.dialog.alert('未入力エラー');
+                        return;
+                    }
+                };
+                ScreenModel.prototype.remove = function () {
+                    var self = this;
+                    if (self.outputSettings().outputSettingSelectedCode() == '') {
+                        nts.uk.ui.dialog.alert('未選択エラー');
+                        return;
+                    }
+                };
                 ScreenModel.prototype.loadOutputSettingDetail = function (selectedCode) {
                     var dfd = $.Deferred();
                     var self = this;
@@ -72,6 +90,7 @@ var qet001;
                 };
                 ScreenModel.prototype.switchToCreateMode = function () {
                     this.outputSettingDetail(new OutputSettingDetail());
+                    this.outputSettings().outputSettingSelectedCode('');
                 };
                 return ScreenModel;
             }());
