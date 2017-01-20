@@ -49,14 +49,14 @@ module qmm018.a.viewmodel {
             self.percentage = ko.observable('60');
             self.texteditor2 = {
                 value: self.percentage,
-                constraint: 'ResidenceCode',
+                constraint: 'ExceptionPayRate',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
                     placeholder: "",
                     width: "30px",
                     textalign: "center"
                 })),
-                required: ko.observable(true),
+                required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };

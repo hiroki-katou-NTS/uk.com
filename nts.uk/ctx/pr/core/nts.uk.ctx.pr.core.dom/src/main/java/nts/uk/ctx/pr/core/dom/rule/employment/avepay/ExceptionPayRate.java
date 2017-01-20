@@ -4,6 +4,7 @@ package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * 例外時割合
@@ -15,7 +16,8 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 @IntegerMinValue(0)
 public class ExceptionPayRate extends IntegerPrimitiveValue<ExceptionPayRate>{
 	
-	public ExceptionPayRate(int value) {
+	public ExceptionPayRate(int value) {		
+		//super(Integer.parseInt(value));
 		super(value);
 		// TODO Auto-generated constructor stub
 	}
