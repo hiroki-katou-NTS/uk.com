@@ -5,6 +5,7 @@ import lombok.Getter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 
 @Builder
 @Getter
@@ -17,13 +18,13 @@ public class UnitPriceHistoryDto {
 
 	/** The unit price code. */
 	private String unitPriceCode;
-	
+
 	/** The unit price name. */
 	private String unitPriceName;
 
 	/** The start month. */
 	private String startMonth;
-	
+
 	/** The end month. */
 	private String endMonth;
 
@@ -50,5 +51,9 @@ public class UnitPriceHistoryDto {
 
 	/** The memo. */
 	private String memo;
+
+	public static UnitPriceHistoryDto fromDomain(UnitPriceHistory domain) {
+		return null;
+	}
 
 }

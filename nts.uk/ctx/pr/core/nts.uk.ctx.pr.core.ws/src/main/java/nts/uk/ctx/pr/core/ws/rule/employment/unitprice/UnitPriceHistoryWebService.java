@@ -17,12 +17,16 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.DeleteUnitPriceH
 import nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.UpdateUnitPriceHistoryCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.UpdateUnitPriceHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employment.unitprice.UnitPriceHistoryDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.unitprice.UnitPriceHistoryFinder;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 
 @Path("pr/proto/unitprice")
 @Produces("application/json")
 public class UnitPriceHistoryWebService extends WebService {
+
+	@Inject
+	private UnitPriceHistoryFinder unitPriceHistoryFinder;
 	@Inject
 	private CreateUnitPriceHistoryCommandHandler createUnitPriceHistoryCommandHandler;
 	@Inject
@@ -73,19 +77,19 @@ public class UnitPriceHistoryWebService extends WebService {
 				.startMonth("2015/04").endMonth("2016/05").budget(120).fixPaySettingType(SettingType.Company)
 				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply)
 				.fixPayAtrDayMonth(ApplySetting.NotApply).fixPayAtrHourly(ApplySetting.Apply)
-				.fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
+				.fixPayAtrMonthly(ApplySetting.Apply).memo("1").build());
 		mock.add(UnitPriceHistoryDto.builder().id("2").unitPriceCode("001").unitPriceName("ガソリン単価")
 				.startMonth("2016/06").endMonth("9999/03").budget(230).fixPaySettingType(SettingType.Contract)
 				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
-				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.NotApply).memo("abc").build());
+				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.NotApply).memo("2").build());
 		mock.add(UnitPriceHistoryDto.builder().id("3").unitPriceCode("002").unitPriceName("宿直単価").startMonth("2016/04")
 				.endMonth("9999/04").budget(340).fixPaySettingType(SettingType.Company).fixPayAtr(ApplySetting.Apply)
 				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.NotApply)
-				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.NotApply).memo("abc").build());
+				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.NotApply).memo("3").build());
 		mock.add(UnitPriceHistoryDto.builder().id("4").unitPriceCode("002").unitPriceName("宿直単価").startMonth("2015/04")
 				.endMonth("2016/03").budget(450).fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
 				.fixPayAtrDaily(ApplySetting.NotApply).fixPayAtrDayMonth(ApplySetting.Apply)
-				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.Apply).memo("abc").build());
+				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.Apply).memo("4").build());
 		return mock;
 	}
 }

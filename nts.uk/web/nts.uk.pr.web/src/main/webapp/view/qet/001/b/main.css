@@ -62,3 +62,8 @@ div#report-item-list {
 .name-input {
 	margin-left: 5px;
 }
+
+i.icon.icon-dot {
+    display: table;
+    margin: 0 auto;
+}

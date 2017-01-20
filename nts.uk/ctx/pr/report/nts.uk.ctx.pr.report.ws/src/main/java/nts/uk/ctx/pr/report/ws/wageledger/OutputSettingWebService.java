@@ -13,8 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
-import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.PaymentType;
 import nts.uk.ctx.pr.report.ws.wageledger.dto.CategorySettingDto;
 import nts.uk.ctx.pr.report.ws.wageledger.dto.OutputSettingDto;
 import nts.uk.ctx.pr.report.ws.wageledger.dto.SettingItemDto;
@@ -65,7 +65,7 @@ public class OutputSettingWebService extends WebService{
 		}
 		List<CategorySettingDto> categories = new ArrayList<>();
 		categories.add(CategorySettingDto.builder()
-				.category(WageLedgerCategory.SalaryPayment)
+				.category(WageLedgerCategory.Attendance)
 				.paymentType(PaymentType.Salary)
 				.outputItems(settingItemDtos)
 				.build());

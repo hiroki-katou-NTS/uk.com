@@ -30,11 +30,11 @@
 				<div class="function-class">
 					<div>
 						<button id="new-button" data-bind="click: switchToCreateMode">新規</button>
-						<button id="register-button" class="proceed">登録</button>
+						<button id="register-button" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
 					</div>
 					<div class="function-middle">
-						<button id="delete-button">削除</button>
-						<button id="close-button">閉じる</button>
+						<button id="delete-button" data-bind="click: remove">削除</button>
+						<button id="close-button" data-bind="click: close">閉じる</button>
 					</div>
 				</div>
 			</div>
