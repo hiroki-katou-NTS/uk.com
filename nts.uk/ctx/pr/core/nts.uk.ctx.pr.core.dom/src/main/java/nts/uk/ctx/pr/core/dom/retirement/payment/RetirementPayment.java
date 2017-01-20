@@ -9,14 +9,14 @@ import nts.uk.shr.com.primitive.Memo;
 import nts.uk.shr.com.primitive.PersonId;
 
 /**
- * 
+ * 退職金明細データ
  * @author Doan Duy Hung
  *
  */
 
 public class RetirementPayment extends AggregateRoot {
 	@Getter
-	private PaymentYear actualRecieveMoney;
+	private PaymentMoney actualRecieveMoney;
 	@Getter
 	private PaymentYear additionalBoardYears;
 	@Getter
@@ -53,7 +53,7 @@ public class RetirementPayment extends AggregateRoot {
 	@Getter
 	private TrialPeriodSet trialPeriodSet;
 
-	public RetirementPayment(PaymentYear actualRecieveMoney, PaymentYear additionalBoardYears, PaymentYear boardYears,
+	public RetirementPayment(PaymentMoney actualRecieveMoney, PaymentYear additionalBoardYears, PaymentYear boardYears,
 			PaymentMoney cityTaxMoney, CompanyCode companyCode, PaymentMoney deduction1Money,
 			PaymentMoney deduction2Money, PaymentMoney deduction3Money, PaymentYear exclusionYears,
 			PaymentMoney incomeTaxMoney, Memo memo, PersonId personId, PaymentMoney prefectureTaxMoney,
@@ -87,7 +87,7 @@ public class RetirementPayment extends AggregateRoot {
 			int retirementPayOption, int taxCalculationMethod,
 			int totalDeclarationMoney, int totalPaymentMoney, int trialPeriodSet) {
 		return new RetirementPayment(
-				new PaymentYear(actualRecieveMoney), 
+				new PaymentMoney(actualRecieveMoney), 
 				new PaymentYear(additionalBoardYears), 
 				new PaymentYear(boardYears), 
 				new PaymentMoney(cityTaxMoney), 
