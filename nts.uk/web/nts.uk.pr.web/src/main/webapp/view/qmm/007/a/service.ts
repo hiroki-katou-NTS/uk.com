@@ -63,7 +63,7 @@ module nts.uk.pr.view.qmm007.a {
             return dfd.promise();
         }
 
-        export function getUnitPriceHistoryDetail(id: string): JQueryPromise<any> {
+        export function find(id: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id)
                 .done(res => {
