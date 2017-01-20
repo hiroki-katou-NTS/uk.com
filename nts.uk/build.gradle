@@ -338,6 +338,14 @@ project (':web:nts.uk.pr.web') {
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pub')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.pubimp')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ws')
+
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ac')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.infra')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pub')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.pubimp')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.ws')
 		
 		runtime project (':screen:pr:nts.uk.screen.pr.ws')
 		runtime project (':screen:pr:nts.uk.screen.pr.app')
