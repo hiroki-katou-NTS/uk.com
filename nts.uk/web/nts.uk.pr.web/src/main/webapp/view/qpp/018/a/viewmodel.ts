@@ -25,9 +25,9 @@ module qpp018.a.viewmodel {
             this.isRedundant= ko.observable(true);
             
             this.insuranceOffice=ko.observableArray<InsuranceOfficeModel>([
-                new InsuranceOfficeModel('0001','Insurance Office 1'),
-                new InsuranceOfficeModel('0002','Insurance Office 2'),
-                new InsuranceOfficeModel('0003','Insurance Office 3')
+//                new InsuranceOfficeModel('0001','Insurance Office 1'),
+//                new InsuranceOfficeModel('0002','Insurance Office 2'),
+//                new InsuranceOfficeModel('0003','Insurance Office 3')
                 ]);
             this.columns=ko.observableArray<nts.uk.ui.NtsGridListColumn>([
                 { headerText: 'コード', prop: 'code', width: 100 },
@@ -72,6 +72,19 @@ module qpp018.a.viewmodel {
             var dfd = $.Deferred<any>();
             // TODO: check for start from menu salary or bonus.
             dfd.resolve();
+            return dfd.promise();
+        }
+        
+        public loadAllOutputSetting(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var self = this;
+            service.getAllInsuranceOffice().done(function(data: service.model.InsuranceOffice[]) {
+                self.insuranceOffice(data);
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            })
             return dfd.promise();
         }
         
