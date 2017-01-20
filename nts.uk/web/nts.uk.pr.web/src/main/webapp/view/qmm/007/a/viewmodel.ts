@@ -27,6 +27,7 @@ module nts.uk.pr.view.qmm007.a {
                 self.selectedId.subscribe(id => {
                     if (id != null || id != undefined) {
                         self.isNewMode(false);
+                        $('.save-error').ntsError('clear');
                         self.loadUnitPriceDetail(id);
                     }
                 });
@@ -43,6 +44,7 @@ module nts.uk.pr.view.qmm007.a {
                     textalign: "left"
                 }));
                 self.currencyEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                    placeholder: "0.00",
                     grouplength: 3,
                     decimallength: 2,
                     currencyformat: "JPY",
@@ -84,6 +86,7 @@ module nts.uk.pr.view.qmm007.a {
 
             enableNewMode() {
                 var self = this;
+                $('.save-error').ntsError('clear');
                 self.clearUnitPriceDetail();
                 self.isNewMode(true);
             }
@@ -95,7 +98,7 @@ module nts.uk.pr.view.qmm007.a {
                 model.unitPriceName('');
                 model.startMonth('2017/01');
                 //model.endMonth('');
-                model.budget(0);
+                model.budget(null);
                 model.fixPaySettingType('Company');
                 model.fixPayAtr('NotApply');
                 model.fixPayAtrMonthly('NotApply');

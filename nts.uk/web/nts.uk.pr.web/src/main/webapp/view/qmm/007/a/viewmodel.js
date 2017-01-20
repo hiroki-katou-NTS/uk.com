@@ -27,6 +27,7 @@ var nts;
                                     self.selectedId.subscribe(function (id) {
                                         if (id != null || id != undefined) {
                                             self.isNewMode(false);
+                                            $('.save-error').ntsError('clear');
                                             self.loadUnitPriceDetail(id);
                                         }
                                     });
@@ -41,6 +42,7 @@ var nts;
                                         textalign: "left"
                                     }));
                                     self.currencyEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                                        placeholder: "0.00",
                                         grouplength: 3,
                                         decimallength: 2,
                                         currencyformat: "JPY",
@@ -76,6 +78,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
+                                    $('.save-error').ntsError('clear');
                                     self.clearUnitPriceDetail();
                                     self.isNewMode(true);
                                 };
@@ -85,7 +88,7 @@ var nts;
                                     model.unitPriceCode('');
                                     model.unitPriceName('');
                                     model.startMonth('2017/01');
-                                    model.budget(0);
+                                    model.budget(null);
                                     model.fixPaySettingType('Company');
                                     model.fixPayAtr('NotApply');
                                     model.fixPayAtrMonthly('NotApply');

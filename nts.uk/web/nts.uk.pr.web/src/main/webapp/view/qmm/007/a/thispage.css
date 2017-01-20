@@ -55,8 +55,8 @@
 	margin-bottom: 3px !important;
 }
 
-#sch_001 {
-	min-width: 60px;
+#sch_001 input{
+	width: 130px;
 }
 
 .btn-default {

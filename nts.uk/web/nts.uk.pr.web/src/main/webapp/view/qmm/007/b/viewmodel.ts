@@ -23,7 +23,10 @@ module nts.uk.pr.view.qmm007.b {
             }
 
             btnApplyClicked() {
-                service.create(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
+                var self = this;
+                var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
+                unitPriceHistoryModel.startMonth(self.startMonth());
+                service.create(service.collectData(unitPriceHistoryModel));
                 nts.uk.ui.windows.close()
             }
             btnCancelClicked() {
