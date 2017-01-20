@@ -8,6 +8,7 @@ package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 import java.util.List;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
 
 /**

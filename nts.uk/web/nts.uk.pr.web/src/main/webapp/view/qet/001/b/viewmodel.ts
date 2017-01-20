@@ -16,7 +16,7 @@ module qet001.b.viewmodel {
             this.outputSettingDetail= ko.observable(new OutputSettingDetail());
             this.reportItems = ko.observableArray([]);
             this.reportItemColumns = ko.observableArray([
-                    {headerText: '区分', prop: 'categoryName', width: 50},
+                    {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
                         formatter: function(data: string) {
                             if (data == 'true') {
@@ -185,12 +185,28 @@ module qet001.b.viewmodel {
         isAggregate: boolean;
         itemCode: string;
         itemName: string;
+        categoryNameJa: string;
         
         constructor(categoryName: string, isAggregate: boolean, itemCode: string, itemName: string) {
             this.categoryName = categoryName;
             this.isAggregate = isAggregate;
             this.itemCode = itemCode;
             this.itemName = itemName;
+            var self = this;
+            // Convert category name to japanese.
+            switch(categoryName) {
+                case Category.PAYMENT:
+                    self.categoryNameJa = '支給';
+                    break;
+                case Category.DEDUCTION: 
+                    self.categoryNameJa = '控除';
+                    break;
+                case Category.ATTENDANCE:
+                    self.categoryNameJa = '勤怠';
+                    break;
+                default:
+                    self.categoryNameJa = '';
+            }
         }
     }
     
@@ -221,5 +237,22 @@ module qet001.b.viewmodel {
          * 明細書の集約項目を出力する
          */
         static SUMMARY_DETAIL_ITEMS = 1;
+    }
+    
+    export class Category {
+        /**
+         * 支給
+         */
+        static PAYMENT = 'Payment';
+        
+        /**
+         * 控除
+         */
+        static DEDUCTION = 'Deduction';
+        
+        /**
+         * 勤怠
+         */
+        static ATTENDANCE = 'Attendance';
     }
 }

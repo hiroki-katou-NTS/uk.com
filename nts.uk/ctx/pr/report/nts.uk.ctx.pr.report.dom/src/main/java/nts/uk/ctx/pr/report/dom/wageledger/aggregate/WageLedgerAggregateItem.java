@@ -8,6 +8,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
 
 /**
@@ -21,6 +22,9 @@ public class WageLedgerAggregateItem {
 	
 	/** The category. */
 	private WageLedgerCategory category;
+	
+	/** The payment type. */
+	private PaymentType paymentType;
 	
 	/** The code. */
 	private AggregateItemCode code;

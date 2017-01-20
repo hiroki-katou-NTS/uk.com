@@ -10,7 +10,7 @@ var qet001;
                     this.outputSettingDetail = ko.observable(new OutputSettingDetail());
                     this.reportItems = ko.observableArray([]);
                     this.reportItemColumns = ko.observableArray([
-                        { headerText: '区分', prop: 'categoryName', width: 50 },
+                        { headerText: '区分', prop: 'categoryNameJa', width: 50 },
                         { headerText: '集約', prop: 'isAggregate', width: 40,
                             formatter: function (data) {
                                 if (data == 'true') {
@@ -133,6 +133,20 @@ var qet001;
                     this.isAggregate = isAggregate;
                     this.itemCode = itemCode;
                     this.itemName = itemName;
+                    var self = this;
+                    switch (categoryName) {
+                        case Category.PAYMENT:
+                            self.categoryNameJa = '支給';
+                            break;
+                        case Category.DEDUCTION:
+                            self.categoryNameJa = '控除';
+                            break;
+                        case Category.ATTENDANCE:
+                            self.categoryNameJa = '勤怠';
+                            break;
+                        default:
+                            self.categoryNameJa = '';
+                    }
                 }
                 return ReportItem;
             }());
@@ -153,6 +167,15 @@ var qet001;
                 return OutputType;
             }());
             viewmodel.OutputType = OutputType;
+            var Category = (function () {
+                function Category() {
+                }
+                Category.PAYMENT = 'Payment';
+                Category.DEDUCTION = 'Deduction';
+                Category.ATTENDANCE = 'Attendance';
+                return Category;
+            }());
+            viewmodel.Category = Category;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qet001.b || (qet001.b = {}));
 })(qet001 || (qet001 = {}));
