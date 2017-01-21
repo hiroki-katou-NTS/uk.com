@@ -347,7 +347,7 @@ module nts.uk.ui.koExtentions {
         });
         return filtered;
     };
-    var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
+    var getNextItem = function(selected, arr, searchResult, selectedKey, isArray) {
         //        console.log(selected + "," + selectedKey + "," + compareKey);
         //        console.log(isArray);
         var current = null;
@@ -355,21 +355,24 @@ module nts.uk.ui.koExtentions {
             if (selected.length > 0) current = selected[0];
         } else if (selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
-        }
-        //        console.log("current = "  + current);
-        if (arr.length > 0) {
+        }      
+        if (searchResult.length > 0) {
             if (current) {
-
-                for (var i = 0; i < arr.length - 1; i++) {
-                    var item = arr[i];
-                    if (selectedKey) {
-                        //                        console.log(i);
-                        if (item[selectedKey] == current) return arr[i + 1][selectedKey];
-                    } else if (item[compareKey] == current[compareKey]) return arr[i + 1];
+                var currentIndex = nts.uk.util.findIndex(arr, current, selectedKey);
+                var nextIndex = 0;
+                var found = false;
+                for (var i = 0; i < searchResult.length; i++) {
+                    var item = searchResult[i];
+                    var itemIndex = nts.uk.util.findIndex(arr,item[selectedKey], selectedKey);    
+                    if(!found && itemIndex >= currentIndex + 1) {
+                        found = true;
+                        nextIndex = i;
+                    }          
+                    if ((i < searchResult.length - 1) && item[selectedKey] == current) return searchResult[i + 1][selectedKey];                 
                 }
+                return searchResult[nextIndex][selectedKey];   
             }
-            if (selectedKey) return arr[0][selectedKey];
-            return arr[0];
+            return searchResult[0][selectedKey];
         }
         return undefined;
     }
@@ -404,7 +407,7 @@ module nts.uk.ui.koExtentions {
                 var filtArr = searchBox.data("searchResult");
                 var compareKey = fields[0];
                 var isArray = $.isArray(selected());
-                var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
+                var selectedItem = getNextItem(selected(), nts.uk.util.flatArray(arr, childField), filtArr, selectedKey, isArray);
                 //                console.log(selectedItem);
                 if (data.mode) {
                     if(data.mode == 'igGrid') {
@@ -413,13 +416,7 @@ module nts.uk.ui.koExtentions {
                         component.trigger("selectionChanged");
                     } else if(data.mode == 'igTree') {
                         var liItem = $("li[data-value='" + selectedItem + "']");
-                        var ulParent = liItem.parent();
-                        if(!ulParent.is(":visible")) {
-                            ulParent.css("display", "block");
-                            var spanSibling = ulParent.siblings("span[data-role='expander']");
-                            spanSibling.removeClass("ui-icon-triangle-1-e");
-                            spanSibling.addClass("ui-icon-triangle-1-s");
-                        }
+                        component.igTree("expandToNode", liItem);                   
                         component.igTree("select", liItem); 
                     }
                 } else {
