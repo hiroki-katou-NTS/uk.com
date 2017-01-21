@@ -1,16 +1,18 @@
-var multiple = false;
+var multiple = true;
 var checkboxMode = multiple ? "biState" : "off";
 __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            var data = [new Node("IG Touring", "IG Touring", [new Node("Rome", "Rome", [new Node("One Week", "$1178", []), new Node("Two Weeks", "$1997", [])]),
+            var data = [new Node("IG Touring", "IG Touring", [new Node("Rome", "Rome", [new Node("One Week", "$1178", [new Node("Hotel", "+$200", []), new Node("House", "+$100", [])]), new Node("Two Weeks", "$1997", [])]),
                     new Node("France", "France", [new Node("Paris", "Paris", [])])])];
             self.dataSource = data;
             self.selectedValue = ko.observable('');
             self.checkedValues = ko.observableArray([]);
             $("#tree").igTree({
                 singleBranchExpand: false,
+                initialExpandDepth: 1,
+                //initialExpandDepth = x, where all nodes at level x are expanded
                 checkboxMode: checkboxMode,
                 bindings: {
                     textKey: 'text',
@@ -22,7 +24,12 @@ __viewContext.ready(function () {
                         childDataProperty: 'childs',
                         bindings: {
                             textKey: 'text',
-                            valueKey: 'value'
+                            valueKey: 'value',
+                            childDataProperty: 'childs',
+                            bindings: {
+                                textKey: 'text',
+                                valueKey: 'value'
+                            }
                         }
                     }
                 },

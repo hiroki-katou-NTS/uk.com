@@ -31,7 +31,7 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>SearchBox Sample</h1>
-						Version: with igGrid					
+						Version: with igTree					
 						<h2>Overview</h2>
 						<div class="cf">
 							<div>	
@@ -42,9 +42,10 @@
 							</div>	
 
 							<div>
-								Single selection value: <span data-bind="text: selectedValue"></span>
+								selectedValue: <span data-bind="text: selectedValue"></span>
 								<br/><br/>
-								Multi selection values: <span data-bind="text: checkedValues"></span>
+								checkedValues: <span data-bind="text: checkedValues"></span><br/><br/>
+								If use checkedValues (multi mode), let replace above 'selected' options of SearchBox to 'checkedValues'
 							</div>			
 						</div>					
 					</div>
