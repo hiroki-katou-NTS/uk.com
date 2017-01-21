@@ -5,11 +5,11 @@ var qrm007;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
             };
-            function getPaymentDateProcessingList() {
+            function getRetirementPayItemList() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+                nts.uk.request.ajax(paths.getRetirementPayItemList)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,7 +18,7 @@ var qrm007;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.getRetirementPayItemList = getRetirementPayItemList;
         })(service = a.service || (a.service = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));

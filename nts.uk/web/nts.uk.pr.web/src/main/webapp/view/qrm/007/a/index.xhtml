@@ -19,17 +19,16 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button">登録</button>
+					<button class="proceed short-button" data-bind="click: updateData()">登録</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
-					<div class="cf">
 						<div class="pull-left">
 							<div class="caret-right caret-background bg-green">
 								<table id="single-list" data-bind="ntsGridList: {
 										width: 600,
 										height: 250,
-										options: items,
+										options: retirementPayItemList,
 										optionsValue: 'code',
 										columns: columns,
 										multiple: false,
@@ -80,7 +79,6 @@
 								</div>
 							</div>
 						</div>
-					</div>
 					
 					
 				</div>
