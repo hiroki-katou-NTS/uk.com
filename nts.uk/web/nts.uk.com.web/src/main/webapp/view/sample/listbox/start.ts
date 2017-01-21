@@ -3,8 +3,8 @@ __viewContext.ready(function () {
         itemList: KnockoutObservableArray<ItemModel>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
+        selectedCode: KnockoutObservable<number>;
+        selectedCodes: KnockoutObservableArray<number>;
         isEnable: KnockoutObservable<boolean>; 
         isMulti: KnockoutObservable<boolean>;
         isMulti2: KnockoutObservable<boolean>;
@@ -14,7 +14,7 @@ __viewContext.ready(function () {
             var self = this;
             var temp = [];
             for(var i = 0; i < 100; i++){
-                temp.push(new ItemModel('基本給' + (i + 1), '基本給', "description " + (i + 1)));
+                temp.push(new ItemModel((i + 1), '基本給', "description " + (i + 1)));
             }
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
@@ -30,12 +30,7 @@ __viewContext.ready(function () {
         addOptions() {
             var self = this;
             var newCode = self.currentCode() + 1;
-            var itemCode = newCode.toString();
-            var codeLength = itemCode.length;
-            while (codeLength < 4) {
-                itemCode = '0' + itemCode;
-                codeLength++;
-            }
+            var itemCode = newCode;
             self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
             self.currentCode(newCode);
         }
@@ -62,7 +57,7 @@ __viewContext.ready(function () {
             var self = this;
             
             // Remove by code.
-            var selected: ItemModel = self.itemList().filter(item => item.code == self.selectedCode())[0];
+            var selected: ItemModel = self.itemList().filter(item => item.code === self.selectedCode())[0];
             self.itemList.remove(selected);
             
             // Remove by codes
@@ -72,11 +67,11 @@ __viewContext.ready(function () {
     }
     
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
         description: string;
         
-        constructor(code: string, name: string, description: string) {
+        constructor(code: number, name: string, description: string) {
             this.code = code;
             this.name = name;
             this.description = description;

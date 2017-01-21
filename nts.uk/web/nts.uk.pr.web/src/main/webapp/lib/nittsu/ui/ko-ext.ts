@@ -1334,7 +1334,7 @@ module nts.uk.ui.koExtentions {
                 var itemsSelected: any = container.data('value');
 
                 data.value(itemsSelected);
-                container.data("selected", typeof itemsSelected === "string" ? itemsSelected : itemsSelected.slice());
+                container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
 
             }));
 

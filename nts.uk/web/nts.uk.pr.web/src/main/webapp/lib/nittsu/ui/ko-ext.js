@@ -1312,7 +1312,7 @@ var nts;
                             // Check is multi-selection.
                             var itemsSelected = container.data('value');
                             data.value(itemsSelected);
-                            container.data("selected", typeof itemsSelected === "string" ? itemsSelected : itemsSelected.slice());
+                            container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
                         }));
                         container.on('validate', (function (e) {
                             // Check empty value
