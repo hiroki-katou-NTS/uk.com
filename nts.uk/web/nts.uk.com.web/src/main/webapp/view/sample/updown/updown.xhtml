@@ -30,6 +30,7 @@
 					<div>
 						<div id="swap-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
@@ -50,6 +51,7 @@
 						</div>
 						<div id="swap-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: currentCodeListSwap,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
@@ -74,6 +76,7 @@
 						</div>
 						<div id="grid-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#grid-test',
 									type: 'grid'
@@ -103,6 +106,7 @@
 						</div>
 						<div id="tree-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: items1,
 									primaryKey: 'code',
 									comId: '#treegrid',
 									type: 'tree', 
@@ -123,6 +127,11 @@
 							</tr>
 						</thead>
 						<tbody>
+							<tr>
+								<td>targetSource</td>
+								<td><b>Type:</b> Array. Sources of target grid (tree) for
+									action.<br /> + <b>Required: True.</b></td>
+							</tr>
 							<tr>
 								<td>primaryKey</td>
 								<td><b>Type:</b> string. Primary key of grid (tree).<br />
@@ -153,8 +162,8 @@
 							</tr>
 							<tr>
 								<td>height</td>
-								<td><b>Type:</b> number.<br/> 
-								<i>Default:</i> Height of target.</td>
+								<td><b>Type:</b> number.<br /> <i>Default:</i> Height of
+									target.</td>
 							</tr>
 						</tbody>
 					</table>

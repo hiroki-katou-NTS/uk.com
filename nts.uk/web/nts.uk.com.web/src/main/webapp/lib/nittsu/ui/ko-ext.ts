@@ -1334,7 +1334,7 @@ module nts.uk.ui.koExtentions {
                 var itemsSelected: any = container.data('value');
 
                 data.value(itemsSelected);
-                container.data("selected", typeof itemsSelected === "string" ? itemsSelected : itemsSelected.slice());
+                container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
 
             }));
 
@@ -1514,7 +1514,7 @@ module nts.uk.ui.koExtentions {
      * Grid scroll helper functions
      * 
      */
-    function calculateIndex(options, id, key) {
+    export function calculateIndex(options, id, key) {
         if (!id) return 0;
         var index = 0;
         for (var i = 0; i < options.length; i++) {
@@ -2521,8 +2521,9 @@ module nts.uk.ui.koExtentions {
                     });
                     if (moved) {
                         $targetElement.igGrid("virtualScrollTo", 0);
-                        $targetElement.igGrid("option", "dataSource", source);
-                        $targetElement.igGrid("dataBind");
+                        data.targetSource(source);
+//                        $targetElement.igGrid("option", "dataSource", source);
+//                        $targetElement.igGrid("dataBind");
                         var index = upDown + grouped["group1"][0].index;
 //                        var index = $targetElement.igGrid("selectedRows")[0].index;
                         $targetElement.igGrid("virtualScrollTo", index);
@@ -2548,8 +2549,9 @@ module nts.uk.ui.koExtentions {
                 source = result.source;
                 
                 if (moved && changed) {
-                    $targetElement.igTreeGrid("option", "dataSource", source);
-                    $targetElement.igTreeGrid("dataBind");
+                    data.targetSource(source);
+//                    $targetElement.igTreeGrid("option", "dataSource", source);
+//                    $targetElement.igTreeGrid("dataBind");
 //                    data.targetSource(source);
                     var index = $targetElement.igTreeGrid("selectedRows")[0].index;
                     if(index !== selected["index"]){
