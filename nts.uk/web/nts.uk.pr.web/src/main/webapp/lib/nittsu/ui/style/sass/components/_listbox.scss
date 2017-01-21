@@ -1,21 +1,4 @@
-.nts-list-box
-{
-	.ui-selecting {
-		background: #FECA40;
-	}
-	
-	.ui-selected {
-		background: #F39814;
-		color: white;
-	}
-	
-	li {
-		height: 28px;
-	}
-}
-
-
-#list-box {
+.ntsListBox {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -25,11 +8,34 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 	width: 300px;
-}
-.nts-column {
-	float: left;
-	padding: 5px;
-}
-.disabled {
-	color: graytext;
+	
+	.nts-list-box
+	{
+		.ui-selecting {
+			background: #FECA40;
+		}
+		
+		.ui-selected {
+			background: #F39814;
+			color: white;
+		}
+		
+		li {
+			height: 28px;
+			overflow: hidden;
+		}
+	}
+	
+	.nts-column {
+		float: left;
+		padding: 0 5px;
+		height: 28px;
+		line-height: 28px;
+		overflow: hidden;
+		box-sizing: border-box;
+	}
+	
+	&.disabled {
+		color: graytext;
+	}
 }
