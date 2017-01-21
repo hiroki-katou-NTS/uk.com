@@ -332,6 +332,17 @@ var nts;
                 return result + "円";
             }
             text_1.formatCurrency = formatCurrency;
+            function reverseDirection(direction) {
+                if (direction === "left")
+                    return "right";
+                else if (direction === "right")
+                    return "left";
+                else if (direction === "top")
+                    return "bottom";
+                else if (direction === "bottom")
+                    return "top";
+            }
+            text_1.reverseDirection = reverseDirection;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;

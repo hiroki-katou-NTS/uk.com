@@ -14,12 +14,10 @@
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
 				<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-					nts.uk.shr.com.primitive.EmployeeId
-					nts.uk.shr.com.primitive.sample.CommonAmount
-					nts.uk.shr.com.primitive.sample.PersonalWageCode
-					nts.uk.shr.com.primitive.sample.ProcessingNo
 					nts.uk.shr.com.primitive.sample.ResidenceCode
+					nts.uk.shr.com.primitive.sample.ProcessingNo
+					nts.uk.shr.com.primitive.sample.PersonalWageCode
+					nts.uk.shr.com.primitive.sample.CommonAmount
 					nts.arc.time.YearMonth
 				</com:ValidatorScript>
             </ui:define>
@@ -34,51 +32,34 @@
 						<p>Get constraints of primitive values from server and use for validation in Javascript</p>
 						<pre><![CDATA[//Test
 <com:ValidatorScript>
-	nts.uk.shr.com.primitive.PersonId
-	nts.uk.shr.com.primitive.EmployeeId
-	nts.uk.shr.com.primitive.sample.CommonAmount
-	nts.uk.shr.com.primitive.sample.PersonalWageCode
-	nts.uk.shr.com.primitive.sample.ProcessingNo
 	nts.uk.shr.com.primitive.sample.ResidenceCode
+	nts.uk.shr.com.primitive.sample.ProcessingNo
+	nts.uk.shr.com.primitive.sample.PersonalWageCode
+	nts.uk.shr.com.primitive.sample.CommonAmount
 	nts.arc.time.YearMonth
 </com:ValidatorScript>]]></pre>
 <pre><![CDATA[//Result (at head)
-	__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};
-	__viewContext.primitiveValueConstraints.PersonId = {
-		valueType: 'String',
-	};
-	__viewContext.primitiveValueConstraints.LayoutCode = {
-		valueType: 'String',
-		charType: 'Numeric',
-		maxLength: 2,
-	};
-	__viewContext.primitiveValueConstraints.ProcessingNo = {
-		valueType: 'Integer',
-		min: 1,
-		max: 5,
-	};
-	__viewContext.primitiveValueConstraints.DependentNumber = {
-		valueType: 'Integer',
-		max: 99,
-		min: 0,
-	};
-	__viewContext.primitiveValueConstraints.CompanyCode = {
-		valueType: 'String',
-		charType: 'Numeric',
-		maxLength: 4,
-	};
-	__viewContext.primitiveValueConstraints.YearMonth = {
-		valueType: 'Integer',
-	};
-	__viewContext.primitiveValueConstraints.CommonAmount = {
-		valueType: 'Decimal',
-	};
-	__viewContext.primitiveValueConstraints.BonusTaxRate = {
-		valueType: 'Integer',
-		min: 0,
-		max: 99999,
-	};
-]]></pre></div></div>
+__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};
+__viewContext.primitiveValueConstraints.ResidenceCode = {
+	valueType: 'String',
+	charType: 'Numeric',
+	maxLength: 6,
+};
+__viewContext.primitiveValueConstraints.ProcessingNo = {
+	valueType: 'Integer',
+	min: 1,
+	max: 5,
+};
+__viewContext.primitiveValueConstraints.PersonalWageCode = {
+	valueType: 'String',
+	maxLength: 2,
+};
+__viewContext.primitiveValueConstraints.CommonAmount = {
+	valueType: 'Decimal',
+};
+__viewContext.primitiveValueConstraints.YearMonth = {
+	valueType: 'Integer',
+};]]></pre></div></div>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>
