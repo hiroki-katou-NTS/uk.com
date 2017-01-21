@@ -27,10 +27,15 @@ __viewContext.ready(function () {
             self.selectedValue = ko.observableArray([]);
             var $treegrid = $("#treegrid");
             self.selectedValue.subscribe(function (newValue) {
-                $treegrid.igTreeGridSelection("clearSelection");
-                newValue.forEach(function (id) {
-                    $treegrid.igTreeGridSelection("selectRowById", id);
+                var selectedRows = _.map($treegrid.igTreeGridSelection("selectedRows"), function (row) {
+                    return row.id;
                 });
+                if (!_.isEqual(selectedRows, newValue)) {
+                    $treegrid.igTreeGridSelection("clearSelection");
+                    newValue.forEach(function (id) {
+                        $treegrid.igTreeGridSelection("selectRowById", id);
+                    });
+                }
             });
             var treeGridId = "treegrid";
             $treegrid.igTreeGrid({
