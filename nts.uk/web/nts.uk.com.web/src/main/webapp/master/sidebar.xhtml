@@ -21,10 +21,12 @@
 				$("div[role=tabpanel]").hide();
 				$("#sidebar-area .navigator a").click(function(e){
 					e.preventDefault();
-					$("#sidebar-area .navigator a").removeClass("active");
-					$(this).addClass("active");
-					$("div[role=tabpanel]").hide();
-					$($(this).attr("href")).show();
+					if (($(this).attr("disabled") !== true &amp;&amp; $(this).attr("disabled") !== "disabled")) {
+						$("#sidebar-area .navigator a").removeClass("active");
+						$(this).addClass("active");
+						$("div[role=tabpanel]").hide();
+						$($(this).attr("href")).show();
+					}
 				});
 				$("#sidebar-area .navigator a.active").trigger('click');
 			})
@@ -39,12 +41,12 @@
     					Header!
     				</td>
    				</tr>
-   				<tr>
+   				<tr data-bind="with: content">
    					<td id="sidebar-area">
 			        	<ui:insert name="sidebar" />
    					</td>
    					<td>
-				        <div data-bind="with: content">
+				        <div>
 				        	<ui:insert name="content" />
 				        </div>
    					</td>

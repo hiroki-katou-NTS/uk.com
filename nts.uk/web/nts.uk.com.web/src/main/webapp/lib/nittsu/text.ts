@@ -334,6 +334,7 @@
             }
             return originalString;
         }
+        
         function addSeperation(amount: string) {           
             var leng = amount.indexOf(".") > -1 ? amount.indexOf(".") : amount.length;
             if(leng < 4) return amount;
@@ -350,11 +351,24 @@
             result = num%1000 + "," + result;
             return result;
         }
+        
         export function formatCurrency(amount: number, locale: string) {
             var result = addSeperation("" + amount);
             if(locale == 'en' || locale == 'EN') return "￥" + result;
             return result + "円";            
         }
+        
+        export function reverseDirection(direction: string) : string {
+            if (direction === "left") 
+                return "right";
+            else if (direction === "right") 
+                return "left";
+            else if (direction === "top") 
+                return "bottom";
+            else if (direction === "bottom") 
+                return "top";
+        }
+        
         export class StringFormatter implements format.IFormatter {
             args: any;
             
