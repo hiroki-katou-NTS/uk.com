@@ -1,7 +1,9 @@
 module qmm018.a.service {
     var paths: any = {
         //getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall",
-        saveData: "pr/core/avepay/register"
+        saveData: "pr/core/avepay/register",
+        updateData: "pr/core/avepay/update",
+        removeData: "pr/core/avepay/remove"
     }
     
     /*
@@ -21,6 +23,32 @@ module qmm018.a.service {
     export function saveData(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.saveData, command)
+            .done(function(res: any) {
+                console.log(res);
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+    export function updateData(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.updateData, command)
+            .done(function(res: any) {
+                console.log(res);
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+    export function removeData(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.removeData, command)
             .done(function(res: any) {
                 console.log(res);
                 dfd.resolve(res);

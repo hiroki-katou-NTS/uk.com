@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.find.rule.employment.avepay;
+package nts.uk.ctx.pr.core.app.find.rule.employment.averagepay;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.find.rule.employment.avepay.dto.AvePayDto;
-import nts.uk.ctx.pr.core.dom.rule.employment.avepay.AvePay;
-import nts.uk.ctx.pr.core.dom.rule.employment.avepay.AvePayRepository;
+import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.dto.AveragePayDto;
+import nts.uk.ctx.pr.core.dom.rule.employment.averagepay.AveragePay;
+import nts.uk.ctx.pr.core.dom.rule.employment.averagepay.AveragePayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,10 +18,10 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @RequestScoped
-public class AvePayFinder {
+public class AveragePayFinder {
 
 	@Inject
-	private AvePayRepository avePayRepository;
+	private AveragePayRepository averagePayRepository;
 	
 	/**
 	 * 
@@ -45,11 +45,11 @@ public class AvePayFinder {
 				avePay.getRoundTimingSet().value); 
 	}*/
 	
-	public List<AvePayDto> findAll() {
-		
-		return this.avePayRepository.findAll()
+	public List<AveragePayDto> findAll() {
+		return this.averagePayRepository.findAll()
 									.stream()
-									.map(x -> new AvePayDto(
+									.map(x -> new AveragePayDto(
+											x.getCompanyCode().v(),
 											x.getAttendDayGettingSet().value, 
 											x.getExceptionPayRate().v(), 
 											x.getRoundTimingSet().value, 

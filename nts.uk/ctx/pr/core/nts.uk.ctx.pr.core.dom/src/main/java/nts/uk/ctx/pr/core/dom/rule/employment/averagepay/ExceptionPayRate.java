@@ -1,10 +1,9 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
-import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * 例外時割合

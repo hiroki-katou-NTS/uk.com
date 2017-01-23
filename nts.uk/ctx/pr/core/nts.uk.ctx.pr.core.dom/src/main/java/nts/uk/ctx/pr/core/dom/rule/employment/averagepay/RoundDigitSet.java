@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.employment.avepay;
+package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 
 
 /**

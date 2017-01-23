@@ -54,7 +54,7 @@ var qmm018;
                             width: "30px",
                             textalign: "center"
                         })),
-                        required: ko.observable(false),
+                        required: ko.observable(true),
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
@@ -83,6 +83,36 @@ var qmm018;
                         roundTimingSet: self.checked() ? 1 : 0
                     };
                     qmm018.a.service.saveData(command).done(function (data) {
+                        dfd.resolve();
+                    }).fail(function (res) {
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.updateData = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var command = {
+                        attendDayGettingSet: self.selectedRuleCode(),
+                        exceptionPayRate: parseInt(self.texteditor2.value()),
+                        roundDigitSet: self.currentCode(),
+                        roundTimingSet: self.checked() ? 1 : 0
+                    };
+                    qmm018.a.service.updateData(command).done(function (data) {
+                        dfd.resolve();
+                    }).fail(function (res) {
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.removeData = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var command = {
+                        attendDayGettingSet: self.selectedRuleCode(),
+                        exceptionPayRate: parseInt(self.texteditor2.value()),
+                        roundDigitSet: self.currentCode(),
+                        roundTimingSet: self.checked() ? 1 : 0
+                    };
+                    qmm018.a.service.removeData(command).done(function (data) {
                         dfd.resolve();
                     }).fail(function (res) {
                     });

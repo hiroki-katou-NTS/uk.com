@@ -56,7 +56,7 @@ module qmm018.a.viewmodel {
                     width: "30px",
                     textalign: "center"
                 })),
-                required: ko.observable(false),
+                required: ko.observable(true),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
@@ -88,6 +88,38 @@ module qmm018.a.viewmodel {
                 roundTimingSet: self.checked() ? 1 : 0
             };
             qmm018.a.service.saveData(command).done(function(data) {
+                dfd.resolve();
+            }).fail(function(res) {
+            });
+            return dfd.promise();    
+        }
+        
+        updateData(){
+            var self = this;
+            var dfd = $.Deferred();
+            var command = {
+                attendDayGettingSet: self.selectedRuleCode(),
+                exceptionPayRate: parseInt(self.texteditor2.value()),
+                roundDigitSet: self.currentCode(),
+                roundTimingSet: self.checked() ? 1 : 0
+            };
+            qmm018.a.service.updateData(command).done(function(data) {
+                dfd.resolve();
+            }).fail(function(res) {
+            });
+            return dfd.promise();    
+        }
+        
+        removeData(){
+            var self = this;
+            var dfd = $.Deferred();
+            var command = {
+                attendDayGettingSet: self.selectedRuleCode(),
+                exceptionPayRate: parseInt(self.texteditor2.value()),
+                roundDigitSet: self.currentCode(),
+                roundTimingSet: self.checked() ? 1 : 0
+            };
+            qmm018.a.service.removeData(command).done(function(data) {
                 dfd.resolve();
             }).fail(function(res) {
             });

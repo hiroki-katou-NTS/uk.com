@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.rule.employment.avepay;
+package nts.uk.ctx.pr.core.app.command.rule.employment.averagepay;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class RegisterAvePayCommand {
+public class RegisterAveragePayCommand {
 	private int attendDayGettingSet;
 	private int exceptionPayRate;
 	private int roundDigitSet;

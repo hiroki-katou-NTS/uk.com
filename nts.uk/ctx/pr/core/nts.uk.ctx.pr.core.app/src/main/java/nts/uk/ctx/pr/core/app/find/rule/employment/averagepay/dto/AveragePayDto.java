@@ -1,15 +1,16 @@
-package nts.uk.ctx.pr.core.app.command.rule.employment.avepay;
+package nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 /**
  * 
  * @author Doan Duy Hung
  *
  */
 @Data
-@NoArgsConstructor
-public class RemoveAvePayCommand {
+@AllArgsConstructor
+public class AveragePayDto {
+	private String companyCode;
 	private int attendDayGettingSet;
 	private int exceptionPayRate;
 	private int roundDigitSet;

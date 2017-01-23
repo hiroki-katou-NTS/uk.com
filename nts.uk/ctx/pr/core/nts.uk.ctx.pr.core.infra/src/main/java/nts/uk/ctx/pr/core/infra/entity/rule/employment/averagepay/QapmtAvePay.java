@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.entity.rule.employment.avepay;
+package nts.uk.ctx.pr.core.infra.entity.rule.employment.averagepay;
 
 
 import javax.persistence.Column;

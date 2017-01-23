@@ -8,7 +8,7 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.rule.employment.avepay.ExceptionPayRate
+					nts.uk.ctx.pr.core.dom.rule.employment.averagepay.ExceptionPayRate
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
@@ -19,7 +19,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click :saveData">登録</button>
+					<button class="proceed short-button" data-bind="click : removeData">登録</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
