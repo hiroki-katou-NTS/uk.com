@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.socialoffice.finder.dto;
+package nts.uk.ctx.pr.core.app.finder.socialoffice.dto;
 
 import lombok.Builder;
 import lombok.Data;

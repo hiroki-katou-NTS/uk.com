@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface UnitPriceHistoryRepository.
@@ -39,7 +40,7 @@ public interface UnitPriceHistoryRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnitPriceHistory> findAll(int companyCode);
+	List<UnitPriceHistory> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -47,5 +48,5 @@ public interface UnitPriceHistoryRepository {
 	 * @param id the id
 	 * @return the unit price history
 	 */
-	UnitPriceHistory findById(String id);
+	Optional<UnitPriceHistory> findById(String id);
 }
