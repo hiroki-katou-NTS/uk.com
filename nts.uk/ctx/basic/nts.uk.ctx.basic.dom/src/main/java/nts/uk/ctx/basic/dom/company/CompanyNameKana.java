@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.company.address;
+package nts.uk.ctx.basic.dom.company;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -7,19 +7,16 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lanlt
  *
  */
-@StringMaxLength(40)
-public class AddressKana2 extends StringPrimitiveValue<AddressKana2>{
-	/**serialVersionUID	 */
+@StringMaxLength(30)
+public class CompanyNameKana extends StringPrimitiveValue<CompanyNameKana>{
+	/**serialVersionUID */
 	private static final long serialVersionUID = 1L;
-	/**
+	/** 
 	 * contructors
-	 * @param rawValue
+	 * @params rawValue  raw value
 	 */
-	public AddressKana2(String rawValue) {
+	public CompanyNameKana(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
-
-	
-
 }

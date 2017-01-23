@@ -1,4 +1,6 @@
-package nts.uk.ctx.basic.dom.company.address;
+package nts.uk.ctx.basic.dom.company;
+
+import org.eclipse.persistence.internal.jpa.parsing.StringFunctionNode;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -7,19 +9,19 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lanlt
  *
  */
-@StringMaxLength(40)
-public class AddressKana2 extends StringPrimitiveValue<AddressKana2>{
+@StringMaxLength(10)
+public class Postal extends StringPrimitiveValue<Postal>{
 	/**serialVersionUID	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * contructors
-	 * @param rawValue
+	 * constructors
+	 * @param rawValue raw value
 	 */
-	public AddressKana2(String rawValue) {
+	public Postal(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
 
-	
+
 
 }

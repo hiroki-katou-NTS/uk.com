@@ -1,7 +1,11 @@
 package nts.uk.ctx.basic.dom.company.address;
 
 import lombok.Getter;
-
+/**
+ * 
+ * @author lanlt
+ *
+ */
 @Getter
 public class Address {
 	

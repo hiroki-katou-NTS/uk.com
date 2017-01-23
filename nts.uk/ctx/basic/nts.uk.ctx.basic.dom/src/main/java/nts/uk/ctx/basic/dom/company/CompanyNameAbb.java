@@ -1,23 +1,25 @@
 package nts.uk.ctx.basic.dom.company;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * @author lanlt
  *
  */
-@StringMaxLength(40)
-public class CompanyName extends StringPrimitiveValue<CompanyName> {
+@StringMaxLength(20)
+public class CompanyNameAbb  extends StringPrimitiveValue<CompanyNameAbb>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * Constructs.
-	 * 
-	 * @param rawValue raw value
+	 * contructors
+	 * @param rawValue
 	 */
-	public CompanyName(String rawValue) {
+	public CompanyNameAbb(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
+	
 
 }
