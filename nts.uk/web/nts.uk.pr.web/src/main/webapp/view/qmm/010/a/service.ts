@@ -1,6 +1,5 @@
 module nts.uk.pr.view.qmm010.a {
     export module service {
-
         var paths: any = {
             findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
             findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",

@@ -27,7 +27,6 @@ public class AccidentInsuranceRateService extends WebService {
 	public List<HistoryAccidentInsuranceRateDto> findAllHistory() {
 		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRate = new ArrayList<HistoryAccidentInsuranceRateDto>();
 		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate006 = new HistoryAccidentInsuranceRateDto();
-		historyAccidentInsuranceRate006.setCompanyCode("companyCode001");
 		MonthRange monthRange006 = new MonthRange();
 		monthRange006.setStartMonth(new YearMonth(2016 * 100 + 4));
 		monthRange006.setEndMonth(new YearMonth(9999 * 100 + 12));
@@ -39,7 +38,6 @@ public class AccidentInsuranceRateService extends WebService {
 				+ historyAccidentInsuranceRate006.getEndMonthRage());
 		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate006);
 		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate005 = new HistoryAccidentInsuranceRateDto();
-		historyAccidentInsuranceRate005.setCompanyCode("companyCode001");
 		MonthRange monthRange005 = new MonthRange();
 		monthRange005.setStartMonth(new YearMonth(2015 * 100 + 10));
 		monthRange005.setEndMonth(new YearMonth(2016 * 100 + 3));
@@ -51,7 +49,6 @@ public class AccidentInsuranceRateService extends WebService {
 				+ historyAccidentInsuranceRate005.getEndMonthRage());
 		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate005);
 		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate004 = new HistoryAccidentInsuranceRateDto();
-		historyAccidentInsuranceRate004.setCompanyCode("companyCode001");
 		MonthRange monthRange004 = new MonthRange();
 		monthRange004.setStartMonth(new YearMonth(2015 * 100 + 4));
 		monthRange004.setEndMonth(new YearMonth(2015 * 100 + 9));
@@ -63,7 +60,6 @@ public class AccidentInsuranceRateService extends WebService {
 				+ historyAccidentInsuranceRate004.getEndMonthRage());
 		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate004);
 		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate003 = new HistoryAccidentInsuranceRateDto();
-		historyAccidentInsuranceRate003.setCompanyCode("companyCode001");
 		MonthRange monthRange003 = new MonthRange();
 		monthRange003.setStartMonth(new YearMonth(2014 * 100 + 9));
 		monthRange003.setEndMonth(new YearMonth(2015 * 100 + 3));
@@ -75,7 +71,6 @@ public class AccidentInsuranceRateService extends WebService {
 				+ historyAccidentInsuranceRate003.getEndMonthRage());
 		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate003);
 		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate002 = new HistoryAccidentInsuranceRateDto();
-		historyAccidentInsuranceRate002.setCompanyCode("companyCode001");
 		MonthRange monthRange002 = new MonthRange();
 		monthRange002.setStartMonth(new YearMonth(2014 * 100 + 4));
 		monthRange002.setEndMonth(new YearMonth(2014 * 100 + 8));
@@ -87,7 +82,6 @@ public class AccidentInsuranceRateService extends WebService {
 				+ historyAccidentInsuranceRate002.getEndMonthRage());
 		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate002);
 		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate001 = new HistoryAccidentInsuranceRateDto();
-		historyAccidentInsuranceRate001.setCompanyCode("companyCode001");
 		MonthRange monthRange001 = new MonthRange();
 		monthRange001.setStartMonth(new YearMonth(2013 * 100 + 4));
 		monthRange001.setEndMonth(new YearMonth(2014 * 100 + 3));

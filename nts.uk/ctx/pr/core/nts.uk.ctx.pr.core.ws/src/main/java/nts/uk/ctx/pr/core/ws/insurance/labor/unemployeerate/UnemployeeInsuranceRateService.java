@@ -1,8 +1,13 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -10,10 +15,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.app.company.command.RemoveCompanyCommand;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSettingDto;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
@@ -21,11 +29,25 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
 import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UnemployeeInsuranceRateService.
+ */
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")
 public class UnemployeeInsuranceRateService extends WebService {
-	
 
+	/** The add. */
+	@Inject
+	UnemployeeInsuranceRateAddCommandHandler add;
+
+	/**
+	 * Detail history.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @return the unemployee insurance rate dto
+	 */
 	@POST
 	@Path("detailHistory/{historyId}")
 	public UnemployeeInsuranceRateDto detailHistory(@PathParam("historyId") String historyId) {
@@ -63,11 +85,17 @@ public class UnemployeeInsuranceRateService extends WebService {
 		umInsuranceRateItemOther.setPersonalSetting(personalSettingOther);
 		UnemployeeInsuranceRateItemSettingDto companySettingOther = new UnemployeeInsuranceRateItemSettingDto();
 		companySettingOther.setRate(56.0);
-		companySettingOther.setRoundAtr(0);//RoundingMethod.RoundUp
+		companySettingOther.setRoundAtr(0);// RoundingMethod.RoundUp
 		umInsuranceRateItemOther.setCompanySetting(companySettingOther);
 		rateItems.add(umInsuranceRateItemOther);
 		unemployeeInsuranceRate.setRateItems(rateItems);
 		return unemployeeInsuranceRate;
+	}
+
+	@POST
+	@Path("add")
+	public void add(UnemployeeInsuranceRateAddCommand command) {
+		this.add.handle(command);
 	}
 
 }

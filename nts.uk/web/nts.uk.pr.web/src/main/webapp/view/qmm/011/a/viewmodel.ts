@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm011.a {
                 nts.uk.ui.windows.setShared("historyEnd", self.historyUnemployeeInsuranceRateEnd());
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
 
-                nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 550, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
                     //OnClose => call
                 });
             }
