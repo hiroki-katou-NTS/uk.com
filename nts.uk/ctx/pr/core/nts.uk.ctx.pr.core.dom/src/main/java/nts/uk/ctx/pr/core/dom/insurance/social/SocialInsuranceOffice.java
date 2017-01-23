@@ -109,6 +109,71 @@ public class SocialInsuranceOffice extends AggregateRoot {
 		super();
 	}
 
+	/**
+	 * @param companyCode
+	 * @param code
+	 * @param name
+	 * @param shortName
+	 * @param picName
+	 * @param picPosition
+	 * @param potalCode
+	 * @param prefecture
+	 * @param address1st
+	 * @param address2nd
+	 * @param kanaAddress1st
+	 * @param kanaAddress2nd
+	 * @param phoneNumber
+	 * @param healthInsuOfficeRefCode1st
+	 * @param healthInsuOfficeRefCode2nd
+	 * @param pensionOfficeRefCode1st
+	 * @param pensionOfficeRefCode2nd
+	 * @param welfarePensionFundCode
+	 * @param officePensionFundCode
+	 * @param healthInsuCityCode
+	 * @param healthInsuOfficeSign
+	 * @param pensionCityCode
+	 * @param pensionOfficeSign
+	 * @param healthInsuOfficeCode
+	 * @param healthInsuAssoCode
+	 * @param memo
+	 */
+	public SocialInsuranceOffice(CompanyCode companyCode, OfficeCode code, OfficeName name, ShortName shortName,
+			PicName picName, PicPosition picPosition, PotalCode potalCode, String prefecture, Address address1st,
+			Address address2nd, KanaAddress kanaAddress1st, KanaAddress kanaAddress2nd, String phoneNumber,
+			String healthInsuOfficeRefCode1st, String healthInsuOfficeRefCode2nd, String pensionOfficeRefCode1st,
+			String pensionOfficeRefCode2nd, String welfarePensionFundCode, String officePensionFundCode,
+			String healthInsuCityCode, String healthInsuOfficeSign, String pensionCityCode, String pensionOfficeSign,
+			String healthInsuOfficeCode, String healthInsuAssoCode, Memo memo) {
+		super();
+		this.companyCode = companyCode;
+		this.code = code;
+		this.name = name;
+		this.shortName = shortName;
+		this.picName = picName;
+		this.picPosition = picPosition;
+		this.potalCode = potalCode;
+		this.prefecture = prefecture;
+		this.address1st = address1st;
+		this.address2nd = address2nd;
+		this.kanaAddress1st = kanaAddress1st;
+		this.kanaAddress2nd = kanaAddress2nd;
+		this.phoneNumber = phoneNumber;
+		this.healthInsuOfficeRefCode1st = healthInsuOfficeRefCode1st;
+		this.healthInsuOfficeRefCode2nd = healthInsuOfficeRefCode2nd;
+		this.pensionOfficeRefCode1st = pensionOfficeRefCode1st;
+		this.pensionOfficeRefCode2nd = pensionOfficeRefCode2nd;
+		this.welfarePensionFundCode = welfarePensionFundCode;
+		this.officePensionFundCode = officePensionFundCode;
+		this.healthInsuCityCode = healthInsuCityCode;
+		this.healthInsuOfficeSign = healthInsuOfficeSign;
+		this.pensionCityCode = pensionCityCode;
+		this.pensionOfficeSign = pensionOfficeSign;
+		this.healthInsuOfficeCode = healthInsuOfficeCode;
+		this.healthInsuAssoCode = healthInsuAssoCode;
+		this.memo = memo;
+	}
+
+
 	// =================== Memento State Support Method ===================
 
 	/**
