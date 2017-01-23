@@ -52,7 +52,7 @@ var nts;
                                 ScreenModel.prototype.rightToggle = function () {
                                     this.rightShow(!this.rightShow());
                                 };
-                                ScreenModel.prototype.CloseModalSubWindow = function () {
+                                ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
                                 };

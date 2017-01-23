@@ -47,8 +47,8 @@ var nts;
                                 }
                                 ScreenModel.prototype.start = function () {
                                 };
-                                ScreenModel.prototype.CloseModalSubWindow = function () {
-                                    nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
+                                ScreenModel.prototype.closeDialog = function () {
+                                    nts.uk.ui.windows.setShared("insuranceOfficeChildValue", this.modalValue(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;

@@ -11,11 +11,7 @@ var qpp018;
                     this.isEqual = ko.observable(true);
                     this.isDeficent = ko.observable(true);
                     this.isRedundant = ko.observable(true);
-                    this.insuranceOffice = ko.observableArray([
-                        new InsuranceOfficeModel('0001', 'Insurance Office 1'),
-                        new InsuranceOfficeModel('0002', 'Insurance Office 2'),
-                        new InsuranceOfficeModel('0003', 'Insurance Office 3')
-                    ]);
+                    this.insuranceOffice = ko.observableArray([]);
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 100 },
                         { headerText: '名称 ', prop: 'name', width: 100 }
@@ -44,7 +40,22 @@ var qpp018;
                 };
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
-                    dfd.resolve();
+                    var self = this;
+                    $.when(self.loadAllInsuranceOffice()).done(function () {
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadAllInsuranceOffice = function () {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    a.service.getAllInsuranceOffice().done(function (data) {
+                        self.insuranceOffice(data);
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                        dfd.reject();
+                    });
                     return dfd.promise();
                 };
                 return ScreenModel;

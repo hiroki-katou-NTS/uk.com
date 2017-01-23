@@ -40,7 +40,7 @@ var nts;
                                     ]);
                                     self.selectedTab = ko.observable('tab-1');
                                 }
-                                ScreenModel.prototype.CloseModalSubWindow = function () {
+                                ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
                                 };

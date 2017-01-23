@@ -25,6 +25,9 @@ public class UnitPriceHistory extends AggregateRoot {
 
 	/** The unit price code. */
 	private UnitPriceCode unitPriceCode;
+	
+	/** The unit price name. */
+	private UnitPriceName unitPriceName;
 
 	/** The apply range. */
 	private MonthRange applyRange;

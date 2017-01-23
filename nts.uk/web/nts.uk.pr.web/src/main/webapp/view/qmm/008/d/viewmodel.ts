@@ -53,7 +53,7 @@ module nts.uk.pr.view.qmm008.d {
             }
 
 
-            CloseModalSubWindow() {
+            closeDialog() {
                 // Set child value
                 nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                 nts.uk.ui.windows.close();
