@@ -5,6 +5,7 @@ interface JQuery {
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
+    setupSearchScroll(controlType: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {

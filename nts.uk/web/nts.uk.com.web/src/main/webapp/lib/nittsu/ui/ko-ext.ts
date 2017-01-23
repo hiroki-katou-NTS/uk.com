@@ -413,7 +413,8 @@ module nts.uk.ui.koExtentions {
                     if(data.mode == 'igGrid') {
                         var selectArr = []; selectArr.push("" + selectedItem);
                         component.ntsGridList("setSelected", selectArr);
-                        component.trigger("selectionChanged");
+                        data.selected(selectArr);
+                        component.trigger("selectChange");
                     } else if(data.mode == 'igTree') {
                         var liItem = $("li[data-value='" + selectedItem + "']");
                         component.igTree("expandToNode", liItem);                   
