@@ -25,5 +25,6 @@ public class MonthRange implements Serializable {
 
 	/** The end month. */
 	public YearMonth endMonth;
+	
 
 }

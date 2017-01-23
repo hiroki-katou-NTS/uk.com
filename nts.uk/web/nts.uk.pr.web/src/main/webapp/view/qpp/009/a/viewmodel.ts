@@ -5,16 +5,18 @@ module qpp009.a.viewmodel {
         selectedDivision: KnockoutObservable<string>;
         detailItemsSetting: KnockoutObservable<DetailItemsSetting>;
         printSetting: KnockoutObservable<PrintSetting>;
+        yearMonth: KnockoutObservable<string>;
         
         constructor() {
             this.targetYear = ko.observable(2016);
-            this.outputDivisions = ko.observableArray([
+            this.outputDivisions = ko.observableArray<SelectionModel>([
                     new SelectionModel('UsuallyMonth', '通常月'),
                     new SelectionModel('PreliminaryMonth', '予備月')
                 ]);
             this.selectedDivision = ko.observable('UsuallyMonth');
             this.detailItemsSetting = ko.observable(new DetailItemsSetting());
             this.printSetting = ko.observable(new PrintSetting());
+            this.yearMonth=ko.observable('2016/12');
         }
         
         /**

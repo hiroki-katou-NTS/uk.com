@@ -14,6 +14,7 @@ var qpp009;
                     this.selectedDivision = ko.observable('UsuallyMonth');
                     this.detailItemsSetting = ko.observable(new DetailItemsSetting());
                     this.printSetting = ko.observable(new PrintSetting());
+                    this.yearMonth = ko.observable('2016/12');
                 }
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();

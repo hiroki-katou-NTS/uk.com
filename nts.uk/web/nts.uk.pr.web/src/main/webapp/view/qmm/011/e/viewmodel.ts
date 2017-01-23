@@ -1,9 +1,7 @@
 module nts.uk.pr.view.qmm011.e {
     import option = nts.uk.ui.option;
     import InsuranceBusinessType = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessType;
-    import BusinessTypeEnum = nts.uk.pr.view.qmm011.a.service.model.BusinessTypeEnum;
     import InsuBizRateItemDto = nts.uk.pr.view.qmm011.a.service.model.InsuBizRateItemDto;
-    import RoundingMethod = nts.uk.pr.view.qmm011.a.service.model.RoundingMethod;
     import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
     export module viewmodel {
         export class ScreenModel {

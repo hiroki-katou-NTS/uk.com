@@ -6,13 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HistoryInsuranceDto{
-	private String historyId;
-	//private MonthRange monthRage;
-	private String startMonthRage;
-	private String endMonthRage;
-	private String inforMonthRage;
+public class HistoryInfoDto extends HistoryInsuranceDto {
+	private boolean takeover;
+
 }

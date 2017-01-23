@@ -9,26 +9,11 @@ import lombok.Setter;
 import nts.uk.ctx.core.app.insurance.HistoryInfoDto;
 import nts.uk.ctx.core.app.insurance.command.ActionCommand;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.PicName;
-import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
-import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
-import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
-import nts.uk.shr.com.primitive.Memo;
 
-/**
- * The Class UnemployeeInsuranceRateAddCommand.
- */
-// TODO: Auto-generated Javadoc
 @Getter
 @Setter
-public class UnemployeeInsuranceRateAddCommand {
-
+public class UnemployeeInsuranceRateUpdateCommand {
 	/** The history info dto. */
 	private HistoryInfoDto historyInfoDto;
 
