@@ -45,7 +45,7 @@ module qpp018.a.viewmodel {
             nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
 //            nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
             
-            nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定"}).onClosed(() => {
                 // Get child value
                 var returnValue = nts.uk.ui.windows.getShared("printSettingValue");
                 alert("Accepted: " + returnValue);

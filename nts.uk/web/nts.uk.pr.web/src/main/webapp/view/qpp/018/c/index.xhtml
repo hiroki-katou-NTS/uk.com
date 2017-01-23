@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<script>var dialogSize = { width: 800, height: 500 };</script>
+		<script>var dialogSize = { width: 600, height: 540 };</script>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
@@ -16,9 +16,14 @@
 		</ui:define>
 
 		<ui:define name="content">			
-			<div id="contents-area">
-				<div id="detail-contents">
-					<div id="title-label">印刷の設定	</div>
+<!-- 			<div id="contents-area">
+								
+			</div>
+			 
+			<div id="detail-contents">
+					
+				</div>
+				<div id="title-label">印刷の設定	</div>-->
 					<div class="end-title"></div>
 					<div id="details">
 						<div id="label-details">
@@ -39,10 +44,19 @@
 						<button id="helpBtn">?</button>
 						</div>
 						<div id="output-setting">
-							<div class="check-output" data-bind="ntsCheckBox: { checked: isDetailed , text:'明細'}"></div>
+ 							<div class="check-output" data-bind="ntsCheckBox: { checked: isDetailed , text:'明細'}"></div>
 							<div class="check-output" data-bind="ntsCheckBox: { checked: isTotalMonthlyTotal , text:'事務所月計'}"></div>
 							<div class="check-output" data-bind="ntsCheckBox: { checked: isOfficeMonthlyTotal , text:'総合月計'}"></div>
 							<div class="check-output" data-bind="ntsCheckBox: { checked: isDeliveryNoticeAmount , text:'納入告知額'}"></div>
+							<!-- 
+							 <div class="check-output" data-bind="ntsMultiCheckBox: {
+																					options: checkListSetting,
+																					optionsValue: '',
+																					optionsText: '',
+																					value: selectedIds,
+																					enable: true">
+								</div>
+								-->
 						</div>
 					</div>
 					<div class="end-title"></div>
@@ -60,9 +74,8 @@
 							</tbody>
 						</table>
 					</div>
-				</div>				
-			</div>
 		</ui:define>
+		
 	</ui:composition>
 </body>
 </html>

@@ -65,7 +65,7 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 	 * findAll(int)
 	 */
 	@Override
-	public List<UnitPrice> findAll(int companyCode) {
+	public List<UnitPrice> findAll(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -21,7 +21,7 @@ var qpp018;
                 }
                 ScreenModel.prototype.openPrintSettingScr = function () {
                     nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
-                    nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml").onClosed(function () {
+                    nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" }).onClosed(function () {
                         var returnValue = nts.uk.ui.windows.getShared("printSettingValue");
                         alert("Accepted: " + returnValue);
                     });
