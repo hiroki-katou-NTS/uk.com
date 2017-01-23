@@ -1,8 +1,16 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.base;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
+import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 @Setter
@@ -23,7 +31,7 @@ public abstract class UnitPriceHistoryCommandBase {
 	private String endMonth;
 
 	/** The budget. */
-	private double budget;
+	private BigDecimal budget;
 
 	/** The fix pay setting type. */
 	private String fixPaySettingType;
@@ -55,6 +63,19 @@ public abstract class UnitPriceHistoryCommandBase {
 	 */
 	public UnitPriceHistory toDomain(String companyCode) {
 		UnitPriceHistory unitPriceHistory = new UnitPriceHistory();
+		unitPriceHistory.setId(id);
+		unitPriceHistory.setCompanyCode(new CompanyCode(companyCode));
+		unitPriceHistory.setUnitPriceCode(new UnitPriceCode(unitPriceCode));
+		unitPriceHistory.setBudget(new Money(budget));
+		// unitPriceHistory.setApplyRange(new MonthRange());
+		unitPriceHistory.setFixPaySettingType(SettingType.valueOf(fixPaySettingType));
+		unitPriceHistory.setFixPayAtr(ApplySetting.valueOf(fixPayAtr));
+		unitPriceHistory.setFixPayAtrMonthly(ApplySetting.valueOf(fixPayAtrMonthly));
+		unitPriceHistory.setFixPayAtrDayMonth(ApplySetting.valueOf(fixPayAtrDayMonth));
+		unitPriceHistory.setFixPayAtrDaily(ApplySetting.valueOf(fixPayAtrDaily));
+		unitPriceHistory.setFixPayAtrHourly(ApplySetting.valueOf(fixPayAtrHourly));
+		unitPriceHistory.setMemo(new Memo(memo));
+
 		return unitPriceHistory;
 	}
 }
