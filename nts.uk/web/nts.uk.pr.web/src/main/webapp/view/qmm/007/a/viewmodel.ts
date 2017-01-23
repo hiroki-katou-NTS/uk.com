@@ -130,6 +130,7 @@ module nts.uk.pr.view.qmm007.a {
                 model.fixPayAtrDayMonth('NotApply');
                 model.fixPayAtrDaily('NotApply');
                 model.fixPayAtrHourly('NotApply');
+                model.memo('');
             }
 
             /**
