@@ -1,8 +1,8 @@
-.ntsRadioBox{
-	display: block;
-}
-.sidebar-content-header{
-	background-size:0%;
+#functions-area {
+	padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .border_none {
 	border: none;
