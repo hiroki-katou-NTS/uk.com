@@ -4,8 +4,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.app.finder.socialoffice.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.service.insurance.social.SocialInsuranceService;
-import nts.uk.ctx.pr.core.app.socialoffice.finder.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 
