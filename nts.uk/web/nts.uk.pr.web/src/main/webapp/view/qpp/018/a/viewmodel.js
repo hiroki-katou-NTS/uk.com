@@ -40,10 +40,13 @@ var qpp018;
                 };
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
-                    dfd.resolve();
+                    var self = this;
+                    $.when(self.loadAllInsuranceOffice()).done(function () {
+                        dfd.resolve();
+                    });
                     return dfd.promise();
                 };
-                ScreenModel.prototype.loadAllOutputSetting = function () {
+                ScreenModel.prototype.loadAllInsuranceOffice = function () {
                     var dfd = $.Deferred();
                     var self = this;
                     a.service.getAllInsuranceOffice().done(function (data) {

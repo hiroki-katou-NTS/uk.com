@@ -70,12 +70,15 @@ module qpp018.a.viewmodel {
         }
         public start(): JQueryPromise<any>{
             var dfd = $.Deferred<any>();
+            var self = this;
             // TODO: check for start from menu salary or bonus.
-            dfd.resolve();
+           $.when(self.loadAllInsuranceOffice()).done(function() {
+                dfd.resolve();
+            })
             return dfd.promise();
         }
         
-        public loadAllOutputSetting(): JQueryPromise<any> {
+        public loadAllInsuranceOffice(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var self = this;
             service.getAllInsuranceOffice().done(function(data: service.model.InsuranceOffice[]) {
