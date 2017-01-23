@@ -22,22 +22,23 @@ var nts;
                                 self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.removeData(self.filteredData2());
+                                console.log(self.filteredData2());
                                 self.selectedCodes = ko.observableArray([]);
                                 self.singleSelectedCode.subscribe(function (newValue) {
                                     self.Value(newValue);
                                     if (self.editMode) {
                                         var count = 0;
                                         self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
-                                        self.nameBySelectedCode(self.findByName(self.itemList()));
+                                        self.nameBySelectedCode(self.findByName(self.filteredData2()));
                                         self.selectedCode(self.nameBySelectedCode().code);
                                         console.log(self.selectedCode());
                                         var co_1 = 0, co1_1 = 0;
-                                        _.each(self.filteredData(), function (obj) {
+                                        _.each(self.filteredData2(), function (obj) {
                                             if (obj.code != self.curentNode().code) {
                                                 co_1++;
                                             }
                                             else {
-                                                if (co_1 < ((_.size(self.filteredData())) - 1)) {
+                                                if (co_1 < ((_.size(self.filteredData2())) - 1)) {
                                                     co1_1 = co_1 + 1;
                                                 }
                                                 else {
@@ -45,7 +46,7 @@ var nts;
                                                 }
                                             }
                                         });
-                                        self.labelSubsub(self.filteredData()[co1_1]);
+                                        self.labelSubsub(self.filteredData2()[co1_1]);
                                         if (self.labelSubsub() == null) {
                                             self.labelSubsub(new Node("11", "22", []));
                                         }
