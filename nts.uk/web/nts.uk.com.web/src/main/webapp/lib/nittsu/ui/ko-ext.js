@@ -1550,24 +1550,7 @@ var nts;
                             }
                         });
                         var gridId = $grid.attr('id');
-                        $grid.on("selectChange", function () {
-                            var scrollContainer = $("#" + gridId + "_scrollContainer");
-                            var row1 = null;
-                            var selectedRows = $grid.igGrid("selectedRows");
-                            if (selectedRows && selectedRows.length > 0)
-                                row1 = $grid.igGrid("selectedRows")[0].id;
-                            else {
-                                var selectedRow = $grid.igGrid("selectedRow");
-                                if (selectedRow && selectedRow.id) {
-                                    row1 = $grid.igGrid("selectedRow").id;
-                                }
-                            }
-                            if (row1 && row1 !== 'undefined') {
-                                //console.log(row1);
-                                var topPos = calculateIndex(options, row1, optionsValue);
-                                $grid.igGrid('virtualScrollTo', topPos);
-                            }
-                        });
+                        $grid.setupSearchScroll("igGrid", true);
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);

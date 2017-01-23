@@ -602,4 +602,52 @@ module nts.uk.ui.jqueryExtentions {
                 return "top";
         }
     }
+    module ntsSearchBox {
+        $.fn.setupSearchScroll = function(controlType: string, virtualization? : boolean) {
+            var $control = this;
+            if(controlType == 'igGrid') return setupIgGridScroll($control, virtualization);
+            if(controlType == 'igTreeGrid') return setupTreeGridScroll($control);
+            if(controlType == 'igTree') return setupIgTreeScroll($control);
+            return this;
+        }
+        function setupIgGridScroll($control: JQuery, virtualization?: boolean) {
+            var $grid = $control;
+            console.log($grid);
+            if(virtualization) {
+                $grid.on("selectChange", function() {
+                    var row = null;
+                    var selectedRows = $grid.igGrid("selectedRows");
+                    if(selectedRows) {
+                        row = selectedRows[0];
+                    } else {
+                        row = $grid.igGrid("selectedRow"); 
+                    }                
+                    if(row) $grid.igGrid("virtualScrollTo", row.index);                
+                });
+            } else {
+                $grid.on("selectChange", function() {
+                    var row = null;
+                    var selectedRows = $grid.igGrid("selectedRows");
+                    if(selectedRows) {
+                        row = selectedRows[0];
+                    } else {
+                        row = $grid.igGrid("selectedRow"); 
+                    }                
+                    if(row) {
+                        var index = row.index;
+                        var height = row.element[0].scrollHeight;
+                        var gridId = $grid.attr('id');
+                        $("#" + gridId + "_scrollContainer").scrollTop(index*height); 
+                    }            
+                }); 
+            }
+            return $grid;
+        }
+        function setupTreeGridScroll($control: JQuery) {
+             
+        }
+        function setupIgTreeScroll($control: JQuery) {
+             
+        }
+    }
 }

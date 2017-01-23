@@ -520,6 +520,60 @@ var nts;
                             return "top";
                     }
                 })(ntsUserGuide || (ntsUserGuide = {}));
+                var ntsSearchBox;
+                (function (ntsSearchBox) {
+                    $.fn.setupSearchScroll = function (controlType, virtualization) {
+                        var $control = this;
+                        if (controlType == 'igGrid')
+                            return setupIgGridScroll($control, virtualization);
+                        if (controlType == 'igTreeGrid')
+                            return setupTreeGridScroll($control);
+                        if (controlType == 'igTree')
+                            return setupIgTreeScroll($control);
+                        return this;
+                    };
+                    function setupIgGridScroll($control, virtualization) {
+                        var $grid = $control;
+                        console.log($grid);
+                        if (virtualization) {
+                            $grid.on("selectChange", function () {
+                                var row = null;
+                                var selectedRows = $grid.igGrid("selectedRows");
+                                if (selectedRows) {
+                                    row = selectedRows[0];
+                                }
+                                else {
+                                    row = $grid.igGrid("selectedRow");
+                                }
+                                if (row)
+                                    $grid.igGrid("virtualScrollTo", row.index);
+                            });
+                        }
+                        else {
+                            $grid.on("selectChange", function () {
+                                var row = null;
+                                var selectedRows = $grid.igGrid("selectedRows");
+                                if (selectedRows) {
+                                    row = selectedRows[0];
+                                }
+                                else {
+                                    row = $grid.igGrid("selectedRow");
+                                }
+                                if (row) {
+                                    var index = row.index;
+                                    var height = row.element[0].scrollHeight;
+                                    var gridId = $grid.attr('id');
+                                    $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                                }
+                            });
+                        }
+                        return $grid;
+                    }
+                    function setupTreeGridScroll($control) {
+                    }
+                    function setupIgTreeScroll($control) {
+                    }
+                })(ntsSearchBox || (ntsSearchBox = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
