@@ -1,7 +1,6 @@
 module qpp018.c.viewmodel {
     export class ScreenModel {
         
-        
         required: KnockoutObservable<boolean>;
         isDetailed: KnockoutObservable<boolean>;
         isTotalMonthlyTotal: KnockoutObservable<boolean>;
@@ -10,8 +9,7 @@ module qpp018.c.viewmodel {
         showHealthInsuranceType: KnockoutObservableArray<HealthInsuranceType>;
         enable: KnockoutObservable<boolean>; 
         selectedCode: KnockoutObservable<string>;
-        printSettingValue: KnockoutObservable<string>; 
-        
+        printSettingValue: KnockoutObservable<string>;
         
         constructor() {
             this.required = ko.observable(true);
@@ -27,7 +25,6 @@ module qpp018.c.viewmodel {
             this.selectedCode=ko.observable('1');
             this.enable=ko.observable(true);
             this.printSettingValue=ko.observable('PrintSetting Value');
-            
         }
         closePrintSetting(){
          // Set child value
@@ -65,5 +62,6 @@ module qpp018.c.viewmodel {
             this.name = name;
         }       
     }
+
 
 }
