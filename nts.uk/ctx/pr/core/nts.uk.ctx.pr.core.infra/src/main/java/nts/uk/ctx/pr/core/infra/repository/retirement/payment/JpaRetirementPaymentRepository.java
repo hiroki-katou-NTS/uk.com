@@ -8,6 +8,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPayment;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPaymentRepository;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPayment;
+import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPaymentPK;
 
 /**
  * 
@@ -58,6 +59,13 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 	@Override
 	public void remove(RetirementPayment retirementPayment) {
 		// TODO Auto-generated method stub
-		this.commandProxy().remove(retirementPayment);
+		//this.commandProxy().remove(retirementPayment);
+		this.commandProxy().remove(
+				QredtRetirementPayment.class,
+				new QredtRetirementPaymentPK(
+						retirementPayment.getCompanyCode().v(), 
+						retirementPayment.getPersonId().v()
+				)
+		);
 	}
 }
