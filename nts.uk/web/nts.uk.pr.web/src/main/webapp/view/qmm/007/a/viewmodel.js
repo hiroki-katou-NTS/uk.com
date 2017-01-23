@@ -91,6 +91,7 @@ var nts;
                                     model.fixPayAtrDayMonth('NotApply');
                                     model.fixPayAtrDaily('NotApply');
                                     model.fixPayAtrHourly('NotApply');
+                                    model.memo('');
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;
