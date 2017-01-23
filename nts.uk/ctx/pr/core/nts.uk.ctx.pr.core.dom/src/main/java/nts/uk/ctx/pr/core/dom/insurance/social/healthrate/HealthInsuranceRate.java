@@ -49,6 +49,30 @@ public class HealthInsuranceRate extends AggregateRoot {
 	public HealthInsuranceRate() {
 		super();
 	}
+	
+	/**
+	 * @param historyId
+	 * @param companyCode
+	 * @param officeCode
+	 * @param applyRange
+	 * @param autoCalculate
+	 * @param maxAmount
+	 * @param rateItems
+	 * @param roundingMethods
+	 */
+	public HealthInsuranceRate(String historyId, CompanyCode companyCode, OfficeCode officeCode, MonthRange applyRange,
+			Boolean autoCalculate, Long maxAmount, List<InsuranceRateItem> rateItems,
+			List<HealthInsuranceRounding> roundingMethods) {
+		super();
+		this.historyId = historyId;
+		this.companyCode = companyCode;
+		this.officeCode = officeCode;
+		this.applyRange = applyRange;
+		this.autoCalculate = autoCalculate;
+		this.maxAmount = maxAmount;
+		this.rateItems = rateItems;
+		this.roundingMethods = roundingMethods;
+	}
 
 	// =================== Memento State Support Method ===================
 	/**
