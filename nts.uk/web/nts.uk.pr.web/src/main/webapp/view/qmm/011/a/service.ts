@@ -5,9 +5,9 @@ module nts.uk.pr.view.qmm011.a {
             findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
             findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
             detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
-            findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findallHistory",
-            findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/findHistory",
-            detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/detailHistory"
+            findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/findall",
+            findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/find",
+            detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/detail"
         };
 
         //Function connection service FindAll Labor Insurance Office

@@ -4,8 +4,10 @@
 			<tr>
 				<td id="contents-left" class="bg-green caret-right caret-background">
 					<div class="leftTop">
-						<button id="C_BTN_001">履歴追加</button>
-						<button id="C_BTN_002" class="danger">履歴編集</button>
+						<button id="btn_addHistoryAccidentInsuranceRate"
+							data-bind="click: openAddHistoryAccidentInsuranceRate">履歴追加</button>
+						<button id="C_BTN_002" class="floatRight"
+							data-bind="click: openEditHistoryAccidentInsuranceRate">履歴編集</button>
 					</div>
 					<div class="list-box" id="lstHistoryAccidentInsuranceRate"
 						data-bind="ntsListBox: {

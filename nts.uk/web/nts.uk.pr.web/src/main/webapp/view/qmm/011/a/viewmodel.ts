@@ -71,6 +71,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             openAddHistoryUnemployeeInsuranceRate() {
+                nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
                 });
@@ -89,7 +90,6 @@ module nts.uk.pr.view.qmm011.a {
                 //  selectionHistoryUnemployeeInsuranceRate
                 var historyId = this.selectionHistoryAccidentInsuranceRate();
                 nts.uk.ui.windows.setShared("historyId", historyId);
-                // nts.uk.ui.windows.setShared("lsthistoryValue", this.lstHistoryAccidentInsurance);
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
                     //OnClose => call
@@ -98,6 +98,7 @@ module nts.uk.pr.view.qmm011.a {
             openAddHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
+                nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
                 });
@@ -285,7 +286,7 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateBiz10ThModel: AccidentInsuranceRateDetailModel;
             constructor(accidentInsuranceRate: AccidentInsuranceRateDto,
                 rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
-                for (var rateItem of  accidentInsuranceRate.rateItems){
+                for (var rateItem of accidentInsuranceRate.rateItems) {
                     //Biz1St
                     if (rateItem.insuBizType == BusinessTypeEnumDto.Biz1St) {
                         this.accidentInsuranceRateBiz1StModel =

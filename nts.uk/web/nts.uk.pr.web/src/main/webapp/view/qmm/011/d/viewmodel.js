@@ -12,6 +12,7 @@ var nts;
                     (function (d) {
                         var option = nts.uk.ui.option;
                         var HistoryInfoDto = d.service.model.HistoryInfoDto;
+                        var TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -26,7 +27,17 @@ var nts;
                                     self.historyStart = ko.observable('');
                                     self.historyEnd = ko.observable('9999/12');
                                     self.selectedId = ko.observable(1);
+                                    self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
                                 }
+                                ScreenModel.prototype.addHistoryInfo = function () {
+                                    var self = this;
+                                    if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
+                                        self.addHistoryInfoUnemployeeInsurance();
+                                    }
+                                    else {
+                                        self.addHistoryInfoAccidentInsurance();
+                                    }
+                                };
                                 ScreenModel.prototype.addHistoryInfoUnemployeeInsurance = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -34,7 +45,14 @@ var nts;
                                     historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
                                     d.service.addHistoryInfoUnemployeeInsurance(historyInfo).done(function (data) {
                                     });
-                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.addHistoryInfoAccidentInsurance = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    var historyInfo;
+                                    historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
+                                    d.service.addHistoryInfoAccidentInsurance(historyInfo).done(function (data) {
+                                    });
                                 };
                                 return ScreenModel;
                             }());

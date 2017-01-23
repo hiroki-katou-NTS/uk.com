@@ -13,7 +13,8 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update"
+                                updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
+                                updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
                             };
                             function updateHistoryInfoUnemployeeInsurance(historyInfo) {
                                 var dfd = $.Deferred();
@@ -28,6 +29,19 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateHistoryInfoUnemployeeInsurance = updateHistoryInfoUnemployeeInsurance;
+                            function updateHistoryInfoAccidentInsuranceRate(historyInfo) {
+                                var dfd = $.Deferred();
+                                var data = { historyInfoDto: historyInfo, comanyCode: "CC0001" };
+                                nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.updateHistoryInfoAccidentInsuranceRate = updateHistoryInfoAccidentInsuranceRate;
                         })(service = f.service || (f.service = {}));
                     })(f = qmm011.f || (qmm011.f = {}));
                 })(qmm011 = view.qmm011 || (view.qmm011 = {}));

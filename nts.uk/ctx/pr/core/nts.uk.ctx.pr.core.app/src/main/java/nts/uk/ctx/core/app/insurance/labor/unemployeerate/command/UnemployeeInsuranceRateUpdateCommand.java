@@ -4,11 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.core.app.insurance.labor.unemployeerate.command;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.app.insurance.HistoryInfoDto;
 import nts.uk.ctx.core.app.insurance.command.ActionCommand;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 
+@Getter
+@Setter
 public class UnemployeeInsuranceRateUpdateCommand {
 	/** The history info dto. */
 	private HistoryInfoDto historyInfoDto;

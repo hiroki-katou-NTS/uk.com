@@ -19,7 +19,8 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add"
+                                addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
+                                addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add"
                             };
                             function addHistoryInfoUnemployeeInsurance(historyInfo) {
                                 var dfd = $.Deferred();
@@ -34,6 +35,19 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addHistoryInfoUnemployeeInsurance = addHistoryInfoUnemployeeInsurance;
+                            function addHistoryInfoAccidentInsurance(historyInfo) {
+                                var dfd = $.Deferred();
+                                var data = { historyInfoDto: historyInfo, comanyCode: "CC0001" };
+                                nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.addHistoryInfoAccidentInsurance = addHistoryInfoAccidentInsurance;
                             var model;
                             (function (model) {
                                 var HistoryInfoDto = (function (_super) {

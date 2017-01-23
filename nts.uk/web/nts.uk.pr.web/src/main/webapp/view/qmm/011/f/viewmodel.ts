@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm011.f {
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
     import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
     import HistoryInfoDto = nts.uk.pr.view.qmm011.d.service.model.HistoryInfoDto;
+    import HistoryInsuranceRateDto = nts.uk.pr.view.qmm011.a.service.model.HistoryInsuranceRateDto;
     export module viewmodel {
         export class ScreenModel {
             fsel001: KnockoutObservableArray<any>;
@@ -12,7 +13,7 @@ module nts.uk.pr.view.qmm011.f {
             historyId: KnockoutObservable<string>;
             historyStart: KnockoutObservable<string>;
             historyEnd: KnockoutObservable<string>;
-            typeHistory: number;
+            typeHistory: KnockoutObservable<number>;
 
             constructor() {
                 var self = this;
@@ -26,7 +27,7 @@ module nts.uk.pr.view.qmm011.f {
                 var historyId = nts.uk.ui.windows.getShared("historyId");
                 var historyStart = nts.uk.ui.windows.getShared("historyStart");
                 var historyEnd = nts.uk.ui.windows.getShared("historyEnd");
-                self.typeHistory = nts.uk.ui.windows.getShared("type");
+                self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
                 self.historyStart = ko.observable(historyStart);
                 self.historyEnd = ko.observable(historyEnd);
             }
@@ -49,6 +50,34 @@ module nts.uk.pr.view.qmm011.f {
                     */
                 });
                 return dfd.promise();
+            }
+            updateHistoryInfoAccidentInsurance(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                var historyInfo: HistoryInfoDto;
+                historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
+                service.updateHistoryInfoAccidentInsuranceRate(historyInfo).done(data => {
+                    /*  self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateDto>(data);
+                      self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
+                      self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
+                      self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
+                      self.selectionHistoryUnemployeeInsuranceRate.subscribe(function(selectionHistoryUnemployeeInsuranceRate: string) {
+                          self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
+                      });
+                      self.detailHistoryUnemployeeInsuranceRate(data[0].historyId).done(data => {
+                          dfd.resolve(self);
+                      });
+                    */
+                });
+                return dfd.promise();
+            }
+            updateHistoryInfo() {
+                var self = this;
+                if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
+                    self.updateHistoryInfoUnemployeeInsurance();
+                } else {
+                    self.updateHistoryInfoAccidentInsurance();
+                }
             }
         }
 

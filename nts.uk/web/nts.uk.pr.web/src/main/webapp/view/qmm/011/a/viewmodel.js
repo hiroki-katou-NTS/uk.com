@@ -49,6 +49,7 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openAddHistoryUnemployeeInsuranceRate = function () {
+                                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                                     nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
                                     });
                                 };
@@ -68,6 +69,7 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openAddHistoryAccidentInsuranceRate = function () {
+                                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
                                     nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
                                     });
                                 };
