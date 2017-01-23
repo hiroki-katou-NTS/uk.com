@@ -606,14 +606,13 @@ module nts.uk.ui.jqueryExtentions {
     module ntsSearchBox {
         $.fn.setupSearchScroll = function(controlType: string, virtualization? : boolean) {
             var $control = this;
-            if(controlType == 'igGrid') return setupIgGridScroll($control, virtualization);
-            if(controlType == 'igTreeGrid') return setupTreeGridScroll($control);
-            if(controlType == 'igTree') return setupIgTreeScroll($control);
+            if(controlType.toLowerCase() == 'iggrid') return setupIgGridScroll($control, virtualization);
+            if(controlType.toLowerCase() == 'igtreegrid') return setupTreeGridScroll($control, virtualization);
+            if(controlType.toLowerCase() == 'igtree') return setupIgTreeScroll($control);
             return this;
         }
         function setupIgGridScroll($control: JQuery, virtualization?: boolean) {
             var $grid = $control;
-            console.log($grid);
             if(virtualization) {
                 $grid.on("selectChange", function() {
                     var row = null;
@@ -644,11 +643,29 @@ module nts.uk.ui.jqueryExtentions {
             }
             return $grid;
         }
-        function setupTreeGridScroll($control: JQuery) {
-             
+        function setupTreeGridScroll($control: JQuery, virtualization?: boolean) {
+            var $treegrid = $control;
+            var id = $treegrid.attr('id');           
+            $treegrid.on("selectChange", function() {
+                var row = null;
+                var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
+                if(selectedRows) {
+                    row = selectedRows[0];
+                } else {
+                    row = $treegrid.igTreeGridSelection("selectedRow"); 
+                }
+                console.log(row);
+                if(row) {
+                    var index = row.index;
+                    var height = row.element[0].scrollHeight;
+//                    console.log(index * height);
+                    $("#" + id + "_scroll").scrollTop(index * height);
+                }
+            });
+            return $treegrid;
         }
         function setupIgTreeScroll($control: JQuery) {
-             
+            
         }
     }
 }

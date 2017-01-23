@@ -524,17 +524,16 @@ var nts;
                 (function (ntsSearchBox) {
                     $.fn.setupSearchScroll = function (controlType, virtualization) {
                         var $control = this;
-                        if (controlType == 'igGrid')
+                        if (controlType.toLowerCase() == 'iggrid')
                             return setupIgGridScroll($control, virtualization);
-                        if (controlType == 'igTreeGrid')
-                            return setupTreeGridScroll($control);
-                        if (controlType == 'igTree')
+                        if (controlType.toLowerCase() == 'igtreegrid')
+                            return setupTreeGridScroll($control, virtualization);
+                        if (controlType.toLowerCase() == 'igtree')
                             return setupIgTreeScroll($control);
                         return this;
                     };
                     function setupIgGridScroll($control, virtualization) {
                         var $grid = $control;
-                        console.log($grid);
                         if (virtualization) {
                             $grid.on("selectChange", function () {
                                 var row = null;
@@ -569,7 +568,27 @@ var nts;
                         }
                         return $grid;
                     }
-                    function setupTreeGridScroll($control) {
+                    function setupTreeGridScroll($control, virtualization) {
+                        var $treegrid = $control;
+                        var id = $treegrid.attr('id');
+                        $treegrid.on("selectChange", function () {
+                            var row = null;
+                            var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
+                            if (selectedRows) {
+                                row = selectedRows[0];
+                            }
+                            else {
+                                row = $treegrid.igTreeGridSelection("selectedRow");
+                            }
+                            console.log(row);
+                            if (row) {
+                                var index = row.index;
+                                var height = row.element[0].scrollHeight;
+                                //                    console.log(index * height);
+                                $("#" + id + "_scroll").scrollTop(index * height);
+                            }
+                        });
+                        return $treegrid;
                     }
                     function setupIgTreeScroll($control) {
                     }

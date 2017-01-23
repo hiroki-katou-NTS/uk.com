@@ -1649,19 +1649,7 @@ var nts;
                         });
                         var treeGridId = $treegrid.attr('id');
                         $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
-                        $treegrid.on("selectChange", function () {
-                            var scrollContainer = $("#" + treeGridId + "_scroll");
-                            var row1 = undefined;
-                            var selectedRows = $treegrid.igTreeGrid("selectedRows");
-                            if (selectedRows && selectedRows.length > 0) {
-                                row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
-                            }
-                            if (row1 !== undefined) {
-                                var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
-                                var rowHeight = $('#' + treeGridId + "_" + row1).height();
-                                scrollContainer.scrollTop(rowHeight * index);
-                            }
-                        });
+                        $treegrid.setupSearchScroll("igTreeGrid");
                     };
                     /**
                      * Update
