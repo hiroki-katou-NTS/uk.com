@@ -415,8 +415,20 @@ div.popup-panel {
   background-color: #F7EFD4;
   color: #C12017;
 }
-
 /* line 208, ../sass/components/_commons.scss */
+.label.with-image {
+  padding: 5px 10px 5px 5px;
+  border-radius: 5px;
+  background-color: #E0F59E;
+  color: #00B050;
+}
+/* line 214, ../sass/components/_commons.scss */
+.label.with-image .image {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+/* line 220, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -424,23 +436,23 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 215, ../sass/components/_commons.scss */
+/* line 227, ../sass/components/_commons.scss */
 .icon {
   position: relative;
   display: inline-block;
 }
-/* line 219, ../sass/components/_commons.scss */
+/* line 231, ../sass/components/_commons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 225, ../sass/components/_commons.scss */
+/* line 237, ../sass/components/_commons.scss */
 .icon.icon-close {
   width: 16px;
   height: 16px;
 }
-/* line 228, ../sass/components/_commons.scss */
+/* line 240, ../sass/components/_commons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -449,7 +461,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 236, ../sass/components/_commons.scss */
+/* line 248, ../sass/components/_commons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -457,7 +469,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 239, ../sass/components/_commons.scss */
+/* line 251, ../sass/components/_commons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -465,7 +477,7 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 244, ../sass/components/_commons.scss */
+/* line 256, ../sass/components/_commons.scss */
 .icon.icon-dot {
   width: 16px;
   height: 16px;
@@ -474,7 +486,7 @@ div.label {
   background: #00B050;
   box-sizing: border-box;
 }
-/* line 253, ../sass/components/_commons.scss */
+/* line 265, ../sass/components/_commons.scss */
 .icon.icon-search {
   width: 12px;
   height: 12px;
@@ -482,7 +494,7 @@ div.label {
   border-radius: 100%;
   transform: rotate(-45deg);
 }
-/* line 259, ../sass/components/_commons.scss */
+/* line 271, ../sass/components/_commons.scss */
 .icon.icon-search::after {
   top: 12px;
   left: 5px;
@@ -490,7 +502,7 @@ div.label {
   width: 2px;
   background-color: #333333;
 }
-/* line 267, ../sass/components/_commons.scss */
+/* line 279, ../sass/components/_commons.scss */
 .icon.icon-searchbox {
   position: absolute;
   top: 0;
@@ -501,7 +513,7 @@ div.label {
   background: #00B050;
   border-radius: 5px;
 }
-/* line 277, ../sass/components/_commons.scss */
+/* line 289, ../sass/components/_commons.scss */
 .icon.icon-searchbox:before {
   width: 12px;
   height: 12px;
@@ -510,7 +522,7 @@ div.label {
   top: 6px;
   left: 7px;
 }
-/* line 285, ../sass/components/_commons.scss */
+/* line 297, ../sass/components/_commons.scss */
 .icon.icon-searchbox::after {
   top: 18px;
   left: 22px;
@@ -520,14 +532,14 @@ div.label {
   background-color: #FFF;
   transform: rotate(-45deg);
 }
-/* line 295, ../sass/components/_commons.scss */
+/* line 307, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-left {
   margin: 10px 0 10px 3px;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 301, ../sass/components/_commons.scss */
+/* line 313, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-left:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -536,7 +548,7 @@ div.label {
   left: -3px;
   top: -4px;
 }
-/* line 309, ../sass/components/_commons.scss */
+/* line 321, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-left:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -545,14 +557,14 @@ div.label {
   left: -3px;
   top: 4px;
 }
-/* line 318, ../sass/components/_commons.scss */
+/* line 330, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-right {
   margin: 10px 3px 10px 0;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 324, ../sass/components/_commons.scss */
+/* line 336, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-right:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -561,7 +573,7 @@ div.label {
   right: -3px;
   top: -4px;
 }
-/* line 332, ../sass/components/_commons.scss */
+/* line 344, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-right:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -570,14 +582,14 @@ div.label {
   right: -3px;
   top: 4px;
 }
-/* line 341, ../sass/components/_commons.scss */
+/* line 353, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-top {
   margin: 8px 5px 0 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 347, ../sass/components/_commons.scss */
+/* line 359, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-top:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -586,7 +598,7 @@ div.label {
   left: -2px;
   top: 2px;
 }
-/* line 355, ../sass/components/_commons.scss */
+/* line 367, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-top:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -595,14 +607,14 @@ div.label {
   left: -10px;
   top: 2px;
 }
-/* line 364, ../sass/components/_commons.scss */
+/* line 376, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-bottom {
   margin: 5px 5px 3px 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 370, ../sass/components/_commons.scss */
+/* line 382, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-bottom:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -611,7 +623,7 @@ div.label {
   left: -2px;
   bottom: 2px;
 }
-/* line 378, ../sass/components/_commons.scss */
+/* line 390, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-bottom:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -1787,7 +1799,7 @@ button.nts-switch-button[disabled]:hover {
   font-family: "DroidSansMono", "Meiryo";
 }
 /* line 17, ../sass/components/_ignitecommons.scss */
-.ui-iggrid table tr td, .ui-iggrid table tr td .ui-iggrid-header, .ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active, .ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus, .ui-iggrid table tr th, .ui-iggrid table tr th .ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header, .ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active, .ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus, .ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header, .ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active, .ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus {
   padding: 0 2px;
   border: 1px solid #CCC;
 }
@@ -1926,7 +1938,7 @@ button.nts-switch-button[disabled]:hover {
   font-family: "DroidSansMono", "Meiryo";
 }
 /* line 17, ../sass/components/_ignitecommons.scss */
-.ui-igtreegrid table tr td, .ui-igtreegrid table tr td .ui-iggrid-header, .ui-igtreegrid table tr td.ui-state-hover, .ui-igtreegrid table tr td.ui-state-active, .ui-igtreegrid table tr td.ui-state-focus, .ui-igtreegrid table tr td.ui-state-active.ui-state-focus, .ui-igtreegrid table tr th, .ui-igtreegrid table tr th .ui-iggrid-header, .ui-igtreegrid table tr th.ui-state-hover, .ui-igtreegrid table tr th.ui-state-active, .ui-igtreegrid table tr th.ui-state-focus, .ui-igtreegrid table tr th.ui-state-active.ui-state-focus {
+.ui-igtreegrid table tr td, .ui-igtreegrid table tr td.ui-iggrid-header, .ui-igtreegrid table tr td.ui-state-hover, .ui-igtreegrid table tr td.ui-state-active, .ui-igtreegrid table tr td.ui-state-focus, .ui-igtreegrid table tr td.ui-state-active.ui-state-focus, .ui-igtreegrid table tr th, .ui-igtreegrid table tr th.ui-iggrid-header, .ui-igtreegrid table tr th.ui-state-hover, .ui-igtreegrid table tr th.ui-state-active, .ui-igtreegrid table tr th.ui-state-focus, .ui-igtreegrid table tr th.ui-state-active.ui-state-focus {
   padding: 0 2px;
   border: 1px solid #CCC;
 }
@@ -3033,6 +3045,20 @@ button.search-btn {
   z-index: 990;
 }
 
+/* line 1, ../sass/components/_images.scss */
+.image {
+  display: inline-block;
+}
+/* line 4, ../sass/components/_images.scss */
+.image.image-calendar {
+  width: 32px;
+  height: 32px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAfCAYAAACGVs+MAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANSSURBVFhH1VdZTxNRFO4vcntXEY1LNNFoojFRH3wxcYsrGhVQkEWFiMYtsqgohghuARcERBAhhlY6bWmBFmgp0JbSlkJbSil83nNDSUumhbFQ4km+ZDLn3nO+s9xzZ2TBmSnkm0uQLFzGKvnZhGCj8iIyjDno8z2DjJyLLUoEsk05kEmNvGCgCuXDzVivvCpJJ4ZkIQUyMUUsWCddIDmgzZekiwZRAqvl57BWcT4CaxhIN9/JQroIG8wuvQ+HKIH3I7/hDvrgmvJweIITaBszIEmZisFJB3dyUHcXz63fEZgJRtV5gv45G2SvfbwPm4X0CF+iBEKRhIvJb8cudTYnp/aY2HMW6lxCmC6L61QeI3aqb87p5sv88iyaAEnVSBv2a/Owr+M28swfEZyZntXE1oVLXARI7AE3hiadmBZxEEsXEkkEjuufYpOQhq2qG3PYrsrEDnVmxLuFdFuE65wciSQC8xfHg2g2YxKwBUbR7x+BeQkQ6om4eyBeiZtAz4QV21QZOMH645tTyS6WVNwxf0CxpQ4blNdQaW/Flb4yft6b3Toc1t3jx9ceGOP74yag9Zr5mt2aHLxlzug5pbeUk6DnYks9jnY94M81znZOKtymJAI02Qw+C59oJv8wjBPDcE6N44vjD49uwO9AtUMOgQ2fTt8gnwW9EzY2GfX8vYXZaXBpOBH/dIDblEQgtDgUCc1zMkjvEpIBMkznusXdyYw+5JspOnJ+xlCCepeKn3O6hmn2U91pHKcbyyP27WXTceRfeuCzQ4ESFhGlv8Legte2Jn6kXlgbeLqpPEWs+X6OaiEfN6DQUguNtx+1TiFiX6n1B7zTfm7z/ypBGYs4p/8duliDPRmqYamu5seQnFEW6FbMMlXiE8tU42gHMk0VvESvbI1IY2XQeQf4Hlozxq5jEkkEcplzikYx3oNLvS9x2lDEr9tj3Y+RYXrDa3yk8z5PN2WDzjyRiSXLXoJHg1/53mgiiQBF28QajDqYUtvq7uJz4BebAfR1Q3dFE0t9t2+IzwgqA90dsWRRBKiTl0Po044yF+5LlMAeTS5O6gvZvF86nNIX4ZCuAOsUFyJ8iRJIJGRJyhRRRSJAv2iyW/1FospEgP4PV/7ndLZBV0iAvzy5lRVZyzEMAAAAAElFTkSuQmCC");
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
@@ -3140,12 +3166,12 @@ button.search-btn {
   line-height: 50px;
 }
 
-/* line 34, ../sass/base.scss */
+/* line 35, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 38, ../sass/base.scss */
+/* line 39, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";
