@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.find.rule.employment.unitprice;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,10 +16,11 @@ public class UnitPriceHistoryFinder {
 	private UnitPriceHistoryRepository repository;
 
 	public Optional<UnitPriceHistoryDto> find(String id) {
-		return null;
+		return repository.findById(id).map(domain -> UnitPriceHistoryDto.fromDomain(domain));
 	}
 
 	public List<UnitPriceHistoryDto> findAll(String companyCode) {
-		return null;
+		return repository.findAll(companyCode).stream().map(domain -> UnitPriceHistoryDto.fromDomain(domain))
+				.collect(Collectors.toList());
 	}
 }

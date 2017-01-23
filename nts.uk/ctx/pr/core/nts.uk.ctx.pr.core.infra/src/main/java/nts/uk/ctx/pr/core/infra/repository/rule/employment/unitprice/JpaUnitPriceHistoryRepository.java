@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -63,7 +64,7 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	 * UnitPriceHistoryRepository#findAll(int)
 	 */
 	@Override
-	public List<UnitPriceHistory> findAll(int companyCode) {
+	public List<UnitPriceHistory> findAll(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -75,7 +76,7 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	 * UnitPriceHistoryRepository#findById(java.lang.String)
 	 */
 	@Override
-	public UnitPriceHistory findById(String id) {
+	public Optional<UnitPriceHistory> findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

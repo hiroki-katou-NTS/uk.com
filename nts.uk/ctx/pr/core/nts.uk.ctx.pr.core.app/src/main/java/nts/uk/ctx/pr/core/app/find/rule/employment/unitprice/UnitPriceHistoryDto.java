@@ -1,8 +1,9 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.unitprice;
 
+import java.math.BigDecimal;
+
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
@@ -14,7 +15,7 @@ public class UnitPriceHistoryDto {
 	private String id;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The unit price code. */
 	private String unitPriceCode;
@@ -29,7 +30,7 @@ public class UnitPriceHistoryDto {
 	private String endMonth;
 
 	/** The budget. */
-	private double budget;
+	private BigDecimal budget;
 
 	/** The fix pay setting type. */
 	private SettingType fixPaySettingType;
@@ -53,7 +54,11 @@ public class UnitPriceHistoryDto {
 	private String memo;
 
 	public static UnitPriceHistoryDto fromDomain(UnitPriceHistory domain) {
-		return null;
+		return new UnitPriceHistoryDto(domain.getId(), domain.getCompanyCode().v(), domain.getUnitPriceCode().v(),
+				domain.getUnitPriceName().v(), domain.getApplyRange().getStartMonth().toString(),
+				domain.getApplyRange().getEndMonth().toString(), domain.getBudget().v(), domain.getFixPaySettingType(),
+				domain.getFixPayAtr(), domain.getFixPayAtrMonthly(), domain.getFixPayAtrDayMonth(),
+				domain.getFixPayAtrDaily(), domain.getFixPayAtrHourly(), domain.getMemo().v());
 	}
 
 }
