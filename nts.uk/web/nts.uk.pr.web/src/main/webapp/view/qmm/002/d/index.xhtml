@@ -4,99 +4,100 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/dialog.xhtml">
-			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1100, height: 530 };</script>
-				<com:ValidatorScript>
-					 nts.uk.shr.com.primitive.PersonId
-				     nts.arc.time.YearMonth
-				     nts.uk.shr.com.primitive.sample.ResidenceCode
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1100, height: 530 };</script>
+			<com:ValidatorScript>
+				     nts.uk.ctx.basic.dom.system.bank.BankCode
+				     nts.uk.ctx.basic.dom.system.bank.BankName
+					 nts.uk.ctx.basic.dom.system.bank.BankNameKana
+					 nts.uk.shr.com.primitive.Memo
    		    </com:ValidatorScript>
-				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
-				<com:scriptfile path="service.js" />
-				<com:stylefile path="main.css" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="functions-area">
-				<button id="A_BTN_001" style="width: 80px;margin-left:10px;">新規</button>
-				<button id="A_BTN_002" class="proceed" data-bind="click: btn_002" style="width: 80px;margin-left:10px;">登録</button>
-				<button id="A_BTN_003" style="width: 80px;margin-left:110px;">閉じる</button>
-				</div>
-				<div id="contents-area">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A_BTN_001" data-bind="click: cleanForm"
+					style="width: 80px; margin-left: 10px;">新規</button>
+				<button id="A_BTN_002" class="proceed" data-bind="click: btn_002"
+					style="width: 80px; margin-left: 10px;">登録</button>
+				<button id="A_BTN_003" style="width: 80px; margin-left: 110px;" data-bind="click: Delete">閉じる</button>
+			</div>
+			<div id="contents-area">
 				<div class="left-content">
 					<div id="LST_001" style="margin-left: 10px;">
-						<table  id="single-list" data-bind="ntsGridList: {
+						<table id="single-list"
+							data-bind="ntsGridList: {
 							width: 300,
 							height: 400,
 							options: items,
-							optionsValue: 'code',
+							optionsValue: 'bankCode',
 							columns: columns,
 							multiple: false,
 							value: currentCode
 					}"></table>
-					</div>					
+					</div>
 				</div>
-				<div class="right-content">
+				<div class="right-content" data-bind="with: currentItem">
 					<div class="right-content-left">
-							<div id="LBL_001" data-bind="ntsFormLabel:{constraint: 'PersonId',required: true}">銀行コード/名称</div>
-							<div id="LBL_002" data-bind="ntsFormLabel:{}" >銀行名称(カナ)</div>
+						<div id="LBL_001"
+							data-bind="ntsFormLabel:{constraint: 'BankCode',required: true}">銀行コード/名称</div>
+						<div id="LBL_002" data-bind="ntsFormLabel:{}">銀行名称(カナ)</div>
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-								<span id="INP_001" style="margin-left: 4px;" data-bind="with: INP_001" >
-									<input class="text-editor1" data-bind="ntsTextEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" /></span>
-								<span id="INP_002" style="margin-left: 5px" data-bind="with: INP_002" >
-									<input class="text-editor2" data-bind="ntsTextEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" /></span>
+							<span id="INP_001" style="margin-left: 4px;"> <input class="text-editor1"
+								data-bind="ntsTextEditor: {
+										value: code,
+										required: true,
+										constraint: 'BankCode',
+										enable: $parent.isCreated}" />
+							</span>
+							<span id="INP_002" style="margin-left: 5px"> <input class="text-editor2"
+								data-bind="ntsTextEditor: {
+										value: name,
+										required: true,
+										constraint: 'BankName'}" /></span>
 						</div>
 						<div class="control-group">
-						       <span id="INP_003" style="margin-left: 5px" data-bind="with: INP_003" >
-									<input class="text-editor3" data-bind="ntsTextEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" /></span>
+							<span id="INP_003" style="margin-left: 5px"> 
+								<input class="text-editor3"
+									data-bind="ntsTextEditor: {
+											value: nameKana,
+											constraint: 'BankNameKana',
+											enable: true,
+											readonly: false}" /></span>
 						</div>
-					</div>			
-				</div>
-				<hr style=" width: 640px;float: left;margin-bottom: 15px"/>	
-				<div class="right-content">
-				  	<div class="right-content-left">
-						<div id="LBL_003" data-bind="ntsFormLabel:{constraint: 'PersonId'}">メモ</div>
 					</div>
-					<div class="right-content-right">					
-						<div class="control-group">	
-							<span id="INP_004" style="margin-bottom: 15px;margin-left: 5px" data-bind="with: INP_004">
-								<textarea style="height:130px"
-								class="text-editor1" data-bind="ntsMultilineEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									enable: enable,
-									readonly: readonly}" />
+				</div>
+				<hr style="width: 640px; float: left; margin-bottom: 15px" />
+				<div class="right-content"  data-bind="with: currentItem">
+					<div class="right-content-left">
+						<div id="LBL_003"
+							data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
+					</div>
+					<div class="right-content-right">
+						<div class="control-group">
+							<span id="INP_004" style="margin-bottom: 15px; margin-left: 5px"> 
+								<textarea
+									style="height: 130px" class="text-editor1"
+									data-bind="ntsMultilineEditor: {
+									value: memo,
+									constraint: 'Memo',
+									enable: true,
+									readonly: false}" />
 							</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+		</ui:define>
+	</ui:composition>
+</body>
 </html>

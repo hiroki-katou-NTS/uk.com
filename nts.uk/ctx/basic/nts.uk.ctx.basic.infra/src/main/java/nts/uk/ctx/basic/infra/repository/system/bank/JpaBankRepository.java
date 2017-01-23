@@ -1,8 +1,11 @@
 package nts.uk.ctx.basic.infra.repository.system.bank;
 
 import java.util.List;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.system.bank.Bank;
@@ -25,6 +28,14 @@ public class JpaBankRepository extends JpaRepository implements BankRepository {
 				 x.bankKnName, 
 				 x.memo));
 	}
+	
+	@Override
+	public Optional<Bank> find(String companyCode, String bankCode) {
+		CbkmtBankPK key = new CbkmtBankPK(companyCode, bankCode);
+		
+		return this.queryProxy().find(key, CbkmtBank.class)
+				.map(x -> Bank.createFromJavaType(companyCode, bankCode, x.bankName, x.bankKnName, x.memo));
+	}
 
 	@Override
 	public void add(Bank bank) {
@@ -34,12 +45,14 @@ public class JpaBankRepository extends JpaRepository implements BankRepository {
 
 	@Override
 	public void update(Bank bank) {
-		this.commandProxy().update(toEntity(bank));
+		CbkmtBank e0 = toEntity(bank);
+		this.commandProxy().update(e0);
 	}
 
 	@Override
 	public void remove(Bank bank) {
-		this.commandProxy().remove(toEntity(bank));
+		CbkmtBankPK key = new CbkmtBankPK(bank.getCompanyCode(), bank.getBankCode().v());
+		this.commandProxy().remove(CbkmtBank.class, key);
 	}
 	
 	/**

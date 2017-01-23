@@ -52,12 +52,12 @@ public class Bank extends AggregateRoot {
 	 * @param memo memo
 	 * @return Bank
 	 */
-	public static Bank createFromJavaType(String companyCode, String bankCode, String bankName, String bankNamKana, String memo) {
+	public static Bank createFromJavaType(String companyCode, String bankCode, String bankName, String bankNameKana, String memo) {
 		return new Bank(
 				companyCode, 
 				new BankCode(bankCode), 
 				new BankName(bankName), 
-				new BankNameKana(bankNamKana), 
+				new BankNameKana(bankNameKana), 
 				new Memo(memo));
 	}
 }

@@ -18,7 +18,7 @@ public class BankFinder {
 	public List<BankDto> findAll() {
 		return this.bankRepository.findAll(AppContexts.user().companyCode())
 				.stream()
-				.map(x -> new BankDto(x.getBankCode().v(), x.getBankName().v()))
+				.map(x -> new BankDto(x.getBankCode().v().trim(), x.getBankName().v(), x.getBankNameKana().v(), x.getMemo().v()))
 				.collect(Collectors.toList());
 	}
 }

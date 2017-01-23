@@ -10,12 +10,14 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.system.bank.AddBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.AddBankCommandHandler;
+import nts.uk.ctx.basic.app.command.system.bank.RemoveBankCommand;
+import nts.uk.ctx.basic.app.command.system.bank.RemoveBankCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.UpdateBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.UpdateBankCommandHandler;
 import nts.uk.ctx.basic.app.find.system.bank.BankFinder;
 import nts.uk.ctx.basic.app.find.system.bank.dto.BankDto;
 
-@Path("pr/core/system/bank")
+@Path("basic/system/bank")
 @Produces("application/json")
 public class BankWebService extends WebService {
 	@Inject
@@ -23,6 +25,10 @@ public class BankWebService extends WebService {
 
 	@Inject
 	private UpdateBankCommandHandler updateBankCommandHandler;
+	
+	@Inject
+	private RemoveBankCommandHandler removeBankCommandHandler;
+	
 	@Inject
 	private BankFinder bankFinder;
 	
@@ -36,6 +42,12 @@ public class BankWebService extends WebService {
 	@Path("update")
 	public void update(UpdateBankCommand command) {
 		this.updateBankCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(RemoveBankCommand command) {
+		this.removeBankCommandHandler.handle(command);
 	}
 	
 	@POST

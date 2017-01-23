@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.dom.system.bank;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BankRepository {
 
@@ -10,6 +11,14 @@ public interface BankRepository {
 	 * @return
 	 */
 	List<Bank> findAll(String companyCode);
+	
+	/**
+	 * Find bank
+	 * @param companyCode
+	 * @param bankCode
+	 * @return
+	 */
+	Optional<Bank> find(String companyCode, String bankCode);
 
 	/**
 	 * Add new Bank
