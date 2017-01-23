@@ -591,6 +591,8 @@ var nts;
                         return $treegrid;
                     }
                     function setupIgTreeScroll($control) {
+                        //implement later if needed
+                        return $control;
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));

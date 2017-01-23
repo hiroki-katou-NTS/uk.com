@@ -665,7 +665,8 @@ module nts.uk.ui.jqueryExtentions {
             return $treegrid;
         }
         function setupIgTreeScroll($control: JQuery) {
-            
+            //implement later if needed
+            return $control;
         }
     }
 }

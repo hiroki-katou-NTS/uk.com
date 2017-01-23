@@ -1507,23 +1507,6 @@ module nts.uk.ui.koExtentions {
         }
     }
 
-
-    /**
-     * Grid scroll helper functions
-     * 
-     */
-    export function calculateIndex(options, id, key) {
-        if (!id) return 0;
-        var index = 0;
-        for (var i = 0; i < options.length; i++) {
-            var item = options[i];
-            if (item[key] == id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
     /**
      * GridList binding handler
      */
