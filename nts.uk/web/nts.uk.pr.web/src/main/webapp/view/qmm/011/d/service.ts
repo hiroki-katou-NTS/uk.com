@@ -4,11 +4,13 @@ module nts.uk.pr.view.qmm011.d {
     export module service {
         var paths: any = {
             addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add"
+            
         };
 
         export function addHistoryInfoUnemployeeInsurance(historyInfo: model.HistoryInfoDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, historyInfo)
+            var data = { historyInfoDto: historyInfo, comanyCode: "CC0001" };
+            nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
                     //xyz
@@ -19,6 +21,7 @@ module nts.uk.pr.view.qmm011.d {
             return dfd.promise();
 
         }
+        
 
         export module model {
             export class HistoryInfoDto extends HistoryInsuranceRateDto {

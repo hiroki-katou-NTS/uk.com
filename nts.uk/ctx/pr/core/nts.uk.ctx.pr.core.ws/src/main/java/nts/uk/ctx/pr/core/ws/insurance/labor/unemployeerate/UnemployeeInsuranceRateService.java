@@ -14,20 +14,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.app.company.command.RemoveCompanyCommand;
-import nts.uk.ctx.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSettingDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
-import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommand;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,6 +33,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 	/** The add. */
 	@Inject
 	UnemployeeInsuranceRateAddCommandHandler add;
+	/** The add. */
+	@Inject
+	UnemployeeInsuranceRateUpdateCommandHandler update;
 
 	/**
 	 * Detail history.
@@ -92,10 +88,22 @@ public class UnemployeeInsuranceRateService extends WebService {
 		return unemployeeInsuranceRate;
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param command
+	 *            the command
+	 */
 	@POST
 	@Path("add")
 	public void add(UnemployeeInsuranceRateAddCommand command) {
 		this.add.handle(command);
+	}
+
+	@POST
+	@Path("update")
+	public void update(UnemployeeInsuranceRateUpdateCommand command) {
+		this.update.handle(command);
 	}
 
 }

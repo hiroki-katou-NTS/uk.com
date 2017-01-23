@@ -31,7 +31,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     var historyInfo;
-                                    historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", self.historyTakeover());
+                                    historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
                                     d.service.addHistoryInfoUnemployeeInsurance(historyInfo).done(function (data) {
                                     });
                                     return dfd.promise();

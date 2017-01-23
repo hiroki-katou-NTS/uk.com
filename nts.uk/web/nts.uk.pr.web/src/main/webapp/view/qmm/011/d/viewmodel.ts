@@ -29,7 +29,7 @@ module nts.uk.pr.view.qmm011.d {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 var historyInfo: HistoryInfoDto;
-                historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", self.historyTakeover());
+                historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
                 service.addHistoryInfoUnemployeeInsurance(historyInfo).done(data => {
                     /*  self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateDto>(data);
                       self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);

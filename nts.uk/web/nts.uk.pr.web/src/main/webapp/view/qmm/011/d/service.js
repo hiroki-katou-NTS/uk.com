@@ -23,7 +23,8 @@ var nts;
                             };
                             function addHistoryInfoUnemployeeInsurance(historyInfo) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, historyInfo)
+                                var data = { historyInfoDto: historyInfo, comanyCode: "CC0001" };
+                                nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })

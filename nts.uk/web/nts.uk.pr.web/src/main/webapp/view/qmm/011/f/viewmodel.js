@@ -11,6 +11,7 @@ var nts;
                     var f;
                     (function (f) {
                         var option = nts.uk.ui.option;
+                        var HistoryInfoDto = nts.uk.pr.view.qmm011.d.service.model.HistoryInfoDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -30,6 +31,15 @@ var nts;
                                     self.historyStart = ko.observable(historyStart);
                                     self.historyEnd = ko.observable(historyEnd);
                                 }
+                                ScreenModel.prototype.updateHistoryInfoUnemployeeInsurance = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    var historyInfo;
+                                    historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
+                                    f.service.updateHistoryInfoUnemployeeInsurance(historyInfo).done(function (data) {
+                                    });
+                                    return dfd.promise();
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
