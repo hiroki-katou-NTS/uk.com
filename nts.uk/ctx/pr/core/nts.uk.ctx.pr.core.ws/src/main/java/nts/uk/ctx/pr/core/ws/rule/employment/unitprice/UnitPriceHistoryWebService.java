@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.unitprice;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,22 +75,25 @@ public class UnitPriceHistoryWebService extends WebService {
 	private List<UnitPriceHistoryDto> getMockData() {
 		List<UnitPriceHistoryDto> mock = new ArrayList<UnitPriceHistoryDto>();
 		mock.add(UnitPriceHistoryDto.builder().id("1").unitPriceCode("001").unitPriceName("ガソリン単価")
-				.startMonth("2015/04").endMonth("2016/05").budget(120).fixPaySettingType(SettingType.Company)
-				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply)
+				.startMonth("2015/04").endMonth("2016/05").budget(new BigDecimal(340))
+				.fixPaySettingType(SettingType.Company).fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply)
 				.fixPayAtrDayMonth(ApplySetting.NotApply).fixPayAtrHourly(ApplySetting.Apply)
 				.fixPayAtrMonthly(ApplySetting.Apply).memo("1").build());
 		mock.add(UnitPriceHistoryDto.builder().id("2").unitPriceCode("001").unitPriceName("ガソリン単価")
-				.startMonth("2016/06").endMonth("9999/03").budget(230).fixPaySettingType(SettingType.Contract)
-				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
+				.startMonth("2016/06").endMonth("9999/03").budget(new BigDecimal(340))
+				.fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
+				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
 				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.NotApply).memo("2").build());
 		mock.add(UnitPriceHistoryDto.builder().id("3").unitPriceCode("002").unitPriceName("宿直単価").startMonth("2016/04")
-				.endMonth("9999/04").budget(340).fixPaySettingType(SettingType.Company).fixPayAtr(ApplySetting.Apply)
-				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.NotApply)
-				.fixPayAtrHourly(ApplySetting.Apply).fixPayAtrMonthly(ApplySetting.NotApply).memo("3").build());
+				.endMonth("9999/04").budget(new BigDecimal(340)).fixPaySettingType(SettingType.Company)
+				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply)
+				.fixPayAtrDayMonth(ApplySetting.NotApply).fixPayAtrHourly(ApplySetting.Apply)
+				.fixPayAtrMonthly(ApplySetting.NotApply).memo("3").build());
 		mock.add(UnitPriceHistoryDto.builder().id("4").unitPriceCode("002").unitPriceName("宿直単価").startMonth("2015/04")
-				.endMonth("2016/03").budget(450).fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
-				.fixPayAtrDaily(ApplySetting.NotApply).fixPayAtrDayMonth(ApplySetting.Apply)
-				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.Apply).memo("4").build());
+				.endMonth("2016/03").budget(new BigDecimal(340)).fixPaySettingType(SettingType.Contract)
+				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.NotApply)
+				.fixPayAtrDayMonth(ApplySetting.Apply).fixPayAtrHourly(ApplySetting.NotApply)
+				.fixPayAtrMonthly(ApplySetting.Apply).memo("4").build());
 		return mock;
 	}
 }

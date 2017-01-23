@@ -40,7 +40,7 @@ public interface UnitPriceRepository {
 	 * @param contractCode the contract code
 	 * @return the list
 	 */
-	List<UnitPrice> findAll(int companyCode);
+	List<UnitPrice> findAll(String companyCode);
 
 	/**
 	 * Find by id.
