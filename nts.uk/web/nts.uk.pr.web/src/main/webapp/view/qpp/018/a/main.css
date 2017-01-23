@@ -7,7 +7,7 @@
 #export-PDF{
 	width: 280px
 }
-#btnPrint-execution{
+#print-excution-log-button{
 	margin-left: 200px;
 }
 #date-picker{	
@@ -49,6 +49,6 @@ div#print-department-hierarchy-checkbox > .help-button {
     margin-top: 4px;
     margin-bottom: 5px;
 }
-div#btnPrint-setting {
+div#print-setting-button {
     margin-top: 35px;
 }
