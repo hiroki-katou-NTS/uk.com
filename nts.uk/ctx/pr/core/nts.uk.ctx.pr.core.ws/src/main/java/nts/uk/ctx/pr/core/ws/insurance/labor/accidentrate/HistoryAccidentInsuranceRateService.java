@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.accidentrate;
 
 import java.util.ArrayList;
@@ -22,6 +26,12 @@ import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
 @Path("pr/insurance/labor/accidentrate/history")
 @Produces("application/json")
 public class HistoryAccidentInsuranceRateService extends WebService {
+	
+	/**
+	 * Find all history.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findall")
 	public List<HistoryAccidentInsuranceRateDto> findAllHistory() {
@@ -95,6 +105,12 @@ public class HistoryAccidentInsuranceRateService extends WebService {
 		return lstHistoryAccidentInsuranceRate;
 	}
 
+	/**
+	 * Find history.
+	 *
+	 * @param historyId the history id
+	 * @return the history accident insurance rate dto
+	 */
 	@POST
 	@Path("find/{historyId}")
 	public HistoryAccidentInsuranceRateDto findHistory(@PathParam("historyId") String historyId) {
@@ -108,6 +124,12 @@ public class HistoryAccidentInsuranceRateService extends WebService {
 		return historyAccidentInsuranceRate;
 	}
 
+	/**
+	 * Detail hitory.
+	 *
+	 * @param historyId the history id
+	 * @return the accident insurance rate dto
+	 */
 	@POST
 	@Path("detail/{historyId}")
 	public AccidentInsuranceRateDto detailHitory(@PathParam("historyId") String historyId) {

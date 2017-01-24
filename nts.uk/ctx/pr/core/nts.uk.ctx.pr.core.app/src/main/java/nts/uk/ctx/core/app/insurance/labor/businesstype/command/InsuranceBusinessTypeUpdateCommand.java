@@ -24,6 +24,11 @@ public class InsuranceBusinessTypeUpdateCommand {
 	/** The company code. */
 	private String companyCode;
 
+	/**
+	 * To domain.
+	 *
+	 * @return the list
+	 */
 	public List<InsuranceBusinessType> toDomain() {
 		List<InsuranceBusinessType> lsInsuranceBusinessType = new ArrayList<>();
 		lsInsuranceBusinessType.add(ActionCommand.detaultInsuranceBusinessType(this.companyCode,

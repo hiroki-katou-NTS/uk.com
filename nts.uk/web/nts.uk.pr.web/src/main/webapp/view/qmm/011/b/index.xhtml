@@ -62,7 +62,9 @@
 											<td><div>
 													<input class="health-input"
 														data-name="rateGeneralBusinessPerson"
-														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
+														data-bind="ntsNumberEditor: {value: personalSetting.rate ,
+														required:true, 
+														constraint: 'RateItem',
 													option: rateInputOptions, 
 													enable: true}">
 													</input>/1000
@@ -81,9 +83,11 @@
 													]}"></div>
 											</td>
 											<td><div>
-													<input class="health-input" data-name="code"
+													<input class="health-input" data-name="agroforestryModelCompanySettingcode"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 													option: rateInputOptions, 
+													constraint:'RateItem',
+													required: true,
 													enable: true}">
 													</input>/1000
 												</div></td>
@@ -110,6 +114,8 @@
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
 													option: rateInputOptions, 
+													constraint: 'RateItem',
+													required:true,
 													enable: true}">
 													</input>/1000
 												</div></td>
@@ -130,6 +136,8 @@
 													<input class="health-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 													option: rateInputOptions, 
+													constraint:'RateItem',
+													required: true,
 													enable: true}">
 													</input>/1000
 												</div></td>
@@ -155,6 +163,8 @@
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
 													option: rateInputOptions, 
+													constraint:'RateItem',
+													required: true,
 													enable: true}">
 													</input>/1000
 												</div></td>
@@ -175,6 +185,8 @@
 													<input class="health-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 													option: rateInputOptions, 
+													constraint:'RateItem',
+													required: true,
 													enable: true}">
 													</input>/1000
 												</div></td>

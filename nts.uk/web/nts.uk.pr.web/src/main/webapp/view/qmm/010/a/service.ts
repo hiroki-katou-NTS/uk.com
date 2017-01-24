@@ -9,10 +9,10 @@ module nts.uk.pr.view.qmm010.a {
         };
 
         //Function connection service FindAll Labor Insurance Office
-        export function findAllLaborInsuranceOffice(): JQueryPromise<Array<any>> {
-            var dfd = $.Deferred<Array<any>>();
+        export function findAllLaborInsuranceOffice(): JQueryPromise<Array<model.LaborInsuranceOfficeInDto>> {
+            var dfd = $.Deferred<Array<model.LaborInsuranceOfficeInDto>>();
             nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
-                .done(function(res: Array<any>) {
+                .done(function(res: Array<model.LaborInsuranceOfficeInDto>) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -22,10 +22,10 @@ module nts.uk.pr.view.qmm010.a {
             return dfd.promise();
         }
         //Function connection service findLaborInsuranceOffice By Code
-        export function findLaborInsuranceOffice(code: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        export function findLaborInsuranceOffice(code: string): JQueryPromise<model.LaborInsuranceOfficeDto> {
+            var dfd = $.Deferred<model.LaborInsuranceOfficeDto>();
             nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + code)
-                .done(function(res: any) {
+                .done(function(res: model.LaborInsuranceOfficeDto) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -34,7 +34,8 @@ module nts.uk.pr.view.qmm010.a {
                 })
             return dfd.promise();
         }
-        export function addLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string): JQueryPromise<any> {
+        //Function connection service add LaborInsuranceOffice
+        export function addLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string) {
             var dfd = $.Deferred<any>();
             var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
             nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
@@ -45,10 +46,9 @@ module nts.uk.pr.view.qmm010.a {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
-            return dfd.promise();
         }
-
-        export function deleteLaborInsuranceOffice(code: string, companyCode: string): JQueryPromise<any> {
+        //Function connection service delete LaborInsuranceOffice  
+        export function deleteLaborInsuranceOffice(code: string, companyCode: string) {
             var dfd = $.Deferred<any>();
             var data = { companyCode: companyCode, code: code };
             nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
@@ -59,11 +59,10 @@ module nts.uk.pr.view.qmm010.a {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
-            return dfd.promise();
         }
 
         /**
-       * Model namespace.
+       * Model namespace. LaborInsuranceOfficeDto
        */
         export module model {
             export class LaborInsuranceOfficeDto {
@@ -105,42 +104,12 @@ module nts.uk.pr.view.qmm010.a {
                 /** The memo. */
                 memo: string;
 
-                //New LaborInsuranceOffice
-                constructor(code: string, name: string, shortName: string, picName: string, picPosition: string,
-                    potalCode: string, prefecture: string, address1st: string, address2nd: string, kanaAddress1st: string,
-                    kanaAddress2nd: string, phoneNumber: string, citySign: string, officeMark: string,
-                    officeNoA: string, officeNoB: string, officeNoC: string, memo: string) {
-                    this.code = code;
-                    this.name = name;
-                    this.shortName = shortName;
-                    this.picName = picName;
-                    this.picPosition = picPosition;
-                    this.potalCode = potalCode;
-                    this.prefecture = prefecture;
-                    this.address1st = address1st;
-                    this.address2nd = address2nd;
-                    this.kanaAddress1st = kanaAddress1st;
-                    this.kanaAddress2nd = kanaAddress2nd;
-                    this.phoneNumber = phoneNumber;
-                    this.citySign = citySign;
-                    this.officeMark = officeMark;
-                    this.officeNoA = officeNoA;
-                    this.officeNoB = officeNoB;
-                    this.officeNoC = officeNoC;
-                    this.memo = memo;
-                }
             }
             export class LaborInsuranceOfficeInDto {
                 /** The code. officeCode*/
                 code: string;
                 /** The name. officeName*/
                 name: string;
-
-                //New LaborInsuranceOfficeInDto
-                constructor(laborInsuranceOffice: LaborInsuranceOfficeDto) {
-                    this.code = laborInsuranceOffice.code;
-                    this.name = laborInsuranceOffice.name;
-                }
             }
 
         }

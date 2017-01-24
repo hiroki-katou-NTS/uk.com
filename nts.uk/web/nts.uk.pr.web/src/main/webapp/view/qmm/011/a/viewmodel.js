@@ -168,17 +168,6 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            function convertdata(yearmonth) {
-                                var viewmonth = '';
-                                if (yearmonth.month < 10) {
-                                    viewmonth = '0' + yearmonth.month;
-                                }
-                                else {
-                                    viewmonth = '' + yearmonth.month;
-                                }
-                                return '' + yearmonth.year + '/' + viewmonth;
-                            }
-                            viewmodel.convertdata = convertdata;
                             var UnemployeeInsuranceRateItemSettingModel = (function () {
                                 function UnemployeeInsuranceRateItemSettingModel(unemployeeInsuranceRateItemSetting) {
                                     this.roundAtr = ko.observable(unemployeeInsuranceRateItemSetting.roundAtr);

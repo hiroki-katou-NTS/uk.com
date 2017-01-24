@@ -28,11 +28,11 @@ module nts.uk.pr.view.qmm010.a {
                 ]);
                 self.enableButton = ko.observable(true);
             }
-            resetValueLaborInsurance() {
+            private resetValueLaborInsurance() {
                 var self = this;
                 self.laborInsuranceOfficeModel().resetAllValue();
             }
-            readFromSocialTnsuranceOffice() {
+            private readFromSocialTnsuranceOffice() {
                 var self = this;
                 self.enableButton(false);
                 nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(() => {
@@ -40,7 +40,7 @@ module nts.uk.pr.view.qmm010.a {
                     //OnClose => call
                 });
             }
-            startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 self.findAllInsuranceOffice().done(data => {
@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm010.a {
                 return dfd.promise();
             }
             //Connection service find All InsuranceOffice
-            findAllInsuranceOffice(): JQueryPromise<any> {
+            private findAllInsuranceOffice(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllLaborInsuranceOffice().done(data => {
@@ -65,7 +65,7 @@ module nts.uk.pr.view.qmm010.a {
                 return dfd.promise();
             }
             //Connection service find All InsuranceOffice
-            findInsuranceOffice(code: string): JQueryPromise<any> {
+            private findInsuranceOffice(code: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findLaborInsuranceOffice(code).done(data => {
@@ -75,31 +75,43 @@ module nts.uk.pr.view.qmm010.a {
                 return dfd.promise();
             }
             //show InsuranceOffice
-            showInsuranceOffice(code: string) {
+            private showInsuranceOffice(code: string) {
                 var self = this;
                 service.findLaborInsuranceOffice(code).done(data => {
                     self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
                 });
             }
-            addLaborInsuranceOffice() {
+            private addLaborInsuranceOffice() {
                 var self = this;
                 service.addLaborInsuranceOffice(self.collectData(), "000001");
             }
-            deleteLaborInsuranceOffice() {
+            private deleteLaborInsuranceOffice() {
                 var self = this;
                 service.deleteLaborInsuranceOffice(self.laborInsuranceOfficeModel().code(), "00001");
             }
             //Convert Model => DTO
-            collectData(): service.model.LaborInsuranceOfficeDto {
+            public collectData(): service.model.LaborInsuranceOfficeDto {
                 var self = this;
-                return new service.model.LaborInsuranceOfficeDto(self.laborInsuranceOfficeModel().code(),
-                    self.laborInsuranceOfficeModel().name(), self.laborInsuranceOfficeModel().shortName(), self.laborInsuranceOfficeModel().picName(),
-                    self.laborInsuranceOfficeModel().picPosition(), self.laborInsuranceOfficeModel().postalCode(), "",
-                    self.laborInsuranceOfficeModel().address1st(), self.laborInsuranceOfficeModel().address2nd(),
-                    self.laborInsuranceOfficeModel().kanaAddress1st(), self.laborInsuranceOfficeModel().kanaAddress2nd(),
-                    self.laborInsuranceOfficeModel().phoneNumber(), self.laborInsuranceOfficeModel().citySign(), self.laborInsuranceOfficeModel().officeMark(),
-                    self.laborInsuranceOfficeModel().officeNoA(), self.laborInsuranceOfficeModel().officeNoB(), self.laborInsuranceOfficeModel().officeNoC(),
-                    self.laborInsuranceOfficeModel().memo());
+                var laborInsuranceOffice: service.model.LaborInsuranceOfficeDto;
+                laborInsuranceOffice = new service.model.LaborInsuranceOfficeDto();
+                laborInsuranceOffice.code = self.laborInsuranceOfficeModel().code();
+                laborInsuranceOffice.name = self.laborInsuranceOfficeModel().name();
+                laborInsuranceOffice.shortName = self.laborInsuranceOfficeModel().shortName();
+                laborInsuranceOffice.picName = self.laborInsuranceOfficeModel().picName();
+                laborInsuranceOffice.picPosition = self.laborInsuranceOfficeModel().picPosition();
+                laborInsuranceOffice.potalCode = self.laborInsuranceOfficeModel().postalCode();
+                laborInsuranceOffice.address1st = self.laborInsuranceOfficeModel().address1st();
+                laborInsuranceOffice.address2nd = self.laborInsuranceOfficeModel().address2nd();
+                laborInsuranceOffice.kanaAddress1st = self.laborInsuranceOfficeModel().kanaAddress1st();
+                laborInsuranceOffice.kanaAddress2nd = self.laborInsuranceOfficeModel().kanaAddress2nd();
+                laborInsuranceOffice.phoneNumber = self.laborInsuranceOfficeModel().phoneNumber();
+                laborInsuranceOffice.citySign = self.laborInsuranceOfficeModel().citySign();
+                laborInsuranceOffice.officeMark = self.laborInsuranceOfficeModel().officeMark();
+                laborInsuranceOffice.officeNoA = self.laborInsuranceOfficeModel().officeNoA();
+                laborInsuranceOffice.officeNoB = self.laborInsuranceOfficeModel().officeNoB();
+                laborInsuranceOffice.officeNoC = self.laborInsuranceOfficeModel().officeNoC();
+                laborInsuranceOffice.memo = self.laborInsuranceOfficeModel().memo();
+                return laborInsuranceOffice;
             }
 
         }

@@ -43,16 +43,14 @@ var nts;
                                     var dfd = $.Deferred();
                                     var historyInfo;
                                     historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                                    d.service.addHistoryInfoUnemployeeInsurance(historyInfo).done(function (data) {
-                                    });
+                                    d.service.addHistoryInfoUnemployeeInsurance(historyInfo);
                                 };
                                 ScreenModel.prototype.addHistoryInfoAccidentInsurance = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     var historyInfo;
                                     historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                                    d.service.addHistoryInfoAccidentInsurance(historyInfo).done(function (data) {
-                                    });
+                                    d.service.addHistoryInfoAccidentInsurance(historyInfo);
                                 };
                                 return ScreenModel;
                             }());
