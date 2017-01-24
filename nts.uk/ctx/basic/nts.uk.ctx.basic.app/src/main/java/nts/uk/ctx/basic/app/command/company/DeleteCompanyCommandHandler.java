@@ -28,7 +28,6 @@ public class DeleteCompanyCommandHandler extends CommandHandler<DeleteCompanyCom
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteCompanyCommand> context) {
-		// TODO Auto-generated method stub
 		DeleteCompanyCommand deleteCompany = context.getCommand();
 		String companyCode= AppContexts.user().companyCode();
 		Company company = this.companyReposity.getCompanyDetail(companyCode)
