@@ -30,4 +30,17 @@ public class InsuranceRateItem extends AggregateRoot {
 	public InsuranceRateItem() {
 		super();
 	}
+
+	/**
+	 * @param chargeRate
+	 * @param payType
+	 * @param insuranceType
+	 */
+	public InsuranceRateItem(ChargeRateItem chargeRate, PaymentType payType, HealthInsuranceType insuranceType) {
+		super();
+		this.chargeRate = chargeRate;
+		this.payType = payType;
+		this.insuranceType = insuranceType;
+	}
+	
 }

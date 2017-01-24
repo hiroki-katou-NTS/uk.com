@@ -28,4 +28,14 @@ public class HealthInsuranceRounding extends AggregateRoot {
 		super();
 	}
 
+	/**
+	 * @param payType
+	 * @param roundAtrs
+	 */
+	public HealthInsuranceRounding(PaymentType payType, RoundingItem roundAtrs) {
+		super();
+		this.payType = payType;
+		this.roundAtrs = roundAtrs;
+	}
+
 }

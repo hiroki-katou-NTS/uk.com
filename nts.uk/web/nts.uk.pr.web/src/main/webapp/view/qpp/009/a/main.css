@@ -1,3 +1,19 @@
+#time-input{
+	float: left;	
+}
+#detail-process-label{
+	font-size: 21px;
+}
+#select-employee-button{
+	font-size: 19px;
+	height: 35px;
+	width: 240px;
+	margin-right: 10px;
+}
+#print-excution-log-button{
+	font-size: 19px;
+	height: 35px;	
+}
 #functions-area .function-class {
 	margin-left: 60px;
 	margin-top: 6px;
@@ -14,6 +30,7 @@ div#target-year-label {
 	text-align: right;
 	padding-top: 3px;
 	padding-right: 8px;
+	margin-bottom: 5px;
 	border-radius: 3px;
 }
 span#japan-year {
@@ -22,8 +39,8 @@ span#japan-year {
 }
 .select-target-year {
 	width: 600px;
-	height: 30px;
-	border: solid 1px #B1B1B1;
+	height: 35px;
+	border: solid 2px #B1B1B1;
 	border-radius: 5px;
 	padding-top: 5px;
 	padding-left: 5px;
@@ -39,14 +56,14 @@ span#year-label {
 
 
 .search-employee {
-    border: solid 1px #B1B1B1;
+    border: solid 2px #B1B1B1;
     width: 655px;
     min-height: 500px;
     margin-top: 10px;
     border-radius: 5px;
 }
 div#detail-process {
-    border: solid 1px #b1b1b1;
+    border: solid 2px #b1b1b1;
     width: 475px;
     height: 530px;
     border-radius: 5px;
@@ -55,6 +72,7 @@ div#detail-process {
 div#output-division {
 	float: right;
 	margin-right: 100px;
+	padding-top:2px;
 }
 
 div#output-division > .nts-switch-button {
@@ -75,6 +93,7 @@ label#navigation-message-1 {
 }
 div#print-department-hierarchy-checkbox > .help-button {
     margin-left: 8px;
+    width: 31px;
 }
 .head-end {
     width: 100%;
@@ -87,11 +106,11 @@ div#print-setting {
     margin-top: 35px;
 }
 div#specify-break-page-select {
-    width: 80px;
+    width: 100px;
    	margin-left: 42px;
 }
 div#specify-break-page-hierarchy-select {
-    width: 60px;
+    width: 70px;
 }
 label#hierarchy-design-label {
     margin-left: 20px;
@@ -100,7 +119,7 @@ div#specify-break-page-hierarchy-select {
     margin-left: 10px;
 }
 div#use-2000-yen-select {
-    margin-left: 42px;
+    margin-left: 42px;    
 }
 .use-2000-yen {
     margin-top: 20px;

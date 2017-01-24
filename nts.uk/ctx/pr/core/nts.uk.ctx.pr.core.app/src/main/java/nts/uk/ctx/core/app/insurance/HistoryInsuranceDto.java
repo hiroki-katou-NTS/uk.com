@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HistoryInsuranceDto{
 	private String historyId;
-	private String companyCode;
 	//private MonthRange monthRage;
 	private String startMonthRage;
 	private String endMonthRage;

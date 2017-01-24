@@ -32,12 +32,9 @@
 						<td>
 							<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">期間</div>
 						</td>
-						<td><input id="D_INP_001" class="w80" data-name="code"
-							data-bind="ntsTextEditor: {value: historyStart, 
-								constraint: 'D_INP_001', 
-								option: textEditorOption, 
-								enable: true}" />
-							<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006"
+						<td><div id="D_INP_001" class="w80" data-name="code"
+							data-bind="ntsDatePicker: {value: historyStart, dateFormat: 'yyyy/MM'} " />
+						<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006"
 							data-bind="text: historyEnd"></label></td>
 					</tr>
 					<tr>
@@ -57,7 +54,7 @@
 				</TABLE>
 				<hr />
 				<div id="this-functions-area" class="control-group halign-center">
-					<button class="btn-default proceed x-large" id="btn_001">決定</button>
+					<button class="btn-default proceed x-large" id="btn_addHistoryInfo" data-bind="click: addHistoryInfo">決定</button>
 					<button class="" id="btn_002" onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>
 			</div>

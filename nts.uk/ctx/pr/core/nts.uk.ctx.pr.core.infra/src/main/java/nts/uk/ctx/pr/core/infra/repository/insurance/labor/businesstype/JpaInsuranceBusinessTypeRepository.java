@@ -11,73 +11,45 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.
  */
 @Stateless
-public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements AccidentInsuranceRateRepository {
+public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements InsuranceBusinessTypeRepository {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#add(nts.uk.ctx.pr.core.dom.insurance.
-	 * labor.accidentrate.AccidentInsuranceRate)
-	 */
 	@Override
-	public void add(AccidentInsuranceRate rate) {
+	public void add(InsuranceBusinessType type) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#update(nts.uk.ctx.pr.core.dom.insurance.
-	 * labor.accidentrate.AccidentInsuranceRate)
-	 */
 	@Override
-	public void update(AccidentInsuranceRate rate) {
+	public void update(InsuranceBusinessType type) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
-	 */
 	@Override
 	public void remove(String id, Long version) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#findAll(int)
-	 */
 	@Override
-	public List<AccidentInsuranceRate> findAll(int companyCode) {
+	public List<InsuranceBusinessType> findAll(int companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#findById(java.lang.String)
-	 */
 	@Override
-	public AccidentInsuranceRate findById(String id) {
+	public InsuranceBusinessType findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }
