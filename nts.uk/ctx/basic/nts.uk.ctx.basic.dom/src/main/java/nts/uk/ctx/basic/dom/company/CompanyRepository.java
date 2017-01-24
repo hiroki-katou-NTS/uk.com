@@ -17,10 +17,10 @@ public interface CompanyRepository {
 	 */
 	Optional<Company> getCompanyDetail(String companyCode);
 	/**
-	 * find all company by company code
+	 * find all company
 	 * @return
 	 */
-	List<Company> getAllCompanys(String companyCode);
+	List<Company> getAllCompanys();
 	/**
 	 * Add a company
 	 * @param company
@@ -34,8 +34,8 @@ public interface CompanyRepository {
 	void update(Company company);
 	/**
 	 * Delete a company
-	 * @param company
+	 * @param companyCode
 	 */
-	void delete(Company company);
+	void delete(String companyCode);
 }
 

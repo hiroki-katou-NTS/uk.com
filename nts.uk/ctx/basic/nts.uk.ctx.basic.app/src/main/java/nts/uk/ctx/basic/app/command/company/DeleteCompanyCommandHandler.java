@@ -29,10 +29,8 @@ public class DeleteCompanyCommandHandler extends CommandHandler<DeleteCompanyCom
 	@Override
 	protected void handle(CommandHandlerContext<DeleteCompanyCommand> context) {
 		DeleteCompanyCommand deleteCompany = context.getCommand();
-		String companyCode= AppContexts.user().companyCode();
-		Company company = this.companyReposity.getCompanyDetail(companyCode)
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found company")));
-        companyReposity.delete(company);
+		String companyCode = deleteCompany.getCompanyCode();
+		companyReposity.delete(companyCode);
 	}
 
 }

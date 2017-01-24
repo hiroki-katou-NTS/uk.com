@@ -25,7 +25,7 @@ public class CmnmtCompany extends TableEntity implements Serializable{
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public CmnmtCompanyPk cmnmtCompanyPk;
+	public CmnmtCompanyPK cmnmtCompanyPk;
 	
 	@Basic(optional = false)
 	@Column(name ="CNAME")

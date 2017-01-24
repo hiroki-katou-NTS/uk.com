@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.finder.company;
+package nts.uk.ctx.basic.app.find.company;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +16,24 @@ import nts.uk.ctx.basic.dom.company.CompanyRepository;
 public class CompanyFinder {
 	@Inject
 	private CompanyRepository companyRepository;
-	public List<CompanyDto> getAllCompany(String companyCode){
-		return this.companyRepository.getAllCompanys(companyCode).stream()
+	public List<CompanyDto> getAllCompanys(){
+		return this.companyRepository.getAllCompanys().stream()
 				.map(item -> CompanyDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 	public Optional<CompanyDto> getCompany(String companyCode){
 		return this.companyRepository.getCompanyDetail(companyCode).map(company-> CompanyDto.fromDomain(company));
 		
+	}
+	
+	public void add(Company company){
+		 this.companyRepository.add(company);
+	}
+	public void delete(String companyCode){
+		this.companyRepository.delete(companyCode);
+	}
+	public void update(Company company){
+		this.companyRepository.update(company);
 	}
 	
     

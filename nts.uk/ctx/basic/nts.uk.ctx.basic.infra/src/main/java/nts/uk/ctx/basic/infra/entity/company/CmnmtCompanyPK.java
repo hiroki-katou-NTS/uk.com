@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CmnmtCompanyPk implements Serializable {
+public class CmnmtCompanyPK implements Serializable {
 	/**
 	 * serialVersionUID
 	 */

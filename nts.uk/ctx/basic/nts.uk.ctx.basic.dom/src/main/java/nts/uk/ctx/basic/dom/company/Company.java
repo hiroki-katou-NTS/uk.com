@@ -73,6 +73,8 @@ public class Company extends AggregateRoot{
 	@Getter
 	private TelephoneNo telephoneNo;
 	/** 期首月	 */
+	@Setter
+	@Getter
 	private TermBeginMon termBeginMon;
 	
 	/** 権限 */
