@@ -5,7 +5,7 @@ __viewContext.ready(function() {
         items1: KnockoutObservableArray<Node>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
-        test: KnockoutObservableArray<any>;
+        test: KnockoutObservable<any>;
         selectedCode: KnockoutObservableArray<any>;
         columns2: KnockoutObservableArray<any>;
 
@@ -52,7 +52,7 @@ __viewContext.ready(function() {
             { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }]);
             this.selectedCode = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);
-            this.test = ko.observableArray([]);
+            this.test = ko.observable(null);
         }
         
         remove(){

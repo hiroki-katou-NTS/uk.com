@@ -25,12 +25,6 @@ var qet001;
                     return WageledgerCategorySetting;
                 }());
                 model.WageledgerCategorySetting = WageledgerCategorySetting;
-                var WageLedgerSettingItem = (function () {
-                    function WageLedgerSettingItem() {
-                    }
-                    return WageLedgerSettingItem;
-                }());
-                model.WageLedgerSettingItem = WageLedgerSettingItem;
             })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = qet001.a || (qet001.a = {}));
