@@ -6,5 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteUnitPriceHistoryCommand {
+
+	/** The id. */
 	private String id;
+
+	/** The version. */
+	private long version;
 }

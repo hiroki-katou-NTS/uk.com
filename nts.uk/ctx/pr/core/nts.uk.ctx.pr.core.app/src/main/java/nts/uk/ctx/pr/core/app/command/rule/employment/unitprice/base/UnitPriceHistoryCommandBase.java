@@ -18,6 +18,9 @@ public abstract class UnitPriceHistoryCommandBase {
 	/** The id. */
 	private String id;
 
+	/** The version. */
+	private long version;
+
 	/** The unit price code. */
 	private String unitPriceCode;
 
@@ -64,6 +67,7 @@ public abstract class UnitPriceHistoryCommandBase {
 	public UnitPriceHistory toDomain(String companyCode) {
 		UnitPriceHistory unitPriceHistory = new UnitPriceHistory();
 		unitPriceHistory.setId(id);
+		unitPriceHistory.setVersion(version);
 		unitPriceHistory.setCompanyCode(new CompanyCode(companyCode));
 		unitPriceHistory.setUnitPriceCode(new UnitPriceCode(unitPriceCode));
 		unitPriceHistory.setBudget(new Money(budget));

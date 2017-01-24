@@ -14,6 +14,9 @@ public class UnitPriceHistoryDto {
 	/** The id. */
 	private String id;
 
+	/** The version. */
+	private long version;
+
 	/** The company code. */
 	private String companyCode;
 
@@ -53,12 +56,20 @@ public class UnitPriceHistoryDto {
 	/** The memo. */
 	private String memo;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the unit price history dto
+	 */
 	public static UnitPriceHistoryDto fromDomain(UnitPriceHistory domain) {
-		return new UnitPriceHistoryDto(domain.getId(), domain.getCompanyCode().v(), domain.getUnitPriceCode().v(),
-				domain.getUnitPriceName().v(), domain.getApplyRange().getStartMonth().toString(),
-				domain.getApplyRange().getEndMonth().toString(), domain.getBudget().v(), domain.getFixPaySettingType(),
-				domain.getFixPayAtr(), domain.getFixPayAtrMonthly(), domain.getFixPayAtrDayMonth(),
-				domain.getFixPayAtrDaily(), domain.getFixPayAtrHourly(), domain.getMemo().v());
+		return new UnitPriceHistoryDto(domain.getId(), domain.getVersion(), domain.getCompanyCode().v(),
+				domain.getUnitPriceCode().v(), domain.getUnitPriceName().v(),
+				domain.getApplyRange().getStartMonth().toString(), domain.getApplyRange().getEndMonth().toString(),
+				domain.getBudget().v(), domain.getFixPaySettingType(), domain.getFixPayAtr(),
+				domain.getFixPayAtrMonthly(), domain.getFixPayAtrDayMonth(), domain.getFixPayAtrDaily(),
+				domain.getFixPayAtrHourly(), domain.getMemo().v());
 	}
 
 }

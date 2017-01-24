@@ -101,7 +101,7 @@
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td><span id="ipnStartMonth"
-								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', startDate: '2017/01/01'}"></span>
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
 								<label id="lblEndMonth"
 								data-bind="text: unitPriceHistoryModel().endMonth()"></label></td>
 						</tr>
@@ -112,7 +112,11 @@
 								data-bind="ntsNumberEditor: {
 									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
-									option: currencyEditorOption,
+									option: {placeholder: '0.00',
+						                    grouplength: 3,
+						                    decimallength: 2,
+						                    currencyformat: 'JPY',
+						                    currencyposition: 'right'},
 									required: true}" />
 							</td>
 						</tr>
