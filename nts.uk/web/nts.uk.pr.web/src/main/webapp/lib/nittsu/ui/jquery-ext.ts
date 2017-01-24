@@ -5,6 +5,8 @@ interface JQuery {
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
+    ntsSideBar(action?: string, param?: any): any;
+    setupSearchScroll(controlType: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -85,7 +87,6 @@ module nts.uk.ui.jqueryExtentions {
             _.defer(function() {
                 if (!dismissible) {
                     $(window).mousedown(function(e) {
-                        //console.log(dismissible);
                         if ($(e.target).closest(popup.$panel).length === 0) {
                             popup.hide();
                         }
@@ -601,5 +602,157 @@ module nts.uk.ui.jqueryExtentions {
             else if (direction === "bottom") 
                 return "top";
         }
+    }
+    
+    module ntsSearchBox {
+        $.fn.setupSearchScroll = function(controlType: string, virtualization? : boolean) {
+            var $control = this;
+            if(controlType.toLowerCase() == 'iggrid') return setupIgGridScroll($control, virtualization);
+            if(controlType.toLowerCase() == 'igtreegrid') return setupTreeGridScroll($control, virtualization);
+            if(controlType.toLowerCase() == 'igtree') return setupIgTreeScroll($control);
+            return this;
+        }
+        function setupIgGridScroll($control: JQuery, virtualization?: boolean) {
+            var $grid = $control;
+            if(virtualization) {
+                $grid.on("selectChange", function() {
+                    var row = null;
+                    var selectedRows = $grid.igGrid("selectedRows");
+                    if(selectedRows) {
+                        row = selectedRows[0];
+                    } else {
+                        row = $grid.igGrid("selectedRow"); 
+                    }                
+                    if(row) $grid.igGrid("virtualScrollTo", row.index);                
+                });
+            } else {
+                $grid.on("selectChange", function() {
+                    var row = null;
+                    var selectedRows = $grid.igGrid("selectedRows");
+                    if(selectedRows) {
+                        row = selectedRows[0];
+                    } else {
+                        row = $grid.igGrid("selectedRow"); 
+                    }                
+                    if(row) {
+                        var index = row.index;
+                        var height = row.element[0].scrollHeight;
+                        var gridId = $grid.attr('id');
+                        $("#" + gridId + "_scrollContainer").scrollTop(index*height); 
+                    }            
+                }); 
+            }
+            return $grid;
+        }
+        
+        function setupTreeGridScroll($control: JQuery, virtualization?: boolean) {
+            var $treegrid = $control;
+            var id = $treegrid.attr('id');           
+            $treegrid.on("selectChange", function() {
+                var row = null;
+                var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
+                if(selectedRows) {
+                    row = selectedRows[0];
+                } else {
+                    row = $treegrid.igTreeGridSelection("selectedRow"); 
+                }
+                if(row) {
+                    var index = row.index;
+                    var height = row.element[0].scrollHeight;
+                    $("#" + id + "_scroll").scrollTop(index * height);
+                }
+            });
+            return $treegrid;
+        }
+        
+        function setupIgTreeScroll($control: JQuery) {
+            //implement later if needed
+            return $control;
+        }
+    }
+    
+    module ntsSideBar {
+        
+        $.fn.ntsSideBar = function (action?: string, index?: number): any {
+            var $control = $(this);
+            if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
+                return init($control);
+            }
+            else if (action === "active") {
+                return active($control, index);
+            }
+            else if (action === "enable") {
+                return enable($control, index);
+            }
+            else if (action === "disable") {
+                return disable($control, index);
+            }
+            else if (action === "show") {
+                return show($control, index);
+            }
+            else if (action === "hide") {
+                return hide($control, index);
+            }
+            else if (action === "getCurrent") {
+                return getCurrent($control);
+            }
+            else {
+                return $control;
+            };
+        }
+        
+        function init(control: JQuery): JQuery {
+            control.find("div[role=tabpanel]").hide();
+            control.on("click", "#sidebar-area .navigator a", function(e){
+                e.preventDefault();
+                if ($(this).attr("disabled") !== "true" &&
+                    $(this).attr("disabled") !== "disabled" &&
+                    $(this).attr("href") !== undefined) {
+                    active(control, $(this).closest("li").index());
+                }
+            });
+            control.find("#sidebar-area .navigator a.active").trigger('click');
+            return control;
+        }
+        
+        function active(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").removeClass("active");
+            control.find("#sidebar-area .navigator a").eq(index).addClass("active");
+            control.find("div[role=tabpanel]").hide();
+            $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+            return control;
+        }
+        
+        function enable(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
+            return control;
+            
+        }
+        
+        function disable(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
+            return control;
+        }
+        
+        function show(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").eq(index).show();
+            return control;
+        }
+        
+        function hide(control: JQuery, index: number): JQuery {
+            var current = getCurrent(control);
+            if (current === index) {
+                active(control, 0);
+            }
+            control.find("#sidebar-area .navigator a").eq(index).hide();
+            return control;
+        }
+        
+        function getCurrent(control: JQuery): number {
+            let index = 0;
+            index = control.find("#sidebar-area .navigator a.active").closest("li").index();
+            return index;
+        }
+        
     }
 }

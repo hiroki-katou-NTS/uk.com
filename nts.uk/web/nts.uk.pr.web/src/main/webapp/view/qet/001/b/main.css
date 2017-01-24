@@ -8,6 +8,7 @@ td#contents-left {
     height: 500px;
     background-color: #E2F79F;
     border-radius: 5px;
+    vertical-align: top;
 }
 
 td#contents-left > div {
@@ -16,6 +17,7 @@ td#contents-left > div {
 div#search-grid {
     margin-bottom: 20px;
     width: 250px;
+    margin-top: 10px;
 }
 input#search-input {
     width: 190px;
@@ -43,6 +45,7 @@ button.help-button {
     height: 1px;
     background: #B1B1B1;
     margin-top: 4px;
+    margin-bottom: 6px;
 }
 div#report-item-list {
     margin-top: 10px;
@@ -66,4 +69,24 @@ div#report-item-list {
 i.icon.icon-dot {
     display: table;
     margin: 0 auto;
+}
+.left-table {
+	margin-bottom: 20px;
+	width: 250px;
+    float: left;
+}
+td.tab-contents-left {
+    width: 340px;
+}
+.ntsMoveDataArea.ntsSwapComponent {
+    height: 250px;
+}
+button.move-button.move-forward {
+    margin-left: 10px;
+}
+td#contents-right {
+    vertical-align: top;
+}
+td.tab-contents-right {
+    vertical-align: top;
 }

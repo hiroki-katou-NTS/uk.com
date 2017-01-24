@@ -4,10 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
@@ -92,5 +95,15 @@ public class ActionCommand {
 		insuBizRateItem.setInsuRate(0.00d);
 		insuBizRateItem.setInsuRound(RoundingMethod.RoundUp);
 		return insuBizRateItem;
+	}
+
+	// Default InsuranceBusinessType
+	public static InsuranceBusinessType detaultInsuranceBusinessType(String companyCode, String bizName,
+			BusinessTypeEnum bizOrder) {
+		InsuranceBusinessType insuranceBusinessType = new InsuranceBusinessType();
+		insuranceBusinessType.setBizOrder(bizOrder);
+		insuranceBusinessType.setBizName(new BusinessName(bizName));
+		insuranceBusinessType.setCompanyCode(new CompanyCode(companyCode));
+		return insuranceBusinessType;
 	}
 }

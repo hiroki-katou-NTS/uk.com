@@ -7,7 +7,7 @@ var qet001;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.outputSettings = ko.observable(new OutputSettings());
-                    this.outputSettingDetail = ko.observable(new OutputSettingDetail());
+                    this.outputSettingDetail = ko.observable(new OutputSettingDetail([], []));
                     this.reportItems = ko.observableArray([]);
                     this.reportItemColumns = ko.observableArray([
                         { headerText: '区分', prop: 'categoryNameJa', width: 50 },
@@ -23,10 +23,12 @@ var qet001;
                         { headerText: '名称', prop: 'itemName', width: 100 },
                     ]);
                     this.reportItemSelected = ko.observable(null);
+                    this.aggregateItemsList = [];
+                    this.masterItemList = [];
                     var self = this;
                     self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
                         if (newVal == undefined || newVal == null) {
-                            self.outputSettingDetail(new OutputSettingDetail());
+                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                             return;
                         }
                         self.loadOutputSettingDetail(newVal);
@@ -39,7 +41,7 @@ var qet001;
                         var reportItemList = [];
                         data.categorySettings().forEach(function (setting) {
                             var categoryName = setting.category;
-                            setting.outputItems.forEach(function (item) {
+                            setting.outputItems().forEach(function (item) {
                                 reportItemList.push(new ReportItem(categoryName, item.isAggregateItem, item.code, item.name));
                             });
                         });
@@ -51,12 +53,14 @@ var qet001;
                     var self = this;
                     var outputSettings = nts.uk.ui.windows.getShared('outputSettings');
                     var selectedSettingCode = nts.uk.ui.windows.getShared('selectedCode');
-                    if (outputSettings != undefined) {
-                        self.outputSettings().outputSettingList(outputSettings);
-                    }
-                    self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
-                    self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
-                    dfd.resolve();
+                    $.when(self.loadAggregateItems(), self.loadMasterItems()).done(function () {
+                        if (outputSettings != undefined) {
+                            self.outputSettings().outputSettingList(outputSettings);
+                        }
+                        self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
+                        self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
+                        dfd.resolve();
+                    });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.close = function () {
@@ -80,7 +84,31 @@ var qet001;
                     var dfd = $.Deferred();
                     var self = this;
                     b.service.findOutputSettingDetail(selectedCode).done(function (data) {
-                        self.outputSettingDetail(new OutputSettingDetail(data));
+                        self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                        dfd.reject();
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadAggregateItems = function () {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    b.service.findAggregateItems().done(function (item) {
+                        self.aggregateItemsList = item;
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                        dfd.reject();
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadMasterItems = function () {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    b.service.findMasterItems().done(function (item) {
+                        self.masterItemList = item;
                         dfd.resolve();
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -89,7 +117,7 @@ var qet001;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.switchToCreateMode = function () {
-                    this.outputSettingDetail(new OutputSettingDetail());
+                    this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
                     this.outputSettings().outputSettingSelectedCode('');
                 };
                 return ScreenModel;
@@ -108,7 +136,7 @@ var qet001;
             }());
             viewmodel.OutputSettings = OutputSettings;
             var OutputSettingDetail = (function () {
-                function OutputSettingDetail(outputSetting) {
+                function OutputSettingDetail(aggregateItems, masterItem, outputSetting) {
                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
                     this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : false);
@@ -122,11 +150,78 @@ var qet001;
                     ]);
                     this.selectedCategory = ko.observable('tab-salary-payment');
                     this.isCreateMode = ko.observable(outputSetting == undefined);
-                    this.categorySettings = ko.observableArray(outputSetting != undefined ? outputSetting.categorySettings : []);
+                    var categorySetting = [];
+                    if (outputSetting == undefined) {
+                        categorySetting = this.convertCategorySettings(aggregateItems, masterItem);
+                    }
+                    else {
+                        categorySetting = this.convertCategorySettings(aggregateItems, masterItem, outputSetting.categorySettings);
+                    }
+                    this.categorySettings = ko.observableArray(categorySetting);
                 }
+                OutputSettingDetail.prototype.convertCategorySettings = function (aggregateItems, masterItem, categorySettings) {
+                    var settings = [];
+                    settings[0] = this.createCategorySetting(Category.PAYMENT, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
+                    settings[1] = this.createCategorySetting(Category.DEDUCTION, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
+                    settings[2] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
+                    settings[3] = this.createCategorySetting(Category.PAYMENT, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+                    settings[4] = this.createCategorySetting(Category.DEDUCTION, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+                    settings[5] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+                    return settings;
+                };
+                OutputSettingDetail.prototype.createCategorySetting = function (category, paymentType, aggregateItems, masterItem, categorySettings) {
+                    var aggregateItemsInCategory = aggregateItems.filter(function (item) { return item.category == category
+                        && item.paymentType == paymentType; });
+                    var masterItemsInCategory = masterItem.filter(function (item) { return item.category == category
+                        && item.paymentType == paymentType; });
+                    var cateTempSetting = { category: category, paymentType: paymentType, outputItems: [] };
+                    if (categorySettings == undefined) {
+                        return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
+                    }
+                    var categorySetting = categorySettings.filter(function (item) { return item.category == category
+                        && item.paymentType == paymentType; })[0];
+                    if (categorySetting == undefined) {
+                        categorySetting = cateTempSetting;
+                    }
+                    return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, categorySetting);
+                };
                 return OutputSettingDetail;
             }());
             viewmodel.OutputSettingDetail = OutputSettingDetail;
+            var CategorySetting = (function () {
+                function CategorySetting(aggregateItems, masterItems, categorySetting) {
+                    this.category = categorySetting.category;
+                    this.paymentType = categorySetting.paymentType;
+                    this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
+                    var settingItemCode = [];
+                    if (categorySetting != undefined) {
+                        settingItemCode = categorySetting.outputItems.map(function (item) {
+                            return item.code;
+                        });
+                    }
+                    var aggregateItemsExcluded = aggregateItems.filter(function (item) { return settingItemCode.indexOf(item.code) == -1; });
+                    var masterItemsExcluded = masterItems.filter(function (item) { return settingItemCode.indexOf(item.code) == -1; });
+                    this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
+                    this.masterItemList = ko.observableArray(masterItemsExcluded);
+                    this.outputItemsSelected = ko.observable('');
+                    this.aggregateItemSelected = ko.observable('');
+                    this.masterItemSelected = ko.observable('');
+                    this.outputItemColumns = ko.observableArray([
+                        { headerText: '集約', prop: 'isAggregateItem', width: 40,
+                            formatter: function (data) {
+                                if (data == 'true') {
+                                    return '<div class="center"><i class="icon icon-dot"></i></div>';
+                                }
+                                return '';
+                            }
+                        },
+                        { headerText: 'コード', prop: 'code', width: 60 },
+                        { headerText: '名称', prop: 'name', width: 100 },
+                    ]);
+                }
+                return CategorySetting;
+            }());
+            viewmodel.CategorySetting = CategorySetting;
             var ReportItem = (function () {
                 function ReportItem(categoryName, isAggregate, itemCode, itemName) {
                     this.categoryName = categoryName;
@@ -176,6 +271,14 @@ var qet001;
                 return Category;
             }());
             viewmodel.Category = Category;
+            var PaymentType = (function () {
+                function PaymentType() {
+                }
+                PaymentType.SALARY = 'Salary';
+                PaymentType.BONUS = 'Bonus';
+                return PaymentType;
+            }());
+            viewmodel.PaymentType = PaymentType;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qet001.b || (qet001.b = {}));
 })(qet001 || (qet001 = {}));

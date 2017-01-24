@@ -5,12 +5,14 @@
 package nts.uk.ctx.pr.report.ws.wageledger.dto;
 
 import lombok.Builder;
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
+import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
 
 /**
- * The Class SettingItemDto.
+ * The Class AggregateItemDto.
  */
 @Builder
-public class SettingItemDto {
+public class AggregateItemDto {
 	
 	/** The code. */
 	public String code;
@@ -18,9 +20,15 @@ public class SettingItemDto {
 	/** The name. */
 	public String name;
 	
-	/** The is aggregate. */
-	public Boolean isAggregateItem;
+	/** The payment type. */
+	public PaymentType paymentType;
 	
-	/** The order number. */
-	public int orderNumber;
+	/** The category. */
+	public WageLedgerCategory category;
+	
+	/** The show name zero value. */
+	public boolean showNameZeroValue;
+	
+	/** The show value zero value. */
+	public boolean showValueZeroValue;
 }
