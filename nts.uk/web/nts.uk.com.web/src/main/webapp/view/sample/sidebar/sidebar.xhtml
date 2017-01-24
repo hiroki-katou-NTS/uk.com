@@ -15,10 +15,10 @@
 				<com:scriptfile path="../catalog/catalog.js" />
 				<script>
 					function openSubWindow (){
-						nts.uk.ui.windows.sub.modeless("/view/sample/commoncss/sidebar-sub.xhtml");
+						nts.uk.ui.windows.sub.modeless("/view/sample/sidebar/sidebar-sub.xhtml");
 					}
 					function openNewTab (){
-						window.open("/nts.uk.com.web/view/sample/commoncss/sidebar-sub.xhtml", "_blank").focus();
+						window.open("/nts.uk.com.web/view/sample/sidebar/sidebar-sub.xhtml", "_blank").focus();
 					}
 				</script>
 			</ui:define>
@@ -38,8 +38,8 @@
 						<article class="cf">
 							<div class="tabs">
 								<ol>
-									<li><a href="#tabs-html">HTML</a></li>
-									<li><a href="#tabs-explain">Explain Code</a></li>
+									<li><a href="#tabs-html">HTML Setup</a></li>
+									<li><a href="#tabs-methods">Methods</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
@@ -79,10 +79,8 @@
    		</div>
   	</div>
 </ui:define>]]></pre>
-								</div>
-								<div id="tabs-explain" class="cf">
 									<article>
-										<h2>Sidebar Area</h2>
+										<h3>Sidebar Area</h3>
 										<p>Put Tabpanel navigator here. Navigator must follow below layout</p>
 <pre><![CDATA[<ui:define name="sidebar">
 	<ul class="navigator">
@@ -96,7 +94,7 @@
 										<p>Navigator link will auto find Tabpanel with specify ID to show. <b>divider</b> is a helper class for quickly create a seperator line.</p>
 									</article>
 									<article>
-										<h2>Content Area</h2>
+										<h3>Content Area</h3>
 										<p>Put Tabpanel here. Tabpanel must have <b>role="tabpanel"</b> and Id match with <b>Navigator's</b> link.</p>
 <pre><![CDATA[<ui:define name="content">
 	<div id="tabpanel-1" role="tabpanel">
@@ -124,6 +122,72 @@
    		</div>
   	</div>
 </ui:define>]]></pre>
+									</article>
+								</div>
+								<div id="tabs-methods" class="cf">
+									<article>
+										<h2>Information</h2>
+										<b>Module:</b> nts.uk.ui.contextmenu<br/>
+										<b>File:</b> /lib/nittsu/ui/ui.ts<br/>
+									</article>
+									<article>
+										<h2>Methods</h2>
+										<table>
+											<colgroup>
+												<col width="400px" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><h4>Methods</h4></th>
+													<th><h4>Description</h4></th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>$.fn.ntsSideBar()<br/>$.fn.ntsSideBar("init")</td>
+													<td>
+														Init SideBar. Auto call in sidebar master page
+													</td>
+												</tr>
+												<tr>
+													<td>$.fn.ntsSideBar("active", index: number)</td>
+													<td>
+														Active sidebar tab with given index (zero base count)
+													</td>
+												</tr>
+												<tr>
+													<td>$.fn.ntsSideBar("enable", index: number)</td>
+													<td>
+														Enable sidebar tab with given index
+													</td>
+												</tr>
+												<tr>
+													<td>$.fn.ntsSideBar("disable", index: number)</td>
+													<td>
+														Disable sidebar tab with given index
+													</td>
+												</tr>
+												<tr>
+													<td>$.fn.ntsSideBar("show", index: number)</td>
+													<td>
+														Show sidebar tab with given index
+													</td>
+												</tr>
+												<tr>
+													<td>$.fn.ntsSideBar("hide", index: number)</td>
+													<td>
+														Hide sidebar tab with given index. If hidden current tab will auto active first tab item
+													</td>
+												</tr>
+												<tr>
+													<td>$.fn.ntsSideBar("getCurrent")</td>
+													<td>
+														<b>return:</b> <i>number</i> Index of current active tab<br/>
+														Get current active tab
+													</td>
+												</tr>
+											</tbody>
+										</table>
 									</article>
 								</div>
 							</div>

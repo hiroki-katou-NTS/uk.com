@@ -71,7 +71,6 @@ var nts;
                         _.defer(function () {
                             if (!dismissible) {
                                 $(window).mousedown(function (e) {
-                                    //console.log(dismissible);
                                     if ($(e.target).closest(popup.$panel).length === 0) {
                                         popup.hide();
                                     }
@@ -580,11 +579,9 @@ var nts;
                             else {
                                 row = $treegrid.igTreeGridSelection("selectedRow");
                             }
-                            console.log(row);
                             if (row) {
                                 var index = row.index;
                                 var height = row.element[0].scrollHeight;
-                                //                    console.log(index * height);
                                 $("#" + id + "_scroll").scrollTop(index * height);
                             }
                         });
@@ -595,6 +592,82 @@ var nts;
                         return $control;
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
+                var ntsSideBar;
+                (function (ntsSideBar) {
+                    $.fn.ntsSideBar = function (action, index) {
+                        var $control = $(this);
+                        if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
+                            return init($control);
+                        }
+                        else if (action === "active") {
+                            return active($control, index);
+                        }
+                        else if (action === "enable") {
+                            return enable($control, index);
+                        }
+                        else if (action === "disable") {
+                            return disable($control, index);
+                        }
+                        else if (action === "show") {
+                            return show($control, index);
+                        }
+                        else if (action === "hide") {
+                            return hide($control, index);
+                        }
+                        else if (action === "getCurrent") {
+                            return getCurrent($control);
+                        }
+                        else {
+                            return $control;
+                        }
+                        ;
+                    };
+                    function init(control) {
+                        control.find("div[role=tabpanel]").hide();
+                        control.on("click", "#sidebar-area .navigator a", function (e) {
+                            e.preventDefault();
+                            if ($(this).attr("disabled") !== "true" &&
+                                $(this).attr("disabled") !== "disabled" &&
+                                $(this).attr("href") !== undefined) {
+                                active(control, $(this).closest("li").index());
+                            }
+                        });
+                        control.find("#sidebar-area .navigator a.active").trigger('click');
+                        return control;
+                    }
+                    function active(control, index) {
+                        control.find("#sidebar-area .navigator a").removeClass("active");
+                        control.find("#sidebar-area .navigator a").eq(index).addClass("active");
+                        control.find("div[role=tabpanel]").hide();
+                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+                        return control;
+                    }
+                    function enable(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
+                        return control;
+                    }
+                    function disable(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
+                        return control;
+                    }
+                    function show(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).show();
+                        return control;
+                    }
+                    function hide(control, index) {
+                        var current = getCurrent(control);
+                        if (current === index) {
+                            active(control, 0);
+                        }
+                        control.find("#sidebar-area .navigator a").eq(index).hide();
+                        return control;
+                    }
+                    function getCurrent(control) {
+                        var index = 0;
+                        index = control.find("#sidebar-area .navigator a.active").closest("li").index();
+                        return index;
+                    }
+                })(ntsSideBar || (ntsSideBar = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
