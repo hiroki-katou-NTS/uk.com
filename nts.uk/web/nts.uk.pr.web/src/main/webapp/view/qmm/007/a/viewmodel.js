@@ -44,7 +44,7 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadUnitPriceHistoryList().done(function () { return dfd.resolve(null); });
+                                    self.loadUnitPriceHistoryList().done(function () { return dfd.resolve(); });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.goToB = function () {

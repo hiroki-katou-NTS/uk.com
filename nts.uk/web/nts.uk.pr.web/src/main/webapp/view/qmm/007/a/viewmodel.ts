@@ -64,7 +64,7 @@ module nts.uk.pr.view.qmm007.a {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                self.loadUnitPriceHistoryList().done(() => dfd.resolve(null));
+                self.loadUnitPriceHistoryList().done(() => dfd.resolve());
                 return dfd.promise();
             }
 
