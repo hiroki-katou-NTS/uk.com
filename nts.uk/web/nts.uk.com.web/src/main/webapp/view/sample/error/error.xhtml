@@ -33,12 +33,22 @@
 						<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>
 						<div data-bind="with: texteditor">
 							<h3>ResidenceCode (CharType: number, Maxlegth: 6)</h3>
-							<input id="testPushError" data-name="ResidentCode" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input id="residence-code"
+								class="save-error"
+								data-name="ResidentCode"
+								data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 						</div>
+						<button data-bind="click: setErrorToResidenceCode">setError</button>
+						<button data-bind="click: clearErrorToResidenceCode">clearError</button>
 						<div data-bind="with: numbereditor">
 							<h3>Number</h3>
-							<input data-name="Number" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+							<input id="number"
+								class="save-error"
+								data-name="Number"
+								data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
 						</div>
+						<hr />
+						<button data-bind="click: clearSaveErrors">clear "save-error"</button>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -46,7 +56,15 @@
 									<li><a href="#tabs-api">API</a></li>
 								</ol>
 								<div id="tabs-call" class="cf">
-									
+									<h2>Set error of a control</h2>
+									<pre><![CDATA[$('#residence-code').ntsError('set', 'えらーです');]]></pre>
+									<h2>Clear error of a control</h2>
+									<pre><![CDATA[$('#residence-code').ntsError('clear');]]></pre>
+									<h2>Grouping error</h2>
+									<pre><![CDATA[<input id="residence-code" class="save-error" ... />
+<input id="number" class="save-error" ... />]]></pre>
+									<pre><![CDATA[// clear all errors of controls have class 'save-error'
+$('.save-error').ntsError('clear');]]></pre>
 								</div>
 								<div id="tabs-api" class="cf">
 
