@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate;
 
 import java.util.ArrayList;
@@ -17,6 +21,12 @@ import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
 @Path("pr/insurance/labor/unemployeerate/history")
 @Produces("application/json")
 public class HistoryUnemployeeInsuranceService extends WebService {
+
+	/**
+	 * Find all history.
+	 *
+	 * @return the list
+	 */
 	// get History UnemployeeInsuranceRate
 	@POST
 	@Path("findall")
@@ -87,7 +97,7 @@ public class HistoryUnemployeeInsuranceService extends WebService {
 		monthRange001.setStartMonth(new YearMonth(2013 * 100 + 4));
 		monthRange001.setEndMonth(new YearMonth(2014 * 100 + 3));
 		// historyUnemployeeInsuranceRate006.setMonthRage(monthRange006);
-		historyUnemployeeInsuranceRate001.setHistoryId("historyId002");
+		historyUnemployeeInsuranceRate001.setHistoryId("historyId001");
 		historyUnemployeeInsuranceRate001
 				.setStartMonthRage(HistoryInsurance.convertMonth(monthRange001.getStartMonth()));
 		historyUnemployeeInsuranceRate001.setEndMonthRage(HistoryInsurance.convertMonth(monthRange001.getEndMonth()));
@@ -97,6 +107,13 @@ public class HistoryUnemployeeInsuranceService extends WebService {
 		return lstHistoryUnemployeeInsuranceRate;
 	}
 
+	/**
+	 * Find history.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @return the history unemployee insurance dto
+	 */
 	@POST
 	@Path("find/{historyId}")
 	public HistoryUnemployeeInsuranceDto findHistory(@PathParam("historyId") String historyId) {

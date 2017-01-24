@@ -53,7 +53,6 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                return dfd.promise();
                             }
                             service.addLaborInsuranceOffice = addLaborInsuranceOffice;
                             function deleteLaborInsuranceOffice(code, companyCode) {
@@ -66,39 +65,18 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                return dfd.promise();
                             }
                             service.deleteLaborInsuranceOffice = deleteLaborInsuranceOffice;
                             var model;
                             (function (model) {
                                 var LaborInsuranceOfficeDto = (function () {
-                                    function LaborInsuranceOfficeDto(code, name, shortName, picName, picPosition, potalCode, prefecture, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, citySign, officeMark, officeNoA, officeNoB, officeNoC, memo) {
-                                        this.code = code;
-                                        this.name = name;
-                                        this.shortName = shortName;
-                                        this.picName = picName;
-                                        this.picPosition = picPosition;
-                                        this.potalCode = potalCode;
-                                        this.prefecture = prefecture;
-                                        this.address1st = address1st;
-                                        this.address2nd = address2nd;
-                                        this.kanaAddress1st = kanaAddress1st;
-                                        this.kanaAddress2nd = kanaAddress2nd;
-                                        this.phoneNumber = phoneNumber;
-                                        this.citySign = citySign;
-                                        this.officeMark = officeMark;
-                                        this.officeNoA = officeNoA;
-                                        this.officeNoB = officeNoB;
-                                        this.officeNoC = officeNoC;
-                                        this.memo = memo;
+                                    function LaborInsuranceOfficeDto() {
                                     }
                                     return LaborInsuranceOfficeDto;
                                 }());
                                 model.LaborInsuranceOfficeDto = LaborInsuranceOfficeDto;
                                 var LaborInsuranceOfficeInDto = (function () {
-                                    function LaborInsuranceOfficeInDto(laborInsuranceOffice) {
-                                        this.code = laborInsuranceOffice.code;
-                                        this.name = laborInsuranceOffice.name;
+                                    function LaborInsuranceOfficeInDto() {
                                     }
                                     return LaborInsuranceOfficeInDto;
                                 }());

@@ -27,4 +27,14 @@ public class PensionRateRounding {
 		super();
 	}
 
+	/**
+	 * @param payType
+	 * @param roundAtrs
+	 */
+	public PensionRateRounding(PaymentType payType, RoundingItem roundAtrs) {
+		super();
+		this.payType = payType;
+		this.roundAtrs = roundAtrs;
+	}
+	
 }

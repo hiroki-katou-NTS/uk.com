@@ -25,8 +25,7 @@ var nts;
                                     var insuranceBusinessType;
                                     insuranceBusinessType =
                                         new InsuranceBusinessTypeDto(self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.insuranceBusinessType());
-                                    e.service.updateInsuranceBusinessType(insuranceBusinessType).done(function (data) {
-                                    });
+                                    e.service.updateInsuranceBusinessType(insuranceBusinessType);
                                 };
                                 return ScreenModel;
                             }());

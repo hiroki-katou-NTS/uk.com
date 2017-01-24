@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social;
 
 import java.util.ArrayList;
@@ -11,9 +15,18 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.core.app.insurance.social.SocialInsuranceOfficeInDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 
+/**
+ * The Class SocialInsuranceOfficeService.
+ */
 @Path("pr/insurance/social")
 @Produces("application/json")
 public class SocialInsuranceOfficeService extends WebService {
+	
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
 	// Find all SocialInsuranceOffice conection data
 	@POST
 	@Path("findall")

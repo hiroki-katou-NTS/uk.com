@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DeleteUnitPriceHistoryCommandHandler extends CommandHandler<DeleteUnitPriceHistoryCommand> {
@@ -18,8 +17,7 @@ public class DeleteUnitPriceHistoryCommandHandler extends CommandHandler<DeleteU
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<DeleteUnitPriceHistoryCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		unitPriceHistoryRepository.remove(context.getCommand().getId(), (long) 1);
+		unitPriceHistoryRepository.remove(context.getCommand().getId(), context.getCommand().getVersion());
 	}
 
 }

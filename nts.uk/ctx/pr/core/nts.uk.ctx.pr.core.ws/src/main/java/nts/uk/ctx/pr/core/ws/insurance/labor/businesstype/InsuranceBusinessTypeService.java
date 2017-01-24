@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.businesstype;
 
 import javax.inject.Inject;
@@ -11,9 +15,16 @@ import nts.uk.ctx.core.app.insurance.labor.businesstype.command.InsuranceBusines
 @Path("pr/insurance/labor/businesstype")
 @Produces("application/json")
 public class InsuranceBusinessTypeService {
+	
+	/** The update. */
 	@Inject
 	InsuranceBusinessTypeUpdateCommandHandler update;
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void update(InsuranceBusinessTypeUpdateCommand command) {

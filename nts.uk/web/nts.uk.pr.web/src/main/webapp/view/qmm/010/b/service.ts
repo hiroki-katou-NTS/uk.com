@@ -5,10 +5,10 @@ module nts.uk.pr.view.qmm010.b {
         };
 
         //Function connection service FindAll Social Insurance Office Service
-        export function findAllSocialInsuranceOffice(): JQueryPromise<Array<any>> {
-            var dfd = $.Deferred<Array<any>>();
+        export function findAllSocialInsuranceOffice(): JQueryPromise<Array<SocialInsuranceOfficeInDto>> {
+            var dfd = $.Deferred<Array<SocialInsuranceOfficeInDto>>();
             nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
-                .done(function(res: Array<any>) {
+                .done(function(res: Array<SocialInsuranceOfficeInDto>) {
                     dfd.resolve(res);
                     //xyz
                 })

@@ -29,8 +29,7 @@ module nts.uk.pr.view.qmm011.e {
                         self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.insuranceBusinessType(),
                         self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.insuranceBusinessType(),
                         self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.insuranceBusinessType());
-                service.updateInsuranceBusinessType(insuranceBusinessType).done(data => {
-                });
+                service.updateInsuranceBusinessType(insuranceBusinessType);
             }
         }
     }

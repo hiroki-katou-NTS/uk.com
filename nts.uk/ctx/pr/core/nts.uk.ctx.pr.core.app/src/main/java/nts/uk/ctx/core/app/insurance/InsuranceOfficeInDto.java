@@ -1,9 +1,16 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.core.app.insurance;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class InsuranceOfficeInDto.
+ */
 @Setter
 @Getter
 public class InsuranceOfficeInDto {

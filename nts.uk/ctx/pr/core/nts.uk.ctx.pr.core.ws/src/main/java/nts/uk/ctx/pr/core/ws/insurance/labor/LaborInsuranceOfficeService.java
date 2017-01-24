@@ -51,6 +51,11 @@ public class LaborInsuranceOfficeService extends WebService {
 	@Inject
 	private LaborInsuranceOfficeDeleteCommandHandler delete;
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findall")
 	public List<LaborInsuranceOfficeInDto> findAll() {
@@ -62,6 +67,12 @@ public class LaborInsuranceOfficeService extends WebService {
 		return lstLaborInsuranceOfficeIn;
 	}
 
+	/**
+	 * Find by code.
+	 *
+	 * @param code the code
+	 * @return the labor insurance office dto
+	 */
 	// Find LaborInsuranceOffice By Code
 	@POST
 	@Path("findLaborInsuranceOffice/{code}")
@@ -75,7 +86,13 @@ public class LaborInsuranceOfficeService extends WebService {
 		}
 		return laborInsuranceOfficeDto;
 	}
-
+	
+	/**
+	 * Find all labor insurance office.
+	 *
+	 * @return the list
+	 */
+	//Find All LaborInsuranceOffice
 	public List<LaborInsuranceOffice> findAllLaborInsuranceOffice() {
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<LaborInsuranceOffice>();
 		LaborInsuranceOffice laborInsuranceOffice001 = new LaborInsuranceOffice();
@@ -143,7 +160,13 @@ public class LaborInsuranceOfficeService extends WebService {
 		lstLaborInsuranceOffice.add(laborInsuranceOffice003);
 		return lstLaborInsuranceOffice;
 	}
-
+	
+	/**
+	 * Convert insurance office O in dto.
+	 *
+	 * @param laborInsuranceOffice the labor insurance office
+	 * @return the labor insurance office in dto
+	 */
 	public LaborInsuranceOfficeInDto convertInsuranceOfficeOInDto(LaborInsuranceOffice laborInsuranceOffice) {
 		LaborInsuranceOfficeInDto laborInsuranceOfficeInDto = new LaborInsuranceOfficeInDto();
 		laborInsuranceOfficeInDto.setName(laborInsuranceOffice.getName().toString());
@@ -151,6 +174,12 @@ public class LaborInsuranceOfficeService extends WebService {
 		return laborInsuranceOfficeInDto;
 	}
 
+	/**
+	 * Convert labor insurance office dto.
+	 *
+	 * @param laborInsuranceOffice the labor insurance office
+	 * @return the labor insurance office dto
+	 */
 	public LaborInsuranceOfficeDto convertLaborInsuranceOfficeDto(LaborInsuranceOffice laborInsuranceOffice) {
 		LaborInsuranceOfficeDto laborInsuranceOfficeDto = LaborInsuranceOfficeDto.builder()
 				.name(laborInsuranceOffice.getName().toString()).code(laborInsuranceOffice.getCode().toString())
@@ -168,21 +197,35 @@ public class LaborInsuranceOfficeService extends WebService {
 				.officeNoB(laborInsuranceOffice.getOfficeNoB()).officeNoC(laborInsuranceOffice.getOfficeNoC())
 				.memo(laborInsuranceOffice.getMemo().toString()).build();
 		return laborInsuranceOfficeDto;
-
 	}
 
+	/**
+	 * Adds the.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("add")
 	public void add(LaborInsuranceOfficeAddCommand command) {
 		this.add.handle(command);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void update(LaborInsuranceOfficeUpdateCommand command) {
 		this.update.handle(command);
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("delete")
 	public void delete(LaborInsuranceOfficeDeleteCommand command) {
