@@ -9,6 +9,17 @@
             return true;
         }
         /**
+         * function find an item index in array
+         * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
+         */
+        export function findIndex(arr, value, key) {
+            for(var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                if(item[key] === value) return i; 
+            }
+            return -1;
+        }
+        /**
          * function add item to array, this function is used in combine with visitDfs function
          * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
          */
