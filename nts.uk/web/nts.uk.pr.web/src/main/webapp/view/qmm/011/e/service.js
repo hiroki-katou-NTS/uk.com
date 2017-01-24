@@ -25,7 +25,6 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                return dfd.promise();
                             }
                             service.updateInsuranceBusinessType = updateInsuranceBusinessType;
                             var model;

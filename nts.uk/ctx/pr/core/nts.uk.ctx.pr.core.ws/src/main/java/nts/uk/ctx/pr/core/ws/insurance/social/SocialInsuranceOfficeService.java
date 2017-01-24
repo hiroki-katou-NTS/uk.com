@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social;
 
 import java.util.ArrayList;
@@ -17,16 +21,20 @@ import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeComma
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand;
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
 
+/**
+ * The Class SocialInsuranceOfficeService.
+ */
 @Path("pr/insurance/social")
 @Produces("application/json")
 public class SocialInsuranceOfficeService extends WebService {
-	
+
 	@Inject
 	private RegisterSocialOfficeCommandHandler registerSocialOfficeCommandHandler;
 	@Inject
 	private UpdateSocialOfficeCommandHandler updateSocialOfficeCommandHandler;
 	@Inject
 	private DeleteSocialOfficeCommandHandler deleteSocialOfficeCommandHandler;
+
 	// Find all SocialInsuranceOffice conection data
 	@POST
 	@Path("findall")

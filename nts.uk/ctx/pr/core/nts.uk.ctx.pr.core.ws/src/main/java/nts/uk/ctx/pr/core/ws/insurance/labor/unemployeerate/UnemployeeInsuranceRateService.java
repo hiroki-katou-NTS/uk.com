@@ -100,6 +100,11 @@ public class UnemployeeInsuranceRateService extends WebService {
 		this.add.handle(command);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void update(UnemployeeInsuranceRateUpdateCommand command) {

@@ -35,7 +35,6 @@ module nts.uk.pr.view.qmm011.a {
             currentCode: KnockoutObservable<number>
             isEnable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
-
             constructor() {
                 var self = this;
 
@@ -57,7 +56,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.isEnable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             }
-
+            //open dialog edit HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
             openEditHistoryUnemployeeInsuranceRate() {
                 var self = this;
                 var historyId = self.selectionHistoryUnemployeeInsuranceRate();
@@ -70,12 +69,14 @@ module nts.uk.pr.view.qmm011.a {
                     //OnClose => call
                 });
             }
+            //open dialog add HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
             openAddHistoryUnemployeeInsuranceRate() {
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
                 });
             }
+            //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
             openEditInsuranceBusinessType() {
                 var self = this;
                 var historyId = self.selectionHistoryAccidentInsuranceRate();
@@ -85,6 +86,7 @@ module nts.uk.pr.view.qmm011.a {
                     //OnClose => call
                 });
             }
+            //open dialog edit HistoryAccidentInsurance => show view model xhtml (action event edit)
             openEditHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
@@ -95,6 +97,7 @@ module nts.uk.pr.view.qmm011.a {
                     //OnClose => call
                 });
             }
+            //open dialog add HistoryAccidentInsuranceRate => show view model xhtml (action event add)
             openAddHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
@@ -103,16 +106,19 @@ module nts.uk.pr.view.qmm011.a {
                     //OnClose => call
                 });
             }
+            //show HistoryUnemployeeInsurance (change event)
             showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate: string) {
                 var self = this;
                 self.findHisotryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                 self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
             }
+            //show HistoryAccidentInsurance (change event)
             showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate: string) {
                 var self = this;
                 self.findHistoryAccidentInsuranceRate(selectionHistoryAccidentInsuranceRate);
                 self.detailHistoryAccidentInsuranceRate(selectionHistoryAccidentInsuranceRate);
             }
+            // startPage => show view model xhtml (constructor)
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -123,7 +129,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
-            //Connection service find All InsuranceOffice
+            //find add HisotryUnemployeeInsuranceRate => show view model xhtml (constructor)
             findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -142,6 +148,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
+            //find HisotryUnemployeeInsuranceRate => show view model xhtml (action event)
             findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -152,6 +159,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
+            //find HistoryAccidentInsuranceRate => show view model xhtml (action event)
             findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -162,6 +170,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
+            //detail HistoryUnemployeeInsuranceRate => show view model xhtml (action event)
             detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -171,7 +180,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
-
+            //find All HistoryAccidentInsuranceRate => Show View model xhtml (constructor)
             findAllHistoryAccidentInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -189,6 +198,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
+            //detail HistoryAccidentInsuranceRate => show view model xhtml (action event)
             detailHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -198,16 +208,6 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
-        }
-
-        export function convertdata(yearmonth: YearMonth): string {
-            var viewmonth = '';
-            if (yearmonth.month < 10) {
-                viewmonth = '0' + yearmonth.month;
-            } else {
-                viewmonth = '' + yearmonth.month;
-            }
-            return '' + yearmonth.year + '/' + viewmonth;
         }
 
         export class UnemployeeInsuranceRateItemSettingModel {

@@ -23,6 +23,9 @@ var qet001;
                 for (var i = 0; i < 10; i++) {
                     data.push({ code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Payment' });
                 }
+                for (var i = 0; i < 10; i++) {
+                    data.push({ code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Deduction' });
+                }
                 dfd.resolve(data);
                 return dfd.promise();
             }

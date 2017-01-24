@@ -30,6 +30,14 @@ public class AggregateItemWebservice extends WebService{
 					.paymentType(PaymentType.Salary)
 					.category(WageLedgerCategory.Payment)
 					.build());
+			dtos.add(AggregateItemDto.builder()
+					.code("AGR" + i)
+					.name("Aggregate item " + i)
+					.showNameZeroValue(i % 2 != 0)
+					.showValueZeroValue(i % 2 == 0)
+					.paymentType(PaymentType.Salary)
+					.category(WageLedgerCategory.Deduction)
+					.build());
 		}
 		return dtos;
 	}

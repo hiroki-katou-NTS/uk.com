@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm011.e {
         var paths: any = {
             updateInsuranceBusinessType: "pr/insurance/labor/businesstype/update"
         };
-        export function updateInsuranceBusinessType(insuranceBusinessType: model.InsuranceBusinessTypeDto): JQueryPromise<any> {
+        export function updateInsuranceBusinessType(insuranceBusinessType: model.InsuranceBusinessTypeDto) {
             var dfd = $.Deferred<any>();
             var data = { insuranceBusinessType: insuranceBusinessType, comanyCode: "CC0001" };
             nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
@@ -14,7 +14,6 @@ module nts.uk.pr.view.qmm011.e {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
-            return dfd.promise();
 
         }
         export module model {

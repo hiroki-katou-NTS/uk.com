@@ -32,7 +32,6 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                return dfd.promise();
                             }
                             service.addHistoryInfoUnemployeeInsurance = addHistoryInfoUnemployeeInsurance;
                             function addHistoryInfoAccidentInsurance(historyInfo) {
@@ -45,7 +44,6 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                return dfd.promise();
                             }
                             service.addHistoryInfoAccidentInsurance = addHistoryInfoAccidentInsurance;
                             var model;

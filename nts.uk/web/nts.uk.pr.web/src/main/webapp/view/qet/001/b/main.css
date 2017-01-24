@@ -90,3 +90,6 @@ td#contents-right {
 td.tab-contents-right {
     vertical-align: top;
 }
+#grid-up-down {
+	width: 50px;
+}

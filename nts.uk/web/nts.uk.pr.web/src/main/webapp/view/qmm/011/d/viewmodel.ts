@@ -40,19 +40,7 @@ module nts.uk.pr.view.qmm011.d {
                 var dfd = $.Deferred<any>();
                 var historyInfo: HistoryInfoDto;
                 historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                service.addHistoryInfoUnemployeeInsurance(historyInfo).done(data => {
-                    /*  self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateDto>(data);
-                      self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
-                      self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
-                      self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
-                      self.selectionHistoryUnemployeeInsuranceRate.subscribe(function(selectionHistoryUnemployeeInsuranceRate: string) {
-                          self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
-                      });
-                      self.detailHistoryUnemployeeInsuranceRate(data[0].historyId).done(data => {
-                          dfd.resolve(self);
-                      });
-                    */
-                });
+                service.addHistoryInfoUnemployeeInsurance(historyInfo);
             }
 
             addHistoryInfoAccidentInsurance() {
@@ -60,19 +48,7 @@ module nts.uk.pr.view.qmm011.d {
                 var dfd = $.Deferred<any>();
                 var historyInfo: HistoryInfoDto;
                 historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                service.addHistoryInfoAccidentInsurance(historyInfo).done(data => {
-                    /*  self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateDto>(data);
-                      self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
-                      self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
-                      self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
-                      self.selectionHistoryUnemployeeInsuranceRate.subscribe(function(selectionHistoryUnemployeeInsuranceRate: string) {
-                          self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
-                      });
-                      self.detailHistoryUnemployeeInsuranceRate(data[0].historyId).done(data => {
-                          dfd.resolve(self);
-                      });
-                    */
-                });
+                service.addHistoryInfoAccidentInsurance(historyInfo);
             }
         }
 

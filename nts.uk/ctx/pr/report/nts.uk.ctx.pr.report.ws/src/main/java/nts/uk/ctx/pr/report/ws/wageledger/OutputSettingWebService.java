@@ -61,11 +61,17 @@ public class OutputSettingWebService extends WebService{
 			settingItemDtos.add(SettingItemDto.builder()
 					.code("ITEM" + i)
 					.name("item " + i)
+					.orderNumber(i)
 					.isAggregateItem(i % 2 == 0).build());
 		}
 		List<CategorySettingDto> categories = new ArrayList<>();
 		categories.add(CategorySettingDto.builder()
 				.category(WageLedgerCategory.Payment)
+				.paymentType(PaymentType.Salary)
+				.outputItems(settingItemDtos)
+				.build());
+		categories.add(CategorySettingDto.builder()
+				.category(WageLedgerCategory.Deduction)
 				.paymentType(PaymentType.Salary)
 				.outputItems(settingItemDtos)
 				.build());

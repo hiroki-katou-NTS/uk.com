@@ -8,7 +8,7 @@ module nts.uk.pr.view.qmm011.d {
 
         };
 
-        export function addHistoryInfoUnemployeeInsurance(historyInfo: model.HistoryInfoDto): JQueryPromise<any> {
+        export function addHistoryInfoUnemployeeInsurance(historyInfo: model.HistoryInfoDto) {
             var dfd = $.Deferred<any>();
             var data = { historyInfoDto: historyInfo, comanyCode: "CC0001" };
             nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
@@ -19,10 +19,9 @@ module nts.uk.pr.view.qmm011.d {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
-            return dfd.promise();
 
         }
-        export function addHistoryInfoAccidentInsurance(historyInfo: model.HistoryInfoDto): JQueryPromise<any> {
+        export function addHistoryInfoAccidentInsurance(historyInfo: model.HistoryInfoDto) {
             var dfd = $.Deferred<any>();
             var data = { historyInfoDto: historyInfo, comanyCode: "CC0001" };
             nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
@@ -33,7 +32,6 @@ module nts.uk.pr.view.qmm011.d {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
-            return dfd.promise();
 
         }
 

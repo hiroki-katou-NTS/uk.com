@@ -11,10 +11,10 @@ module nts.uk.pr.view.qmm011.a {
         };
 
         //Function connection service FindAll Labor Insurance Office
-        export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<any>> {
-            var dfd = $.Deferred<Array<any>>();
+        export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<model.HistoryUnemployeeInsuranceRateDto>> {
+            var dfd = $.Deferred<Array<model.HistoryUnemployeeInsuranceRateDto>>();
             nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
-                .done(function(res: Array<any>) {
+                .done(function(res: Array<model.HistoryUnemployeeInsuranceRateDto>) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -23,10 +23,11 @@ module nts.uk.pr.view.qmm011.a {
                 })
             return dfd.promise();
         }
-        export function findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        //Function connection service Find History By historyId
+        export function findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<model.HistoryUnemployeeInsuranceRateDto> {
+            var dfd = $.Deferred<model.HistoryUnemployeeInsuranceRateDto>();
             nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
-                .done(function(res: any) {
+                .done(function(res: model.HistoryUnemployeeInsuranceRateDto) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -35,10 +36,11 @@ module nts.uk.pr.view.qmm011.a {
                 })
             return dfd.promise();
         }
-        export function detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        //Funtion connection service detail by historyId 
+        export function detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<model.UnemployeeInsuranceRateDto> {
+            var dfd = $.Deferred<model.UnemployeeInsuranceRateDto>();
             nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
-                .done(function(res: any) {
+                .done(function(res: model.UnemployeeInsuranceRateDto) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -48,11 +50,11 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
 
         }
-
-        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<any>> {
-            var dfd = $.Deferred<Array<any>>();
+        //Function connection service find All HistoryAccidentInsurance 
+        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<model.HistoryAccidentInsuranceRateDto>> {
+            var dfd = $.Deferred<Array<model.HistoryAccidentInsuranceRateDto>>();
             nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
-                .done(function(res: Array<any>) {
+                .done(function(res: Array<model.HistoryAccidentInsuranceRateDto>) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -61,11 +63,11 @@ module nts.uk.pr.view.qmm011.a {
                 })
             return dfd.promise();
         }
-
-        export function findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        //Function connection service find HistoryAccidentInsurance
+        export function findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<model.HistoryAccidentInsuranceRateDto> {
+            var dfd = $.Deferred<model.HistoryAccidentInsuranceRateDto>();
             nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
-                .done(function(res: any) {
+                .done(function(res: model.HistoryAccidentInsuranceRateDto) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -74,10 +76,11 @@ module nts.uk.pr.view.qmm011.a {
                 })
             return dfd.promise();
         }
-        export function detailHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        //Function connection service detail HistoryAccidentInsurance
+        export function detailHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<model.AccidentInsuranceRateDto> {
+            var dfd = $.Deferred<model.AccidentInsuranceRateDto>();
             nts.uk.request.ajax(paths.detailHistoryAccidentInsuranceRate + "/" + historyId)
-                .done(function(res: any) {
+                .done(function(res: model.AccidentInsuranceRateDto) {
                     dfd.resolve(res);
                     //xyz
                 })

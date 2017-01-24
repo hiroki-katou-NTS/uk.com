@@ -13,11 +13,13 @@ module qet001.b.viewmodel {
         reportItemSelected: KnockoutObservable<string>;
         aggregateItemsList: service.Item[];
         masterItemList: service.Item[];
+        isLoading: KnockoutObservable<boolean>;
         
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
             this.outputSettingDetail= ko.observable(new OutputSettingDetail([], []));
             this.reportItems = ko.observableArray([]);
+            this.isLoading = ko.observable(true);
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
@@ -37,28 +39,42 @@ module qet001.b.viewmodel {
             
             var self = this;
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
+                self.isLoading(true);
                 if (newVal== undefined || newVal == null) {
                     self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                    self.isLoading(false);
                     return;
                 }
                 // load detail output setting.
                 self.loadOutputSettingDetail(newVal);
+                self.isLoading(false);
             })
+            
             self.outputSettingDetail.subscribe((data: OutputSettingDetail) => {
-                if(data == undefined || data == null || data.categorySettings().length == 0) {
-                    self.reportItems([]);
-                    return;
-                }
-                // Set data to report item list.
-                var reportItemList: ReportItem[] = [];
-                data.categorySettings().forEach((setting) => {
-                    var categoryName: string = setting.category;
-                    setting.outputItems().forEach((item) => {
-                        reportItemList.push(new ReportItem(categoryName, item.isAggregateItem, item.code, item.name));
-                    });
+                self.reloadReportItem();
+                data.reloadReportItems = self.reloadReportItem.bind(self);
+            });
+        }
+        
+        /**
+         * Reload report items.
+         */
+        public reloadReportItem() {
+            var self = this;
+            var data = self.outputSettingDetail();
+            if (data == undefined || data == null || data.categorySettings().length == 0) {
+                self.reportItems([]);
+                return;
+            }
+            // Set data to report item list.
+            var reportItemList: ReportItem[] = [];
+            data.categorySettings().forEach((setting) => {
+                var categoryName: string = setting.category;
+                setting.outputItems().forEach((item) => {
+                    reportItemList.push(new ReportItem(categoryName, item.isAggregateItem, item.code, item.name));
                 });
-                self.reportItems(reportItemList);
-            })
+            });
+            self.reportItems(reportItemList);
         }
         
         public start(): JQueryPromise<any>{
@@ -203,7 +219,7 @@ module qet001.b.viewmodel {
         selectedCategory: KnockoutObservable<string>;
         isCreateMode: KnockoutObservable<boolean>;
         categorySettings: KnockoutObservableArray<CategorySetting>;
-        
+        reloadReportItems: () => void;
         
         constructor (aggregateItems: service.Item[], masterItem: service.Item[], outputSetting?: WageLedgerOutputSetting) {
             this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
@@ -226,6 +242,12 @@ module qet001.b.viewmodel {
                 categorySetting = this.convertCategorySettings(aggregateItems, masterItem, outputSetting.categorySettings);
             }
             this.categorySettings = ko.observableArray(categorySetting);
+            var self = this;
+            self.categorySettings().forEach((setting) => {
+                setting.outputItems.subscribe((newValue) => {
+                    self.reloadReportItems();
+                });
+            });
         }
         
         /**
@@ -297,9 +319,9 @@ module qet001.b.viewmodel {
             var masterItemsExcluded = masterItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
             this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
             this.masterItemList = ko.observableArray(masterItemsExcluded);
-            this.outputItemsSelected = ko.observable('');
-            this.aggregateItemSelected = ko.observable('');
-            this.masterItemSelected = ko.observable('');
+            this.outputItemsSelected = ko.observable(null);
+            this.aggregateItemSelected = ko.observable(null);
+            this.masterItemSelected = ko.observable(null);
             this.outputItemColumns = ko.observableArray([
                     {headerText: '集約', prop: 'isAggregateItem', width: 40,
                         formatter: function(data: string) {
@@ -313,8 +335,58 @@ module qet001.b.viewmodel {
                     {headerText: '名称', prop: 'name', width: 100},
                 ]);
         }
+        
+        /**
+         * Move master item to outputItems.
+         */
+        public masterItemToDisplay() {
+            // If master item is unselected => return.
+            if (this.masterItemSelected() == undefined || this.masterItemSelected() == null) {
+                return;
+            }
+            var self = this;
+            var selectedItem: service.Item = self.masterItemList().filter((item: service.Item) => {
+                return item.code == self.masterItemSelected();
+            })[0];
+            
+            // Remove form master list.
+            self.masterItemList.shift();
+            
+            // Add to outputItems.
+            self.outputItems.push({
+                code: selectedItem.code,
+                name: selectedItem.name,
+                isAggregateItem: true,
+            });
+            self.masterItemSelected(null);
+        }
+        
+        public aggregateItemToDisplay() {
+            // If master item is unselected => return.
+            if (this.aggregateItemSelected() == undefined || this.aggregateItemSelected() == null) {
+                return;
+            }
+            var self = this;
+            var selectedItem: service.Item = self.aggregateItemsList().filter((item: service.Item) => {
+                return item.code == self.aggregateItemSelected();
+            })[0];
+            
+            // Remove form master list.
+            self.aggregateItemsList.shift();
+            
+            // Add to outputItems.
+            self.outputItems.push({
+                code: selectedItem.code,
+                name: selectedItem.name,
+                isAggregateItem: false,
+            });
+            self.aggregateItemSelected(null);
+        }
     }
     
+    /**
+     * Report Item class.
+     */
     export class ReportItem {
         categoryName: string;
         isAggregate: boolean;

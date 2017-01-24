@@ -30,10 +30,11 @@ module qet001.a {
                 outputItems: WageLedgerSettingItem[];
             }
             
-            export class WageLedgerSettingItem {
+            export interface WageLedgerSettingItem {
                 code: string;
                 name: string;
-                isAggregateItem: boolean
+                isAggregateItem: boolean;
+                orderNumber?: number;
             }
         }
     }

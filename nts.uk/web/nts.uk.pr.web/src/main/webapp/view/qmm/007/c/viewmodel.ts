@@ -30,9 +30,9 @@ module nts.uk.pr.view.qmm007.c {
                 var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
                 if (self.isEditMode()) {
                     unitPriceHistoryModel.startMonth(self.startMonth());
-                    service.update(service.collectData(nts.uk.ui.windows.getShared('unitPriceHistoryModel')));
+                    service.update(service.collectData(unitPriceHistoryModel));
                 } else {
-                    service.remove(nts.uk.ui.windows.getShared('unitPriceHistoryModel').id);
+                    service.remove(unitPriceHistoryModel.id, unitPriceHistoryModel.version);
                 }
                 nts.uk.ui.windows.close()
             }
