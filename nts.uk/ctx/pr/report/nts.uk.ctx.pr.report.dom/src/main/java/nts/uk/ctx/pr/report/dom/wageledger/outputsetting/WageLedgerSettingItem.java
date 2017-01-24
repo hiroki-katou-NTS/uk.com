@@ -17,4 +17,7 @@ public class WageLedgerSettingItem {
 	
 	/** The type. */
 	private WageLedgerItemType type;
+	
+	/** The order number. */
+	private int orderNumber;
 }

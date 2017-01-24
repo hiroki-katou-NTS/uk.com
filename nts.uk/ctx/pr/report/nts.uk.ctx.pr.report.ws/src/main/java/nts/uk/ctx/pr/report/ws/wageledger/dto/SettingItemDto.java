@@ -20,4 +20,7 @@ public class SettingItemDto {
 	
 	/** The is aggregate. */
 	public Boolean isAggregateItem;
+	
+	/** The order number. */
+	public int orderNumber;
 }
