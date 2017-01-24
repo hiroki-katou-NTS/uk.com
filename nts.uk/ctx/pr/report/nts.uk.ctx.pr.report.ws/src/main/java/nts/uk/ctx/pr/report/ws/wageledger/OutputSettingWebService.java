@@ -65,7 +65,7 @@ public class OutputSettingWebService extends WebService{
 		}
 		List<CategorySettingDto> categories = new ArrayList<>();
 		categories.add(CategorySettingDto.builder()
-				.category(WageLedgerCategory.Attendance)
+				.category(WageLedgerCategory.Payment)
 				.paymentType(PaymentType.Salary)
 				.outputItems(settingItemDtos)
 				.build());

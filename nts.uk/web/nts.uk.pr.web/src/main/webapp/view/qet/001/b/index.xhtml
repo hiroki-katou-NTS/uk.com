@@ -54,7 +54,7 @@
 							<div id="output-setting-list">
 								<table id="output-settings" data-bind="ntsGridList: {
 										width: 250,
-										height: 400,
+										height: 550,
 										options: outputSettingList,
 										optionsValue: 'code',
 										columns: outputSettingColumns,
@@ -82,50 +82,64 @@
 							
 							<div id="aggregate-category-tab" data-bind="ntsTabPanel: { dataSource: categorySettingTabs, active: selectedCategory}">
 								<div id="salary-payment">
-									<!-- <table data-bind="with: salaryPaymentInfo">
+									<table data-bind="with: categorySettings()[0]">
 										<tr>
 											<td class="tab-contents-left">
-												<div>
+												<div class="left-table">
 													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる給与支給項目</div>
-													<table id="salary-payment-items" data-bind="ntsGridList: {
+													<div class="head-end"></div>
+													<table id="salary-payment-master-items" data-bind="ntsGridList: {
  															width: 250,
- 															height: 400,
- 															options: itemList,
- 															optionsValue: 'itemCode',
- 															columns: itemColumns,
+ 															height: 160,
+ 															options: masterItemList,
+ 															optionsValue: 'code',
+ 															columns: ko.observableArray([
+ 																{headerText: 'コード', prop: 'code', width: 50},
+																{headerText: '名称', prop: 'name', width: 70}
+																]),
  															multiple: false,
- 															value: payItemSelected
+ 															value: masterItemSelected
  														}"></table> 
 												</div>
-												<div>
+												<div class="ntsMoveDataArea ntsSwapComponent">
+													<button class="move-button move-forward">forward</button>
+												</div>
+													
+												<div class="left-table">
 													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる集約項目</div>
+													<div class="head-end"></div>
 													<table id="salary-payment-aggregate-items" data-bind="ntsGridList: {
  															width: 250,
- 															height: 400,
- 															options: aggregateItemList,
-															optionsValue: 'aggregateItemCode',
-															columns: aggregateItemColumns,
+ 															height: 160,
+ 															options: aggregateItemsList,
+ 															optionsValue: 'code',
+ 															columns: ko.observableArray([
+ 																{headerText: 'コード', prop: 'code', width: 50},
+																{headerText: '名称', prop: 'name', width: 70}
+																]),
  															multiple: false,
  															value: aggregateItemSelected
  														}"></table>
 												</div>
-												
+												<div class="ntsMoveDataArea ntsSwapComponent">
+													<button class="move-button move-forward">forward</button>
+												</div>
 											</td>
 											<td class="tab-contents-right">
 												<div id="display-items-label" data-bind="ntsFormLabel: {}">表示する項目</div>
+												<div class="head-end"></div>
 												<table id="display-item-list" data-bind="ntsGridList: {
  															width: 250,
  															height: 400,
- 															options: displayItemList,
-															optionsValue: 'displayItemCode',
-															columns: displayItemColumns,
+ 															options: outputItems,
+															optionsValue: 'code',
+															columns: outputItemColumns,
  															multiple: false,
- 															value: displayItemSelected
+ 															value: outputItemsSelected
  														}"></table>
 											</td>
 										</tr>
 									</table>
-									 -->
 								</div>
 								<div id="salary-deduction"></div>
 								<div id="salary-attendance"></div>

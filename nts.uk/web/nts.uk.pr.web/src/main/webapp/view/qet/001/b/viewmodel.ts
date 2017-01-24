@@ -3,6 +3,7 @@ module qet001.b.viewmodel {
     import NtsTabModel = nts.uk.ui.NtsTabPanelModel;
     import WageLedgerOutputSetting = qet001.a.service.model.WageLedgerOutputSetting;
     import WageledgerCategorySetting = qet001.a.service.model.WageledgerCategorySetting;
+    import WageLedgerSettingItem = qet001.a.service.model.WageLedgerSettingItem;
     
     export class ScreenModel {
         outputSettings: KnockoutObservable<OutputSettings>;
@@ -10,10 +11,12 @@ module qet001.b.viewmodel {
         reportItems: KnockoutObservableArray<ReportItem>;
         reportItemColumns: KnockoutObservableArray<any>;
         reportItemSelected: KnockoutObservable<string>;
+        aggregateItemsList: service.Item[];
+        masterItemList: service.Item[];
         
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
-            this.outputSettingDetail= ko.observable(new OutputSettingDetail());
+            this.outputSettingDetail= ko.observable(new OutputSettingDetail([], []));
             this.reportItems = ko.observableArray([]);
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
@@ -29,11 +32,13 @@ module qet001.b.viewmodel {
                     {headerText: '名称', prop: 'itemName', width: 100},
                 ]);
             this.reportItemSelected = ko.observable(null);
+            this.aggregateItemsList = [];
+            this.masterItemList = [];
             
             var self = this;
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
                 if (newVal== undefined || newVal == null) {
-                    self.outputSettingDetail(new OutputSettingDetail());
+                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     return;
                 }
                 // load detail output setting.
@@ -48,7 +53,7 @@ module qet001.b.viewmodel {
                 var reportItemList: ReportItem[] = [];
                 data.categorySettings().forEach((setting) => {
                     var categoryName: string = setting.category;
-                    setting.outputItems.forEach((item) => {
+                    setting.outputItems().forEach((item) => {
                         reportItemList.push(new ReportItem(categoryName, item.isAggregateItem, item.code, item.name));
                     });
                 });
@@ -61,13 +66,17 @@ module qet001.b.viewmodel {
             var self = this;
             var outputSettings: WageLedgerOutputSetting[] = nts.uk.ui.windows.getShared('outputSettings');
             var selectedSettingCode: string = nts.uk.ui.windows.getShared('selectedCode');
-            // Check output setting is empty.
-            if (outputSettings != undefined) {
-                self.outputSettings().outputSettingList(outputSettings);
-            }
-            self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
-            self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
-            dfd.resolve();
+            
+            // Load master items and aggregate items.
+            $.when(self.loadAggregateItems(), self.loadMasterItems()).done(() => {
+                // Check output setting is empty.
+                if (outputSettings != undefined) {
+                    self.outputSettings().outputSettingList(outputSettings);
+                }
+                self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
+                self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
+                dfd.resolve();
+            });
             return dfd.promise();
         }
         
@@ -114,7 +123,7 @@ module qet001.b.viewmodel {
             var self = this;
             
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
-                self.outputSettingDetail(new OutputSettingDetail(data));
+                self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
@@ -124,10 +133,42 @@ module qet001.b.viewmodel {
         }
         
         /**
+         * Load Aggregate items.
+         */
+        public loadAggregateItems(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var self = this;
+            service.findAggregateItems().done((item: service.Item[]) => {
+                self.aggregateItemsList = item;
+                dfd.resolve();
+            }).fail((res) => {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+        /**
+         * Load master item.
+         */
+        public loadMasterItems(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var self = this;
+            service.findMasterItems().done((item: service.Item[]) => {
+                self.masterItemList = item;
+                dfd.resolve();
+            }).fail((res) => {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+        
+        /**
          * Switch to create mode.
          */
         public switchToCreateMode() {
-            this.outputSettingDetail(new OutputSettingDetail());
+            this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
             this.outputSettings().outputSettingSelectedCode('');
         }
     }
@@ -151,16 +192,20 @@ module qet001.b.viewmodel {
         }
     }
     
-    export class OutputSettingDetail{
+    /**
+     * Output setting detail.
+     */
+    export class OutputSettingDetail {
         settingCode: KnockoutObservable<string>;
         settingName: KnockoutObservable<string>;
         isPrintOnePageEachPer: KnockoutObservable<boolean>;
         categorySettingTabs: KnockoutObservableArray<NtsTabModel>;
         selectedCategory: KnockoutObservable<string>;
         isCreateMode: KnockoutObservable<boolean>;
-        categorySettings: KnockoutObservableArray<WageledgerCategorySetting>;
+        categorySettings: KnockoutObservableArray<CategorySetting>;
         
-        constructor(outputSetting?: WageLedgerOutputSetting) {
+        
+        constructor (aggregateItems: service.Item[], masterItem: service.Item[], outputSetting?: WageLedgerOutputSetting) {
             this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
             this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
             this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : false);
@@ -174,11 +219,101 @@ module qet001.b.viewmodel {
             ]);
             this.selectedCategory = ko.observable('tab-salary-payment');
             this.isCreateMode = ko.observable(outputSetting == undefined);
-            this.categorySettings = ko.observableArray(outputSetting != undefined ? outputSetting.categorySettings : []);
+            var categorySetting : CategorySetting[] = [];
+            if (outputSetting == undefined) {
+                categorySetting = this.convertCategorySettings(aggregateItems, masterItem);
+            } else {
+                categorySetting = this.convertCategorySettings(aggregateItems, masterItem, outputSetting.categorySettings);
+            }
+            this.categorySettings = ko.observableArray(categorySetting);
+        }
+        
+        /**
+         * Convert category setting data to screen model.
+         */
+        private convertCategorySettings(aggregateItems: service.Item[], masterItem: service.Item[],
+                categorySettings?: WageledgerCategorySetting[]) : CategorySetting[] {
+            var settings: CategorySetting[] = [];
+            
+            settings[0] = this.createCategorySetting(Category.PAYMENT, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
+            settings[1] = this.createCategorySetting(Category.DEDUCTION, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
+            settings[2] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
+            settings[3] = this.createCategorySetting(Category.PAYMENT, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+            settings[4] = this.createCategorySetting(Category.DEDUCTION, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+            settings[5] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+            
+            return settings;
+        }
+        
+        private createCategorySetting(category: string, paymentType: string,
+                aggregateItems: service.Item[], masterItem: service.Item[], categorySettings?: WageledgerCategorySetting[]): CategorySetting {
+            //var categorySetting: CategorySetting;
+            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category 
+                && item.paymentType == paymentType);
+            var masterItemsInCategory = masterItem.filter((item) => item.category == category 
+                && item.paymentType == paymentType);
+            var cateTempSetting: WageledgerCategorySetting = {category: category, paymentType: paymentType, outputItems: []};
+            if (categorySettings == undefined) {
+                return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
+            }
+            
+            var categorySetting = categorySettings.filter((item) => item.category == category 
+                && item.paymentType == paymentType)[0];
+            if (categorySetting == undefined) {
+                categorySetting = cateTempSetting;
+            }
+            return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, categorySetting);
         }
     }
     
-    
+    /**
+     * Category setting class.
+     */
+    export class CategorySetting {
+        category: string;
+        paymentType: string;
+        outputItems: KnockoutObservableArray<WageLedgerSettingItem>;
+        aggregateItemsList: KnockoutObservableArray<service.Item>;
+        masterItemList: KnockoutObservableArray<service.Item>;
+        aggregateItemSelected: KnockoutObservable<string>;
+        masterItemSelected: KnockoutObservable<string>;
+        outputItemsSelected: KnockoutObservable<string>;
+        outputItemColumns: KnockoutObservableArray<any>;
+
+        constructor(aggregateItems: service.Item[], masterItems: service.Item[],
+                categorySetting?: WageledgerCategorySetting) {
+            this.category = categorySetting.category;
+            this.paymentType = categorySetting.paymentType;
+            this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
+
+            // exclude item contain in setting.
+            var settingItemCode: string[] = [];
+            if (categorySetting != undefined) {
+                settingItemCode = categorySetting.outputItems.map((item) => {
+                    return item.code;
+                });
+            }
+            var aggregateItemsExcluded = aggregateItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
+            var masterItemsExcluded = masterItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
+            this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
+            this.masterItemList = ko.observableArray(masterItemsExcluded);
+            this.outputItemsSelected = ko.observable('');
+            this.aggregateItemSelected = ko.observable('');
+            this.masterItemSelected = ko.observable('');
+            this.outputItemColumns = ko.observableArray([
+                    {headerText: '集約', prop: 'isAggregateItem', width: 40,
+                        formatter: function(data: string) {
+                            if (data == 'true') {
+                                return '<div class="center"><i class="icon icon-dot"></i></div>';
+                            }
+                            return '';
+                        }
+                    },
+                    {headerText: 'コード', prop: 'code', width: 60},
+                    {headerText: '名称', prop: 'name', width: 100},
+                ]);
+        }
+    }
     
     export class ReportItem {
         categoryName: string;
@@ -239,6 +374,9 @@ module qet001.b.viewmodel {
         static SUMMARY_DETAIL_ITEMS = 1;
     }
     
+    /**
+     * Wage ledger category.
+     */
     export class Category {
         /**
          * 支給
@@ -254,5 +392,20 @@ module qet001.b.viewmodel {
          * 勤怠
          */
         static ATTENDANCE = 'Attendance';
+    }
+    
+    /**
+     * Wage ledger payment type.
+     */
+    export class PaymentType {
+        /**
+         * Salary.
+         */
+        static SALARY = 'Salary';
+        
+        /**
+         * Bonus.
+         */
+        static BONUS = 'Bonus'
     }
 }

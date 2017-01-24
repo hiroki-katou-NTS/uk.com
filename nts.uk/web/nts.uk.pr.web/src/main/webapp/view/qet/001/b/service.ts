@@ -4,8 +4,9 @@ module qet001.b {
 
         // Service paths.
         var servicePath = {
-            findOutputSettings: 'ctx/pr/report/wageledger/outputsetting/findAll',
-            findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find'
+            findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
+            findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
+            findMasterItems: '????'
         }
         
         /**
@@ -15,5 +16,37 @@ module qet001.b {
             return nts.uk.request.ajax(servicePath.findOutputSettingDetail + '/' + settingCode);
         }
         
+        /**
+         * Find all Aggregate items.
+         */
+        export function findAggregateItems() : JQueryPromise<Item[]> {
+            return nts.uk.request.ajax(servicePath.findAggregateItems);
+        }
+        
+        /**
+         * Find master items.
+         */
+        export function findMasterItems() : JQueryPromise<Item[]> {
+            var dfd = $.Deferred<Item[]>();
+            // Fake data.
+            var data = [];
+            for (var i = 0; i < 10; i++) {
+                data.push({code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Payment'});
+            }
+            dfd.resolve(data);
+            return dfd.promise();
+        }
+        
+        /**
+         * Aggregate item class.
+         */
+        export class Item {
+            code: string;
+            name: string;
+            paymentType: string;
+            category: string;
+            showNameZeroValue: boolean;
+            showValueZeroValue: boolean;
+        }
     }
 }
