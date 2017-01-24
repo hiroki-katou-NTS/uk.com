@@ -34,4 +34,20 @@ public class FundRateItem {
 		super();
 	}
 
+	/**
+	 * @param burdenChargeRate
+	 * @param payType
+	 * @param exemptionChargeRate
+	 * @param genderType
+	 */
+	public FundRateItem(ChargeRateItem burdenChargeRate, PaymentType payType, ChargeRateItem exemptionChargeRate,
+			InsuranceGender genderType) {
+		super();
+		this.burdenChargeRate = burdenChargeRate;
+		this.payType = payType;
+		this.exemptionChargeRate = exemptionChargeRate;
+		this.genderType = genderType;
+	}
+	
+
 }

@@ -12,10 +12,10 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var UnitPriceHistoryModel = a.service.model.UnitPriceHistoryModel;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
+                                    self.isNewMode = ko.observable(true);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel());
                                     self.historyList = ko.observableArray();
                                     self.switchButtonDataSource = ko.observableArray([
@@ -25,14 +25,13 @@ var nts;
                                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.historyList(), "childs"));
                                     self.selectedId = ko.observable('');
                                     self.selectedId.subscribe(function (id) {
-                                        if (id != null || id != undefined) {
+                                        if (id) {
                                             self.isNewMode(false);
                                             $('.save-error').ntsError('clear');
                                             self.loadUnitPriceDetail(id);
                                         }
                                     });
                                     self.isContractSettingEnabled = ko.observable(false);
-                                    self.isNewMode = ko.observable(true);
                                     self.unitPriceHistoryModel().fixPaySettingType.subscribe(function (val) {
                                         val == 'Contract' ? self.isContractSettingEnabled(true) : self.isContractSettingEnabled(false);
                                     });
@@ -40,13 +39,6 @@ var nts;
                                         textmode: "text",
                                         placeholder: "",
                                         textalign: "left"
-                                    }));
-                                    self.currencyEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                                        placeholder: "0.00",
-                                        grouplength: 3,
-                                        decimallength: 2,
-                                        currencyformat: "JPY",
-                                        currencyposition: 'right'
                                     }));
                                 }
                                 ScreenModel.prototype.startPage = function () {
@@ -83,7 +75,7 @@ var nts;
                                     model.id = '';
                                     model.unitPriceCode('');
                                     model.unitPriceName('');
-                                    model.startMonth('2017/01');
+                                    model.startMonth('');
                                     model.budget(null);
                                     model.fixPaySettingType('Company');
                                     model.fixPayAtr('NotApply');
@@ -95,34 +87,57 @@ var nts;
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;
-                                    a.service.find(id).done(function (data) {
-                                        var model = self.unitPriceHistoryModel();
-                                        model.id = data.id;
-                                        model.unitPriceCode(data.unitPriceCode);
-                                        model.unitPriceName(data.unitPriceName);
-                                        model.startMonth(data.startMonth);
-                                        model.budget(data.budget);
-                                        model.fixPaySettingType(data.fixPaySettingType);
-                                        model.fixPayAtr(data.fixPayAtr);
-                                        model.fixPayAtrMonthly(data.fixPayAtrMonthly);
-                                        model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
-                                        model.fixPayAtrDaily(data.fixPayAtrDaily);
-                                        model.fixPayAtrHourly(data.fixPayAtrHourly);
-                                        model.memo(data.memo);
-                                    });
+                                    if (id) {
+                                        a.service.find(id).done(function (data) {
+                                            var model = self.unitPriceHistoryModel();
+                                            model.id = data.id;
+                                            model.version = data.version;
+                                            model.unitPriceCode(data.unitPriceCode);
+                                            model.unitPriceName(data.unitPriceName);
+                                            model.startMonth(data.startMonth);
+                                            model.budget(data.budget);
+                                            model.fixPaySettingType(data.fixPaySettingType);
+                                            model.fixPayAtr(data.fixPayAtr);
+                                            model.fixPayAtrMonthly(data.fixPayAtrMonthly);
+                                            model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
+                                            model.fixPayAtrDaily(data.fixPayAtrDaily);
+                                            model.fixPayAtrHourly(data.fixPayAtrHourly);
+                                            model.memo(data.memo);
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.loadUnitPriceHistoryList = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.getUnitPriceHistoryList().done(function (data) {
                                         self.historyList(data);
-                                        dfd.resolve(null);
+                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            var UnitPriceHistoryModel = (function () {
+                                function UnitPriceHistoryModel() {
+                                    this.id = '';
+                                    this.version = 0;
+                                    this.unitPriceCode = ko.observable('');
+                                    this.unitPriceName = ko.observable('');
+                                    this.startMonth = ko.observable('');
+                                    this.endMonth = ko.observable('（平成29年01月） ~');
+                                    this.budget = ko.observable(null);
+                                    this.fixPaySettingType = ko.observable('Company');
+                                    this.fixPayAtr = ko.observable('NotApply');
+                                    this.fixPayAtrMonthly = ko.observable('NotApply');
+                                    this.fixPayAtrDayMonth = ko.observable('NotApply');
+                                    this.fixPayAtrDaily = ko.observable('NotApply');
+                                    this.fixPayAtrHourly = ko.observable('NotApply');
+                                    this.memo = ko.observable('');
+                                }
+                                return UnitPriceHistoryModel;
+                            }());
+                            viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));

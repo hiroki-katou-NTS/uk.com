@@ -53,6 +53,32 @@ public class PensionRate extends AggregateRoot {
 		super();
 	}
 
+	/**
+	 * @param historyId
+	 * @param companyCode
+	 * @param officeCode
+	 * @param applyRange
+	 * @param maxAmount
+	 * @param fundRateItems
+	 * @param premiumRateItems
+	 * @param childContributionRate
+	 * @param roundingMethods
+	 */
+	public PensionRate(String historyId, CompanyCode companyCode, OfficeCode officeCode, MonthRange applyRange,
+			Long maxAmount, List<FundRateItem> fundRateItems, List<PensionPremiumRateItem> premiumRateItems,
+			Double childContributionRate, List<PensionRateRounding> roundingMethods) {
+		super();
+		this.historyId = historyId;
+		this.companyCode = companyCode;
+		this.officeCode = officeCode;
+		this.applyRange = applyRange;
+		this.maxAmount = maxAmount;
+		this.fundRateItems = fundRateItems;
+		this.premiumRateItems = premiumRateItems;
+		this.childContributionRate = childContributionRate;
+		this.roundingMethods = roundingMethods;
+	}
+
 	// =================== Memento State Support Method ===================
 
 	/**
