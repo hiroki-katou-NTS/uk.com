@@ -7,13 +7,19 @@ package nts.uk.ctx.pr.core.ws.insurance.social;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.core.app.insurance.social.SocialInsuranceOfficeInDto;
-import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
+import nts.uk.ctx.pr.core.app.command.insurance.social.DeleteSocialOfficeCommand;
+import nts.uk.ctx.pr.core.app.command.insurance.social.DeleteSocialOfficeCommandHandler;
+import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeCommand;
+import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeCommandHandler;
+import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand;
+import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
 
 /**
  * The Class SocialInsuranceOfficeService.
@@ -21,12 +27,14 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 @Path("pr/insurance/social")
 @Produces("application/json")
 public class SocialInsuranceOfficeService extends WebService {
-	
-	/**
-	 * Find all.
-	 *
-	 * @return the list
-	 */
+
+	@Inject
+	private RegisterSocialOfficeCommandHandler registerSocialOfficeCommandHandler;
+	@Inject
+	private UpdateSocialOfficeCommandHandler updateSocialOfficeCommandHandler;
+	@Inject
+	private DeleteSocialOfficeCommandHandler deleteSocialOfficeCommandHandler;
+
 	// Find all SocialInsuranceOffice conection data
 	@POST
 	@Path("findall")
@@ -46,5 +54,25 @@ public class SocialInsuranceOfficeService extends WebService {
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice003);
 		return lstSocialInsuranceOfficeIn;
 	}
-
+	@POST
+	@Path("create")
+	public void createOffice(RegisterSocialOfficeCommand command)
+	{
+		this.registerSocialOfficeCommandHandler.handle(command);
+		return;
+	}
+	@POST
+	@Path("update")
+	public void updateOffice(UpdateSocialOfficeCommand command)
+	{
+		this.updateSocialOfficeCommandHandler.handle(command);
+		return;
+	}
+	@POST
+	@Path("remove")
+	public void removeOffice(DeleteSocialOfficeCommand command)
+	{
+		this.deleteSocialOfficeCommandHandler.handle(command);
+		return;
+	}
 }

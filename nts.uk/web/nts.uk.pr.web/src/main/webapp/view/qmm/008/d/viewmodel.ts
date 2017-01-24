@@ -1,88 +1,39 @@
 module nts.uk.pr.view.qmm008.d {
     export module viewmodel {
+        import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         export class ScreenModel {
-
-            index: number;
-            dataSource: any;
-            filteredData: any;
-            singleSelectedCode: any;
-            selectedCodes: any;
-            headers: any;
-            //for tab panel
-            tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            selectedTab: KnockoutObservable<string>;
-
-            modalValue: KnockoutObservable<string>;
-            isTransistReturnData: KnockoutObservable<boolean>;
-
-            // for group radio button
-            listOptions: KnockoutObservableArray<any>;
-            selectedValue: KnockoutObservable<any>;
+            listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
+            listHealthInsuranceAvgearn: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
-                self.listOptions = ko.observableArray([new optionsModel(1, "Ã¦Å“â‚¬Ã¦â€“Â°Ã£ï¿½Â®Ã¥Â±Â¥Ã¦Â­Â´(2016/04)Ã£ï¿½â€¹Ã£â€šâ€°Ã¥Â¼â€¢Ã£ï¿½ï¿½Ã§Â¶â„¢Ã£ï¿½ï¿½"), new optionsModel(2, "Ã¥Ë†ï¿½Ã£â€šï¿½Ã£ï¿½â€¹Ã£â€šâ€°Ã¤Â½Å“Ã¦Ë†ï¿½Ã£ï¿½â„¢Ã£â€šâ€¹")]);
-                self.selectedValue = ko.observable(new optionsModel(1, ""));
-
-                self.modalValue = ko.observable("Goodbye world!");
-                self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
-                // Reset child value 
-                self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                    new Node('0003', 'Bangkok Thailand', []),
-                    new Node('0004', 'Tokyo Japan', []),
-                    new Node('0005', 'Jakarta Indonesia', []),
-                    new Node('0002', 'Seoul Korea', []),
-                    new Node('0006', 'Paris France', []),
-                    new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                    new Node('0010', 'Beijing China', []),
-                    new Node('0011', 'London United Kingdom', []),
-                    new Node('0012', '', [])]);
-
-                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.dataSource(), "childs"));
-                self.singleSelectedCode = ko.observable(null);
-                self.selectedCodes = ko.observableArray([]);
-                self.index = 0;
-                self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
-                //panel
-                self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: 'åŸºæœ¬æƒ…å ±', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: 'ä¿�é™ºãƒžã‚¹ã‚¿ã�®æƒ…å ±', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                self.listAvgEarnLevelMasterSetting = ko.observableArray([
+                    { code: 1, healthLevel: 1, pensionLevel: 1, avgEarn: 58000, salMin: 0, salMax: 63000 },
+                    { code: 2, healthLevel: 2, pensionLevel: 1, avgEarn: 68000, salMin: 63000, salMax: 73000 }
                 ]);
-                self.selectedTab = ko.observable('tab-1');
+                self.listHealthInsuranceAvgearn = ko.observableArray([
+                    { historyId: 1, levelCode: 1, companyAvg: { general: 123, nursing: 345, basic: 567, specific: 678 }, personalAvg: { general: 123, nursing: 345, basic: 567, specific: 678 } },
+                    { historyId: 2, levelCode: 2, companyAvg: { general: 444, nursing: 222, basic: 111, specific: 333 }, personalAvg: { general: 222, nursing: 444, basic: 555, specific: 666 } }
+                ]);
 
             }
 
-
             closeDialog() {
-                // Set child value
-                nts.uk.ui.windows.setShared("addHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                 nts.uk.ui.windows.close();
             }
         }
-        export class optionsModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
-        }
 
-        export class Node {
-            code: string;
-            name: string;
-            nodeText: string;
-            custom: string;
-            childs: any;
-            constructor(code: string, name: string, childs: Array<Node>) {
-                var self = this;
-                self.code = code;
-                self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
-                self.childs = childs;
-                self.custom = 'Random' + new Date().getTime();
-            }
+        export class HealthInsuranceAvgEarnValue {
+            general: number;
+            nursing: number;
+            basic: number;
+            specific: number;
+        }
+        export class HealthInsuranceAvgEarn {
+            historyId: string;
+            levelCode: number;
+            companyAvg: HealthInsuranceAvgEarnValue;
+            personalAvg: HealthInsuranceAvgEarnValue;
         }
     }
 }
