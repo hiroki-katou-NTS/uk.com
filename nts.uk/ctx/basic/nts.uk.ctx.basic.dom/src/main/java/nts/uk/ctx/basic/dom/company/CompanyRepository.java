@@ -20,13 +20,7 @@ public interface CompanyRepository {
 	 * find all company by company code
 	 * @return
 	 */
-	List<Company> getAllCompanys();
-	/**
-	 * get a company before update
-	 * @param companyCode
-	 * @return
-	 */
-	List<Company> getHistoryBefore(String companyCode);
+	List<Company> getAllCompanys(String companyCode);
 	/**
 	 * Add a company
 	 * @param company
@@ -38,6 +32,10 @@ public interface CompanyRepository {
 	 * @param company
 	 */
 	void update(Company company);
-	
+	/**
+	 * Delete a company
+	 * @param company
+	 */
+	void delete(Company company);
 }
 

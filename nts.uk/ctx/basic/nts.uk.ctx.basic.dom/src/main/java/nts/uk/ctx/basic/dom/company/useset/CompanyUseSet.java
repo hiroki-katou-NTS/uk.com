@@ -15,45 +15,64 @@ import nts.arc.primitive.StringPrimitiveValue;
 @AllArgsConstructor
 public class CompanyUseSet extends DomainObject{
      /**グループ会社権限*/
-	 private UseSet USE_GR_SET;
+	@Getter
+	 private UseSet use_Gr_Set;
 	
 	 /**就業権限*/
-	 private UseSet USE_KT_SET ;
+	@Getter
+	 private UseSet use_Kt_Set ;
 	
 	 /**給与権限 */
-	 private UseSet USE_QY_SET;
+	@Getter
+	 private UseSet use_Qy_Set;
 	 /**人事権限*/
-	 private UseSet USE_JJ_SET;
+	@Getter
+	 private UseSet use_Jj_Set;
 	 /**会計権限 */
-	 private UseSet USE_AC_SET;
+	@Getter
+	 private UseSet use_Ac_Set;
 	 /** グループウェア権限*/
-	 private UseSet USE_GW_SET;
+	@Getter
+	 private UseSet use_Gw_Set;
 	 /** ヘルスケア権限*/
-	 private UseSet USE_HC_SET;
+	@Getter
+	 private UseSet use_Hc_Set;
 	 /**労務コスト権限*/
-	 private UseSet USE_LC_SET;
+	@Getter
+	 private UseSet use_Lc_Set;
 	 /** BI権限*/
-	 private UseSet USE_BI_SET;
+	@Getter
+	 private UseSet use_Bi_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS01_SET;
+	@Getter
+	 private UseSet use_Rs01_Set;
 	 /** 権限予備(Reserve） */
-	 private UseSet USE_RS02_SET;
+	@Getter
+	 private UseSet use_Rs02_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS03_SET;
+	 @Getter
+	 private UseSet use_Rs03_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS04_SET;
+	 @Getter
+	 private UseSet use_Rs04_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS05_SET;
+	 @Getter
+	 private UseSet use_Rs05_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS06_SET;
+	 @Getter
+	 private UseSet use_Rs06_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS07_SET;
+	 @Getter
+	 private UseSet use_Rs07_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS08_SET;
+	 @Getter
+	 private UseSet use_Rs08_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS09_SET;
+	 @Getter
+	 private UseSet use_Rs09_Set;
 	 /** 権限予備(Reserve）*/
-	 private UseSet USE_RS010_SET;
+	 @Getter
+	 private UseSet use_Rs10_Set;
 
  
 	

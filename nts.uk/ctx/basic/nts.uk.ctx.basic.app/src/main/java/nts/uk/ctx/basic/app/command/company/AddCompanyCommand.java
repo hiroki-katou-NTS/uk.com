@@ -21,14 +21,37 @@ public class AddCompanyCommand {
     private String companyNameKana;
     private String corporateMyNumber;
     private int depWorkPlaceSet;
+    private int displayAttribute;
     private String faxNo;
     private String postal;
     private String presidentJobTitle;
     private String telephoneNo;
-	private String historyId;
+    private int termBeginMon;
+	private int use_Gr_Set;
+	private int use_Kt_Set;
+	private int use_Qy_Set;
+	private int use_Jj_Set;
+	private int use_Ac_Set;
+	private int use_Gw_Set;
+	private int use_Hc_Set;
+	private int use_Lc_Set;
+	private int use_Bi_Set;
+	private int use_Rs01_Set;
+    private int use_Rs02_Set;
+	private int use_Rs03_Set;
+	private int use_Rs04_Set;
+	private int use_Rs05_Set;
+	private int use_Rs06_Set;
+	private int use_Rs07_Set;
+	private int use_Rs08_Set;
+	private int use_Rs09_Set;
+	private int use_Rs10_Set;
 	public Company toDomain(){
 		return Company.createFromJavaType(AppContexts.user().companyCode(), companyName, companyNameAbb, 
-				companyNameKana, corporateMyNumber, faxNo, postal, presidentJobTitle, telephoneNo,
-				 depWorkPlaceSet, address1, address2, addressKana1, addressKana2);
+				 companyNameKana, corporateMyNumber, faxNo, postal, presidentJobTitle, telephoneNo,
+				 depWorkPlaceSet,displayAttribute, address1, address2, addressKana1, addressKana2, termBeginMon,
+				 use_Gr_Set,use_Kt_Set, use_Qy_Set, use_Jj_Set, use_Ac_Set, use_Gw_Set,use_Hc_Set,use_Lc_Set,
+				 use_Bi_Set,use_Rs01_Set, use_Rs02_Set, use_Rs03_Set,use_Rs04_Set, use_Rs05_Set,
+				 use_Rs06_Set,use_Rs07_Set,use_Rs08_Set,use_Rs09_Set,use_Rs10_Set);
 	}
 }

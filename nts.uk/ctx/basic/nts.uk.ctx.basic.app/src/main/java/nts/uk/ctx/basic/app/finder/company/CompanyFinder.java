@@ -16,13 +16,13 @@ import nts.uk.ctx.basic.dom.company.CompanyRepository;
 public class CompanyFinder {
 	@Inject
 	private CompanyRepository companyRepository;
-	public List<CompanyDto> getAllCompany(){
-		return this.companyRepository.getAllCompanys().stream()
+	public List<CompanyDto> getAllCompany(String companyCode){
+		return this.companyRepository.getAllCompanys(companyCode).stream()
 				.map(item -> CompanyDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
-	public Optional<Company> getCompany(String companyCode){
-		return this.companyRepository.getCompanyDetail(companyCode);
+	public Optional<CompanyDto> getCompany(String companyCode){
+		return this.companyRepository.getCompanyDetail(companyCode).map(company-> CompanyDto.fromDomain(company));
 		
 	}
 	
