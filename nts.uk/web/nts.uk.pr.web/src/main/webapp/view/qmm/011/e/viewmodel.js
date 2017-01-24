@@ -11,6 +11,7 @@ var nts;
                     var e;
                     (function (e) {
                         var option = nts.uk.ui.option;
+                        var InsuranceBusinessTypeDto = e.service.model.InsuranceBusinessTypeDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -19,6 +20,14 @@ var nts;
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.accidentInsuranceRateModel = nts.uk.ui.windows.getShared("accidentInsuranceRateModel");
                                 }
+                                ScreenModel.prototype.updateInsuranceBusinessType = function () {
+                                    var self = this;
+                                    var insuranceBusinessType;
+                                    insuranceBusinessType =
+                                        new InsuranceBusinessTypeDto(self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.insuranceBusinessType());
+                                    e.service.updateInsuranceBusinessType(insuranceBusinessType).done(function (data) {
+                                    });
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
