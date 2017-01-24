@@ -33,4 +33,17 @@ public class PensionPremiumRateItem extends AggregateRoot {
 	public PensionPremiumRateItem() {
 		super();
 	}
+
+	/**
+	 * @param chargeRates
+	 * @param payType
+	 * @param genderType
+	 */
+	public PensionPremiumRateItem(Set<ChargeRateItem> chargeRates, PaymentType payType, InsuranceGender genderType) {
+		super();
+		this.chargeRates = chargeRates;
+		this.payType = payType;
+		this.genderType = genderType;
+	}
+	
 }
