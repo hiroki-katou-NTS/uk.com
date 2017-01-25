@@ -17,8 +17,8 @@ module qet002.a.viewmodel {
         /**
          * Start screen.
          */
-        public start(): JQueryPromise<any>{
-            var dfd = $.Deferred<any>();
+        public start(): JQueryPromise<void>{
+            var dfd = $.Deferred<void>();
             dfd.resolve();
             return dfd.promise();
         }

@@ -2,35 +2,35 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
+package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
- * The Interface OutputSettingRepository.
+ * The Interface SalaryAggregateItemRepository.
  */
-public interface OutputSettingRepository {
+public interface SalaryAggregateItemRepository {
 	
 	/**
 	 * Save.
 	 *
-	 * @param outputSetting the output setting
+	 * @param aggregateItem the aggregate item
 	 */
-	void save(WageLedgerOutputSetting outputSetting);
+	void save(SalaryAggregateItem aggregateItem);
 	
 	/**
 	 * Removes the.
 	 *
-	 * @param outputSetting the output setting
+	 * @param aggregateItem the aggregate item
 	 */
-	void remove(WageLedgerOutputSetting outputSetting);
+	void remove(SalaryAggregateItem aggregateItem);
 	
 	/**
-	 * Find.
+	 * Find by code.
 	 *
 	 * @param code the code
 	 * @param companyCode the company code
-	 * @return the wage ledger output setting
+	 * @return the salary aggregate item
 	 */
-	WageLedgerOutputSetting find(OutputSettingCode code, CompanyCode companyCode);
+	SalaryAggregateItem findByCode(String code, CompanyCode companyCode);
 }
