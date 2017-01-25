@@ -4,6 +4,7 @@ __viewContext.ready(function() {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
+        test: KnockoutObservableArray<any>;
 
         constructor() {
 
@@ -16,12 +17,16 @@ __viewContext.ready(function() {
             this.itemsSwap(array);
 
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '説明', prop: 'description', width: 200 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
 
             this.currentCodeListSwap = ko.observableArray([]);
+            this.test = ko.observableArray([]);
+        }
+        
+        remove(){
+            this.itemsSwap.shift();            
         }
         
     }

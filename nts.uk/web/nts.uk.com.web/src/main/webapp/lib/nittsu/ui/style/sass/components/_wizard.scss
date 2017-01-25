@@ -15,14 +15,12 @@ $wizard_image_size: 60px;
 	width: -moz-calc($calc);
 }
 
-.nts-wizard, .tabcontrol2 {
+.nts-wizard {
     display: block;
     width: 1000px;
     overflow: hidden;
 	
-	a {
-	    outline: 0;
-	}
+	a { outline: 0; }
 	
 	ul {
 	    list-style: none !important;
@@ -34,23 +32,6 @@ $wizard_image_size: 60px;
 	    display: block;
 	    padding: 0;
 	}
-	
-	/* Accessibility */
-	> .steps .current-info {
-	    position: absolute;
-	    left: -999em;
-	}
-	
-	> .content > .title {
-	    position: absolute;
-	    left: -999em;
-	}
-}
-
-/*
-    Wizard
-*/
-.nts-wizard {
 	
 	.header {
 		margin:5px 5px 5px 8px;
@@ -80,7 +61,8 @@ $wizard_image_size: 60px;
 		    box-sizing: border-box;
    		}
 	}
-	
+		
+	/* Accessibility */
 	> .steps {
 	    position: relative;
 	    display: block;
@@ -247,8 +229,17 @@ $wizard_image_size: 60px;
 	> .steps > ul > li,
 	> .actions > ul > li {
 	    float: left;
-	}	
-
+	}
+	
+	> .steps .current-info {
+	    position: absolute;
+	    left: -999em;
+	}
+	
+	> .content > .title {
+	    position: absolute;
+	    left: -999em;
+	}
 	
 	> .content {
 	    background: #eee;

@@ -12,6 +12,19 @@ var nts;
             }
             util.alwaysTrue = alwaysTrue;
             /**
+             * function find an item index in array
+             * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
+             */
+            function findIndex(arr, value, key) {
+                for (var i = 0; i < arr.length; i++) {
+                    var item = arr[i];
+                    if (item[key] === value)
+                        return i;
+                }
+                return -1;
+            }
+            util.findIndex = findIndex;
+            /**
              * function add item to array, this function is used in combine with visitDfs function
              * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
              */
@@ -209,6 +222,43 @@ var nts;
                 }());
                 optional.Optional = Optional;
             })(optional = util.optional || (util.optional = {}));
+            var Range = (function () {
+                function Range(start, end) {
+                    if (start > end) {
+                        throw new Error('start is larger than end');
+                    }
+                    this.start = start;
+                    this.end = end;
+                }
+                Range.prototype.contains = function (value) {
+                    return this.start <= value && value <= this.end;
+                };
+                Range.prototype.greaterThan = function (value) {
+                    return value < this.start;
+                };
+                Range.prototype.greaterThanOrEqualTo = function (value) {
+                    return value <= this.start;
+                };
+                Range.prototype.lessThan = function (value) {
+                    return this.end < value;
+                };
+                Range.prototype.lessThanOrEqualTo = function (value) {
+                    return this.end <= value;
+                };
+                Range.prototype.distanceFrom = function (value) {
+                    if (this.greaterThan(value)) {
+                        return value - this.start;
+                    }
+                    else if (this.lessThan(value)) {
+                        return value - this.end;
+                    }
+                    else {
+                        return 0;
+                    }
+                };
+                return Range;
+            }());
+            util.Range = Range;
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
