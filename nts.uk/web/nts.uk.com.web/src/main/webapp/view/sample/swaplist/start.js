@@ -12,7 +12,11 @@ __viewContext.ready(function () {
                 { headerText: '名称', key: 'name', width: 150 }
             ]);
             this.currentCodeListSwap = ko.observableArray([]);
+            this.test = ko.observableArray([]);
         }
+        ScreenModel.prototype.remove = function () {
+            this.itemsSwap.shift();
+        };
         return ScreenModel;
     }());
     var ItemModel = (function () {

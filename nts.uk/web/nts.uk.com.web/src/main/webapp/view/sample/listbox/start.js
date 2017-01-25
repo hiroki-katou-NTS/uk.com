@@ -4,7 +4,7 @@ __viewContext.ready(function () {
             var self = this;
             var temp = [];
             for (var i = 0; i < 100; i++) {
-                temp.push(new ItemModel('基本給' + (i + 1), '基本給', "description " + (i + 1)));
+                temp.push(new ItemModel((i + 1), '基本給', "description " + (i + 1)));
             }
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
@@ -19,12 +19,7 @@ __viewContext.ready(function () {
         ScreenModel.prototype.addOptions = function () {
             var self = this;
             var newCode = self.currentCode() + 1;
-            var itemCode = newCode.toString();
-            var codeLength = itemCode.length;
-            while (codeLength < 4) {
-                itemCode = '0' + itemCode;
-                codeLength++;
-            }
+            var itemCode = newCode;
             self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
             self.currentCode(newCode);
         };
@@ -46,7 +41,7 @@ __viewContext.ready(function () {
         ScreenModel.prototype.remove = function () {
             var self = this;
             // Remove by code.
-            var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
+            var selected = self.itemList().filter(function (item) { return item.code === self.selectedCode(); })[0];
             self.itemList.remove(selected);
             // Remove by codes
             var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });
