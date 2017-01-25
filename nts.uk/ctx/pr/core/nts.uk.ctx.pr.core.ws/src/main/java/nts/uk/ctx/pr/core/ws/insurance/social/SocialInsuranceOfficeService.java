@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.ws.insurance.social;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,6 +27,7 @@ import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand
  */
 @Path("pr/insurance/social")
 @Produces("application/json")
+@Stateless
 public class SocialInsuranceOfficeService extends WebService {
 
 	@Inject
