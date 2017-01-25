@@ -5,10 +5,16 @@ var qpp007;
         var service;
         (function (service) {
             var servicePath = {
-                getallOutputSetting: "ctx/pr/report/wageledger/outputsetting/findAll"
+                getallOutputSetting: "?"
             };
             function getallOutputSetting() {
-                return nts.uk.request.ajax(servicePath.getallOutputSetting);
+                var dfd = $.Deferred();
+                var data = [];
+                for (var i = 1; i <= 10; i++) {
+                    data.push({ code: '0' + i, name: 'Output Item Setting ' + i });
+                }
+                dfd.resolve(data);
+                return dfd.promise();
             }
             service.getallOutputSetting = getallOutputSetting;
             var model;

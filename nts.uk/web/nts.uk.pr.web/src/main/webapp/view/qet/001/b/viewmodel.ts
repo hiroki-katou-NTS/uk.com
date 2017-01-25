@@ -77,8 +77,8 @@ module qet001.b.viewmodel {
             self.reportItems(reportItemList);
         }
         
-        public start(): JQueryPromise<any>{
-            var dfd = $.Deferred<any>();
+        public start(): JQueryPromise<void>{
+            var dfd = $.Deferred<void>();
             var self = this;
             var outputSettings: WageLedgerOutputSetting[] = nts.uk.ui.windows.getShared('outputSettings');
             var selectedSettingCode: string = nts.uk.ui.windows.getShared('selectedCode');
@@ -134,8 +134,8 @@ module qet001.b.viewmodel {
         /**
          * Load detail output setting.
          */
-        public loadOutputSettingDetail(selectedCode: string): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        public loadOutputSettingDetail(selectedCode: string): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var self = this;
             
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
@@ -151,8 +151,8 @@ module qet001.b.viewmodel {
         /**
          * Load Aggregate items.
          */
-        public loadAggregateItems(): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        public loadAggregateItems(): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var self = this;
             service.findAggregateItems().done((item: service.Item[]) => {
                 self.aggregateItemsList = item;
@@ -167,8 +167,8 @@ module qet001.b.viewmodel {
         /**
          * Load master item.
          */
-        public loadMasterItems(): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        public loadMasterItems(): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var self = this;
             service.findMasterItems().done((item: service.Item[]) => {
                 self.masterItemList = item;

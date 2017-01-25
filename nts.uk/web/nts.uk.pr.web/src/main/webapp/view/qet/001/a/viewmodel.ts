@@ -30,8 +30,8 @@ module qet001.a.viewmodel {
         /**
          * Load all output setting.
          */
-        public loadAllOutputSetting(): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        public loadAllOutputSetting(): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var self = this;
             service.findOutputSettings().done(function(data: service.model.WageLedgerOutputSetting[]) {
                 self.outputSettings(data);

@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
+package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -10,11 +10,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * The Class OutputSettingCode.
+ * The Class WageLedgerOutputSettingCode.
  */
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(3)
-public class AggregateItemCode extends CodePrimitiveValue<AggregateItemCode> {
+public class WLOutputSettingCode extends CodePrimitiveValue<WLOutputSettingCode> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -24,7 +24,7 @@ public class AggregateItemCode extends CodePrimitiveValue<AggregateItemCode> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public AggregateItemCode(String rawValue) {
+	public WLOutputSettingCode(String rawValue) {
 		super(rawValue);
 	}
 

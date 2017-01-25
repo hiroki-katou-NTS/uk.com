@@ -31,6 +31,7 @@ var nts;
                                 }
                                 ScreenModel.prototype.addHistoryInfo = function () {
                                     var self = this;
+                                    nts.uk.ui.windows.close();
                                     if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
                                         self.addHistoryInfoUnemployeeInsurance();
                                     }

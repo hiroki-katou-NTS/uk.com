@@ -2,26 +2,27 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
+package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class OutputSettingName.
+ * The Class SalaryOutputSettingName.
  */
-@StringMaxLength(40)
-public class AggregateItemName extends StringPrimitiveValue<AggregateItemName> {
-
+@StringMaxLength(20)
+public class SalaryOutputSettingName extends StringPrimitiveValue<SalaryOutputSettingName>{
+	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new output setting name.
+	 * Instantiates a new salary output setting name.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public AggregateItemName(String rawValue) {
+	public SalaryOutputSettingName(String rawValue) {
 		super(rawValue);
 	}
+
 }
