@@ -14,17 +14,17 @@ module qpp018.c.viewmodel {
         constructor() {
             this.required = ko.observable(true);
             this.isDetailed = ko.observable(true);
-            this.isTotalMonthlyTotal= ko.observable(true);
-            this.isOfficeMonthlyTotal= ko.observable(true);
-            this.isDeliveryNoticeAmount= ko.observable(true);
-            this.showHealthInsuranceType= ko.observableArray<HealthInsuranceType>([
+            this.isTotalMonthlyTotal = ko.observable(true);
+            this.isOfficeMonthlyTotal = ko.observable(true);
+            this.isDeliveryNoticeAmount = ko.observable(true);
+            this.showHealthInsuranceType = ko.observableArray<HealthInsuranceType>([
                 new HealthInsuranceType('1','表示する'),
                 new HealthInsuranceType('2','表示しない'),
              ]);
             
-            this.selectedCode=ko.observable('1');
-            this.enable=ko.observable(true);
-            this.printSettingValue=ko.observable('PrintSetting Value');
+            this.selectedCode = ko.observable('1');
+            this.enable = ko.observable(true);
+            this.printSettingValue = ko.observable('PrintSetting Value');
         }
         closePrintSetting(){
          // Set child value

@@ -12,18 +12,9 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
-
 		</ui:define>
 
-		<ui:define name="content">			
-<!-- 			<div id="contents-area">
-								
-			</div>
-			 
-			<div id="detail-contents">
-					
-				</div>
-				<div id="title-label">印刷の設定	</div>-->
+		<ui:define name="content">	
 					<div class="end-title"></div>
 					<div id="details">
 						<div id="label-details">
@@ -48,15 +39,6 @@
 							<div class="check-output" data-bind="ntsCheckBox: { checked: isTotalMonthlyTotal , text:'事務所月計'}"></div>
 							<div class="check-output" data-bind="ntsCheckBox: { checked: isOfficeMonthlyTotal , text:'総合月計'}"></div>
 							<div class="check-output" data-bind="ntsCheckBox: { checked: isDeliveryNoticeAmount , text:'納入告知額'}"></div>
-							<!-- 
-							 <div class="check-output" data-bind="ntsMultiCheckBox: {
-																					options: checkListSetting,
-																					optionsValue: '',
-																					optionsText: '',
-																					value: selectedIds,
-																					enable: true">
-								</div>
-								-->
 						</div>
 					</div>
 					<div class="end-title"></div>

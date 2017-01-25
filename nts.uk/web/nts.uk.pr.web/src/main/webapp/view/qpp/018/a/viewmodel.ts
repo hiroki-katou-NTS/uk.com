@@ -33,8 +33,8 @@ module qpp018.a.viewmodel {
                 { headerText: 'コード', prop: 'code', width: 100 },
                 { headerText: '名称 ', prop: 'name', width: 100 }
                 ]);
-            this.selectedOfficeList=ko.observableArray<InsuranceOfficeModel>([]);
-            this.exportDataDetails=ko.observable('Something');
+            this.selectedOfficeList = ko.observableArray<InsuranceOfficeModel>([]);
+            this.exportDataDetails = ko.observable('Something');
         }
         
         /**
