@@ -1,0 +1,64 @@
+@import url("../qmm005.css");
+
+#functions-area {
+	display: block;
+}
+
+.form-extent {
+	padding-bottom: 12px;
+}
+
+#D_BTN_001 {
+	background-color: rgb(164, 238, 176);
+}
+
+#D_BTN_003 {
+	color: #3030ff;
+	text-decoration: underline;
+	border: none;
+	margin: 30px 0 0 0;
+	display: inline-block;
+	cursor: pointer;
+}
+
+
+#D_LBL_003, #D_LBL_005, #D_LBL_009, #D_LBL_013, #D_LBL_016,
+	#D_LBL_020, #D_LBL_022, #D_LBL_026 {
+	min-width: 240px;
+}
+
+#D_LBL_004, #D_LBL_006, #D_LBL_010, #D_LBL_014, #D_LBL_017,
+	#D_LBL_021, #D_LBL_023 {
+	min-width: 75px;
+}
+
+#D_LBL_005 .btn, #D_LBL_005 button {
+	width: initial;
+	min-width: initial;
+	margin-left: 7px;
+}
+
+#D_LBL_007, #D_LBL_011 {
+	padding: 0 5px 0 10px;
+}
+
+#D_LBL_019 {
+	padding-left: 245px;
+}
+
+#D_LBL_024, #D_LBL_025 {
+	display: block;
+	padding-left: 245px;
+}
+
+#D_LBL_025 {
+	padding-left: 260px;
+}
+
+#D_SEL_001, #D_SEL_002, #D_SEL_003, #D_SEL_004, #D_SEL_005,
+	#D_SEL_006, #D_SEL_007, #D_SEL_008, #D_SEL_009, #D_SEL_010,
+	#D_SEL_011, #D_SEL_012, #D_SEL_013, #D_SEL_014, #D_SEL_015
+	{
+	width: 90px;
+	min-width: 90px !important;
+}

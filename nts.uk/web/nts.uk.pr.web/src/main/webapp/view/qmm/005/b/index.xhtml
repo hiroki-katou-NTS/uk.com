@@ -17,10 +17,10 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="btn-group-left">
-					<button id="B_BTN_001">新規</button>
-					<button id="B_BTN_002">登録</button>
+					<button id="B_BTN_001"  data-bind="click: showModalDialogC">新規</button>
+					<button id="B_BTN_002"  data-bind="click: showModalDialogD">登録</button>
 					<button id="B_BTN_003">削除</button>
-					<button id="B_BTN_004">閉じる</button>
+					<button id="B_BTN_004" data-bind="click: () => alert('not allowed')">閉じる</button>
 				</div>
 				<div class="clear-fix"></div>
 			</div>
@@ -49,7 +49,7 @@
 							<div data-bind="ntsFormLabel: {}">処理年</div>
 							<input class="form-control" id="B_INP_001" type="text"
 								data-bind="value: '2016'" /> <label>（平成28年）</label>
-							<button>システム基準日の情報を反映する</button>
+							<button data-bind="click: showModalDialogE">システム基準日の情報を反映する</button>
 						</div>
 					</div>
 					<div class="right-panel-bottom">
@@ -82,63 +82,33 @@
 									<th data-bind="text: ($index() + 1)"></th>
 									<th data-bind="text: ($index() + 1 + '月')"></th>
 									<td>
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"
-												data-bind="click: toggleCalendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td>
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td class="double-border">
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td class="toggle hidden">
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td class="toggle hidden">
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td class="toggle hidden">
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td class="toggle hidden">
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
 									<td class="toggle hidden">
-										<div class="form-group">
-											<input type="text" class="form-control"
-												data-bind="ntsDatePicker: {value: $parent.date, dateFormat: 'yyyy/MM/dd D'}" />
-											<button class="btn-calendar"></button>
-										</div>
+										<div data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
 									</td>
-									<td class="checkbox-cols"><input type="checkbox" /></td>
+									<td class="checkbox-cols">
+										<span id="B_SEL_00"
+											data-bind="ntsCheckBox: { checked: false, enable: true, text: '' }"></span>
+									</td>
 								</tr>
 							</tbody>
 						</table>

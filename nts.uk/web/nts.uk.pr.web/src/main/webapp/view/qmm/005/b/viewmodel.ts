@@ -1,15 +1,13 @@
-let ko: any, $: any;
-
 module nts.uk.pr.view.qmm005.b.viewmodel {
     export class ViewModel {
         date: any;
         selectedCodes: any;
-        tableItems: TableRowItem[];
-        listboxItem: SelectItem[];
+        tableItems: any;
+        listboxItem: any;
         constructor() {
             this.date = ko.observable(new Date());
-            this.selectedCodes = ko.observable(2);
-            
+            this.selectedCodes = ko.observableArray([2]);
+
             this.listboxItem = ko.observableArray([
                 new SelectItem(1, "Option 1"),
                 new SelectItem(2, "Option 2"),
@@ -29,7 +27,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 new SelectItem(16, "Option 16"),
                 new SelectItem(17, "Option 17")
             ]);
-            
+
             this.tableItems = ko.observableArray([
                 new TableRowItem(1),
                 new TableRowItem(2),
@@ -45,17 +43,38 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
                 new TableRowItem(12)
             ]);
         }
+        
         toggleColumns(item, event): void {
             $('.toggle').toggleClass('hidden');
             $(event.currentTarget).parent('td').toggleClass('checkbox-cols');
             ($(event.currentTarget).text() == "-" && $(event.currentTarget).text('+')) || $(event.currentTarget).text('-');
         }
+
+        showModalDialogC(item, event): void {
+            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 682, height: 370, title: '処理区分の追加' })
+            .onClosed(() => {
+                alert('ok');
+            });
+        }
+
+        showModalDialogD(item, event): void {
+            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 682, height: 410, title: '処理区分の追加' })
+            .onClosed(() => {
+                alert('ok');
+            });
+        }
+        
+        showModalDialogE(item, event): void {
+            nts.uk.ui.windows.sub.modal("../e/index.xhtml", { width: 540, height: 600, title: '処理区分の追加' })
+            .onClosed(() => {
+                alert('ok');
+            });
+        }
     }
 
     class SelectItem {
-        constructor(public index: number,public label: string){
+        constructor(public index: number, public label: string) {
         }
-    
     }
 
     class TableRowItem {

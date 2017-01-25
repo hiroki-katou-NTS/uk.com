@@ -5,6 +5,11 @@
 	color: rgb(64, 64, 64);
 }
 
+hr {
+	border-top: none;
+	border-bottom: 1px solid #999;
+}
+
 *:before, *:after {
 	content: '';
 	color: rgb(64, 64, 64);
@@ -21,34 +26,58 @@
 	overflow: hidden;
 }
 
-label {
-	line-height: 30px;
+.ui-igcombo-wrapper {
+	top: 10px;
 }
 
-button, .btn {
-	top: 0;
-	margin: 0;
-	box-shadow: none;
+.ui-igcombo-field {
+	border-radius: 0px;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active,
+	a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover
+	{
+	background-color: initial;
+}
+
+.ui-state-active {
+	border: 1px solid #999;
+}
+
+.ui-igcombo-no-border {
+	border: none !important;
+}
+
+.ui-igcombo-list {
+	max-height: 200px !important;
+}
+
+.ntsCheckBox span.box:after{
+    width: 12px;
+    height: 6px;
+    top: 3px;
+    left: 2px;
+}
+
+button:not(.ui-button ), .btn:not(.ui-button ) {
 	min-width: 73px;
-	border-bottom: 3px solid #999999;
-	box-shadow: none;
+	position: relative;
 }
 
-.btn:active, button:active {
-	top: 0;
-	border-bottom: 2px solid #999999;
-}
-
-.btn {
+.btn:not(.ui-button ) {
 	display: inline-block;
 	padding: 3px 7px;
-	line-height: 21px;
+	line-height: 24px;
 	cursor: pointer;
+}
+
+*:not(.ntsControl)>label, label.label {
+	line-height: 32px;
 }
 
 div.form-label, div.form-label.inline {
 	height: initial;
-	line-height: 30px;
+	line-height: 32px;
 	padding: 0 10px 0 8px;
 }
 
@@ -56,11 +85,27 @@ div.form-label>i {
 	margin: 0;
 }
 
+.verticle-align .ntsCheckBox span.label:not(.helper){
+	min-width: 160px;
+}
+
 input, div.form-group>.form-control {
-	line-height: 30px;
-	max-height: 30px;
+	line-height: 32px;
+	max-height: 32px;
 	padding: 0 5px;
 	border: 1px solid #999999;
+}
+
+div.form-group>.form-label {
+	margin-top: 9px;
+}
+
+div.form-group.form-inline>*:not(.clear-fix){
+	float: left;
+}
+
+div.form-group.form-inline:after{
+	clear: both;
 }
 
 div.form-group>select.form-control {
@@ -68,8 +113,8 @@ div.form-group>select.form-control {
 }
 
 div.form-group {
+	min-height: 41px;
 	position: relative;
-	margin-bottom: 10px;
 }
 
 a, input, select, .form-control, div.form-group>input.form-control {
@@ -128,9 +173,13 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	text-align: right !important;
 }
 
+#functions-area {
+	height: 47px;
+	padding-top: 7px;
+}
+
 #functions-area, #contents-area {
-	padding: 10px;
-	height: initial;
+	padding-left: 10px;
 }
 
 #functions-area .btn-group-left, #functions-area .btn-group-right {
@@ -155,7 +204,7 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	padding-left: 30px;
 }
 
-#contents-area{
+#contents-area {
 	padding-bottom: 30px;
 }
 
@@ -200,11 +249,12 @@ a, input, select, .form-control, div.form-group>input.form-control {
 
 #contents-area table.table select, #contents-area table.table button {
 	font-size: 12px;
-	height: 24px;
+	height: 27px;
 	padding: 0 7px;
 }
 
 #contents-area table.table button {
+	height: 24px;
 	width: 100%;
 }
 
@@ -214,10 +264,10 @@ a, input, select, .form-control, div.form-group>input.form-control {
 
 #contents-area table.table .caret:after {
 	margin-top: 2px;
-	border-top: 10px solid transparent;
-	border-bottom: 10px solid transparent;
-	border-left: 6px solid rgb(174, 238, 96);
-	width: 10px;
+	border-top: 12px solid transparent;
+	border-bottom: 12px solid transparent;
+	border-left: 7px solid rgb(174, 238, 96);
+	width: 12px;
 	position: absolute;
 }
 
@@ -225,8 +275,27 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	margin-left: 10px;
 }
 
+.verticle-align>* {
+	display: block;
+}
+
+.horizontal-align>*{
+	display: inline-block;
+}
+
 .clear-fix, #functions-area .btn-group-right:after {
 	clear: both;
+}
+
+.dialog-button-group {
+	position: fixed;
+	background-color: #fff;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	display: block;
+	padding: 5px 0 10px 0;
+	border-top: 1px solid #999;
 }
 
 .hidden {

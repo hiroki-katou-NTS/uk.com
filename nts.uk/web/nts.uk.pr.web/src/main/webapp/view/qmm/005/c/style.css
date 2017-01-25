@@ -1,11 +1,21 @@
 @import url("../qmm005.css");
 
-body {
-	width: 650px;
+#functions-area {
+	display: none;
 }
 
-#C_LBL_002, #C_LBL_004, #C_LBL_008 {
+.form-extent {
+	padding-bottom: 72px;
+}
+
+#C_LBL_002, #C_LBL_004, #C_LBL_008, #C_LBL_012, #C_LBL_015,
+	#C_LBL_019, #C_LBL_021, #C_LBL_025 {
 	min-width: 240px;
+}
+
+#C_LBL_003, #C_LBL_005, #C_LBL_009, #C_LBL_013, #C_LBL_016,
+	#C_LBL_020, #C_LBL_022 {
+	min-width: 75px;
 }
 
 #C_LBL_004 .btn, #C_LBL_004 button {
@@ -18,17 +28,38 @@ body {
 	padding: 0 5px 0 10px;
 }
 
+#C_LBL_018 {
+	padding-left: 245px;
+}
+
+#C_LBL_023, #C_LBL_024 {
+	display: block;
+	padding-left: 245px;
+}
+
+#C_LBL_024 {
+	padding-left: 260px;
+}
+
+#C_SEL_001, #C_SEL_002, #C_SEL_003, #C_SEL_004, #C_SEL_005,
+	#C_SEL_006, #C_SEL_007, #C_SEL_008, #C_SEL_009, #C_SEL_010,
+	#C_SEL_011, #C_SEL_012, #C_SEL_013, #C_SEL_014, #C_SEL_015
+	{
+	width: 90px;
+	min-width: 90px !important;
+}
+
 #C_BTN_001 {
 	color: #3030ff;
 	text-decoration: underline;
 	border: none;
 	margin: 30px 0 0 0;
-	display: block;
+	display: inline-block;
 	cursor: pointer;
 }
 
 #C_BTN_002 {
-	height: 42px;
+	height: 43px;
 	font-weight: bold;
 	font-size: 1.3em;
 	padding-left: 17px;
