@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.core.app.service.healthinsurance.HealthInsuranceService;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
+
 @Stateless
 public class DefaultHealthInsuranceService implements HealthInsuranceService  {
 

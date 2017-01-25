@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -20,6 +21,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 	HealthInsuranceService healthInsuranceService;
 
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<RegisterHealthInsuranceCommand> command) {
 		
 		HealthInsuranceRateDto HIRDto = command.getCommand().getHIRDto();

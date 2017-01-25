@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.command.insurance.social;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -19,6 +20,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> command) {
 		// TODO Auto-generated method stub
 		SocialInsuranceOfficeDto SODto = command.getCommand().getSIODto();

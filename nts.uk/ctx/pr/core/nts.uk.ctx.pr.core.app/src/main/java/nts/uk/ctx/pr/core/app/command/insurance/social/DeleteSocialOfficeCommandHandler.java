@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.command.insurance.social;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -19,6 +20,7 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocia
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<DeleteSocialOfficeCommand> command) {
 		
 		SocialInsuranceOffice findOffice = socialInsuranceOfficeRepository.findById(command.getCommand().getSIODto().getCode().toString());
