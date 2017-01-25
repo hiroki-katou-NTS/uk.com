@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.retirement.payitem;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -42,5 +44,31 @@ public class UpdateRetirementPayItemCommandHandler extends CommandHandler<Update
 				new RetirementPayItemFullName(command.fullName), 
 				new Memo(command.memo));
 		this.retirementPayItemRepository.update(retirementPayItem);
+		
 	}
 }
+/*@RequestScoped
+public class UpdateRetirementPayItemCommandHandler extends CommandHandler<List<UpdateRetirementPayItemCommand>>{
+	@Inject
+	private RetirementPayItemRepository retirementPayItemRepository;
+	
+	@Override
+	protected void handle(CommandHandlerContext<List<UpdateRetirementPayItemCommand>> context) {
+		// TODO Auto-generated method stub
+		List<UpdateRetirementPayItemCommand> command = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		for (UpdateRetirementPayItemCommand updateRetirementPayItemCommand : command) {
+			RetirementPayItem retirementPayItem = new RetirementPayItem(
+					new CompanyCode(companyCode), 
+					EnumAdaptor.valueOf(updateRetirementPayItemCommand.category, IndicatorCategory.class), 
+					new RetirementPayItemCode(updateRetirementPayItemCommand.itemCode), 
+					new RetirementPayItemName(updateRetirementPayItemCommand.itemName), 
+					new RetirementPayItemPrintName(updateRetirementPayItemCommand.printName), 
+					new RetirementPayItemEnglishName(updateRetirementPayItemCommand.englishName), 
+					new RetirementPayItemFullName(updateRetirementPayItemCommand.fullName), 
+					new Memo(updateRetirementPayItemCommand.memo));
+			this.retirementPayItemRepository.update(retirementPayItem);
+		}
+		
+	}
+}*/

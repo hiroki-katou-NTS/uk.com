@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.ws.retirement.payitem;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -35,21 +36,37 @@ public class Qrm007WebService extends WebService{
 	@Inject
 	private RemoveRetirementPayItemCommandHandler removeRetirementPayItemCommandHandler;
 	
+	@POST
 	@Path("register")
 	public void register(RegisterRetirementPayItemCommand command) {
 		this.registerRetirementPayItemCommandHandler.handle(command);
 	}
 	
+	@POST
 	@Path("findAll")
 	public List<RetirementPayItemDto> findAll() {
 		return this.retirementPayItemFinder.findAll();
 	}
 	
+	@POST
+	@Path("findBycompanyCode")
+	public List<RetirementPayItemDto> findBycompanyCode() {
+		return this.retirementPayItemFinder.find_By_companyCode();
+	}
+	
+	/*@POST
+	@Path("update")
+	public void update(List<UpdateRetirementPayItemCommand> command) {
+		this.updateRetirementPayItemCommandHandler.handle(command);
+	}*/
+	
+	@POST
 	@Path("update")
 	public void update(UpdateRetirementPayItemCommand command) {
 		this.updateRetirementPayItemCommandHandler.handle(command);
 	}
 	
+	@POST
 	@Path("remove")
 	public void remove(RemoveRetirementPayItemCommand command) {
 		this.removeRetirementPayItemCommandHandler.handle(command);

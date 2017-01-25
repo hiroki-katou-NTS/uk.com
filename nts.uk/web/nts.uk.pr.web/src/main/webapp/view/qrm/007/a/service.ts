@@ -1,14 +1,14 @@
 module qrm007.a.service {
     var paths: any = {
-        getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
-        //getRetirementPayItemList: "pr/core/retirement/payitem/findAll",
-        //updateData: "pr/core/retirement/payitem/update"
+        //getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
+        getRetirementPayItemList: "pr/core/retirement/payitem/findBycompanyCode",
+        updateRetirementPayItem: "pr/core/retirement/payitem/update"
     }
 
-    export function getRetirementPayItemList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
+    export function getRetirementPayItemList(): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.getRetirementPayItemList)
-            .done(function(res: Array<any>) {
+            .done(function(res: any) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -16,11 +16,11 @@ module qrm007.a.service {
             })
         return dfd.promise();
     }
-    /*
-    export function updateData(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.updateData)
-            .done(function(res: Array<any>) {
+    
+    export function updateRetirementPayItem(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.updateRetirementPayItem, command)
+            .done(function(res: any) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -28,5 +28,5 @@ module qrm007.a.service {
             })
         return dfd.promise();
     }
-    */
+    
 }

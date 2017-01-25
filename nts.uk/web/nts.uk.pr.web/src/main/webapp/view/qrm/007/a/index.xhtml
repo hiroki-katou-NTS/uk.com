@@ -8,7 +8,9 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemCode
+					nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemPrintName
+					nts.uk.shr.com.primitive.Memo
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
@@ -19,7 +21,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click: updateData()">登録</button>
+					<button class="proceed short-button" data-bind="click: updateRetirementPayItemList">登録</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
@@ -29,7 +31,7 @@
 										width: 600,
 										height: 250,
 										options: retirementPayItemList,
-										optionsValue: 'code',
+										optionsValue: 'itemCode',
 										columns: columns,
 										multiple: false,
 										value: currentCode}">
@@ -39,42 +41,42 @@
 						<div>
 							<div class="table">
 								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { required: true }">コード/名称</div>
+									<div data-bind="ntsFormLabel: { required: true, constraint: 'RetirementPayItemCode' }">コード/名称</div>
 								</div>
 								<div class="cell">
 									<span data-bind="text: currentCode"></span>
-									<span id="name-span" data-bind="text: currentItem().name"></span>
+									<span id="name-span" data-bind="text: currentItem().itemName"></span>
 								</div>
 							</div>
 							<div class="table">
 								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">印刷用名称</div>
+									<div data-bind="ntsFormLabel: { constraint: 'RetirementPayItemPrintName', required: true }">印刷用名称</div>
 								</div>
 								<div class="cell valign-center">
 									<div data-bind="with: texteditor">
 										<input data-bind="ntsTextEditor: {
 											value: value,
-											constraint: constraint,
+											constraint: 'RetirementPayItemPrintName',
 											option: option,
-											required: required,
-											enable: enable,
-											readonly: readonly}" />
+											required: true,
+											enable: true,
+											readonly: false}" />
 									</div>
 								</div>
 							</div>
 							<hr id="division"/>
 							<div class="table">
 								<div class="cell column1 valign-top">
-									<div class="right-column" data-bind="ntsFormLabel: { constraint: 'PersonId', required: false }">メモ</div>
+									<div class="right-column" data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">メモ</div>
 								</div>
 								<div class="cell">
 									<div data-bind="with: multilineeditor">
 										<textarea id="text-area" data-bind="ntsMultilineEditor: {
 											value: value,
-											constraint: constraint,
-											option: option,
-											enable: enable,
-											readonly: readonly}" />
+											constraint: 'Memo',
+											option: true,
+											enable: true,
+											readonly: false}" />
 									</div>
 								</div>
 							</div>

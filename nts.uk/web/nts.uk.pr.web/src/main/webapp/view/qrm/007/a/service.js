@@ -5,7 +5,9 @@ var qrm007;
         var service;
         (function (service) {
             var paths = {
-                getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
+                //getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
+                getRetirementPayItemList: "pr/core/retirement/payitem/findBycompanyCode",
+                updateRetirementPayItem: "pr/core/retirement/payitem/update"
             };
             function getRetirementPayItemList() {
                 var dfd = $.Deferred();
@@ -19,6 +21,18 @@ var qrm007;
                 return dfd.promise();
             }
             service.getRetirementPayItemList = getRetirementPayItemList;
+            function updateRetirementPayItem(command) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateRetirementPayItem, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateRetirementPayItem = updateRetirementPayItem;
         })(service = a.service || (a.service = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));

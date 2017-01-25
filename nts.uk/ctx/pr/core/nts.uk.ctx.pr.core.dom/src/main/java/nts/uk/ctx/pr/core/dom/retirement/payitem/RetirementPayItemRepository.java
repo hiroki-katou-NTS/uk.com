@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.core.dom.retirement.payitem;
 
 import java.util.List;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -9,11 +11,13 @@ import java.util.List;
  */
 public interface RetirementPayItemRepository {
 	
-	void add(RetirementPayItem itemSetting);
+	void add(RetirementPayItem payItem);
 	
 	List<RetirementPayItem> findAll();
 	
-	void update(RetirementPayItem itemSetting);
+	List<RetirementPayItem> findByCompanyCode(CompanyCode companyCode);
 	
-	void remove(RetirementPayItem itemSetting);
+	void update(RetirementPayItem payItem);
+	
+	void remove(RetirementPayItem payItem);
 }

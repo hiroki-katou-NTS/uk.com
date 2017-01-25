@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.entity.retirement.payitem;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name="QREMT_RETIRE_PAY_ITEM")
 public class QremtRetirePayItem {
 	@EmbeddedId
