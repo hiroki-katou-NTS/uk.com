@@ -83,7 +83,7 @@
 							
 							<div id="aggregate-category-tab" data-bind="ntsTabPanel: { dataSource: categorySettingTabs, active: selectedCategory}">
 								<!-- Salary payment Tab -->
-								<div id="salary-payment">
+								<div id="salary-payment" data-bind="if: selectedCategory() == 'tab-salary-payment'">
 									<table data-bind="with: categorySettings()[0]">
 										<tr>
 											<td class="tab-contents-left">
@@ -154,7 +154,7 @@
 									</table>
 								</div>
 								<!-- Salary deduction Tab -->
-								<div id="salary-deduction">
+								<div id="salary-deduction" data-bind="if: selectedCategory() == 'tab-salary-deduction'">
 									<table data-bind="with: categorySettings()[1]">
 										<tr>
 											<td class="tab-contents-left">
@@ -225,7 +225,7 @@
 									</table>
 								</div>
 								<!-- Salary attendance Tab -->
-								<div id="salary-attendance">
+								<div id="salary-attendance" data-bind="if: selectedCategory() == 'tab-salary-attendance'">
 									<table data-bind="with: categorySettings()[2]">
 										<tr>
 											<td class="tab-contents-left">
@@ -296,7 +296,7 @@
 									</table>
 								</div>
 								<!-- Bonus payment Tab -->
-								<div id="bonus-payment">
+								<div id="bonus-payment" data-bind="if: selectedCategory() == 'tab-bonus-payment'">
 									<table data-bind="with: categorySettings()[3]">
 										<tr>
 											<td class="tab-contents-left">
@@ -367,7 +367,7 @@
 									</table>
 								</div>
 								<!-- Bonus deduction Tab -->
-								<div id="bonus-deduction">
+								<div id="bonus-deduction" data-bind="if: selectedCategory() == 'tab-bonus-deduction'">
 									<table data-bind="with: categorySettings()[4]">
 										<tr>
 											<td class="tab-contents-left">
@@ -438,7 +438,7 @@
 									</table>
 								</div>
 								<!-- Bonus attendance Tab -->
-								<div id="bonus-attendance">
+								<div id="bonus-attendance" data-bind="if: selectedCategory() == 'tab-bonus-attendance'">
 									<table data-bind="with: categorySettings()[5]">
 										<tr>
 											<td class="tab-contents-left">
