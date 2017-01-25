@@ -88,6 +88,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.findAllHisotryUnemployeeInsuranceRate().done(function (data) {
                                         self.findAllHistoryAccidentInsuranceRate().done(function (data) {
+                                            self.typeAction = ko.observable(2);
                                             dfd.resolve(self);
                                         });
                                     });

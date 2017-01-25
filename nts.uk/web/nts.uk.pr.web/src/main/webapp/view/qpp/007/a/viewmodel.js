@@ -37,6 +37,10 @@ var qpp007;
                         new SelectionModel('2', '英語')
                     ]);
                     this.selectedOutputLanguage = ko.observable('1');
+                    var self = this;
+                    this.isDepartmentHierarchy = ko.computed(function () {
+                        return self.selectedpageBreakSetting() == '4';
+                    });
                 }
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();

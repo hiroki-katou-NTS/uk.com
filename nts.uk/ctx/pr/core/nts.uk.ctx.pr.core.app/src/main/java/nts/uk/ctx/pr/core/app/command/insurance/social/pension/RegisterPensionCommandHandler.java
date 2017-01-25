@@ -3,7 +3,9 @@ package nts.uk.ctx.pr.core.app.command.insurance.social.pension;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -13,12 +15,13 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
-
+@Stateless
 public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensionCommand> {
 
 	@Inject
 	PensionService pensionService;
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<RegisterPensionCommand> command) {
 		PensionRateDto pensionRateDto = command.getCommand().getPensionRate();
 	
