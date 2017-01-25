@@ -37,6 +37,24 @@
 	padding: 10px 0px 0px 30px;
 	display: inline-block;
 }
-#A_BTN_005{
+
+#A_BTN_005 {
 	margin-left: 20px;
-} 
+}
+
+#A_SEL_001 button {
+	display: flex;
+	margin-bottom: 10px;
+	width: 170px;
+	height: 35px;
+	box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+}
+
+#A_SEL_001 button:ACTIVE {
+	top: 3px;
+	box-shadow: 0 0 #999;
+}
+
+#A_SEL_001 {
+	margin: 10px 0px 0px 50px;
+}

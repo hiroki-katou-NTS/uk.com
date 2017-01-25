@@ -27,22 +27,30 @@
 							maxLength: 7
 						}
 					};
-				</script>	
+				</script>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<div style="margin-left: 20px;" class="left-content">
 					<div class="form-label">
-						<label id="LBL_001">項目区分</label>
-						<label id ="LBL_002" data-bind="text: itemAtr" style ="margin-left: 50px">支給項目</label>
+						<label id="LBL_001">項目区分</label> <label id="LBL_002"
+							data-bind="text: itemAtr" style="margin-left: 50px">支給項目</label>
 					</div>
 					<br />
 					<div class="form-label" style="margin-top: 5px;">
 						<div style="display: flex">
-							<div><label id="LBL_003">コード/名称</label></div>
-							<div><input id="INP_001" style="margin-left: 20px; margin-top: 5px" type="text" maxlength="20" /></div>
-							<div><button id="SCH_001" style="width: 68px; margin-left: 5px" data-bind="click: searchItem">検索</button></div>
+							<div>
+								<label id="LBL_003">コード/名称</label>
+							</div>
+							<div>
+								<input id="INP_001" style="margin-left: 20px; margin-top: 5px"
+									type="text" maxlength="20" />
+							</div>
+							<div>
+								<button id="SCH_001" style="width: 68px; margin-left: 5px"
+									data-bind="click: searchItem">検索</button>
+							</div>
 						</div>
 					</div>
 					<br /> <br />
@@ -67,14 +75,16 @@
 				</div>
 				<div class="right-content">
 					<div class="form-label" data-bind="with: listBox">
-						<label id="LBL_004">コード/名称</label> <a data-bind="text: selectedCode">コード</a><a
+						<label id="LBL_004">コード/名称</label> <a
+							data-bind="text: selectedCode">コード</a><a
 							data-bind="text: selectedName">名称</a>
 					</div>
 					<br />
 					<div data-bind="if: checkDisplayComboBoxCalcMethod()">
 						<!-- 内訳区分 -->
-						<div style="margin-bottom: 5px; margin-top: 5px" id="uchiWakeKubun"
-							data-bind="with: comboBoxSumScopeAtr" class="form-label required">
+						<div style="margin-bottom: 5px; margin-top: 5px"
+							id="uchiWakeKubun" data-bind="with: comboBoxSumScopeAtr"
+							class="form-label required">
 							<label id="LBL_007">内訳区分</label>
 							<div style="margin: -5px 0 0 30px; float: right" id="SEL_001"
 								data-bind="ntsComboBox: {
@@ -117,13 +127,14 @@
 								<label>コード/名称</label>
 								<button data-bind="click: openHDialog"
 									style="margin-left: 17px; width: 71px;">参照</button>
-								<label data-bind="text: wageCode"></label>  <label data-bind="text: wageName"></label> 
+								<label data-bind="text: wageCode"></label> <label
+									data-bind="text: wageName"></label>
 							</div>
 						</div>
 						<!-- CategoryAtr = 0 and select 手入力 -->
 						<div>
 							<!-- 通勤区分 -->
-							<div style="margin-bottom: 5px;" id = "calcMethod"
+							<div style="margin-bottom: 5px;" id="calcMethod"
 								data-bind="with: $root.content.comboBoxCommutingClassification, visible: isCategoryAtrEqual0() &amp;&amp; checkManualInput()"
 								class="form-label">
 								<label style="float: left" id="LBL_018">通勤区分</label>
@@ -143,8 +154,11 @@
 						</div>
 						<!-- 按分設定 -->
 						<div class="form-label">
-							<div style="float: left; display: flex; margin-top: 5px" data-bind="with: switchButton">
-								<div style="width: 85px"><label id = "LBL_009">按分設定</label></div>
+							<div style="float: left; display: flex; margin-top: 5px"
+								data-bind="with: switchButton">
+								<div style="width: 85px">
+									<label id="LBL_009">按分設定</label>
+								</div>
 								<div id="SEL_003"
 									data-bind="ntsSwitchButton: {
 									options: distributeSet,
@@ -179,18 +193,20 @@
 							<div class="clsDivRange">
 								<label id="LBL_010" class="clsLbl_010">上限チェック</label>
 								<div id="checkBoxErrRangeHigh"
-										data-bind="ntsCheckBox: { checked: checkUseHighError, text: 'エラー'}"
-										class="cf clsCheckbox"></div>
+									data-bind="ntsCheckBox: { checked: checkUseHighError, text: 'エラー'}"
+									class="cf clsCheckbox"></div>
 								<div style="display: flex">
-									<input style="float: left; margin-left: 9px;"  id="INP_002" data-bind="ntsNumberEditor: {
+									<input style="float: left; margin-left: 9px;" id="INP_002"
+										data-bind="ntsNumberEditor: {
 										value: errRangeHigh,
 										constraint: '',
 										enable: checkUseHighError,
 										option: (new nts.uk.ui.option.CurrencyEditorOption({grouplength: 4, decimallength: 2, currencyformat: 'USD', currencyposition: 'left'})),
 									}"
-									type="text" />　</div>
-								<label id="LBL_011">　　　　を超える場合</label>
-							</div>	
+										type="text" />
+								</div>
+								<label id="LBL_011"> を超える場合</label>
+							</div>
 							<br />
 							<div style="width: 500px">
 								<div class="clsDivRangeSlow">
@@ -199,14 +215,16 @@
 										class="cf clsCheckbox"></div>
 								</div>
 								<div class="clsInp">
-									<input style="float: left; margin-left: 9px;"  id="INP_003" data-bind="ntsNumberEditor: {
+									<input style="float: left; margin-left: 9px;" id="INP_003"
+										data-bind="ntsNumberEditor: {
 										value: alamRangeHigh,
 										constraint: '',
 										enable: checkUseHighAlam,
 										option: (new nts.uk.ui.option.CurrencyEditorOption({grouplength: 4, decimallength: 2, currencyformat: 'USD', currencyposition: 'left'})),
 									}"
-									type="text" /></div>
-								<label id = "LBL_012">　　　　　を超える場合</label>
+										type="text" />
+								</div>
+								<label id="LBL_012"> を超える場合</label>
 							</div>
 						</div>
 						<br /> <br />
@@ -218,42 +236,46 @@
 									data-bind="ntsCheckBox: { checked: checkUseLowError, text: 'エラー'}"
 									class="cf clsCheckbox"></div>
 								<div style="display: flex">
-									<input style="float: left; margin-left: 9px;"  id="INP_004" data-bind="ntsNumberEditor: {
+									<input style="float: left; margin-left: 9px;" id="INP_004"
+										data-bind="ntsNumberEditor: {
 										value: errRangeLow,
 										constraint: '',
 										enable: checkUseLowError,
 										option: (new nts.uk.ui.option.CurrencyEditorOption({grouplength: 4, decimallength: 2, currencyformat: 'USD', currencyposition: 'left'})),
 									}"
-									type="text" /></div>
-									<label id="LBL_014">　　　　　未満の場合</label>
+										type="text" />
+								</div>
+								<label id="LBL_014"> 未満の場合</label>
 							</div>
 							<br />
 							<div>
 								<div class="clsDivRangeSlow">
 									<div id="checkBoxAlRangeHigh"
-									data-bind="ntsCheckBox: { checked: checkUseLowAlam, text: 'アラーム'}"
-									class="cf clsCheckbox"></div>
+										data-bind="ntsCheckBox: { checked: checkUseLowAlam, text: 'アラーム'}"
+										class="cf clsCheckbox"></div>
 								</div>
 								<div class="clsInp">
-									<input style="float: left; margin-left: 9px;"  id="INP_005" data-bind="ntsNumberEditor: {
+									<input style="float: left; margin-left: 9px;" id="INP_005"
+										data-bind="ntsNumberEditor: {
 										value: alamRangeLow,
 										constraint: '',
 										enable: checkUseLowAlam,
 										option: (new nts.uk.ui.option.CurrencyEditorOption({grouplength: 4, decimallength: 2, currencyformat: 'USD', currencyposition: 'left'})),
 									}"
-									type="text" />
+										type="text" />
 								</div>
-								<label id="LBL_015">　　　　　未満の場合</label>
-							</div>	
-							
+								<label id="LBL_015"> 未満の場合</label>
+							</div>
+
 						</div>
-						<br /> <br /> <br /> <span>※エラーの場合は、データ登録されません。</span>
-						<br /><span style="margin-left: 15px;">アラームの場合は、メッセージが表示されます。（データは登録されます）
+						<br /> <br /> <br /> <span>※エラーの場合は、データ登録されません。</span> <br />
+						<span style="margin-left: 15px;">アラームの場合は、メッセージが表示されます。（データは登録されます）
 						</span>
 					</div>
 					<hr />
-					<button data-bind="click: returnBackData, enable: $root.errors.isEmpty" style="margin-left: 50px"
-						class="x-large proceed">設定</button>
+					<button
+						data-bind="click: returnBackData, enable: $root.errors.isEmpty"
+						style="margin-left: 50px" class="x-large proceed">設定</button>
 					<button data-bind="click: close" style="margin-left: 15px">キャンセル</button>
 				</div>
 			</div>

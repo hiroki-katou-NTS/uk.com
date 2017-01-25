@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+<com:scriptfile set="IGNITE" />
+<com:scriptfile path="viewmodel.js" />
+<com:scriptfile path="start.js" />
+<com:scriptfile path="service.js" />
+<com:stylefile path="style.css" />
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<!-- Template region -->
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.layout.LayoutName
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="style.css" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="divLine">
+				<div class="divLineCol1">
+					<div id="E_LBL_001" data-bind="ntsFormLabel: {  required: true }">課税</div>
+				</div>
+				<div class="divLineCol2">
+					<div id="E_SEL_001" class="cf switchNomalSize"
+						data-bind="ntsSwitchButton: {
+										options: roundingRules_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_002,
+										enable: enable }"></div>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1">
+					<div id="E_LBL_002" data-bind="ntsFormLabel: {  required: true }">課税</div>
+				</div>
+				<div class="divLineCol2">
+					<div id="E_SEL_002" class="cf switchNomalSize"
+						data-bind="ntsSwitchButton: {
+										options: roundingRules_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_002,
+										enable: enable }"></div>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1">
+					<div id="E_LBL_003" data-bind="ntsFormLabel: {  required: false }">限度金額</div>
+				</div>
+				<div class="divLineCol2">
+					<div id="E_SEL_003" class="cf switchNomalSize"
+						data-bind="ntsSwitchButton: {
+										options: roundingRules_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_002,
+										enable: enable }"></div>
+					<div id="E_SEL_004"
+						data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1">
+					<div id="E_LBL_004" data-bind="ntsFormLabel: {  required: false }">社会保険区分</div>
+				</div>
+				<div class="divLineCol2">
+					<div id="E_SEL_005"
+						data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+					<div id="E_INP_001" data-bind="with: currencyeditor">
+						<input
+							data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+					</div>
+					<label id="E_LBL_005">月給者 </label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1"></div>
+				<div class="divLineCol2">
+					<div id="E_SEL_006"
+						data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+					<div id="E_INP_002" data-bind="with: currencyeditor">
+						<input
+							data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+					</div>
+					<label id="E_LBL_006">月給者 </label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1">
+					<div id="E_LBL_007" data-bind="ntsFormLabel: {  required: false }">固定的賃金</div>
+				</div>
+				<div class="divLineCol2 verticalAlignBottom">
+					<div id="E_SEL_007"
+						data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+					<div id="E_INP_003" data-bind="with: currencyeditor">
+						<input
+							data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+					</div>
+					<label id="E_LBL_008">月給者 </label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1"></div>
+				<div class="divLineCol2">
+					<div id="E_SEL_008"
+						data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+					<div id="E_INP_004" data-bind="with: currencyeditor">
+						<input
+							data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+					</div>
+					<label id="E_LBL_009">月給者 </label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1"></div>
+				<div class="divLineCol2">
+					<label id="E_LBL_010"> ナビゲーションメッセージ1 <br />ナビゲーションメッセージ1
+					</label>
+
+				</div>
+
+			</div>
+			<div class="divLine">
+				<div class="divLineCol1 verticalAlignTop">
+					<div id="E_LBL_011" data-bind="ntsFormLabel: {  required: false }">備考</div>
+				</div>
+				<div class="divLineCol2">
+					<TEXTAREA id="E_INP_005" rows="5" cols="40"
+						data-bind="value: textArea"></TEXTAREA>
+				</div>
+
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

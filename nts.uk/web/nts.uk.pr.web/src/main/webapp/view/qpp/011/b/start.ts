@@ -22,8 +22,8 @@ __viewContext.ready(function() {
             var self = this;
             //start radiogroup data
             self.RadioItemList = ko.observableArray([
-                new BoxModel(1, '本社'),
-                new BoxModel(2, '法定調書出力用会社')
+                new BoxModel(1, '譛ｬ遉ｾ'),
+                new BoxModel(2, '豕募ｮ夊ｪｿ譖ｸ蜃ｺ蜉帷畑莨夂､ｾ')
             ]);
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
@@ -41,25 +41,25 @@ __viewContext.ready(function() {
             //end combobox data
             // start gridlist
             this.items = ko.observableArray([
-                new GridItemModel('001', '蝓ｺ譛ｬ邨ｦ'),
-                new GridItemModel('150', '蠖ｹ閨ｷ謇句ｽ�'),
-                new GridItemModel('ABC', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC1', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC2', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC3', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC4', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC5', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC6', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC7', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC8', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC9', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC10', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC11', '蝓ｺ12譛ｬghj邨ｦ'),
-                new GridItemModel('ABC12', '蝓ｺ12譛ｬghj邨ｦ')
+                new GridItemModel('001', '陜難ｽｺ隴幢ｽｬ驍ｨ�ｽｦ'),
+                new GridItemModel('150', '陟厄ｽｹ髢ｨ�ｽｷ隰�蜿･�ｽｽ�ｿｽ'),
+                new GridItemModel('ABC', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC1', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC2', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC3', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC4', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC5', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC6', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC7', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC8', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC9', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC10', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC11', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ'),
+                new GridItemModel('ABC12', '陜難ｽｺ12隴幢ｽｬghj驍ｨ�ｽｦ')
             ]);
             this.columns = ko.observableArray([
-                { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 100 },
-                { headerText: '蜷咲ｧｰ', prop: 'name', width: 150 }
+                { headerText: '郢ｧ�ｽｳ郢晢ｽｼ郢晢ｿｽ', prop: 'code', width: 100 },
+                { headerText: '陷ｷ蜥ｲ�ｽｧ�ｽｰ', prop: 'name', width: 150 }
             ]);
             this.gridListCurrentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
@@ -80,6 +80,7 @@ __viewContext.ready(function() {
                 readonly: ko.observable(false)
             }
             //end number editer
+            
         }
     class BoxModel {
         id: number;

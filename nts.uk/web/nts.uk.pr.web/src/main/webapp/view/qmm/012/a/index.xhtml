@@ -20,10 +20,15 @@
 				<div style="margin-top: 20px;">
 					<div class="floatLeft">
 						<label id="A_LBL_002" class="displayBlock">ナビゲーションメッセージ２</label>
-						<button id="A_BTN_001" class="proceed displayBlock">支給項目ボタン
-						</button>
+						<div id="A_SEL_001" class="cf" data-bind="ntsSwitchButton: {
+							options: roundingRules,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedRuleCode,
+							enable: enable }"></div>
+						<!-- <button id="A_BTN_001" class="proceed displayBlock">支給項目ボタン</button>
 						<button id="A_BTN_002" class="displayBlock">支給項目ボタン</button>
-						<button id="A_BTN_003" class="displayBlock">支給項目ボタン</button>
+						<button id="A_BTN_003" class="displayBlock">支給項目ボタン</button> -->
 					</div>
 					<div
 						style="margin-left: 20px; background-color: #f2f2f2; border-radius: 5px; height: 290px; width: 350px;"
@@ -35,8 +40,8 @@
 				</div>
 			</div>
 			<div id="contents-area">
-				<button id="A_BTN_004" class="x-large proceed">選択ボタン</button>
-				<button id="A_BTN_005" class="large">キャンセルボタン</button>
+				<button id="A_BTN_004" class="x-large proceed" onclick="submitInfo()">選択ボタン</button>
+				<button id="A_BTN_005" class="large" onclick="closeDialog()">キャンセルボタン</button>
 			</div>
 		</ui:define>
 	</ui:composition>
