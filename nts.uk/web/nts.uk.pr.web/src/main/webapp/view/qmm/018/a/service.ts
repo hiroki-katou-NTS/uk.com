@@ -1,12 +1,12 @@
 module qmm018.a.service {
     var paths: any = {
-        //getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall",
+        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall",
         saveData: "pr/core/avepay/register",
         updateData: "pr/core/avepay/update",
         removeData: "pr/core/avepay/remove"
     }
     
-    /*
+    
     export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.getPaymentDateProcessingList)
@@ -18,7 +18,7 @@ module qmm018.a.service {
             })
         return dfd.promise();
     }
-    */
+    
     
     export function saveData(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();

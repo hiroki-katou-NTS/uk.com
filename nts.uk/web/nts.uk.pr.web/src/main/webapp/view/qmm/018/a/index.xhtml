@@ -19,7 +19,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click : removeData">登録</button>
+					<button class="proceed short-button" data-bind="click : updateData">登録</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
@@ -99,7 +99,7 @@
 								<span data-bind="with: texteditor2">
 									<input data-bind="ntsTextEditor: {
 										value: value,
-										constraint: constraint,
+										constraint: 'ExceptionPayRate',
 										option: option,
 										required: required,
 										enable: enable,

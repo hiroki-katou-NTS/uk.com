@@ -8,13 +8,14 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="QAPMT_AVE_PAY")
-public class QapmtAvePay {
+public class QapmtAvePay extends TableEntity{
 	@Id
 	@Column(name="CCD")
 	public String companyCode;
@@ -30,6 +31,31 @@ public class QapmtAvePay {
 	
 	@Column(name="EXCEPTION_PAY_RATE")
 	public int exceptionPayRate;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyCode == null) ? 0 : companyCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QapmtAvePay other = (QapmtAvePay) obj;
+		if (companyCode == null) {
+			if (other.companyCode != null)
+				return false;
+		} else if (!companyCode.equals(other.companyCode))
+			return false;
+		return true;
+	}
 
 /*
 @Data

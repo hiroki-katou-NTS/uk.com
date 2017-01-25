@@ -59,20 +59,15 @@ var qmm018;
                         readonly: ko.observable(false)
                     };
                 }
-                /*
-                startPage(): JQueryPromise<any> {
+                ScreenModel.prototype.startPage = function () {
                     var self = this;
-        
                     var dfd = $.Deferred();
-                    qmm018.a.service.getPaymentDateProcessingList().done(function(data) {
-                        self.paymentDateProcessingList(data);
+                    qmm018.a.service.getPaymentDateProcessingList().done(function (data) {
                         dfd.resolve();
-                    }).fail(function(res) {
-        
+                    }).fail(function (res) {
                     });
                     return dfd.promise();
-                }
-                */
+                };
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
                     var dfd = $.Deferred();

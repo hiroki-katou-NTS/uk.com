@@ -1,6 +1,6 @@
 module qmm018.a.viewmodel {
     export class ScreenModel {
-        //paymentDateProcessingList: KnockoutObservableArray<any>;
+        paymentDateProcessingList: KnockoutObservableArray<any>;
         //selectedPaymentDate: KnockoutObservable<any>
         checked: KnockoutObservable<boolean>;
         roundingRules: KnockoutObservableArray<any>;
@@ -63,20 +63,19 @@ module qmm018.a.viewmodel {
             
         }
         
-        /*
+        
         startPage(): JQueryPromise<any> {
             var self = this;
 
             var dfd = $.Deferred();
             qmm018.a.service.getPaymentDateProcessingList().done(function(data) {
-                self.paymentDateProcessingList(data);
                 dfd.resolve();
             }).fail(function(res) {
 
             });
             return dfd.promise();
         }
-        */
+        
         
         saveData(){
             var self = this;
