@@ -2,6 +2,7 @@ module qpp008.g.viewmodel {
     export class ScreenModel {
         paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymentDate: KnockoutObservable<any>;
+        firstLoad: KnockoutObservable<boolean>;
         /*checkBox*/
         checked: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
@@ -25,6 +26,7 @@ module qpp008.g.viewmodel {
                 { code: '3', name: '確認済み' }
             ]);
             /*iggrid*/
+            self.firstLoad = ko.observable(true);
             var _isDataBound = false;
             var _checkAll = false;
             var _checkAllValue = false;
@@ -39,7 +41,7 @@ module qpp008.g.viewmodel {
                 if (_checkAll) {
                     //                    return true;
                 } else if (_isDataBound === false) {
-                    _isDataBound = true;
+                    _isDataBound = false;
                 } else {
                     return;
                 }
@@ -51,34 +53,82 @@ module qpp008.g.viewmodel {
 
                 for (i = 0; i < dataLength; i++) {
                     if (_checkAll) {
-                        if (data[i]["UnitPrice"] * data[i]["UnitsInStock"] < 15000) {
+                        if (data[i]["UnitPrice"] < 100 || data[i]["UnitPrice"] > 270) {
                             data[i]["IsPromotion"] = _checkAllValue;
                         }
-                    } else if (data[i]["UnitPrice"] * data[i]["UnitsInStock"] < 15000) {
-                        data[i]["IsPromotion"] = true;
                     }
-                    else {
-                        data[i]["IsPromotion"] = false;
+                    else if (self.firstLoad()) {
+                        if (data[i]["UnitPrice"] < 100 || data[i]["UnitPrice"] > 270) {
+                            data[i]["IsPromotion"] = true;
+                        }
+                        //                    else {
+                        //                        data[i]["IsPromotion"] = false;
+                        //                    }
                     }
+
+                    //                _checkAll = false;
                 }
-                _checkAll = false;
+                self.firstLoad = ko.observable(false);
+            });
+            //Bind after initialization  
+//            $(document).delegate("#grid10", "iggridupdatingeditcellstarted", function(evt, ui) {
+//                alert(ui.columnIndex);
+//            };
+            $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function(evt, ui) {
+                var $cell = $($("#grid10").igGrid("cellById", ui.rowID, "UnitPrice"));
+                //var $cell1 = $($("#grid10").igGrid("cellAt", 4, ui.rowID));
+                if (!($cell.hasClass("red") || $cell.hasClass("yellow"))) {
+                    return false;
+
+                }
+                //return the triggered event
+                evt;
+
+                // get reference to igGridUpdating widget
+                ui.owner;
+
+                // to get key or index of row
+                ui.rowID;
+
+                // check if that event is raised while new-row-adding
+                ui.rowAdding;
+            });
+            //change color by delegate
+            $(document).delegate("#grid10", "iggriddatarendered", function(evt, ui) {
+                //var x = _.find($(event.target).find(".ui-iggrid-modifiedrecord").children(), function(cell) { return $(cell).attr("aria-describedby").indexOf("UnitPrice") >= 0 })
+                _.forEach(ui.owner.dataSource.dataView(), function(item, index) {
+                    if (item["UnitPrice"] > 270) {
+                        var cell1 = $("#grid10").igGrid("cellById", item["ProductID"], "UnitPrice");
+                        $(cell1).addClass('red').attr('data-class', 'red');
+                        $(window).on('resize', () => { $(cell1).addClass('red'); });
+                        //item["IsPromotion"] = true;
+                    } else if (item["UnitPrice"] < 100) {
+                        var cell1 = $("#grid10").igGrid("cellById", item["ProductID"], "UnitPrice");
+                        $(cell1).addClass('yellow').attr('data-class', 'yellow');
+                        $(window).on('resize', () => { $(cell1).addClass('yellow'); });
+                        
+                       //item["IsPromotion"] = true;
+                    } else {
+                        //item["IsPromotion"] = false;
+                    }
+                });
             });
 
-            $("#grid10").on("iggridupdatingeditrowended", function(event, ui) {
-                var unitPrice = ui.values["UnitPrice"];
-                var unitsInStock = ui.values["UnitsInStock"];
-                var totalValue = (unitPrice * unitsInStock) || ui.values["Total"];
-                var x = _.find($(event.target).find(".ui-iggrid-modifiedrecord").children(), function(cell) { return $(cell).attr("aria-describedby").indexOf("UnitPrice") >= 0 })
-                $(x).css("backgroundColor": "red");
-                //                $("#grid10").igGridUpdating("setCellValue", ui.rowID, "Total", totalValue);
-
-                if (totalValue < 1000) {
-                    $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", true);
-                }
-                else {
-                    $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", false);
-                }
-            });
+//            $("#grid10").on("iggridupdatingeditrowended", function(event, ui) {
+//                if (ui.update) {
+//
+//                    var unitPrice = ui.values["UnitPrice"];
+//                    var unitsInStock = ui.values["UnitsInStock"];
+//                    var totalValue = (unitPrice * unitsInStock) || ui.values["Total"];
+//
+//                    if (totalValue < 1000) {
+//                        $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", true);
+//                    }
+//                    else {
+//                        $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", false);
+//                    }
+//                }
+//            });
 
             //instantiation
             var iggridData = [];
@@ -129,6 +179,17 @@ module qpp008.g.viewmodel {
                     {
                         name: "Paging",
                         type: "local",
+                        pageIndexChanged: function(evt, ui) {
+                            //                            _.forEach(ui.owner.grid.dataSource.data(), function(item, cellId) {
+                            //                                if (item["UnitPrice"] > 270) {
+                            //                                    var cell = $("#grid10").igGrid("cellById", 3, cellId);
+                            //                                    $(cell).addClass('red');
+                            //                                } else if (item["UnitPrice"] < 100) {
+                            //                                    var cell1 = $("#grid10").igGrid("cellById", 3, cellId);
+                            //                                    $(cell1).css("background-color", "yellow");
+                            //                                }
+                            //                            });
+                        },
                         pageSize: 20
                     },
                     {
@@ -147,23 +208,32 @@ module qpp008.g.viewmodel {
                                 readOnly: true
                             },
                             {
+                                columnKey: "ProductName",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "UnitsInStock",
+                                readOnly: true
+                            },
+                            {
+                                columnKey: "UnitPrice",
+                                readOnly: true
+                            },
+                            {
                                 columnKey: "IsPromotion",
                                 editorType: "checkbox",
                                 readOnly: false
 
                             },
                             {
-                                columnKey: "UnitsInStock",
-                                required: true
-                            },
-                            {
                                 columnKey: "UnitPrice",
-                                required: true
+                                readOnly: true
                             }
                         ]
                     }
                 ]
             });
+            //checkBox
             $("#cb1").on("click", function(event, ui) {
                 var value = $(this).is(":checked");
                 _checkAll = true;

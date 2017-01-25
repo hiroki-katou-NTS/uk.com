@@ -1,4 +1,5 @@
 .function-area button{
+	za	a	s65`	Q2 -
 	margin-left: 40px;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -49,4 +50,13 @@
 }
 .switchButton{
 	margin-left: 35px;
+}
+.red {
+    background-color: red !important;
+}
+.blue{
+	background-color: 33CC66 !important;
+}
+.yellow{
+	background-color: yellow;
 }
