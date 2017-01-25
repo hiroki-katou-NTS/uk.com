@@ -1,6 +1,5 @@
 module qmm002.d.viewmodel {
     export class ScreenModel {
-        paymentDateProcessingList: KnockoutObservableArray<any>;
         selectedPaymentDate: KnockoutObservable<any>;
         items: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -15,7 +14,6 @@ module qmm002.d.viewmodel {
 
         constructor() {
             var self = this;
-            self.paymentDateProcessingList = ko.observableArray([]);
             self.items = ko.observableArray([]);
             self.currentItem = ko.observable(new Bank("", "", "", ""));
             self.currentCode = ko.observable();
@@ -38,7 +36,6 @@ module qmm002.d.viewmodel {
             var dfd = $.Deferred();
             
             self.getBankList().done(function(data){
-                debugger
                 var hadData = self.isEmptyList(data);
                 self.isCreated(!hadData);
                 if (hadData) {
@@ -83,6 +80,7 @@ module qmm002.d.viewmodel {
                 memo: self.currentItem().memo()
             };
             
+            self.cleanForm();
             var dfd = $.Deferred();
             qmm002.d.service.removeBank(bankInfo).done(function() {
                 dfd.resolve();                
