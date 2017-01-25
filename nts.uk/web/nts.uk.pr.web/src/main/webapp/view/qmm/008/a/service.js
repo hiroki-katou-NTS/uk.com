@@ -13,10 +13,10 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                getListOfficeItem: "",
-                                getAllRoundingItem: "",
-                                getHealthInsuranceItemDetail: "",
-                                getPensionItemDetail: ""
+                                getListOfficeItem: "list/office",
+                                getAllRoundingItem: "list/rounding",
+                                getHealthInsuranceItemDetail: "health/list",
+                                getPensionItemDetail: "pension/list"
                             };
                             function findInsuranceOffice(key) {
                                 var dfd = $.Deferred();

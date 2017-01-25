@@ -4,37 +4,29 @@ module nts.uk.pr.view.qmm008.b {
         export class ScreenModel {
             getInsuranceOfficeItemDto : KnockoutObservable<InsuranceOfficeItemDto>;
             returnInsuranceOfficeItemDto: KnockoutObservable<InsuranceOfficeItemDto>;
-            modalValue: KnockoutObservable<string>;
             isTransistReturnData: KnockoutObservable<boolean>;
 
             // for group radio button
             listOptions: KnockoutObservableArray<any>;
             selectedValue: KnockoutObservable<any>;
             //for input 
-            inp_001: any;
             officeCodeName: KnockoutObservable<string>;
+            addDate: KnockoutObservable<string>;
             constructor(recivedVal: any) {
                 var self = this;
                 self.getInsuranceOfficeItemDto = ko.observable(recivedVal);
                 self.returnInsuranceOfficeItemDto = ko.observable(null);
+                
+                //select options 
                 self.listOptions = ko.observableArray([new optionsModel(1, "最新の履歴(2016/04)から引き継ぐ"), new optionsModel(2, "初めから作成する")]);
+                
                 self.selectedValue = ko.observable(new optionsModel(1, ""));
 
-                self.modalValue = ko.observable("Goodbye world!");
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
                 // Reset child value
                 //            nts.uk.ui.windows.setShared("childValue", null);
-                self.inp_001 = {
-                value: ko.observable('2016/04'),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    width: "100",
-                    textalign: "center"
-                })),
-                required: ko.observable(false),
-            };
-                this.officeCodeName= ko.observable(recivedVal.code + " " +recivedVal.name );
+                self.officeCodeName= ko.observable(recivedVal.code + " " +recivedVal.name );
+                self.addDate = ko.observable('2016/04');
             }
 
 

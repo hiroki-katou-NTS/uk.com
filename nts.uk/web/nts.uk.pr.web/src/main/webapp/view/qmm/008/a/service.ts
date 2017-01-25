@@ -4,10 +4,10 @@ module nts.uk.pr.view.qmm008.a {
 
         // Service paths.
         var servicePath = {
-            getListOfficeItem: "",
-            getAllRoundingItem: "",
-            getHealthInsuranceItemDetail:"",
-            getPensionItemDetail:""
+            getListOfficeItem: "list/office",
+            getAllRoundingItem: "list/rounding",
+            getHealthInsuranceItemDetail:"health/list",
+            getPensionItemDetail:"pension/list"
         };
         /**
          * Function is used to load all InsuranceOfficeItem by key.
