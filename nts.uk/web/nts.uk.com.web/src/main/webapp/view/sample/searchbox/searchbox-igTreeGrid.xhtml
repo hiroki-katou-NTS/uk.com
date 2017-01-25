@@ -13,17 +13,8 @@
 				
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="igTree.js" />
-				<com:scriptfile path="../catalog/catalog.js" />
-				<style>
-					.links {
-						color: green !important;
-						font-weight: bold;
-					}
-					#tree ul {
-						list-style-type: none !important;
-					}
-				</style>
+				<com:scriptfile path="igTreeGrid.js" />
+				<com:scriptfile path="../catalog/catalog.js" />				
 			</ui:define>
 			
 			<ui:define name="content">
@@ -31,21 +22,20 @@
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
 						<h1>SearchBox Sample</h1>
-						Version: with igTree					
+						Version: with igTreeGrid					
 						<h2>Overview</h2>
 						<div class="cf">
 							<div>	
 								<h3>Multi Selection</h3>																				
-								<div style="width: 700px" data-bind="ntsSearchBox: {mode: 'igTree', comId: 'tree', items: dataSource, selected: selectedValue, selectedKey: 'value', fields: ['text'], childField: 'childs'}" />							
-								<div id="tree" class="cf"></div>
+								<div style="width: 700px" data-bind="ntsSearchBox: {comId: 'treegrid', items: dataSource, selected: selectedValue, selectedKey: 'code', fields: ['name', 'code'], childField: 'childs'}" />
+								<br/>							
+								<table id="treegrid" class="cf"></table>
 								<br />
 							</div>	
 
 							<div>
 								selectedValue: <span data-bind="text: selectedValue"></span>
-								<br/><br/>
-								checkedValues: <span data-bind="text: checkedValues"></span><br/><br/>
-								If use checkedValues (multi mode), let replace above 'selected' options of SearchBox to 'checkedValues'
+								<br/><br/>							
 							</div>			
 						</div>					
 					</div>
