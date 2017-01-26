@@ -12,6 +12,8 @@
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -20,7 +22,8 @@
 				<div style="margin-top: 20px;">
 					<div class="floatLeft">
 						<label id="A_LBL_002" class="displayBlock">ナビゲーションメッセージ２</label>
-						<div id="A_SEL_001" class="cf" data-bind="ntsSwitchButton: {
+						<div id="A_SEL_001" class="cf"
+							data-bind="ntsSwitchButton: {
 							options: roundingRules,
 							optionsValue: 'code',
 							optionsText: 'name',
@@ -40,8 +43,9 @@
 				</div>
 			</div>
 			<div id="contents-area">
-				<button id="A_BTN_004" class="x-large proceed" onclick="submitInfo()">選択ボタン</button>
-				<button id="A_BTN_005" class="large" onclick="closeDialog()">キャンセルボタン</button>
+				<button id="A_BTN_004" class="x-large proceed"
+					data-bind="click: submitInfo">選択ボタン</button>
+				<button id="A_BTN_005" class="large" data-bind="click: closeDialog">キャンセルボタン</button>
 			</div>
 		</ui:define>
 	</ui:composition>

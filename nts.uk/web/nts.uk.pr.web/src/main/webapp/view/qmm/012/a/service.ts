@@ -1,7 +1,4 @@
-module qmm012.b {
+module qmm012.a {
     export module service {
     }
 }
-
-
-
