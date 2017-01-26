@@ -65,6 +65,19 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            // NumberEditor
+            self.numbereditor2 = {
+                value: ko.observable(12),
+                constraint: '',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3,
+                    decimallength: 2,
+                    symbolChar: '%',
+                    symbolPosition: 'right' })),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
             // CurrencyEditor
             self.currencyeditor = {
                 value: ko.observable(1200),
