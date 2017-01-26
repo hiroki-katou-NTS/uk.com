@@ -19,11 +19,6 @@ var nts;
                 return result;
             }
             time_1.formatYearMonth = formatYearMonth;
-            function getYearMonthJapan(year, month) {
-                if (month)
-                    return year + "年 " + month + " 月";
-                return year;
-            }
             var JapanYearMonth = (function () {
                 function JapanYearMonth(empire, year, month) {
                     this.empire = empire;
