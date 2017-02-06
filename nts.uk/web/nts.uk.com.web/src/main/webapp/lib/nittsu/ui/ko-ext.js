@@ -20,11 +20,9 @@ var nts;
                         var setValue = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
-                        var atomWidth = 9;
-                        //9 * 160 = 1440 max width, TextEditor shouldnt reach this width
-                        // need to consider more
-                        if (constraint && constraint.maxLength) {
-                            var autoWidth = constraint.maxLength <= 160 ? constraint.maxLength * atomWidth : "100%";
+                        var characterWidth = 9;
+                        if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                            var autoWidth = constraint.maxLength * characterWidth;
                             $input.width(autoWidth);
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
