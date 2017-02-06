@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 
 import nts.uk.ctx.pr.core.app.command.insurance.social.health.RegisterHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.command.insurance.social.health.RegisterHealthInsuranceCommandHandler;
-import nts.uk.ctx.pr.core.app.finder.healthinsurance.dto.HealthInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.find.insurance.social.healthrate.HealthInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 public class HealthInsuranceService {

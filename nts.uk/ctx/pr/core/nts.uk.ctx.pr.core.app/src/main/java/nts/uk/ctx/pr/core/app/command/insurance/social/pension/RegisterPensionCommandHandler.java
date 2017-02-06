@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.app.finder.pension.dto.PensionRateDto;
+import nts.uk.ctx.pr.core.app.find.insurance.social.pensionrate.PensionRateDto;
 import nts.uk.ctx.pr.core.app.service.pension.PensionService;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;

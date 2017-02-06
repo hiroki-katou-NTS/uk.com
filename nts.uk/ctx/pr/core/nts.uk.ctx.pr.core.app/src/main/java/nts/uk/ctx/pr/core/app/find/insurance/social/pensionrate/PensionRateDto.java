@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.finder.pension.dto;
+package nts.uk.ctx.pr.core.app.find.insurance.social.pensionrate;
 
 import java.util.List;
 

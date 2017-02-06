@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.finder.healthinsurance.dto;
+package nts.uk.ctx.pr.core.app.find.insurance.social.healthrate;
 
 import java.util.List;
 
@@ -7,16 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.PicName;
-import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
-import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
-import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.shr.com.primitive.Memo;
 
 @Builder
 @Data
