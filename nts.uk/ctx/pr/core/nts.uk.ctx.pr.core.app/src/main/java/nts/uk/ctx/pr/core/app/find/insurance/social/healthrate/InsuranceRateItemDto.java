@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.finder.healthinsurance.dto;
+package nts.uk.ctx.pr.core.app.find.insurance.social.healthrate;
 
 import lombok.Builder;
 import lombok.Data;

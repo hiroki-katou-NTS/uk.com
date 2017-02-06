@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.finder.socialoffice.dto;
+package nts.uk.ctx.pr.core.app.find.insurance.social;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,7 +58,6 @@ public class SocialInsuranceOfficeDto {
 	private KanaAddress kanaAddress2nd;
 
 	/** The phone number. */
-	// TODO: TelephoneNo
 	private String phoneNumber;
 
 	/** The health insu office ref code 1 st. */

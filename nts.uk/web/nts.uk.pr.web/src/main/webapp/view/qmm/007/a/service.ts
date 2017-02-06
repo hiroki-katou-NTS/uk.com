@@ -15,11 +15,11 @@ module nts.uk.pr.view.qmm007.a {
         /**
          *  Find all UnitPriceHistory
          */
-        export function getUnitPriceHistoryList(): JQueryPromise<Array<UnitPriceHistoryDto>> {
+        export function getUnitPriceHistoryList(): JQueryPromise<Array<model.UnitPriceHistoryDto>> {
             var dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.getUnitPriceHistoryList)
                 .done(res => {
-                    dfd.resolve(convertToTreeList(res));
+                    dfd.resolve(res);
                 })
                 .fail(res => {
                     dfd.reject(res);
@@ -46,16 +46,14 @@ module nts.uk.pr.view.qmm007.a {
          *  Create UnitPriceHistory
          */
         export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = unitPriceHistory;
-            return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
+            return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory);
         }
 
         /**
          *  Update UnitPriceHistory
          */
         export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            var data = unitPriceHistory;
-            return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
+            return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory);
         }
 
         /**
@@ -64,31 +62,6 @@ module nts.uk.pr.view.qmm007.a {
         export function remove(id: string, version: number): JQueryPromise<any> {
             var request = { id: id, version: version };
             return nts.uk.request.ajax(paths.removeUnitPriceHistory, request);
-        }
-
-        /**
-         * Convert list from dto to treegrid
-         */
-        function convertToTreeList(unitPriceHistoryList: Array<UnitPriceHistoryDto>): Array<UnitPriceHistoryNode> {
-            var groupByCode = {};
-
-            // group by unit price code
-            unitPriceHistoryList.forEach(item => {
-                var c = item.unitPriceCode;
-                groupByCode[c] = item;
-            });
-            // convert groupByCode to array
-            var arr = Object.keys(groupByCode).map(key => groupByCode[key]);
-
-            // convert to tree node
-            var parentNodes = arr.map(item => new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, false, []));
-            var childNodes = unitPriceHistoryList.map(item => new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true));
-
-            var treeList: Array<UnitPriceHistoryNode> = parentNodes.map(parent => {
-                childNodes.forEach(child => parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''));
-                return parent;
-            });
-            return treeList;
         }
 
         /**
@@ -133,35 +106,6 @@ module nts.uk.pr.view.qmm007.a {
                 fixPayAtrHourly: string;
                 memo: string;
             }
-
-            export class UnitPriceHistoryNode {
-                id: string
-                unitPriceCode: string;
-                unitPriceName: string;
-                startMonth: string;
-                endMonth: string;
-                nodeText: string;
-                isChild: boolean;
-                childs: Array<UnitPriceHistoryNode>;
-                constructor(id: string,
-                    unitPriceCode: string,
-                    unitPriceName: string,
-                    startMonth: string,
-                    endMonth: string,
-                    isChild: boolean,
-                    childs?: Array<UnitPriceHistoryNode>) {
-                    var self = this;
-                    self.isChild = isChild;
-                    self.unitPriceCode = unitPriceCode;
-                    self.unitPriceName = unitPriceName;
-                    self.startMonth = startMonth;
-                    self.endMonth = endMonth;
-                    self.id = self.isChild == true ? id : id + id;
-                    self.childs = childs;
-                    self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
-                }
-            }
-
         }
     }
 }
