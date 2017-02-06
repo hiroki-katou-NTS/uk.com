@@ -23,8 +23,6 @@ import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
 import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommandHandler;
 import nts.uk.ctx.pr.core.app.finder.socialoffice.dto.SocialInsuranceOfficeDto;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
 
 /**
  * The Class SocialInsuranceOfficeService.
@@ -49,16 +47,16 @@ public class SocialInsuranceOfficeService extends WebService {
 	public List<SocialInsuranceOfficeDto> findAll() {
 		List<SocialInsuranceOfficeDto> lstSocialInsuranceOfficeIn = new ArrayList<SocialInsuranceOfficeDto>();
 		SocialInsuranceOfficeDto socialInsuranceOffice001 = new SocialInsuranceOfficeDto();
-		socialInsuranceOffice001.setCode(new OfficeCode("000000000001"));
-		socialInsuranceOffice001.setName(new OfficeName("A事業所"));
+		socialInsuranceOffice001.setCode("000000000001");
+		socialInsuranceOffice001.setName("A 事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice001);
 		SocialInsuranceOfficeDto socialInsuranceOffice002 = new SocialInsuranceOfficeDto();
-		socialInsuranceOffice002.setCode(new OfficeCode("000000000002"));
-		socialInsuranceOffice002.setName(new OfficeName("B事業所"));
+		socialInsuranceOffice002.setCode("000000000002");
+		socialInsuranceOffice002.setName("BA 事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice002);
 		SocialInsuranceOfficeDto socialInsuranceOffice003 = new SocialInsuranceOfficeDto();
-		socialInsuranceOffice003.setCode(new OfficeCode("000000000003"));
-		socialInsuranceOffice003.setName(new OfficeName("C事業所"));
+		socialInsuranceOffice003.setCode("000000000003");
+		socialInsuranceOffice003.setName("CA 事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice003);
 		return lstSocialInsuranceOfficeIn;
 	}
@@ -97,6 +95,12 @@ public class SocialInsuranceOfficeService extends WebService {
 	public void removeOffice(DeleteSocialOfficeCommand command)
 	{
 		this.deleteSocialOfficeCommandHandler.handle(command);
+		return;
+	}
+	@POST
+	@Path("list/office")
+	public void listOffice()
+	{
 		return;
 	}
 	
