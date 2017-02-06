@@ -59,6 +59,9 @@
 	/* height: 400px; */
 	float: left;
 }
+.divRBt1>swapUpDown{
+	float: left;
+}
 .divRBt1Up{
 	height: 50px;
 }
@@ -103,5 +106,13 @@
 }
 .nts-left-content .icon-searchbox{
 	    margin: -5px -1px -4px -2px !important;
+}
+.upDown-container {
+    display: table-cell;
+    vertical-align: middle;
+    position: fixed;
+    top: 345px;
+    left: 893px;
+    width: 100px;
 }
 

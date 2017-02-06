@@ -104,17 +104,28 @@
 												<div id="D_LBL_002" class="D_LBL_1_2"
 													data-bind="ntsFormLabel: {}">表に追加した項目</div>
 											</div>
-											<div class="divRBt1Down"></div>
-											<div id="E_LST_001"
-												data-bind="ntsSwapList: {
-																			showSearchBox: true,
-																			height: 300,
-																			options: itemsSwap2,
-																			optionsValue: 'code',
-																			columns: columnsSwap2,
-																			value: currentCodeListSwap2
-																		}"
-												class=""></div>
+											<div class="divRBt1Down">
+												<div id="E_LST_001"
+													data-bind="ntsSwapList: {
+																				showSearchBox: true,
+																				height: 300,
+																				options: itemsSwap2,
+																				optionsValue: 'code',
+																				columns: columnsSwap2,
+																				value: currentCodeListSwap2
+																			}"
+													class=""></div>
+													<div id="swap-up-down"
+															data-bind="ntsUpDown: {
+																	targetSource: currentCodeListSwap2,
+																	primaryKey: 'code',
+																	comId: '#E_LST_001',
+																	type: 'swap',
+																	swapTarget: 'right'
+																}"
+															class="swapUpDown"></div>
+											</div>
+											
 										</div>
 										<div class="tab-content-3">
 											<div class="divRBt1Up">
