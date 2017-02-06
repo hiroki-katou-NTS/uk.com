@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.app.insurance.HistoryInfoDto;
 import nts.uk.ctx.core.app.insurance.command.ActionCommand;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -30,7 +31,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class UnemployeeInsuranceRateAddCommand {
 
 	/** The history info dto. */
-	private HistoryInfoDto historyInfoDto;
+	private UnemployeeInsuranceRateDto unemployeeInsuranceRate;
 
 	/** The comany code. */
 	private String comanyCode;
@@ -42,9 +43,10 @@ public class UnemployeeInsuranceRateAddCommand {
 	 */
 	public UnemployeeInsuranceRate toDomain() {
 		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate();
-		unemployeeInsuranceRate.setHistoryId(this.historyInfoDto.getHistoryId());
-		unemployeeInsuranceRate.setApplyRange(ActionCommand.convertMonthRange(this.historyInfoDto.getStartMonthRage(),
-				this.historyInfoDto.getEndMonthRage()));
+		unemployeeInsuranceRate.setHistoryId(this.unemployeeInsuranceRate.getHistoryInsurance().getHistoryId());
+		unemployeeInsuranceRate.setApplyRange(ActionCommand.convertMonthRange(
+				this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
+				this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
 		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.comanyCode));
 		unemployeeInsuranceRate.setRateItems(ActionCommand.defaultSetUnemployeeInsuranceRateItem());
 		return unemployeeInsuranceRate;

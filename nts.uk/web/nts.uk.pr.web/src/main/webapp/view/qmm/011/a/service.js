@@ -21,10 +21,36 @@ var nts;
                                 findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
                                 findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
                                 detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
+                                addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
+                                updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
                                 findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/findall",
                                 findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/find",
                                 detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/detail"
                             };
+                            function addUnemployeeInsuranceRate() {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.addUnemployeeInsuranceRate)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.addUnemployeeInsuranceRate = addUnemployeeInsuranceRate;
+                            function updateUnemployeeInsuranceRate() {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.updateUnemployeeInsuranceRate = updateUnemployeeInsuranceRate;
                             function findAllHisotryUnemployeeInsuranceRate() {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
@@ -221,6 +247,11 @@ var nts;
                                     TypeHistory[TypeHistory["HistoryAccident"] = 2] = "HistoryAccident";
                                 })(model.TypeHistory || (model.TypeHistory = {}));
                                 var TypeHistory = model.TypeHistory;
+                                (function (TypeActionInsuranceRate) {
+                                    TypeActionInsuranceRate[TypeActionInsuranceRate["add"] = 1] = "add";
+                                    TypeActionInsuranceRate[TypeActionInsuranceRate["update"] = 2] = "update";
+                                })(model.TypeActionInsuranceRate || (model.TypeActionInsuranceRate = {}));
+                                var TypeActionInsuranceRate = model.TypeActionInsuranceRate;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm011.a || (qmm011.a = {}));

@@ -17,6 +17,7 @@ module nts.uk.pr.view.qmm011.e {
             }
             updateInsuranceBusinessType() {
                 var self = this;
+                nts.uk.ui.windows.close();
                 var insuranceBusinessType: InsuranceBusinessTypeDto;
                 insuranceBusinessType =
                     new InsuranceBusinessTypeDto(self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.insuranceBusinessType(),
@@ -30,6 +31,7 @@ module nts.uk.pr.view.qmm011.e {
                         self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.insuranceBusinessType(),
                         self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.insuranceBusinessType());
                 service.updateInsuranceBusinessType(insuranceBusinessType);
+                
             }
         }
     }

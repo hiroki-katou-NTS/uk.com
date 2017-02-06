@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm011.a {
     import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
     import HistoryAccidentInsuranceRateDto = service.model.HistoryAccidentInsuranceRateDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
+    import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     export module viewmodel {
         export class ScreenModel {
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>;
@@ -113,6 +114,19 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 self.findHisotryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                 self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
+            }
+            //action save HistoryUnemployeeInsurance Onlick connection service
+            private saveHistoryUnemployeeInsurance(typeActionUnemployeeInsuranceRate: number){
+                var self=this;
+                //add
+                if(typeActionUnemployeeInsuranceRate==TypeActionInsuranceRate.add){
+                    service.addUnemployeeInsuranceRate();    
+                }
+                //update
+                else {
+                    service.updateUnemployeeInsuranceRate();    
+                }
+                return true;
             }
             //show HistoryAccidentInsurance (change event)
             private showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate: string) {

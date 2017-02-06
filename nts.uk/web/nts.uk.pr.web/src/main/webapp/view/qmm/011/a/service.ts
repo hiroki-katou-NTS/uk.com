@@ -5,11 +5,39 @@ module nts.uk.pr.view.qmm011.a {
             findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
             findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
             detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
+            addUnemployeeInsuranceRate : "pr/insurance/labor/unemployeerate/add",
+            updateUnemployeeInsuranceRate : "pr/insurance/labor/unemployeerate/update",
             findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/findall",
             findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/find",
             detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/detail"
         };
 
+        //Function connection service add Unemployee Insurance Rate
+        export function addUnemployeeInsuranceRate():JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.addUnemployeeInsuranceRate)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function connection service update Unemployee Insurance Rate
+        export function updateUnemployeeInsuranceRate():JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
         //Function connection service FindAll Labor Insurance Office
         export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<model.HistoryUnemployeeInsuranceRateDto>> {
             var dfd = $.Deferred<Array<model.HistoryUnemployeeInsuranceRateDto>>();
@@ -226,6 +254,10 @@ module nts.uk.pr.view.qmm011.a {
             export enum TypeHistory {
                 HistoryUnemployee = 1,
                 HistoryAccident = 2
+            }
+            export enum TypeActionInsuranceRate{
+                add=1,
+                update=2    
             }
         }
     }

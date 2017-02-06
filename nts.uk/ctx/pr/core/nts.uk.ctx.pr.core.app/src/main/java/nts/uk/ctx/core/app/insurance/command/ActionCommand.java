@@ -3,7 +3,12 @@ package nts.uk.ctx.core.app.insurance.command;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.GenerationType;
+
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemDto;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSettingDto;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -34,6 +39,69 @@ public class ActionCommand {
 
 	// Default SetUnemployeeInsuranceRateItem
 	public static Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem() {
+		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<UnemployeeInsuranceRateItem>();
+		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemAgroforestry = defaultUnemployeeInsuranceRateItem(
+				CareerGroup.Agroforestry);
+		setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItemAgroforestry);
+		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemContruction = defaultUnemployeeInsuranceRateItem(
+				CareerGroup.Contruction);
+		setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItemContruction);
+		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemOther = defaultUnemployeeInsuranceRateItem(
+				CareerGroup.Other);
+		setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItemOther);
+		return setUnemployeeInsuranceRateItem;
+	}
+
+	// Convert UnemployeeInsuranceRateItem
+	public static UnemployeeInsuranceRateItem convertUnemployeeInsuranceRateItem(
+			UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItemDto) {
+		UnemployeeInsuranceRateItem unemployeeInsuranceRateItem = new UnemployeeInsuranceRateItem();
+		if (unemployeeInsuranceRateItemDto.getCareerGroup().equals(0)) {
+			unemployeeInsuranceRateItem.setCareerGroup(CareerGroup.Agroforestry);
+		}
+		if (unemployeeInsuranceRateItemDto.getCareerGroup().equals(1)) {
+			unemployeeInsuranceRateItem.setCareerGroup(CareerGroup.Contruction);
+		}
+		if (unemployeeInsuranceRateItemDto.getCareerGroup().equals(2)) {
+			unemployeeInsuranceRateItem.setCareerGroup(CareerGroup.Other);
+		}
+		return unemployeeInsuranceRateItem;
+	}
+
+	// Convert UnemployeeInsuranceRateItemSetting
+	public static UnemployeeInsuranceRateItemSetting convertUnemployeeInsuranceRateItemSetting(
+			UnemployeeInsuranceRateItemSettingDto unemployeeInsuranceRateItemSettingDto) {
+		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+		unemployeeInsuranceRateItemSetting.setRate(unemployeeInsuranceRateItemSettingDto.getRate());
+		unemployeeInsuranceRateItemSetting
+				.setRoundAtr(convertRoundingMethod(unemployeeInsuranceRateItemSettingDto.getRoundAtr()));
+		return unemployeeInsuranceRateItemSetting;
+	}
+
+	// Convert RoundingMethod
+	public static RoundingMethod convertRoundingMethod(Integer round) {
+
+		if (round == 0) {
+			return RoundingMethod.RoundUp;
+		}
+		if (round == 1) {
+			return RoundingMethod.Truncation;
+		}
+		if (round == 2) {
+			return RoundingMethod.RoundDown;
+		}
+		if (round == 3) {
+			return RoundingMethod.Down5_Up6;
+		}
+		if (round == 4) {
+			return RoundingMethod.Down4_Up5;
+		}
+		return RoundingMethod.RoundUp;
+	}
+
+	// Convert SetUnemployeeInsuranceRateItem
+	public static Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem(
+			UnemployeeInsuranceRateDto unemployeeInsuranceRate) {
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<UnemployeeInsuranceRateItem>();
 		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemAgroforestry = defaultUnemployeeInsuranceRateItem(
 				CareerGroup.Agroforestry);
