@@ -9,6 +9,17 @@
             return true;
         }
         /**
+         * function find an item index in array
+         * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
+         */
+        export function findIndex(arr, value, key) {
+            for(var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                if(item[key] === value) return i; 
+            }
+            return -1;
+        }
+        /**
          * function add item to array, this function is used in combine with visitDfs function
          * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
          */
@@ -197,6 +208,50 @@
                     if (!this.isPresent) {
                         throw errorBuilder();
                     }
+                }
+            }
+        }
+        
+        export class Range {
+            start: number;
+            end: number;
+            
+            constructor(start: number, end: number) {
+                if (start > end) {
+                    throw new Error('start is larger than end');
+                }
+                
+                this.start = start;
+                this.end = end;
+            }
+            
+            contains(value: number) {
+                return this.start <= value && value <= this.end;
+            }
+            
+            greaterThan(value: number) {
+                return value < this.start;
+            }
+            
+            greaterThanOrEqualTo(value: number) {
+                return value <= this.start;
+            }
+            
+            lessThan(value: number) {
+                return this.end < value;
+            }
+            
+            lessThanOrEqualTo(value: number) {
+                return this.end <= value;
+            }
+            
+            distanceFrom(value: number) {
+                if (this.greaterThan(value)) {
+                    return value - this.start;
+                } else if (this.lessThan(value)) {
+                    return value - this.end;
+                } else {
+                    return 0;
                 }
             }
         }

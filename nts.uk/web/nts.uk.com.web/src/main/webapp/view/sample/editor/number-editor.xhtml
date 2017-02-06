@@ -37,6 +37,11 @@
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
+						<div data-bind="with: numbereditor2">
+							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
+							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -45,7 +50,11 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: numbereditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode'}" />
+
+<!-- Full Options -->
+<div data-bind="with: numbereditor">
 	<input data-bind="ntsNumberEditor: {
 		value: value,
 		constraint: constraint,
@@ -148,6 +157,22 @@
 														</td>
 													</tr>
 													<tr>
+														<td>symbolChar<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> ""<br/>
+															symbol like '%', etc..
+														</td>
+													</tr>
+													<tr>
+														<td>symbolPosition<br/><i>(optional)</i></td>
+														<td>
+															<b>Type:</b> string<br/>
+															<b>Default:</b> 'right'<br/>
+															position for symbol
+														</td>
+													</tr>
+													<tr>
 														<td>placeholder<br/><i>(optional)</i></td>
 														<td>
 															<b>Type:</b> string<br/>
@@ -207,14 +232,14 @@
 						<h1>CurrencyEditor</h1>
 						<h2>Overview</h2>
 						<div data-bind="with: currencyeditor">
-							<h3>USD</h3>
+							<h3>Yen</h3>
 							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<div data-bind="with: currencyeditor2">
-							<h3>Yen</h3>
+							<h3>USD</h3>
 							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
@@ -227,7 +252,11 @@
 								</ol>
 								<div id="tabs-currency-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<div data-bind="with: currencyeditor">
+<pre><![CDATA[<!-- Simple -->
+<input data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode' }" />
+
+<!-- Full Options -->
+<div data-bind="with: currencyeditor">
 	<input data-bind="ntsNumberEditor: {
 		value: value,
 		constraint: constraint,
