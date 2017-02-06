@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeComma
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand;
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
 import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommandHandler;
-import nts.uk.ctx.pr.core.app.finder.socialoffice.dto.SocialInsuranceOfficeDto;
+import nts.uk.ctx.pr.core.app.find.insurance.social.SocialInsuranceOfficeDto;
 
 /**
  * The Class SocialInsuranceOfficeService.
@@ -60,7 +60,7 @@ public class SocialInsuranceOfficeService extends WebService {
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice003);
 		return lstSocialInsuranceOfficeIn;
 	}
-	
+
 	@POST
 	@Path("find/{officeName}")
 	public SocialInsuranceOfficeDto findHistory(@PathParam("officeName") String officeName) {
@@ -73,27 +73,24 @@ public class SocialInsuranceOfficeService extends WebService {
 		}
 		return socialInsuranceOfficeDtoResult;
 	}
-	
+
 	@POST
 	@Path("create")
-	public void createOffice(RegisterSocialOfficeCommand command)
-	{
+	public void createOffice(RegisterSocialOfficeCommand command) {
 		this.registerSocialOfficeCommandHandler.handle(command);
 		return;
 	}
-	
+
 	@POST
 	@Path("update")
-	public void updateOffice(UpdateSocialOfficeCommand command)
-	{
+	public void updateOffice(UpdateSocialOfficeCommand command) {
 		this.updateSocialOfficeCommandHandler.handle(command);
 		return;
 	}
-	
+
 	@POST
 	@Path("remove")
-	public void removeOffice(DeleteSocialOfficeCommand command)
-	{
+	public void removeOffice(DeleteSocialOfficeCommand command) {
 		this.deleteSocialOfficeCommandHandler.handle(command);
 		return;
 	}
@@ -103,5 +100,5 @@ public class SocialInsuranceOfficeService extends WebService {
 	{
 		return;
 	}
-	
+
 }
