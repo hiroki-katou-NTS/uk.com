@@ -7,9 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-@AllArgsConstructor
+import lombok.Setter;
+
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class CmnmtJobTittlePK implements Serializable{
 
