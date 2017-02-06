@@ -701,7 +701,7 @@ div.label {
 }
 /* line 25, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left .nts-input {
-  padding-left: 15px;
+  padding-left: 20px;
 }
 /* line 27, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-left:after {
@@ -710,7 +710,7 @@ div.label {
 }
 /* line 34, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right .nts-input {
-  padding-right: 15px;
+  padding-right: 20px;
 }
 /* line 36, ../sass/components/_editor.scss */
 .ntsControl.symbol.symbol-right:after {
