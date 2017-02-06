@@ -102,10 +102,10 @@ module cmm013.a.viewmodel {
         selectedTab: KnockoutObservable<string>;
         constructor() {
             var self = this;
-            self.tabs = ko.observableArray([
-                { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) ,
-                { id: 'tab-2', title: '險育ｮ怜ｼ上・險ｭ螳・, content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) } 
-            ]);
+//            self.tabs = ko.observableArray([
+//                { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) ,
+//                { id: 'tab-2', title: '險育ｮ怜ｼ上・險ｭ螳・, content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) } 
+//            ]);
             self.selectedTab = ko.observable('tab-1');
             self.listbox = ko.observable(new ListBoxx());
             self.searchboxx = ko.observable(new GridLists());
@@ -195,10 +195,15 @@ module cmm013.a.viewmodel {
 
             ]);
             this.columns = ko.observableArray([
-                { headerText: '繧ｳ繝ｼ繝・, prop: 'code', width: 50 },
-                { headerText: '蜷咲ｧｰ', prop: 'name', width: 80 },
-                { headerText: '隱ｬ譏・, prop: 'description', width: 80 }
-            ]);
+            { headerText: 'コード', prop: 'code', width: 100 },
+            { headerText: '名称', prop: 'name', width: 150 },
+            { headerText: '説明', prop: 'description', width: 200 }
+        ]);
+//            this.columns = ko.observableArray([
+//                { headerText: '繧ｳ繝ｼ繝・, prop: 'code', width: 50 },
+//                { headerText: '蜷咲ｧｰ', prop: 'name', width: 80 },
+//                { headerText: '隱ｬ譏・, prop: 'description', width: 80 }
+//            ]);
            
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);

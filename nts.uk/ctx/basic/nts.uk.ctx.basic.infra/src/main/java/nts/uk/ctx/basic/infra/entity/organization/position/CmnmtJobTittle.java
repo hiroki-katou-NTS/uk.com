@@ -1,16 +1,17 @@
 package nts.uk.ctx.basic.infra.entity.organization.position;
 
 import java.io.Serializable;
-import java.util.Date;
-
+import java.time.LocalDate;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,13 +24,15 @@ public class CmnmtJobTittle implements Serializable{
 	@EmbeddedId
 	public CmnmtJobTittlePK cmnmtJobTittlePK;
 	
+	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name ="STR_YM")
-	public Date strYm;
+	public LocalDate strYm;
 
+	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name = "END_YM")
-	public Date endYm;
+	public LocalDate endYm;
 	
 	@Basic(optional = false)
 	@Column(name = "MEMO")
