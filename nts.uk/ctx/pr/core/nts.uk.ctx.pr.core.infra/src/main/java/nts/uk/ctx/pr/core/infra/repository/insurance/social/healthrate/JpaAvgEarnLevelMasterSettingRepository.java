@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +34,14 @@ public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository
 
 	@Override
 	public List<AvgEarnLevelMasterSetting> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
+		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = new ArrayList<AvgEarnLevelMasterSetting>();
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(1, 1, 1, 58000L, 63000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(2, 2, 1, 68000L, 73000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(3, 3, 1, 78000L, 83000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(4, 4, 1, 88000L, 93000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(5, 5, 1, 98000L, 101000L));
+		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(6, 6, 2, 104000L, 121000L));
+		return listAvgEarnLevelMasterSetting;
 	}
 
 	@Override

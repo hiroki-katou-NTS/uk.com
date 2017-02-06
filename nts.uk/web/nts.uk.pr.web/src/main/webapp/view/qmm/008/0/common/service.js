@@ -15,20 +15,29 @@ var nts;
                             var service;
                             (function (service) {
                                 var paths = {
-                                    getAvgEarnLevelMasterSetting: "pr/proto/insurance/social/healthrate/getAvgEarnLevelMasterSetting",
+                                    getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/healthrate/getAvgEarnLevelMasterSettingList",
                                 };
-                                function getAvgEarnLevelMasterSetting() {
+                                function getAvgEarnLevelMasterSettingList() {
                                     var dfd = $.Deferred();
-                                    nts.uk.request.ajax(paths.getAvgEarnLevelMasterSetting)
+                                    nts.uk.request.ajax(paths.getAvgEarnLevelMasterSettingList)
                                         .done(function (res) {
-                                        dfd.resolve(res);
+                                        dfd.resolve(convertToAvgEarnLevelMasterSettingModel(res));
                                     })
                                         .fail(function (res) {
                                         dfd.reject(res);
                                     });
                                     return dfd.promise();
                                 }
-                                service.getAvgEarnLevelMasterSetting = getAvgEarnLevelMasterSetting;
+                                service.getAvgEarnLevelMasterSettingList = getAvgEarnLevelMasterSettingList;
+                                function convertToAvgEarnLevelMasterSettingModel(listDto) {
+                                    var salMin = 0;
+                                    for (var i in listDto) {
+                                        var dto = listDto[i];
+                                        dto['salMin'] = salMin;
+                                        salMin = dto.salLimit;
+                                    }
+                                    return listDto;
+                                }
                                 var model;
                                 (function (model) {
                                     var AvgEarnLevelMasterSettingDto = (function () {

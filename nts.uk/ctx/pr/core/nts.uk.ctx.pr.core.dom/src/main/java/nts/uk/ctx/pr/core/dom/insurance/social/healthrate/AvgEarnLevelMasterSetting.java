@@ -34,4 +34,14 @@ public class AvgEarnLevelMasterSetting {
 		super();
 	}
 
+	public AvgEarnLevelMasterSetting(Integer code, Integer healthLevel, Integer pensionLevel, Long avgEarn,
+			Long salLimit) {
+		super();
+		this.code = code;
+		this.healthLevel = healthLevel;
+		this.pensionLevel = pensionLevel;
+		this.avgEarn = avgEarn;
+		this.salLimit = salLimit;
+	}
+
 }

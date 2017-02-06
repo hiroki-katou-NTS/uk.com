@@ -23,7 +23,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="large proceed">登録</button>
+				<button class="large proceed" data-bind="click: save">登録</button>
 				<button class="large">印刷</button>
 				<button class="large">再計算</button>
 				<button class="large" data-bind="click: closeDialog">閉じる</button>
@@ -79,7 +79,7 @@
 									<td class="bg-green"><span data-bind="text: pensionLevel"></span></td>
 									<td class="bg-green"><span data-bind="text: avgEarn"></span></td>
 									<td class="bg-green"><span data-bind="text: salMin"></span></td>
-									<td class="bg-green"><span data-bind="text: salMax"></span></td>
+									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
 									<com:ko-foreach bind="$parent.listHealthInsuranceAvgearn">
 										<com:ko-if bind="$parent.code == levelCode">
 											<td><input data-bind="value: personalAvg.general"></input></td>

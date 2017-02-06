@@ -5,21 +5,31 @@ module nts.uk.pr.view.qmm008._0.common {
          *  Service paths
          */
         var paths: any = {
-            getAvgEarnLevelMasterSetting: "pr/proto/insurance/social/healthrate/getAvgEarnLevelMasterSetting",
+            getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/healthrate/getAvgEarnLevelMasterSettingList",
         };
         /**
         *  Get AvgEarnLevelMasterSetting list 
         */
-        export function getAvgEarnLevelMasterSetting(): JQueryPromise<Array<any>> {
+        export function getAvgEarnLevelMasterSettingList(): JQueryPromise<Array<any>> {
             var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.getAvgEarnLevelMasterSetting)
+            nts.uk.request.ajax(paths.getAvgEarnLevelMasterSettingList)
                 .done(res => {
-                    dfd.resolve(res);
+                    dfd.resolve(convertToAvgEarnLevelMasterSettingModel(res));
                 })
                 .fail(res => {
                     dfd.reject(res);
                 })
             return dfd.promise();
+        }
+
+        function convertToAvgEarnLevelMasterSettingModel(listDto: Array<model.AvgEarnLevelMasterSettingDto>): Array<AvgEarnLevelMasterSettingModel> {
+            var salMin = 0;
+            for (const i in listDto) {
+                var dto = listDto[i];
+                dto['salMin'] = salMin;
+                salMin = dto.salLimit;
+            }
+            return listDto;
         }
 
         /**
@@ -31,16 +41,7 @@ module nts.uk.pr.view.qmm008._0.common {
                 healthLevel: number;
                 pensionLevel: number;
                 avgEarn: number;
-                salMin: number;
-                salMax: number;
-                /*constructor(code: number, healthLevel: number, pensionLevel: number, avgEarn: number, salLimit: number) {
-                var self = this;
-                self.code = code;
-                self.healthLevel = healthLevel;
-                self.pensionLevel = pensionLevel;
-                self.avgEarn = avgEarn;
-                self.salLimit = salLimit;
-            }*/
+                salLimit: number;
             }
         }
     }
