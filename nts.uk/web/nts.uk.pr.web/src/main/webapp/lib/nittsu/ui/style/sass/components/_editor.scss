@@ -22,7 +22,7 @@ $editor-border-color: #999999;
 		}
 		
 		&.symbol-left {
-			.nts-input { padding-left: 15px; }
+			.nts-input { padding-left: 20px; }
 			
 			&:after {
 				left: 5px;
@@ -31,7 +31,7 @@ $editor-border-color: #999999;
 		}
 		
 		&.symbol-right {
-			.nts-input { padding-right: 15px; }
+			.nts-input { padding-right: 20px; }
 		
 			&:after {
 				right: 5px;
