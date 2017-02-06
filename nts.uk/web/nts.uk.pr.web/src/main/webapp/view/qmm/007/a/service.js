@@ -23,7 +23,7 @@ var nts;
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.getUnitPriceHistoryList)
                                     .done(function (res) {
-                                    dfd.resolve(convertToTreeList(res));
+                                    dfd.resolve(res);
                                 })
                                     .fail(function (res) {
                                     dfd.reject(res);
@@ -44,13 +44,11 @@ var nts;
                             }
                             service.find = find;
                             function create(unitPriceHistory) {
-                                var data = unitPriceHistory;
-                                return nts.uk.request.ajax(paths.createUnitPriceHistory, data);
+                                return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory);
                             }
                             service.create = create;
                             function update(unitPriceHistory) {
-                                var data = unitPriceHistory;
-                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, data);
+                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory);
                             }
                             service.update = update;
                             function remove(id, version) {
@@ -58,21 +56,6 @@ var nts;
                                 return nts.uk.request.ajax(paths.removeUnitPriceHistory, request);
                             }
                             service.remove = remove;
-                            function convertToTreeList(unitPriceHistoryList) {
-                                var groupByCode = {};
-                                unitPriceHistoryList.forEach(function (item) {
-                                    var c = item.unitPriceCode;
-                                    groupByCode[c] = item;
-                                });
-                                var arr = Object.keys(groupByCode).map(function (key) { return groupByCode[key]; });
-                                var parentNodes = arr.map(function (item) { return new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, false, []); });
-                                var childNodes = unitPriceHistoryList.map(function (item) { return new model.UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true); });
-                                var treeList = parentNodes.map(function (parent) {
-                                    childNodes.forEach(function (child) { return parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''); });
-                                    return parent;
-                                });
-                                return treeList;
-                            }
                             function collectData(unitPriceHistoryModel) {
                                 var dto = new service.model.UnitPriceHistoryDto();
                                 dto.id = unitPriceHistoryModel.id;
@@ -100,21 +83,6 @@ var nts;
                                     return UnitPriceHistoryDto;
                                 }());
                                 model.UnitPriceHistoryDto = UnitPriceHistoryDto;
-                                var UnitPriceHistoryNode = (function () {
-                                    function UnitPriceHistoryNode(id, unitPriceCode, unitPriceName, startMonth, endMonth, isChild, childs) {
-                                        var self = this;
-                                        self.isChild = isChild;
-                                        self.unitPriceCode = unitPriceCode;
-                                        self.unitPriceName = unitPriceName;
-                                        self.startMonth = startMonth;
-                                        self.endMonth = endMonth;
-                                        self.id = self.isChild == true ? id : id + id;
-                                        self.childs = childs;
-                                        self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
-                                    }
-                                    return UnitPriceHistoryNode;
-                                }());
-                                model.UnitPriceHistoryNode = UnitPriceHistoryNode;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
