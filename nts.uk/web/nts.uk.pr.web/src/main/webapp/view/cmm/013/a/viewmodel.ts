@@ -103,7 +103,7 @@ module cmm013.a.viewmodel {
         constructor() {
             var self = this;
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) ,
                 { id: 'tab-2', title: '險育ｮ怜ｼ上・險ｭ螳・, content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) } 
             ]);
             self.selectedTab = ko.observable('tab-1');
@@ -199,6 +199,7 @@ module cmm013.a.viewmodel {
                 { headerText: '蜷咲ｧｰ', prop: 'name', width: 80 },
                 { headerText: '隱ｬ譏・, prop: 'description', width: 80 }
             ]);
+           
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
         }

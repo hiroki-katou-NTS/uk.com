@@ -86,7 +86,7 @@ var cmm013;
                 function ScreenModel() {
                     var self = this;
                     self.tabs = ko.observableArray([
-                        { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true), },
                         { id: 'tab-2', title: '險育ｮ怜ｼ上・險ｭ螳・, content: '.tab - content - 2, ', enable: ko.observable(true), visible: ko.observable(true) } :  }
                     ]);
                     self.selectedTab = ko.observable('tab-1');
