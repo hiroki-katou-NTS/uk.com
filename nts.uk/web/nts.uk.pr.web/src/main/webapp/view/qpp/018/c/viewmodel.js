@@ -7,10 +7,6 @@ var qpp018;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.required = ko.observable(true);
-                    this.isDetailed = ko.observable(true);
-                    this.isTotalMonthlyTotal = ko.observable(true);
-                    this.isOfficeMonthlyTotal = ko.observable(true);
-                    this.isDeliveryNoticeAmount = ko.observable(true);
                     this.showHealthInsuranceType = ko.observableArray([
                         new HealthInsuranceType('1', '表示する'),
                         new HealthInsuranceType('2', '表示しない'),
@@ -18,24 +14,41 @@ var qpp018;
                     this.selectedCode = ko.observable('1');
                     this.enable = ko.observable(true);
                     this.printSettingValue = ko.observable('PrintSetting Value');
+                    this.printSettingList = ko.observable();
                 }
                 ScreenModel.prototype.closePrintSetting = function () {
+                    nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.setupPrintSetting = function () {
-                    if (!(this.isDetailed()) && !(this.isTotalMonthlyTotal()) && !(this.isOfficeMonthlyTotal())
-                        && !(this.isDeliveryNoticeAmount())) {
+                    if (!(this.printSettingList().showDetail) && !(this.printSettingList().showCategoryInsuranceItem) && !(this.printSettingList().showOffice)
+                        && !(this.printSettingList().showDeliveryNoticeAmount)) {
                         alert("Something is not right");
                     }
                     else {
                         nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                        nts.uk.ui.windows.close();
                         alert("Yep");
+                        nts.uk.ui.windows.close();
                     }
                 };
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
-                    dfd.resolve();
+                    var self = this;
+                    $.when(self.loadAllCheckListPrintSetting()).done(function () {
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.loadAllCheckListPrintSetting = function () {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    c.service.getallCheckListPrintSetting().done(function (data) {
+                        self.printSettingList(data);
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                        dfd.reject();
+                    });
                     return dfd.promise();
                 };
                 return ScreenModel;
@@ -49,6 +62,16 @@ var qpp018;
                 return HealthInsuranceType;
             }());
             viewmodel.HealthInsuranceType = HealthInsuranceType;
+            var PrintSettingList = (function () {
+                function PrintSettingList(showCategoryInsuranceItem, showDeliveryNoticeAmount, showDetail, showOffice) {
+                    this.showCategoryInsuranceItem = showCategoryInsuranceItem;
+                    this.showDeliveryNoticeAmount = showDeliveryNoticeAmount;
+                    this.showDetail = showDetail;
+                    this.showOffice = showOffice;
+                }
+                return PrintSettingList;
+            }());
+            viewmodel.PrintSettingList = PrintSettingList;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qpp018.c || (qpp018.c = {}));
 })(qpp018 || (qpp018 = {}));
