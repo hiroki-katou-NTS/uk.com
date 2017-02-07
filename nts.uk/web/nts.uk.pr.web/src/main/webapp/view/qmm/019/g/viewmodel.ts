@@ -24,6 +24,7 @@ module qmm019.g.viewmodel {
         layoutCode: KnockoutObservable<string>;
         //---input name
         layoutName: KnockoutObservable<string>;
+        yearMonthEra: KnockoutObservable<string>;
         /**
          * Init screen model.
          */
@@ -35,7 +36,7 @@ module qmm019.g.viewmodel {
             self.itemList = ko.observableArray([]);   
             self.comboboxList = ko.observableArray([]);
             self.selectLayoutCode = ko.observable("");
-            self.layoutAtrStr = ko.observable(null);
+            self.layoutAtrStr = ko.observable("レーザープリンタ Ａ４ 横向き 最大3人");
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
             self.selectStartYm =  ko.observable(null);
@@ -57,6 +58,8 @@ module qmm019.g.viewmodel {
             self.layoutCode = ko.observable("");
             //---input name
             self.layoutName = ko.observable("");
+            self.yearMonthEra = ko.observable("");
+            //self.yearMonthEra = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(self.selectStartYm()) + ")");
         }   
         
         // start function
@@ -91,6 +94,8 @@ module qmm019.g.viewmodel {
                 self.buildComboboxChange(newValue);
             })
             $('#INP_001').focus();
+            //self.yearMonthEra("(" + nts.uk.time.yearmonthInJapanEmpire(self.selectStartYm()) + ")");
+            
             dfd.resolve();
             // Return.
             return dfd.promise();    
