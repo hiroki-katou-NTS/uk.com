@@ -7,8 +7,10 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.shr.com.primitive.sample.CommonAmount;
 
 /**
  * The Interface PensionRateMemento.
@@ -48,7 +50,7 @@ public interface PensionRateMemento {
 	 *
 	 * @return the max amount
 	 */
-	Long getMaxAmount();
+	CommonAmount getMaxAmount();
 
 	/**
 	 * Gets the fund rate items.
@@ -69,7 +71,7 @@ public interface PensionRateMemento {
 	 *
 	 * @return the child contribution rate
 	 */
-	Double getChildContributionRate();
+	Ins2Rate getChildContributionRate();
 
 	/**
 	 * Gets the rounding methods.
@@ -118,7 +120,7 @@ public interface PensionRateMemento {
 	 *
 	 * @param maxAmount the new max amount
 	 */
-	void setMaxAmount(Long maxAmount);
+	void setMaxAmount(CommonAmount maxAmount);
 
 	/**
 	 * Sets the fund rate items.
@@ -139,7 +141,7 @@ public interface PensionRateMemento {
 	 *
 	 * @param childContributionRate the new child contribution rate
 	 */
-	void setChildContributionRate(Double childContributionRate);
+	void setChildContributionRate(Ins2Rate childContributionRate);
 
 	/**
 	 * Sets the rounding methods.

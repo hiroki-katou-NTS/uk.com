@@ -9,6 +9,7 @@ import java.util.List;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.shr.com.primitive.sample.CommonAmount;
 
 /**
  * The Interface HealthInsuranceRateMemento.
@@ -55,7 +56,7 @@ public interface HealthInsuranceRateMemento {
 	 *
 	 * @return the max amount
 	 */
-	Long getMaxAmount();
+	CommonAmount getMaxAmount();
 
 	/**
 	 * Gets the rate items.
@@ -118,7 +119,7 @@ public interface HealthInsuranceRateMemento {
 	 *
 	 * @param maxAmount the new max amount
 	 */
-	void setMaxAmount(Long maxAmount);
+	void setMaxAmount(CommonAmount maxAmount);
 
 	/**
 	 * Sets the rate items.

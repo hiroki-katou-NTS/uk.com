@@ -29,7 +29,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		
 		// convert rateItems
 		List<InsuranceRateItem> rateItems = HIRDto.getRateItems().stream()
-				.map(item -> new InsuranceRateItem(item.getChargeRate(), item.getPayType(), item.getInsuranceType()))
+				.map(item -> new InsuranceRateItem(item.getPayType(), item.getInsuranceType(), item.getChargeRate()))
 				.collect(Collectors.toList());
 		
 		// convert roundingMethods

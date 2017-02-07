@@ -7,16 +7,26 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.collection.ListUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.shr.com.primitive.sample.CommonAmount;
 
 /**
  * The Class PensionRate.
  */
 @Data
 public class PensionRate extends AggregateRoot {
+	/** The fund rate item count. */
+	private final int FUND_RATE_ITEM_COUNT = 6;
+
+	/** The rounding method count. */
+	private final int ROUNDING_METHOD_COUNT = 4;
 
 	/** The history id. */
 	// historyId
@@ -32,7 +42,7 @@ public class PensionRate extends AggregateRoot {
 	private MonthRange applyRange;
 
 	/** The max amount. */
-	private Long maxAmount;
+	private CommonAmount maxAmount;
 
 	/** The fund rate items. */
 	private List<FundRateItem> fundRateItems;
@@ -41,7 +51,7 @@ public class PensionRate extends AggregateRoot {
 	private List<PensionPremiumRateItem> premiumRateItems;
 
 	/** The child contribution rate. */
-	private Double childContributionRate;
+	private Ins2Rate childContributionRate;
 
 	/** The rounding methods. */
 	private List<PensionRateRounding> roundingMethods;
@@ -65,9 +75,18 @@ public class PensionRate extends AggregateRoot {
 	 * @param roundingMethods
 	 */
 	public PensionRate(String historyId, CompanyCode companyCode, OfficeCode officeCode, MonthRange applyRange,
-			Long maxAmount, List<FundRateItem> fundRateItems, List<PensionPremiumRateItem> premiumRateItems,
-			Double childContributionRate, List<PensionRateRounding> roundingMethods) {
+			CommonAmount maxAmount, List<FundRateItem> fundRateItems, List<PensionPremiumRateItem> premiumRateItems,
+			Ins2Rate childContributionRate, List<PensionRateRounding> roundingMethods) {
 		super();
+
+		// Validate required item
+		if (StringUtil.isNullOrEmpty(officeCode.v(), true) || applyRange == null || maxAmount == null
+				|| childContributionRate == null || ListUtil.isEmpty(fundRateItems)
+				|| fundRateItems.size() != FUND_RATE_ITEM_COUNT || ListUtil.isEmpty(roundingMethods)
+				|| roundingMethods.size() != ROUNDING_METHOD_COUNT) {
+			throw new BusinessException("ER001");
+		}
+
 		this.historyId = historyId;
 		this.companyCode = companyCode;
 		this.officeCode = officeCode;
