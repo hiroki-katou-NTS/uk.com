@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
@@ -86,11 +88,11 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	public Optional<HealthInsuranceRate> findById(String id) {
 		List<InsuranceRateItem> list1 = new ArrayList<InsuranceRateItem>();
 		List<HealthInsuranceRounding> list2 = new ArrayList<HealthInsuranceRounding>();
-		MonthRange mr = new MonthRange();
+		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 		mr.setEndMonth(new YearMonth(55));
 		mr.setStartMonth(new YearMonth(33));
-		HealthInsuranceRate mock = new HealthInsuranceRate("111", new CompanyCode("Ｃ 事業所"), new OfficeCode("000000"), mr, true,
-				1l, list1, list2);
+		HealthInsuranceRate mock = new HealthInsuranceRate("111", new CompanyCode("Ｃ 事業所"), new OfficeCode("000000"),
+				mr, true, new CommonAmount(new BigDecimal(5)), list1, list2);
 		return Optional.of(mock);
 	}
 }
