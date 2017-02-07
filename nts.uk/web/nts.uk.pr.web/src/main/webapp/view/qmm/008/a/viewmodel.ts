@@ -304,8 +304,9 @@ module nts.uk.pr.view.qmm008.a {
             
             //open office register dialog
             public OpenModalOfficeRegister() {
+                var self =this;
                 // Set parent value
-                nts.uk.ui.windows.setShared("listOfficeOfParentValue", "");
+                nts.uk.ui.windows.setShared("officeCodeOfParentValue",self.officeSelectedCode());
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
                     // Get child value

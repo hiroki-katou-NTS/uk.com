@@ -20,7 +20,8 @@ module nts.uk.pr.view.qmm008.c {
             //text area
             textArea: any;
             textInputOption: KnockoutObservable<any>;
-            constructor() {
+            selectedOfficeCode : KnockoutObservable<string>;
+            constructor(selectedOfficeCode : any) {
                 var self = this;
 
                 this.currentCode = ko.observable();
@@ -54,6 +55,7 @@ module nts.uk.pr.view.qmm008.c {
                     width: "100",
                     textalign: "center"
                 }));
+                self.selectedOfficeCode = ko.observable(selectedOfficeCode); 
             }
             // start
             public start(): JQueryPromise<any> {
@@ -83,8 +85,8 @@ module nts.uk.pr.view.qmm008.c {
             public loadInsuranceOfficeData(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                // find data from search key
-                service.findInsuranceOffice(self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
+                // find data 
+                service.findInsuranceOffice(self.selectedOfficeCode()).done(function(data: Array<any>) {
                     // Set list.
                     self.InsuranceOfficeList(data);
                     dfd.resolve(data);

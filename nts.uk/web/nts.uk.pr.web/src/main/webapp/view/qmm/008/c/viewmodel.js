@@ -13,7 +13,7 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(selectedOfficeCode) {
                                     var self = this;
                                     this.currentCode = ko.observable();
                                     this.items = ko.observableArray([]);
@@ -39,6 +39,7 @@ var nts;
                                         width: "100",
                                         textalign: "center"
                                     }));
+                                    self.selectedOfficeCode = ko.observable(selectedOfficeCode);
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -58,7 +59,7 @@ var nts;
                                 ScreenModel.prototype.loadInsuranceOfficeData = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    service.findInsuranceOffice(self.searchKey()).done(function (data) {
+                                    service.findInsuranceOffice(self.selectedOfficeCode()).done(function (data) {
                                         self.InsuranceOfficeList(data);
                                         dfd.resolve(data);
                                     });

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.find.insurance.social;
+package nts.uk.ctx.pr.core.app.find.insurance.social.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -197,7 +197,8 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
-                                    nts.uk.ui.windows.setShared("listOfficeOfParentValue", "");
+                                    var self = this;
+                                    nts.uk.ui.windows.setShared("officeCodeOfParentValue", self.officeSelectedCode());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
