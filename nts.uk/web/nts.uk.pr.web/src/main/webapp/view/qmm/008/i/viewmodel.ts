@@ -1,5 +1,7 @@
-module nts.uk.pr.view.qmm008.e {
+module nts.uk.pr.view.qmm008.i {
     export module viewmodel {
+        import commonService = nts.uk.pr.view.qmm008._0.common.service;
+
         export class ScreenModel {
 
             leftShow: KnockoutObservable<boolean>;
@@ -16,14 +18,24 @@ module nts.uk.pr.view.qmm008.e {
                 self.rightBtnText = ko.computed(function() { if (self.rightShow()) return "-"; return "+"; });
             }
 
-            leftToggle() {
+            /**
+             * Start page.
+             */
+            public startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
+            }
+
+            private leftToggle() {
                 this.leftShow(!this.leftShow());
             }
-            rightToggle() {
+            private rightToggle() {
                 this.rightShow(!this.rightShow());
             }
 
-            closeDialog() {
+            private closeDialog() {
                 nts.uk.ui.windows.close();
             }
         }

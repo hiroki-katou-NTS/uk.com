@@ -8,10 +8,14 @@ var nts;
             (function (view) {
                 var qmm008;
                 (function (qmm008) {
-                    var e;
-                    (function (e) {
+                    var i;
+                    (function (i) {
                         var service;
                         (function (service) {
+                            var paths = {
+                                saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
+                                getListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
+                            };
                             var model;
                             (function (model) {
                                 var PensionAvgearnValue = (function () {
@@ -27,8 +31,8 @@ var nts;
                                 }());
                                 model.HealthInsuranceAvgEarnDto = HealthInsuranceAvgEarnDto;
                             })(model = service.model || (service.model = {}));
-                        })(service = e.service || (e.service = {}));
-                    })(e = qmm008.e || (qmm008.e = {}));
+                        })(service = i.service || (i.service = {}));
+                    })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));

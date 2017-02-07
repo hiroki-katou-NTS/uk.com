@@ -1,5 +1,13 @@
-module nts.uk.pr.view.qmm008.e {
+module nts.uk.pr.view.qmm008.i {
     export module service {
+
+        /**
+         *  Service paths
+         */
+        var paths: any = {
+            saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
+            getListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
+        };
 
         /**
         * Model namespace.

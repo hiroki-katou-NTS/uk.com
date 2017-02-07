@@ -8,8 +8,8 @@ var nts;
             (function (view) {
                 var qmm008;
                 (function (qmm008) {
-                    var d;
-                    (function (d) {
+                    var h;
+                    (function (h) {
                         var viewmodel;
                         (function (viewmodel) {
                             var commonService = nts.uk.pr.view.qmm008._0.common.service;
@@ -27,6 +27,10 @@ var nts;
                                     var dfd = $.Deferred();
                                     commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
                                         self.listAvgEarnLevelMasterSetting(data);
+                                        h.service.findHealthInsuranceRate('a').done(function (data) { });
+                                        h.service.findHealthInsuranceAvgEarn('a').done(function (zz) {
+                                            self.listHealthInsuranceAvgearn(zz);
+                                        });
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -43,10 +47,10 @@ var nts;
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                 };
-                                ScreenModel.prototype.loadListHealthInsuranceAvgEarn = function () {
+                                ScreenModel.prototype.loadHealthInsuranceAvgEarn = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    d.service.getListHealthInsuranceAvgEarn().done(function (data) {
+                                    h.service.findHealthInsuranceAvgEarn('a').done(function (data) {
                                         data.forEach(function (item) {
                                         });
                                         self.listHealthInsuranceAvgearn(data);
@@ -72,8 +76,8 @@ var nts;
                                 return HealthInsuranceAvgEarnValueModel;
                             }());
                             viewmodel.HealthInsuranceAvgEarnValueModel = HealthInsuranceAvgEarnValueModel;
-                        })(viewmodel = d.viewmodel || (d.viewmodel = {}));
-                    })(d = qmm008.d || (qmm008.d = {}));
+                        })(viewmodel = h.viewmodel || (h.viewmodel = {}));
+                    })(h = qmm008.h || (qmm008.h = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));

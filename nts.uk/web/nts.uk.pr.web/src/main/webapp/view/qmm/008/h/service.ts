@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm008.d {
+module nts.uk.pr.view.qmm008.h {
     export module service {
 
         /**
@@ -6,7 +6,8 @@ module nts.uk.pr.view.qmm008.d {
          */
         var paths: any = {
             saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/",
-            getListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findAllHealthInsuranceAvgearn",
+            findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceAvgearn",
+            findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
         };
 
         /**
@@ -17,10 +18,33 @@ module nts.uk.pr.view.qmm008.d {
         }
 
         /**
-         *  Get ListHealthInsuranceAvgEarn
+         *  Find HealthInsuranceRate by historyId
          */
-        export function getListHealthInsuranceAvgEarn(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getListHealthInsuranceAvgEarn);
+        export function findHealthInsuranceRate(id: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findHealthInsuranceRate + '/' + id)
+                .done(res => {
+                    dfd.resolve(res);
+                })
+                .fail(res => {
+                    dfd.reject(res);
+                })
+            return dfd.promise();;
+        }
+
+        /**
+         *  Find HealthInsuranceAvgEarn by historyId
+         */
+        export function findHealthInsuranceAvgEarn(id: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+                .done(res => {
+                    dfd.resolve(res);
+                })
+                .fail(res => {
+                    dfd.reject(res);
+                })
+            return dfd.promise();;
         }
 
         /**

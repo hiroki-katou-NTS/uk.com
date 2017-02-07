@@ -8,8 +8,8 @@ var nts;
             (function (view) {
                 var qmm008;
                 (function (qmm008) {
-                    var e;
-                    (function (e) {
+                    var i;
+                    (function (i) {
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -22,6 +22,12 @@ var nts;
                                     self.rightBtnText = ko.computed(function () { if (self.rightShow())
                                         return "-"; return "+"; });
                                 }
+                                ScreenModel.prototype.startPage = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    dfd.resolve();
+                                    return dfd.promise();
+                                };
                                 ScreenModel.prototype.leftToggle = function () {
                                     this.leftShow(!this.leftShow());
                                 };
@@ -34,8 +40,8 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                        })(viewmodel = e.viewmodel || (e.viewmodel = {}));
-                    })(e = qmm008.e || (qmm008.e = {}));
+                        })(viewmodel = i.viewmodel || (i.viewmodel = {}));
+                    })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
