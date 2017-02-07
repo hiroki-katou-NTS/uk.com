@@ -2,10 +2,6 @@ module qpp018.c.viewmodel {
     export class ScreenModel {
         
         required: KnockoutObservable<boolean>;
-//        isDetailed: KnockoutObservable<boolean>;
-//        isTotalMonthlyTotal: KnockoutObservable<boolean>;
-//        isOfficeMonthlyTotal: KnockoutObservable<boolean>; 
-//        isDeliveryNoticeAmount: KnockoutObservable<boolean>; 
         showHealthInsuranceType: KnockoutObservableArray<HealthInsuranceType>;
         enable: KnockoutObservable<boolean>; 
         selectedCode: KnockoutObservable<string>;
@@ -14,10 +10,6 @@ module qpp018.c.viewmodel {
         
         constructor() {
             this.required = ko.observable(true);
-//            this.isDetailed = ko.observable(true);
-//            this.isTotalMonthlyTotal = ko.observable(true);
-//            this.isOfficeMonthlyTotal = ko.observable(true);
-//            this.isDeliveryNoticeAmount = ko.observable(true);
             this.showHealthInsuranceType = ko.observableArray<HealthInsuranceType>([
                 new HealthInsuranceType('1','表示する'),
                 new HealthInsuranceType('2','表示しない'),
@@ -40,10 +32,8 @@ module qpp018.c.viewmodel {
             } else {
                 nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
                 alert("Yep");
-                nts.uk.ui.windows.close();
-                
-            }
-              
+                nts.uk.ui.windows.close();                
+            }              
         }
         
         public start(): JQueryPromise<any>{
