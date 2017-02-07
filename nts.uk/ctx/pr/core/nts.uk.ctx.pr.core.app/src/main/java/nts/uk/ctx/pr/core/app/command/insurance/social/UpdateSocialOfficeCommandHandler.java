@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.app.insurance.social.SocialInsuranceOfficeInDto;
+import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.service.insurance.social.SocialInsuranceService;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
@@ -24,7 +24,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 	@Transactional
 	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> command) {
 		// TODO Auto-generated method stub
-		SocialInsuranceOfficeInDto SODto = command.getCommand().getSIODto();
+		SocialInsuranceOfficeDto SODto = command.getCommand().getSIODto();
 
 		// Convert Dto to Domain
 		SocialInsuranceOffice SIODomain = new SocialInsuranceOffice(SODto.getCompanyCode(), SODto.getCode(),
