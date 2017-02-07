@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.ws.insurance;
 
 import javax.ws.rs.POST;
@@ -11,6 +15,11 @@ import dto.CheckListPrintSettingDto;
 @Produces("application/json")
 public class CheckListPrintSettingWebservice {
 	
+	/**
+	 * Find all.
+	 *
+	 * @return the check list print setting dto
+	 */
 	@POST
 	@Path("findAll")
 	public CheckListPrintSettingDto findAll(){		
