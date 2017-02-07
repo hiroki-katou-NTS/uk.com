@@ -117,7 +117,7 @@ module qpp008.g.viewmodel {
             $("#grid10").igGrid({
                 primaryKey: "EmpCode",
                 dataSource: iggridData,//Datasources
-                width: "100%",
+                width: "1260",
                 autoGenerateColumns: false,
                 //dataSourceType: "Json",
                 //responseDataKey: "results",
@@ -132,20 +132,10 @@ module qpp008.g.viewmodel {
                     { headerText: "差異理由", key: "Reason", dataType: "string" },
                     { headerText: "登録状況（比較年月１）", key: "RegisStatus1", dataType: "string" },
                     { headerText: "登録状況（比較年月2）", key: "RegisStatus2", dataType: "string" },
-                    { headerText: "確認済<br/><input type='checkbox' id='cb1'/>", key: "Confirm", dataType: "bool", unbound: true, format: "checkbox" }
+                    { headerText: "確認済  <br/><input type='checkbox' id='cb1'/>", key: "Confirm", dataType: "bool", unbound: true, format: "checkbox", width: 60 }
                 ],
                 features:
                 [
-                    {
-                        name: "Responsive",
-                        enableVerticalRendering: false,
-                        columnSettings: [
-                            {
-                                columnKey: "EmpCode",
-                                classes: "ui-hidden-tablet"
-                            }
-                        ]
-                    },
                     {
                         name: "Paging",
                         type: "local",

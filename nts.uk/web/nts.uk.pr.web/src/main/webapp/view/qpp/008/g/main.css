@@ -60,3 +60,7 @@
 .yellow{
 	background-color: yellow;
 }
+.ui-iggrid-header,
+.ui-widget-header {
+	text-align: center !important;
+}
