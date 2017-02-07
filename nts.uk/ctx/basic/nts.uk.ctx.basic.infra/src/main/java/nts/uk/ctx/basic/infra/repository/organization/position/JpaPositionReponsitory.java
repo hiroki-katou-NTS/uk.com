@@ -2,6 +2,7 @@ package nts.uk.ctx.basic.infra.repository.organization.position;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -23,6 +24,17 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		val domain = Position.createFromJavaType(GeneralDate.localDate(entity.endYm), entity.jobName, entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.strYm), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCd, entity.memo);
 
 		return domain;
+	}
+	
+	private CmnmtJobTittle toEntityPK(Position domain) {
+		val entity = new CmnmtJobTittle();
+
+		entity.cmnmtJobTittlePK = new CmnmtJobTittlePK();
+		entity.cmnmtJobTittlePK.companyCd = domain.getCompanyCode();
+		entity.cmnmtJobTittlePK.jobCode = domain.getJobCode().v();
+		entity.cmnmtJobTittlePK.historyID = domain.getHistoryID();
+		
+		return entity;
 	}
 
 	private CmnmtJobTittle toEntity(Position domain) {
@@ -57,6 +69,14 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		objectKey.companyCd = companyCode;
 
 		this.commandProxy().remove(CmnmtJobTittle.class, objectKey);
+	}
+	
+	@Override
+	public void remove(List<Position> details) {
+		List<CmnmtJobTittle> cmnmtJobTittlePKs = details.stream().map(
+					detail -> {return this.toEntityPK(detail);}
+				).collect(Collectors.toList());
+		this.commandProxy().removeAll(CmnmtJobTittlePK.class, cmnmtJobTittlePKs);
 	}
 
 	@Override

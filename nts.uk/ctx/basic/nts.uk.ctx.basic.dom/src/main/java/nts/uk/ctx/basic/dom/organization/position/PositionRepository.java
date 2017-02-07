@@ -31,4 +31,6 @@ public interface PositionRepository {
 	void update(Position position);
 
 	void remove(String companyCode);
+
+	void remove(List<Position> details);
 }
