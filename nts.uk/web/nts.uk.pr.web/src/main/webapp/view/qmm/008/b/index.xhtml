@@ -15,37 +15,42 @@
 					height : 350
 				};
 			</script>
-<!-- 			<com:stylefile path="../catalog/catalog.css" /> -->
+			<!-- 			<com:stylefile path="../catalog/catalog.css" /> -->
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
-<!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
+			<!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="content" class="cf">
-					<table class="border_none" >
+					<table class="border_none">
 						<tr>
 							<td class="border_none" colspan="2">新たに作成する履歴の、作成情報を入力してください。</td>
 						</tr>
 						<tr>
 							<td class="border_none"><div data-bind="ntsFormLabel: {}">コード/名称</div></td>
-							<td class="border_none"><span data-bind="text: officeCodeName"></span></td>
+							<td class="border_none"><span
+								data-bind="text: officeCodeName"></span></td>
 						</tr>
 						<tr>
-							<td class="border_none"><div data-bind="ntsFormLabel: {required: true}">期間</div></td>
-							<td class="border_none"><div data-bind="with: inp_001">
-									<input
-										data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required}" />
+							<td class="border_none"><div
+									data-bind="ntsFormLabel: {required: true}">期間</div></td>
+							<td class="border_none"><div
+									data-bind="ntsDatePicker: {
+									value: addDate, 
+									dateFormat: 'yyyy/MM'}">
 								</div></td>
-								<td>(平成28年04月) ~ 9999/12</td>
+							<td>(平成28年04月) ~ 9999/12</td>
 						</tr>
 						<tr>
-							<td class="border_none"><div data-bind="ntsFormLabel: {required: true}">履歴の引継ぎ</div></td>
-							<td class="border_none"><div id="first-list" data-bind="ntsRadioBoxGroup: {options: listOptions,
+							<td class="border_none"><div
+									data-bind="ntsFormLabel: {required: true}">履歴の引継ぎ</div></td>
+							<td class="border_none"><div id="first-list"
+									data-bind="ntsRadioBoxGroup: {options: listOptions,
 											optionsText: 'name',
 											value: selectedValue}"></div></td>
 						</tr>
@@ -53,7 +58,9 @@
 					<div>
 						<hr />
 					</div>
-					<button class="proceed">決定</button><button data-bind="click: CloseModalSubWindow" style="float:right;" >キャンセル</button>
+					<button class="proceed x-large">決定</button>
+					<button data-bind="click: CloseModalSubWindow"
+						style="float: right;">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

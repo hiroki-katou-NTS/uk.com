@@ -14,9 +14,12 @@ module nts.uk.pr.view.qmm011.a {
     import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
     import HistoryAccidentInsuranceRateDto = service.model.HistoryAccidentInsuranceRateDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
+    import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     export module viewmodel {
         export class ScreenModel {
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>;
+            //Update or Add To service 1 add 2 update
+            typeAction: KnockoutObservable<number>;
             //雇用保険 detail B
             lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryUnemployeeInsuranceRateDto>;
             unemployeeInsuranceRateModel: KnockoutObservable<UnemployeeInsuranceRateModel>;
@@ -57,7 +60,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             }
             //open dialog edit HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
-            openEditHistoryUnemployeeInsuranceRate() {
+            private openEditHistoryUnemployeeInsuranceRate() {
                 var self = this;
                 var historyId = self.selectionHistoryUnemployeeInsuranceRate();
                 nts.uk.ui.windows.setShared("historyId", historyId);
@@ -70,14 +73,14 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             //open dialog add HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
-            openAddHistoryUnemployeeInsuranceRate() {
+            private openAddHistoryUnemployeeInsuranceRate() {
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
                 });
             }
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
-            openEditInsuranceBusinessType() {
+            private openEditInsuranceBusinessType() {
                 var self = this;
                 var historyId = self.selectionHistoryAccidentInsuranceRate();
                 nts.uk.ui.windows.setShared("historyId", historyId);
@@ -87,7 +90,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             //open dialog edit HistoryAccidentInsurance => show view model xhtml (action event edit)
-            openEditHistoryAccidentInsuranceRate() {
+            private openEditHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
                 var historyId = this.selectionHistoryAccidentInsuranceRate();
@@ -98,7 +101,7 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             //open dialog add HistoryAccidentInsuranceRate => show view model xhtml (action event add)
-            openAddHistoryAccidentInsuranceRate() {
+            private openAddHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
@@ -107,30 +110,44 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
             //show HistoryUnemployeeInsurance (change event)
-            showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate: string) {
+            private showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate: string) {
                 var self = this;
                 self.findHisotryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                 self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
             }
+            //action save HistoryUnemployeeInsurance Onlick connection service
+            private saveHistoryUnemployeeInsurance(typeActionUnemployeeInsuranceRate: number){
+                var self=this;
+                //add
+                if(typeActionUnemployeeInsuranceRate==TypeActionInsuranceRate.add){
+                    service.addUnemployeeInsuranceRate();    
+                }
+                //update
+                else {
+                    service.updateUnemployeeInsuranceRate();    
+                }
+                return true;
+            }
             //show HistoryAccidentInsurance (change event)
-            showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate: string) {
+            private showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate: string) {
                 var self = this;
                 self.findHistoryAccidentInsuranceRate(selectionHistoryAccidentInsuranceRate);
                 self.detailHistoryAccidentInsuranceRate(selectionHistoryAccidentInsuranceRate);
             }
             // startPage => show view model xhtml (constructor)
-            startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 self.findAllHisotryUnemployeeInsuranceRate().done(data => {
                     self.findAllHistoryAccidentInsuranceRate().done(data => {
+                        self.typeAction = ko.observable(2);//Set update type
                         dfd.resolve(self);
                     });
                 });
                 return dfd.promise();
             }
             //find add HisotryUnemployeeInsuranceRate => show view model xhtml (constructor)
-            findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<any> {
+            private findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllHisotryUnemployeeInsuranceRate().done(data => {
@@ -149,7 +166,7 @@ module nts.uk.pr.view.qmm011.a {
                 return dfd.promise();
             }
             //find HisotryUnemployeeInsuranceRate => show view model xhtml (action event)
-            findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
+            private findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findHisotryUnemployeeInsuranceRate(historyId).done(data => {
@@ -160,7 +177,7 @@ module nts.uk.pr.view.qmm011.a {
                 return dfd.promise();
             }
             //find HistoryAccidentInsuranceRate => show view model xhtml (action event)
-            findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
+            private findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findHistoryAccidentInsuranceRate(historyId).done(data => {
@@ -171,7 +188,7 @@ module nts.uk.pr.view.qmm011.a {
                 return dfd.promise();
             }
             //detail HistoryUnemployeeInsuranceRate => show view model xhtml (action event)
-            detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
+            private detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.detailHistoryUnemployeeInsuranceRate(historyId).done(data => {
@@ -181,7 +198,7 @@ module nts.uk.pr.view.qmm011.a {
                 return dfd.promise();
             }
             //find All HistoryAccidentInsuranceRate => Show View model xhtml (constructor)
-            findAllHistoryAccidentInsuranceRate(): JQueryPromise<any> {
+            private findAllHistoryAccidentInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllHistoryAccidentInsuranceRate().done(data => {
@@ -199,7 +216,7 @@ module nts.uk.pr.view.qmm011.a {
                 return dfd.promise();
             }
             //detail HistoryAccidentInsuranceRate => show view model xhtml (action event)
-            detailHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
+            private detailHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.detailHistoryAccidentInsuranceRate(historyId).done(data => {

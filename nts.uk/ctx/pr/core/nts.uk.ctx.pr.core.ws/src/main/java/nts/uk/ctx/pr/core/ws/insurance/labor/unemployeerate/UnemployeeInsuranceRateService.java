@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemDto;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSettingDto;
@@ -49,7 +50,9 @@ public class UnemployeeInsuranceRateService extends WebService {
 	public UnemployeeInsuranceRateDto detailHistory(@PathParam("historyId") String historyId) {
 		UnemployeeInsuranceRateDto unemployeeInsuranceRate = new UnemployeeInsuranceRateDto();
 		unemployeeInsuranceRate.setCompanyCode("companyCode001");
-		unemployeeInsuranceRate.setHistoryId(historyId);
+		HistoryUnemployeeInsuranceDto historyUnemployeeInsurance = new HistoryUnemployeeInsuranceDto();
+		historyUnemployeeInsurance.setHistoryId(historyId);
+		unemployeeInsuranceRate.setHistoryInsurance(historyUnemployeeInsurance);
 		List<UnemployeeInsuranceRateItemDto> rateItems = new ArrayList<UnemployeeInsuranceRateItemDto>();
 		UnemployeeInsuranceRateItemDto umInsuranceRateItemAgroforestry = new UnemployeeInsuranceRateItemDto();
 		umInsuranceRateItemAgroforestry.setCareerGroup(0);// CareerGroup.Agroforestry
@@ -103,7 +106,8 @@ public class UnemployeeInsuranceRateService extends WebService {
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")

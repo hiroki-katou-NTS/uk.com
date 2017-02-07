@@ -13,25 +13,28 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                getListOfficeItem: "",
-                                getAllRoundingItem: "",
-                                getHealthInsuranceItemDetail: "",
-                                getPensionItemDetail: ""
+                                getAllOfficeItem: "pr/insurance/social/findall",
+                                getAllRoundingItem: "list/rounding",
+                                getHealthInsuranceItemDetail: "health/list",
+                                getPensionItemDetail: "pension/list"
                             };
                             function findInsuranceOffice(key) {
                                 var dfd = $.Deferred();
-                                var findPath = servicePath.getListOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-                                var data = null;
-                                var OfficeItemList = [
-                                    new model.finder.InsuranceOfficeItemDto('id01', 'A 事業所', 'code1', [
-                                        new model.finder.InsuranceOfficeItemDto('child01', '2017/04 ~ 9999/12', 'chilcode1', []),
-                                        new model.finder.InsuranceOfficeItemDto('child02', '2016/04 ~ 2017/03', 'chilcode2', [])
-                                    ]),
-                                    new model.finder.InsuranceOfficeItemDto('id02', 'B 事業所', 'code2', [])];
-                                dfd.resolve(OfficeItemList);
+                                var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
+                                nts.uk.request.ajax(findPath).done(function (data) {
+                                    var OfficeItemList = convertToTreeList(data);
+                                    dfd.resolve(OfficeItemList);
+                                });
                                 return dfd.promise();
                             }
                             service.findInsuranceOffice = findInsuranceOffice;
+                            function convertToTreeList(data) {
+                                var OfficeItemList = [];
+                                data.forEach(function (item, index) {
+                                    OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, []));
+                                });
+                                return OfficeItemList;
+                            }
                             function findAllRounding() {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllRoundingItem;
@@ -86,11 +89,18 @@ var nts;
                                         new model.finder.HealthInsuranceRateItemDto(2263, model.PaymentType.Salary, model.HealthInsuranceType.General),
                                         new model.finder.HealthInsuranceRateItemDto(2634, model.PaymentType.Salary, model.HealthInsuranceType.General),
                                     ];
+                                    var arrayRoundingMethod = [
+                                        new model.finder.RoundingItemDto("roundingcode1", "切り上げ"),
+                                        new model.finder.RoundingItemDto("roundingcode2", "切捨て"),
+                                        new model.finder.RoundingItemDto("roundingcode3", "四捨五入"),
+                                        new model.finder.RoundingItemDto("roundingcode4", "五捨五超入"),
+                                        new model.finder.RoundingItemDto("roundingcode5", "五捨六入")
+                                    ];
                                     var roundingMethods = [
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "op1"), new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "op2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "op3")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
+                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
                                     ];
                                     var data = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 2, rateItems, roundingMethods, 20000);
                                 }

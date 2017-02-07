@@ -1,15 +1,19 @@
-package nts.uk.ctx.pr.core.app.finder.healthinsurance.dto;
+package nts.uk.ctx.pr.core.app.find.insurance.social.healthrate;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 @Builder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class HealthInsuranceRateDto {
 	/** The history id. */
 	// historyId

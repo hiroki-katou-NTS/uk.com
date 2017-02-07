@@ -1,10 +1,10 @@
 package nts.uk.ctx.pr.core.app.command.insurance.social;
+
 import lombok.Data;
-import nts.uk.ctx.pr.core.app.finder.socialoffice.dto.SocialInsuranceOfficeDto;
+import nts.uk.ctx.core.app.insurance.social.SocialInsuranceOfficeInDto;
 
 @Data
-// TODO add implements for class
 public class RegisterSocialOfficeCommand {
-	
-	private SocialInsuranceOfficeDto SIODto;
+
+	private SocialInsuranceOfficeInDto SIODto;
 }

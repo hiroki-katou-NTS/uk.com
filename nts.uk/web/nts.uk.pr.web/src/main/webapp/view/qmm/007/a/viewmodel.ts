@@ -159,10 +159,35 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.getUnitPriceHistoryList().done(data => {
-                    self.historyList(data);
+                    self.historyList(self.convertToTreeList(data));
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+
+            /**
+             * Convert list from dto to treegrid
+             */
+            private convertToTreeList(unitPriceHistoryList: Array<UnitPriceHistoryDto>): Array<UnitPriceHistoryNode> {
+                var groupByCode = {};
+
+                // group by unit price code
+                unitPriceHistoryList.forEach(item => {
+                    var c = item.unitPriceCode;
+                    groupByCode[c] = item;
+                });
+                // convert groupByCode to array
+                var arr = Object.keys(groupByCode).map(key => groupByCode[key]);
+
+                // convert to tree node
+                var parentNodes = arr.map(item => new UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, '', '', false, []));
+                var childNodes = unitPriceHistoryList.map(item => new UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true));
+
+                var treeList: Array<UnitPriceHistoryNode> = parentNodes.map(parent => {
+                    childNodes.forEach(child => parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''));
+                    return parent;
+                });
+                return treeList;
             }
         }
 
@@ -199,6 +224,34 @@ module nts.uk.pr.view.qmm007.a {
                 this.memo = ko.observable('');
             }
         }
+
+        export class UnitPriceHistoryNode {
+                id: string
+                unitPriceCode: string;
+                unitPriceName: string;
+                startMonth: string;
+                endMonth: string;
+                nodeText: string;
+                isChild: boolean;
+                childs: Array<UnitPriceHistoryNode>;
+                constructor(id: string,
+                    unitPriceCode: string,
+                    unitPriceName: string,
+                    startMonth: string,
+                    endMonth: string,
+                    isChild: boolean,
+                    childs?: Array<UnitPriceHistoryNode>) {
+                    var self = this;
+                    self.isChild = isChild;
+                    self.unitPriceCode = unitPriceCode;
+                    self.unitPriceName = unitPriceName;
+                    self.startMonth = startMonth;
+                    self.endMonth = endMonth;
+                    self.id = self.isChild == true ? id : id + id;
+                    self.childs = childs;
+                    self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
+                }
+            }
 
     }
 }

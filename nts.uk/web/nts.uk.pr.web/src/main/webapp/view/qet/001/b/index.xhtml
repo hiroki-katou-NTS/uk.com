@@ -20,8 +20,8 @@
 				// TODO: Code validate.
 			</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.OutputSettingCode
-				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.OutputSettingName
+				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode
+				nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName
   			</com:ValidatorScript>
 		</ui:define>
 
@@ -67,14 +67,14 @@
 							<div class="caret-right caret-background">
 							<div id="code-name-input">
 								<div class="flex valign-center">
-									<div id="code-name-label" data-bind="ntsFormLabel: {constraint: ['OutputSettingCode','OutputSettingName'],
+									<div id="code-name-label" data-bind="ntsFormLabel: {constraint: ['WLOutputSettingCode','WLOutputSettingName'],
 										 required: true}">コード/名称</div>
 									<input id="code-input" data-bind="ntsTextEditor: {value: settingCode, 
 													enable: isCreateMode() &amp;&amp; !$parent.isLoading(),
-													constraint: 'OutputSettingCode'}"></input>
+													constraint: 'WLOutputSettingCode'}"></input>
 									<div class="name-input">
 										<input id="name-input" data-bind="ntsTextEditor: {value: settingName,
-														constraint: 'OutputSettingName', enable: !$parent.isLoading()}"></input>
+														constraint: 'WLOutputSettingName', enable: !$parent.isLoading()}"></input>
 									</div>
 								</div>
 								<div id="print-one-page-checkbox" data-bind="ntsCheckBox: { checked: isPrintOnePageEachPer }">一人当たりの印刷枚数を1枚にする</div>

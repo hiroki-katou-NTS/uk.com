@@ -29,6 +29,7 @@ module nts.uk.pr.view.qmm011.d {
             }
             addHistoryInfo() {
                 var self = this;
+                nts.uk.ui.windows.close();
                 if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
                     self.addHistoryInfoUnemployeeInsurance();
                 } else {

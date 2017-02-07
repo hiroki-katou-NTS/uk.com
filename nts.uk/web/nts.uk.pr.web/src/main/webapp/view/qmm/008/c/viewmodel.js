@@ -26,12 +26,7 @@ var nts;
                                     ]);
                                     self.listOptions = ko.observableArray([new optionsModel(1, "基本情報"), new optionsModel(2, "保険料マスタの情報")]);
                                     self.selectedValue = ko.observable(new optionsModel(1, ""));
-                                    self.modalValue = ko.observable("Goodbye world!");
                                     self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
-                                    self.singleSelectedCode = ko.observable(null);
-                                    self.selectedCodes = ko.observableArray([]);
-                                    self.index = 0;
-                                    self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
                                     self.tabs = ko.observableArray([
                                         { id: 'tab-1', title: '基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: 'tab-2', title: '保険料マスタの情報', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -46,9 +41,31 @@ var nts;
                                     }));
                                 }
                                 ScreenModel.prototype.start = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    self.loadInsuranceOfficeData().done(function () {
+                                        if (self.InsuranceOfficeData().length > 0) {
+                                        }
+                                        else {
+                                        }
+                                        dfd.resolve(null);
+                                    });
+                                    self.getAllRounding().done(function () {
+                                        dfd.resolve(null);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadInsuranceOfficeData = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    service.findInsuranceOffice(self.searchKey()).done(function (data) {
+                                        self.InsuranceOfficeList(data);
+                                        dfd.resolve(data);
+                                    });
+                                    return dfd.promise();
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
-                                    nts.uk.ui.windows.setShared("insuranceOfficeChildValue", this.modalValue(), this.isTransistReturnData());
+                                    nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;

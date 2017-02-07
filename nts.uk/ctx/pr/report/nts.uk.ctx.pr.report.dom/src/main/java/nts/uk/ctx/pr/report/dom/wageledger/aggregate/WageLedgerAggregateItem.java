@@ -27,10 +27,10 @@ public class WageLedgerAggregateItem {
 	private PaymentType paymentType;
 	
 	/** The code. */
-	private AggregateItemCode code;
+	private WLAggregateItemCode code;
 	
 	/** The name. */
-	private AggregateItemName name;
+	private WLAggregateItemName name;
 	
 	/** The show name zero value. */
 	private boolean showNameZeroValue;

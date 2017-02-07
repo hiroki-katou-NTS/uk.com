@@ -110,10 +110,25 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.getUnitPriceHistoryList().done(function (data) {
-                                        self.historyList(data);
+                                        self.historyList(self.convertToTreeList(data));
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.convertToTreeList = function (unitPriceHistoryList) {
+                                    var groupByCode = {};
+                                    unitPriceHistoryList.forEach(function (item) {
+                                        var c = item.unitPriceCode;
+                                        groupByCode[c] = item;
+                                    });
+                                    var arr = Object.keys(groupByCode).map(function (key) { return groupByCode[key]; });
+                                    var parentNodes = arr.map(function (item) { return new UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, '', '', false, []); });
+                                    var childNodes = unitPriceHistoryList.map(function (item) { return new UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true); });
+                                    var treeList = parentNodes.map(function (parent) {
+                                        childNodes.forEach(function (child) { return parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''); });
+                                        return parent;
+                                    });
+                                    return treeList;
                                 };
                                 return ScreenModel;
                             }());
@@ -138,6 +153,21 @@ var nts;
                                 return UnitPriceHistoryModel;
                             }());
                             viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
+                            var UnitPriceHistoryNode = (function () {
+                                function UnitPriceHistoryNode(id, unitPriceCode, unitPriceName, startMonth, endMonth, isChild, childs) {
+                                    var self = this;
+                                    self.isChild = isChild;
+                                    self.unitPriceCode = unitPriceCode;
+                                    self.unitPriceName = unitPriceName;
+                                    self.startMonth = startMonth;
+                                    self.endMonth = endMonth;
+                                    self.id = self.isChild == true ? id : id + id;
+                                    self.childs = childs;
+                                    self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
+                                }
+                                return UnitPriceHistoryNode;
+                            }());
+                            viewmodel.UnitPriceHistoryNode = UnitPriceHistoryNode;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));

@@ -5,13 +5,14 @@
 package nts.uk.ctx.pr.report.dom.insurance;
 
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class ChecklistPrintSetting.
  */
 @Getter
-public class ChecklistPrintSetting {
+public class ChecklistPrintSetting extends AggregateRoot{
 	
 	/** The company code. */
 	private CompanyCode companyCode;

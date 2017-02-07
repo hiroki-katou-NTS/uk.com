@@ -18,17 +18,10 @@ var nts;
                                     self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
                                     self.pensionModel = ko.observable(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
                                     self.InsuranceOfficeList = ko.observableArray([]);
-                                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.InsuranceOfficeList(), "childs"));
-                                    self.singleSelectedCode = ko.observable(null);
                                     self.officeSelectedCode = ko.observable('');
-                                    self.index = 0;
-                                    self.headers = ko.observableArray(["Item Value Header", "Item Text Header", "Auto generated Field"]);
+                                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.InsuranceOfficeList(), "childs"));
                                     self.searchKey = ko.observable('');
                                     self.roundingList = ko.observableArray([]);
-                                    self.healthInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                                        grouplength: 3,
-                                        decimallength: 2
-                                    }));
                                     self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
                                         width: "100",
@@ -57,21 +50,13 @@ var nts;
                                         { code: '2', name: 'しない' }
                                     ]);
                                     self.pensionCalculateSelectedCode = ko.observable(1);
-                                    self.date = ko.observable(new Date('2016/12/01'));
-                                    self.show = ko.observable(true);
-                                    self.itemList = ko.observableArray([]);
-                                    self.btnText = ko.computed(function () { if (self.show())
-                                        return "-"; return "+"; });
-                                    for (var i = 1; i <= 12; i++) {
-                                        self.itemList.push({ index: i });
-                                    }
-                                    self.value = ko.observable("Hello world!");
                                     self.isTransistReturnData = ko.observable(false);
                                     self.healthDate = ko.observable('2016/04');
-                                    self.pensionTimeInput = ko.observable("time");
+                                    self.pensionDate = ko.observable("2016/04");
                                     self.healthTotal = ko.observable(5400000);
                                     self.pensionCurrency = ko.observable(1500000);
                                     self.pensionOwnerRate = ko.observable(1.5);
+                                    self.fundInputEnable = ko.observable(true);
                                     self.officeSelectedCode.subscribe(function (officeSelectedCode) {
                                         if (officeSelectedCode != null || officeSelectedCode != undefined) {
                                             $.when(self.load(officeSelectedCode)).done(function () {
@@ -79,9 +64,15 @@ var nts;
                                             });
                                         }
                                     });
+                                    self.pensionModel().funInputOption.subscribe(function (pensionFundInputOptions) {
+                                        if (self.fundInputEnable()) {
+                                            self.fundInputEnable(false);
+                                        }
+                                        else {
+                                            self.fundInputEnable(true);
+                                        }
+                                    });
                                 }
-                                ScreenModel.prototype.testObservable = function () {
-                                };
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -168,15 +159,6 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.resetSelection = function () {
-                                    var self = this;
-                                    self.filteredData(self.dataSource());
-                                    self.singleSelectedCode('0002');
-                                    self.officeSelectedCode(['002']);
-                                };
-                                ScreenModel.prototype.toggle = function () {
-                                    this.show(!this.show());
-                                };
                                 ScreenModel.prototype.resize = function () {
                                     if ($("#tabs-complex").width() > 700)
                                         $("#tabs-complex").width(700);
@@ -203,31 +185,33 @@ var nts;
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
                                         var currentInsuranceOfficeList = self.InsuranceOfficeList();
-                                        currentInsuranceOfficeList.forEach(function (item, index) {
-                                            if (item.code == returnValue.code) {
-                                                currentInsuranceOfficeList[index] = returnValue;
-                                            }
-                                        });
+                                        if (returnValue != undefined) {
+                                            currentInsuranceOfficeList.forEach(function (item, index) {
+                                                if (item.code == returnValue.code) {
+                                                    currentInsuranceOfficeList[index] = returnValue;
+                                                }
+                                            });
+                                        }
                                         self.InsuranceOfficeList([]);
                                         self.InsuranceOfficeList(currentInsuranceOfficeList);
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
-                                    nts.uk.ui.windows.setShared("listOfficeOfParentValue", this.value());
+                                    nts.uk.ui.windows.setShared("listOfficeOfParentValue", "");
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
-                                    nts.uk.ui.windows.setShared("dataParentValue", this.value());
+                                    nts.uk.ui.windows.setShared("dataParentValue", "");
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/d/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePension = function () {
-                                    nts.uk.ui.windows.setShared("dataParentValue", this.value());
+                                    nts.uk.ui.windows.setShared("dataParentValue", "");
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");

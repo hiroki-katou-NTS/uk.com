@@ -16,10 +16,10 @@ import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 public class WageLedgerOutputSetting {
 	
 	/** The code. */
-	private OutputSettingCode code;
+	private WLOutputSettingCode code;
 	
 	/** The name. */
-	private OutputSettingName name;
+	private WLOutputSettingName name;
 	
 	/** The once sheet per person. */
 	private boolean onceSheetPerPerson;

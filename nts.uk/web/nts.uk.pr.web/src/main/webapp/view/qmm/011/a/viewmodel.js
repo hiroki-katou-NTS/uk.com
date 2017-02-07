@@ -15,6 +15,7 @@ var nts;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
+                        var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -78,6 +79,16 @@ var nts;
                                     self.findHisotryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                                     self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                                 };
+                                ScreenModel.prototype.saveHistoryUnemployeeInsurance = function (typeActionUnemployeeInsuranceRate) {
+                                    var self = this;
+                                    if (typeActionUnemployeeInsuranceRate == TypeActionInsuranceRate.add) {
+                                        a.service.addUnemployeeInsuranceRate();
+                                    }
+                                    else {
+                                        a.service.updateUnemployeeInsuranceRate();
+                                    }
+                                    return true;
+                                };
                                 ScreenModel.prototype.showchangeHistoryAccidentInsurance = function (selectionHistoryAccidentInsuranceRate) {
                                     var self = this;
                                     self.findHistoryAccidentInsuranceRate(selectionHistoryAccidentInsuranceRate);
@@ -88,6 +99,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.findAllHisotryUnemployeeInsuranceRate().done(function (data) {
                                         self.findAllHistoryAccidentInsuranceRate().done(function (data) {
+                                            self.typeAction = ko.observable(2);
                                             dfd.resolve(self);
                                         });
                                     });

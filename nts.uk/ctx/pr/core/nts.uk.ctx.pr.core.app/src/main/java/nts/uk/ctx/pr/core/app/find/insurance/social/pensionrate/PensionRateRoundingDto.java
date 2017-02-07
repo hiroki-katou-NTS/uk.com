@@ -1,13 +1,12 @@
-package nts.uk.ctx.pr.core.app.finder.healthinsurance.dto;
+package nts.uk.ctx.pr.core.app.find.insurance.social.pensionrate;
 
-import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 
-@Builder
 @Data
-public class HealthInsuranceRoundingDto {
+public class PensionRateRoundingDto {
+
 	/** The pay type. */
 	private PaymentType payType;
 
