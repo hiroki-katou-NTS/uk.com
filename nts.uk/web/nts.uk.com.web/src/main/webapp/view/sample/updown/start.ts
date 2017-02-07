@@ -5,8 +5,9 @@ __viewContext.ready(function() {
         items1: KnockoutObservableArray<Node>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
-        test: KnockoutObservable<any>;
+        test: KnockoutObservableArray<any>;
         selectedCode: KnockoutObservableArray<any>;
+        testSingle: KnockoutObservable<any>;
         columns2: KnockoutObservableArray<any>;
 
         constructor() {
@@ -53,6 +54,7 @@ __viewContext.ready(function() {
             this.selectedCode = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);
             this.test = ko.observable(null);
+            this.testSingle = ko.observable(null);
         }
         
         remove(){

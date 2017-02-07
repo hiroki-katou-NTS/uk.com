@@ -2,31 +2,29 @@ package nts.uk.ctx.pr.core.app.find.insurance.social.healthrate;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import lombok.Getter;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 @Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class HealthInsuranceRateDto {
 	/** The history id. */
-	// historyId
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The office code. */
-	private OfficeCode officeCode;
+	private String officeCode;
 
-	/** The apply range. */
-	private MonthRange applyRange;
+	/** The start month. */
+	private String startMonth;
+
+	/** The end month. */
+	private String endMonth;
 
 	/** The auto calculate. */
 	private Boolean autoCalculate;
@@ -35,8 +33,23 @@ public class HealthInsuranceRateDto {
 	private Long maxAmount;
 
 	/** The rate items. */
-	private List<InsuranceRateItemDto> rateItems;
+	private List<InsuranceRateItem> rateItems;
 
 	/** The rounding methods. */
-	private List<HealthInsuranceRoundingDto> roundingMethods;
+	private List<HealthInsuranceRounding> roundingMethods;
+
+	/**
+	 * From domain.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the health insurance rate dto
+	 */
+	public static HealthInsuranceRateDto fromDomain(HealthInsuranceRate domain) {
+		return new HealthInsuranceRateDto(domain.getHistoryId(), domain.getCompanyCode().v(),
+				domain.getOfficeCode().v(), domain.getApplyRange().getStartMonth().toString(),
+				domain.getApplyRange().getEndMonth().toString(), domain.getAutoCalculate(), domain.getMaxAmount(),
+				domain.getRateItems(), domain.getRoundingMethods());
+
+	}
 }

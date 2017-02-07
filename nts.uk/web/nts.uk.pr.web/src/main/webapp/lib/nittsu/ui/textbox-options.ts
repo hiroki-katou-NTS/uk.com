@@ -24,12 +24,12 @@ module nts.uk.ui.option {
         constructor(option?: ITextEditorOption) {
             super();
             // Default value
-            this.textmode = (option && option.textmode) ? option.textmode : "text";
-            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-            this.width = (option && option.width) ? option.width : "";
-            this.textalign = (option && option.textalign) ? option.textalign : "left";
-            this.filldirection = (option && option.filldirection) ? option.filldirection : "right";
-            this.fillcharacter = (option && option.fillcharacter) ? option.fillcharacter : "0";
+            this.textmode = (option !== undefined && option.textmode !== undefined) ? option.textmode : "text";
+            this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+            this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+            this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+            this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
+            this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
         }
     }
 
@@ -47,10 +47,10 @@ module nts.uk.ui.option {
         constructor(option?: ITimeEditorOption) {
             super();
             // Default value
-            this.inputFormat = (option && option.inputFormat) ? option.inputFormat : "yearmonthdate";
-            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-            this.width = (option && option.width) ? option.width : "";
-            this.textalign = (option && option.textalign) ? option.textalign : "left";
+            this.inputFormat = (option !== undefined && option.inputFormat !== undefined) ? option.inputFormat : "yearmonthdate";
+            this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+            this.width = (option !== undefined && option.width !== undefined ) ? option.width : "";
+            this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
         }
     }
 
@@ -65,6 +65,8 @@ module nts.uk.ui.option {
         placeholder?: string;
         width?: string;
         textalign?: string;
+        symbolChar?: string;
+        symbolPosition?: string;
     }
 
     export class NumberEditorOption extends EditorOptionBase {
@@ -72,17 +74,21 @@ module nts.uk.ui.option {
         grouplength: number;
         decimalseperator: string;
         decimallength: number;
+        symbolChar: string;
+        symbolPosition: string;
         
         constructor(option?: INumberEditorOption) {
             super();
             // Default value
-            this.groupseperator = (option && option.groupseperator) ? option.groupseperator : ",";
-            this.grouplength = (option && option.grouplength) ? option.grouplength : 0;
-            this.decimalseperator = (option && option.decimalseperator) ? option.decimalseperator : ".";
-            this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
-            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-            this.width = (option && option.width) ? option.width : "";
-            this.textalign = (option && option.textalign) ? option.textalign : "left";
+            this.groupseperator = (option !== undefined && option.groupseperator !== undefined) ? option.groupseperator : ",";
+            this.grouplength = (option !== undefined && option.grouplength !== undefined) ? option.grouplength : 0;
+            this.decimalseperator = (option !== undefined && option.decimalseperator !== undefined) ? option.decimalseperator : ".";
+            this.decimallength = (option !== undefined && option.decimallength !== undefined) ? option.decimallength : 0;
+            this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+            this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+            this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
+            this.symbolChar = (option !== undefined && option.symbolChar !== undefined) ? option.symbolChar : "";
+            this.symbolPosition = (option !== undefined && option.symbolPosition !== undefined) ? option.symbolPosition : "right";
         }
     }
 
@@ -93,15 +99,16 @@ module nts.uk.ui.option {
         constructor(option?: INumberEditorOption) {
             super();
             // Default value
-            this.groupseperator = (option && option.groupseperator) ? option.groupseperator : ",";
-            this.grouplength = (option && option.grouplength) ? option.grouplength : 0;
-            this.decimalseperator = (option && option.decimalseperator) ? option.decimalseperator : ".";
-            this.decimallength = (option && option.decimallength) ? option.decimallength : 0;
-            this.currencyformat = (option && option.currencyformat) ? option.currencyformat : "JPY";
-            this.currencyposition = (option && option.currencyposition) ? option.currencyposition : getCurrencyPosition(this.currencyformat);
-            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-            this.width = (option && option.width) ? option.width : "";
-            this.textalign = (option && option.textalign) ? option.textalign : "left";
+            this.groupseperator = (option !== undefined && option.groupseperator !== undefined) ? option.groupseperator : ",";
+            this.grouplength = (option !== undefined && option.grouplength !== undefined) ? option.grouplength : 0;
+            this.decimalseperator = (option !== undefined && option.decimalseperator !== undefined) ? option.decimalseperator : ".";
+            this.decimallength = (option !== undefined && option.decimallength !== undefined) ? option.decimallength : 0;
+            this.currencyformat = (option !== undefined && option.currencyformat !== undefined) ? option.currencyformat : "JPY";
+            this.currencyposition = (option !== undefined && option.currencyposition !== undefined)
+                ? option.currencyposition : getCurrencyPosition(this.currencyformat);
+            this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+            this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+            this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
         }
     }
     
@@ -123,10 +130,10 @@ module nts.uk.ui.option {
         constructor(option?: IMultilineEditorOption) {
             super();
             // Default value
-            this.resizeable = (option && option.resizeable !== undefined) ? option.resizeable : false;
-            this.placeholder = (option && option.placeholder) ? option.placeholder : "";
-            this.width = (option && option.width) ? option.width : "";
-            this.textalign = (option && option.textalign) ? option.textalign : "left";
+            this.resizeable = (option !== undefined && option.resizeable !== undefined) ? option.resizeable : false;
+            this.placeholder = (option !== undefined && option.placeholder !== undefined) ? option.placeholder : "";
+            this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
+            this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "left";
         }
     }
     

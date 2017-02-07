@@ -117,120 +117,126 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				layout.getHistoryId());
 		this.categoryRepo.add(category);
 		//データベース登録[明細書マスタ行.INS-1] を実施する
-		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "0", 1);
-		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "1", 2);
-		createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, "2", 3);
-		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "3", 1);
-		createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, "4", 2);
-		createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, "5", 1);
-		//データベース登録[明細書マスタ明細.INS-1] を実施する
-		//支給3項目
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.PAYMENT,
-				"F001",
-				"0",
-				9,
-				SumScopeAtr.EXCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.PAYMENT,
-				"F002",
-				"1",
-				9,
-				SumScopeAtr.EXCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.PAYMENT,
-				"F003",
-				"2",
-				9,
-				SumScopeAtr.EXCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
-		
-		//控除9項目
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F101",
-				"3",
-				1,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.MANUAL_ENTRY);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F102",
-				"3",
-				2,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.MANUAL_ENTRY);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F103",
-				"3",
-				3,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.MANUAL_ENTRY);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F104",
-				"3",
-				4,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.MANUAL_ENTRY);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F105",
-				"3",
-				5,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F106",
-				"3",
-				6,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F107",
-				"3",
-				7,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.MANUAL_ENTRY);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F108",
-				"3",
-				8,
-				SumScopeAtr.INCLUDED,
-				CalculationMethod.MANUAL_ENTRY);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.DEDUCTION,
-				"F114",
-				"4",
-				9,
-				SumScopeAtr.EXCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
-		createDetailDefault(layout,
-				companyCode,
-				CategoryAtr.ARTICLES,
-				"F309",
-				"5",
-				9,
-				SumScopeAtr.EXCLUDED,
-				CalculationMethod.SYSTEM_CALCULATION);
+				String autoLineId1 = IdentifierUtil.randomUniqueId();
+				String autoLineId2 = IdentifierUtil.randomUniqueId();
+				String autoLineId3 = IdentifierUtil.randomUniqueId();
+				String autoLineId4 = IdentifierUtil.randomUniqueId();
+				String autoLineId5 = IdentifierUtil.randomUniqueId();
+				String autoLineId6 = IdentifierUtil.randomUniqueId();
+				createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, autoLineId1, 1);
+				createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, autoLineId2, 2);
+				createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, autoLineId3, 3);
+				createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, autoLineId4, 1);
+				createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, autoLineId5, 2);
+				createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, autoLineId6, 1);
+				//データベース登録[明細書マスタ明細.INS-1] を実施する
+				//支給3項目
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.PAYMENT,
+						"F001",
+						autoLineId1,
+						9,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.PAYMENT,
+						"F002",
+						autoLineId2,
+						9,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.PAYMENT,
+						"F003",
+						autoLineId3,
+						9,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
+				
+				//控除9項目
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F101",
+						autoLineId4,
+						1,
+						SumScopeAtr.INCLUDED,
+						CalculationMethod.MANUAL_ENTRY);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F102",
+						autoLineId4,
+						2,
+						SumScopeAtr.INCLUDED,
+						CalculationMethod.MANUAL_ENTRY);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F103",
+						autoLineId4,
+						3,
+						SumScopeAtr.INCLUDED,
+						CalculationMethod.MANUAL_ENTRY);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F104",
+						autoLineId4,
+						4,
+						SumScopeAtr.INCLUDED,
+						CalculationMethod.MANUAL_ENTRY);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F105",
+						autoLineId4,
+						5,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F106",
+						autoLineId4,
+						6,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F107",
+						autoLineId4,
+						7,
+						SumScopeAtr.INCLUDED,
+						CalculationMethod.MANUAL_ENTRY);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F108",
+						autoLineId4,
+						8,
+						SumScopeAtr.INCLUDED,
+						CalculationMethod.MANUAL_ENTRY);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.DEDUCTION,
+						"F114",
+						autoLineId5,
+						9,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
+				createDetailDefault(layout,
+						companyCode,
+						CategoryAtr.ARTICLES,
+						"F309",
+						autoLineId6,
+						9,
+						SumScopeAtr.EXCLUDED,
+						CalculationMethod.SYSTEM_CALCULATION);
 	}
 	private void createDetailDefault(LayoutMaster layout, 
 			String companyCode,
@@ -337,11 +343,11 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 								org.getItemCode(), 
 								org.getAutoLineId(), 
 								org.getItemPosColumn(), 
-								org.getError(), 
+								org.getAlarm(), 
 								org.getCalculationMethod(), 
 								org.getDistribute(), 
 								org.getDisplayAtr(), 
-								org.getAlarm(), 
+								org.getError(), 
 								org.getSumScopeAtr(), 
 								org.getSetOffItemCode(), 
 								org.getCommuteAtr(), 

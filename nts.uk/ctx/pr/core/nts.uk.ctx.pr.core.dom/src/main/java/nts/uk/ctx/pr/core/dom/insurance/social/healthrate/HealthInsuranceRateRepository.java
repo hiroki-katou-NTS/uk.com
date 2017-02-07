@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface HealthInsuranceRateRepository.
@@ -33,7 +34,7 @@ public interface HealthInsuranceRateRepository {
 	 */
     void remove(String id, Long version);
 
-	/**
+	/**  
 	 * Find all.
 	 *
 	 * @param companyCode the company code
@@ -44,8 +45,9 @@ public interface HealthInsuranceRateRepository {
 	/**
 	 * Find by id.
 	 *
+	 * @param <Optional> the generic type
 	 * @param id the id
-	 * @return the pension rate
+	 * @return the health insurance rate
 	 */
-	HealthInsuranceRate findById(String id);
+	Optional<HealthInsuranceRate> findById(String id);
 }

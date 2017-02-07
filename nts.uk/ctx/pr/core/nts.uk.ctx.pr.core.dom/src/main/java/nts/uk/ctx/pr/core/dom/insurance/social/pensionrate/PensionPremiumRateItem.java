@@ -9,7 +9,6 @@ import java.util.Set;
 import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.social.ChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 
 /**
@@ -19,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 public class PensionPremiumRateItem extends AggregateRoot {
 
 	/** The charge rates. */
-	private Set<ChargeRateItem> chargeRates;
+	private Set<PensionChargeRateItem> chargeRates;
 
 	/** The pay type. */
 	private PaymentType payType;
@@ -39,11 +38,12 @@ public class PensionPremiumRateItem extends AggregateRoot {
 	 * @param payType
 	 * @param genderType
 	 */
-	public PensionPremiumRateItem(Set<ChargeRateItem> chargeRates, PaymentType payType, InsuranceGender genderType) {
+	public PensionPremiumRateItem(Set<PensionChargeRateItem> chargeRates, PaymentType payType,
+			InsuranceGender genderType) {
 		super();
 		this.chargeRates = chargeRates;
 		this.payType = payType;
 		this.genderType = genderType;
 	}
-	
+
 }

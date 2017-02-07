@@ -19,7 +19,7 @@ __viewContext.ready(function () {
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null);
+            self.selectedCode = ko.observable(2);
             self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
             self.isMulti = ko.observable(true);

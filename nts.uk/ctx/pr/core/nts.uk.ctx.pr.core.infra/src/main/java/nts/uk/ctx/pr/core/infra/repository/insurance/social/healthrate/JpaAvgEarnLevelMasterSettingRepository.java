@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.Dependent;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.AvgEarnLevelMasterSetting;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.AvgEarnLevelMasterSettingRepository;
 
-@Dependent
+@Stateless
 public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository
 		implements AvgEarnLevelMasterSettingRepository {
 

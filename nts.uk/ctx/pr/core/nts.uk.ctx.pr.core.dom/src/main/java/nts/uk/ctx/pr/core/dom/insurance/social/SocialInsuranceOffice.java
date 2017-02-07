@@ -5,7 +5,9 @@
 package nts.uk.ctx.pr.core.dom.insurance.social;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -20,6 +22,7 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class SocialInsuranceOffice.
  */
+// TODO: @Data -> @Getter
 @Data
 public class SocialInsuranceOffice extends AggregateRoot {
 
@@ -145,6 +148,16 @@ public class SocialInsuranceOffice extends AggregateRoot {
 			String healthInsuCityCode, String healthInsuOfficeSign, String pensionCityCode, String pensionOfficeSign,
 			String healthInsuOfficeCode, String healthInsuAssoCode, Memo memo) {
 		super();
+
+		// Validate required item
+		if (StringUtil.isNullOrEmpty(code.v(), true) || StringUtil.isNullOrEmpty(name.v(), true)
+				|| StringUtil.isNullOrEmpty(picPosition.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+
+		// TODO: Office code duplication check
+		// throw new BusinessException("ER005");
+
 		this.companyCode = companyCode;
 		this.code = code;
 		this.name = name;
@@ -172,7 +185,6 @@ public class SocialInsuranceOffice extends AggregateRoot {
 		this.healthInsuAssoCode = healthInsuAssoCode;
 		this.memo = memo;
 	}
-
 
 	// =================== Memento State Support Method ===================
 
