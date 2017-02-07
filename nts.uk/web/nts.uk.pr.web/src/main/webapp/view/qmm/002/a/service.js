@@ -13,28 +13,35 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                getBankList: ""
+                                getBankList: "basic/system/bank/find/all",
+                                addBranchList: "basic/system/bank/branch/add",
+                                updateBranchList: "basic/system/bank/branch/update"
                             };
                             function getBankList() {
                                 var dfd = $.Deferred();
-                                var result = [
-                                    new a.viewmodel.Node('0001', '1', 'Hanoi Vietnam', []),
-                                    new a.viewmodel.Node('0003', '1', 'Bangkok Thailand', []),
-                                    new a.viewmodel.Node('0004', '1', 'Tokyo Japan', []),
-                                    new a.viewmodel.Node('0005', '1', 'Jakarta Indonesia', []),
-                                    new a.viewmodel.Node('0002', '1', 'Seoul Korea', []),
-                                    new a.viewmodel.Node('0006', '1', 'Paris France', []),
-                                    new a.viewmodel.Node('0007', '1', 'United States', [
-                                        new a.viewmodel.Node('0008', '0007', 'Washington US', []),
-                                        new a.viewmodel.Node('0009', '0007', 'Newyork US', [])]),
-                                    new a.viewmodel.Node('0010', '1', 'Beijing China', []),
-                                    new a.viewmodel.Node('0011', '1', 'London United Kingdom', []),
-                                    new a.viewmodel.Node('0012', '1', '', [])
-                                ];
-                                dfd.resolve(result);
+                                nts.uk.request.ajax("com", paths.getBankList)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
                                 return dfd.promise();
                             }
                             service.getBankList = getBankList;
+                            function addBank(isCreated, bankInfo) {
+                                var dfd = $.Deferred();
+                                var path = isCreated ? paths.addBranchList : paths.updateBranchList;
+                                nts.uk.request.ajax("com", path, bankInfo)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.addBank = addBank;
                         })(service = a.service || (a.service = {}));
                     })(a = qmm002_1.a || (qmm002_1.a = {}));
                 })(qmm002_1 = view.qmm002_1 || (view.qmm002_1 = {}));

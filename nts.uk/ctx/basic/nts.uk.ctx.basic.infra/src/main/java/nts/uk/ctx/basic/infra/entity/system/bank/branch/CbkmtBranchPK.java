@@ -21,6 +21,6 @@ public class CbkmtBranchPK {
    @Column(name="BANK_CD")
    public String bankCode;
    
-   @Column(name="BRANCD_CD")
+   @Column(name="BRANCH_CD")
    public String branchCode;
 }

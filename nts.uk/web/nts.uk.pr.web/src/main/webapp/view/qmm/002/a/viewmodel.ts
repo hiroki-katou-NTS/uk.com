@@ -5,16 +5,18 @@ module nts.uk.pr.view.qmm002_1.a {
 
             currentEra: any;
             lst_001: any;
+            lst_002: any;
             filteredData: any;
-            nodeParent: KnockoutObservable<Node>;
+            nodeParent: KnockoutObservable<BankInfo>;
             singleSelectedCode: any;
             selectedCodes: any;
-            parentNode: KnockoutObservable<Node>;
+            parentNode: KnockoutObservable<BankInfo>;
             A_INP_002: any;
-            A_LBL_006: any;
+            A_INP_006: any;
             A_INP_003: any;
             A_INP_004: any;
             A_INP_005: any;
+            isCreated: any;
 
 
             constructor() {
@@ -25,11 +27,13 @@ module nts.uk.pr.view.qmm002_1.a {
                 self.selectedCodes = ko.observableArray([])
                 self.currentEra = ko.observable();
                 self.nodeParent = ko.observable(null);
+                self.lst_002 = ko.observableArray([]);
+                self.isCreated = ko.observable(false);
 
 
                 self.A_INP_005 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'BankBranchNameKana',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
@@ -37,8 +41,8 @@ module nts.uk.pr.view.qmm002_1.a {
                         textalign: "left"
                     })),
                     required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(true)
+                    enable: ko.observable(),
+                    readonly: ko.observable(false)
                 };
 
                 self.A_INP_002 = {
@@ -51,13 +55,13 @@ module nts.uk.pr.view.qmm002_1.a {
                         textalign: "left"
                     })),
                     required: ko.observable(true),
-                    enable: ko.observable(true),
+                    enable: ko.observable(false),
                     readonly: ko.observable(false)
                 };
 
-                self.A_LBL_006 = {
+                self.A_INP_006 = {
                     value: ko.observable(''),
-                    constraint: 'ResidenceCode',
+                    constraint: 'Memo',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                         resizeable: true,
                         placeholder: "",
@@ -69,52 +73,42 @@ module nts.uk.pr.view.qmm002_1.a {
                     readonly: ko.observable(false)
                 };
 
-                self.currentEra = ko.observable(_.first(self.lst_001()));
-                self.singleSelectedCode.subscribe(function(codeChanged) {
-                    self.currentEra(self.getEra(codeChanged));
-                    self.nodeParent(self.getEra(self.currentEra().parentcode))
-                    if (self.nodeParent() == undefined) {
-                        self.nodeParent(self.getEra(codeChanged))
-                    }
+                self.currentEra = ko.observable(''),
+                    self.singleSelectedCode.subscribe(function(codeChanged) {
+                        var x = self.getEra(codeChanged, undefined);
+                        if (x.parentCode !== null) {
+                            self.currentEra(x);
+                            self.nodeParent(self.getEra(codeChanged, x.parentCode));
+                        } else {
+                            self.nodeParent(x);
+                            self.currentEra(new BankInfo());
+                        }
 
-
-                });
+                        self.A_INP_003.value(self.currentEra().code);
+                        self.A_INP_004.value(self.currentEra().name);
+                        self.A_INP_005.value(self.currentEra().nameKata);
+                        self.A_INP_006.value(self.currentEra().memo);
+                        self.A_INP_003.enable(false);
+                        self.isCreated(false);
+                    });
 
                 self.A_INP_003 = {
-                    value: ko.computed(function() {
-                        if (self.currentEra() != undefined) {
-                            if (self.currentEra().parentcode != "1") {
-                                return !self.currentEra() ? '' : self.currentEra().code;
-                            }
-                        }
-                        else {
-                            return ko.observable('');
-                        }
-                    }),
-                    constraint: 'ResidenceCode',
+                    value: ko.observable(''),
+                    constraint: 'BankBranchCode',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
                         width: "45px",
                         textalign: "left"
                     })),
-                    required: ko.observable(true),
+                    required: ko.observable(false),
                     enable: ko.observable(false),
-                    readonly: ko.observable(true)
+                    readonly: ko.observable(false)
                 };
 
                 self.A_INP_004 = {
-                    value: ko.computed(function() {
-                        if (self.currentEra() != undefined) {
-                            if (self.currentEra().parentcode != "1") {
-                                return !self.currentEra() ? '' : self.currentEra().name;
-                            }
-                        }
-                        else {
-                            return ko.observable('');
-                        }
-                    }),
-                    constraint: 'ResidenceCode',
+                    value: ko.observable(''),
+                    constraint: 'BankBranchName',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: "text",
                         placeholder: "",
@@ -123,7 +117,7 @@ module nts.uk.pr.view.qmm002_1.a {
                     })),
                     required: ko.observable(true),
                     enable: ko.observable(true),
-                    readonly: ko.observable(true)
+                    readonly: ko.observable(false)
                 };
 
 
@@ -131,13 +125,8 @@ module nts.uk.pr.view.qmm002_1.a {
 
             startPage() {
                 var self = this;
-                service.getBankList().done(function(result) {
-
-                    self.lst_001(result);
-                    self.filteredData(nts.uk.util.flatArray(result, "childs"));
-                    if (result.length > 0) {
-                        self.singleSelectedCode(result[0].code);
-                    }
+                $.when(self.getBankList()).done(function(){
+                   self.singleSelectedCode(self.lst_001()[0].code);
                 });
             }
 
@@ -155,27 +144,86 @@ module nts.uk.pr.view.qmm002_1.a {
                 nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" });
             }
 
-
-            getEra(codeNew): Node {
+            addBranch(): any {
                 var self = this;
-                var node = _.find(self.filteredData(), function(item: Node) {
+                var branchInfo = {
+                    bankCode: self.nodeParent().code,
+                    branchCode: self.A_INP_003.value(),
+                    branchName: self.A_INP_004.value(),
+                    branchKnName: self.A_INP_005.value(),
+                    memo: self.A_INP_006.value()
+                };
+
+                var dfd = $.Deferred();
+                service.addBank(self.isCreated(),branchInfo).done(function() {
+                    // reload tree
+                    self.getBankList();
+                }).fail(function(error) {
+                    alert(error.message);
+                })
+            }
+            
+            getEra(codeNew, parentId): BankInfo {
+                var self = this;
+                self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))
+                var node = _.find(self.lst_002(), function(item: BankInfo) {
                     return item.code == codeNew;
                 });
+
+                if (parentId !== undefined) {
+                    node = _.find(self.lst_002(), function(item: BankInfo) {
+                        return item.code == node.parentCode;
+                    });
+                }
+
                 return node;
             }
 
-            deleteItem() {
+            //            deleteItem() {
+            //                var self = this;
+            //                debugger
+            //                self.lst_001.remove(self.currentEra());
+            //                var i = self.nodeParent().childs.indexOf(self.currentEra());
+            //                if (i != -1) {
+            //                    self.nodeParent().childs.splice(i, 1);
+            //                    var tempNodeParent = self.nodeParent();
+            //                    var tempLst001 = self.lst_001();
+            //                    self.nodeParent(tempNodeParent);
+            //        self.lst_001(tempLst001)
+            //                }
+            //                console.log(self.lst_001());
+            //            }
+            
+            getBankList(): any {
                 var self = this;
-                self.lst_001.remove(self.currentEra());
-                var i = self.nodeParent().childs.indexOf(self.currentEra());
-                if (i != -1) {
-                    self.nodeParent().childs.splice(i, 1);
-                    var tempNodeParent = self.nodeParent();
-                    var tempLst001 = self.lst_001();
-                    self.nodeParent(tempNodeParent);
-                    self.lst_001(tempLst001)
-                }
-                console.log(self.lst_001());
+                var dfd = $.Deferred();
+                service.getBankList().done(function(data) {
+                    var list001: Array<BankInfo> = [];
+                    _.forEach(data, function(itemBank) {
+                        var childs = _.map(itemBank.bankBranch, function(item) {
+                            return new BankInfo(item["bankBrandCode"], item["bankBrandName"], item["bankBrandNameKana"], item["memo"], null, itemBank.bankCode);
+                        });
+
+                        list001.push(new BankInfo(itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
+                    });
+
+                    self.lst_001(list001);
+                    dfd.resolve(list001);
+                }).fail(function(res) {
+                    // error
+                });
+
+                return dfd.promise();
+            }
+
+
+            cleanBranch() {
+                var self = this;
+                self.A_INP_003.value('');
+                self.A_INP_004.value('');
+                self.A_INP_005.value('');
+                self.A_INP_003.enable(true);
+                self.isCreated(true);
             }
         }
 
@@ -185,28 +233,28 @@ module nts.uk.pr.view.qmm002_1.a {
             name: string;
             nameKata: string;
             memo: string;
-            child: BankInfo;
+            childs: Array<BankInfo>;
+            parentCode: string;
 
-            constructor(code: string, name: string, nameKata: string, memo: string, child: BankInfo) {
+            constructor(code?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
                 var self = this;
                 self.code = code;
                 self.name = name;
                 self.nameKata = nameKata;
                 self.memo = memo;
-                self.child = child;
+                self.childs = childs;
+                self.parentCode = parentCode;
             }
         }
 
         export class Node {
             code: string;
-            parentcode: string;
             name: string;
             nodeText: string;
             childs: any;
-            constructor(code: string, parentcode: string, name: string, childs: Array<Node>) {
+            constructor(code: string, name: string, childs: Array<Node>) {
                 var self = this;
                 self.code = code;
-                self.parentcode = parentcode;
                 self.name = name;
                 self.nodeText = self.code + ' ' + self.name;
                 self.childs = childs;

@@ -8,9 +8,10 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 		<com:ValidatorScript>
-					 nts.uk.shr.com.primitive.PersonId
-				     nts.arc.time.YearMonth
-				     nts.uk.shr.com.primitive.sample.ResidenceCode
+					 nts.uk.ctx.basic.dom.system.bank.branch.BankBranchCode
+					 nts.uk.ctx.basic.dom.system.bank.branch.BankBranchName
+					 nts.uk.ctx.basic.dom.system.bank.branch.BankBranchNameKana
+					 nts.uk.shr.com.primitive.Memo
    		</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
@@ -21,13 +22,13 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_001" >新規</button>
-				<button id="A_BTN_002" class="proceed" >登録</button>
+				<button id="A_BTN_001" data-bind="click: cleanBranch" >新規</button>
+				<button id="A_BTN_002" class="proceed" data-bind="click: addBranch" >登録</button>
 				<button id="A_BTN_005" >印刷 (PDF)</button>
 				<button id="A_BTN_009" data-bind="click: OpenDdialog">銀行の追加</button>
 				<button id="A_BTN_006" data-bind="click: OpenCdialog">銀行の統合</button>
 				<button id="A_BTN_008" >マスタ修正ログ</button>
-				<button id="A_BTN_003" class="danger" data-bind="click: deleteItem">削除</button>
+				<button id="A_BTN_003" class="danger">削除</button>
 				<button id="A_BTN_004" class="danger" data-bind="click: OpenBdialog" >一括削除</button>
 				<a href="#"
 					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">振込元銀行の登録へ</a>
@@ -53,7 +54,7 @@
 									value: singleSelectedCode,								
 									optionsValue: 'code',
 									optionsChild: 'childs',
-									optionsText: 'nodeText',
+									optionsText: 'name',
 									multiple: false,
 									enable: true,										
 									showCheckBox: false}"
@@ -98,7 +99,7 @@
 					<table>
 						<tr>
 							<td>
-								<div id="A_LBL_004" style="margin: 8px 0px 20px 40px;" data-bind="ntsFormLabel: { constraint: 'ResidenceCode', inline: false, required: true, enable: true}">支店コード/名称</div>
+								<div id="A_LBL_004" style="margin: 8px 0px 20px 40px;" data-bind="ntsFormLabel: { constraint: 'BankBranchName', inline: false, required: true, enable: true}">支店コード/名称</div>
 							</td>
 							<td>
 							   <div style="margin: 8px 0px 20px 30px;">
@@ -108,7 +109,7 @@
 									constraint: constraint,
 									option: option,
 									required: required,
-									enable: enable,
+									enable: $parent.isCreated,
 									readonly: readonly}" /></span>
 									
 								<span style="margin-left: 5px" data-bind="with: A_INP_004" >
@@ -150,7 +151,7 @@
 								<div id="A_LBL_006" data-bind="ntsFormLabel: {}">メモ</div>
 							</td>
 							<td>
-						　　　　　　　<span  style="margin-bottom: 15px" data-bind="with: A_LBL_006">
+						　　　　　　　<span  style="margin-bottom: 15px" data-bind="with: A_INP_006">
 								<textarea id="A_INP_006" style="height:130px; margin: 15px 0px 0px 43px;"
 								class="text-editor1" data-bind="ntsMultilineEditor: {
 									value: value,
