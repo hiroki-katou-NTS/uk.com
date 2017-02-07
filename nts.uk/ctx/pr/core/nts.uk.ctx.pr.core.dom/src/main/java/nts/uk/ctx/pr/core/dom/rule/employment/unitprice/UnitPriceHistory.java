@@ -5,7 +5,9 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.shr.com.primitive.Memo;
@@ -13,6 +15,7 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class UnitPriceHistory.
  */
+// TODO: @Data -> @Getter
 @Data
 public class UnitPriceHistory extends AggregateRoot {
 
@@ -25,7 +28,7 @@ public class UnitPriceHistory extends AggregateRoot {
 
 	/** The unit price code. */
 	private UnitPriceCode unitPriceCode;
-	
+
 	/** The unit price name. */
 	private UnitPriceName unitPriceName;
 
@@ -61,6 +64,67 @@ public class UnitPriceHistory extends AggregateRoot {
 	 */
 	public UnitPriceHistory() {
 		super();
+	}
+
+	/**
+	 * Instantiates a new unit price history.
+	 *
+	 * @param id
+	 *            the id
+	 * @param companyCode
+	 *            the company code
+	 * @param unitPriceCode
+	 *            the unit price code
+	 * @param unitPriceName
+	 *            the unit price name
+	 * @param applyRange
+	 *            the apply range
+	 * @param budget
+	 *            the budget
+	 * @param fixPaySettingType
+	 *            the fix pay setting type
+	 * @param fixPayAtr
+	 *            the fix pay atr
+	 * @param fixPayAtrMonthly
+	 *            the fix pay atr monthly
+	 * @param fixPayAtrDayMonth
+	 *            the fix pay atr day month
+	 * @param fixPayAtrDaily
+	 *            the fix pay atr daily
+	 * @param fixPayAtrHourly
+	 *            the fix pay atr hourly
+	 * @param memo
+	 *            the memo
+	 */
+	public UnitPriceHistory(String id, CompanyCode companyCode, UnitPriceCode unitPriceCode,
+			UnitPriceName unitPriceName, MonthRange applyRange, Money budget, SettingType fixPaySettingType,
+			ApplySetting fixPayAtr, ApplySetting fixPayAtrMonthly, ApplySetting fixPayAtrDayMonth,
+			ApplySetting fixPayAtrDaily, ApplySetting fixPayAtrHourly, Memo memo) {
+		super();
+
+		// Validate required item
+		if (StringUtil.isNullOrEmpty(unitPriceCode.v(), true) || StringUtil.isNullOrEmpty(unitPriceName.v(), true)
+				|| applyRange == null || budget == null) {
+			throw new BusinessException("ER001");
+		}
+
+		// TODO: Check consistency date range.
+		// History after start date and time exists
+		// throw new BusinessException("ER010");
+
+		this.id = id;
+		this.companyCode = companyCode;
+		this.unitPriceCode = unitPriceCode;
+		this.unitPriceName = unitPriceName;
+		this.applyRange = applyRange;
+		this.budget = budget;
+		this.fixPaySettingType = fixPaySettingType;
+		this.fixPayAtr = fixPayAtr;
+		this.fixPayAtrMonthly = fixPayAtrMonthly;
+		this.fixPayAtrDayMonth = fixPayAtrDayMonth;
+		this.fixPayAtrDaily = fixPayAtrDaily;
+		this.fixPayAtrHourly = fixPayAtrHourly;
+		this.memo = memo;
 	}
 
 	// =================== Memento State Support Method ===================

@@ -8,12 +8,15 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
 
 /**
  * The Class MonthRange.
  */
 @Getter
+
+// TODO: Remove setter.
 @Setter
 public class MonthRange implements Serializable {
 
@@ -21,10 +24,59 @@ public class MonthRange implements Serializable {
 	private static final long serialVersionUID = 4492995458816732355L;
 
 	/** The start month. */
-	public YearMonth startMonth;
+	private YearMonth startMonth;
 
 	/** The end month. */
-	public YearMonth endMonth;
+	private YearMonth endMonth;
 	
+	/**
+	 * Instantiates a new month range.
+	 *
+	 * @param startMonth
+	 *            the start month
+	 * @param endMonth
+	 *            the end month
+	 */
+	private MonthRange(YearMonth startMonth, YearMonth endMonth) {
+		super();
+		this.startMonth = startMonth;
+		this.endMonth = endMonth;
+	}
 
+	/**
+	 * Forward.
+	 *
+	 * @param startMonth
+	 *            the start month
+	 * @return the month range
+	 */
+	public static MonthRange toMaxDate(YearMonth startMonth) {
+		return new MonthRange(startMonth,
+				YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));
+	}
+
+	/**
+	 * Behind.
+	 *
+	 * @param endMonth
+	 *            the end month
+	 * @return the month range
+	 */
+	public static MonthRange toMinDate(YearMonth endMonth) {
+		return new MonthRange(YearMonth.of(DateTimeConstraints.LIMIT_YEAR.min(), DateTimeConstraints.LIMIT_MONTH.min()),
+				endMonth);
+	}
+
+	/**
+	 * New range.
+	 *
+	 * @param startMonth
+	 *            the start month
+	 * @param endMonth
+	 *            the end month
+	 * @return the month range
+	 */
+	public static MonthRange range(YearMonth startMonth, YearMonth endMonth) {
+		return new MonthRange(startMonth, endMonth);
+	}
 }

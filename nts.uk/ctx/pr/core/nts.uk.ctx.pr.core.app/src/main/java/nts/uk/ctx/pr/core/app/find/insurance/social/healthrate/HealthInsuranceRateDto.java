@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 @Builder
 @Data
@@ -16,17 +13,19 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 @NoArgsConstructor
 public class HealthInsuranceRateDto {
 	/** The history id. */
-	// historyId
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The office code. */
-	private OfficeCode officeCode;
+	private String officeCode;
 
-	/** The apply range. */
-	private MonthRange applyRange;
+	/** The start month. */
+	private String startMonth;
+	
+	/** The end month. */
+	private String endMonth;
 
 	/** The auto calculate. */
 	private Boolean autoCalculate;

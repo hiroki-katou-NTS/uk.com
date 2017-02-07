@@ -2,28 +2,23 @@ module qpp018.a.viewmodel {
     export class ScreenModel {
         
         //date: KnockoutObservable<Date>;
-        yearMonth: KnockoutObservable<string>;
-        
+        yearMonth: KnockoutObservable<string>;        
         checked: KnockoutObservable<boolean>;
         isEqual: KnockoutObservable<boolean>;
         isDeficent: KnockoutObservable<boolean>;
-        isRedundant: KnockoutObservable<boolean>;
-        
+        isRedundant: KnockoutObservable<boolean>;        
         insuranceOffice: KnockoutObservableArray<InsuranceOfficeModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         selectedOfficeList: KnockoutObservableArray<InsuranceOfficeModel>;
         exportDataDetails: KnockoutObservable<string>;
         
-        constructor() {
-           
+        constructor() {           
             //this.date = ko.observable(new Date('2016/12/01'));
-            this.yearMonth = ko.observable('2016/05');
-            
+            this.yearMonth = ko.observable('2016/05');            
             this.checked = ko.observable(true);
             this.isEqual= ko.observable(true);
             this.isDeficent= ko.observable(true);
-            this.isRedundant= ko.observable(true);
-            
+            this.isRedundant= ko.observable(true);            
             this.insuranceOffice=ko.observableArray<InsuranceOfficeModel>([
 //                new InsuranceOfficeModel('0001','Insurance Office 1'),
 //                new InsuranceOfficeModel('0002','Insurance Office 2'),
@@ -53,7 +48,7 @@ module qpp018.a.viewmodel {
         }
         
         /**
-         * 
+         *  Export Data
          */
         
         exportData() : boolean {

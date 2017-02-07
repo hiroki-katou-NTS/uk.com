@@ -8,22 +8,45 @@ var nts;
             (function (view) {
                 var qmm008;
                 (function (qmm008) {
-                    var d;
-                    (function (d) {
+                    var h;
+                    (function (h) {
                         var service;
                         (function (service) {
                             var paths = {
                                 saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/",
-                                getListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findAllHealthInsuranceAvgearn",
+                                findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceAvgearn",
+                                findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
                             };
                             function save(list) {
                                 return nts.uk.request.ajax(paths.saveListHealthInsuranceAvgEarn, list);
                             }
                             service.save = save;
-                            function getListHealthInsuranceAvgEarn() {
-                                return nts.uk.request.ajax(paths.getListHealthInsuranceAvgEarn);
+                            function findHealthInsuranceRate(id) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findHealthInsuranceRate + '/' + id)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                                ;
                             }
-                            service.getListHealthInsuranceAvgEarn = getListHealthInsuranceAvgEarn;
+                            service.findHealthInsuranceRate = findHealthInsuranceRate;
+                            function findHealthInsuranceAvgEarn(id) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                                ;
+                            }
+                            service.findHealthInsuranceAvgEarn = findHealthInsuranceAvgEarn;
                             var model;
                             (function (model) {
                                 var HealthInsuranceAvgEarnValue = (function () {
@@ -62,8 +85,8 @@ var nts;
                                 }());
                                 model.HealthInsuranceRounding = HealthInsuranceRounding;
                             })(model = service.model || (service.model = {}));
-                        })(service = d.service || (d.service = {}));
-                    })(d = qmm008.d || (qmm008.d = {}));
+                        })(service = h.service || (h.service = {}));
+                    })(h = qmm008.h || (qmm008.h = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));

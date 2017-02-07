@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.social.ChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 
 /**
@@ -15,17 +14,17 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 @Data
 public class FundRateItem {
 
-	/** The burden charge rate. */
-	private ChargeRateItem burdenChargeRate;
-
 	/** The pay type. */
 	private PaymentType payType;
 
-	/** The exemption charge rate. */
-	private ChargeRateItem exemptionChargeRate;
-
 	/** The gender type. */
 	private InsuranceGender genderType;
+
+	/** The burden charge rate. */
+	private PensionChargeRateItem burdenChargeRate;
+
+	/** The exemption charge rate. */
+	private PensionChargeRateItem exemptionChargeRate;
 
 	/**
 	 * Instantiates a new fund rate item.
@@ -35,19 +34,24 @@ public class FundRateItem {
 	}
 
 	/**
-	 * @param burdenChargeRate
+	 * Instantiates a new fund rate item.
+	 *
 	 * @param payType
-	 * @param exemptionChargeRate
+	 *            the pay type
 	 * @param genderType
+	 *            the gender type
+	 * @param burdenChargeRate
+	 *            the burden charge rate
+	 * @param exemptionChargeRate
+	 *            the exemption charge rate
 	 */
-	public FundRateItem(ChargeRateItem burdenChargeRate, PaymentType payType, ChargeRateItem exemptionChargeRate,
-			InsuranceGender genderType) {
+	public FundRateItem(PaymentType payType, InsuranceGender genderType, PensionChargeRateItem burdenChargeRate,
+			PensionChargeRateItem exemptionChargeRate) {
 		super();
-		this.burdenChargeRate = burdenChargeRate;
 		this.payType = payType;
-		this.exemptionChargeRate = exemptionChargeRate;
 		this.genderType = genderType;
+		this.burdenChargeRate = burdenChargeRate;
+		this.exemptionChargeRate = exemptionChargeRate;
 	}
-	
 
 }

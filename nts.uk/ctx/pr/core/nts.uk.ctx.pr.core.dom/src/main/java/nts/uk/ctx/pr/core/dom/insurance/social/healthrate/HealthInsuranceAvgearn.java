@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * The Class HealthInsuranceAvgearn.
  */
 @Data
+@AllArgsConstructor
 public class HealthInsuranceAvgearn {
 
 	/** The history id. */
@@ -31,5 +33,4 @@ public class HealthInsuranceAvgearn {
 	public HealthInsuranceAvgearn() {
 		super();
 	}
-
 }

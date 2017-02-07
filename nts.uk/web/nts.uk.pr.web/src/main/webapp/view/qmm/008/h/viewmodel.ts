@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm008.d {
+module nts.uk.pr.view.qmm008.h {
     export module viewmodel {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
@@ -26,6 +26,10 @@ module nts.uk.pr.view.qmm008.d {
                 var dfd = $.Deferred();
                 commonService.getAvgEarnLevelMasterSettingList().done(data => {
                     self.listAvgEarnLevelMasterSetting(data);
+                    service.findHealthInsuranceRate('a').done(data => { });
+                    service.findHealthInsuranceAvgEarn('a').done(zz => { 
+                        self.listHealthInsuranceAvgearn(zz);
+                    });
                     dfd.resolve();
                     //self.loadListHealthInsuranceAvgEarn().done(() => {
                     //});
@@ -48,10 +52,10 @@ module nts.uk.pr.view.qmm008.d {
                 //service.save(this.collectData());
             }
 
-            private loadListHealthInsuranceAvgEarn(): JQueryPromise<any> {
+            private loadHealthInsuranceAvgEarn(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.getListHealthInsuranceAvgEarn().done(data => {
+                service.findHealthInsuranceAvgEarn('a').done(data => {
                     data.forEach(item => {
 
                     });

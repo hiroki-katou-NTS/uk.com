@@ -5,12 +5,14 @@
 
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * The Class HealthInsuranceAvgearnValue.
  */
 @Data
+@AllArgsConstructor
 public class HealthInsuranceAvgearnValue {
 
 	/** The health basic mny. */

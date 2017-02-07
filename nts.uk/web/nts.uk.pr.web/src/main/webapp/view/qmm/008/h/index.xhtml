@@ -82,14 +82,14 @@
 									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
 									<com:ko-foreach bind="$parent.listHealthInsuranceAvgearn">
 										<com:ko-if bind="$parent.code == levelCode">
-											<td><input data-bind="value: personalAvg.general"></input></td>
-											<td><input data-bind="value: personalAvg.nursing"></input></td>
-											<td><input data-bind="value: personalAvg.specific"></input></td>
-											<td><input data-bind="value: personalAvg.basic"></input></td>
-											<td><input data-bind="value: companyAvg.general"></input></td>
-											<td><input data-bind="value: companyAvg.nursing"></input></td>
-											<td><input data-bind="value: companyAvg.specific"></input></td>
-											<td><input data-bind="value: companyAvg.basic"></input></td>
+											<td><input data-bind="value: personalAvg.healthGeneralMny"></input></td>
+											<td><input data-bind="value: personalAvg.healthNursingMny"></input></td>
+											<td><input data-bind="value: personalAvg.healthSpecificMny"></input></td>
+											<td><input data-bind="value: personalAvg.healthBasicMny"></input></td>
+											<td><input data-bind="value: companyAvg.healthGeneralMny"></input></td>
+											<td><input data-bind="value: companyAvg.healthNursingMny"></input></td>
+											<td><input data-bind="value: companyAvg.healthSpecificMny"></input></td>
+											<td><input data-bind="value: companyAvg.healthBasicMny"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>

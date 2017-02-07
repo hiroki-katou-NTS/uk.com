@@ -2,26 +2,27 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.social;
+package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import lombok.Data;
+import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 
 /**
  * The Class ChargeRateItem.
  */
 @Data
-public class ChargeRateItem {
+public class HealthChargeRateItem {
 
 	/** The company rate. */
-	private Double companyRate;
+	private Ins3Rate companyRate;
 
 	/** The personal rate. */
-	private Double personalRate;
+	private Ins3Rate personalRate;
 
 	/**
 	 * Instantiates a new charge rate item.
 	 */
-	public ChargeRateItem() {
+	public HealthChargeRateItem() {
 		super();
 	}
 
