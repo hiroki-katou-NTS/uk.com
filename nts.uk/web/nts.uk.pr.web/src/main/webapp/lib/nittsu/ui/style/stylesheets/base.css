@@ -111,125 +111,151 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 }
 
 /*****************************
-  Helper Class
+  Overwrite JQueryUI
 *****************************/
 /* line 4, ../sass/components/_commons.scss */
+.ui-widget,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+  font-family: "Meiryo UI";
+}
+
+/*****************************
+  Helper Class
+*****************************/
+/* line 15, ../sass/components/_commons.scss */
 .hidden {
   display: none !important;
 }
 
-/* line 5, ../sass/components/_commons.scss */
+/* line 16, ../sass/components/_commons.scss */
 .invisible {
   visibility: hidden !important;
 }
 
-/* line 6, ../sass/components/_commons.scss */
+/* line 17, ../sass/components/_commons.scss */
 .relative {
   position: relative !important;
 }
 
-/* line 7, ../sass/components/_commons.scss */
+/* line 18, ../sass/components/_commons.scss */
 .absolute {
   position: absolute !important;
 }
 
-/* line 8, ../sass/components/_commons.scss */
+/* line 19, ../sass/components/_commons.scss */
 .pull-left {
   float: left;
 }
 
-/* line 9, ../sass/components/_commons.scss */
+/* line 20, ../sass/components/_commons.scss */
 .pull-right {
   float: right;
 }
 
-/* line 10, ../sass/components/_commons.scss */
+/* line 21, ../sass/components/_commons.scss */
 .hyperlink {
   color: #0066CC;
   text-decoration: underline;
   cursor: pointer;
 }
 
-/* line 11, ../sass/components/_commons.scss */
+/* line 22, ../sass/components/_commons.scss */
 .control-group.valign-center > * {
   vertical-align: middle;
 }
 
-/* line 12, ../sass/components/_commons.scss */
+/* line 23, ../sass/components/_commons.scss */
 .control-group.valign-top > * {
   vertical-align: top;
 }
 
-/* line 13, ../sass/components/_commons.scss */
+/* line 24, ../sass/components/_commons.scss */
 .control-group.valign-bottom > * {
   vertical-align: bottom;
 }
 
-/* line 14, ../sass/components/_commons.scss */
+/* line 25, ../sass/components/_commons.scss */
 .halign-left {
   text-align: left;
 }
 
-/* line 15, ../sass/components/_commons.scss */
+/* line 26, ../sass/components/_commons.scss */
 .halign-right {
   text-align: right;
 }
 
-/* line 16, ../sass/components/_commons.scss */
+/* line 27, ../sass/components/_commons.scss */
 .halign-center {
   text-align: center;
 }
 
-/* line 17, ../sass/components/_commons.scss */
+/* line 28, ../sass/components/_commons.scss */
 .bg-green {
   background-color: #E0F59E;
 }
 
-/* line 18, ../sass/components/_commons.scss */
+/* line 29, ../sass/components/_commons.scss */
 .bg-yellow {
   background-color: #F7EFD4;
 }
 
-/* line 19, ../sass/components/_commons.scss */
+/* line 30, ../sass/components/_commons.scss */
 .color-proceed {
   color: #00B050;
 }
 
-/* line 20, ../sass/components/_commons.scss */
+/* line 31, ../sass/components/_commons.scss */
 .color-danger {
   color: #C12017;
 }
 
-/* line 21, ../sass/components/_commons.scss */
+/* line 32, ../sass/components/_commons.scss */
+.container {
+  width: 1200px;
+}
+/* line 34, ../sass/components/_commons.scss */
+.container:before, .container:after {
+  content: " ";
+  display: table;
+}
+/* line 35, ../sass/components/_commons.scss */
+.container:after {
+  clear: both;
+}
+
+/* line 37, ../sass/components/_commons.scss */
 .flex {
   display: flex;
 }
-/* line 23, ../sass/components/_commons.scss */
+/* line 39, ../sass/components/_commons.scss */
 .flex .item {
   flex: 1;
 }
-/* line 24, ../sass/components/_commons.scss */
+/* line 40, ../sass/components/_commons.scss */
 .flex.valign-center {
   align-items: center;
 }
 
-/* line 26, ../sass/components/_commons.scss */
+/* line 42, ../sass/components/_commons.scss */
 .table {
   display: table;
 }
-/* line 28, ../sass/components/_commons.scss */
+/* line 44, ../sass/components/_commons.scss */
 .table .cell {
   display: table-cell;
 }
-/* line 30, ../sass/components/_commons.scss */
+/* line 46, ../sass/components/_commons.scss */
 .table .cell.valign-center {
   vertical-align: middle;
 }
-/* line 31, ../sass/components/_commons.scss */
+/* line 47, ../sass/components/_commons.scss */
 .table .cell.valign-bottom {
   vertical-align: bottom;
 }
-/* line 32, ../sass/components/_commons.scss */
+/* line 48, ../sass/components/_commons.scss */
 .table .cell.valign-top {
   vertical-align: top;
 }
@@ -237,12 +263,12 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   ntsControl
 *****************************/
-/* line 39, ../sass/components/_commons.scss */
+/* line 55, ../sass/components/_commons.scss */
 .control-group {
   margin-bottom: 10px;
 }
 
-/* line 40, ../sass/components/_commons.scss */
+/* line 56, ../sass/components/_commons.scss */
 .ntsControl {
   display: inline-block;
 }
@@ -250,7 +276,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /*****************************
   NtsFormLabel
 *****************************/
-/* line 45, ../sass/components/_commons.scss */
+/* line 61, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
   height: 27px;
@@ -259,30 +285,30 @@ div.form-label {
   border-width: 0 0 0 5px;
   padding: 10px 10px 0 8px;
 }
-/* line 68, ../sass/components/_commons.scss */
+/* line 84, ../sass/components/_commons.scss */
 div.form-label.broken {
   padding-top: 0;
   padding-bottom: 10px;
 }
-/* line 73, ../sass/components/_commons.scss */
+/* line 89, ../sass/components/_commons.scss */
 div.form-label.inline {
   height: 18px;
   padding-top: 3px;
   padding-bottom: 2px;
 }
-/* line 79, ../sass/components/_commons.scss */
+/* line 95, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 83, ../sass/components/_commons.scss */
+/* line 99, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 87, ../sass/components/_commons.scss */
+/* line 103, ../sass/components/_commons.scss */
 div.form-label > label {
   font-size: 14px;
 }
-/* line 91, ../sass/components/_commons.scss */
+/* line 107, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -290,15 +316,15 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 98, ../sass/components/_commons.scss */
+/* line 114, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 102, ../sass/components/_commons.scss */
+/* line 118, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 107, ../sass/components/_commons.scss */
+/* line 123, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
@@ -307,7 +333,7 @@ div.form-label.inline > i {
 /*****************************
   NtsLinkButton
 *****************************/
-/* line 117, ../sass/components/_commons.scss */
+/* line 133, ../sass/components/_commons.scss */
 div.link-button {
   display: inline-block;
   padding: 3px 12px;
@@ -320,7 +346,7 @@ div.link-button {
 /*****************************
   NtsPopupPanel
 *****************************/
-/* line 130, ../sass/components/_commons.scss */
+/* line 146, ../sass/components/_commons.scss */
 div.popup-panel {
   position: absolute;
   background-color: #fff;
@@ -334,12 +360,12 @@ div.popup-panel {
 /*****************************
   NtsEditor
 *****************************/
-/* line 142, ../sass/components/_commons.scss */
+/* line 158, ../sass/components/_commons.scss */
 .nts-editor.error {
   border-color: #ff6666;
 }
 
-/* line 146, ../sass/components/_commons.scss */
+/* line 162, ../sass/components/_commons.scss */
 .error {
   border: 1px solid #ff6666 !important;
 }
@@ -347,7 +373,7 @@ div.popup-panel {
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 153, ../sass/components/_commons.scss */
+/* line 169, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: none;
@@ -363,13 +389,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 166, ../sass/components/_commons.scss */
+/* line 182, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 172, ../sass/components/_commons.scss */
+/* line 188, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   display: inline-block;
 }
@@ -377,12 +403,12 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 181, ../sass/components/_commons.scss */
+/* line 197, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 185, ../sass/components/_commons.scss */
+/* line 201, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
@@ -390,7 +416,7 @@ div.popup-panel {
   color: #C12017;
 }
 
-/* line 192, ../sass/components/_commons.scss */
+/* line 208, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -398,23 +424,23 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 199, ../sass/components/_commons.scss */
+/* line 215, ../sass/components/_commons.scss */
 .icon {
   position: relative;
   display: inline-block;
 }
-/* line 203, ../sass/components/_commons.scss */
+/* line 219, ../sass/components/_commons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 209, ../sass/components/_commons.scss */
+/* line 225, ../sass/components/_commons.scss */
 .icon.icon-close {
   width: 16px;
   height: 16px;
 }
-/* line 212, ../sass/components/_commons.scss */
+/* line 228, ../sass/components/_commons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -423,7 +449,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 220, ../sass/components/_commons.scss */
+/* line 236, ../sass/components/_commons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -431,7 +457,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 223, ../sass/components/_commons.scss */
+/* line 239, ../sass/components/_commons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -439,14 +465,160 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 228, ../sass/components/_commons.scss */
+/* line 244, ../sass/components/_commons.scss */
 .icon.icon-dot {
   width: 16px;
   height: 16px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: #3BC31C;
+  background: #00B050;
   box-sizing: border-box;
+}
+/* line 253, ../sass/components/_commons.scss */
+.icon.icon-search {
+  width: 12px;
+  height: 12px;
+  border: solid 2px #333333;
+  border-radius: 100%;
+  transform: rotate(-45deg);
+}
+/* line 259, ../sass/components/_commons.scss */
+.icon.icon-search::after {
+  top: 12px;
+  left: 5px;
+  height: 10px;
+  width: 2px;
+  background-color: #333333;
+}
+/* line 267, ../sass/components/_commons.scss */
+.icon.icon-searchbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  background: #00B050;
+  border-radius: 5px;
+}
+/* line 277, ../sass/components/_commons.scss */
+.icon.icon-searchbox:before {
+  width: 12px;
+  height: 12px;
+  border: solid 2px #FFF;
+  border-radius: 100%;
+  top: 6px;
+  left: 7px;
+}
+/* line 285, ../sass/components/_commons.scss */
+.icon.icon-searchbox::after {
+  top: 18px;
+  left: 22px;
+  height: 8px;
+  width: 2px;
+  border-radius: 0 0 5px 5px;
+  background-color: #FFF;
+  transform: rotate(-45deg);
+}
+/* line 295, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-left {
+  margin: 10px 0 10px 3px;
+  width: 40px;
+  height: 4px;
+  background-color: #00B050;
+}
+/* line 301, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-left:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-40deg);
+  left: -3px;
+  top: -4px;
+}
+/* line 309, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-left:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 2px 0 0 2px;
+  transform: rotate(-140deg);
+  left: -3px;
+  top: 4px;
+}
+/* line 318, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-right {
+  margin: 10px 3px 10px 0;
+  width: 40px;
+  height: 4px;
+  background-color: #00B050;
+}
+/* line 324, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-right:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 2px 0 0 2px;
+  transform: rotate(40deg);
+  right: -3px;
+  top: -4px;
+}
+/* line 332, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-right:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(140deg);
+  right: -3px;
+  top: 4px;
+}
+/* line 341, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-top {
+  margin: 8px 5px 0 5px;
+  width: 4px;
+  height: 30px;
+  background-color: #00B050;
+}
+/* line 347, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-top:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(50deg);
+  left: -2px;
+  top: 2px;
+}
+/* line 355, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-top:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(130deg);
+  left: -10px;
+  top: 2px;
+}
+/* line 364, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-bottom {
+  margin: 5px 5px 3px 5px;
+  width: 4px;
+  height: 30px;
+  background-color: #00B050;
+}
+/* line 370, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-bottom:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-50deg);
+  left: -2px;
+  bottom: 2px;
+}
+/* line 378, ../sass/components/_commons.scss */
+.icon.icon-button-arrow-bottom:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-130deg);
+  left: -10px;
+  bottom: 2px;
 }
 
 /* line 2, ../sass/components/_accordion.scss */
@@ -489,9 +661,49 @@ div.label {
   border-color: #999;
 }
 
-/* line 1, ../sass/components/_editor.scss */
-input[type="text"] {
+/* line 3, ../sass/components/_editor.scss */
+.ntsControl {
+  /* Extra Symbol */
+}
+/* line 5, ../sass/components/_editor.scss */
+.ntsControl .nts-input {
+  border: 1px solid #999999;
+  padding: 5px 10px;
   font-family: "DroidSansMono", "Meiryo";
+  border-radius: 5px;
+}
+/* line 10, ../sass/components/_editor.scss */
+.ntsControl .nts-input:focus {
+  outline: none;
+}
+/* line 14, ../sass/components/_editor.scss */
+.ntsControl.symbol {
+  position: relative;
+}
+/* line 17, ../sass/components/_editor.scss */
+.ntsControl.symbol:after {
+  position: absolute;
+  content: attr(data-content);
+  top: 0.4em;
+  color: #999;
+}
+/* line 25, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-left .nts-input {
+  padding-left: 15px;
+}
+/* line 27, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-left:after {
+  left: 5px;
+  text-align: left;
+}
+/* line 34, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-right .nts-input {
+  padding-right: 15px;
+}
+/* line 36, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-right:after {
+  right: 5px;
+  text-align: right;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
@@ -685,7 +897,7 @@ button.with-icon.x-large {
   padding-left: 38px;
 }
 
-/* line 96, ../sass/components/_button.scss */
+/* line 97, ../sass/components/_button.scss */
 button {
   color: #404040;
   font-size: 13px;
@@ -696,12 +908,12 @@ button {
   margin-bottom: 3px;
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
 }
-/* line 123, ../sass/components/_button.scss */
+/* line 124, ../sass/components/_button.scss */
 button:active {
   top: 3px;
   box-shadow: 0 0 #999;
 }
-/* line 128, ../sass/components/_button.scss */
+/* line 129, ../sass/components/_button.scss */
 button.small {
   /* START: SAME ALL SIZES */
   font-size: 12px;
@@ -711,12 +923,12 @@ button.small {
   box-shadow: 0 3px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 144, ../sass/components/_button.scss */
+/* line 145, ../sass/components/_button.scss */
 button.small:active {
   top: 3px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 151, ../sass/components/_button.scss */
+/* line 152, ../sass/components/_button.scss */
 button.large {
   /* START: SAME ALL SIZES */
   font-size: 15px;
@@ -726,12 +938,12 @@ button.large {
   box-shadow: 0 4px rgba(0, 0, 0, 0.4);
   /* END: SAME ALL SIZES */
 }
-/* line 167, ../sass/components/_button.scss */
+/* line 168, ../sass/components/_button.scss */
 button.large:active {
   top: 4px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
 }
-/* line 174, ../sass/components/_button.scss */
+/* line 175, ../sass/components/_button.scss */
 button.x-large {
   /* START: SAME ALL SIZES */
   font-size: 22px;
@@ -741,10 +953,14 @@ button.x-large {
   box-shadow: 0 5px #999;
   /* END: SAME ALL SIZES */
 }
-/* line 190, ../sass/components/_button.scss */
+/* line 191, ../sass/components/_button.scss */
 button.x-large:active {
   top: 5px;
   box-shadow: 0 0 rgba(0, 0, 0, 0.4);
+}
+/* line 198, ../sass/components/_button.scss */
+button.auto-height {
+  height: auto;
 }
 
 /*****************************
@@ -971,6 +1187,180 @@ button.caret-right:after {
 /* line 179, ../sass/components/_caret.scss */
 .caret-background.caret-bottom:after {
   top: 100%;
+}
+
+/* line 183, ../sass/components/_caret.scss */
+.caret-overlay:before {
+  content: '';
+  position: absolute;
+  border-width: 10px;
+  color: rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+}
+/* line 190, ../sass/components/_caret.scss */
+.caret-overlay.caret-right:before {
+  border-left: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  top: 50%;
+  left: 100%;
+  margin-top: -1em;
+}
+/* line 196, ../sass/components/_caret.scss */
+.caret-overlay.caret-left:before {
+  border-right: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  top: 50%;
+  right: 100%;
+  margin-top: -1em;
+}
+/* line 202, ../sass/components/_caret.scss */
+.caret-overlay.caret-top:before {
+  border-bottom: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -1em;
+}
+/* line 208, ../sass/components/_caret.scss */
+.caret-overlay.caret-bottom:before {
+  border-top: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+  top: 100%;
+  left: 50%;
+  margin-left: -1em;
+}
+/* line 215, ../sass/components/_caret.scss */
+.caret-overlay:after {
+  position: absolute;
+  border-width: 10px;
+  color: #fff;
+}
+/* line 221, ../sass/components/_caret.scss */
+.caret-overlay.caret-right:after {
+  top: 50%;
+  left: 100%;
+  margin-top: -10px;
+}
+/* line 222, ../sass/components/_caret.scss */
+.caret-overlay.caret-left:after {
+  top: 50%;
+  right: 100%;
+  margin-top: -10px;
+}
+/* line 223, ../sass/components/_caret.scss */
+.caret-overlay.caret-top:after {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -10px;
+}
+/* line 224, ../sass/components/_caret.scss */
+.caret-overlay.caret-bottom:after {
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+}
+
+/* line 227, ../sass/components/_caret.scss */
+.caret-helpbutton {
+  position: absolute;
+  font-size: 10px;
+}
+/* line 231, ../sass/components/_caret.scss */
+.caret-helpbutton:before {
+  content: '';
+  position: absolute;
+  border-width: 1.1em;
+  color: rgba(0, 0, 0, 0.15);
+}
+/* line 237, ../sass/components/_caret.scss */
+.caret-helpbutton:after {
+  position: absolute;
+  border-width: 2em;
+  color: #E0F59E;
+}
+/* line 243, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right {
+  right: 0;
+}
+/* line 245, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right:before {
+  top: 0.5em;
+  border-left: 2.1em solid;
+  border-top: 1.1em solid transparent;
+  border-bottom: 1.1em solid transparent;
+  margin-right: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 253, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right:after {
+  top: 0.5em;
+  border-left: 2em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 260, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left {
+  left: -2em;
+}
+/* line 262, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left:before {
+  top: 0.5em;
+  border-right: 2.1em solid;
+  border-top: 1.1em solid transparent;
+  border-bottom: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 270, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left:after {
+  top: 0.5em;
+  border-right: 2em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 277, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top {
+  top: -2em;
+}
+/* line 279, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top:before {
+  left: 0.5em;
+  border-bottom: 2.1em solid;
+  border-right: 1.1em solid transparent;
+  border-left: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 287, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top:after {
+  left: 0.5em;
+  border-bottom: 2em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 294, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom {
+  bottom: 0;
+}
+/* line 296, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom:before {
+  left: 0.5em;
+  border-top: 2.1em solid;
+  border-right: 1.1em solid transparent;
+  border-left: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-bottom: -0.1em;
+}
+/* line 304, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom:after {
+  left: 0.5em;
+  border-top: 2em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
 }
 
 /* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
@@ -1342,22 +1732,8 @@ button.nts-switch-button[disabled]:hover {
   background-color: #DDD;
 }
 
-/* line 3, ../sass/components/_listbox.scss */
-.nts-list-box .ui-selecting {
-  background: #FECA40;
-}
-/* line 7, ../sass/components/_listbox.scss */
-.nts-list-box .ui-selected {
-  background: #F39814;
-  color: white;
-}
-/* line 12, ../sass/components/_listbox.scss */
-.nts-list-box li {
-  height: 28px;
-}
-
-/* line 18, ../sass/components/_listbox.scss */
-#list-box {
+/* line 1, ../sass/components/_listbox.scss */
+.ntsListBox {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -1368,15 +1744,31 @@ button.nts-switch-button[disabled]:hover {
   overflow-y: auto;
   width: 300px;
 }
-
-/* line 29, ../sass/components/_listbox.scss */
-.nts-column {
-  float: left;
-  padding: 5px;
+/* line 14, ../sass/components/_listbox.scss */
+.ntsListBox .nts-list-box .ui-selecting {
+  background: #FECA40;
 }
-
-/* line 33, ../sass/components/_listbox.scss */
-.disabled {
+/* line 18, ../sass/components/_listbox.scss */
+.ntsListBox .nts-list-box .ui-selected {
+  background: #F39814;
+  color: white;
+}
+/* line 23, ../sass/components/_listbox.scss */
+.ntsListBox .nts-list-box li {
+  height: 28px;
+  overflow: hidden;
+}
+/* line 29, ../sass/components/_listbox.scss */
+.ntsListBox .nts-column {
+  float: left;
+  padding: 0 5px;
+  height: 28px;
+  line-height: 28px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+/* line 38, ../sass/components/_listbox.scss */
+.ntsListBox.disabled {
   color: graytext;
 }
 
@@ -1549,6 +1941,18 @@ button.nts-switch-button[disabled]:hover {
   color: #000;
 }
 
+/* line 8, ../sass/components/_combobox.scss */
+.nts-combo-item {
+  height: 20px;
+}
+
+/* line 11, ../sass/components/_combobox.scss */
+.nts-column {
+  height: 20px;
+  overflow: hidden;
+  margin-right: 5px;
+}
+
 /* line 1, ../sass/components/_dialog.scss */
 .ui-dialog {
   padding: 0px;
@@ -1644,46 +2048,32 @@ button.nts-switch-button[disabled]:hover {
 }
 
 /* line 18, ../sass/components/_wizard.scss */
-.nts-wizard, .tabcontrol2 {
+.nts-wizard {
   display: block;
   width: 1000px;
   overflow: hidden;
   /* Accessibility */
 }
 /* line 23, ../sass/components/_wizard.scss */
-.nts-wizard a, .tabcontrol2 a {
+.nts-wizard a {
   outline: 0;
 }
-/* line 27, ../sass/components/_wizard.scss */
-.nts-wizard ul, .tabcontrol2 ul {
+/* line 25, ../sass/components/_wizard.scss */
+.nts-wizard ul {
   list-style: none !important;
   padding: 0;
   margin: 5px;
 }
-/* line 33, ../sass/components/_wizard.scss */
-.nts-wizard ul > li, .tabcontrol2 ul > li {
+/* line 31, ../sass/components/_wizard.scss */
+.nts-wizard ul > li {
   display: block;
   padding: 0;
 }
-/* line 39, ../sass/components/_wizard.scss */
-.nts-wizard > .steps .current-info, .tabcontrol2 > .steps .current-info {
-  position: absolute;
-  left: -999em;
-}
-/* line 44, ../sass/components/_wizard.scss */
-.nts-wizard > .content > .title, .tabcontrol2 > .content > .title {
-  position: absolute;
-  left: -999em;
-}
-
-/*
-    Wizard
-*/
-/* line 55, ../sass/components/_wizard.scss */
+/* line 36, ../sass/components/_wizard.scss */
 .nts-wizard .header {
   margin: 5px 5px 5px 8px;
 }
-/* line 58, ../sass/components/_wizard.scss */
+/* line 39, ../sass/components/_wizard.scss */
 .nts-wizard .header .image {
   position: absolute;
   width: 60px;
@@ -1693,7 +2083,7 @@ button.nts-switch-button[disabled]:hover {
   border: 3px solid #fff;
   z-index: 3;
 }
-/* line 68, ../sass/components/_wizard.scss */
+/* line 49, ../sass/components/_wizard.scss */
 .nts-wizard .header .content {
   display: block;
   margin: 8px 0 5px 0;
@@ -1711,21 +2101,21 @@ button.nts-switch-button[disabled]:hover {
   padding: 1em 1em 1em 3em;
   box-sizing: border-box;
 }
-/* line 84, ../sass/components/_wizard.scss */
+/* line 66, ../sass/components/_wizard.scss */
 .nts-wizard > .steps {
   position: relative;
   display: block;
   width: 100%;
 }
-/* line 89, ../sass/components/_wizard.scss */
+/* line 71, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .number {
   font-size: 1.429em;
 }
-/* line 91, ../sass/components/_wizard.scss */
+/* line 73, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li {
   width: 25%;
 }
-/* line 93, ../sass/components/_wizard.scss */
+/* line 75, ../sass/components/_wizard.scss */
 .nts-wizard > .steps a,
 .nts-wizard > .steps a:hover,
 .nts-wizard > .steps a:active {
@@ -1743,28 +2133,28 @@ button.nts-switch-button[disabled]:hover {
   word-wrap: break-word;
   cursor: default;
 }
-/* line 108, ../sass/components/_wizard.scss */
+/* line 90, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .disabled a,
 .nts-wizard > .steps .disabled a:hover,
 .nts-wizard > .steps .disabled a:active {
   color: #fff;
 }
-/* line 114, ../sass/components/_wizard.scss */
+/* line 96, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .current a,
 .nts-wizard > .steps .current a:hover,
 .nts-wizard > .steps .current a:active {
   color: #000;
   background: #fff;
 }
-/* line 121, ../sass/components/_wizard.scss */
+/* line 103, ../sass/components/_wizard.scss */
 .nts-wizard > .steps .begin a div {
   margin-left: 20px;
 }
-/* line 137, ../sass/components/_wizard.scss */
+/* line 119, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .nts-steps {
   float: left;
 }
-/* line 141, ../sass/components/_wizard.scss */
+/* line 123, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end > a, .nts-wizard > .steps > ul > .end > a:hover, .nts-wizard > .steps > ul > .end > a:active {
   display: table;
   background-color: #E2F79F;
@@ -1777,19 +2167,19 @@ button.nts-switch-button[disabled]:hover {
   width: -webkit-calc(100% - 25px);
   width: -moz-calc(100% - 25px);
 }
-/* line 153, ../sass/components/_wizard.scss */
+/* line 135, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end > a > div, .nts-wizard > .steps > ul > .end > a:hover > div, .nts-wizard > .steps > ul > .end > a:active > div {
   display: table-cell;
   padding: 0;
   vertical-align: middle;
 }
-/* line 155, ../sass/components/_wizard.scss */
+/* line 137, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end.current a, .nts-wizard > .steps > ul > .end.current a:hover, .nts-wizard > .steps > ul > .end.current a:active {
   color: #fff;
   background: #4FCE3A;
   box-shadow: 0 0 0 1px #fff inset;
 }
-/* line 164, ../sass/components/_wizard.scss */
+/* line 146, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle {
   height: 100%;
   float: left;
@@ -1799,7 +2189,7 @@ button.nts-switch-button[disabled]:hover {
   padding-left: 33px;
   position: absolute;
 }
-/* line 173, ../sass/components/_wizard.scss */
+/* line 155, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-vertical-line {
   background-color: #4D4D4D;
   width: 5px;
@@ -1807,7 +2197,7 @@ button.nts-switch-button[disabled]:hover {
   height: 100%;
   border-left: 2px solid white;
 }
-/* line 180, ../sass/components/_wizard.scss */
+/* line 162, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > .nts-point {
   width: 18px;
   height: 18px;
@@ -1819,7 +2209,7 @@ button.nts-switch-button[disabled]:hover {
   left: -5px;
   box-sizing: border-box;
 }
-/* line 191, ../sass/components/_wizard.scss */
+/* line 173, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li.current > .nts-steps-middle > .nts-bridge > .nts-horizontal-line {
   width: -webkit-calc(100% - 62px);
   width: -moz-calc(100% - 62px);
@@ -1829,24 +2219,24 @@ button.nts-switch-button[disabled]:hover {
   z-index: 1;
   top: 7px;
 }
-/* line 200, ../sass/components/_wizard.scss */
+/* line 182, ../sass/components/_wizard.scss */
 .nts-wizard > .steps a > div {
   padding: 1em 1em;
 }
-/* line 203, ../sass/components/_wizard.scss */
+/* line 185, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > div {
   position: absolute;
 }
-/* line 206, ../sass/components/_wizard.scss */
+/* line 188, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge > div {
   position: absolute;
 }
-/* line 209, ../sass/components/_wizard.scss */
+/* line 191, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li > .nts-steps-middle > .nts-bridge {
   top: 35%;
   width: 100%;
 }
-/* line 213, ../sass/components/_wizard.scss */
+/* line 195, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .end > .nts-steps {
   width: 0px;
   height: 0px;
@@ -1856,37 +2246,47 @@ button.nts-switch-button[disabled]:hover {
   position: absolute;
   left: 27px;
 }
-/* line 222, ../sass/components/_wizard.scss */
+/* line 204, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .current > .nts-steps > .nts-bridge > .nts-point {
   background: #4d4d4d;
   border: 3px solid #4d4d4d;
 }
-/* line 226, ../sass/components/_wizard.scss */
+/* line 208, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .first {
   z-index: 1;
 }
-/* line 229, ../sass/components/_wizard.scss */
+/* line 211, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > .begin.current > .nts-steps {
   border: 3px solid white;
 }
-/* line 234, ../sass/components/_wizard.scss */
+/* line 216, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .steps {
   float: left;
   width: 30%;
   background-color: #a0a0a0;
 }
-/* line 239, ../sass/components/_wizard.scss */
+/* line 221, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .steps > ul > li {
   width: 100%;
   height: 100%;
   position: relative;
 }
-/* line 247, ../sass/components/_wizard.scss */
+/* line 229, ../sass/components/_wizard.scss */
 .nts-wizard > .steps > ul > li,
 .nts-wizard > .actions > ul > li {
   float: left;
 }
-/* line 253, ../sass/components/_wizard.scss */
+/* line 234, ../sass/components/_wizard.scss */
+.nts-wizard > .steps .current-info {
+  position: absolute;
+  left: -999em;
+}
+/* line 239, ../sass/components/_wizard.scss */
+.nts-wizard > .content > .title {
+  position: absolute;
+  left: -999em;
+}
+/* line 244, ../sass/components/_wizard.scss */
 .nts-wizard > .content {
   background: #eee;
   display: block;
@@ -1899,14 +2299,14 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 266, ../sass/components/_wizard.scss */
+/* line 257, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .content {
   display: inline;
   float: left;
   margin: 0 2.5% 0.5em 2.5%;
   width: 65%;
 }
-/* line 273, ../sass/components/_wizard.scss */
+/* line 264, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body {
   float: left;
   position: absolute;
@@ -1914,74 +2314,74 @@ button.nts-switch-button[disabled]:hover {
   height: 95%;
   padding: 2.5%;
 }
-/* line 281, ../sass/components/_wizard.scss */
+/* line 272, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body ul {
   list-style: disc !important;
 }
-/* line 285, ../sass/components/_wizard.scss */
+/* line 276, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body ul > li {
   display: list-item;
 }
-/* line 289, ../sass/components/_wizard.scss */
+/* line 280, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body > iframe {
   border: 0 none;
   width: 100%;
   height: 100%;
 }
-/* line 295, ../sass/components/_wizard.scss */
+/* line 286, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body input {
   display: block;
   border: 1px solid #ccc;
 }
-/* line 300, ../sass/components/_wizard.scss */
+/* line 291, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body input[type="checkbox"] {
   display: inline-block;
 }
-/* line 304, ../sass/components/_wizard.scss */
+/* line 295, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body input.error {
   background: #fbe3e4;
   border: 1px solid #fbc2c4;
   color: #8a1f11;
 }
-/* line 310, ../sass/components/_wizard.scss */
+/* line 301, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body label {
   display: inline-block;
   margin-bottom: 0.5em;
 }
-/* line 315, ../sass/components/_wizard.scss */
+/* line 306, ../sass/components/_wizard.scss */
 .nts-wizard > .content > .body label.error {
   color: #8a1f11;
   display: inline-block;
   margin-left: 1.5em;
 }
-/* line 321, ../sass/components/_wizard.scss */
+/* line 312, ../sass/components/_wizard.scss */
 .nts-wizard > .actions {
   position: relative;
   display: block;
   text-align: right;
   width: 100%;
 }
-/* line 328, ../sass/components/_wizard.scss */
+/* line 319, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions {
   display: inline;
   float: right;
   margin: 0 2.5%;
   width: 95%;
 }
-/* line 335, ../sass/components/_wizard.scss */
+/* line 326, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul {
   display: inline-block;
   text-align: right;
 }
-/* line 340, ../sass/components/_wizard.scss */
+/* line 331, ../sass/components/_wizard.scss */
 .nts-wizard > .actions > ul > li {
   margin: 0 0.5em;
 }
-/* line 344, ../sass/components/_wizard.scss */
+/* line 335, ../sass/components/_wizard.scss */
 .nts-wizard.vertical > .actions > ul > li {
   margin: 0 0 0 1em;
 }
-/* line 348, ../sass/components/_wizard.scss */
+/* line 339, ../sass/components/_wizard.scss */
 .nts-wizard > .actions a,
 .nts-wizard > .actions a:hover,
 .nts-wizard > .actions a:active {
@@ -1994,63 +2394,101 @@ button.nts-switch-button[disabled]:hover {
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
-/* line 361, ../sass/components/_wizard.scss */
+/* line 352, ../sass/components/_wizard.scss */
 .nts-wizard > .actions .disabled a,
 .nts-wizard > .actions .disabled a:hover,
 .nts-wizard > .actions .disabled a:active {
   background: #eee;
   color: #aaa;
 }
-/* line 375, ../sass/components/_wizard.scss */
+/* line 366, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue .header .content {
   background: #ABEBF5;
 }
-/* line 377, ../sass/components/_wizard.scss */
+/* line 368, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end > a,
 .nts-wizard.theme-blue > .steps > ul > .end > a:hover,
 .nts-wizard.theme-blue > .steps > ul > .end > a:active {
   background-color: #ABEBF5;
 }
-/* line 381, ../sass/components/_wizard.scss */
+/* line 372, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .steps > ul > .end.current a, .nts-wizard.theme-blue > .steps > ul > .end.current a:hover, .nts-wizard.theme-blue > .steps > ul > .end.current a:active {
   background-color: #37B0F0;
 }
-/* line 385, ../sass/components/_wizard.scss */
+/* line 376, ../sass/components/_wizard.scss */
 .nts-wizard.theme-blue > .actions a:active {
   background: #ABEBF5;
 }
 
-/* line 1, ../sass/components/_currency.scss */
-.currency {
-  position: relative;
+/* line 1, ../sass/components/_swaplist.scss */
+.ntsSwapArea {
+  display: table;
 }
-/* line 4, ../sass/components/_currency.scss */
-.currency.currencyLeft input[type="text"] {
-  padding-left: 10px;
+
+/* line 4, ../sass/components/_swaplist.scss */
+.ntsSwapList-container {
+  display: inline-block;
 }
-/* line 8, ../sass/components/_currency.scss */
-.currency.currencyRight input[type="text"] {
-  padding-right: 10px;
+
+/* line 7, ../sass/components/_swaplist.scss */
+.ntsSwapList {
+  overflow: auto;
 }
-/* line 13, ../sass/components/_currency.scss */
-.currency:after {
-  position: absolute;
-  content: ' ';
-  color: #999;
+
+/* line 10, ../sass/components/_swaplist.scss */
+.ntsSearchButton {
+  margin-left: 10px;
 }
-/* line 19, ../sass/components/_currency.scss */
-.currency.currencyLeft:after {
-  content: attr(data-content);
-  left: 0;
-  top: 0;
-  text-align: left;
+
+/* line 13, ../sass/components/_swaplist.scss */
+.move-button {
+  width: 75px;
 }
-/* line 26, ../sass/components/_currency.scss */
-.currency.currencyRight:after {
-  content: attr(data-content);
-  right: 0;
-  top: 0;
-  text-align: right;
+
+/* line 16, ../sass/components/_swaplist.scss */
+.move-forward {
+  margin-bottom: 5px;
+}
+
+/* line 19, ../sass/components/_swaplist.scss */
+.ntsSwapComponent {
+  display: table-cell;
+}
+
+/* line 22, ../sass/components/_swaplist.scss */
+.ntsMoveDataArea {
+  height: 100%;
+  vertical-align: middle;
+  width: 75px;
+  text-align: center;
+}
+
+/* line 28, ../sass/components/_swaplist.scss */
+.ntsSearchArea div {
+  display: inline-block;
+}
+
+/* line 1, ../sass/components/_updown.scss */
+.ntsUpDown {
+  width: 70px;
+  height: 100%;
+  display: inline-block;
+}
+
+/* line 6, ../sass/components/_updown.scss */
+.upDown-container {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* line 10, ../sass/components/_updown.scss */
+.ntsUpDownButton {
+  width: 70px;
+}
+
+/* line 13, ../sass/components/_updown.scss */
+.ntsUpButton {
+  margin-bottom: 10px;
 }
 
 /* line 1, ../sass/components/_searchbox.scss */
@@ -2301,13 +2739,7 @@ button.search-btn {
 }
 
 /* Basic */
-/* line 220, ../sass/components/_datepicker.scss */
-body {
-  overflow-x: hidden;
-  margin: 0;
-}
-
-/* line 226, ../sass/components/_datepicker.scss */
+/* line 219, ../sass/components/_datepicker.scss */
 .browserupgrade {
   margin: 0;
   padding: 5px 15px;
@@ -2317,30 +2749,30 @@ body {
 }
 
 /* Header */
-/* line 239, ../sass/components/_datepicker.scss */
+/* line 232, ../sass/components/_datepicker.scss */
 .docs-header {
   margin-bottom: 0;
 }
 
-/* line 243, ../sass/components/_datepicker.scss */
+/* line 236, ../sass/components/_datepicker.scss */
 .navbar-toggle:hover,
 .navbar-toggle:focus {
   border-color: #0074d9;
 }
 
-/* line 248, ../sass/components/_datepicker.scss */
+/* line 241, ../sass/components/_datepicker.scss */
 .navbar-toggle .icon-bar {
   background-color: #0074d9;
 }
 
 /* Jumbotron */
-/* line 255, ../sass/components/_datepicker.scss */
+/* line 248, ../sass/components/_datepicker.scss */
 .docs-jumbotron {
   color: #fff;
   background-color: #0074d9;
 }
 
-/* line 260, ../sass/components/_datepicker.scss */
+/* line 253, ../sass/components/_datepicker.scss */
 .docs-jumbotron .version {
   font-size: 14px;
   opacity: .5;
@@ -2349,7 +2781,7 @@ body {
 }
 
 /* Content */
-/* line 272, ../sass/components/_datepicker.scss */
+/* line 265, ../sass/components/_datepicker.scss */
 .docs-datepicker-container {
   position: relative;
   display: none;
@@ -2358,7 +2790,7 @@ body {
   border: 1px dashed #eee;
 }
 
-/* line 283, ../sass/components/_datepicker.scss */
+/* line 276, ../sass/components/_datepicker.scss */
 .docs-datepicker-container:before {
   font-size: 12px;
   line-height: 20px;
@@ -2372,45 +2804,45 @@ body {
   color: #ccc;
 }
 
-/* line 300, ../sass/components/_datepicker.scss */
+/* line 293, ../sass/components/_datepicker.scss */
 .docs-datepicker-container > .datepicker-container {
   margin: 10px auto;
 }
 
-/* line 304, ../sass/components/_datepicker.scss */
+/* line 297, ../sass/components/_datepicker.scss */
 .docs-options > .input-group {
   margin-bottom: 10px;
 }
 
-/* line 308, ../sass/components/_datepicker.scss */
+/* line 301, ../sass/components/_datepicker.scss */
 .docs-options > .input-group > .input-group-addon {
   min-width: 100px;
 }
 
-/* line 312, ../sass/components/_datepicker.scss */
+/* line 305, ../sass/components/_datepicker.scss */
 .docs-actions > .input-group,
 .docs-actions > .btn-group,
 .docs-actions > .btn {
   margin-bottom: 5px;
 }
 
-/* line 318, ../sass/components/_datepicker.scss */
+/* line 311, ../sass/components/_datepicker.scss */
 .docs-actions .input-group-btn {
   width: 50%;
 }
 
-/* line 322, ../sass/components/_datepicker.scss */
+/* line 315, ../sass/components/_datepicker.scss */
 .docs-actions .input-group-btn .btn {
   width: 100%;
 }
 
 /* Footer */
-/* line 329, ../sass/components/_datepicker.scss */
+/* line 322, ../sass/components/_datepicker.scss */
 .docs-footer {
   overflow: hidden;
 }
 
-/* line 333, ../sass/components/_datepicker.scss */
+/* line 326, ../sass/components/_datepicker.scss */
 .heart {
   font-size: 18px;
   line-height: 30px;
@@ -2424,12 +2856,12 @@ body {
   color: #ddd;
 }
 
-/* line 351, ../sass/components/_datepicker.scss */
+/* line 344, ../sass/components/_datepicker.scss */
 .heart:hover {
   color: #ff4136;
 }
 
-/* line 355, ../sass/components/_datepicker.scss */
+/* line 348, ../sass/components/_datepicker.scss */
 .heart:before {
   position: absolute;
   top: 50%;
@@ -2441,7 +2873,7 @@ body {
   border-top: 1px solid #eee;
 }
 
-/* line 370, ../sass/components/_datepicker.scss */
+/* line 363, ../sass/components/_datepicker.scss */
 .heart:after {
   position: relative;
   z-index: 1;
@@ -2451,8 +2883,35 @@ body {
   background-color: #fff;
 }
 
+/* line 375, ../sass/components/_datepicker.scss */
+.ntsDatepicker {
+  vertical-align: middle;
+}
+
+/* line 376, ../sass/components/_datepicker.scss */
+.datepicker-btn {
+  background-image: url(datepicker.png);
+  background-color: transparent;
+  /* make the button transparent */
+  background-repeat: no-repeat;
+  /* make the background image appear only once */
+  background-position: center;
+  /* equivalent to 'top left' */
+  background-size: auto 100%;
+  border: none;
+  /* assuming we don't want any borders */
+  cursor: pointer;
+  /* make the cursor like hovering over an <a> element */
+  height: 22px;
+  /* make this the size of your image */
+  padding-left: 24px;
+  /* make text start to the right of the image */
+  vertical-align: middle;
+}
+
 /* line 1, ../sass/components/_contextmenu.scss */
 .ntsContextMenu {
+  position: absolute;
   display: inline-block;
   background: #fff;
   border: 1px solid #aaa;
@@ -2461,7 +2920,7 @@ body {
   border-radius: 2px;
   box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
 }
-/* line 10, ../sass/components/_contextmenu.scss */
+/* line 11, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li {
   position: relative;
   display: block;
@@ -2470,29 +2929,71 @@ body {
   line-height: 28px;
   cursor: pointer;
 }
-/* line 18, ../sass/components/_contextmenu.scss */
+/* line 19, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li:hover {
   background: rgba(0, 0, 0, 0.075);
 }
-/* line 22, ../sass/components/_contextmenu.scss */
+/* line 23, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li.disabled {
   background: transparent;
   opacity: 0.7;
   cursor: default;
 }
-/* line 28, ../sass/components/_contextmenu.scss */
+/* line 29, ../sass/components/_contextmenu.scss */
 .ntsContextMenu li .menu-icon {
   position: absolute;
   left: 6px;
   top: 50%;
   margin-top: -8px;
 }
-/* line 36, ../sass/components/_contextmenu.scss */
+/* line 37, ../sass/components/_contextmenu.scss */
 .ntsContextMenu .divider {
   height: 0;
   border-top: 1px solid #ccc;
   padding: 0;
   margin: 5px 0;
+}
+
+/* line 1, ../sass/components/_userguide.scss */
+.ntsUserGuide {
+  display: none;
+}
+/* line 4, ../sass/components/_userguide.scss */
+.ntsUserGuide .userguide-box {
+  position: absolute;
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 600px;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+}
+
+/* line 15, ../sass/components/_userguide.scss */
+.userguide-overlay {
+  position: fixed;
+  background: #000;
+  opacity: 0.3;
+  z-index: 999;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+/* line 1, ../sass/components/_helpbutton.scss */
+.ntsHelpButton {
+  display: inline-block;
+  position: relative;
+}
+/* line 5, ../sass/components/_helpbutton.scss */
+.ntsHelpButton .nts-help-button-image {
+  background-color: #E0F59E;
+  padding: 18px 12px;
+  position: absolute;
+  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 990;
 }
 
 /* line 1, ../sass/frame/_header.scss */
@@ -2602,12 +3103,12 @@ body {
   line-height: 50px;
 }
 
-/* line 31, ../sass/base.scss */
+/* line 34, ../sass/base.scss */
 html {
   font-size: 14px;
 }
 
-/* line 35, ../sass/base.scss */
+/* line 38, ../sass/base.scss */
 body * {
   font-size: 1rem;
   font-family: "Meiryo UI";

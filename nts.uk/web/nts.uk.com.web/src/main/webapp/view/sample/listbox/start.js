@@ -12,12 +12,9 @@ __viewContext.ready(function () {
             self.selectedCode = ko.observable(null);
             self.selectedCodes = ko.observableArray([]);
             self.isEnable = ko.observable(true);
-            $('#list-box').on('selectionChanging', function (event) {
-                console.log('Selecting value:' + event.originalEvent.detail);
-            });
-            $('#list-box').on('selectionChanged', function (event) {
-                console.log('Selected value:' + event.originalEvent.detail);
-            });
+            self.isMulti = ko.observable(true);
+            self.isMulti2 = ko.observable(true);
+            self.isValidate = ko.observable(true);
         }
         ScreenModel.prototype.addOptions = function () {
             var self = this;
