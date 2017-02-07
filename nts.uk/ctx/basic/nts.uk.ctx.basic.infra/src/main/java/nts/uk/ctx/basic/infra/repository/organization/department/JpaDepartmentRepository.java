@@ -41,6 +41,7 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		builderString.append(" FROM CmnmtDep e");
 		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtDepPK.departmentCode = :departmentCode");
+		builderString.append(" AND e.cmnmtDepPK.historyId = :historyId");
 		FIND_SINGLE = builderString.toString();
 	}
 
@@ -71,8 +72,11 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 	@Override
 	public Optional<Department> findSingleDepartment(String companyCode, DepartmentCode departmentCode,
 			String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(FIND_SINGLE, CmnmtDep.class).setParameter("companyCode", "'" + companyCode + "'")
+				.setParameter("workPlaceCode", "'" + departmentCode.toString() + "'")
+				.setParameter("historyId", historyId).getSingle().map(e -> {
+					return Optional.of(convertToDomain(e));
+				}).orElse(Optional.empty());
 	}
 
 	@Override
