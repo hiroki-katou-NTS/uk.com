@@ -7,9 +7,9 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.List;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.shr.com.primitive.sample.CommonAmount;
 
 /**
  * The Interface HealthInsuranceRateMemento.

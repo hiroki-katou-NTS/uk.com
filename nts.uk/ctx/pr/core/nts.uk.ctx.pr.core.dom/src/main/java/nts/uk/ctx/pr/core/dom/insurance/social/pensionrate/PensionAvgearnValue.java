@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import lombok.Data;
 import nts.arc.error.BusinessException;
-import nts.uk.shr.com.primitive.sample.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 
 /**
  * The Class PensionAvgearnValue.

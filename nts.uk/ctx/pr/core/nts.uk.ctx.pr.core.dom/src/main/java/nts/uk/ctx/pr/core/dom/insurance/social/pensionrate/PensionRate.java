@@ -12,10 +12,10 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.ListUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.shr.com.primitive.sample.CommonAmount;
 
 /**
  * The Class PensionRate.
