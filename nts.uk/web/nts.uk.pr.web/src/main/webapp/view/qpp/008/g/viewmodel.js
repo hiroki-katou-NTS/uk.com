@@ -13,6 +13,7 @@ var qpp008;
                     var self = this;
                     self.checked = ko.observable(true);
                     self.enable = ko.observable(true);
+                    self.selectedRuleCode = ko.observable(1);
                     /*switchButton*/
                     self.roundingRules = ko.observableArray([
                         { code: '1', name: 'すべて' },
@@ -24,11 +25,7 @@ var qpp008;
                     var _isDataBound = false;
                     var _checkAll = false;
                     var _checkAllValue = false;
-                    // event
-                    $("#grid10").on("iggridupdatingdatadirty", function (event, ui) {
-                        $("#grid10").igGrid("saveChanges");
-                        return false;
-                    });
+                    /////////////event of iggrid
                     $("#grid10").on("iggriddatabound", function (event, ui) {
                         if (_checkAll) {
                         }
@@ -41,25 +38,21 @@ var qpp008;
                         var i, grid = ui.owner, ds = grid.dataSource, data = ds.data(), dataLength = data.length;
                         for (i = 0; i < dataLength; i++) {
                             if (_checkAll) {
-                                if (data[i]["UnitPrice"] < 100 || data[i]["UnitPrice"] > 270) {
-                                    data[i]["IsPromotion"] = _checkAllValue;
+                                if (data[i]["Difference"] < 6 || data[i]["Difference"] > 20) {
+                                    data[i]["Confirm"] = _checkAllValue;
                                 }
                             }
                             else if (self.firstLoad()) {
-                                if (data[i]["UnitPrice"] < 100 || data[i]["UnitPrice"] > 270) {
-                                    data[i]["IsPromotion"] = true;
+                                if (data[i]["Difference"] < 6 || data[i]["Difference"] > 20) {
+                                    data[i]["Confirm"] = true;
                                 }
                             }
                         }
                         self.firstLoad = ko.observable(false);
                     });
-                    //Bind after initialization  
-                    //            $(document).delegate("#grid10", "iggridupdatingeditcellstarted", function(evt, ui) {
-                    //                alert(ui.columnIndex);
-                    //            };
+                    // event editable cell
                     $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function (evt, ui) {
-                        var $cell = $($("#grid10").igGrid("cellById", ui.rowID, "UnitPrice"));
-                        //var $cell1 = $($("#grid10").igGrid("cellAt", 4, ui.rowID));
+                        var $cell = $($("#grid10").igGrid("cellById", ui.rowID, "Difference"));
                         if (!($cell.hasClass("red") || $cell.hasClass("yellow"))) {
                             return false;
                         }
@@ -74,15 +67,14 @@ var qpp008;
                     });
                     //change color by delegate
                     $(document).delegate("#grid10", "iggriddatarendered", function (evt, ui) {
-                        //var x = _.find($(event.target).find(".ui-iggrid-modifiedrecord").children(), function(cell) { return $(cell).attr("aria-describedby").indexOf("UnitPrice") >= 0 })
                         _.forEach(ui.owner.dataSource.dataView(), function (item, index) {
-                            if (item["UnitPrice"] > 270) {
-                                var cell1 = $("#grid10").igGrid("cellById", item["ProductID"], "UnitPrice");
+                            if (item["Difference"] > 20) {
+                                var cell1 = $("#grid10").igGrid("cellById", item["EmpCode"], "Difference");
                                 $(cell1).addClass('red').attr('data-class', 'red');
                                 $(window).on('resize', function () { $(cell1).addClass('red'); });
                             }
-                            else if (item["UnitPrice"] < 100) {
-                                var cell1 = $("#grid10").igGrid("cellById", item["ProductID"], "UnitPrice");
+                            else if (item["Difference"] < 6) {
+                                var cell1 = $("#grid10").igGrid("cellById", item["EmpCode"], "Difference");
                                 $(cell1).addClass('yellow').attr('data-class', 'yellow');
                                 $(window).on('resize', function () { $(cell1).addClass('yellow'); });
                             }
@@ -90,53 +82,40 @@ var qpp008;
                             }
                         });
                     });
-                    //            $("#grid10").on("iggridupdatingeditrowended", function(event, ui) {
-                    //                if (ui.update) {
-                    //
-                    //                    var unitPrice = ui.values["UnitPrice"];
-                    //                    var unitsInStock = ui.values["UnitsInStock"];
-                    //                    var totalValue = (unitPrice * unitsInStock) || ui.values["Total"];
-                    //
-                    //                    if (totalValue < 1000) {
-                    //                        $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", true);
-                    //                    }
-                    //                    else {
-                    //                        $("#grid10").igGridUpdating("setCellValue", ui.rowID, "IsPromotion", false);
-                    //                    }
-                    //                }
-                    //            });
                     //instantiation
                     var iggridData = [];
-                    var str = ['a0', 'b0', 'c0', 'd0', 'eo', 'f0', 'g0'];
+                    var str = ['a0', 'b0', 'c0', 'd0', 'eo', 'f0', 'g0', 'h0', 'i0', 'j0', 'k0'];
                     for (var j = 0; j < 4; j++) {
                         for (var i = 1; i < 41; i++) {
                             var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                            var codeUnisInStock = Math.floor((Math.random() * 20) + 3);
-                            var UnitPrice = Math.floor((Math.random() * 5000) + 150);
-                            iggridData.push({ "ProductID": i, "ProductName": code, "UnitsInStock": 100, "UnitPrice": i * 15, "PromotionExpDate": new Date("2017/05/05"), "IsPromotion": true, "Total": 1000 });
+                            var CompareDate1 = Math.floor((Math.random() * 5000) + 150);
+                            var CompareDate2 = Math.floor((Math.random() * 5000) + 150);
+                            var Difference = Math.floor((Math.random() * 20) + 5);
+                            iggridData.push({
+                                "EmpCode": code, "EmpName": code, "Classification": '未', "ItemName": '項目名', "CompareDate1": CompareDate1,
+                                "CompareDate2": CompareDate2, "Difference": Difference, "Reason": 'diference', "RegisStatus1": 'aa', "RegisStatus2": 'bb', "Confirm": true
+                            });
                         }
                     }
                     $("#grid10").igGrid({
-                        primaryKey: "ProductID",
+                        primaryKey: "EmpCode",
                         dataSource: iggridData,
                         width: "100%",
                         autoGenerateColumns: false,
-                        dataSourceType: "json",
-                        responseDataKey: "results",
+                        //dataSourceType: "Json",
+                        //responseDataKey: "results",
                         columns: [
-                            { headerText: "Product ID", key: "ProductID", dataType: "number" },
-                            { headerText: "Product Name", key: "ProductName", dataType: "string" },
-                            { headerText: "Units in Stock", key: "UnitsInStock", dataType: "number" },
-                            { headerText: "Unit Price", key: "UnitPrice", dataType: "number", format: "currency", columnCssClass: "colStyle" },
-                            {
-                                headerText: "Promotion Exp Date", key: "PromotionExpDate", dataType: "date", unbound: true, format: "date",
-                                unboundValues: [new Date("4/24/2012"), new Date("8/24/2012"), new Date("6/24/2012"), new Date("7/24/2012"), new Date("9/24/2012"), new Date("10/24/2012"), new Date("11/24/2012")]
-                            },
-                            { headerText: "Is Promotion<br/><input type='checkbox' id='cb1'/>", key: "IsPromotion", dataType: "bool", unbound: true, format: "checkbox" },
-                            {
-                                headerText: "Total Price", key: "Total", dataType: "number", unbound: true, format: "currency",
-                                formula: function CalculateTotal(data, grid) { return data["UnitPrice"] * data["UnitsInStock"]; }
-                            }
+                            { headerText: "％社員％コード", key: "EmpCode", dataType: "string" },
+                            { headerText: "氏名", key: "EmpName", dataType: "string" },
+                            { headerText: "区分", key: "Classification", dataType: "string", width: 30 },
+                            { headerText: "項目名", key: "ItemName", dataType: "string" },
+                            { headerText: "比較年月1", key: "CompareDate1", dataType: "number" },
+                            { headerText: "比較年月2", key: "CompareDate2", dataType: "number" },
+                            { headerText: "差額", key: "Difference", dataType: "number" },
+                            { headerText: "差異理由", key: "Reason", dataType: "string" },
+                            { headerText: "登録状況（比較年月１）", key: "RegisStatus1", dataType: "string" },
+                            { headerText: "登録状況（比較年月2）", key: "RegisStatus2", dataType: "string" },
+                            { headerText: "確認済<br/><input type='checkbox' id='cb1'/>", key: "Confirm", dataType: "bool", unbound: true, format: "checkbox" }
                         ],
                         features: [
                             {
@@ -144,7 +123,7 @@ var qpp008;
                                 enableVerticalRendering: false,
                                 columnSettings: [
                                     {
-                                        columnKey: "ProductID",
+                                        columnKey: "EmpCode",
                                         classes: "ui-hidden-tablet"
                                     }
                                 ]
@@ -153,15 +132,6 @@ var qpp008;
                                 name: "Paging",
                                 type: "local",
                                 pageIndexChanged: function (evt, ui) {
-                                    //                            _.forEach(ui.owner.grid.dataSource.data(), function(item, cellId) {
-                                    //                                if (item["UnitPrice"] > 270) {
-                                    //                                    var cell = $("#grid10").igGrid("cellById", 3, cellId);
-                                    //                                    $(cell).addClass('red');
-                                    //                                } else if (item["UnitPrice"] < 100) {
-                                    //                                    var cell1 = $("#grid10").igGrid("cellById", 3, cellId);
-                                    //                                    $(cell1).css("background-color", "yellow");
-                                    //                                }
-                                    //                            });
                                 },
                                 pageSize: 20
                             },
@@ -172,34 +142,50 @@ var qpp008;
                                 enableDeleteRow: true,
                                 columnSettings: [
                                     {
-                                        columnKey: "ProductID",
+                                        columnKey: "EmpCode",
                                         readOnly: true
                                     },
                                     {
-                                        columnKey: "Total",
+                                        columnKey: "EmpName",
+                                        readOnly: true
+                                    },
+                                    {
+                                        columnKey: "Classification",
+                                        readOnly: true
+                                    },
+                                    {
+                                        columnKey: "ItemName",
+                                        readOnly: true
+                                    },
+                                    {
+                                        columnKey: "CompareDate1",
+                                        readOnly: true
+                                    },
+                                    {
+                                        columnKey: "CompareDate2",
+                                        readOnly: true
+                                    },
+                                    {
+                                        columnKey: "Difference",
                                         editorType: "numeric",
                                         readOnly: true
                                     },
                                     {
-                                        columnKey: "ProductName",
+                                        columnKey: "Reason",
+                                        readOnly: false
+                                    },
+                                    {
+                                        columnKey: "RegisStatus1",
                                         readOnly: true
                                     },
                                     {
-                                        columnKey: "UnitsInStock",
-                                        readOnly: true
-                                    },
-                                    {
-                                        columnKey: "UnitPrice",
+                                        columnKey: "RegisStatus2",
                                         readOnly: true
                                     },
                                     {
                                         columnKey: "IsPromotion",
                                         editorType: "checkbox",
                                         readOnly: false
-                                    },
-                                    {
-                                        columnKey: "UnitPrice",
-                                        readOnly: true
                                     }
                                 ]
                             }
@@ -210,14 +196,8 @@ var qpp008;
                         var value = $(this).is(":checked");
                         _checkAll = true;
                         _checkAllValue = value;
-                        //                var dataSource = $("#grid10").igGrid("option", "dataSource");
-                        //                _.forEach(dataSource, function(item){
-                        //                    item["IsPromotion"] = value;
-                        //                });
-                        //                $("#grid10").igGrid("option", "dataSource", dataSource);
                         $("#grid10").igGrid("dataBind");
                     });
-                    self.selectedRuleCode = ko.observable(1);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
