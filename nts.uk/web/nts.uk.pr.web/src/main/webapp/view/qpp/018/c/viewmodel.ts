@@ -2,21 +2,22 @@ module qpp018.c.viewmodel {
     export class ScreenModel {
         
         required: KnockoutObservable<boolean>;
-        isDetailed: KnockoutObservable<boolean>;
-        isTotalMonthlyTotal: KnockoutObservable<boolean>;
-        isOfficeMonthlyTotal: KnockoutObservable<boolean>; 
-        isDeliveryNoticeAmount: KnockoutObservable<boolean>; 
+//        isDetailed: KnockoutObservable<boolean>;
+//        isTotalMonthlyTotal: KnockoutObservable<boolean>;
+//        isOfficeMonthlyTotal: KnockoutObservable<boolean>; 
+//        isDeliveryNoticeAmount: KnockoutObservable<boolean>; 
         showHealthInsuranceType: KnockoutObservableArray<HealthInsuranceType>;
         enable: KnockoutObservable<boolean>; 
         selectedCode: KnockoutObservable<string>;
         printSettingValue: KnockoutObservable<string>;
+        printSettingList: KnockoutObservable<PrintSettingList>; 
         
         constructor() {
             this.required = ko.observable(true);
-            this.isDetailed = ko.observable(true);
-            this.isTotalMonthlyTotal = ko.observable(true);
-            this.isOfficeMonthlyTotal = ko.observable(true);
-            this.isDeliveryNoticeAmount = ko.observable(true);
+//            this.isDetailed = ko.observable(true);
+//            this.isTotalMonthlyTotal = ko.observable(true);
+//            this.isOfficeMonthlyTotal = ko.observable(true);
+//            this.isDeliveryNoticeAmount = ko.observable(true);
             this.showHealthInsuranceType = ko.observableArray<HealthInsuranceType>([
                 new HealthInsuranceType('1','表示する'),
                 new HealthInsuranceType('2','表示しない'),
@@ -25,33 +26,51 @@ module qpp018.c.viewmodel {
             this.selectedCode = ko.observable('1');
             this.enable = ko.observable(true);
             this.printSettingValue = ko.observable('PrintSetting Value');
+            this.printSettingList = ko.observable<PrintSettingList>();
         }
         closePrintSetting(){
          // Set child value
-         //   nts.uk.ui.windows.setShared("printSettingValue",this.printSettingValue,true);
+            nts.uk.ui.windows.setShared("printSettingValue",this.printSettingValue(),true);
             nts.uk.ui.windows.close();    
         }
         setupPrintSetting(){
-            if (!(this.isDetailed()) && !(this.isTotalMonthlyTotal()) && !(this.isOfficeMonthlyTotal()) 
-                    && !(this.isDeliveryNoticeAmount())) {
+            if (!(this.printSettingList().showDetail) && !(this.printSettingList().showCategoryInsuranceItem) && !(this.printSettingList().showOffice) 
+                    && !(this.printSettingList().showDeliveryNoticeAmount)) {
                 alert("Something is not right");
             } else {
                 nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                nts.uk.ui.windows.close();
                 alert("Yep");
+                nts.uk.ui.windows.close();
+                
             }
               
         }
         
         public start(): JQueryPromise<any>{
             var dfd = $.Deferred<any>();
-            dfd.resolve();
+            var self=this;
+            $.when(self.loadAllCheckListPrintSetting()).done(function() {
+                dfd.resolve();
+            })
+            return dfd.promise();
+        }
+        
+        public loadAllCheckListPrintSetting(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var self = this;
+            service.getallCheckListPrintSetting().done(function(data: service.model.CheckListPrintSetting) {
+                self.printSettingList(data);
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            })
             return dfd.promise();
         }
         
     }
     /**
-     * class HealthInsuranceType
+     * Class HealthInsuranceType
      */
     export class HealthInsuranceType{
         code: string;
@@ -61,6 +80,22 @@ module qpp018.c.viewmodel {
             this.code = code;
             this.name = name;
         }       
+    }
+    
+    /**
+     * Class PrintSettingList
+     */
+    export class PrintSettingList{
+        showCategoryInsuranceItem: boolean;
+        showDeliveryNoticeAmount: boolean;
+        showDetail: boolean;
+        showOffice: boolean;
+        constructor(showCategoryInsuranceItem: boolean, showDeliveryNoticeAmount: boolean, showDetail: boolean, showOffice: boolean){
+            this.showCategoryInsuranceItem =  showCategoryInsuranceItem;
+            this.showDeliveryNoticeAmount =  showDeliveryNoticeAmount;
+            this.showDetail = showDetail;
+            this.showOffice = showOffice;
+        }    
     }
 
 
