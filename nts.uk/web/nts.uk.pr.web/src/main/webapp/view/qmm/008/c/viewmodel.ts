@@ -1,9 +1,11 @@
 module nts.uk.pr.view.qmm008.c {
     export module viewmodel {
+        
+        import InsuranceOfficeItemDto = qmm008.a.service.model.finder.InsuranceOfficeItemDto;
+        import aservice =  nts.uk.pr.view.qmm008.a.service;
         export class ScreenModel {
             // for left list
-            items: KnockoutObservableArray<ItemModel>;
-            currentCode: KnockoutObservable<any>;
+            officeItems: KnockoutObservableArray<ItemModel>;
             columns2: KnockoutObservableArray<NtsGridListColumn>;
            
             //for tab panel
@@ -25,10 +27,7 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
 
                 this.currentCode = ko.observable();
-                this.items = ko.observableArray([]);
-                for (let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, 'name' + i));
-                }
+                this.officeItems = ko.observableArray([]);
                 this.columns2 = ko.observableArray([
                     { headerText: 'コード', key: 'code', width: 100 },
                     { headerText: '名称', key: 'name', width: 150 }
@@ -55,16 +54,25 @@ module nts.uk.pr.view.qmm008.c {
                     width: "100",
                     textalign: "center"
                 }));
-                self.selectedOfficeCode = ko.observable(selectedOfficeCode); 
-            }
+                self.selectedOfficeCode = ko.observable('');
+                self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
+                    if (selectedOfficeCode != null || selectedOfficeCode != undefined) {
+//                        alert(officeSelectedCode);
+                        $.when(self.load(selectedOfficeCode)).done(function() {
+                            //TODO load data success
+                        }).fail(function(res) {
+                            //TODO when load data error
+                        });
+                    }
+                });
             // start
             public start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 //first load
-                self.loadInsuranceOfficeData().done(function() {
+                self.loadAllInsuranceOfficeData().done(function() {
                     // Load first result.
-                    if (self.InsuranceOfficeData().length > 0) {
+                    if (self.officeItems().length > 0) {
                         //TODO load select first item of list
                         //self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
                     } else {
@@ -73,27 +81,45 @@ module nts.uk.pr.view.qmm008.c {
                     // Resolve
                     dfd.resolve(null);
                 });
-                
-                self.getAllRounding().done(function() {
-                    // Resolve
-                    dfd.resolve(null);
-                });
                 // Return.
                 return dfd.promise();
             }
             //
-            public loadInsuranceOfficeData(): JQueryPromise<any> {
+            public loadAllInsuranceOfficeData(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                // find data 
-                service.findInsuranceOffice(self.selectedOfficeCode()).done(function(data: Array<any>) {
-                    // Set list.
-                    self.InsuranceOfficeList(data);
+                // find all insurance office 
+                aservice.findInsuranceOffice('').done(function(data: Array<any>) {
+                    // Set data get from service to list.
+                    data.forEach((item, index) => {
+                        self.officeItems.push(new ItemModel(item.code, item.name));
+                    });
                     dfd.resolve(data);
                 });
                 // Return.
                 return dfd.promise();
             }
+            public load(officeCode: string) : JQueryPromise<any>
+            {
+                var self = this;
+                service.getOfficeItemDetail(officeCode).done(function(data: any){
+                    //TODO Convert data get from service to screen
+                    self.officeModel().officeCode(data.code);
+                    self.officeModel().officeName(data.name);
+                    self.officeModel().healthInsuOfficeRefCode1st(data.code);
+                    self.officeModel().healthInsuOfficeRefCode2nd(data.name);
+                });   
+            }
+            public convertDatatoList(data: Array<InsuranceOfficeItemDto>): Array<ItemModel>
+            {
+                var OfficeItemList: Array<ItemModel> = [];
+                // 
+                data.forEach((item, index) => {
+                    OfficeItemList.push(new ItemModel(item.code,item.name));
+                });
+                return OfficeItemList;
+            }
+            
             closeDialog() {
                 // Set child value
                 nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());

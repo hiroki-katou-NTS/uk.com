@@ -12,14 +12,12 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var aservice = nts.uk.pr.view.qmm008.a.service;
                             var ScreenModel = (function () {
                                 function ScreenModel(selectedOfficeCode) {
                                     var self = this;
                                     this.currentCode = ko.observable();
-                                    this.items = ko.observableArray([]);
-                                    for (var i = 1; i < 100; i++) {
-                                        this.items.push(new ItemModel('00' + i, 'name' + i));
-                                    }
+                                    this.officeItems = ko.observableArray([]);
                                     this.columns2 = ko.observableArray([
                                         { headerText: 'コード', key: 'code', width: 100 },
                                         { headerText: '名称', key: 'name', width: 150 }
@@ -39,31 +37,53 @@ var nts;
                                         width: "100",
                                         textalign: "center"
                                     }));
-                                    self.selectedOfficeCode = ko.observable(selectedOfficeCode);
+                                    self.selectedOfficeCode = ko.observable('');
+                                    self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
+                                        if (selectedOfficeCode != null || selectedOfficeCode != undefined) {
+                                            $.when(self.load(selectedOfficeCode)).done(function () {
+                                            }).fail(function (res) {
+                                            });
+                                        }
+                                    });
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadInsuranceOfficeData().done(function () {
-                                        if (self.InsuranceOfficeData().length > 0) {
+                                    self.loadAllInsuranceOfficeData().done(function () {
+                                        if (self.officeItems().length > 0) {
                                         }
                                         else {
                                         }
                                         dfd.resolve(null);
                                     });
-                                    self.getAllRounding().done(function () {
-                                        dfd.resolve(null);
-                                    });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.loadInsuranceOfficeData = function () {
+                                ScreenModel.prototype.loadAllInsuranceOfficeData = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    service.findInsuranceOffice(self.selectedOfficeCode()).done(function (data) {
-                                        self.InsuranceOfficeList(data);
+                                    aservice.findInsuranceOffice('').done(function (data) {
+                                        data.forEach(function (item, index) {
+                                            self.officeItems.push(new ItemModel(item.code, item.name));
+                                        });
                                         dfd.resolve(data);
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.load = function (officeCode) {
+                                    var self = this;
+                                    c.service.getOfficeItemDetail(officeCode).done(function (data) {
+                                        self.officeModel().officeCode(data.code);
+                                        self.officeModel().officeName(data.name);
+                                        self.officeModel().healthInsuOfficeRefCode1st(data.code);
+                                        self.officeModel().healthInsuOfficeRefCode2nd(data.name);
+                                    });
+                                };
+                                ScreenModel.prototype.convertDatatoList = function (data) {
+                                    var OfficeItemList = [];
+                                    data.forEach(function (item, index) {
+                                        OfficeItemList.push(new ItemModel(item.code, item.name));
+                                    });
+                                    return OfficeItemList;
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());

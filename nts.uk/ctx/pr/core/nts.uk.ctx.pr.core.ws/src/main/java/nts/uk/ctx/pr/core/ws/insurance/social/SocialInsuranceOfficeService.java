@@ -22,7 +22,10 @@ import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeComma
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand;
 import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
 import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommandHandler;
+import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeItemDto;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
 
 /**
  * The Class SocialInsuranceOfficeService.
@@ -52,26 +55,39 @@ public class SocialInsuranceOfficeService extends WebService {
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice001);
 		SocialInsuranceOfficeItemDto socialInsuranceOffice002 = new SocialInsuranceOfficeItemDto();
 		socialInsuranceOffice002.setCode("000000000002");
-		socialInsuranceOffice002.setName("b 事業所");
+		socialInsuranceOffice002.setName("B 事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice002);
 		SocialInsuranceOfficeItemDto socialInsuranceOffice003 = new SocialInsuranceOfficeItemDto();
 		socialInsuranceOffice003.setCode("000000000003");
-		socialInsuranceOffice003.setName("c 事業所");
+		socialInsuranceOffice003.setName("C 事業所");
 		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice003);
 		return lstSocialInsuranceOfficeIn;
 	}
 
 	@POST
-	@Path("find/{officeName}")
-	public SocialInsuranceOfficeItemDto findHistory(@PathParam("officeName") String officeName) {
-		SocialInsuranceOfficeItemDto socialInsuranceOfficeDtoResult = new SocialInsuranceOfficeItemDto();
-		List<SocialInsuranceOfficeItemDto> listOffice = this.findAll();
-		for (SocialInsuranceOfficeItemDto SocialInsuranceOfficeDto : listOffice) {
-			if (SocialInsuranceOfficeDto.getName().equals(officeName)) {
-				socialInsuranceOfficeDtoResult = SocialInsuranceOfficeDto;
-			}
+	@Path("find/{officeCode}")
+	public SocialInsuranceOfficeDto findHistory(@PathParam("officeCode") String officeCode) {
+		
+		List<SocialInsuranceOfficeDto> lstOffice = new ArrayList<SocialInsuranceOfficeDto>();
+		SocialInsuranceOfficeDto officeDtoResult = new SocialInsuranceOfficeDto();
+		SocialInsuranceOfficeDto office1 = new SocialInsuranceOfficeDto();
+		office1.setCode("000000000001");
+		office1.setName("A 事業所");
+		lstOffice.add(office1);
+		SocialInsuranceOfficeDto office2 = new SocialInsuranceOfficeDto();
+		office2.setCode("000000000002");
+		office2.setName("B 事業所");
+		lstOffice.add(office2);
+		SocialInsuranceOfficeDto office3 = new SocialInsuranceOfficeDto();
+		office3.setCode("000000000003");
+		office3.setName("C 事業所");
+		lstOffice.add(office3);
+		for (SocialInsuranceOfficeDto OfficeDto : lstOffice) {
+ 			if (OfficeDto.getCode().toString().equals(officeCode)) {
+ 				officeDtoResult = OfficeDto;
+ 			}
 		}
-		return socialInsuranceOfficeDtoResult;
+		return officeDtoResult;
 	}
 
 	@POST

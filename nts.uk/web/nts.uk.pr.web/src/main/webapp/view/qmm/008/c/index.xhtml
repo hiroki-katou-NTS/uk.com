@@ -19,6 +19,7 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<!-- 			<com:scriptfile path="../catalog/catalog.js" /> -->
@@ -40,16 +41,16 @@
 							<div class="bg-green caret-right caret-background"
 								style="float: left; width: 350px; height: 500px; margin: 20px 50px;">
 								<div style="width: 400px"
-									data-bind="ntsSearchBox: {comId: 'multi-list', items: items, selected: currentCode, selectedKey: 'code', fields: ['name', 'code']}"  />
+									data-bind="ntsSearchBox: {comId: 'multi-list', items: officeItems, selected: selectedOfficeCode, selectedKey: 'code', fields: ['name', 'code']}"  />
 								<div style="padding-left: 25px; padding-top: 5px;">
 									<table id="single-list"
 										data-bind="ntsGridList: {
 												height: 350,
-												options: items,
+												options: officeItems,
 												optionsValue: 'code',
 												columns: columns2,
-												multiple: true,
-												value: currentCode
+												multiple: false,
+												value: selectedOfficeCode
 																}"
 										class="cf"></table>
 								</div>
