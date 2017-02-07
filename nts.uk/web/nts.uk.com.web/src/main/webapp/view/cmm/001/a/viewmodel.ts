@@ -26,6 +26,8 @@ module nts.uk.pr.view.cmm001.a {
         //check
         checked1: KnockoutObservable<boolean>;
         checked2: KnockoutObservable<boolean>;
+        //search box
+        textSearch: string = "";
         
         constructor(){
             let self = this;
@@ -92,6 +94,7 @@ module nts.uk.pr.view.cmm001.a {
                  });
             
             }
+      
        getObj(items: Array<Company>, newValue: string): void{
           let self = this;
           let node: Company;
@@ -172,6 +175,14 @@ module nts.uk.pr.view.cmm001.a {
             self.checked1 = ko.observable(true);
             self.checked2 = ko.observable(true);                 
         }
+        // search box A_INP_001& A_SCH_001
+        searchCompany():void{
+            let self = this;
+            let textSearch : string = $("A_INP_001").val().strim();
+            if(textSearch.length ===  0){
+                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");  
+            }
+            }
        //BTN-002 
       ClickRegister():void{
            alert("Success");

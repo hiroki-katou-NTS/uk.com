@@ -13,6 +13,8 @@ var nts;
                         var ScreenModel = (function () {
                             function ScreenModel() {
                                 this.editMode = true;
+                                //search box
+                                this.textSearch = "";
                                 var self = this;
                                 var node;
                                 self.init();
@@ -144,6 +146,14 @@ var nts;
                                 //check
                                 self.checked1 = ko.observable(true);
                                 self.checked2 = ko.observable(true);
+                            };
+                            // search box A_INP_001& A_SCH_001
+                            ScreenModel.prototype.searchCompany = function () {
+                                var self = this;
+                                var textSearch = $("A_INP_001").val().strim();
+                                if (textSearch.length === 0) {
+                                    nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
+                                }
                             };
                             //BTN-002 
                             ScreenModel.prototype.ClickRegister = function () {

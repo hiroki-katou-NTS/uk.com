@@ -1,7 +1,8 @@
 package nts.uk.ctx.basic.app.command.company;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -47,9 +48,21 @@ public class AddCompanyCommandHandler extends CommandHandler<AddCompanyCommand>{
 				addCompany.getUse_Rs06_Set(), addCompany.getUse_Rs07_Set(),
 				addCompany.getUse_Rs08_Set(), addCompany.getUse_Rs09_Set(),
 				addCompany.getUse_Rs10_Set());
-		companyRepository.add(company);
-		
-	}
+		List<Company> lst;	
+		lst = this.companyRepository.getAllCompanys();
+		//notification error 005 check in account -> add account (sign up)
+		int count =0;
+		for(int i = 0; i < lst.size(); i++){
+			if(lst.get(i).getCompanyCode().toString() != addCompany.getCompanyCode().toString())
+			{   count = count + 1;
+				throw new BusinessException(new RawErrorMessage("入力した company code は既に存在しています。\r\n。 "
+						+ "を確認してください again。"));
+			}	
+	    }
+		if(count == 0){
+			this.companyRepository.add(company);
+		}
+}
 	
 
 }

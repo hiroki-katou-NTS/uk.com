@@ -2,23 +2,6 @@ package nts.uk.ctx.basic.app.find.company;
 
 import lombok.Value;
 import nts.uk.ctx.basic.dom.company.Company;
-import nts.uk.ctx.basic.dom.company.CompanyCode;
-import nts.uk.ctx.basic.dom.company.CompanyName;
-import nts.uk.ctx.basic.dom.company.CompanyNameAbb;
-import nts.uk.ctx.basic.dom.company.CompanyNameKana;
-import nts.uk.ctx.basic.dom.company.CorporateMyNumber;
-import nts.uk.ctx.basic.dom.company.DepWorkPlaceSet;
-import nts.uk.ctx.basic.dom.company.DisplayAttribute;
-import nts.uk.ctx.basic.dom.company.FaxNo;
-import nts.uk.ctx.basic.dom.company.Postal;
-import nts.uk.ctx.basic.dom.company.PresidentJobTitle;
-import nts.uk.ctx.basic.dom.company.TelephoneNo;
-import nts.uk.ctx.basic.dom.company.TermBeginMon;
-import nts.uk.ctx.basic.dom.company.address.Address1;
-import nts.uk.ctx.basic.dom.company.address.Address2;
-import nts.uk.ctx.basic.dom.company.address.AddressKana1;
-import nts.uk.ctx.basic.dom.company.address.AddressKana2;
-import nts.uk.ctx.basic.dom.company.useset.UseSet;
 /**
  * 
  * @author lanlt

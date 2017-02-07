@@ -5,8 +5,6 @@ package nts.uk.ctx.basic.app.command.company;
 
 import lombok.Getter;
 import nts.uk.ctx.basic.dom.company.Company;
-import nts.uk.shr.com.context.AppContexts;
-
 /**
  * @author lanlt
  *
@@ -50,7 +48,7 @@ public class DeleteCompanyCommand {
 	private int use_Rs09_Set;
 	private int use_Rs10_Set;
 	public Company toDomain(){
-		return Company.createFromJavaType(AppContexts.user().companyCode(), companyName, companyNameAbb, 
+		return Company.createFromJavaType(companyCode, companyName, companyNameAbb, 
 				 companyNameKana, corporateMyNumber, faxNo, postal, presidentJobTitle, telephoneNo,
 				 depWorkPlaceSet,displayAttribute, address1, address2, addressKana1, addressKana2, termBeginMon,
 				 use_Gr_Set,use_Kt_Set, use_Qy_Set, use_Jj_Set, use_Ac_Set, use_Gw_Set,use_Hc_Set,use_Lc_Set,

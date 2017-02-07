@@ -127,7 +127,8 @@ public class Company extends AggregateRoot{
 			int g, int h, int i, int j, int k,int m,
 			int n, int l, int o, int p, int q, int t,int r)
 	{
-		if (companyCode.isEmpty()) {
+		if (companyCode.isEmpty()|| companyName.isEmpty()||
+				companyNameAbb.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
 		}
 		 Company company= new Company(new CompanyCode(companyCode),

@@ -21,7 +21,7 @@ import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
 	private static final String SEL_1 = "SELECT e FROM cmtmtCompany e";
-	private static final String SEL_2 = SEL_1 + "WHERE  e.cmnmtCompanyPK.companyCd = : companyCd";
+	//private static final String SEL_2 = SEL_1 + "WHERE  e.cmnmtCompanyPK.companyCd = : companyCd";
 	private final Company toDomain(CmnmtCompany entity) {
 		val domain = Company.createFromJavaType(
 				entity.cmnmtCompanyPk.companyCd, entity.cName, entity.cName_Abb,
