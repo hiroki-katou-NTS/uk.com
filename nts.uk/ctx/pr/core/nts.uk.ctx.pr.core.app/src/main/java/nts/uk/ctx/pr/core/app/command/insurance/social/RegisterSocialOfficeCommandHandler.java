@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.app.insurance.social.SocialInsuranceOfficeInDto;
+import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.service.insurance.social.SocialInsuranceService;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 
@@ -20,7 +20,7 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 	@Transactional
 	protected void handle(CommandHandlerContext<RegisterSocialOfficeCommand> command) {
 
-		SocialInsuranceOfficeInDto SODto = command.getCommand().getSIODto();
+		SocialInsuranceOfficeDto SODto = command.getCommand().getSIODto();
 		// TODO get data from session
 		// Integer companyCode = 1;
 		// String contractCode = "1";
