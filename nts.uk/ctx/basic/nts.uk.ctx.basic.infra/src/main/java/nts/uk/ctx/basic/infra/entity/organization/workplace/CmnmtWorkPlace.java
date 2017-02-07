@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.infra.entity.organization.workplace;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -81,10 +82,10 @@ public class CmnmtWorkPlace implements Serializable {
 	private String externalCode;
 
 	@Column(name = "PARENT_CHILD_ATR1")
-	private String parentChildAttribute1;
+	private BigDecimal parentChildAttribute1;
 
 	@Column(name = "PARENT_CHILD_ATR2")
-	private String parentChildAttribute2;
+	private BigDecimal parentChildAttribute2;
 
 	@Column(name = "PARENT_WKPCD1")
 	private String parentWorkCode1;
@@ -236,19 +237,19 @@ public class CmnmtWorkPlace implements Serializable {
 		this.externalCode = externalCode;
 	}
 
-	public String getParentChildAttribute1() {
+	public BigDecimal getParentChildAttribute1() {
 		return parentChildAttribute1;
 	}
 
-	public void setParentChildAttribute1(String parentChildAttribute1) {
+	public void setParentChildAttribute1(BigDecimal parentChildAttribute1) {
 		this.parentChildAttribute1 = parentChildAttribute1;
 	}
 
-	public String getParentChildAttribute2() {
+	public BigDecimal getParentChildAttribute2() {
 		return parentChildAttribute2;
 	}
 
-	public void setParentChildAttribute2(String parentChildAttribute2) {
+	public void setParentChildAttribute2(BigDecimal parentChildAttribute2) {
 		this.parentChildAttribute2 = parentChildAttribute2;
 	}
 

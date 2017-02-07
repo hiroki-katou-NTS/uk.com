@@ -23,6 +23,10 @@ var cmm009;
                     };
                 }
                 ScreenModel.prototype.start = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    dfd.resolve();
+                    return dfd.promise();
                 };
                 return ScreenModel;
             }());

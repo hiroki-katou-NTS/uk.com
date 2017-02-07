@@ -24,7 +24,11 @@ module cmm009.b.viewmodel {
             };
         }
 
-        start(){
+        start(): JQueryPromise<any>{
+            var self = this;
+            var dfd = $.Deferred<any>();
+            dfd.resolve();
+            return dfd.promise();
         }
     }
 }
