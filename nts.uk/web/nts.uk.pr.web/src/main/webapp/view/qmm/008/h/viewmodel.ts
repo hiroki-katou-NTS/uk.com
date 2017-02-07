@@ -8,14 +8,13 @@ module nts.uk.pr.view.qmm008.h {
         export class ScreenModel {
             listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<any>;
+            healthInsuranceRateModel: KnockoutObservable<HealthInsuranceRateModel>;
 
             constructor() {
                 var self = this;
-                self.listAvgEarnLevelMasterSetting = ko.observableArray();
-                self.listHealthInsuranceAvgearn = ko.observableArray([
-                    { historyId: 1, levelCode: 1, companyAvg: { general: 123, nursing: 345, basic: 567, specific: 678 }, personalAvg: { general: 123, nursing: 345, basic: 567, specific: 678 } },
-                    { historyId: 2, levelCode: 2, companyAvg: { general: 444, nursing: 222, basic: 111, specific: 333 }, personalAvg: { general: 222, nursing: 444, basic: 555, specific: 666 } }
-                ]);
+                self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
+                self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
+                self.listHealthInsuranceAvgearn = ko.observableArray([]);
             }
 
             /**
@@ -26,8 +25,11 @@ module nts.uk.pr.view.qmm008.h {
                 var dfd = $.Deferred();
                 commonService.getAvgEarnLevelMasterSettingList().done(data => {
                     self.listAvgEarnLevelMasterSetting(data);
-                    service.findHealthInsuranceRate('a').done(data => { });
-                    service.findHealthInsuranceAvgEarn('a').done(zz => { 
+                    service.findHealthInsuranceRate('a').done(xx => {
+                        self.healthInsuranceRateModel().officeCode(xx.officeCode);
+                        self.healthInsuranceRateModel().companyCode(xx.companyCode);
+                    });
+                    service.findHealthInsuranceAvgEarn('a').done(zz => {
                         self.listHealthInsuranceAvgearn(zz);
                     });
                     dfd.resolve();
@@ -70,6 +72,22 @@ module nts.uk.pr.view.qmm008.h {
             }
         }
 
+        export class HealthInsuranceRateModel {
+            companyCode: KnockoutObservable<string>;
+            officeCode: KnockoutObservable<string>;
+            startMonth: KnockoutObservable<string>;
+            endMonth: KnockoutObservable<string>;
+            autoCalculate: KnockoutObservable<boolean>;
+            maxAmount: KnockoutObservable<number>;
+            constructor() {
+                this.companyCode = ko.observable('');
+                this.officeCode = ko.observable('');
+                this.startMonth = ko.observable('');
+                this.endMonth = ko.observable('');
+                this.autoCalculate = ko.observable(false);
+                this.maxAmount = ko.observable(0);
+            }
+        }
         export class HealthInsuranceAvgEarnModel {
             historyId: string;
             levelCode: number;

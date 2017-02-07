@@ -4,6 +4,13 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+#lblCode {
+	padding-right: 20px;
+}
+#tbl-health-insuarance {
+	max-width: 100%;
+	border: none;
+}
 .border_none {
 	border: none;
 }
@@ -27,4 +34,15 @@ table, td, th {
 }
 .text_center {
 	text-align: center;
+}
+.footer td {
+	border: none;
+	padding-left: 600px;
+	padding-top: 10px;
+}
+.btn-close {
+	margin-left: 100px;
+}
+.inp-money input {
+	max-width: 100px;
 }

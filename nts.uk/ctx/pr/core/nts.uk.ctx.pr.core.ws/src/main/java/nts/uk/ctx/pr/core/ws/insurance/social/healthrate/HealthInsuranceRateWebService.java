@@ -42,6 +42,6 @@ public class HealthInsuranceRateWebService extends WebService {
 	@POST
 	@Path("findHealthInsuranceRate/{id}")
 	public HealthInsuranceRateDto findHealthInsuranceRate(@PathParam("id") String id) {
-		return healthInsuranceRateFinder.find(id);
+		return healthInsuranceRateFinder.find(id).get();
 	}
 }

@@ -3,14 +3,14 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
+import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceAvgearnValue;
 
-@Dependent
+@Stateless
 public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthInsuranceAvgearnRepository {
 
 	@Override
