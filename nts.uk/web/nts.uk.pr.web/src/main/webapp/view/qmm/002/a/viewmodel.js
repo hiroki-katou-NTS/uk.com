@@ -64,7 +64,7 @@ var nts;
                                     };
                                     self.currentEra = ko.observable(''),
                                         self.singleSelectedCode.subscribe(function (codeChanged) {
-                                            var x = self.getEra(codeChanged, undefined);
+                                            var x = self.getNode(codeChanged, undefined);
                                             if (x.parentCode !== null) {
                                                 self.currentEra(x);
                                                 self.nodeParent(self.getEra(codeChanged, x.parentCode));
@@ -140,7 +140,7 @@ var nts;
                                         alert(error.message);
                                     });
                                 };
-                                ScreenModel.prototype.getEra = function (codeNew, parentId) {
+                                ScreenModel.prototype.getNode = function (codeNew, parentId) {
                                     var self = this;
                                     self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                     var node = _.find(self.lst_002(), function (item) {

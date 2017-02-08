@@ -75,7 +75,7 @@ module nts.uk.pr.view.qmm002_1.a {
 
                 self.currentEra = ko.observable(''),
                     self.singleSelectedCode.subscribe(function(codeChanged) {
-                        var x = self.getEra(codeChanged, undefined);
+                        var x = self.getNode(codeChanged, undefined);
                         if (x.parentCode !== null) {
                             self.currentEra(x);
                             self.nodeParent(self.getEra(codeChanged, x.parentCode));
@@ -162,7 +162,7 @@ module nts.uk.pr.view.qmm002_1.a {
                 })
             }
 
-            getEra(codeNew, parentId): BankInfo {
+            getNode(codeNew, parentId): BankInfo {
                 var self = this;
                 self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))
                 var node = _.find(self.lst_002(), function(item: BankInfo) {
