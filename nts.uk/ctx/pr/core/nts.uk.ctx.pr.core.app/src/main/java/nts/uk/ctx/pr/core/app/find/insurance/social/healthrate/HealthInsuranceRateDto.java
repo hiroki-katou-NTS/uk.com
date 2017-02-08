@@ -5,12 +5,14 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 @Builder
 @Getter
+@Setter
 public class HealthInsuranceRateDto {
 	/** The history id. */
 	private String historyId;
@@ -20,6 +22,9 @@ public class HealthInsuranceRateDto {
 
 	/** The office code. */
 	private String officeCode;
+
+	/** The office name. */
+	private String officeName;
 
 	/** The start month. */
 	private String startMonth;
@@ -48,7 +53,7 @@ public class HealthInsuranceRateDto {
 	 */
 	public static HealthInsuranceRateDto fromDomain(HealthInsuranceRate domain) {
 		return new HealthInsuranceRateDto(domain.getHistoryId(), domain.getCompanyCode().v(),
-				domain.getOfficeCode().v(), domain.getApplyRange().getStartMonth().toString(),
+				domain.getOfficeCode().v(), "", domain.getApplyRange().getStartMonth().toString(),
 				domain.getApplyRange().getEndMonth().toString(), domain.getAutoCalculate(), domain.getMaxAmount().v(),
 				domain.getRateItems(), domain.getRoundingMethods());
 

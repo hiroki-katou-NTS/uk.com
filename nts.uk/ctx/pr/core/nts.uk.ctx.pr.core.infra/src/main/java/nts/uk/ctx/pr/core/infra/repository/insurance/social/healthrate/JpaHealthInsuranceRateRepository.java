@@ -91,8 +91,14 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 		mr.setEndMonth(new YearMonth(55));
 		mr.setStartMonth(new YearMonth(33));
-		HealthInsuranceRate mock = new HealthInsuranceRate("111", new CompanyCode("Ｃ 事業所"), new OfficeCode("000000"),
-				mr, true, new CommonAmount(new BigDecimal(5)), list1, list2);
+		HealthInsuranceRate mock = new HealthInsuranceRate();
+		mock.setCompanyCode(new CompanyCode("Ｃ 事業所"));
+		mock.setOfficeCode(new OfficeCode("000000"));
+		mock.setApplyRange(mr);
+		mock.setAutoCalculate(true);
+		mock.setMaxAmount(new CommonAmount(new BigDecimal(5)));
+		mock.setRateItems(list1);
+		mock.setRoundingMethods(list2);
 		return Optional.of(mock);
 	}
 }

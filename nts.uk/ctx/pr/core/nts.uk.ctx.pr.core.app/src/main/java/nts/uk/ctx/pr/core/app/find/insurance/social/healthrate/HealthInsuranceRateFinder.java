@@ -5,15 +5,23 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 
 @Stateless
 public class HealthInsuranceRateFinder {
 
 	@Inject
-	private HealthInsuranceRateRepository repository;
+	private HealthInsuranceRateRepository healthInsuranceRateRepository;
+	@Inject
+	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	public Optional<HealthInsuranceRateDto> find(String id) {
-		return this.repository.findById(id).map(domain -> HealthInsuranceRateDto.fromDomain(domain));
+		Optional<HealthInsuranceRateDto> dto = this.healthInsuranceRateRepository.findById(id)
+				.map(domain -> HealthInsuranceRateDto.fromDomain(domain));
+		// dto.get().setOfficeName(socialInsuranceOfficeRepository.findByOfficeCode(dto.get().getOfficeCode()).getName().v());
+		// mock data
+		dto.get().setOfficeName("Ｃ 事業所");
+		return dto;
 	}
 }
