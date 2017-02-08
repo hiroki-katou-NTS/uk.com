@@ -65,15 +65,7 @@ __viewContext.ready(function () {
                     }]
             });
             $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview');
-            $treegrid.on("selectChange", function () {
-                var scrollContainer = $("#" + treeGridId + "_scroll");
-                var row1 = "" + self.selectedValue()[0];
-                if (row1) {
-                    var index = nts.uk.ui.koExtentions.calculateIndex(nts.uk.util.flatArray(data, childField), row1, primaryKey);
-                    var rowHeight = $('#' + treeGridId + "_" + row1).height();
-                    scrollContainer.scrollTop(rowHeight * index);
-                }
-            });
+            $treegrid.setupSearchScroll("igTreeGrid");
         }
         return ScreenModel;
     }());

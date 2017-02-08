@@ -204,6 +204,18 @@ div.popup-panel {
 		background-color: $yellow_background_color;
 		color: $red_warning_color;
 	}
+	
+	&.with-image {
+		padding: 5px 10px 5px 5px;
+		border-radius: 5px;
+		background-color: $green_background_color;
+		color: $activated_color;
+		
+		.image {
+			vertical-align: middle;
+			margin-right: 10px;
+		}
+	}
 }
 div.label {
 	width: 100%;

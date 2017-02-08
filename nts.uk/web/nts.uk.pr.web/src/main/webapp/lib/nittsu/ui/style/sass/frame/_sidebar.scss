@@ -7,8 +7,8 @@ $sidebar_arrow_width: 50px;
 #sidebar-html,
 #sidebar-html body{height: 100%;}
 
-#sidebar-wrapper {height: 100%; width: 100%;}
-#sidebar-wrapper > tbody > tr > td {vertical-align: top;}
+#sidebar {height: 100%; width: 100%;}
+#sidebar > tbody > tr > td {vertical-align: top;}
 
 #sidebar-header {
 	background: $sidebar_background_color;
@@ -32,6 +32,7 @@ $sidebar_arrow_width: 50px;
 		box-sizing: border-box;
 		text-decoration: none;
 		font-size: 1.2rem;
+		cursor: pointer;
 		
 		&:hover{
 			background-color:rgba(255,255,255,0.1);
@@ -39,6 +40,11 @@ $sidebar_arrow_width: 50px;
 		&.active{
 			background-color:$sidebar_theme_color;
 			color: $sidebar_border_color;
+		}
+		&[disabled=disabled] {
+			color:#BBB;
+			background-color: transparent;
+			cursor: default;
 		}
 	}
 	

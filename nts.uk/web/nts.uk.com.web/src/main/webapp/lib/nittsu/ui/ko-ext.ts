@@ -184,8 +184,13 @@ module nts.uk.ui.koExtentions {
                 $parent.addClass("symbol").addClass(
                     option.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                 $input.width(width);
-                var format = option.currencyformat === "JPY" ? "\u00A5" : '$'
+                var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
+            }else if(option.symbolChar !== undefined && option.symbolChar !== "" && option.symbolPosition !== undefined){
+                $parent.addClass("symbol").addClass(
+                    option.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                $input.width(width);
+                $parent.attr("data-content", option.symbolChar);
             }
         }
 
@@ -413,7 +418,8 @@ module nts.uk.ui.koExtentions {
                     if(data.mode == 'igGrid') {
                         var selectArr = []; selectArr.push("" + selectedItem);
                         component.ntsGridList("setSelected", selectArr);
-                        component.trigger("selectionChanged");
+                        data.selected(selectArr);
+                        component.trigger("selectChange");
                     } else if(data.mode == 'igTree') {
                         var liItem = $("li[data-value='" + selectedItem + "']");
                         component.igTree("expandToNode", liItem);                   
@@ -1427,7 +1433,7 @@ module nts.uk.ui.koExtentions {
                         var itemTemplate: string = '';
                         if (columns && columns.length > 0) {
                             columns.forEach((col, cIdx) => {
-                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
+                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.key !== undefined ? col.key : col.prop] + '</div>';
                             });
                         } else {
                             itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
@@ -1506,23 +1512,6 @@ module nts.uk.ui.koExtentions {
         }
     }
 
-
-    /**
-     * Grid scroll helper functions
-     * 
-     */
-    export function calculateIndex(options, id, key) {
-        if (!id) return 0;
-        var index = 0;
-        for (var i = 0; i < options.length; i++) {
-            var item = options[i];
-            if (item[key] == id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
     /**
      * GridList binding handler
      */
@@ -1583,25 +1572,7 @@ module nts.uk.ui.koExtentions {
 
             });
             var gridId = $grid.attr('id');
-            $grid.on("selectChange", function() {
-                var scrollContainer = $("#" + gridId + "_scrollContainer");
-                var row1 = null;
-                var selectedRows = $grid.igGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0)
-                    row1 = $grid.igGrid("selectedRows")[0].id;
-                else {
-                    var selectedRow: any = $grid.igGrid("selectedRow");
-                    if (selectedRow && selectedRow.id) {
-                        row1 = (<any>$grid.igGrid("selectedRow")).id;
-                    }
-                }
-                if (row1 && row1 !== 'undefined') {
-                    //console.log(row1);
-                    var topPos = calculateIndex(options, row1, optionsValue);
-                    $grid.igGrid('virtualScrollTo', topPos);
-                    //                    console.log(topPos);
-                }
-            });
+            $grid.setupSearchScroll("igGrid", true);
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1710,19 +1681,7 @@ module nts.uk.ui.koExtentions {
             });
             var treeGridId = $treegrid.attr('id');
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
-            $treegrid.on("selectChange", function() {
-                var scrollContainer = $("#" + treeGridId + "_scroll");
-                var row1 = undefined;
-                var selectedRows = $treegrid.igTreeGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0) {
-                    row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
-                }
-                if (row1 !== undefined) {
-                    var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
-                    var rowHeight = $('#' + treeGridId + "_" + row1).height();
-                    scrollContainer.scrollTop(rowHeight * index);
-                }
-            });
+            $treegrid.setupSearchScroll("igTreeGrid");
         }
 
         /**
@@ -2481,12 +2440,20 @@ module nts.uk.ui.koExtentions {
             $down.text("Down");
 
             var move = function(upDown, $targetElement) {
-                var selectedRaw = $targetElement.igGrid("selectedRows");
-//                var targetSource = ko.unwrap(data.targetSource);
+                var multySelectedRaw = $targetElement.igGrid("selectedRows");
+                var singleSelectedRaw = $targetElement.igGrid("selectedRow");
+                var selected = [];
+                if(multySelectedRaw !== null) {
+                    selected = _.filter(multySelectedRaw, function(item) {
+                        return item["index"] >= 0;
+                    });    
+                } else if (singleSelectedRaw !== null) {
+                    selected.push(singleSelectedRaw);
+                } else {
+                    return;    
+                }
+                
                 var source = _.cloneDeep($targetElement.igGrid("option", "dataSource"));
-                var selected = _.filter(selectedRaw, function(item) {
-                    return item["index"] >= 0;
-                });
                 var group = 1;
                 var grouped = { "group1": [] };
                 if (selected.length > 0) {
@@ -2529,11 +2496,21 @@ module nts.uk.ui.koExtentions {
             }
 
             var moveTree = function(upDown, $targetElement) {
-                var selectedRaw = $targetElement.igTreeGrid("selectedRows");
-                if (selectedRaw.length !== 1) {
-                    return;
+                var multiSelectedRaw = $targetElement.igTreeGrid("selectedRows");
+                var singleSelectedRaw = $targetElement.igTreeGrid("selectedRow");
+//                var targetSource = ko.unwrap(data.targetSource);
+                var selected;
+                if(multiSelectedRaw !== null) {
+                    if (multiSelectedRaw.length !== 1) {
+                        return;
+                    }
+                    selected = multiSelectedRaw[0];  
+                } else if (singleSelectedRaw !== null) {
+                    selected.push(singleSelectedRaw);
+                } else {
+                    return;    
                 }
-                var selected = selectedRaw[0];
+                
                 if (selected["index"] < 0) {
                     return;
                 }

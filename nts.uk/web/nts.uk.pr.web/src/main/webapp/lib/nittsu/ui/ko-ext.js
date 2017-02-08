@@ -202,6 +202,11 @@ var nts;
                             var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
                         }
+                        else if (option.symbolChar !== undefined && option.symbolChar !== "" && option.symbolPosition !== undefined) {
+                            $parent.addClass("symbol").addClass(option.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                            $input.width(width);
+                            $parent.attr("data-content", option.symbolChar);
+                        }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
@@ -363,7 +368,7 @@ var nts;
                     });
                     return filtered;
                 };
-                var getNextItem = function (selected, arr, selectedKey, compareKey, isArray) {
+                var getNextItem = function (selected, arr, searchResult, selectedKey, isArray) {
                     //        console.log(selected + "," + selectedKey + "," + compareKey);
                     //        console.log(isArray);
                     var current = null;
@@ -374,23 +379,24 @@ var nts;
                     else if (selected !== undefined && selected !== '' && selected !== null) {
                         current = selected;
                     }
-                    //        console.log("current = "  + current);
-                    if (arr.length > 0) {
+                    if (searchResult.length > 0) {
                         if (current) {
-                            for (var i = 0; i < arr.length - 1; i++) {
-                                var item = arr[i];
-                                if (selectedKey) {
-                                    //                        console.log(i);
-                                    if (item[selectedKey] == current)
-                                        return arr[i + 1][selectedKey];
+                            var currentIndex = nts.uk.util.findIndex(arr, current, selectedKey);
+                            var nextIndex = 0;
+                            var found = false;
+                            for (var i = 0; i < searchResult.length; i++) {
+                                var item = searchResult[i];
+                                var itemIndex = nts.uk.util.findIndex(arr, item[selectedKey], selectedKey);
+                                if (!found && itemIndex >= currentIndex + 1) {
+                                    found = true;
+                                    nextIndex = i;
                                 }
-                                else if (item[compareKey] == current[compareKey])
-                                    return arr[i + 1];
+                                if ((i < searchResult.length - 1) && item[selectedKey] == current)
+                                    return searchResult[i + 1][selectedKey];
                             }
+                            return searchResult[nextIndex][selectedKey];
                         }
-                        if (selectedKey)
-                            return arr[0][selectedKey];
-                        return arr[0];
+                        return searchResult[0][selectedKey];
                     }
                     return undefined;
                 };
@@ -428,24 +434,19 @@ var nts;
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
                             var isArray = $.isArray(selected());
-                            var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
+                            var selectedItem = getNextItem(selected(), nts.uk.util.flatArray(arr, childField), filtArr, selectedKey, isArray);
                             //                console.log(selectedItem);
                             if (data.mode) {
                                 if (data.mode == 'igGrid') {
                                     var selectArr = [];
                                     selectArr.push("" + selectedItem);
                                     component.ntsGridList("setSelected", selectArr);
-                                    component.trigger("selectionChanged");
+                                    data.selected(selectArr);
+                                    component.trigger("selectChange");
                                 }
                                 else if (data.mode == 'igTree') {
                                     var liItem = $("li[data-value='" + selectedItem + "']");
-                                    var ulParent = liItem.parent();
-                                    if (!ulParent.is(":visible")) {
-                                        ulParent.css("display", "block");
-                                        var spanSibling = ulParent.siblings("span[data-role='expander']");
-                                        spanSibling.removeClass("ui-icon-triangle-1-e");
-                                        spanSibling.addClass("ui-icon-triangle-1-s");
-                                    }
+                                    component.igTree("expandToNode", liItem);
                                     component.igTree("select", liItem);
                                 }
                             }
@@ -1402,7 +1403,7 @@ var nts;
                                     var itemTemplate = '';
                                     if (columns && columns.length > 0) {
                                         columns.forEach(function (col, cIdx) {
-                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
+                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.key !== undefined ? col.key : col.prop] + '</div>';
                                         });
                                     }
                                     else {
@@ -1482,23 +1483,6 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 /**
-                 * Grid scroll helper functions
-                 *
-                 */
-                function calculateIndex(options, id, key) {
-                    if (!id)
-                        return 0;
-                    var index = 0;
-                    for (var i = 0; i < options.length; i++) {
-                        var item = options[i];
-                        if (item[key] == id) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    return index;
-                }
-                /**
                  * GridList binding handler
                  */
                 var NtsGridListBindingHandler = (function () {
@@ -1554,24 +1538,7 @@ var nts;
                             }
                         });
                         var gridId = $grid.attr('id');
-                        $grid.on("selectChange", function () {
-                            var scrollContainer = $("#" + gridId + "_scrollContainer");
-                            var row1 = null;
-                            var selectedRows = $grid.igGrid("selectedRows");
-                            if (selectedRows && selectedRows.length > 0)
-                                row1 = $grid.igGrid("selectedRows")[0].id;
-                            else {
-                                var selectedRow = $grid.igGrid("selectedRow");
-                                if (selectedRow && selectedRow.id) {
-                                    row1 = $grid.igGrid("selectedRow").id;
-                                }
-                            }
-                            if (row1 && row1 !== 'undefined') {
-                                //console.log(row1);
-                                var topPos = calculateIndex(options, row1, optionsValue);
-                                $grid.igGrid('virtualScrollTo', topPos);
-                            }
-                        });
+                        $grid.setupSearchScroll("igGrid", true);
                     };
                     NtsGridListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $grid = $(element);
@@ -1669,19 +1636,7 @@ var nts;
                         });
                         var treeGridId = $treegrid.attr('id');
                         $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
-                        $treegrid.on("selectChange", function () {
-                            var scrollContainer = $("#" + treeGridId + "_scroll");
-                            var row1 = undefined;
-                            var selectedRows = $treegrid.igTreeGrid("selectedRows");
-                            if (selectedRows && selectedRows.length > 0) {
-                                row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
-                            }
-                            if (row1 !== undefined) {
-                                var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
-                                var rowHeight = $('#' + treeGridId + "_" + row1).height();
-                                scrollContainer.scrollTop(rowHeight * index);
-                            }
-                        });
+                        $treegrid.setupSearchScroll("igTreeGrid");
                     };
                     /**
                      * Update
@@ -2381,12 +2336,21 @@ var nts;
                         $up.text("Up");
                         $down.text("Down");
                         var move = function (upDown, $targetElement) {
-                            var selectedRaw = $targetElement.igGrid("selectedRows");
-                            //                var targetSource = ko.unwrap(data.targetSource);
+                            var multySelectedRaw = $targetElement.igGrid("selectedRows");
+                            var singleSelectedRaw = $targetElement.igGrid("selectedRow");
+                            var selected = [];
+                            if (multySelectedRaw !== null) {
+                                selected = _.filter(multySelectedRaw, function (item) {
+                                    return item["index"] >= 0;
+                                });
+                            }
+                            else if (singleSelectedRaw !== null) {
+                                selected.push(singleSelectedRaw);
+                            }
+                            else {
+                                return;
+                            }
                             var source = _.cloneDeep($targetElement.igGrid("option", "dataSource"));
-                            var selected = _.filter(selectedRaw, function (item) {
-                                return item["index"] >= 0;
-                            });
                             var group = 1;
                             var grouped = { "group1": [] };
                             if (selected.length > 0) {
@@ -2429,11 +2393,22 @@ var nts;
                             }
                         };
                         var moveTree = function (upDown, $targetElement) {
-                            var selectedRaw = $targetElement.igTreeGrid("selectedRows");
-                            if (selectedRaw.length !== 1) {
+                            var multiSelectedRaw = $targetElement.igTreeGrid("selectedRows");
+                            var singleSelectedRaw = $targetElement.igTreeGrid("selectedRow");
+                            //                var targetSource = ko.unwrap(data.targetSource);
+                            var selected;
+                            if (multiSelectedRaw !== null) {
+                                if (multiSelectedRaw.length !== 1) {
+                                    return;
+                                }
+                                selected = multiSelectedRaw[0];
+                            }
+                            else if (singleSelectedRaw !== null) {
+                                selected.push(singleSelectedRaw);
+                            }
+                            else {
                                 return;
                             }
-                            var selected = selectedRaw[0];
                             if (selected["index"] < 0) {
                                 return;
                             }

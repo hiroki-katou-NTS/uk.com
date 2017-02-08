@@ -1,17 +1,8 @@
 @import "_ignitecommons.scss";
 
-.nts-gridlist.ui-iggrid {
+.ui-iggrid {
 	@include iggridstyle();
 	@include iggridrowselector();
 		
 	cursor: default;
-}
-.ui-igcheckbox-normal{
-  position: relative !important;
-}
-.ui-igcheckbox-normal-on{
-  position: absolute !important;
-}
-.ui-iggrid-hiding-indicator, .ui-iggrid-hiding-hiddencolumnindicator {
-	display: none;
 }

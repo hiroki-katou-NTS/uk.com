@@ -15,10 +15,11 @@
 			
 			<ui:define name="sidebar">
 				<ul class="navigator">
-					<li><a href="#tabpanel-1" class="active" >の間</a></li>
-					<li><a href="#tabpanel-2" data-bind="attr: {disabled: false}">操作</a></li>
-					<li><a href="#tabpanel-3" data-bind="visible: false">切断</a></li>
-					<li><a href="#tabpanel-4">接続</a></li>
+					<li><a href="#tabpanel-1" role="tab-navigator" class="active" >の間</a></li>
+					<li><a href="#tabpanel-2" role="tab-navigator">操作</a></li>
+					<li><a href="#tabpanel-3" role="tab-navigator">切断</a></li>
+					<li><a href="#tabpanel-4" role="tab-navigator">接続</a></li>
+					<li><a data-bind="click: testSideMenu">Test</a></li>
 				</ul>
 				<div class="divider"></div>
 				<span>ログインをしなおしてください</span>
@@ -35,7 +36,9 @@
 						<button>接続を切断しました</button>
 					</div>
 					<div class="contents-area">
-						Content 1
+						Content 1<br/>
+						<div data-bind="ntsCheckBox: { checked: show }">Show Item "操作"</div><br/>
+						<div data-bind="ntsCheckBox: { checked: enable }">Enable Item "1 &amp; 2"</div>
 			   		</div>
 		   		</div>
 		   		<div id="tabpanel-2" role="tabpanel">
