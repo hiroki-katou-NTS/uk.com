@@ -87,6 +87,10 @@ public class PensionRate extends AggregateRoot {
 			throw new BusinessException("ER001");
 		}
 
+		// TODO: Check consistency date range.
+		// History after start date and time exists
+		// throw new BusinessException("ER011"); ER0123!?
+
 		this.historyId = historyId;
 		this.companyCode = companyCode;
 		this.officeCode = officeCode;

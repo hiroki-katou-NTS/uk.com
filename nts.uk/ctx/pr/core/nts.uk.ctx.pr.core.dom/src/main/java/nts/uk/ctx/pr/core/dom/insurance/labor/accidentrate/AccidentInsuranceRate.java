@@ -7,7 +7,9 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 import java.util.Set;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
@@ -35,6 +37,37 @@ public class AccidentInsuranceRate extends AggregateRoot {
 	 */
 	public AccidentInsuranceRate() {
 		super();
+	}
+
+	/**
+	 * Instantiates a new accident insurance rate.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @param companyCode
+	 *            the company code
+	 * @param applyRange
+	 *            the apply range
+	 * @param rateItems
+	 *            the rate items
+	 */
+	public AccidentInsuranceRate(String historyId, CompanyCode companyCode, MonthRange applyRange,
+			Set<InsuBizRateItem> rateItems) {
+		super();
+
+		// Validate required item
+		if (applyRange == null) {
+			throw new BusinessException("ER001");
+		}
+
+		// TODO: Check consistency date range.
+		// History after start date and time exists
+		// throw new BusinessException("ER010");
+
+		this.historyId = historyId;
+		this.companyCode = companyCode;
+		this.applyRange = applyRange;
+		this.rateItems = rateItems;
 	}
 
 	// =================== Memento State Support Method ===================
