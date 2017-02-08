@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
@@ -26,7 +28,7 @@ public class PensionRateDto {
 	private MonthRange applyRange;
 
 	/** The max amount. */
-	private Long maxAmount;
+	private CommonAmount maxAmount;
 
 	/** The fund rate items. */
 	private List<FundRateItem> fundRateItems;
@@ -35,7 +37,7 @@ public class PensionRateDto {
 	private List<PensionPremiumRateItem> premiumRateItems;
 
 	/** The child contribution rate. */
-	private Double childContributionRate;
+	private Ins2Rate childContributionRate;
 
 	/** The rounding methods. */
 	private List<PensionRateRounding> roundingMethods;

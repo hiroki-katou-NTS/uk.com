@@ -6,8 +6,17 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.service.insurance.social.SocialInsuranceService;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.PicName;
+import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
+import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
+import nts.uk.ctx.pr.core.dom.insurance.ShortName;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 
@@ -24,24 +33,35 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 	@Transactional
 	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> command) {
 		// TODO Auto-generated method stub
-		SocialInsuranceOfficeDto SODto = command.getCommand().getSIODto();
+		SocialInsuranceOfficeDto socialInsuranceOfficeDto = command.getCommand().getSocialInsuranceOfficeDto();
 
 		// Convert Dto to Domain
-		SocialInsuranceOffice SIODomain = new SocialInsuranceOffice(SODto.getCompanyCode(), SODto.getCode(),
-				SODto.getName(), SODto.getShortName(), SODto.getPicName(), SODto.getPicPosition(), SODto.getPotalCode(),
-				SODto.getPrefecture(), SODto.getAddress1st(), SODto.getAddress2nd(), SODto.getKanaAddress1st(),
-				SODto.getKanaAddress2nd(), SODto.getPhoneNumber(), SODto.getHealthInsuOfficeRefCode1st(),
-				SODto.getHealthInsuOfficeRefCode2nd(), SODto.getPensionOfficeRefCode1st(),
-				SODto.getPensionOfficeRefCode2nd(), SODto.getWelfarePensionFundCode(), SODto.getOfficePensionFundCode(),
-				SODto.getHealthInsuCityCode(), SODto.getHealthInsuOfficeSign(), SODto.getPensionCityCode(),
-				SODto.getPensionOfficeSign(), SODto.getHealthInsuOfficeCode(), SODto.getHealthInsuAssoCode(),
-				SODto.getMemo());
+		SocialInsuranceOffice SocialInsuranceOfficeDomain = new SocialInsuranceOffice(
+				new CompanyCode(socialInsuranceOfficeDto.getCompanyCode()),
+				new OfficeCode(socialInsuranceOfficeDto.getCode()), new OfficeName(socialInsuranceOfficeDto.getName()),
+				new ShortName(socialInsuranceOfficeDto.getShortName()),
+				new PicName(socialInsuranceOfficeDto.getPicName()),
+				new PicPosition(socialInsuranceOfficeDto.getPicPosition()),
+				new PotalCode(socialInsuranceOfficeDto.getPotalCode()), socialInsuranceOfficeDto.getPrefecture(),
+				new Address(socialInsuranceOfficeDto.getAddress1st()),
+				new Address(socialInsuranceOfficeDto.getAddress2nd()),
+				new KanaAddress(socialInsuranceOfficeDto.getKanaAddress1st()),
+				new KanaAddress(socialInsuranceOfficeDto.getKanaAddress2nd()),
+				socialInsuranceOfficeDto.getPhoneNumber(), socialInsuranceOfficeDto.getHealthInsuOfficeRefCode1st(),
+				socialInsuranceOfficeDto.getHealthInsuOfficeRefCode2nd(),
+				socialInsuranceOfficeDto.getPensionOfficeRefCode1st(),
+				socialInsuranceOfficeDto.getPensionOfficeRefCode2nd(),
+				socialInsuranceOfficeDto.getWelfarePensionFundCode(),
+				socialInsuranceOfficeDto.getOfficePensionFundCode(), socialInsuranceOfficeDto.getHealthInsuCityCode(),
+				socialInsuranceOfficeDto.getHealthInsuOfficeSign(), socialInsuranceOfficeDto.getPensionCityCode(),
+				socialInsuranceOfficeDto.getPensionOfficeSign(), socialInsuranceOfficeDto.getHealthInsuOfficeCode(),
+				socialInsuranceOfficeDto.getHealthInsuAssoCode(), socialInsuranceOfficeDto.getMemo());
 		SocialInsuranceOffice findOffice = socialInsuranceOfficeRepository
-				.findById(command.getCommand().getSIODto().getCode().toString());
+				.findById(command.getCommand().getSocialInsuranceOfficeDto().getCode().toString());
 		if (findOffice == null) {
 			// TODO show error message
 		} else {
-			insuranceSocialService.update(SIODomain);
+			insuranceSocialService.update(SocialInsuranceOfficeDomain);
 		}
 		// TODO return item update
 		return;

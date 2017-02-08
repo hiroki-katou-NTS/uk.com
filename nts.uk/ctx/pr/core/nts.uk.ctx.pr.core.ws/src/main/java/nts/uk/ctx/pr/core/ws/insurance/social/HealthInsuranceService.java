@@ -22,10 +22,10 @@ public class HealthInsuranceService {
 		public List<HealthInsuranceRateDto> findAll() {
 			List<HealthInsuranceRateDto> HealthInsuranceRateDtoList = new ArrayList<HealthInsuranceRateDto>();
 			
-			HealthInsuranceRateDto HealthInsuranceRateDto001 = new HealthInsuranceRateDto();
-			HealthInsuranceRateDto001.setOfficeCode(new OfficeCode("000000000001"));
-			HealthInsuranceRateDto001.setAutoCalculate(true);
-			HealthInsuranceRateDtoList.add(HealthInsuranceRateDto001);
+//			HealthInsuranceRateDto HealthInsuranceRateDto001 = new HealthInsuranceRateDto();
+//			HealthInsuranceRateDto001.setOfficeCode("000000000001");
+//			HealthInsuranceRateDto001.setAutoCalculate(true);
+//			HealthInsuranceRateDtoList.add(HealthInsuranceRateDto001);
 			
 			return HealthInsuranceRateDtoList;
 		}

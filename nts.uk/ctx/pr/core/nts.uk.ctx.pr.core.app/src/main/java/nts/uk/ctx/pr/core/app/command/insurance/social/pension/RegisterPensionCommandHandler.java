@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.app.find.insurance.social.pensionrate.PensionRateDto;
 import nts.uk.ctx.pr.core.app.service.pension.PensionService;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
@@ -27,7 +28,7 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 	
 		// Convert to Dto
 		List<FundRateItem> fundRateItems = pensionRateDto.getFundRateItems().stream()
-				.map(item -> new FundRateItem(item.getBurdenChargeRate(), item.getPayType(), item.getExemptionChargeRate(),item.getGenderType()))
+				.map(item -> new FundRateItem(item.getPayType(),item.getGenderType(),item.getBurdenChargeRate(),item.getExemptionChargeRate()))
 				.collect(Collectors.toList());
 		
 		List<PensionPremiumRateItem> premiumRateItems = pensionRateDto.getPremiumRateItems().stream()

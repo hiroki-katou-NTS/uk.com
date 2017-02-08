@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.find.insurance.social.healthrate;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Builder;
@@ -30,7 +31,7 @@ public class HealthInsuranceRateDto {
 	private Boolean autoCalculate;
 
 	/** The max amount. */
-	private Long maxAmount;
+	private BigDecimal maxAmount;
 
 	/** The rate items. */
 	private List<InsuranceRateItem> rateItems;
@@ -48,7 +49,7 @@ public class HealthInsuranceRateDto {
 	public static HealthInsuranceRateDto fromDomain(HealthInsuranceRate domain) {
 		return new HealthInsuranceRateDto(domain.getHistoryId(), domain.getCompanyCode().v(),
 				domain.getOfficeCode().v(), domain.getApplyRange().getStartMonth().toString(),
-				domain.getApplyRange().getEndMonth().toString(), domain.getAutoCalculate(), domain.getMaxAmount(),
+				domain.getApplyRange().getEndMonth().toString(), domain.getAutoCalculate(), domain.getMaxAmount().v(),
 				domain.getRateItems(), domain.getRoundingMethods());
 
 	}

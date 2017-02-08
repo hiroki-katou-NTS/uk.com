@@ -5,5 +5,5 @@ import nts.uk.ctx.pr.core.app.find.insurance.social.healthrate.HealthInsuranceRa
 
 @Data
 public class RegisterHealthInsuranceCommand {
-	HealthInsuranceRateDto HIRDto;
+	HealthInsuranceRateDto healthInsuranceRateDto;
 }

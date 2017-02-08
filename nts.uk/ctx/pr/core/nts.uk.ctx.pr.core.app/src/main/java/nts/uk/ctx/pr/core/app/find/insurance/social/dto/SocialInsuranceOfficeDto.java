@@ -41,7 +41,7 @@ public class SocialInsuranceOfficeDto {
 	public String kanaAddress1st;
 
 	/** The kana address 2 nd. */
-	public KanaAddress kanaAddress2nd;
+	public String kanaAddress2nd;
 
 	/** The phone number. */
 	public String phoneNumber;

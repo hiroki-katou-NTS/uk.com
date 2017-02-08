@@ -5,5 +5,5 @@ import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto
 
 @Data
 public class UpdateSocialOfficeCommand {
-	SocialInsuranceOfficeDto SIODto;
+	SocialInsuranceOfficeDto socialInsuranceOfficeDto;
 }
