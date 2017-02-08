@@ -9,8 +9,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.core.app.insurance.labor.businesstype.command.InsuranceBusinessTypeUpdateCommand;
-import nts.uk.ctx.core.app.insurance.labor.businesstype.command.InsuranceBusinessTypeUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.InsuranceBusinessTypeUpdateCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.InsuranceBusinessTypeUpdateCommandHandler;
 
 @Path("pr/insurance/labor/businesstype")
 @Produces("application/json")

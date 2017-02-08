@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-import nts.uk.ctx.core.app.insurance.social.health.command.RegisterHealthInsuranceCommand;
-import nts.uk.ctx.core.app.insurance.social.health.command.RegisterHealthInsuranceCommandHandler;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.social.health.command.RegisterHealthInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.health.command.RegisterHealthInsuranceCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 public class HealthInsuranceService {

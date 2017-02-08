@@ -10,10 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateAddCommand;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateAddCommandHandler;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommand;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateAddCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateAddCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommandHandler;
 
 @Path("pr/insurance/labor/accidentrate")
 @Produces("application/json")

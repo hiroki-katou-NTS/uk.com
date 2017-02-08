@@ -17,8 +17,8 @@ import nts.uk.ctx.core.app.rule.employment.unitprice.command.DeleteUnitPriceHist
 import nts.uk.ctx.core.app.rule.employment.unitprice.command.DeleteUnitPriceHistoryCommandHandler;
 import nts.uk.ctx.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommand;
 import nts.uk.ctx.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommandHandler;
-import nts.uk.ctx.core.app.rule.employment.unitprice.find.UnitPriceHistoryDto;
-import nts.uk.ctx.core.app.rule.employment.unitprice.find.UnitPriceHistoryFinder;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.find.UnitPriceHistoryDto;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.find.UnitPriceHistoryFinder;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 
