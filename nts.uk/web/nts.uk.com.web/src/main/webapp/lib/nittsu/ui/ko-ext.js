@@ -202,6 +202,11 @@ var nts;
                             var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
                             $parent.attr("data-content", format);
                         }
+                        else if (option.symbolChar !== undefined && option.symbolChar !== "" && option.symbolPosition !== undefined) {
+                            $parent.addClass("symbol").addClass(option.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                            $input.width(width);
+                            $parent.attr("data-content", option.symbolChar);
+                        }
                     };
                     NumberEditorProcessor.prototype.getDefaultOption = function () {
                         return new nts.uk.ui.option.NumberEditorOption();
@@ -1398,7 +1403,7 @@ var nts;
                                     var itemTemplate = '';
                                     if (columns && columns.length > 0) {
                                         columns.forEach(function (col, cIdx) {
-                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
+                                            itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.key !== undefined ? col.key : col.prop] + '</div>';
                                         });
                                     }
                                     else {
@@ -2331,12 +2336,21 @@ var nts;
                         $up.text("Up");
                         $down.text("Down");
                         var move = function (upDown, $targetElement) {
-                            var selectedRaw = $targetElement.igGrid("selectedRows");
-                            //                var targetSource = ko.unwrap(data.targetSource);
+                            var multySelectedRaw = $targetElement.igGrid("selectedRows");
+                            var singleSelectedRaw = $targetElement.igGrid("selectedRow");
+                            var selected = [];
+                            if (multySelectedRaw !== null) {
+                                selected = _.filter(multySelectedRaw, function (item) {
+                                    return item["index"] >= 0;
+                                });
+                            }
+                            else if (singleSelectedRaw !== null) {
+                                selected.push(singleSelectedRaw);
+                            }
+                            else {
+                                return;
+                            }
                             var source = _.cloneDeep($targetElement.igGrid("option", "dataSource"));
-                            var selected = _.filter(selectedRaw, function (item) {
-                                return item["index"] >= 0;
-                            });
                             var group = 1;
                             var grouped = { "group1": [] };
                             if (selected.length > 0) {
@@ -2379,11 +2393,22 @@ var nts;
                             }
                         };
                         var moveTree = function (upDown, $targetElement) {
-                            var selectedRaw = $targetElement.igTreeGrid("selectedRows");
-                            if (selectedRaw.length !== 1) {
+                            var multiSelectedRaw = $targetElement.igTreeGrid("selectedRows");
+                            var singleSelectedRaw = $targetElement.igTreeGrid("selectedRow");
+                            //                var targetSource = ko.unwrap(data.targetSource);
+                            var selected;
+                            if (multiSelectedRaw !== null) {
+                                if (multiSelectedRaw.length !== 1) {
+                                    return;
+                                }
+                                selected = multiSelectedRaw[0];
+                            }
+                            else if (singleSelectedRaw !== null) {
+                                selected.push(singleSelectedRaw);
+                            }
+                            else {
                                 return;
                             }
-                            var selected = selectedRaw[0];
                             if (selected["index"] < 0) {
                                 return;
                             }
