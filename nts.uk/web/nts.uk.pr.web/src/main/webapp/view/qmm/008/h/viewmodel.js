@@ -19,6 +19,8 @@ var nts;
                                     self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
                                     self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                                    self.rateItems = ko.observableArray([]);
+                                    self.roundingMethods = ko.observableArray([]);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -27,7 +29,8 @@ var nts;
                                         self.listAvgEarnLevelMasterSetting(data);
                                         h.service.findHealthInsuranceRate('a').done(function (xx) {
                                             self.healthInsuranceRateModel().officeCode(xx.officeCode);
-                                            self.healthInsuranceRateModel().companyCode(xx.companyCode);
+                                            self.healthInsuranceRateModel().officeName(xx.officeName);
+                                            self.rateItems(xx.ratesItem);
                                         });
                                         h.service.findHealthInsuranceAvgEarn('a').done(function (zz) {
                                             self.listHealthInsuranceAvgearn(zz);
@@ -42,11 +45,11 @@ var nts;
                                     self.listHealthInsuranceAvgearn().forEach(function (item) {
                                         data.push(ko.toJS(item));
                                     });
-                                    console.log(data);
                                     return data;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    h.service.saveListHealthInsuranceAvgEarn(this.collectData());
                                 };
                                 ScreenModel.prototype.loadHealthInsuranceAvgEarn = function () {
                                     var self = this;
@@ -69,6 +72,7 @@ var nts;
                                 function HealthInsuranceRateModel() {
                                     this.companyCode = ko.observable('');
                                     this.officeCode = ko.observable('');
+                                    this.officeName = ko.observable('');
                                     this.startMonth = ko.observable('');
                                     this.endMonth = ko.observable('');
                                     this.autoCalculate = ko.observable(false);

@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm008.a {
         // Service paths.
         var servicePath = {
             getAllOfficeItem: "pr/insurance/social/findall",
+            getAllHistoryOfOffice: "pr/insurance/social/history",
             getAllRoundingItem: "list/rounding",
             getHealthInsuranceItemDetail:"health/list",
             getPensionItemDetail:"pension/list"
@@ -51,6 +52,22 @@ module nts.uk.pr.view.qmm008.a {
                 OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id'+index, item.name, item.code,[]));
             });
             return OfficeItemList;
+        }
+        
+        /**
+         * Function is used to load history of Office by office code.
+         */
+        export function findHistoryByOfficeCode(code: string): JQueryPromise<model.finder.InsuranceOfficeItemDto> {
+            // Init new dfd.
+            var dfd = $.Deferred<model.finder.InsuranceOfficeItemDto>();
+            var findPath = servicePath.getAllHistoryOfOffice+"/"+code;
+            // Call ajax.
+            nts.uk.request.ajax(findPath).done(function(data) {
+                // Resolve.
+                dfd.resolve(data);
+            });
+            // Ret promise.
+            return dfd.promise();
         }
         
         /**
@@ -304,6 +321,19 @@ module nts.uk.pr.view.qmm008.a {
                 export class ChooseOption{
                     code:string;
                     name:string;   
+                }
+                export class HistoryItemDto{
+                    id: string;
+                    name: string;
+                    code: string;
+                    childs: any;
+                    codeName: string;
+                    constructor(id: string, name: string, code: string,childs: Array<InsuranceOfficeItemDto>) {
+                        this.id = id;
+                        this.name = name;
+                        this.code = code;
+                        this.childs=childs;
+                    }
                 }
                 //office DTO
                 export class InsuranceOfficeItemDto {

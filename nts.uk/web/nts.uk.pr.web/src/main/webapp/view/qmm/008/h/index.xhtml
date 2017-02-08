@@ -32,7 +32,7 @@
 				<div style="margin-top: 20px;"
 					data-bind="ntsFormLabel: {required: true}">事業所 :</div>
 				<span id="lblCode" data-bind="text: healthInsuranceRateModel().officeCode()"></span>
-				<span id="lblName" data-bind="text: healthInsuranceRateModel().companyCode()"></span>
+				<span id="lblName" data-bind="text: healthInsuranceRateModel().officeName()"></span>
 				<div style="margin-left: 200px; margin-top: 20px;"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
 				<span id="startMonth">(平成28年04月)</span>
@@ -66,6 +66,7 @@
 								<th class="text_center">内（基本）</th>
 							</tr>
 							<tr class="bg-green">
+							<th class="text_center">40.900/1000</th>
 								<th class="text_center">40.900/1000</th>
 								<th class="text_center">40.900/1000</th>
 								<th class="text_center">40.900/1000</th>
@@ -73,7 +74,22 @@
 								<th class="text_center">40.900/1000</th>
 								<th class="text_center">40.900/1000</th>
 								<th class="text_center">40.900/1000</th>
-								<th class="text_center">40.900/1000</th>
+								<!--<com:ko-foreach bind="rateItems">
+									<com:ko-if bind="insuranceType == 'Basic'">
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+										<th><span data-bind="text: payType"></span></th>
+									</com:ko-if> 
+									<th><span data-bind="text: payType"></span></th>
+									<th><span data-bind="text: payType"></span></th>
+									<th><span data-bind="text: payType"></span></th>
+									<th><span data-bind="text: payType"></span></th>
+								</com:ko-foreach>-->
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
 								<tr class="inp-money">

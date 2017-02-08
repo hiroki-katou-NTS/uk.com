@@ -4,8 +4,8 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.pension.command.RegisterPensionCommand;
+import nts.uk.ctx.core.app.insurance.social.pension.command.RegisterPensionCommandHandler;
 
 public class PensionService {
 	@Inject

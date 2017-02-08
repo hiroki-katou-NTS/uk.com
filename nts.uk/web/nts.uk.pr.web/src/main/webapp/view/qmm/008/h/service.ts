@@ -5,15 +5,15 @@ module nts.uk.pr.view.qmm008.h {
          *  Service paths
          */
         var paths: any = {
-            saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/",
+            saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/updateHealthInsuranceAvgearn",
             findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceAvgearn",
             findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
         };
 
         /**
-         *  Save 
+         *  Save List Health Insurance Average Earn
          */
-        export function save(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
+        export function saveListHealthInsuranceAvgEarn(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.saveListHealthInsuranceAvgEarn, list);
         }
 

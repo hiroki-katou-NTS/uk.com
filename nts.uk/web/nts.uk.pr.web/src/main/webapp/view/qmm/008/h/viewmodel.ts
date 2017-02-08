@@ -9,12 +9,16 @@ module nts.uk.pr.view.qmm008.h {
             listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<any>;
             healthInsuranceRateModel: KnockoutObservable<HealthInsuranceRateModel>;
+            rateItems: KnockoutObservableArray<any>;
+            roundingMethods: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
                 self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
                 self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                 self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                self.rateItems = ko.observableArray([]);
+                self.roundingMethods = ko.observableArray([]);
             }
 
             /**
@@ -27,7 +31,8 @@ module nts.uk.pr.view.qmm008.h {
                     self.listAvgEarnLevelMasterSetting(data);
                     service.findHealthInsuranceRate('a').done(xx => {
                         self.healthInsuranceRateModel().officeCode(xx.officeCode);
-                        self.healthInsuranceRateModel().companyCode(xx.companyCode);
+                        self.healthInsuranceRateModel().officeName(xx.officeName);
+                        self.rateItems(xx.ratesItem);
                     });
                     service.findHealthInsuranceAvgEarn('a').done(zz => {
                         self.listHealthInsuranceAvgearn(zz);
@@ -45,13 +50,12 @@ module nts.uk.pr.view.qmm008.h {
                 self.listHealthInsuranceAvgearn().forEach(item => {
                     data.push(ko.toJS(item));
                 });
-                console.log(data);
                 return data;
             }
 
             private save() {
                 var self = this;
-                //service.save(this.collectData());
+                service.saveListHealthInsuranceAvgEarn(this.collectData());
             }
 
             private loadHealthInsuranceAvgEarn(): JQueryPromise<any> {
@@ -75,6 +79,7 @@ module nts.uk.pr.view.qmm008.h {
         export class HealthInsuranceRateModel {
             companyCode: KnockoutObservable<string>;
             officeCode: KnockoutObservable<string>;
+            officeName: KnockoutObservable<string>;
             startMonth: KnockoutObservable<string>;
             endMonth: KnockoutObservable<string>;
             autoCalculate: KnockoutObservable<boolean>;
@@ -82,6 +87,7 @@ module nts.uk.pr.view.qmm008.h {
             constructor() {
                 this.companyCode = ko.observable('');
                 this.officeCode = ko.observable('');
+                this.officeName = ko.observable('');
                 this.startMonth = ko.observable('');
                 this.endMonth = ko.observable('');
                 this.autoCalculate = ko.observable(false);

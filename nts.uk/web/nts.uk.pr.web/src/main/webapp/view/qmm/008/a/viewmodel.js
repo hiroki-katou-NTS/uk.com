@@ -12,6 +12,7 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var InsuranceOfficeItem = a.service.model.finder.InsuranceOfficeItemDto;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -76,7 +77,8 @@ var nts;
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadAllInsuranceOffice().done(function () {
+                                    self.loadAllInsuranceOffice().done(function (data) {
+                                        self.InsuranceOfficeList(data);
                                         if (self.InsuranceOfficeList().length > 0) {
                                         }
                                         else {
@@ -92,7 +94,12 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.findInsuranceOffice(self.searchKey()).done(function (data) {
-                                        self.InsuranceOfficeList(data);
+                                        data.forEach(function (item, index) {
+                                            a.service.findHistoryByOfficeCode(item.code).done(function (data2) {
+                                                var addData = new InsuranceOfficeItem(index + item.code, data2.name, index + data2.code, []);
+                                                data[index].childs.push(addData);
+                                            });
+                                        });
                                         dfd.resolve(data);
                                     });
                                     return dfd.promise();

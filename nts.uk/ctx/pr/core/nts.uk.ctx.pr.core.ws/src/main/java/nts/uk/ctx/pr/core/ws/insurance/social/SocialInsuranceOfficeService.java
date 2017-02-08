@@ -15,17 +15,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.insurance.social.DeleteSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.DeleteSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommandHandler;
-import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto;
-import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeItemDto;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.core.app.insurance.social.command.DeleteSocialOfficeCommand;
+import nts.uk.ctx.core.app.insurance.social.command.DeleteSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.command.RegisterSocialOfficeCommand;
+import nts.uk.ctx.core.app.insurance.social.command.RegisterSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.command.UpdateSocialOfficeCommand;
+import nts.uk.ctx.core.app.insurance.social.command.UpdateSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.find.dto.HistoryDto;
+import nts.uk.ctx.core.app.insurance.social.find.dto.SocialInsuranceOfficeDto;
+import nts.uk.ctx.core.app.insurance.social.find.dto.SocialInsuranceOfficeItemDto;
+import nts.uk.ctx.core.app.insurance.social.pension.command.RegisterPensionCommandHandler;
 
 /**
  * The Class SocialInsuranceOfficeService.
@@ -66,7 +65,7 @@ public class SocialInsuranceOfficeService extends WebService {
 
 	@POST
 	@Path("find/{officeCode}")
-	public SocialInsuranceOfficeDto findHistory(@PathParam("officeCode") String officeCode) {
+	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
 		
 		List<SocialInsuranceOfficeDto> lstOffice = new ArrayList<SocialInsuranceOfficeDto>();
 		SocialInsuranceOfficeDto officeDtoResult = new SocialInsuranceOfficeDto();
@@ -89,7 +88,35 @@ public class SocialInsuranceOfficeService extends WebService {
 		}
 		return officeDtoResult;
 	}
-
+	
+	@POST
+	@Path("history/{officeCode}")
+	public HistoryDto findHistory(@PathParam("officeCode") String officeCode) {
+		
+		List<HistoryDto> lstHistory = new ArrayList<HistoryDto>();
+		HistoryDto returnHistory = new HistoryDto();
+		
+		HistoryDto history1 = new HistoryDto();
+		history1.setCode("000000000001");
+		history1.setName("2015");
+		lstHistory.add(history1);
+		HistoryDto history2 = new HistoryDto();
+		history2.setCode("000000000002");
+		history2.setName("2016");
+		lstHistory.add(history2);
+		HistoryDto history3 = new HistoryDto();
+		history3.setCode("000000000003");
+		history3.setName("2017");
+		lstHistory.add(history3);
+		
+		for (HistoryDto HistoryDto : lstHistory) {
+ 			if (HistoryDto.getCode().toString().equals(officeCode)) {
+ 				returnHistory = HistoryDto;
+ 			}
+		}
+		return returnHistory;
+	}
+	
 	@POST
 	@Path("create")
 	public void createOffice(RegisterSocialOfficeCommand command) {

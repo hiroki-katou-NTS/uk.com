@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-import nts.uk.ctx.pr.core.app.command.insurance.social.health.RegisterHealthInsuranceCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.health.RegisterHealthInsuranceCommandHandler;
-import nts.uk.ctx.pr.core.app.find.insurance.social.healthrate.HealthInsuranceRateDto;
+import nts.uk.ctx.core.app.insurance.social.health.command.RegisterHealthInsuranceCommand;
+import nts.uk.ctx.core.app.insurance.social.health.command.RegisterHealthInsuranceCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 public class HealthInsuranceService {
@@ -22,10 +22,10 @@ public class HealthInsuranceService {
 		public List<HealthInsuranceRateDto> findAll() {
 			List<HealthInsuranceRateDto> HealthInsuranceRateDtoList = new ArrayList<HealthInsuranceRateDto>();
 			
-			HealthInsuranceRateDto HealthInsuranceRateDto001 = new HealthInsuranceRateDto();
-			HealthInsuranceRateDto001.setOfficeCode(new OfficeCode("000000000001"));
-			HealthInsuranceRateDto001.setAutoCalculate(true);
-			HealthInsuranceRateDtoList.add(HealthInsuranceRateDto001);
+//			HealthInsuranceRateDto HealthInsuranceRateDto001 = new HealthInsuranceRateDto();
+//			HealthInsuranceRateDto001.setOfficeCode("000000000001");
+//			HealthInsuranceRateDto001.setAutoCalculate(true);
+//			HealthInsuranceRateDtoList.add(HealthInsuranceRateDto001);
 			
 			return HealthInsuranceRateDtoList;
 		}

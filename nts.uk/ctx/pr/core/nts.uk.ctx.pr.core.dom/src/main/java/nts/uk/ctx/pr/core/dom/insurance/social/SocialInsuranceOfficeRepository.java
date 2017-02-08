@@ -48,4 +48,12 @@ public interface SocialInsuranceOfficeRepository {
 	 * @return the social insurance office
 	 */
 	SocialInsuranceOffice findById(String id);
+	
+	/**
+	 * Find by office code.
+	 *
+	 * @param officeCode the office code
+	 * @return the social insurance office
+	 */
+	SocialInsuranceOffice findByOfficeCode(String officeCode);
 }

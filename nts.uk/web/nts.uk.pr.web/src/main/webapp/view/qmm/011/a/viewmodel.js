@@ -63,9 +63,12 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openEditHistoryAccidentInsuranceRate = function () {
-                                    var historyId = this.selectionHistoryAccidentInsuranceRate();
+                                    var self = this;
+                                    var historyId = self.selectionHistoryAccidentInsuranceRate();
                                     nts.uk.ui.windows.setShared("historyId", historyId);
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                                    nts.uk.ui.windows.setShared("historyStart", self.historyAccidentInsuranceRateStart());
+                                    nts.uk.ui.windows.setShared("historyEnd", self.historyAccidentInsuranceRateEnd());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
                                     });
                                 };
@@ -79,13 +82,14 @@ var nts;
                                     self.findHisotryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                                     self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                                 };
-                                ScreenModel.prototype.saveHistoryUnemployeeInsurance = function (typeActionUnemployeeInsuranceRate) {
+                                ScreenModel.prototype.saveHistoryUnemployeeInsurance = function () {
+                                    var typeActionUnemployeeInsuranceRate;
+                                    typeActionUnemployeeInsuranceRate = TypeActionInsuranceRate.add;
                                     var self = this;
                                     if (typeActionUnemployeeInsuranceRate == TypeActionInsuranceRate.add) {
-                                        a.service.addUnemployeeInsuranceRate();
+                                        a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), self.selectionHistoryUnemployeeInsuranceRate(), "companyCode001");
                                     }
                                     else {
-                                        a.service.updateUnemployeeInsuranceRate();
                                     }
                                     return true;
                                 };
