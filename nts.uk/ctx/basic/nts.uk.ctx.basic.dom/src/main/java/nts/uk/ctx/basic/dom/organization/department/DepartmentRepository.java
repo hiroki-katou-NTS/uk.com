@@ -17,6 +17,8 @@ public interface DepartmentRepository {
 	
 	Optional<Department> findSingleDepartment(String companyCode, DepartmentCode departmentCode, String historyId);
 	
-	List<Department> findAll(String companyCode);
+	List<Department> findAllByHistory(String companyCode, String historyId);
+	
+	boolean checkExist(String companyCode);
 
 }

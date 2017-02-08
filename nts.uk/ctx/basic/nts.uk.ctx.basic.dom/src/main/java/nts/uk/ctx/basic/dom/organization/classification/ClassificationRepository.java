@@ -14,5 +14,7 @@ public interface ClassificationRepository {
 	Optional<Classification> findSingleClassification(String companyCode, ClassificationCode classificationCode);
 	
 	List<Classification> findAll(String companyCode);
+	
+	boolean isExisted(String companyCode, ClassificationCode classificationCode);
 
 }

@@ -25,16 +25,19 @@ import nts.uk.shr.com.primitive.Memo;
 @Stateless
 public class JpaDepartmentRepository extends JpaRepository implements DepartmentRepository {
 
-	private static final String FIND_ALL;
+	private static final String FIND_ALL_BY_HISTORY;
 
 	private static final String FIND_SINGLE;
+
+	private static final String CHECK_EXIST;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtDep e");
 		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
-		FIND_ALL = builderString.toString();
+		builderString.append(" AND e.cmnmtDepPK.historyId = :historyId");
+		FIND_ALL_BY_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -43,6 +46,12 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		builderString.append(" AND e.cmnmtDepPK.departmentCode = :departmentCode");
 		builderString.append(" AND e.cmnmtDepPK.historyId = :historyId");
 		FIND_SINGLE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM CmnmtDep e");
+		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
+		CHECK_EXIST = builderString.toString();
 	}
 
 	@Override
@@ -80,12 +89,21 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 	}
 
 	@Override
-	public List<Department> findAll(String companyCode) {
-		List<CmnmtDep> resultList = this.queryProxy().query(FIND_ALL, CmnmtDep.class)
-				.setParameter("companyCode", "'" + companyCode + "'").getList();
+	public List<Department> findAllByHistory(String companyCode, String historyId) {
+		List<CmnmtDep> resultList = this.queryProxy().query(FIND_ALL_BY_HISTORY, CmnmtDep.class)
+				.setParameter("companyCode", "'" + companyCode + "'")
+				.setParameter("historyId", "'" + historyId + "'")
+				.getList();
 		return !resultList.isEmpty() ? resultList.stream().map(item -> {
 			return convertToDomain(item);
 		}).collect(Collectors.toList()) : new ArrayList<>();
+	}
+
+	@Override
+	public boolean checkExist(String companyCode) {
+		return this.queryProxy().query(CHECK_EXIST, long.class)
+				.setParameter("companyCode", "'" + companyCode + "'")
+				.getSingle().get() > 0;
 	}
 
 	private Department convertToDomain(CmnmtDep cmnmtDep) {
