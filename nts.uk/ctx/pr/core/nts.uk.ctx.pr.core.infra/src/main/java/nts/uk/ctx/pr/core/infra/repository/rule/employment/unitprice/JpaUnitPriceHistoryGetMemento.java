@@ -10,13 +10,14 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryMemento;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryGetMemento;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class JpaAggrSchemaMemento.
  */
-public class JpaUnitPriceHistoryMemento implements UnitPriceHistoryMemento {
+public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento {
 
 	// TODO: Object -> entity class.
 	protected Object typeValue;
@@ -27,7 +28,7 @@ public class JpaUnitPriceHistoryMemento implements UnitPriceHistoryMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceHistoryMemento(Object typeValue) {
+	public JpaUnitPriceHistoryGetMemento(Object typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -45,6 +46,12 @@ public class JpaUnitPriceHistoryMemento implements UnitPriceHistoryMemento {
 
 	@Override
 	public UnitPriceCode getUnitPriceCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UnitPriceName getUnitPriceName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -107,84 +114,6 @@ public class JpaUnitPriceHistoryMemento implements UnitPriceHistoryMemento {
 	public Long getVersion() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void setId(String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setUnitPriceCode(UnitPriceCode unitPriceCode) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setBudget(Money budget) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFixPaySettingType(SettingType fixPaySettingType) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFixPayAtr(ApplySetting fixPayAtr) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFixPayAtrMonthly(ApplySetting fixPayAtrMonthly) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFixPayAtrDayMonth(ApplySetting fixPayAtrDayMonth) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFixPayAtrDaily(ApplySetting fixPayAtrDaily) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setFixPayAtrHourly(ApplySetting fixPayAtrHourly) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMemo(Memo memo) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

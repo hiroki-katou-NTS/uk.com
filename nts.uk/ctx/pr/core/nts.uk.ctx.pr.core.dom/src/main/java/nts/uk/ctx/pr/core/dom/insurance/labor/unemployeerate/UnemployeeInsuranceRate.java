@@ -6,7 +6,8 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -15,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 /**
  * The Class UnemployeeInsuranceRate.
  */
-@Data
+@Getter
 public class UnemployeeInsuranceRate extends AggregateRoot {
 
 	/** The history id. */
@@ -26,9 +27,11 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 	private CompanyCode companyCode;
 
 	/** The apply range. */
+	@Setter
 	private MonthRange applyRange;
 
 	/** The rate items. */
+	@Setter
 	private Set<UnemployeeInsuranceRateItem> rateItems;
 
 	/**
@@ -62,7 +65,7 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 		// TODO: Check consistency date range.
 		// History after start date and time exists
 		// throw new BusinessException("ER010");
-		
+
 		// TODO: Check duplicate start date. !? in EAP file.
 		// throw new BusinessException("ER005");
 

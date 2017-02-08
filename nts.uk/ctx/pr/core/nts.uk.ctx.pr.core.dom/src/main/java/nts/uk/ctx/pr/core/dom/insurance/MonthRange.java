@@ -7,17 +7,14 @@ package nts.uk.ctx.pr.core.dom.insurance;
 import java.io.Serializable;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 
 /**
  * The Class MonthRange.
  */
 @Getter
-
-// TODO: Remove setter.
-@Setter
 public class MonthRange implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -28,7 +25,7 @@ public class MonthRange implements Serializable {
 
 	/** The end month. */
 	private YearMonth endMonth;
-	
+
 	/**
 	 * Instantiates a new month range.
 	 *
@@ -78,5 +75,21 @@ public class MonthRange implements Serializable {
 	 */
 	public static MonthRange range(YearMonth startMonth, YearMonth endMonth) {
 		return new MonthRange(startMonth, endMonth);
+	}
+
+	/**
+	 * Range.
+	 *
+	 * @param startMonth
+	 *            the start month
+	 * @param endMonth
+	 *            the end month
+	 * @param separatorChar
+	 *            the separator char
+	 * @return the month range
+	 */
+	public static MonthRange range(String startMonth, String endMonth, String separatorChar) {
+		return new MonthRange(PrimitiveUtil.toYearMonth(startMonth, separatorChar),
+				PrimitiveUtil.toYearMonth(endMonth, separatorChar));
 	}
 }
