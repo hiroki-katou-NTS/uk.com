@@ -91,6 +91,7 @@ $button-disabled-base-color: #888888;
             padding-left: 38px;
         }
     }
+    
 }
 
 button {
@@ -193,4 +194,9 @@ button {
     	}
     	/* END: SAME ALL SIZES */
 	}
+	
+    &.auto-height{
+    	height: auto;
+    }
+	
 }

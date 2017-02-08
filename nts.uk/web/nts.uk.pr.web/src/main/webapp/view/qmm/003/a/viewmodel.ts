@@ -35,23 +35,24 @@ module nts.uk.pr.view.qmm003.a {
             self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.removeData(self.filteredData2());
+            console.log(self.filteredData2());
             self.selectedCodes = ko.observableArray([]);
             self.singleSelectedCode.subscribe(function(newValue) {
                 self.Value(newValue);
 
-                if (self.editMode) {
+                if (self.editMode ) {
                     let count = 0;  
                     self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
-                    self.nameBySelectedCode(self.findByName(self.itemList()));
+                    self.nameBySelectedCode(self.findByName(self.filteredData2()));
                     self.selectedCode(self.nameBySelectedCode().code);
                     console.log(self.selectedCode());
                     let co = 0, co1 = 0;
-                    _.each(self.filteredData(), function(obj: Node) {
+                    _.each(self.filteredData2(), function(obj: Node) {
 
                         if (obj.code != self.curentNode().code) {
                             co++;
                         } else {
-                            if (co < ((_.size(self.filteredData())) - 1)) {
+                            if (co < ((_.size(self.filteredData2())) - 1)) {
                                 co1 = co + 1;
 
                             } else {
@@ -60,7 +61,7 @@ module nts.uk.pr.view.qmm003.a {
                         }
                     });
 
-                    self.labelSubsub(self.filteredData()[co1]);
+                    self.labelSubsub(self.filteredData2()[co1]);
                     if (self.labelSubsub() == null) {
                         self.labelSubsub(new Node("11", "22", []));
                     }

@@ -1,9 +1,12 @@
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
+    ntsListBox(action: string, param?: any): any;
     ntsGridList(action: string, param?: any): any;
     ntsWizard(action: string, param?: any): any;
     ntsUserGuide(action?: string, param?: any): any;
+    ntsSideBar(action?: string, param?: any): any;
+    setupSearchScroll(controlType: string, param?: any): any;
 }
 
 module nts.uk.ui.jqueryExtentions {
@@ -84,7 +87,6 @@ module nts.uk.ui.jqueryExtentions {
             _.defer(function() {
                 if (!dismissible) {
                     $(window).mousedown(function(e) {
-                        //console.log(dismissible);
                         if ($(e.target).closest(popup.$panel).length === 0) {
                             popup.hide();
                         }
@@ -166,6 +168,11 @@ module nts.uk.ui.jqueryExtentions {
     }
 
     module ntsGridList {
+        
+        let OUTSIDE_AUTO_SCROLL_SPEED = {
+            RATIO: 0.2,
+            MAX: 30
+        };
 
         $.fn.ntsGridList = function(action: string, param?: any): any {
 
@@ -225,45 +232,90 @@ module nts.uk.ui.jqueryExtentions {
             return $grid;
         }
 
-        // this code was provided by Infragistics support
         function setupDragging($grid: JQuery) {
             var dragSelectRange = [];
+            
+            // used to auto scrolling when dragged above/below grid)
+            var mousePos: { x: number, y: number, rowIndex: number } = null;
+                
+            var $container = $grid.closest('.ui-iggrid-scrolldiv');
 
-            $grid.on('mousedown', function(e) {
+            $grid.bind('mousedown', function(e) {
                 // グリッド内がマウスダウンされていない場合は処理なしで終了
                 if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                     return;
                 }
+                
+                // current grid size
+                var gridVerticalRange = new util.Range(
+                    $container.offset().top,
+                    $container.offset().top + $container.height());
+                
+                mousePos = {
+                    x: e.pageX,
+                    y: e.pageY,
+                    rowIndex: ig.grid.getRowIndexFrom($(e.target))
+                };
 
-                // http://jp.igniteui.com/help/api/2016.2/ui.iggrid#methods:getElementInfo
-                var trInfo = $grid.igGrid('getElementInfo', $(e.target).closest('tr'));
-
-                // ドラッグ開始位置を設定する
-                dragSelectRange.push(trInfo.rowIndex);
+                // set position to start dragging
+                dragSelectRange.push(mousePos.rowIndex);
+                
+                var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
+                
+                // auto scroll while mouse is outside grid
+                var timerAutoScroll = setInterval(() => {
+                    var distance = gridVerticalRange.distanceFrom(mousePos.y);
+                    if (distance === 0) {
+                        return;
+                    }
+                    
+                    var delta = Math.min(distance * OUTSIDE_AUTO_SCROLL_SPEED.RATIO, OUTSIDE_AUTO_SCROLL_SPEED.MAX);
+                    var currentScrolls = $scroller.scrollTop();
+                    $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
+                }, 20);
+                
+                // handle mousemove on window while dragging (unhandle when mouseup)
+                $(window).bind('mousemove.NtsGridListDragging', function(e) {
+                    
+                    var newPointedRowIndex = ig.grid.getRowIndexFrom($(e.target));
+                    
+                    // selected range is not changed
+                    if (mousePos.rowIndex === newPointedRowIndex) {
+                        return;
+                    }
+                    
+                    mousePos = {
+                        x: e.pageX,
+                        y: e.pageY,
+                        rowIndex: newPointedRowIndex
+                    };
+                    
+                    if (dragSelectRange.length === 1 && !e.ctrlKey) {
+                        $grid.igGridSelection('clearSelection');
+                    }
+                    
+                    updateSelections();
+                });
+                
+                // stop dragging
+                $(window).one('mouseup', function(e) {
+                    mousePos = null;
+                    dragSelectRange = [];
+                     $(window).unbind('mousemove.NtsGridListDragging');
+                    clearInterval(timerAutoScroll);
+                });
             });
 
-            $grid.on('mousemove', function(e) {
-                // ドラッグ開始位置が設定されていない場合は処理なしで終了
-                if (dragSelectRange.length === 0) {
+            function updateSelections() {
+                
+                // rowIndex is NaN when mouse is outside grid
+                if (isNaN(mousePos.rowIndex)) {
                     return;
-                }
-
-                var $tr = $(e.target).closest('tr'),
-                    // http://jp.igniteui.com/help/api/2016.2/ui.iggrid#methods:getElementInfo
-                    trInfo = $grid.igGrid('getElementInfo', $tr);
-
-
-                // 無駄な処理をさせないためにドラッグ終了位置が同じかどうかをチェックする
-                if (trInfo.rowIndex === dragSelectRange[dragSelectRange.length - 1]) {
-                    return;
-                }
-
-                // 新たにドラッグ選択を開始する場合、Ctrlキー押下されていない場合は以前の選択行を全てクリアする
-                if (dragSelectRange.length === 1 && !e.ctrlKey) {
-                    $grid.igGridSelection('clearSelection');
                 }
 
                 // 以前のドラッグ範囲の選択を一旦解除する
+                // TODO: probably this code has problem of perfomance when select many rows
+                // should process only "differences" instead of "all"
                 for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
                     // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:deselectRow
                     $grid.igGridSelection('deselectRow', dragSelectRange[i]);
@@ -271,26 +323,21 @@ module nts.uk.ui.jqueryExtentions {
 
                 var newDragSelectRange = [];
 
-                if (dragSelectRange[0] <= trInfo.rowIndex) {
-                    for (var j = dragSelectRange[0]; j <= trInfo.rowIndex; j++) {
+                if (dragSelectRange[0] <= mousePos.rowIndex) {
+                    for (var j = dragSelectRange[0]; j <= mousePos.rowIndex; j++) {
                         // http://jp.igniteui.com/help/api/2016.2/ui.iggridselection#methods:selectRow
                         $grid.igGridSelection('selectRow', j);
                         newDragSelectRange.push(j);
                     }
-                } else if (dragSelectRange[0] > trInfo.rowIndex) {
-                    for (var j = dragSelectRange[0]; j >= trInfo.rowIndex; j--) {
+                } else if (dragSelectRange[0] > mousePos.rowIndex) {
+                    for (var j = dragSelectRange[0]; j >= mousePos.rowIndex; j--) {
                         $grid.igGridSelection('selectRow', j);
                         newDragSelectRange.push(j);
                     }
                 }
 
                 dragSelectRange = newDragSelectRange;
-            });
-
-            $grid.on('mouseup', function(e) {
-                // ドラッグを終了する
-                dragSelectRange = [];
-            });
+            }
         }
 
         function setupSelectingEvents($grid: JQuery) {
@@ -353,28 +400,98 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
     }
-
-    module userGuide {
+    
+    module ntsWizard {
+        $.fn.ntsWizard = function (action: string, index?: number): any {
+            var $wizard = $(this);
+            if (action === "begin") {
+                return begin($wizard);
+            }
+            else if (action === "end") {
+                return end($wizard);
+            }
+            else if (action === "goto") {
+                return goto($wizard, index);
+            }
+            else if (action === "prev") {
+                return prev($wizard);
+            }
+            else if (action === "next") {
+                return next($wizard);
+            }
+            else if (action === "getCurrentStep") {
+                return getCurrentStep($wizard);
+            }
+            else {
+                return $wizard;
+            };
+        }
         
-        $.fn.ntsUserGuide = function (action: string): any {
+        function begin (wizard: JQuery): JQuery {
+            wizard.setStep(0);
+            return wizard;
+        }
+        
+        function end (wizard: JQuery): JQuery {
+            wizard.setStep(wizard.data("length") - 1);
+            return wizard;
+        }
+        
+        function goto (wizard: JQuery, index: number): JQuery {
+            wizard.setStep(index);
+            return wizard;
+        }
+        
+        function prev (wizard: JQuery): JQuery {
+            wizard.steps("previous");
+            return wizard;
+        }
+        
+        function next (wizard: JQuery): JQuery {
+            wizard.steps("next");
+            return wizard;
+        }
+        
+        function getCurrentStep (wizard: JQuery): number {
+            return wizard.steps("getCurrentIndex");
+        }
+        
+    }
+
+    module ntsUserGuide {
+        
+        $.fn.ntsUserGuide = function (action?: string): any {
             var $controls = $(this);
-            if (nts.uk.util.isNullOrUndefined(action)) {
+            if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
                 return init($controls);
+            }
+            else if (action === "destroy") {
+                return destroy($controls);
             }
             else if (action === "show") {
                 return show($controls);
             }
+            else if (action === "hide") {
+                return hide($controls);
+            }
+            else if (action === "toggle") {
+                return toggle($controls);
+            }
+            else if (action === "isShow") {
+                return isShow($controls);
+            }
             else {
-                
+                return $controls;
             };
         }
         
-        function init(controls: JQuery) {
+        function init(controls: JQuery): JQuery {
             controls.each(function() {
                 // UserGuide container
                 let $control = $(this);
                 $control.remove();
-                if (!$control.hasClass("ntsUserGuide")) $control.addClass("ntsUserGuide");
+                if (!$control.hasClass("ntsUserGuide"))
+                    $control.addClass("ntsUserGuide");
                 $($control).appendTo($("body")).show();
                 let target = $control.data('target');
                 let direction = $control.data('direction');
@@ -389,46 +506,253 @@ module nts.uk.ui.jqueryExtentions {
                 // Userguide Overlay
                 let $overlay = $("<div class='userguide-overlay'></div>")
                                 .addClass("overlay-" + direction)
-                                .on("click", function(){
-                                    $control.hide();
-                                })
                                 .appendTo($control);
                 $control.hide();
             });
             return controls;
         }
         
-        function show(controls: JQuery) {
+        function destroy(controls: JQuery) {
             controls.each(function() {
-                let $control = $(this);
-                let target = $control.data('target');
-                let direction = $control.data('direction');
-                $control.show();
-                $control.children().each(function(){
-                    let $box = $(this);
-                    let boxTarget = $box.data("target");
-                    $box.position({
-                        my: getReveseDirection(direction) + "+20",
-                        at: "right center",
-                        of: boxTarget
-                    });
-                });
-                let $overlay = $control.find(".userguide-overlay").css(getReveseDirection(direction), $(target).offset().left + $(target).outerWidth());
-            })
+                $(this).remove();
+            });
             return controls;
         }
         
-        function getReveseDirection(direction: string) {
-            switch (direction) {
-                case "left":
-                    return "right";
-                case "right":
-                    return "left";
-                case "top":
-                    return "bottom";
-                case "bottom":
-                    return "top";
-            }
+        function show(controls: JQuery): JQuery {
+            controls.each(function() {
+                let $control = $(this);
+                $control.show();
+                
+                let target = $control.data('target');
+                let direction = $control.data('direction');
+                $control.find(".userguide-overlay").each(function(index, elem){
+                    calcOverlayPosition($(elem), target, direction)
+                });
+                $control.children().each(function(){
+                    let $box = $(this);
+                    let boxTarget = $box.data("target");
+                    let boxDirection = $box.data("direction");
+                    let boxMargin = ($box.data("margin")) ? $box.data("margin") : "20";
+                    calcBoxPosition($box, boxTarget, boxDirection, boxMargin);
+                });
+            });
+            return controls;
         }
+        
+        function hide(controls: JQuery): JQuery {
+            controls.each(function() {
+                $(this).hide();
+            });
+            return controls;
+        }
+        
+        function toggle(controls: JQuery): JQuery {
+            if (isShow(controls))
+                hide(controls);
+            else
+                show(controls);
+            return controls;
+        }
+        
+        function isShow(controls: JQuery): boolean {
+            let result = true;
+            controls.each(function() {
+                if (!$(this).is(":visible"))
+                    result = false;
+            });
+            return result;
+        }
+        
+        function calcOverlayPosition(overlay: JQuery, target: string, direction: string): JQuery {
+            if (direction === "left") 
+                return overlay.css("right", "auto")
+                              .css("width", $(target).offset().left);
+            else if (direction === "right") 
+                return overlay.css("left", $(target).offset().left + $(target).outerWidth());
+            else if (direction === "top") 
+                return overlay.css("position", "absolute")
+                              .css("bottom", "auto")
+                              .css("height", $(target).offset().top);
+            else if (direction === "bottom") 
+                return overlay.css("position", "absolute")
+                              .css("top", $(target).offset().top + $(target).outerHeight())
+                              .css("height", $("body").height() - $(target).offset().top);
+        }
+        
+        function calcBoxPosition(box: JQuery, target: string, direction: string, margin: string): JQuery {
+            let operation = "+";
+            if (direction === "left" || direction === "top")
+                operation = "-";
+            return box.position({
+                my: getReveseDirection(direction) + operation + margin,
+                at: direction,
+                of: target,
+                collision: "none"
+            });
+        }
+        
+        function getReveseDirection(direction: string): string {
+            if (direction === "left") 
+                return "right";
+            else if (direction === "right") 
+                return "left";
+            else if (direction === "top") 
+                return "bottom";
+            else if (direction === "bottom") 
+                return "top";
+        }
+    }
+    
+    module ntsSearchBox {
+        $.fn.setupSearchScroll = function(controlType: string, virtualization? : boolean) {
+            var $control = this;
+            if(controlType.toLowerCase() == 'iggrid') return setupIgGridScroll($control, virtualization);
+            if(controlType.toLowerCase() == 'igtreegrid') return setupTreeGridScroll($control, virtualization);
+            if(controlType.toLowerCase() == 'igtree') return setupIgTreeScroll($control);
+            return this;
+        }
+        function setupIgGridScroll($control: JQuery, virtualization?: boolean) {
+            var $grid = $control;
+            if(virtualization) {
+                $grid.on("selectChange", function() {
+                    var row = null;
+                    var selectedRows = $grid.igGrid("selectedRows");
+                    if(selectedRows) {
+                        row = selectedRows[0];
+                    } else {
+                        row = $grid.igGrid("selectedRow"); 
+                    }                
+                    if(row) $grid.igGrid("virtualScrollTo", row.index);                
+                });
+            } else {
+                $grid.on("selectChange", function() {
+                    var row = null;
+                    var selectedRows = $grid.igGrid("selectedRows");
+                    if(selectedRows) {
+                        row = selectedRows[0];
+                    } else {
+                        row = $grid.igGrid("selectedRow"); 
+                    }                
+                    if(row) {
+                        var index = row.index;
+                        var height = row.element[0].scrollHeight;
+                        var gridId = $grid.attr('id');
+                        $("#" + gridId + "_scrollContainer").scrollTop(index*height); 
+                    }            
+                }); 
+            }
+            return $grid;
+        }
+        
+        function setupTreeGridScroll($control: JQuery, virtualization?: boolean) {
+            var $treegrid = $control;
+            var id = $treegrid.attr('id');           
+            $treegrid.on("selectChange", function() {
+                var row = null;
+                var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
+                if(selectedRows) {
+                    row = selectedRows[0];
+                } else {
+                    row = $treegrid.igTreeGridSelection("selectedRow"); 
+                }
+                if(row) {
+                    var index = row.index;
+                    var height = row.element[0].scrollHeight;
+                    $("#" + id + "_scroll").scrollTop(index * height);
+                }
+            });
+            return $treegrid;
+        }
+        
+        function setupIgTreeScroll($control: JQuery) {
+            //implement later if needed
+            return $control;
+        }
+    }
+    
+    module ntsSideBar {
+        
+        $.fn.ntsSideBar = function (action?: string, index?: number): any {
+            var $control = $(this);
+            if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
+                return init($control);
+            }
+            else if (action === "active") {
+                return active($control, index);
+            }
+            else if (action === "enable") {
+                return enable($control, index);
+            }
+            else if (action === "disable") {
+                return disable($control, index);
+            }
+            else if (action === "show") {
+                return show($control, index);
+            }
+            else if (action === "hide") {
+                return hide($control, index);
+            }
+            else if (action === "getCurrent") {
+                return getCurrent($control);
+            }
+            else {
+                return $control;
+            };
+        }
+        
+        function init(control: JQuery): JQuery {
+            control.find("div[role=tabpanel]").hide();
+            control.on("click", "#sidebar-area .navigator a", function(e){
+                e.preventDefault();
+                if ($(this).attr("disabled") !== "true" &&
+                    $(this).attr("disabled") !== "disabled" &&
+                    $(this).attr("href") !== undefined) {
+                    active(control, $(this).closest("li").index());
+                }
+            });
+            control.find("#sidebar-area .navigator a.active").trigger('click');
+            return control;
+        }
+        
+        function active(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").removeClass("active");
+            control.find("#sidebar-area .navigator a").eq(index).addClass("active");
+            control.find("div[role=tabpanel]").hide();
+            $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+            return control;
+        }
+        
+        function enable(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
+            return control;
+            
+        }
+        
+        function disable(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
+            return control;
+        }
+        
+        function show(control: JQuery, index: number): JQuery {
+            control.find("#sidebar-area .navigator a").eq(index).show();
+            return control;
+        }
+        
+        function hide(control: JQuery, index: number): JQuery {
+            var current = getCurrent(control);
+            if (current === index) {
+                active(control, 0);
+            }
+            control.find("#sidebar-area .navigator a").eq(index).hide();
+            return control;
+        }
+        
+        function getCurrent(control: JQuery): number {
+            let index = 0;
+            index = control.find("#sidebar-area .navigator a.active").closest("li").index();
+            return index;
+        }
+        
     }
 }
