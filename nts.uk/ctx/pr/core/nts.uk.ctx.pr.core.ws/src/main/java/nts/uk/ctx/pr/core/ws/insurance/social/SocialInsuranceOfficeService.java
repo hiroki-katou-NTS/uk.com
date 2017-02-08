@@ -15,15 +15,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.insurance.social.DeleteSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.DeleteSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.RegisterSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.command.insurance.social.UpdateSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.command.insurance.social.pension.RegisterPensionCommandHandler;
-import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeDto;
-import nts.uk.ctx.pr.core.app.find.insurance.social.dto.SocialInsuranceOfficeItemDto;
+import nts.uk.ctx.core.app.insurance.social.command.DeleteSocialOfficeCommand;
+import nts.uk.ctx.core.app.insurance.social.command.DeleteSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.command.RegisterSocialOfficeCommand;
+import nts.uk.ctx.core.app.insurance.social.command.RegisterSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.command.UpdateSocialOfficeCommand;
+import nts.uk.ctx.core.app.insurance.social.command.UpdateSocialOfficeCommandHandler;
+import nts.uk.ctx.core.app.insurance.social.find.dto.SocialInsuranceOfficeDto;
+import nts.uk.ctx.core.app.insurance.social.find.dto.SocialInsuranceOfficeItemDto;
+import nts.uk.ctx.core.app.insurance.social.pension.command.RegisterPensionCommandHandler;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
 
