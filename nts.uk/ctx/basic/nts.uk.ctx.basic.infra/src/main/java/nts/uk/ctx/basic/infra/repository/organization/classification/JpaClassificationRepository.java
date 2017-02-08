@@ -22,6 +22,8 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 	private static final String FIND_ALL;
 
 	private static final String FIND_SINGLE;
+	
+	private static final String QUERY_IS_EXISTED;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -36,6 +38,12 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 		builderString.append(" WHERE e.cmnmtClassPK.companyCode =: companyCode");
 		builderString.append(" AND e.cmnmtClassPK.classificationCode =: classificationCode");
 		FIND_SINGLE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" WHERE e.cmnmtClassPK.companyCode =: companyCode");
+		builderString.append(" AND e.cmnmtClassPK.classificationCode =: classificationCode");
+		QUERY_IS_EXISTED = builderString.toString();
 	}
 
 	@Override
@@ -74,6 +82,14 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 		return !resultList.isEmpty() ? resultList.stream().map(e -> {
 			return convertToDomain(e);
 		}).collect(Collectors.toList()) : new ArrayList<>();
+	}
+
+	@Override
+	public boolean isExisted(String companyCode, ClassificationCode classificationCode) {
+		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
+		.setParameter("companyCode", "'" + companyCode + "'")
+		.setParameter("classificationCode", "'" + classificationCode.toString() + "'")
+		.getSingle().get() > 0;
 	}
 
 	private CmnmtClass convertToDbType(Classification classification) {
