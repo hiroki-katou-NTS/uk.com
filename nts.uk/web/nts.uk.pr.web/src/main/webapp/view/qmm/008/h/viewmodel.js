@@ -27,7 +27,7 @@ var nts;
                                         self.listAvgEarnLevelMasterSetting(data);
                                         h.service.findHealthInsuranceRate('a').done(function (xx) {
                                             self.healthInsuranceRateModel().officeCode(xx.officeCode);
-                                            self.healthInsuranceRateModel().companyCode(xx.companyCode);
+                                            self.healthInsuranceRateModel().officeName(xx.officeName);
                                         });
                                         h.service.findHealthInsuranceAvgEarn('a').done(function (zz) {
                                             self.listHealthInsuranceAvgearn(zz);
@@ -69,6 +69,7 @@ var nts;
                                 function HealthInsuranceRateModel() {
                                     this.companyCode = ko.observable('');
                                     this.officeCode = ko.observable('');
+                                    this.officeName = ko.observable('');
                                     this.startMonth = ko.observable('');
                                     this.endMonth = ko.observable('');
                                     this.autoCalculate = ko.observable(false);

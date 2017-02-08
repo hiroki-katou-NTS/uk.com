@@ -7,14 +7,14 @@ package nts.uk.ctx.core.app.insurance.labor.accidentrate.command;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.app.insurance.HistoryInfoDto;
-import nts.uk.ctx.core.app.insurance.command.ActionCommand;
+import nts.uk.ctx.core.app.insurance.command.BaseInsuranceCommand;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 
 // TODO: Auto-generated Javadoc
 @Getter
 @Setter
-public class AccidentInsuranceRateUpdateCommand {
+public class AccidentInsuranceRateUpdateCommand extends BaseInsuranceCommand {
 
 	/** The history info dto. */
 	private HistoryInfoDto historyInfoDto;
@@ -31,9 +31,9 @@ public class AccidentInsuranceRateUpdateCommand {
 		AccidentInsuranceRate accidentInsuranceRate = new AccidentInsuranceRate();
 		accidentInsuranceRate.setCompanyCode(new CompanyCode(this.comanyCode));
 		accidentInsuranceRate.setHistoryId(this.historyInfoDto.getHistoryId());
-		accidentInsuranceRate.setApplyRange(ActionCommand.convertMonthRange(this.historyInfoDto.getStartMonthRage(),
-				this.historyInfoDto.getEndMonthRage()));
-		accidentInsuranceRate.setRateItems(ActionCommand.defaultSetInsuBizRateItem());
+		accidentInsuranceRate.setApplyRange(
+				convertMonthRange(this.historyInfoDto.getStartMonthRage(), this.historyInfoDto.getEndMonthRage()));
+		accidentInsuranceRate.setRateItems(defaultSetInsuBizRateItem());
 		return accidentInsuranceRate;
 
 	}

@@ -6,21 +6,10 @@ package nts.uk.ctx.core.app.insurance.labor.unemployeerate.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.app.insurance.HistoryInfoDto;
-import nts.uk.ctx.core.app.insurance.command.ActionCommand;
+import nts.uk.ctx.core.app.insurance.command.BaseInsuranceCommand;
 import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.PicName;
-import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
-import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
-import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class UnemployeeInsuranceRateAddCommand.
@@ -28,7 +17,7 @@ import nts.uk.shr.com.primitive.Memo;
 // TODO: Auto-generated Javadoc
 @Getter
 @Setter
-public class UnemployeeInsuranceRateAddCommand {
+public class UnemployeeInsuranceRateAddCommand extends BaseInsuranceCommand {
 
 	/** The history info dto. */
 	private UnemployeeInsuranceRateDto unemployeeInsuranceRate;
@@ -44,11 +33,11 @@ public class UnemployeeInsuranceRateAddCommand {
 	public UnemployeeInsuranceRate toDomain() {
 		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate();
 		unemployeeInsuranceRate.setHistoryId(this.unemployeeInsuranceRate.getHistoryInsurance().getHistoryId());
-		unemployeeInsuranceRate.setApplyRange(ActionCommand.convertMonthRange(
-				this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
-				this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
+		unemployeeInsuranceRate
+				.setApplyRange(convertMonthRange(this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
+						this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
 		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.comanyCode));
-		unemployeeInsuranceRate.setRateItems(ActionCommand.defaultSetUnemployeeInsuranceRateItem());
+		unemployeeInsuranceRate.setRateItems(defaultSetUnemployeeInsuranceRateItem());
 		return unemployeeInsuranceRate;
 	}
 

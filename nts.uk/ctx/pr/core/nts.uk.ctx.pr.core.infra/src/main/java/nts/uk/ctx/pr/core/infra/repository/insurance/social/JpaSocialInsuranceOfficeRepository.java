@@ -83,4 +83,13 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository#findByOfficeCode(java.lang.String)
+	 */
+	@Override
+	public SocialInsuranceOffice findByOfficeCode(String officeCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
