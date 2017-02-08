@@ -104,8 +104,6 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
-		mr.setEndMonth(new YearMonth(55));
-		mr.setStartMonth(new YearMonth(33));
 		HealthInsuranceRate mock = new HealthInsuranceRate();
 		mock.setCompanyCode(new CompanyCode("Ｃ 事業所"));
 		mock.setOfficeCode(new OfficeCode("000000"));

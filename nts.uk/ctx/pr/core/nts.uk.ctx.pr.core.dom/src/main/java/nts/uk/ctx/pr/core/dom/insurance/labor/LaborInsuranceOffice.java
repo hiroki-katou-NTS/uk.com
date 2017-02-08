@@ -5,7 +5,7 @@
 
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
@@ -23,8 +23,7 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class LaborInsuranceOffice.
  */
-//TODO: @Data -> @Getter
-@Data
+@Getter
 public class LaborInsuranceOffice extends AggregateRoot {
 
 	/** The company code. */
@@ -95,25 +94,44 @@ public class LaborInsuranceOffice extends AggregateRoot {
 	/**
 	 * Instantiates a new labor insurance office.
 	 *
-	 * @param companyCode the company code
-	 * @param code the code
-	 * @param name the name
-	 * @param shortName the short name
-	 * @param picName the pic name
-	 * @param picPosition the pic position
-	 * @param potalCode the potal code
-	 * @param prefecture the prefecture
-	 * @param address1st the address 1 st
-	 * @param address2nd the address 2 nd
-	 * @param kanaAddress1st the kana address 1 st
-	 * @param kanaAddress2nd the kana address 2 nd
-	 * @param phoneNumber the phone number
-	 * @param citySign the city sign
-	 * @param officeMark the office mark
-	 * @param officeNoA the office no A
-	 * @param officeNoB the office no B
-	 * @param officeNoC the office no C
-	 * @param memo the memo
+	 * @param companyCode
+	 *            the company code
+	 * @param code
+	 *            the code
+	 * @param name
+	 *            the name
+	 * @param shortName
+	 *            the short name
+	 * @param picName
+	 *            the pic name
+	 * @param picPosition
+	 *            the pic position
+	 * @param potalCode
+	 *            the potal code
+	 * @param prefecture
+	 *            the prefecture
+	 * @param address1st
+	 *            the address 1 st
+	 * @param address2nd
+	 *            the address 2 nd
+	 * @param kanaAddress1st
+	 *            the kana address 1 st
+	 * @param kanaAddress2nd
+	 *            the kana address 2 nd
+	 * @param phoneNumber
+	 *            the phone number
+	 * @param citySign
+	 *            the city sign
+	 * @param officeMark
+	 *            the office mark
+	 * @param officeNoA
+	 *            the office no A
+	 * @param officeNoB
+	 *            the office no B
+	 * @param officeNoC
+	 *            the office no C
+	 * @param memo
+	 *            the memo
 	 */
 	public LaborInsuranceOffice(CompanyCode companyCode, OfficeCode code, OfficeName name, ShortName shortName,
 			PicName picName, PicPosition picPosition, PotalCode potalCode, String prefecture, Address address1st,
@@ -159,7 +177,7 @@ public class LaborInsuranceOffice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public LaborInsuranceOffice(LaborInsuranceOfficeMemento memento) {
+	public LaborInsuranceOffice(LaborInsuranceOfficeGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
@@ -188,7 +206,7 @@ public class LaborInsuranceOffice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(LaborInsuranceOfficeMemento memento) {
+	public void saveToMemento(LaborInsuranceOfficeSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
