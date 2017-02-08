@@ -23,14 +23,13 @@
 				<label id="A_LBL_002">1：25日支払 の処理月を更新します。</label>
 				<div class="block-inline">
 					<div class="block-left">
-						<label class="label-date">平成<span>12</span>年<span>27</span>月度の作業を<span>終了</span>し、
-						</label> <label class="label-date">平成<span>28</span>年<span>01</span>月度の作業を<span>開始</span>ます。</label>
+						<label id="A_LBL_003" class="label-date">平成<span>12</span>年<span>27</span>月度の作業を<span>終了</span>し、
+						</label> <label id="A_LBL_004" class="label-date">平成<span>28</span>年<span>01</span>月度の作業を<span>開始</span>ます。</label>
 					</div>
 					<div class="block-right">
-						<table class="table no-margin">
+						<table id="A_LST_001" class="table no-margin">
 							<thead>
 								<tr>
-									<th></th>
 									<th>処理内容</th>
 									<th>実施者</th>
 									<th>実施日時</th>
@@ -38,7 +37,6 @@
 							</thead>
 							<tbody data-bind="foreach: [1, 2, 3, 4, 5, 6]">
 								<tr>
-									<th data-bind="text: $index() +  1"></th>
 									<td>2016年10月→2016年11月</td>
 									<td>00000001　日通　一郎</td>
 									<td>10/1/2016  12:10:00 AM</td>

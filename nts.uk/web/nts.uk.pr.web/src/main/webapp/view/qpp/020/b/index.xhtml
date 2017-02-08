@@ -28,10 +28,14 @@
 							<th>処理状態</th>
 							<td>完了</td>
 						</tr>
+						<tr>
+							<th>エラー件数</th>
+							<td>0えっろ</td>
+						</tr>
 					</tbody>
 				</table>
 				<label id="B_LBL_002">処理情報</label>
-				<table class="table" id="B_LST_002">
+				<table class="table no-margin" id="B_LST_002">
 					<tbody>
 						<tr>
 							<th>終了年月</th>
@@ -47,24 +51,29 @@
 					<button>エラー出力</button>
 				</div>
 				<div class="table-container">
-				<table class="table" id="B_LST_003">
-					<thead>
-						<tr>
-							<th></th>
-							<th>処理状態</th>
-							<th>区分</th>
-							<th>内容</th>							
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<th>1</th>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</tbody>
-				</table>
+					<table class="table" id="B_LST_003">
+						<thead class="fixed">
+							<tr>
+								<th></th>
+								<th>処理状態</th>
+								<th>区分</th>
+								<th>内容</th>							
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+							<tr>
+								<th data-bind="text: $index() +  1"></th>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="text-center dialog-button-group">
+					<button id="B_BTN_002"
+						data-bind="click: () => { nts.uk.ui.windows.close();}">閉じる</button>
 				</div>
 			</div>
 		</ui:define>
