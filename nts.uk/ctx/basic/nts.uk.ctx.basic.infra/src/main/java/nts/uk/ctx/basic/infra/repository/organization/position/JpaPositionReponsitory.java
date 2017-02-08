@@ -1,5 +1,6 @@
 package nts.uk.ctx.basic.infra.repository.organization.position;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -95,6 +96,12 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	@Override
+	public boolean isExist(String companyCode, LocalDate startDate) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

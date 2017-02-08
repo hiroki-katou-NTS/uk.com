@@ -44,11 +44,11 @@
 				</div>
 				<div class = "right-area">
 					<div class = "code-name-area">
-						<div data-bind="ntsFormLabel: { constraint: 'PayClassificationCode', required: true }">コード/名称</div>
+						<div data-bind="ntsFormLabel: { constraint: 'ClassificationCode', required: true }">コード/名称</div>
 						<div data-bind="with: texteditorcode">
 							<input data-bind="ntsTextEditor: {
 							value: value,
-							constraint: PayClassificationCode,
+							constraint: ClassificationCode,
 							required: required,
 							enable: enable}" />
 						</div>
