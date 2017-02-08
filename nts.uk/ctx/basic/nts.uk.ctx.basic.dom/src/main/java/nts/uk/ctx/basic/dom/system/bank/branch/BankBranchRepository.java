@@ -47,5 +47,5 @@ public interface BankBranchRepository {
 	 * Remove a bank branch
 	 * @param bank branch
 	 */
-	void remove(BankBranch bank);
+	void remove(String companyCode, String bankCode, String branchCode);
 }
