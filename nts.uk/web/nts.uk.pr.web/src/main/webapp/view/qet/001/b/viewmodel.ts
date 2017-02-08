@@ -40,7 +40,7 @@ module qet001.b.viewmodel {
             var self = this;
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
                 self.isLoading(true);
-                if (newVal== undefined || newVal == null) {
+                if (newVal== undefined || newVal == null || newVal == '') {
                     self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.isLoading(false);
                     return;
@@ -109,12 +109,21 @@ module qet001.b.viewmodel {
         public save() {
             var self = this;
             // Validate.
-            if(self.outputSettingDetail().settingCode() == '' || self.outputSettingDetail().settingName() == '') {
-                // TODO: Add error message '未入力エラー'.
-                nts.uk.ui.dialog.alert('未入力エラー');
+            if (self.outputSettingDetail().settingCode() == '') {
+                $('#code-input').ntsError('set', '未入力エラー');
+            }
+            if(self.outputSettingDetail().settingName() == '') {
+                $('#name-input').ntsError('set', '未入力エラー');
+            }
+            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
-            // TODO: Call service to save output setting.
+            service.saveOutputSetting(self.outputSettingDetail()).done(function() {
+                // TODO: 
+            }).fail(function(res) {
+                // TODO: Show message duplicate code.
+                nts.uk.ui.dialog.alert(res.message);
+            })
         }
         
         /**
@@ -224,7 +233,7 @@ module qet001.b.viewmodel {
         constructor (aggregateItems: service.Item[], masterItem: service.Item[], outputSetting?: WageLedgerOutputSetting) {
             this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
             this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
-            this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : false);
+            this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.isOnceSheetPerPerson : false);
             this.categorySettingTabs = ko.observableArray([
                 { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', enable: ko.observable(true), visible: ko.observable(true) },

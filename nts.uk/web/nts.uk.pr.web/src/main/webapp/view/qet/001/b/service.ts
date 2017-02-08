@@ -6,7 +6,8 @@ module qet001.b {
         var servicePath = {
             findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
             findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
-            findMasterItems: '????'
+            findMasterItems: '???',
+            saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
         }
         
         /**
@@ -21,6 +22,23 @@ module qet001.b {
          */
         export function findAggregateItems() : JQueryPromise<Item[]> {
             return nts.uk.request.ajax(servicePath.findAggregateItems);
+        }
+        
+        export function saveOutputSetting(settingDetail: viewmodel.OutputSettingDetail) : JQueryPromise<void> {
+            var categorySettingData = [];
+            // Set order number to item list.
+            settingDetail.categorySettings().forEach(setting => {
+                for (var i = 0; i < setting.outputItems().length; i++) {
+                    setting.outputItems()[i].orderNumber = i;
+                }
+            })
+            var data = {
+                code: settingDetail.settingCode(),
+                name: settingDetail.settingName(),
+                onceSheetPerPerson: settingDetail.isPrintOnePageEachPer(),
+                categorySettings: ko.toJS(settingDetail.categorySettings()),
+            };
+            return nts.uk.request.ajax(servicePath.saveOutputSetting, data);
         }
         
         /**
@@ -43,11 +61,12 @@ module qet001.b {
         /**
          * Aggregate item class.
          */
-        export class Item {
+        export interface Item {
             code: string;
             name: string;
             paymentType: string;
             category: string;
+            orderNumber? : number;
             showNameZeroValue: boolean;
             showValueZeroValue: boolean;
         }

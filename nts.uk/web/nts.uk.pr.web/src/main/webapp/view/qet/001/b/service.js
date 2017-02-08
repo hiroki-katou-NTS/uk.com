@@ -7,7 +7,8 @@ var qet001;
             var servicePath = {
                 findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
                 findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
-                findMasterItems: '????'
+                findMasterItems: '???',
+                saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
             };
             function findOutputSettingDetail(settingCode) {
                 return nts.uk.request.ajax(servicePath.findOutputSettingDetail + '/' + settingCode);
@@ -17,6 +18,22 @@ var qet001;
                 return nts.uk.request.ajax(servicePath.findAggregateItems);
             }
             service.findAggregateItems = findAggregateItems;
+            function saveOutputSetting(settingDetail) {
+                var categorySettingData = [];
+                settingDetail.categorySettings().forEach(function (setting) {
+                    for (var i = 0; i < setting.outputItems().length; i++) {
+                        setting.outputItems()[i].orderNumber = i;
+                    }
+                });
+                var data = {
+                    code: settingDetail.settingCode(),
+                    name: settingDetail.settingName(),
+                    onceSheetPerPerson: settingDetail.isPrintOnePageEachPer(),
+                    categorySettings: ko.toJS(settingDetail.categorySettings()),
+                };
+                return nts.uk.request.ajax(servicePath.saveOutputSetting, data);
+            }
+            service.saveOutputSetting = saveOutputSetting;
             function findMasterItems() {
                 var dfd = $.Deferred();
                 var data = [];
@@ -30,12 +47,6 @@ var qet001;
                 return dfd.promise();
             }
             service.findMasterItems = findMasterItems;
-            var Item = (function () {
-                function Item() {
-                }
-                return Item;
-            }());
-            service.Item = Item;
         })(service = b.service || (b.service = {}));
     })(b = qet001.b || (qet001.b = {}));
 })(qet001 || (qet001 = {}));

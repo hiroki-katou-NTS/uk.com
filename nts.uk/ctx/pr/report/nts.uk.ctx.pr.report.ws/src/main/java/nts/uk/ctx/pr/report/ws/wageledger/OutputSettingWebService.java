@@ -7,12 +7,15 @@ package nts.uk.ctx.pr.report.ws.wageledger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingCommand;
+import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommandHandler;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
 import nts.uk.ctx.pr.report.ws.wageledger.dto.CategorySettingDto;
@@ -25,6 +28,9 @@ import nts.uk.ctx.pr.report.ws.wageledger.dto.SettingItemDto;
 @Path("ctx/pr/report/wageledger/outputsetting")
 @Produces("application/json")
 public class OutputSettingWebService extends WebService{
+	
+	@Inject
+	private OutputSettingSaveCommandHandler handler;
 	
 	/**
 	 * Find all.
@@ -82,4 +88,16 @@ public class OutputSettingWebService extends WebService{
 				.categorySettings(categories)
 				.build();
 	}
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("save")
+	public void save(OutputSettingCommand command) {
+		this.handler.handle(command);
+	}
+	
 }

@@ -69,12 +69,14 @@
 								<div class="flex valign-center">
 									<div id="code-name-label" data-bind="ntsFormLabel: {constraint: ['WLOutputSettingCode','WLOutputSettingName'],
 										 required: true}">コード/名称</div>
-									<input id="code-input" data-bind="ntsTextEditor: {value: settingCode, 
+									<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: settingCode, 
 													enable: isCreateMode() &amp;&amp; !$parent.isLoading(),
-													constraint: 'WLOutputSettingCode'}"></input>
+													constraint: 'WLOutputSettingCode',
+													required: true}"></input>
 									<div class="name-input">
-										<input id="name-input" data-bind="ntsTextEditor: {value: settingName,
-														constraint: 'WLOutputSettingName', enable: !$parent.isLoading()}"></input>
+										<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: settingName,
+														constraint: 'WLOutputSettingName', enable: !$parent.isLoading(),
+														required: true}"></input>
 									</div>
 								</div>
 								<div id="print-one-page-checkbox" data-bind="ntsCheckBox: { checked: isPrintOnePageEachPer }">一人当たりの印刷枚数を1枚にする</div>
@@ -141,14 +143,14 @@
 	 															value: outputItemsSelected
 	 														}"></table>
  												</div>
-												<!--  <div id="grid-up-down"
+												<div id="grid-up-down"
 													data-bind="ntsUpDown: {
 															targetSource: outputItems,
 															primaryKey: 'code',
-															comId: '#display-item-list-0',
+															comId: '#salary-payment-items',
 															type: 'grid'
 														}"
-													class=""></div>-->
+													class=""></div>
 											</td>
 											</tr>
 									</table>
@@ -212,14 +214,14 @@
 	 															value: outputItemsSelected
 	 														}"></table>
  												</div>
-												<!--  <div id="grid-up-down"
+												 <div id="grid-up-down"
 													data-bind="ntsUpDown: {
 															targetSource: outputItems,
 															primaryKey: 'code',
-															comId: '#display-item-list-0',
+															comId: '#salary-deduction-items',
 															type: 'grid'
 														}"
-													class=""></div>-->
+													class=""></div>
 											</td>
 											</tr>
 									</table>
@@ -283,14 +285,14 @@
 	 															value: outputItemsSelected
 	 														}"></table>
  												</div>
-												<!--  <div id="grid-up-down"
+												<div id="grid-up-down"
 													data-bind="ntsUpDown: {
 															targetSource: outputItems,
 															primaryKey: 'code',
-															comId: '#display-item-list-0',
+															comId: '#salary-attendance-items',
 															type: 'grid'
 														}"
-													class=""></div>-->
+													class=""></div>
 											</td>
 											</tr>
 									</table>
@@ -354,14 +356,14 @@
 	 															value: outputItemsSelected
 	 														}"></table>
  												</div>
-												<!--  <div id="grid-up-down"
+												<div id="grid-up-down"
 													data-bind="ntsUpDown: {
 															targetSource: outputItems,
 															primaryKey: 'code',
-															comId: '#display-item-list-0',
+															comId: '#bonus-payment-items',
 															type: 'grid'
 														}"
-													class=""></div>-->
+													class=""></div>
 											</td>
 											</tr>
 									</table>
@@ -425,14 +427,14 @@
 	 															value: outputItemsSelected
 	 														}"></table>
  												</div>
-												<!--  <div id="grid-up-down"
+												<div id="grid-up-down"
 													data-bind="ntsUpDown: {
 															targetSource: outputItems,
 															primaryKey: 'code',
-															comId: '#display-item-list-0',
+															comId: '#bonus-deduction-items',
 															type: 'grid'
 														}"
-													class=""></div>-->
+													class=""></div>
 											</td>
 											</tr>
 									</table>
@@ -496,14 +498,14 @@
 	 															value: outputItemsSelected
 	 														}"></table>
  												</div>
-												<!--  <div id="grid-up-down"
+												<div id="grid-up-down"
 													data-bind="ntsUpDown: {
 															targetSource: outputItems,
 															primaryKey: 'code',
-															comId: '#display-item-list-0',
+															comId: '#bonus-attendance-items',
 															type: 'grid'
 														}"
-													class=""></div>-->
+													class=""></div>
 											</td>
 											</tr>
 									</table>

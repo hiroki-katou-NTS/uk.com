@@ -91,5 +91,12 @@ td.tab-contents-right {
     vertical-align: top;
 }
 #grid-up-down {
+	width: 37px;
+}
+.output-items-table {
+    float: left;
+}
+.ntsUpDownButton {
 	width: 50px;
+	margin-left: 4px;
 }

@@ -20,7 +20,7 @@ module qet001.a {
             export class WageLedgerOutputSetting {
                 code: string;
                 name: string;
-                onceSheetPerPerson: boolean;
+                isOnceSheetPerPerson: boolean;
                 categorySettings: WageledgerCategorySetting[];
             }
             

@@ -24,5 +24,20 @@ public class WageLedgerCategorySetting {
 	private PaymentType paymentType;
 	
 	/** The output items. */
-	private List<WageLedgerSettingItem> outputItems; 
+	private List<WageLedgerSettingItem> outputItems;
+
+	/**
+	 * Instantiates a new wage ledger category setting.
+	 *
+	 * @param category the category
+	 * @param paymentType the payment type
+	 * @param outputItems the output items
+	 */
+	public WageLedgerCategorySetting(WageLedgerCategory category, PaymentType paymentType,
+			List<WageLedgerSettingItem> outputItems) {
+		super();
+		this.category = category;
+		this.paymentType = paymentType;
+		this.outputItems = outputItems;
+	}
 }

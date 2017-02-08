@@ -29,7 +29,7 @@ var qet001;
                     var self = this;
                     self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
                         self.isLoading(true);
-                        if (newVal == undefined || newVal == null) {
+                        if (newVal == undefined || newVal == null || newVal == '') {
                             self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                             self.isLoading(false);
                             return;
@@ -78,10 +78,19 @@ var qet001;
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;
-                    if (self.outputSettingDetail().settingCode() == '' || self.outputSettingDetail().settingName() == '') {
-                        nts.uk.ui.dialog.alert('未入力エラー');
+                    if (self.outputSettingDetail().settingCode() == '') {
+                        $('#code-input').ntsError('set', '未入力エラー');
+                    }
+                    if (self.outputSettingDetail().settingName() == '') {
+                        $('#name-input').ntsError('set', '未入力エラー');
+                    }
+                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
+                    b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
@@ -149,7 +158,7 @@ var qet001;
                 function OutputSettingDetail(aggregateItems, masterItem, outputSetting) {
                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
-                    this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.onceSheetPerPerson : false);
+                    this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.isOnceSheetPerPerson : false);
                     this.categorySettingTabs = ko.observableArray([
                         { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', enable: ko.observable(true), visible: ko.observable(true) },
                         { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', enable: ko.observable(true), visible: ko.observable(true) },

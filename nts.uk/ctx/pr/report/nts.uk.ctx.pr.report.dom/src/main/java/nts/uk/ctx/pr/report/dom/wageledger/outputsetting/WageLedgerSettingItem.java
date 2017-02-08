@@ -20,4 +20,18 @@ public class WageLedgerSettingItem {
 	
 	/** The order number. */
 	private int orderNumber;
+
+	/**
+	 * Instantiates a new wage ledger setting item.
+	 *
+	 * @param linkageCode the linkage code
+	 * @param type the type
+	 * @param orderNumber the order number
+	 */
+	public WageLedgerSettingItem(String linkageCode, WageLedgerItemType type, int orderNumber) {
+		super();
+		this.linkageCode = linkageCode;
+		this.type = type;
+		this.orderNumber = orderNumber;
+	}
 }
