@@ -21,24 +21,23 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
 
 //class auto convert object a to b
-public class ActionCommand {
+public class BaseInsuranceCommand {
 	// String => YearMonth
-	public static YearMonth convertYearMonth(String monthyear) {
+	public YearMonth convertYearMonth(String monthyear) {
 		// Format mm/YYYY => String mm and YYYY
 		String outmonthyear[] = monthyear.split("/");
 		return YearMonth.of(Integer.parseInt(outmonthyear[0]), Integer.parseInt(outmonthyear[1]));
 	}
 
 	// String, String => MonthRange
-	public static MonthRange convertMonthRange(String historyStar, String historyEnd) {
-		MonthRange monthRange = new MonthRange();
-		monthRange.setEndMonth(convertYearMonth(historyEnd));
-		monthRange.setStartMonth(convertYearMonth(historyStar));
+	public  MonthRange convertMonthRange(String historyStar, String historyEnd) {
+		YearMonth yearMonth = convertYearMonth(historyStar);
+		MonthRange monthRange = MonthRange.range(yearMonth, yearMonth);
 		return monthRange;
 	}
 
 	// Default SetUnemployeeInsuranceRateItem
-	public static Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem() {
+	public  Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem() {
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<UnemployeeInsuranceRateItem>();
 		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemAgroforestry = defaultUnemployeeInsuranceRateItem(
 				CareerGroup.Agroforestry);
@@ -53,7 +52,7 @@ public class ActionCommand {
 	}
 
 	// Convert UnemployeeInsuranceRateItem
-	public static UnemployeeInsuranceRateItem convertUnemployeeInsuranceRateItem(
+	public  UnemployeeInsuranceRateItem convertUnemployeeInsuranceRateItem(
 			UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItemDto) {
 		UnemployeeInsuranceRateItem unemployeeInsuranceRateItem = new UnemployeeInsuranceRateItem();
 		if (unemployeeInsuranceRateItemDto.getCareerGroup().equals(0)) {
@@ -69,7 +68,7 @@ public class ActionCommand {
 	}
 
 	// Convert UnemployeeInsuranceRateItemSetting
-	public static UnemployeeInsuranceRateItemSetting convertUnemployeeInsuranceRateItemSetting(
+	public UnemployeeInsuranceRateItemSetting convertUnemployeeInsuranceRateItemSetting(
 			UnemployeeInsuranceRateItemSettingDto unemployeeInsuranceRateItemSettingDto) {
 		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		unemployeeInsuranceRateItemSetting.setRate(unemployeeInsuranceRateItemSettingDto.getRate());
@@ -79,7 +78,7 @@ public class ActionCommand {
 	}
 
 	// Convert RoundingMethod
-	public static RoundingMethod convertRoundingMethod(Integer round) {
+	public  RoundingMethod convertRoundingMethod(Integer round) {
 
 		if (round == 0) {
 			return RoundingMethod.RoundUp;
@@ -100,7 +99,7 @@ public class ActionCommand {
 	}
 
 	// Convert SetUnemployeeInsuranceRateItem
-	public static Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem(
+	public Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem(
 			UnemployeeInsuranceRateDto unemployeeInsuranceRate) {
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<UnemployeeInsuranceRateItem>();
 		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemAgroforestry = defaultUnemployeeInsuranceRateItem(
@@ -116,7 +115,7 @@ public class ActionCommand {
 	}
 
 	// Default UnemployeeInsuranceRateItem
-	public static UnemployeeInsuranceRateItem defaultUnemployeeInsuranceRateItem(CareerGroup careerGroup) {
+	public UnemployeeInsuranceRateItem defaultUnemployeeInsuranceRateItem(CareerGroup careerGroup) {
 		UnemployeeInsuranceRateItem unemployeeInsuranceRateItem = new UnemployeeInsuranceRateItem();
 		unemployeeInsuranceRateItem.setCareerGroup(careerGroup);
 		UnemployeeInsuranceRateItemSetting companySetting = new UnemployeeInsuranceRateItemSetting();
@@ -131,7 +130,7 @@ public class ActionCommand {
 	}
 
 	// Default Set InsuBizRateItem
-	public static Set<InsuBizRateItem> defaultSetInsuBizRateItem() {
+	public Set<InsuBizRateItem> defaultSetInsuBizRateItem() {
 		Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<InsuBizRateItem>();
 		InsuBizRateItem insuBizRateItemBiz1St = defaultInsuBizRateItem(BusinessTypeEnum.Biz1St);
 		setInsuBizRateItem.add(insuBizRateItemBiz1St);
@@ -157,7 +156,7 @@ public class ActionCommand {
 	}
 
 	// Default InsuBizRateItem
-	public static InsuBizRateItem defaultInsuBizRateItem(BusinessTypeEnum businessTypeEnum) {
+	public InsuBizRateItem defaultInsuBizRateItem(BusinessTypeEnum businessTypeEnum) {
 		InsuBizRateItem insuBizRateItem = new InsuBizRateItem();
 		insuBizRateItem.setInsuBizType(businessTypeEnum);
 		insuBizRateItem.setInsuRate(0.00d);
@@ -166,7 +165,7 @@ public class ActionCommand {
 	}
 
 	// Default InsuranceBusinessType
-	public static InsuranceBusinessType detaultInsuranceBusinessType(String companyCode, String bizName,
+	public InsuranceBusinessType detaultInsuranceBusinessType(String companyCode, String bizName,
 			BusinessTypeEnum bizOrder) {
 		InsuranceBusinessType insuranceBusinessType = new InsuranceBusinessType();
 		insuranceBusinessType.setBizOrder(bizOrder);

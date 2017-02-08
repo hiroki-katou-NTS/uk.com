@@ -93,9 +93,12 @@ module nts.uk.pr.view.qmm011.a {
             private openEditHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
-                var historyId = this.selectionHistoryAccidentInsuranceRate();
+                var self = this;
+                var historyId = self.selectionHistoryAccidentInsuranceRate();
                 nts.uk.ui.windows.setShared("historyId", historyId);
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                nts.uk.ui.windows.setShared("historyStart", self.historyAccidentInsuranceRateStart());
+                nts.uk.ui.windows.setShared("historyEnd", self.historyAccidentInsuranceRateEnd());
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
                     //OnClose => call
                 });
@@ -116,15 +119,17 @@ module nts.uk.pr.view.qmm011.a {
                 self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
             }
             //action save HistoryUnemployeeInsurance Onlick connection service
-            private saveHistoryUnemployeeInsurance(typeActionUnemployeeInsuranceRate: number){
-                var self=this;
-                //add
-                if(typeActionUnemployeeInsuranceRate==TypeActionInsuranceRate.add){
-                    service.addUnemployeeInsuranceRate();    
+            private saveHistoryUnemployeeInsurance() {
+                var typeActionUnemployeeInsuranceRate: number;
+                typeActionUnemployeeInsuranceRate = TypeActionInsuranceRate.add;
+                var self = this;
+                //add type action mode
+                if (typeActionUnemployeeInsuranceRate == TypeActionInsuranceRate.add) {
+                    service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), self.selectionHistoryUnemployeeInsuranceRate(), "companyCode001");
                 }
                 //update
                 else {
-                    service.updateUnemployeeInsuranceRate();    
+                    //service.updateUnemployeeInsuranceRate();
                 }
                 return true;
             }

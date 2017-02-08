@@ -96,7 +96,7 @@ public class HistoryAccidentInsuranceRateService extends WebService {
 		monthRange001.setStartMonth(new YearMonth(2013 * 100 + 4));
 		monthRange001.setEndMonth(new YearMonth(2014 * 100 + 3));
 		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate001.setHistoryId("historyId002");
+		historyAccidentInsuranceRate001.setHistoryId("historyId001");
 		historyAccidentInsuranceRate001.setStartMonthRage(HistoryInsurance.convertMonth(monthRange001.getStartMonth()));
 		historyAccidentInsuranceRate001.setEndMonthRage(HistoryInsurance.convertMonth(monthRange001.getEndMonth()));
 		historyAccidentInsuranceRate001.setInforMonthRage(historyAccidentInsuranceRate001.getStartMonthRage() + " ~ "
