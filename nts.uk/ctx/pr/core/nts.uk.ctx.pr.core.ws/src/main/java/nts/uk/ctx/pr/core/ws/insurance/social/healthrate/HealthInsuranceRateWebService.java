@@ -9,16 +9,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.core.app.insurance.social.health.command.RegisterHealthInsuranceCommand;
-import nts.uk.ctx.core.app.insurance.social.health.command.RegisterHealthInsuranceCommandHandler;
-import nts.uk.ctx.core.app.insurance.social.health.command.UpdateHealthInsuranceCommand;
-import nts.uk.ctx.core.app.insurance.social.health.command.UpdateHealthInsuranceCommandHandler;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.AvgEarnLevelMasterSettingDto;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.AvgEarnLevelMasterSettingFinder;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnDto;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnFinder;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
-import nts.uk.ctx.core.app.insurance.social.healthrate.find.HealthInsuranceRateFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.health.command.RegisterHealthInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.health.command.RegisterHealthInsuranceCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.health.command.UpdateHealthInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.health.command.UpdateHealthInsuranceCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.AvgEarnLevelMasterSettingDto;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.AvgEarnLevelMasterSettingFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnDto;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateFinder;
 
 @Path("ctx/pr/core/insurance/social/healthrate")
 @Produces("application/json")

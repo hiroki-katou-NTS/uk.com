@@ -4,18 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
-import lombok.Data;
-import nts.arc.error.BusinessException;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Class UnitPrice.
  */
-// TODO: @Data -> @Getter
-@Data
+@Getter
 public class UnitPrice extends AggregateRoot {
+
+	/** The id. */
+	private String id;
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -24,6 +25,7 @@ public class UnitPrice extends AggregateRoot {
 	private UnitPriceCode code;
 
 	/** The name. */
+	@Setter
 	private UnitPriceName name;
 
 	/**
@@ -34,29 +36,24 @@ public class UnitPrice extends AggregateRoot {
 	}
 
 	/**
-	 * Instantiates a new unit price.
+	 * Validate.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param code
-	 *            the code
-	 * @param name
-	 *            the name
+	 * @param service
+	 *            the service
 	 */
-	public UnitPrice(CompanyCode companyCode, UnitPriceCode code, UnitPriceName name) {
-		super();
-
+	public void validate(UnitPriceService service) {
 		// Validate required item
-		if (StringUtil.isNullOrEmpty(code.v(), true) || StringUtil.isNullOrEmpty(name.v(), true)) {
-			throw new BusinessException("ER001");
-		}
+		service.validateRequiredItem(this);
+		// Validate required item
+		// if (StringUtil.isNullOrEmpty(code.v(), true) ||
+		// StringUtil.isNullOrEmpty(name.v(), true)) {
+		// throw new BusinessException("ER001");
+		// }
 
+		// Check duplicate code
+		service.checkDuplicateCode(this);
 		// TODO: Check duplicate code in create mode.
-		// throw new BusinessException("ER005");
-
-		this.companyCode = companyCode;
-		this.code = code;
-		this.name = name;
+		// // throw new BusinessException("ER005");
 	}
 
 	// =================== Memento State Support Method ===================

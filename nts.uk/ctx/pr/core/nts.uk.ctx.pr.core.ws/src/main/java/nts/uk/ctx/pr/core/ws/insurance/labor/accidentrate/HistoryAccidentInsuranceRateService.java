@@ -14,9 +14,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
-import nts.uk.ctx.core.app.insurance.labor.accidentrate.InsuBizRateItemDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.InsuBizRateItemDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;

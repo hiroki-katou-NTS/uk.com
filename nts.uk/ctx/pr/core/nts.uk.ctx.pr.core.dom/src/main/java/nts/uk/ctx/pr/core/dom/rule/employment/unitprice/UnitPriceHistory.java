@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
-import lombok.Data;
-import nts.arc.error.BusinessException;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.shr.com.primitive.Memo;
@@ -15,8 +14,7 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class UnitPriceHistory.
  */
-// TODO: @Data -> @Getter
-@Data
+@Getter
 public class UnitPriceHistory extends AggregateRoot {
 
 	/** The id. */
@@ -30,101 +28,64 @@ public class UnitPriceHistory extends AggregateRoot {
 	private UnitPriceCode unitPriceCode;
 
 	/** The unit price name. */
+	@Setter
 	private UnitPriceName unitPriceName;
 
 	/** The apply range. */
+	@Setter
 	private MonthRange applyRange;
 
 	/** The budget. */
+	@Setter
 	private Money budget;
 
 	/** The fix pay setting type. */
+	@Setter
 	private SettingType fixPaySettingType;
 
 	/** The fix pay atr. */
+	@Setter
 	private ApplySetting fixPayAtr;
 
 	/** The fix pay atr monthly. */
+	@Setter
 	private ApplySetting fixPayAtrMonthly;
 
 	/** The fix pay atr day month. */
+	@Setter
 	private ApplySetting fixPayAtrDayMonth;
 
 	/** The fix pay atr daily. */
+	@Setter
 	private ApplySetting fixPayAtrDaily;
 
 	/** The fix pay atr hourly. */
+	@Setter
 	private ApplySetting fixPayAtrHourly;
 
 	/** The memo. */
+	@Setter
 	private Memo memo;
 
 	/**
-	 * Instantiates a new unit price history.
-	 */
-	public UnitPriceHistory() {
-		super();
-	}
-
-	/**
-	 * Instantiates a new unit price history.
+	 * Validate.
 	 *
-	 * @param id
-	 *            the id
-	 * @param companyCode
-	 *            the company code
-	 * @param unitPriceCode
-	 *            the unit price code
-	 * @param unitPriceName
-	 *            the unit price name
-	 * @param applyRange
-	 *            the apply range
-	 * @param budget
-	 *            the budget
-	 * @param fixPaySettingType
-	 *            the fix pay setting type
-	 * @param fixPayAtr
-	 *            the fix pay atr
-	 * @param fixPayAtrMonthly
-	 *            the fix pay atr monthly
-	 * @param fixPayAtrDayMonth
-	 *            the fix pay atr day month
-	 * @param fixPayAtrDaily
-	 *            the fix pay atr daily
-	 * @param fixPayAtrHourly
-	 *            the fix pay atr hourly
-	 * @param memo
-	 *            the memo
+	 * @param service
+	 *            the service
 	 */
-	public UnitPriceHistory(String id, CompanyCode companyCode, UnitPriceCode unitPriceCode,
-			UnitPriceName unitPriceName, MonthRange applyRange, Money budget, SettingType fixPaySettingType,
-			ApplySetting fixPayAtr, ApplySetting fixPayAtrMonthly, ApplySetting fixPayAtrDayMonth,
-			ApplySetting fixPayAtrDaily, ApplySetting fixPayAtrHourly, Memo memo) {
-		super();
-
+	public void validate(UnitPriceHistoryService service) {
 		// Validate required item
-		if (StringUtil.isNullOrEmpty(unitPriceCode.v(), true) || StringUtil.isNullOrEmpty(unitPriceName.v(), true)
-				|| applyRange == null || budget == null) {
-			throw new BusinessException("ER001");
-		}
+		service.validateRequiredItem(this);
+		// if (StringUtil.isNullOrEmpty(unitPriceCode.v(), true) ||
+		// StringUtil.isNullOrEmpty(unitPriceName.v(), true)
+		// || applyRange == null || budget == null) {
+		// throw new BusinessException("ER001");
+		// }
 
-		// TODO: Check consistency date range.
+		// Check consistency date range.
+		service.validateDateRange(this);
 		// History after start date and time exists
 		// throw new BusinessException("ER010");
-
-		this.id = id;
-		this.companyCode = companyCode;
-		this.unitPriceCode = unitPriceCode;
-		this.unitPriceName = unitPriceName;
-		this.applyRange = applyRange;
-		this.budget = budget;
-		this.fixPaySettingType = fixPaySettingType;
-		this.fixPayAtr = fixPayAtr;
-		this.fixPayAtrMonthly = fixPayAtrMonthly;
-		this.fixPayAtrDayMonth = fixPayAtrDayMonth;
-		this.fixPayAtrDaily = fixPayAtrDaily;
-		this.fixPayAtrHourly = fixPayAtrHourly;
-		this.memo = memo;
 	}
 
 	// =================== Memento State Support Method ===================
@@ -134,10 +95,11 @@ public class UnitPriceHistory extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public UnitPriceHistory(UnitPriceHistoryMemento memento) {
+	public UnitPriceHistory(UnitPriceHistoryGetMemento memento) {
 		this.id = memento.getId();
 		this.companyCode = memento.getCompanyCode();
 		this.unitPriceCode = memento.getUnitPriceCode();
+		this.unitPriceName = memento.getUnitPriceName();
 		this.applyRange = memento.getApplyRange();
 		this.budget = memento.getBudget();
 		this.fixPaySettingType = memento.getFixPaySettingType();
@@ -156,10 +118,11 @@ public class UnitPriceHistory extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(UnitPriceHistoryMemento memento) {
+	public void saveToMemento(UnitPriceHistorySetMemento memento) {
 		memento.setId(this.id);
 		memento.setCompanyCode(this.companyCode);
 		memento.setUnitPriceCode(this.unitPriceCode);
+		memento.setUnitPriceName(this.unitPriceName);
 		memento.setApplyRange(this.applyRange);
 		memento.setBudget(this.budget);
 		memento.setFixPaySettingType(this.fixPaySettingType);
