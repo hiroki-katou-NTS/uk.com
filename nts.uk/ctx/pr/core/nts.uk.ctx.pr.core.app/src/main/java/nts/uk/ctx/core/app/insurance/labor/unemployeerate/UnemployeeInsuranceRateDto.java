@@ -16,12 +16,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UnemployeeInsuranceRateDto {
-	
+
 	/** The history insurance. */
 	private HistoryUnemployeeInsuranceDto historyInsurance;
-
-	/** The company code. */
-	private String companyCode;
 
 	// private MonthRange applyRange;
 

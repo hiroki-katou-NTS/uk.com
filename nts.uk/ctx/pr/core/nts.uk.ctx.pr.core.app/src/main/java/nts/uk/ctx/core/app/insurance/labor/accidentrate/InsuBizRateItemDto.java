@@ -24,7 +24,8 @@ public class InsuBizRateItemDto {
 	/** The insu round. */
 	private Integer insuRound;
 
-	/** insuranceBusinessType. */
+
+	/** The insurance business type. */
 	private String insuranceBusinessType;
 
 }

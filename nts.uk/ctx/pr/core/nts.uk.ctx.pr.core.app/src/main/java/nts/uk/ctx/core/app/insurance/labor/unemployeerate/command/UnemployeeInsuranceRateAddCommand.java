@@ -11,10 +11,12 @@ import nts.uk.ctx.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRat
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class UnemployeeInsuranceRateAddCommand.
  */
 // TODO: Auto-generated Javadoc
+
 @Getter
 @Setter
 public class UnemployeeInsuranceRateAddCommand extends BaseInsuranceCommand {
@@ -22,8 +24,8 @@ public class UnemployeeInsuranceRateAddCommand extends BaseInsuranceCommand {
 	/** The history info dto. */
 	private UnemployeeInsuranceRateDto unemployeeInsuranceRate;
 
-	/** The comany code. */
-	private String comanyCode;
+	/** The company code. */
+	private String companyCode;
 
 	/**
 	 * To domain.
@@ -36,7 +38,7 @@ public class UnemployeeInsuranceRateAddCommand extends BaseInsuranceCommand {
 		unemployeeInsuranceRate
 				.setApplyRange(convertMonthRange(this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
 						this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
-		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.comanyCode));
+		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.companyCode));
 		unemployeeInsuranceRate.setRateItems(defaultSetUnemployeeInsuranceRateItem());
 		return unemployeeInsuranceRate;
 	}

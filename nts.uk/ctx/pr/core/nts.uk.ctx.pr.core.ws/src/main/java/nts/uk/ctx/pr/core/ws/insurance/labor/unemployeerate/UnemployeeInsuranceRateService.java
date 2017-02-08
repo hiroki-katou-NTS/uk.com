@@ -34,7 +34,8 @@ public class UnemployeeInsuranceRateService extends WebService {
 	/** The add. */
 	@Inject
 	UnemployeeInsuranceRateAddCommandHandler add;
-	/** The add. */
+	
+	/** The update. */
 	@Inject
 	UnemployeeInsuranceRateUpdateCommandHandler update;
 
@@ -49,7 +50,6 @@ public class UnemployeeInsuranceRateService extends WebService {
 	@Path("detailHistory/{historyId}")
 	public UnemployeeInsuranceRateDto detailHistory(@PathParam("historyId") String historyId) {
 		UnemployeeInsuranceRateDto unemployeeInsuranceRate = new UnemployeeInsuranceRateDto();
-		unemployeeInsuranceRate.setCompanyCode("companyCode001");
 		HistoryUnemployeeInsuranceDto historyUnemployeeInsurance = new HistoryUnemployeeInsuranceDto();
 		historyUnemployeeInsurance.setHistoryId(historyId);
 		unemployeeInsuranceRate.setHistoryInsurance(historyUnemployeeInsurance);

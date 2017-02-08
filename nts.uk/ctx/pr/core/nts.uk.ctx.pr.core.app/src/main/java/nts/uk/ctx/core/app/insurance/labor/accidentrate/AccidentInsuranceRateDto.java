@@ -20,10 +20,7 @@ import lombok.NoArgsConstructor;
 public class AccidentInsuranceRateDto {
 	/** The history id. */
 	// historyId
-	private String historyId;
-
-	/** The company code. */
-	private String companyCode;
+	private HistoryAccidentInsuranceRateDto historyInsurance;
 
 	/** The short name. */
 	private List<InsuBizRateItemDto> rateItems;

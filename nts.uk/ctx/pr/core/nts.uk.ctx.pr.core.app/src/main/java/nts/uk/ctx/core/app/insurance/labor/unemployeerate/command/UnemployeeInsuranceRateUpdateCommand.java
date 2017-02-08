@@ -13,12 +13,12 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 
 @Getter
 @Setter
-public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand{
+public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand {
 	/** The history info dto. */
 	private UnemployeeInsuranceRateDto unemployeeInsuranceRate;
 
-	/** The comany code. */
-	private String comanyCode;
+	/** The company code. */
+	private String companyCode;
 
 	/**
 	 * To domain.
@@ -28,9 +28,10 @@ public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand{
 	public UnemployeeInsuranceRate toDomain() {
 		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate();
 		unemployeeInsuranceRate.setHistoryId(this.unemployeeInsuranceRate.getHistoryInsurance().getHistoryId());
-		unemployeeInsuranceRate.setApplyRange(convertMonthRange(this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
-				this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
-		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.comanyCode));
+		unemployeeInsuranceRate
+				.setApplyRange(convertMonthRange(this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
+						this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
+		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.companyCode));
 		unemployeeInsuranceRate.setRateItems(defaultSetUnemployeeInsuranceRateItem());
 		return unemployeeInsuranceRate;
 	}

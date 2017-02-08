@@ -124,8 +124,11 @@ public class HistoryAccidentInsuranceRateService extends WebService {
 	@Path("detail/{historyId}")
 	public AccidentInsuranceRateDto detailHitory(@PathParam("historyId") String historyId) {
 		AccidentInsuranceRateDto accidentInsuranceRate = new AccidentInsuranceRateDto();
-		accidentInsuranceRate.setHistoryId(historyId);
-		accidentInsuranceRate.setCompanyCode("companyCode001");
+		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate = new HistoryAccidentInsuranceRateDto();
+		historyAccidentInsuranceRate.setHistoryId(historyId);
+		historyAccidentInsuranceRate.setStartMonthRage("2001/01");
+		historyAccidentInsuranceRate.setEndMonthRage("9999/12");
+		accidentInsuranceRate.setHistoryInsurance(historyAccidentInsuranceRate);
 		List<InsuBizRateItemDto> rateItems = new ArrayList<>();
 		InsuBizRateItemDto insuBizRateItemBiz1St = new InsuBizRateItemDto();
 		insuBizRateItemBiz1St.setInsuBizType(1);// BusinessTypeEnum.Biz1St
