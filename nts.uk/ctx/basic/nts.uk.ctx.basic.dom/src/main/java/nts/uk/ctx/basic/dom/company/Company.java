@@ -123,9 +123,11 @@ public class Company extends AggregateRoot{
 			String faxNo, String postal, String presidentJobTitle, String telephoneNo,
 			int depWorkPlaceSet, int displayAttribute, String address1,String address2,
 			String addressKana1,String addressKana2, int termBeginMon,
-			int a, int b, int c, int d, int e, int f,
-			int g, int h, int i, int j, int k,int m,
-			int n, int l, int o, int p, int q, int t,int r)
+			int use_Gr_Set, int use_Kt_Set, int use_Qy_Set, int use_Jj_Set,
+			int use_Ac_Set, int use_Gw_Set,	int use_Hc_Set, int use_Lc_Set, int use_Bi_Set,
+			int use_Rs01_Set, int use_Rs02_Set,int use_Rs03_Set,int use_Rs04_Se,
+			int use_Rs05_Set, int use_Rs06_Set, int use_Rs07_Set, int use_Rs08_Set,
+			int use_Rs09_Set,int use_Rs10_Set)
 	{
 		if (companyCode.isEmpty()|| companyName.isEmpty()||
 				companyNameAbb.isEmpty()) {
@@ -141,10 +143,10 @@ public class Company extends AggregateRoot{
                            new FaxNo(faxNo), new Postal(postal), new PresidentJobTitle(presidentJobTitle), 
                            new TelephoneNo(telephoneNo), new TermBeginMon(termBeginMon),
                            new CompanyUseSet(
-                        		   new UseSet(a),new  UseSet(b),new UseSet(c), new UseSet(d), new UseSet(e),
-                        		   new UseSet(f), new UseSet(g), new UseSet(h), new UseSet(i), new UseSet(j),
-                        		   new UseSet(k) , new UseSet(n), new UseSet (m), new UseSet(l), new UseSet(o),
-                        		   new UseSet(p), new UseSet(q), new UseSet(r), new UseSet(t)));
+                        		   new UseSet(use_Gr_Set),new  UseSet(use_Kt_Set),new UseSet(use_Qy_Set), new UseSet(use_Jj_Set), new UseSet(use_Ac_Set),
+                        		   new UseSet(use_Gw_Set), new UseSet(use_Hc_Set), new UseSet(use_Lc_Set), new UseSet(use_Bi_Set), new UseSet(use_Rs01_Set),
+                        		   new UseSet(use_Rs02_Set) , new UseSet(use_Rs03_Set), new UseSet (use_Rs04_Se), new UseSet(use_Rs05_Set), new UseSet(use_Rs06_Set),
+                        		   new UseSet(use_Rs07_Set), new UseSet(use_Rs08_Set), new UseSet(use_Rs09_Set), new UseSet(use_Rs10_Set)));
 		return company;
 		
 	}

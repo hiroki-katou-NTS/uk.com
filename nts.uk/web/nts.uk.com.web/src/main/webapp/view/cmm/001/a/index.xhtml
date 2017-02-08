@@ -39,7 +39,12 @@
 							data-bind="ntsFormLabel: {}">
 							<label id="A_LBL_002">コード/名称</label>
 						</div>
-						 <div data-bind="ntsSearchBox: {items: items, selectedKey: 'code', filteredItems: items, fields: ['name', 'code']}"/>						
+                    	<div  data-bind="ntsSearchBox: 
+                    	       {comId: 'single-list',
+                    	        items: items, 
+                    	        selected: currentCode,
+                    	        selectedKey: 'code',
+                    	        fields: ['name', 'code']}"/>
 						</div>
 						<div class="div-table">
 							<table id="single-list" data-bind="ntsGridList: {								
@@ -60,7 +65,7 @@
 					   <div style="width: 176px;" data-bind="ntsFormLabel: { required: true }">
 							<label id="A_LBL_003">会社コード</label>
 						</div>
-						<input id="A_INP_002" data-bind="enable: false, value:currentCode()"  class="input-table"/>
+						<input id="A_INP_002" data-bind="enable: true, value:currentCode()"  class="input-table"/>
 						<div class="bg-yellow">
 						<div data-bind="ntsCheckBox: {checked: checked2, text: 'この会社を廃止する' }" class="cf minimalist ntsCheckBox-right"></div>
 						<button style="width: 25px; height: 25px; margin-left: 20px;" data-bind="click: ClickSel001">?</button>
@@ -80,61 +85,33 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="A_INP_004" type="text" data-bind="value: currentNode().name" class="input-table"/>
+								<input id="A_INP_003" type="text" data-bind="value: currentNode().name" class="input-table"/>
 								</th>
 							</tr>
 	                        <tr style="margin-top: 10px;">
 								<th colspan="1" class="th-col1">
-									<div class="form-label"
-										data-bind="ntsFormLabel:{required: true}" >
-										<label id="A_LBL_006">半角ｶﾅ</label>
+									<div style="margin-left: 55px" >
+										<label id="A_LBL_005">半角ｶﾅ</label>
 									</div>
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="A_INP_005" value="ﾕｰｹｰｼｽﾃﾑｶﾌﾞｼｷｶﾞｲｼｬ" class="input-table"/>
+								<input id="A_INP_004" value="ﾕｰｹｰｼｽﾃﾑｶﾌﾞｼｷｶﾞｲｼｬ" class="input-table" style="margin-bottom: 10px;"/>
 								</th>
 							</tr>
 							<!--  3  -->
 							
 							<tr style="margin-top: 20px;">
 								<th colspan="1" class="th-col1">
-									<div class="form-label"
-										data-bind="ntsFormLabel:{required: true}">
+									<div style="margin-left: 50px">
 										<label id="A_LBL_006">　略名</label>
 									</div>
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="A_INP_006" value="UKシステム（株）" class="input-table" />
-								</th>
-							</tr>	
-																			
-							<!--  2  -->
-							<!-- <tr style="margin-top: 10px;">
-								<th colspan="1" class="th-col1">
-									<div  style="margin-left: 25px;" >
-										<label id="A_LBL_005">半角ｶﾅ</label>
-									</div>
-								</th>
-
-								<th colspan="2" class="th-col2">
-								<input id="A_INP_005" value="ﾕｰｹｰｼｽﾃﾑｶﾌﾞｼｷｶﾞｲｼｬ" class="input-table"/>
+								<input id="A_INP_005" value="UKシステム（株）" class="input-table" style="margin-bottom: 10px;"/>
 								</th>
 							</tr>
-							 3 
-							
-							<tr style="margin-top: 20px;">
-								<th colspan="1" class="th-col1">
-									<div style="margin-left: 20px;">
-										<label id="A_LBL_006">　略名</label>
-									</div>
-								</th>
-
-								<th colspan="2" class="th-col2">
-								<input id="A_INP_006" value="UKシステム（株）" class="input-table" />
-								</th>
-							</tr>	 -->
 												
 						</tbody>
 					</table>
@@ -224,7 +201,7 @@
 
 								<th colspan="2" class="th-col2">
 									<div class="control-group valign-center">
-											<div id="combo-box"
+										<div id="combo-box"
 											 data-bind="ntsComboBox: {
 											 options: itemList,
 											 optionsValue: 'code',
@@ -232,11 +209,10 @@
 											 optionsText: 'name',
 											 editable: isEditable,
 											 enable: isEnable,
-											 columns: [
-													{ prop: 'name', length: 5 },
-											   ]}">
-											</div>	
-											</div>
+											 columns: 
+											 [{ prop: 'name', length: 5 },]}">
+										 </div>	
+									</div>
 								 </th>
 							</tr>
 							<!-- 3 -->

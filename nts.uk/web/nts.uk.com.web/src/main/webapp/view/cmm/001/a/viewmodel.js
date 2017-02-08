@@ -138,6 +138,7 @@ var nts;
                                     new Company('9', '9月', ''),
                                     new Company('10', '10月', '')
                                 ]);
+                                self.companys = ko.observableArray([]);
                                 self.itemName = ko.observable('');
                                 self.currentCodeCombox = ko.observable(4);
                                 self.selectedCode = ko.observable('4');
@@ -146,6 +147,8 @@ var nts;
                                 //check
                                 self.checked1 = ko.observable(true);
                                 self.checked2 = ko.observable(true);
+                                //test
+                                self.test = ko.observable("");
                             };
                             // search box A_INP_001& A_SCH_001
                             ScreenModel.prototype.searchCompany = function () {
@@ -155,9 +158,18 @@ var nts;
                                     nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
                                 }
                             };
+                            // register company information
                             //BTN-002 
                             ScreenModel.prototype.ClickRegister = function () {
-                                alert("Success");
+                                var self = this;
+                                var companyCode = $('#A_INP_002').val();
+                                var companyAbb = $("#A_INP_003").val();
+                                var companyHira = $("#A_INP_004").val();
+                                var companyHira1 = $("#A_INP_005").val();
+                                console.log(companyCode);
+                                console.log(companyAbb);
+                                console.log(companyHira);
+                                console.log(companyHira1);
                             };
                             //BTN-003 -Setting cac thong so ban dau
                             ScreenModel.prototype.ClickSetting = function () {
@@ -178,6 +190,30 @@ var nts;
                             //SEL-Btn-001
                             ScreenModel.prototype.Browse = function () {
                                 alert("Browse!");
+                            };
+                            ScreenModel.prototype.bindDataSource = function () {
+                            };
+                            ScreenModel.prototype.start = function () {
+                                var self = this;
+                                var dfd = $.Deferred();
+                                nts.uk.pr.view.cmm001.a.service.updateData().done();
+                                //           cmm001.a.service.getAllCompanys().done(function(companys: Array<cmm001.a.service.model.CompanyDto>){
+                                //               if(companys.length > 0){
+                                //                   self.companys(companys);
+                                //                   console.log(companys);
+                                //                   console.log(self.companys);
+                                //                   }
+                                //            })
+                                return dfd.promise();
+                            };
+                            ScreenModel.prototype.buildGridDataSource = function () {
+                                var self = this;
+                                var items = [];
+                                console.log(self.companys());
+                                //            _.forEach(self.companys(), function(obj:qpp004.a.service.model.CompanyDto){
+                                //                if(self.test() === "") self.test = obj.companyName ;
+                                //                
+                                //                });
                             };
                             return ScreenModel;
                         }());

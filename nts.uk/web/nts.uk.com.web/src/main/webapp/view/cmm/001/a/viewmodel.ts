@@ -28,7 +28,9 @@ module nts.uk.pr.view.cmm001.a {
         checked2: KnockoutObservable<boolean>;
         //search box
         textSearch: string = "";
-        
+        //company from database
+        companys: KnockoutObservableArray<nts.uk.pr.view.cmm001.a.service.model.CompanyDto>;
+        test: any;
         constructor(){
             let self = this;
             let node: Company;
@@ -165,7 +167,8 @@ module nts.uk.pr.view.cmm001.a {
                 new Company('8', '8月',''),
                 new Company('9', '9月',''),
                 new Company('10', '10月','')                                               
-            ]);   
+            ]); 
+            self.companys = ko.observableArray([]);  
             self.itemName = ko.observable('');
             self.currentCodeCombox = ko.observable(4);
             self.selectedCode = ko.observable('4');
@@ -173,7 +176,9 @@ module nts.uk.pr.view.cmm001.a {
             self.isEditable = ko.observable(true);    
             //check
             self.checked1 = ko.observable(true);
-            self.checked2 = ko.observable(true);                 
+            self.checked2 = ko.observable(true); 
+            //test
+            self.test = ko.observable("");                
         }
         // search box A_INP_001& A_SCH_001
         searchCompany():void{
@@ -183,9 +188,19 @@ module nts.uk.pr.view.cmm001.a {
                 nts.uk.ui.dialog.alert("コード/名称が入力されていません。");  
             }
             }
+        // register company information
+        
        //BTN-002 
-      ClickRegister():void{
-           alert("Success");
+      ClickRegister():any{
+          let self = this;
+          let companyCode = $('#A_INP_002').val();
+          let companyAbb= $("#A_INP_003").val();
+          let companyHira= $("#A_INP_004").val();
+          let companyHira1= $("#A_INP_005").val();
+          console.log(companyCode);
+          console.log(companyAbb);
+          console.log(companyHira);
+          console.log(companyHira1);
            
        }
         //BTN-003 -Setting cac thong so ban dau
@@ -210,6 +225,31 @@ module nts.uk.pr.view.cmm001.a {
           Browse():void{
           alert("Browse!");
             }
+        bindDataSource():any{
+            
+            }
+        start(): JQueryPromise<any>{
+            let self = this;
+            let dfd = $.Deferred<any>();
+            nts.uk.pr.view.cmm001.a.service.updateData().done();
+//           cmm001.a.service.getAllCompanys().done(function(companys: Array<cmm001.a.service.model.CompanyDto>){
+//               if(companys.length > 0){
+//                   self.companys(companys);
+//                   console.log(companys);
+//                   console.log(self.companys);
+//                   }
+//            })
+            return dfd.promise();
+        }
+        buildGridDataSource(): any{
+            let self = this;
+            let items = [];
+            console.log(self.companys());
+//            _.forEach(self.companys(), function(obj:qpp004.a.service.model.CompanyDto){
+//                if(self.test() === "") self.test = obj.companyName ;
+//                
+//                });
+        }
    
      }  
      export class Company {
