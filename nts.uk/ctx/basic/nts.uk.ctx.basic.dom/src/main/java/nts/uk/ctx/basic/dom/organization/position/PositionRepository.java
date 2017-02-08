@@ -1,7 +1,10 @@
 package nts.uk.ctx.basic.dom.organization.position;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 
 
 public interface PositionRepository {
@@ -31,4 +34,7 @@ public interface PositionRepository {
 	void update(Position position);
 
 	void remove(String companyCode);
+
+	void remove(List<Position> details);
+	boolean isExist(String companyCode, LocalDate startDate);
 }

@@ -2,11 +2,13 @@ package nts.uk.ctx.basic.infra.repository.organization.position;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.Position;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTittle;
@@ -19,9 +21,20 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.cmnmtJobTittlePK.companyCd = :companyCd";
 
 	private final Position toDomain(CmnmtJobTittle entity) {
-		val domain = Position.createFromJavaType(entity.endYm, entity.jobName, entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,entity.strYm, entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCd, entity.memo);
+		val domain = Position.createFromJavaType(GeneralDate.localDate(entity.endYm), entity.jobName, entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.strYm), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCd, entity.memo);
 
 		return domain;
+	}
+	
+	private CmnmtJobTittle toEntityPK(Position domain) {
+		val entity = new CmnmtJobTittle();
+
+		entity.cmnmtJobTittlePK = new CmnmtJobTittlePK();
+		entity.cmnmtJobTittlePK.companyCd = domain.getCompanyCode();
+		entity.cmnmtJobTittlePK.jobCode = domain.getJobCode().v();
+		entity.cmnmtJobTittlePK.historyID = domain.getHistoryID();
+		
+		return entity;
 	}
 
 	private CmnmtJobTittle toEntity(Position domain) {
@@ -31,9 +44,10 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		entity.cmnmtJobTittlePK.companyCd = domain.getCompanyCode();
 		entity.cmnmtJobTittlePK.jobCode = domain.getJobCode().v();
 		entity.cmnmtJobTittlePK.historyID = domain.getHistoryID();
-		entity.endYm = domain.getEndDate();
-		entity.strYm = domain.getStartDate();
+		entity.endYm = domain.getEndDate().localDate();
+		entity.strYm = domain.getStartDate().localDate();
 
+		
 		return entity;
 	}
 
@@ -55,6 +69,14 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		objectKey.companyCd = companyCode;
 
 		this.commandProxy().remove(CmnmtJobTittle.class, objectKey);
+	}
+	
+	@Override
+	public void remove(List<Position> details) {
+		List<CmnmtJobTittle> cmnmtJobTittlePKs = details.stream().map(
+					detail -> {return this.toEntityPK(detail);}
+				).collect(Collectors.toList());
+		this.commandProxy().removeAll(CmnmtJobTittlePK.class, cmnmtJobTittlePKs);
 	}
 
 	@Override
