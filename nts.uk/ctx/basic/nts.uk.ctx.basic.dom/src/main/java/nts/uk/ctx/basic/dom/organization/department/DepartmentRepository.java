@@ -19,6 +19,10 @@ public interface DepartmentRepository {
 	
 	List<Department> findAllByHistory(String companyCode, String historyId);
 	
+	List<Department> findHistories(String companyCode);
+	
 	boolean checkExist(String companyCode);
+	
+	Optional<DepartmentMemo> findMemo(String companyCode, String historyId);
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.infra.repository.organization.department;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,14 +12,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.department.Department;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentCode;
-import nts.uk.ctx.basic.dom.organization.department.DepartmentGenericName;
+import nts.uk.ctx.basic.dom.organization.department.DepartmentFullName;
+import nts.uk.ctx.basic.dom.organization.department.DepartmentMemo;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentName;
 import nts.uk.ctx.basic.dom.organization.department.DepartmentRepository;
-import nts.uk.ctx.basic.dom.organization.department.DepartmentShortName;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
-import nts.uk.ctx.basic.dom.organization.shr.HierarchyLevelCd;
-import nts.uk.ctx.basic.dom.organization.shr.HierarchyLevelCode;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDep;
+import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepMemo;
 import nts.uk.ctx.basic.infra.entity.organization.department.CmnmtDepPK;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -30,6 +30,10 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 	private static final String FIND_SINGLE;
 
 	private static final String CHECK_EXIST;
+
+	private static final String FIND_HISTORIES;
+
+	private static final String FIND_MEMO;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -52,6 +56,23 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		builderString.append(" FROM CmnmtDep e");
 		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
 		CHECK_EXIST = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e.cmnmtDepPK.historyId");
+		builderString.append(" ,e.startDate");
+		builderString.append(" ,e.endDate");
+		builderString.append(" FROM CmnmtDep e");
+		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
+		builderString.append(" GROUP BY e.cmnmtDepPK.historyId, e.startDate, e.endDate");
+		builderString.append(" ORDER BY e.startDate ASC");
+		FIND_HISTORIES = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtDepMemo e");
+		builderString.append(" WHERE e.cmnmtDepMemoPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtDepMemoPK.historyId = :historyId");
+		FIND_MEMO = builderString.toString();
 	}
 
 	@Override
@@ -91,8 +112,7 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 	@Override
 	public List<Department> findAllByHistory(String companyCode, String historyId) {
 		List<CmnmtDep> resultList = this.queryProxy().query(FIND_ALL_BY_HISTORY, CmnmtDep.class)
-				.setParameter("companyCode", "'" + companyCode + "'")
-				.setParameter("historyId", "'" + historyId + "'")
+				.setParameter("companyCode", "'" + companyCode + "'").setParameter("historyId", "'" + historyId + "'")
 				.getList();
 		return !resultList.isEmpty() ? resultList.stream().map(item -> {
 			return convertToDomain(item);
@@ -101,28 +121,35 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 
 	@Override
 	public boolean checkExist(String companyCode) {
-		return this.queryProxy().query(CHECK_EXIST, long.class)
-				.setParameter("companyCode", "'" + companyCode + "'")
+		return this.queryProxy().query(CHECK_EXIST, long.class).setParameter("companyCode", "'" + companyCode + "'")
 				.getSingle().get() > 0;
+	}
+
+	@Override
+	public List<Department> findHistories(String companyCode) {
+		List<Object[]> resultList = this.queryProxy().query(FIND_HISTORIES)
+				.setParameter("companyCode", "'" + companyCode + "'").getList();
+		return resultList.stream().map(e -> new Department((String) e[0], GeneralDate.legacyDate((Date) e[2]),
+				GeneralDate.legacyDate((Date) e[1]))).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<DepartmentMemo> findMemo(String companyCode, String historyId) {
+		return this.queryProxy().query(FIND_MEMO, CmnmtDepMemo.class)
+				.setParameter("companyCode", "'" + companyCode + "'").setParameter("historyId", "'" + historyId + "'")
+				.getSingle().map(e -> {
+					return Optional.of(new DepartmentMemo(e.getCmnmtDepMemoPK().getCompanyCode(),
+							e.getCmnmtDepMemoPK().getHistoryId(), new Memo(e.getMemo())));
+				}).orElse(Optional.empty());
 	}
 
 	private Department convertToDomain(CmnmtDep cmnmtDep) {
 		return new Department(cmnmtDep.getCmnmtDepPK().getCompanyCode(),
 				new DepartmentCode(cmnmtDep.getCmnmtDepPK().getDepartmentCode()),
 				cmnmtDep.getCmnmtDepPK().getHistoryId(), GeneralDate.legacyDate(cmnmtDep.getEndDate()),
-				new DepartmentCode(cmnmtDep.getExternalCode()), new DepartmentGenericName(cmnmtDep.getGenericName()),
+				new DepartmentCode(cmnmtDep.getExternalCode()), new DepartmentFullName(cmnmtDep.getFullName()),
 				new HierarchyCode(cmnmtDep.getHierarchyId()), new DepartmentName(cmnmtDep.getName()),
-				new DepartmentShortName(cmnmtDep.getShortName()), GeneralDate.legacyDate(cmnmtDep.getStartDate()),
-				new HierarchyLevelCd(new HierarchyLevelCode(cmnmtDep.getHierarchyId01()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId02()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId03()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId04()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId05()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId06()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId07()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId08()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId09()),
-						new HierarchyLevelCode(cmnmtDep.getHierarchyId10())));
+				GeneralDate.legacyDate(cmnmtDep.getStartDate()));
 
 	}
 
@@ -133,18 +160,8 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		cmnmtDep.setCmnmtDepPK(cmnmtDepPK);
 		cmnmtDep.setEndDate(department.getEndDate().date());
 		cmnmtDep.setExternalCode(department.getExternalCode().toString());
-		cmnmtDep.setGenericName(department.getGenericName().toString());
+		cmnmtDep.setFullName(department.getFullName().toString());
 		cmnmtDep.setHierarchyId(department.getHierarchyCode().toString());
-		cmnmtDep.setHierarchyId01(department.getHierarchyLevelCd().getHierarchyCd01().toString());
-		cmnmtDep.setHierarchyId02(department.getHierarchyLevelCd().getHierarchyCd02().toString());
-		cmnmtDep.setHierarchyId03(department.getHierarchyLevelCd().getHierarchyCd03().toString());
-		cmnmtDep.setHierarchyId04(department.getHierarchyLevelCd().getHierarchyCd04().toString());
-		cmnmtDep.setHierarchyId05(department.getHierarchyLevelCd().getHierarchyCd05().toString());
-		cmnmtDep.setHierarchyId06(department.getHierarchyLevelCd().getHierarchyCd06().toString());
-		cmnmtDep.setHierarchyId07(department.getHierarchyLevelCd().getHierarchyCd07().toString());
-		cmnmtDep.setHierarchyId08(department.getHierarchyLevelCd().getHierarchyCd08().toString());
-		cmnmtDep.setHierarchyId09(department.getHierarchyLevelCd().getHierarchyCd09().toString());
-		cmnmtDep.setHierarchyId10(department.getHierarchyLevelCd().getHierarchyCd10().toString());
 		return cmnmtDep;
 	}
 
