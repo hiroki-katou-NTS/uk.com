@@ -444,7 +444,7 @@ module nts.uk.ui.koExtentions {
             });
             $input.change(function(event) {
                 var searchTerm = $input.val();
-                searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
+                searchBox.data("searchResult", filteredArray(ko.unwrap(data.items), searchTerm, fields, childField));
             });
             $button.click(nextSearch);
         }

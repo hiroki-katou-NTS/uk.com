@@ -7,7 +7,6 @@ var qmm002;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.paymentDateProcessingList = ko.observableArray([]);
                     self.items = ko.observableArray([]);
                     self.currentItem = ko.observable(new Bank("", "", "", ""));
                     self.currentCode = ko.observable();
@@ -26,7 +25,6 @@ var qmm002;
                     var self = this;
                     var dfd = $.Deferred();
                     self.getBankList().done(function (data) {
-                        debugger;
                         var hadData = self.isEmptyList(data);
                         self.isCreated(!hadData);
                         if (hadData) {
@@ -66,6 +64,7 @@ var qmm002;
                         bankNameKana: self.currentItem().nameKana(),
                         memo: self.currentItem().memo()
                     };
+                    self.cleanForm();
                     var dfd = $.Deferred();
                     qmm002.d.service.removeBank(bankInfo).done(function () {
                         dfd.resolve();
