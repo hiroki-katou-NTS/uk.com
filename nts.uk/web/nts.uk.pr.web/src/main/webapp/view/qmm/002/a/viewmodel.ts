@@ -55,7 +55,7 @@ module nts.uk.pr.view.qmm002_1.a {
                         textalign: "left"
                     })),
                     required: ko.observable(true),
-                    enable: ko.observable(false),
+                    enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
 
@@ -125,15 +125,15 @@ module nts.uk.pr.view.qmm002_1.a {
 
             startPage() {
                 var self = this;
-                $.when(self.getBankList()).done(function(){
-                   self.singleSelectedCode(self.lst_001()[0].code);
+                $.when(self.getBankList()).done(function() {
+                    self.singleSelectedCode(self.lst_001()[0].code);
                 });
             }
 
             OpenBdialog(): any {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" });
-                nts.uk.ui.windows.setShared('listItem', self.lst_001);
+                nts.uk.ui.windows.setShared('listItem', self.lst_001());
             }
 
             OpenCdialog(): any {
@@ -154,25 +154,24 @@ module nts.uk.pr.view.qmm002_1.a {
                     memo: self.A_INP_006.value()
                 };
 
-                var dfd = $.Deferred();
-                service.addBank(self.isCreated(),branchInfo).done(function() {
+                service.addBank(self.isCreated(), branchInfo).done(function() {
                     // reload tree
                     self.getBankList();
                 }).fail(function(error) {
                     alert(error.message);
                 })
             }
-            
+
             getEra(codeNew, parentId): BankInfo {
                 var self = this;
                 self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))
                 var node = _.find(self.lst_002(), function(item: BankInfo) {
-                    return item.code == codeNew;
+                    return item.treeCode == codeNew;
                 });
 
                 if (parentId !== undefined) {
                     node = _.find(self.lst_002(), function(item: BankInfo) {
-                        return item.code == node.parentCode;
+                        return item.treeCode == node.parentCode;
                     });
                 }
 
@@ -193,7 +192,7 @@ module nts.uk.pr.view.qmm002_1.a {
             //                }
             //                console.log(self.lst_001());
             //            }
-            
+
             getBankList(): any {
                 var self = this;
                 var dfd = $.Deferred();
@@ -201,12 +200,11 @@ module nts.uk.pr.view.qmm002_1.a {
                     var list001: Array<BankInfo> = [];
                     _.forEach(data, function(itemBank) {
                         var childs = _.map(itemBank.bankBranch, function(item) {
-                            return new BankInfo(item["bankBrandCode"], item["bankBrandName"], item["bankBrandNameKana"], item["memo"], null, itemBank.bankCode);
+                            return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
                         });
 
-                        list001.push(new BankInfo(itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
+                        list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
                     });
-
                     self.lst_001(list001);
                     dfd.resolve(list001);
                 }).fail(function(res) {
@@ -216,12 +214,23 @@ module nts.uk.pr.view.qmm002_1.a {
                 return dfd.promise();
             }
 
+            removeBranch() {
+                var self = this;
+                service.removeBranch(self.nodeParent().code, self.A_INP_003.value()).done(function() {
+                    // reload tree
+                    self.getBankList();
+                    self.cleanBranch();
+                }).fail(function(error) {
+                    alert(error.message);
+                })
+            };
 
             cleanBranch() {
                 var self = this;
                 self.A_INP_003.value('');
                 self.A_INP_004.value('');
                 self.A_INP_005.value('');
+                self.A_INP_006.value('');
                 self.A_INP_003.enable(true);
                 self.isCreated(true);
             }
@@ -229,6 +238,7 @@ module nts.uk.pr.view.qmm002_1.a {
 
 
         export class BankInfo {
+            treeCode: string;
             code: string;
             name: string;
             nameKata: string;
@@ -236,8 +246,9 @@ module nts.uk.pr.view.qmm002_1.a {
             childs: Array<BankInfo>;
             parentCode: string;
 
-            constructor(code?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
+            constructor(treeCode?: string,  code?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
                 var self = this;
+                self.treeCode = treeCode;
                 self.code = code;
                 self.name = name;
                 self.nameKata = nameKata;
