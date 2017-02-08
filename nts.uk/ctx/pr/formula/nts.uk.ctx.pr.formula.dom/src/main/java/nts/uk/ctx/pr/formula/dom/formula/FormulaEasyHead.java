@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
  * @author hungnm
  *
  */
-public class FormulaEasy extends DomainObject {
+public class FormulaEasyHead extends DomainObject {
 	@Getter
 	private ConditionAtr conditionAtr;
 
@@ -28,14 +28,14 @@ public class FormulaEasy extends DomainObject {
 	 * @param referenceMasterNo
 	 * @param formulaEasyCondition
 	 */
-	public FormulaEasy(ConditionAtr conditionAtr, ReferenceMasterNo referenceMasterNo) {
+	public FormulaEasyHead(ConditionAtr conditionAtr, ReferenceMasterNo referenceMasterNo) {
 		super();
 		this.conditionAtr = conditionAtr;
 		this.referenceMasterNo = referenceMasterNo;
 	}
 
-	public FormulaEasy createFromJavaType(int conditionAtr, int referenceMasterNo) {
-		return new FormulaEasy(EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class),
+	public FormulaEasyHead createFromJavaType(int conditionAtr, int referenceMasterNo) {
+		return new FormulaEasyHead(EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class),
 				EnumAdaptor.valueOf(referenceMasterNo, ReferenceMasterNo.class));
 	}
 	

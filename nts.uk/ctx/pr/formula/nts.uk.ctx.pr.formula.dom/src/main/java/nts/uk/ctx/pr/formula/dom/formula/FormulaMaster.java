@@ -49,7 +49,7 @@ public class FormulaMaster extends AggregateRoot {
 	
 	@Getter
 	@Setter
-	private FormulaEasy formulaEasy;
+	private FormulaEasyHead formulaEasy;
 
 	/**
 	 * @param companyCode

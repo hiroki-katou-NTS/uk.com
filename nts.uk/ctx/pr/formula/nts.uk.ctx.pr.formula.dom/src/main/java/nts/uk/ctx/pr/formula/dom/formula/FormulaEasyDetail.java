@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.Range;
@@ -67,6 +68,7 @@ public class FormulaEasyDetail extends DomainObject {
 	private Range<Integer> limitValue;
 
 	@Getter
+	@Setter
 	private List<ItemCode> aItemCode = new ArrayList<>();
 
 	/**
