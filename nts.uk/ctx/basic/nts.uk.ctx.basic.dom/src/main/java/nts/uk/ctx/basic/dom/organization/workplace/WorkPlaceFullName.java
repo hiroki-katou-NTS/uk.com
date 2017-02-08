@@ -2,14 +2,14 @@ package nts.uk.ctx.basic.dom.organization.workplace;
 
 import nts.arc.primitive.StringPrimitiveValue;
 
-public class WorkPlaceGenericName extends StringPrimitiveValue<WorkPlaceGenericName>{
+public class WorkPlaceFullName extends StringPrimitiveValue<WorkPlaceFullName>{
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WorkPlaceGenericName(String rawValue) {
+	public WorkPlaceFullName(String rawValue) {
 		super(rawValue);
 	}
 

@@ -17,6 +17,12 @@ public interface WorkPlaceRepository {
 	
 	Optional<WorkPlace> findSingle(String companyCode, WorkPlaceCode workPlaceCode, String historyId);
 	
-	List<WorkPlace> findAll(String companyCode);
+	List<WorkPlace> findAllByHistory(String companyCode, String historyId);
+	
+	List<WorkPlace> findHistories(String companyCode);
+	
+	boolean checkExist(String companyCode);
+	
+	Optional<WorkPlaceMemo> findMemo(String companyCode, String historyId);
 
 }
