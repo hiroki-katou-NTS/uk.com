@@ -12,7 +12,8 @@ var nts;
                     (function (f) {
                         var option = nts.uk.ui.option;
                         var TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
-                        var HistoryInfoDto = nts.uk.pr.view.qmm011.d.service.model.HistoryInfoDto;
+                        var HistoryUnemployeeInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceDto;
+                        var HistoryAccidentInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryAccidentInsuranceDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -32,32 +33,27 @@ var nts;
                                     self.historyStart = ko.observable(historyStart);
                                     self.historyEnd = ko.observable(historyEnd);
                                 }
-                                ScreenModel.prototype.updateHistoryInfoUnemployeeInsurance = function () {
+                                ScreenModel.prototype.fwupdateHistoryInfoUnemployeeInsurance = function () {
                                     var self = this;
-                                    var dfd = $.Deferred();
                                     var historyInfo;
-                                    historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                                    f.service.updateHistoryInfoUnemployeeInsurance(historyInfo).done(function (data) {
-                                    });
-                                    return dfd.promise();
+                                    historyInfo = new HistoryUnemployeeInsuranceDto("historyId001", self.historyStart(), self.historyEnd());
+                                    nts.uk.ui.windows.setShared("updateHistoryUnemployeeInsuranceDto", historyInfo);
                                 };
-                                ScreenModel.prototype.updateHistoryInfoAccidentInsurance = function () {
+                                ScreenModel.prototype.fwupdateHistoryInfoAccidentInsurance = function () {
                                     var self = this;
-                                    var dfd = $.Deferred();
                                     var historyInfo;
-                                    historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                                    f.service.updateHistoryInfoAccidentInsuranceRate(historyInfo).done(function (data) {
-                                    });
-                                    return dfd.promise();
+                                    historyInfo = new HistoryAccidentInsuranceDto("historyId001", self.historyStart(), self.historyEnd());
+                                    nts.uk.ui.windows.setShared("updateHistoryAccidentInsuranceDto", historyInfo);
                                 };
-                                ScreenModel.prototype.updateHistoryInfo = function () {
+                                ScreenModel.prototype.fwupdateHistoryInfo = function () {
                                     var self = this;
                                     if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
-                                        self.updateHistoryInfoUnemployeeInsurance();
+                                        self.fwupdateHistoryInfoUnemployeeInsurance();
                                     }
                                     else {
-                                        self.updateHistoryInfoAccidentInsurance();
+                                        self.fwupdateHistoryInfoAccidentInsurance();
                                     }
+                                    nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());

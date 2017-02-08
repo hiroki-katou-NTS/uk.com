@@ -1,7 +1,7 @@
 module nts.uk.pr.view.qmm011.a {
     import option = nts.uk.ui.option;
     import RoundingMethodDto = service.model.RoundingMethodDto;
-    import HistoryUnemployeeInsuranceRateDto = service.model.HistoryUnemployeeInsuranceRateDto;
+    import HistoryUnemployeeInsuranceDto = service.model.HistoryUnemployeeInsuranceDto;
     import MonthRange = service.model.MonthRange;
     import YearMonth = service.model.YearMonth;
     import UnemployeeInsuranceRateItemSettingDto = service.model.UnemployeeInsuranceRateItemSettingDto;
@@ -12,28 +12,30 @@ module nts.uk.pr.view.qmm011.a {
     import InsuranceBusinessType = service.model.InsuranceBusinessType;
     import TypeHistory = service.model.TypeHistory;
     import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
-    import HistoryAccidentInsuranceRateDto = service.model.HistoryAccidentInsuranceRateDto;
+    import HistoryAccidentInsuranceDto = service.model.HistoryAccidentInsuranceDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     export module viewmodel {
         export class ScreenModel {
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>;
             //Update or Add To service 1 add 2 update
-            typeAction: KnockoutObservable<number>;
+            typeActionUnemployeeInsurance: KnockoutObservable<number>;
             //雇用保険 detail B
-            lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryUnemployeeInsuranceRateDto>;
+            lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryUnemployeeInsuranceDto>;
             unemployeeInsuranceRateModel: KnockoutObservable<UnemployeeInsuranceRateModel>;
             rateInputOptions: any;
             historyUnemployeeInsuranceRateStart: KnockoutObservable<string>;
             historyUnemployeeInsuranceRateEnd: KnockoutObservable<string>;
             selectionHistoryUnemployeeInsuranceRate: KnockoutObservable<string>;
             //労災保険 detail C
-            lstHistoryAccidentInsuranceRate: KnockoutObservableArray<HistoryAccidentInsuranceRateDto>;
+            lstHistoryAccidentInsuranceRate: KnockoutObservableArray<HistoryAccidentInsuranceDto>;
             historyAccidentInsuranceRateStart: KnockoutObservable<string>;
             historyAccidentInsuranceRateEnd: KnockoutObservable<string>;
             selectionHistoryAccidentInsuranceRate: KnockoutObservable<string>;
             //detail D
             accidentInsuranceRateModel: KnockoutObservable<AccidentInsuranceRateModel>;
+            //Update or Add  typeAccidentInsurance: KnockoutObservable<number>;
+            typeActionAccidentInsurance: KnockoutObservable<number>;
             itemName: KnockoutObservable<string>;
             currentCode: KnockoutObservable<number>
             isEnable: KnockoutObservable<boolean>;
@@ -58,25 +60,41 @@ module nts.uk.pr.view.qmm011.a {
                 self.currentCode = ko.observable(2);
                 self.isEnable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                self.typeActionUnemployeeInsurance = ko.observable(TypeActionInsuranceRate.update);
+                self.typeActionAccidentInsurance = ko.observable(TypeActionInsuranceRate.update);
             }
             //open dialog edit HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
             private openEditHistoryUnemployeeInsuranceRate() {
                 var self = this;
                 var historyId = self.selectionHistoryUnemployeeInsuranceRate();
-                nts.uk.ui.windows.setShared("historyId", historyId);
-                nts.uk.ui.windows.setShared("historyStart", self.historyUnemployeeInsuranceRateStart());
-                nts.uk.ui.windows.setShared("historyEnd", self.historyUnemployeeInsuranceRateEnd());
-                nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
-
-                nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 550, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
-                    //OnClose => call
+                service.findHisotryUnemployeeInsuranceRate(historyId).done(data => {
+                    nts.uk.ui.windows.setShared("historyId", data.historyId);
+                    nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
+                    nts.uk.ui.windows.setShared("historyEnd", data.endMonthRage);
+                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
+                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 550, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
+                        //OnClose => call
+                        var updateHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryUnemployeeInsuranceDto");
+                        if (updateHistoryUnemployeeInsuranceDto != null && updateHistoryUnemployeeInsuranceDto != undefined) {
+                            self.historyUnemployeeInsuranceRateStart(updateHistoryUnemployeeInsuranceDto.startMonthRage);
+                            self.historyUnemployeeInsuranceRateEnd(updateHistoryUnemployeeInsuranceDto.endMonthRage);
+                        }
+                    });
                 });
             }
             //open dialog add HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
             private openAddHistoryUnemployeeInsuranceRate() {
+                var self = this;
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
+                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
+                    var addHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("addHistoryUnemployeeInsuranceDto");
+                    if (addHistoryUnemployeeInsuranceDto != null && addHistoryUnemployeeInsuranceDto != undefined) {
+                        self.historyUnemployeeInsuranceRateStart(addHistoryUnemployeeInsuranceDto.startMonthRage);
+                        self.historyUnemployeeInsuranceRateEnd(addHistoryUnemployeeInsuranceDto.endMonthRage);
+                    }
                 });
             }
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
@@ -99,17 +117,30 @@ module nts.uk.pr.view.qmm011.a {
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
                 nts.uk.ui.windows.setShared("historyStart", self.historyAccidentInsuranceRateStart());
                 nts.uk.ui.windows.setShared("historyEnd", self.historyAccidentInsuranceRateEnd());
+                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
                     //OnClose => call
+                    var updateHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryAccidentInsuranceDto");
+                    if (updateHistoryAccidentInsuranceDto != null && updateHistoryAccidentInsuranceDto != undefined) {
+                        self.historyAccidentInsuranceRateStart(updateHistoryAccidentInsuranceDto.startMonthRage);
+                        self.historyAccidentInsuranceRateEnd(updateHistoryAccidentInsuranceDto.endMonthRage);
+                    }
                 });
             }
             //open dialog add HistoryAccidentInsuranceRate => show view model xhtml (action event add)
             private openAddHistoryAccidentInsuranceRate() {
                 // Set parent value
                 //  selectionHistoryUnemployeeInsuranceRate
+                var self = this;
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
+                    var addHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("addHistoryAccidentInsuranceDto");
+                    if (addHistoryAccidentInsuranceDto != null && addHistoryAccidentInsuranceDto != undefined) {
+                        self.historyAccidentInsuranceRateStart(addHistoryAccidentInsuranceDto.startMonthRage);
+                        self.historyAccidentInsuranceRateEnd(addHistoryAccidentInsuranceDto.endMonthRage);
+                    }
                 });
             }
             //show HistoryUnemployeeInsurance (change event)
@@ -120,16 +151,35 @@ module nts.uk.pr.view.qmm011.a {
             }
             //action save HistoryUnemployeeInsurance Onlick connection service
             private saveHistoryUnemployeeInsurance() {
-                var typeActionUnemployeeInsuranceRate: number;
-                typeActionUnemployeeInsuranceRate = TypeActionInsuranceRate.add;
                 var self = this;
                 //add type action mode
-                if (typeActionUnemployeeInsuranceRate == TypeActionInsuranceRate.add) {
-                    service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), self.selectionHistoryUnemployeeInsuranceRate(), "companyCode001");
+                if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
+                    var historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto(self.selectionHistoryUnemployeeInsuranceRate(),
+                        self.historyUnemployeeInsuranceRateStart(), self.historyUnemployeeInsuranceRateEnd());
+                    service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), historyUnemployeeInsuranceDto, "companyCode001");
                 }
                 //update
                 else {
-                    //service.updateUnemployeeInsuranceRate();
+                    var historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto(self.selectionHistoryUnemployeeInsuranceRate(),
+                        self.historyUnemployeeInsuranceRateStart(), self.historyUnemployeeInsuranceRateEnd());
+                    service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), historyUnemployeeInsuranceDto, "companyCode001");
+                }
+                return true;
+            }
+            //action save HistoryAccidentInsurance Onlick connection service
+            private saveHistoryAccidentInsurance() {
+                var self = this;
+                //add type action mode
+                if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
+                    var historyAccidentInsuranceDto = new HistoryAccidentInsuranceDto(self.selectionHistoryUnemployeeInsuranceRate(),
+                        self.historyAccidentInsuranceRateStart(), self.historyAccidentInsuranceRateEnd());
+                    service.addAccidentInsuranceRate(self.accidentInsuranceRateModel(), historyAccidentInsuranceDto, "companyCode001");
+                }
+                //update
+                else {
+                    var historyAccidentInsuranceDto = new HistoryAccidentInsuranceDto(self.selectionHistoryUnemployeeInsuranceRate(),
+                        self.historyAccidentInsuranceRateStart(), self.historyAccidentInsuranceRateEnd());
+                    service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel(), historyAccidentInsuranceDto, "companyCode001");
                 }
                 return true;
             }
@@ -145,7 +195,6 @@ module nts.uk.pr.view.qmm011.a {
                 var dfd = $.Deferred<any>();
                 self.findAllHisotryUnemployeeInsuranceRate().done(data => {
                     self.findAllHistoryAccidentInsuranceRate().done(data => {
-                        self.typeAction = ko.observable(2);//Set update type
                         dfd.resolve(self);
                     });
                 });
@@ -156,7 +205,7 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllHisotryUnemployeeInsuranceRate().done(data => {
-                    self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceRateDto>(data);
+                    self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceDto>(data);
                     self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
                     self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
                     self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
@@ -207,7 +256,7 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllHistoryAccidentInsuranceRate().done(data => {
-                    self.lstHistoryAccidentInsuranceRate = ko.observableArray<HistoryAccidentInsuranceRateDto>(data);
+                    self.lstHistoryAccidentInsuranceRate = ko.observableArray<HistoryAccidentInsuranceDto>(data);
                     self.selectionHistoryAccidentInsuranceRate = ko.observable(data[0].historyId);
                     self.historyAccidentInsuranceRateStart = ko.observable(data[0].startMonthRage);
                     self.historyAccidentInsuranceRateEnd = ko.observable(data[0].endMonthRage);

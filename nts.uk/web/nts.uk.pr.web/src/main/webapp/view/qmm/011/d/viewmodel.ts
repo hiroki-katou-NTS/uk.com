@@ -1,7 +1,8 @@
 module nts.uk.pr.view.qmm011.d {
     import option = nts.uk.ui.option;
-    import HistoryInfoDto = service.model.HistoryInfoDto;
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
+    import HistoryUnemployeeInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceDto;
+    import HistoryAccidentInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryAccidentInsuranceDto;
     export module viewmodel {
         export class ScreenModel {
             dsel001: KnockoutObservableArray<any>;
@@ -27,29 +28,27 @@ module nts.uk.pr.view.qmm011.d {
                 self.selectedId = ko.observable(1);
                 self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
             }
-            addHistoryInfo() {
+            fwaddHistoryInfo() {
                 var self = this;
-                nts.uk.ui.windows.close();
                 if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
-                    self.addHistoryInfoUnemployeeInsurance();
+                    self.fwaddHistoryInfoUnemployeeInsurance();
                 } else {
-                    self.addHistoryInfoAccidentInsurance();
+                    self.fwaddHistoryInfoAccidentInsurance();
                 }
+                nts.uk.ui.windows.close();
             }
-            addHistoryInfoUnemployeeInsurance() {
+            fwaddHistoryInfoUnemployeeInsurance() {
                 var self = this;
-                var dfd = $.Deferred<any>();
-                var historyInfo: HistoryInfoDto;
-                historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                service.addHistoryInfoUnemployeeInsurance(historyInfo);
+                var historyInfo: HistoryUnemployeeInsuranceDto;
+                historyInfo = new HistoryUnemployeeInsuranceDto("historyId001", self.historyStart(), "9999/12");
+                nts.uk.ui.windows.setShared("addHistoryUnemployeeInsuranceDto", historyInfo);
             }
 
-            addHistoryInfoAccidentInsurance() {
+            fwaddHistoryInfoAccidentInsurance() {
                 var self = this;
-                var dfd = $.Deferred<any>();
-                var historyInfo: HistoryInfoDto;
-                historyInfo = new HistoryInfoDto("historyId001", "companyCode001", null, self.historyStart(), "9999/12", true);
-                service.addHistoryInfoAccidentInsurance(historyInfo);
+                var historyInfo: HistoryAccidentInsuranceDto;
+                historyInfo = new HistoryAccidentInsuranceDto("historyId001", self.historyStart(), "9999/12");
+                nts.uk.ui.windows.setShared("addHistoryAccidentInsuranceDto", historyInfo);
             }
         }
 
