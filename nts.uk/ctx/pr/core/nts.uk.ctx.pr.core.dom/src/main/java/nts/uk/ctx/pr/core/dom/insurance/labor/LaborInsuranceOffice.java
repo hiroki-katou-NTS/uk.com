@@ -6,7 +6,9 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import lombok.Data;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -21,6 +23,7 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class LaborInsuranceOffice.
  */
+//TODO: @Data -> @Getter
 @Data
 public class LaborInsuranceOffice extends AggregateRoot {
 
@@ -87,6 +90,65 @@ public class LaborInsuranceOffice extends AggregateRoot {
 	 */
 	public LaborInsuranceOffice() {
 		super();
+	}
+
+	/**
+	 * Instantiates a new labor insurance office.
+	 *
+	 * @param companyCode the company code
+	 * @param code the code
+	 * @param name the name
+	 * @param shortName the short name
+	 * @param picName the pic name
+	 * @param picPosition the pic position
+	 * @param potalCode the potal code
+	 * @param prefecture the prefecture
+	 * @param address1st the address 1 st
+	 * @param address2nd the address 2 nd
+	 * @param kanaAddress1st the kana address 1 st
+	 * @param kanaAddress2nd the kana address 2 nd
+	 * @param phoneNumber the phone number
+	 * @param citySign the city sign
+	 * @param officeMark the office mark
+	 * @param officeNoA the office no A
+	 * @param officeNoB the office no B
+	 * @param officeNoC the office no C
+	 * @param memo the memo
+	 */
+	public LaborInsuranceOffice(CompanyCode companyCode, OfficeCode code, OfficeName name, ShortName shortName,
+			PicName picName, PicPosition picPosition, PotalCode potalCode, String prefecture, Address address1st,
+			Address address2nd, KanaAddress kanaAddress1st, KanaAddress kanaAddress2nd, String phoneNumber,
+			String citySign, String officeMark, String officeNoA, String officeNoB, String officeNoC, Memo memo) {
+		super();
+
+		// Validate required item
+		if (StringUtil.isNullOrEmpty(code.v(), true) || StringUtil.isNullOrEmpty(name.v(), true)
+				|| StringUtil.isNullOrEmpty(picPosition.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+
+		// TODO: Office code duplication check
+		// throw new BusinessException("ER005");
+
+		this.companyCode = companyCode;
+		this.code = code;
+		this.name = name;
+		this.shortName = shortName;
+		this.picName = picName;
+		this.picPosition = picPosition;
+		this.potalCode = potalCode;
+		this.prefecture = prefecture;
+		this.address1st = address1st;
+		this.address2nd = address2nd;
+		this.kanaAddress1st = kanaAddress1st;
+		this.kanaAddress2nd = kanaAddress2nd;
+		this.phoneNumber = phoneNumber;
+		this.citySign = citySign;
+		this.officeMark = officeMark;
+		this.officeNoA = officeNoA;
+		this.officeNoB = officeNoB;
+		this.officeNoC = officeNoC;
+		this.memo = memo;
 	}
 
 	// =================== Memento State Support Method ===================

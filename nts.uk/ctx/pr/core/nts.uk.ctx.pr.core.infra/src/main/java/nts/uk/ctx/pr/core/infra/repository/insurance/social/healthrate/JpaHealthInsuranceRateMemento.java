@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 import java.util.List;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateMemento;
@@ -62,7 +63,7 @@ public class JpaHealthInsuranceRateMemento implements HealthInsuranceRateMemento
 	}
 
 	@Override
-	public Long getMaxAmount() {
+	public CommonAmount getMaxAmount() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -116,7 +117,7 @@ public class JpaHealthInsuranceRateMemento implements HealthInsuranceRateMemento
 	}
 
 	@Override
-	public void setMaxAmount(Long maxAmount) {
+	public void setMaxAmount(CommonAmount maxAmount) {
 		// TODO Auto-generated method stub
 		
 	}
