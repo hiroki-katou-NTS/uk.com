@@ -13,14 +13,14 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/",
+                                saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/updateHealthInsuranceAvgearn",
                                 findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceAvgearn",
                                 findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
                             };
-                            function save(list) {
+                            function saveListHealthInsuranceAvgEarn(list) {
                                 return nts.uk.request.ajax(paths.saveListHealthInsuranceAvgEarn, list);
                             }
-                            service.save = save;
+                            service.saveListHealthInsuranceAvgEarn = saveListHealthInsuranceAvgEarn;
                             function findHealthInsuranceRate(id) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findHealthInsuranceRate + '/' + id)

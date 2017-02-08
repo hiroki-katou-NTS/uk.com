@@ -30,28 +30,28 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 	@Transactional
 	protected void handle(CommandHandlerContext<RegisterHealthInsuranceCommand> command) {
 
-		HealthInsuranceRateDto healthInsuranceRateDto = command.getCommand().getHealthInsuranceRateDto();
-		// convert Dto to Domain
-
-		// convert rateItems
-		List<InsuranceRateItem> rateItems = healthInsuranceRateDto.getRateItems().stream()
-				.map(item -> new InsuranceRateItem(item.getPayType(), item.getInsuranceType(), item.getChargeRate()))
-				.collect(Collectors.toList());
-
-		// convert roundingMethods
-		List<HealthInsuranceRounding> roundingMethods = healthInsuranceRateDto.getRoundingMethods().stream()
-				.map(item -> new HealthInsuranceRounding(item.getPayType(), item.getRoundAtrs()))
-				.collect(Collectors.toList());
-
-		HealthInsuranceRate healthInsuranceRateDomain = new HealthInsuranceRate(healthInsuranceRateDto.getHistoryId(),
-				new CompanyCode(healthInsuranceRateDto.getCompanyCode()),
-				new OfficeCode(healthInsuranceRateDto.getOfficeCode()),
-				MonthRange.range(new YearMonth(Integer.parseInt(healthInsuranceRateDto.getStartMonth())),
-						new YearMonth(Integer.parseInt(healthInsuranceRateDto.getEndMonth()))),
-				healthInsuranceRateDto.getAutoCalculate(), new CommonAmount(healthInsuranceRateDto.getMaxAmount()), rateItems,
-				roundingMethods);
-
-		healthInsuranceService.add(healthInsuranceRateDomain);
+//		HealthInsuranceRateDto healthInsuranceRateDto = command.getCommand().getHealthInsuranceRateDto();
+//		// convert Dto to Domain
+//
+//		// convert rateItems
+//		List<InsuranceRateItem> rateItems = healthInsuranceRateDto.getRateItems().stream()
+//				.map(item -> new InsuranceRateItem(item.getPayType(), item.getInsuranceType(), item.getChargeRate()))
+//				.collect(Collectors.toList());
+//
+//		// convert roundingMethods
+//		List<HealthInsuranceRounding> roundingMethods = healthInsuranceRateDto.getRoundingMethods().stream()
+//				.map(item -> new HealthInsuranceRounding(item.getPayType(), item.getRoundAtrs()))
+//				.collect(Collectors.toList());
+//
+//		HealthInsuranceRate healthInsuranceRateDomain = new HealthInsuranceRate(healthInsuranceRateDto.getHistoryId(),
+//				new CompanyCode(healthInsuranceRateDto.getCompanyCode()),
+//				new OfficeCode(healthInsuranceRateDto.getOfficeCode()),
+//				MonthRange.range(new YearMonth(Integer.parseInt(healthInsuranceRateDto.getStartMonth())),
+//						new YearMonth(Integer.parseInt(healthInsuranceRateDto.getEndMonth()))),
+//				healthInsuranceRateDto.getAutoCalculate(), new CommonAmount(healthInsuranceRateDto.getMaxAmount()), rateItems,
+//				roundingMethods);
+//
+//		healthInsuranceService.add(healthInsuranceRateDomain);
 	}
 
 }

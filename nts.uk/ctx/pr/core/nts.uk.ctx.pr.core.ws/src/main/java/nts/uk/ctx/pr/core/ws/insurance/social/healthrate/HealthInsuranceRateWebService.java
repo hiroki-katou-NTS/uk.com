@@ -64,4 +64,10 @@ public class HealthInsuranceRateWebService extends WebService {
 	public void update(UpdateHealthInsuranceCommand command) {
 		updateHealthInsuranceCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("updateHealthInsuranceAvgearn")
+	public void updateHealthInsuranceAvgearn() {
+		
+	}
 }

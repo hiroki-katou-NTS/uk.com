@@ -15,11 +15,17 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 /**
@@ -87,7 +93,16 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	@Override
 	public Optional<HealthInsuranceRate> findById(String id) {
 		List<InsuranceRateItem> list1 = new ArrayList<InsuranceRateItem>();
+		HealthChargeRateItem rateItem = new HealthChargeRateItem();
+		rateItem.setCompanyRate(new Ins3Rate(new BigDecimal(40.900)));
+		rateItem.setPersonalRate(new Ins3Rate(new BigDecimal(40.900)));
+		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
 		List<HealthInsuranceRounding> list2 = new ArrayList<HealthInsuranceRounding>();
+		RoundingItem ri = new RoundingItem();
+		ri.setCompanyRoundAtr(RoundingMethod.Down4_Up5);
+		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
+		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 		mr.setEndMonth(new YearMonth(55));
 		mr.setStartMonth(new YearMonth(33));

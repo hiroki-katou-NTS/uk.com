@@ -19,6 +19,8 @@ var nts;
                                     self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
                                     self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                                    self.rateItems = ko.observableArray([]);
+                                    self.roundingMethods = ko.observableArray([]);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -28,6 +30,7 @@ var nts;
                                         h.service.findHealthInsuranceRate('a').done(function (xx) {
                                             self.healthInsuranceRateModel().officeCode(xx.officeCode);
                                             self.healthInsuranceRateModel().officeName(xx.officeName);
+                                            self.rateItems(xx.ratesItem);
                                         });
                                         h.service.findHealthInsuranceAvgEarn('a').done(function (zz) {
                                             self.listHealthInsuranceAvgearn(zz);
@@ -42,11 +45,11 @@ var nts;
                                     self.listHealthInsuranceAvgearn().forEach(function (item) {
                                         data.push(ko.toJS(item));
                                     });
-                                    console.log(data);
                                     return data;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    h.service.saveListHealthInsuranceAvgEarn(this.collectData());
                                 };
                                 ScreenModel.prototype.loadHealthInsuranceAvgEarn = function () {
                                     var self = this;

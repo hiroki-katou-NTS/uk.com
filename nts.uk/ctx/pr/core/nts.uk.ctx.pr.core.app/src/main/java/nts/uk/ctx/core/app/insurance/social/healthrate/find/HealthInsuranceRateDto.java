@@ -2,13 +2,13 @@ package nts.uk.ctx.core.app.insurance.social.healthrate.find;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 @Builder
 @Getter
@@ -39,7 +39,7 @@ public class HealthInsuranceRateDto {
 	private BigDecimal maxAmount;
 
 	/** The rate items. */
-	private List<InsuranceRateItem> rateItems;
+	private List<InsuranceRateItemDto> rateItems;
 
 	/** The rounding methods. */
 	private List<HealthInsuranceRounding> roundingMethods;
@@ -55,7 +55,10 @@ public class HealthInsuranceRateDto {
 		return new HealthInsuranceRateDto(domain.getHistoryId(), domain.getCompanyCode().v(),
 				domain.getOfficeCode().v(), "", domain.getApplyRange().getStartMonth().toString(),
 				domain.getApplyRange().getEndMonth().toString(), domain.getAutoCalculate(), domain.getMaxAmount().v(),
-				domain.getRateItems(), domain.getRoundingMethods());
+				domain.getRateItems().stream()
+						.map(insuranceRateItemDomain -> InsuranceRateItemDto.fromDomain(insuranceRateItemDomain))
+						.collect(Collectors.toList()),
+				domain.getRoundingMethods());
 
 	}
 }
