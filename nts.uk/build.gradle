@@ -96,14 +96,17 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.11'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.13'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.13'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.14.6'
 	}
 }
 
 project (':shr:nts.uk.shr.com') {
 	dependencies {
 		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		// Mime Detection Utility
+		compile group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
 	}
 }
 
