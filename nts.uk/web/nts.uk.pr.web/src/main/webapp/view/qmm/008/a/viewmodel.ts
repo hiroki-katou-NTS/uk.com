@@ -141,7 +141,9 @@ module nts.uk.pr.view.qmm008.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 //first load
-                self.loadAllInsuranceOffice().done(function() {
+                self.loadAllInsuranceOffice().done(function(data) {
+                    // Set list.
+                    self.InsuranceOfficeList(data); 
                     // Load first result.
                     if (self.InsuranceOfficeList().length > 0) {
                         //TODO load select first item of list
@@ -166,8 +168,15 @@ module nts.uk.pr.view.qmm008.a {
                 var dfd = $.Deferred<any>();
                 // find data from search key
                 service.findInsuranceOffice(self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
-                    // Set list.
-                    self.InsuranceOfficeList(data);
+                    //TODO add childs(history) for each item office
+                   data.forEach(function(item,index){
+                        service.findHistoryByOfficeCode(item.code).done(function(data2:InsuranceOfficeItem) {
+                            //TODO convert data get from service
+                            var addData = new InsuranceOfficeItem(index+item.code, data2.name, index+data2.code,[]);
+                            data[index].childs.push(addData);
+                        });
+                    });
+                    
                     dfd.resolve(data);
                 });
                 // Return.

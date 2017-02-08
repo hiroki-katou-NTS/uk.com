@@ -14,6 +14,7 @@ var nts;
                         (function (service) {
                             var servicePath = {
                                 getAllOfficeItem: "pr/insurance/social/findall",
+                                getAllHistoryOfOffice: "pr/insurance/social/history",
                                 getAllRoundingItem: "list/rounding",
                                 getHealthInsuranceItemDetail: "health/list",
                                 getPensionItemDetail: "pension/list"
@@ -35,6 +36,15 @@ var nts;
                                 });
                                 return OfficeItemList;
                             }
+                            function findHistoryByOfficeCode(code) {
+                                var dfd = $.Deferred();
+                                var findPath = servicePath.getAllHistoryOfOffice + "/" + code;
+                                nts.uk.request.ajax(findPath).done(function (data) {
+                                    dfd.resolve(data);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findHistoryByOfficeCode = findHistoryByOfficeCode;
                             function findAllRounding() {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllRoundingItem;
@@ -225,6 +235,16 @@ var nts;
                                         return ChooseOption;
                                     }());
                                     finder.ChooseOption = ChooseOption;
+                                    var HistoryItemDto = (function () {
+                                        function HistoryItemDto(id, name, code, childs) {
+                                            this.id = id;
+                                            this.name = name;
+                                            this.code = code;
+                                            this.childs = childs;
+                                        }
+                                        return HistoryItemDto;
+                                    }());
+                                    finder.HistoryItemDto = HistoryItemDto;
                                     var InsuranceOfficeItemDto = (function () {
                                         function InsuranceOfficeItemDto(id, name, code, childs) {
                                             this.id = id;
