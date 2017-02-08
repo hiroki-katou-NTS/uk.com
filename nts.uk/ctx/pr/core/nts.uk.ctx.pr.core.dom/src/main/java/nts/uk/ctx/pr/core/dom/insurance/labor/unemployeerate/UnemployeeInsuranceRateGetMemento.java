@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 /**
  * The Interface UnemployeeInsuranceRateMemento.
  */
-public interface UnemployeeInsuranceRateMemento {
+public interface UnemployeeInsuranceRateGetMemento {
 
 	/**
 	 * Gets the history id.
@@ -48,40 +48,5 @@ public interface UnemployeeInsuranceRateMemento {
 	 * @return the verion
 	 */
 	Long getVersion();
-
-	/**
-	 * Sets the history id.
-	 *
-	 * @param historyId the new history id
-	 */
-	void setHistoryId(String historyId);
-
-	/**
-	 * Sets the company code.
-	 *
-	 * @param companyCode the new company code
-	 */
-	void setCompanyCode(CompanyCode companyCode);
-
-	/**
-	 * Sets the apply range.
-	 *
-	 * @param applyRange the new apply range
-	 */
-	void setApplyRange(MonthRange applyRange);
-
-	/**
-	 * Sets the rate items.
-	 *
-	 * @param rateItems the new rate items
-	 */
-	void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems);
-
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
 
 }

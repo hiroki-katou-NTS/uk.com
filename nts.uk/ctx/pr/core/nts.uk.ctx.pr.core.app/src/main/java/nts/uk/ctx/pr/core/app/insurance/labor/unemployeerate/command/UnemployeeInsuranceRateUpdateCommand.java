@@ -4,12 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command;
 
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.command.BaseInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 
 @Getter
 @Setter
@@ -26,13 +31,46 @@ public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand {
 	 * @return the labor insurance office
 	 */
 	public UnemployeeInsuranceRate toDomain() {
-		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate();
-		unemployeeInsuranceRate.setHistoryId(this.unemployeeInsuranceRate.getHistoryInsurance().getHistoryId());
-		unemployeeInsuranceRate
-				.setApplyRange(convertMonthRange(this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
-						this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
-		unemployeeInsuranceRate.setCompanyCode(new CompanyCode(this.companyCode));
-		unemployeeInsuranceRate.setRateItems(defaultSetUnemployeeInsuranceRateItem());
+		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate(
+				new UnemployeeInsuranceRateGetMemento() {
+
+					@Override
+					public Long getVersion() {
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					public Set<UnemployeeInsuranceRateItem> getRateItems() {
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					public String getHistoryId() {
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					public CompanyCode getCompanyCode() {
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					public MonthRange getApplyRange() {
+						// TODO Auto-generated method stub
+						return null;
+					}
+				});
+		// unemployeeInsuranceRate.setHistoryId(this.unemployeeInsuranceRate.getHistoryInsurance().getHistoryId());
+		// unemployeeInsuranceRate
+		// .setApplyRange(convertMonthRange(this.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
+		// this.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage()));
+		// unemployeeInsuranceRate.setCompanyCode(new
+		// CompanyCode(this.companyCode));
+		// unemployeeInsuranceRate.setRateItems(defaultSetUnemployeeInsuranceRateItem());
 		return unemployeeInsuranceRate;
 	}
 

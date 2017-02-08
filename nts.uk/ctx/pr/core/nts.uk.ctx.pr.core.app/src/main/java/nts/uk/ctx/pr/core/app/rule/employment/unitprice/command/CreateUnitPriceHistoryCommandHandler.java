@@ -13,7 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryService;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

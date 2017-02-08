@@ -13,13 +13,13 @@ import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeMemento;
+import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class JpaAggrSchemaMemento.
  */
-public class JpaLaborInsuranceOfficeMemento implements LaborInsuranceOfficeMemento {
+public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSetMemento {
 
 	// TODO: Object -> entity class.
 	protected Object typeValue;
@@ -30,128 +30,8 @@ public class JpaLaborInsuranceOfficeMemento implements LaborInsuranceOfficeMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaLaborInsuranceOfficeMemento(Object typeValue) {
+	public JpaLaborInsuranceOfficeSetMemento(Object typeValue) {
 		this.typeValue = typeValue;
-	}
-
-	@Override
-	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public OfficeCode getCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public OfficeName getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ShortName getShortName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PicName getPicName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PicPosition getPicPosition() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public PotalCode getPotalCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPrefecture() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Address getAddress1st() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Address getAddress2nd() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public KanaAddress getKanaAddress1st() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public KanaAddress getKanaAddress2nd() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPhoneNumber() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getCitySign() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getOfficeMark() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getOfficeNoA() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getOfficeNoB() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getOfficeNoC() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Memo getMemo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

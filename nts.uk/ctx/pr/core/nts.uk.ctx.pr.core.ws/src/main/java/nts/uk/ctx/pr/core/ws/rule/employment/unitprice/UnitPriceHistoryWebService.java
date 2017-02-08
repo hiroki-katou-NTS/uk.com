@@ -11,12 +11,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommand;
-import nts.uk.ctx.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommandHandler;
-import nts.uk.ctx.core.app.rule.employment.unitprice.command.DeleteUnitPriceHistoryCommand;
-import nts.uk.ctx.core.app.rule.employment.unitprice.command.DeleteUnitPriceHistoryCommandHandler;
-import nts.uk.ctx.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommand;
-import nts.uk.ctx.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommandHandler;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommand;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommandHandler;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.DeleteUnitPriceHistoryCommand;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.DeleteUnitPriceHistoryCommandHandler;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommand;
+import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.find.UnitPriceHistoryDto;
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.find.UnitPriceHistoryFinder;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;

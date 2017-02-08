@@ -83,7 +83,7 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public UnemployeeInsuranceRate(UnemployeeInsuranceRateMemento memento) {
+	public UnemployeeInsuranceRate(UnemployeeInsuranceRateGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.historyId = memento.getHistoryId();
 		this.applyRange = memento.getApplyRange();
@@ -97,7 +97,7 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(UnemployeeInsuranceRateMemento memento) {
+	public void saveToMemento(UnemployeeInsuranceRateSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setHistoryId(this.historyId);
 		memento.setApplyRange(this.applyRange);
