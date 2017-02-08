@@ -34,4 +34,19 @@ public interface PayClassificationRepository {
 
 
 	void remove(String companyCode);
+
+
+
+	boolean isExisted(String companyCode, PayClassificationCode payClassificationCode);
+
+
+
+	List<PayClassification> findAll(String companyCode);
+
+
+
+	Optional<PayClassification> findSinglePayClassification(String companyCode,
+			PayClassificationCode payClassificationCode);
+
+	void remove(String companyCode, PayClassificationCode payClassificationCode);
 }

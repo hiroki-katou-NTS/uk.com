@@ -31,6 +31,41 @@ public class QmnmtPayClass implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "PAYCLASS_NAME")
 	public String payClassName;
+
+
+	public QmnmtPayClassPK getQmnmtPayClassPK() {
+		return qmnmtPayClassPK;
+	}
+
+
+	public void setQmnmtPayClassPK(QmnmtPayClassPK qmnmtPayClassPK) {
+		this.qmnmtPayClassPK = qmnmtPayClassPK;
+	}
+
+
+	public String getMemo() {
+		return memo;
+	}
+
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+
+	public String getPayClassName() {
+		return payClassName;
+	}
+
+
+	public void setPayClassName(String payClassName) {
+		this.payClassName = payClassName;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	
 
 	

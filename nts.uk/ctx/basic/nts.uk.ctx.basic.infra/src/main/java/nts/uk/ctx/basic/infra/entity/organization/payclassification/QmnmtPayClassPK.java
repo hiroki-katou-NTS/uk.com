@@ -7,10 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
+@Getter
+@Setter
 public class QmnmtPayClassPK implements Serializable{
 
 	/**
@@ -20,7 +24,7 @@ public class QmnmtPayClassPK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name ="CCD")
-	public String companyCd;
+	public String companyCode;
 	
 	@Basic(optional = false)
 	@Column(name ="PAYCLASS_CD")
