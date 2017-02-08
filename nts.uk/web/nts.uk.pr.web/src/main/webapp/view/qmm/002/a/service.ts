@@ -3,34 +3,52 @@ module nts.uk.pr.view.qmm002_1.a {
         var paths = {
             getBankList: "basic/system/bank/find/all",
             addBranchList: "basic/system/bank/branch/add",
-            updateBranchList: "basic/system/bank/branch/update"
+            updateBranchList: "basic/system/bank/branch/update",
+            removeBranch: "basic/system/bank/branch/remove"
         };
-        
-       export function getBankList(): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<any>();
-        nts.uk.request.ajax("com", paths.getBankList)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
-        return dfd.promise();
-    }
-        
+
+        export function getBankList(): JQueryPromise<Array<any>> {
+            let dfd = $.Deferred<any>();
+            nts.uk.request.ajax("com", paths.getBankList)
+                .done(function(res: Array<any>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                });
+            return dfd.promise();
+        }
+
         export function addBank(isCreated, bankInfo): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        var path = isCreated ? paths.addBranchList : paths.updateBranchList;
+            var dfd = $.Deferred<any>();
+            var path = isCreated ? paths.addBranchList : paths.updateBranchList;
+
+            nts.uk.request.ajax("com", path, bankInfo)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
         
-        nts.uk.request.ajax("com", path, bankInfo)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
+        export function removeBranch(bankCode,branchCode): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var path = paths.removeBranch;
+            var obj = {
+                bankCode: bankCode,
+                branchCode: branchCode   
+            };
+            nts.uk.request.ajax("com", path, obj)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
     }
-    }
-    
+
 }
