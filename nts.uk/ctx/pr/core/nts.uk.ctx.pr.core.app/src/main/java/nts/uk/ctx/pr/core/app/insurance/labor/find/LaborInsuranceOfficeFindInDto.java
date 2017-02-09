@@ -2,21 +2,21 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance;
+package nts.uk.ctx.pr.core.app.insurance.labor.find;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
- * The Class InsuranceOfficeInDto.
+ * The Class LaborInsuranceOfficeFindDto. Search LaborInsuranceOffice data base
  */
-@Setter
-@Getter
-public class InsuranceOfficeInDto {
+@AllArgsConstructor
+@Data
+public class LaborInsuranceOfficeFindInDto {
 	/** The code. officeCode */
 	private String code;
-	/** The name. officeName */
-	private String name;
+	
+	/** The company code. */
+	private String companyCode;
 
 }

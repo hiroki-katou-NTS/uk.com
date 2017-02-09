@@ -15,7 +15,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.labor.LaborInsuranceOfficeInDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.InsuBizRateItemDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeAddCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeDeleteCommand;
@@ -23,6 +25,8 @@ import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeDelete
 import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.find.LaborInsuranceOfficeDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.find.LaborInsuranceOfficeFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.find.LaborInsuranceOfficeFinder;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -39,8 +43,11 @@ import nts.uk.shr.com.primitive.Memo;
 @Produces("application/json")
 public class LaborInsuranceOfficeWebService extends WebService {
 
+	/** The find. */
+	@Inject
+	private LaborInsuranceOfficeFinder find;
+
 	/** The add. */
-	// Find all LaborInsuranceOffice conection data
 	@Inject
 	private LaborInsuranceOfficeAddCommandHandler add;
 
@@ -53,30 +60,23 @@ public class LaborInsuranceOfficeWebService extends WebService {
 	private LaborInsuranceOfficeDeleteCommandHandler delete;
 
 	/**
-	 * Find all.
+	 * Find all history.
 	 *
 	 * @return the list
 	 */
 	@POST
-	@Path("findall")
-	public List<LaborInsuranceOfficeInDto> findAll() {
-		List<LaborInsuranceOfficeInDto> lstLaborInsuranceOfficeIn = new ArrayList<LaborInsuranceOfficeInDto>();
-		List<LaborInsuranceOffice> lstLaborInsuranceOffice = findAllLaborInsuranceOffice();
-		for (int index = 0; index < lstLaborInsuranceOffice.size(); index++) {
-			lstLaborInsuranceOfficeIn.add(convertInsuranceOfficeOInDto(lstLaborInsuranceOffice.get(index)));
-		}
-		return lstLaborInsuranceOfficeIn;
+	@Path("findall/{companyCode}")
+	public List<LaborInsuranceOfficeFindOutDto> findAll(@PathParam("companyCode") String companyCode) {
+		return find.findAll(companyCode);
 	}
 
 	/**
-	 * Find by code.
+	 * Find history.
 	 *
-	 * @param code
-	 *            the code
-	 * @return the labor insurance office dto
+	 * @param historyId
+	 *            the history id
+	 * @return the history accident insurance rate dto
 	 */
-	// Find LaborInsuranceOffice By Code
-	@POST
 	@Path("findLaborInsuranceOffice/{code}")
 	public LaborInsuranceOfficeDto findByCode(@PathParam("code") String code) {
 		LaborInsuranceOfficeDto laborInsuranceOfficeDto = null;
@@ -90,11 +90,49 @@ public class LaborInsuranceOfficeWebService extends WebService {
 	}
 
 	/**
-	 * Find all labor insurance office.
+	 * Adds the.
 	 *
-	 * @return the list
+	 * @param command
+	 *            the command
 	 */
-	// Find All LaborInsuranceOffice
+	@POST
+	@Path("add")
+	public void add(LaborInsuranceOfficeAddCommand command) {
+		this.add.handle(command);
+	}
+
+	/**
+	 * Update.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("update")
+	public void update(LaborInsuranceOfficeUpdateCommand command) {
+		this.update.handle(command);
+	}
+
+	/**
+	 * Delete.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("delete")
+	public void delete(LaborInsuranceOfficeDeleteCommand command) {
+		this.delete.handle(command);
+	}
+
+	/**
+	 * Detail hitory.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @return the accident insurance rate dto
+	 */
+
 	public List<LaborInsuranceOffice> findAllLaborInsuranceOffice() {
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<LaborInsuranceOffice>();
 		LaborInsuranceOffice laborInsuranceOffice001 = new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
@@ -203,27 +241,6 @@ public class LaborInsuranceOfficeWebService extends WebService {
 		return lstLaborInsuranceOffice;
 	}
 
-	/**
-	 * Convert insurance office O in dto.
-	 *
-	 * @param laborInsuranceOffice
-	 *            the labor insurance office
-	 * @return the labor insurance office in dto
-	 */
-	public LaborInsuranceOfficeInDto convertInsuranceOfficeOInDto(LaborInsuranceOffice laborInsuranceOffice) {
-		LaborInsuranceOfficeInDto laborInsuranceOfficeInDto = new LaborInsuranceOfficeInDto();
-		laborInsuranceOfficeInDto.setName(laborInsuranceOffice.getName().toString());
-		laborInsuranceOfficeInDto.setCode(laborInsuranceOffice.getCode().toString());
-		return laborInsuranceOfficeInDto;
-	}
-
-	/**
-	 * Convert labor insurance office dto.
-	 *
-	 * @param laborInsuranceOffice
-	 *            the labor insurance office
-	 * @return the labor insurance office dto
-	 */
 	public LaborInsuranceOfficeDto convertLaborInsuranceOfficeDto(LaborInsuranceOffice laborInsuranceOffice) {
 		LaborInsuranceOfficeDto laborInsuranceOfficeDto = LaborInsuranceOfficeDto.builder()
 				.name(laborInsuranceOffice.getName().toString()).code(laborInsuranceOffice.getCode().toString())
@@ -241,41 +258,5 @@ public class LaborInsuranceOfficeWebService extends WebService {
 				.officeNoB(laborInsuranceOffice.getOfficeNoB()).officeNoC(laborInsuranceOffice.getOfficeNoC())
 				.memo(laborInsuranceOffice.getMemo().toString()).build();
 		return laborInsuranceOfficeDto;
-	}
-
-	/**
-	 * Adds the.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("add")
-	public void add(LaborInsuranceOfficeAddCommand command) {
-		this.add.handle(command);
-	}
-
-	/**
-	 * Update.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("update")
-	public void update(LaborInsuranceOfficeUpdateCommand command) {
-		this.update.handle(command);
-	}
-
-	/**
-	 * Delete.
-	 *
-	 * @param command
-	 *            the command
-	 */
-	@POST
-	@Path("delete")
-	public void delete(LaborInsuranceOfficeDeleteCommand command) {
-		this.delete.handle(command);
 	}
 }

@@ -1,12 +1,12 @@
 module nts.uk.pr.view.qmm010.a {
     import option = nts.uk.ui.option;
     import LaborInsuranceOfficeDto = service.model.LaborInsuranceOfficeDto;
-    import LaborInsuranceOfficeInDto = service.model.LaborInsuranceOfficeInDto;
+    import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
     export module viewmodel {
         export class ScreenModel {
             //ojbect value binding
             laborInsuranceOfficeModel: KnockoutObservable<LaborInsuranceOfficeModel>;
-            lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeInDto>
+            lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeFindOutDto>
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
             textSearch: any;
@@ -54,8 +54,9 @@ module nts.uk.pr.view.qmm010.a {
             private findAllInsuranceOffice(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findAllLaborInsuranceOffice().done(data => {
-                    self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeInDto>(data);
+                service.findAllLaborInsuranceOffice("companyCode").done(data => {
+                    self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
+                    console.log(data);
                     self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
                     self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
                         self.showInsuranceOffice(selectCodeLstlaborInsuranceOffice);

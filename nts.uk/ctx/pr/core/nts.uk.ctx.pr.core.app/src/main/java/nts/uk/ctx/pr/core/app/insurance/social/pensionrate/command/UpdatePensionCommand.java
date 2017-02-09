@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
+package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
 import java.util.List;
 
@@ -6,18 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 
 @Getter
 @Setter
-public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
-	public HealthInsuranceRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
-		HealthInsuranceRate domain = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
+public class UpdatePensionCommand extends PensionBaseCommand {
+	public PensionRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
+		PensionRate domain = new PensionRate(new PensionRateGetMemento() {
 
 			@Override
 			public Long getVersion() {
@@ -26,13 +28,13 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			}
 
 			@Override
-			public List<HealthInsuranceRounding> getRoundingMethods() {
+			public List<PensionRateRounding> getRoundingMethods() {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public List<InsuranceRateItem> getRateItems() {
+			public List<PensionPremiumRateItem> getPremiumRateItems() {
 				// TODO Auto-generated method stub
 				return null;
 			}
@@ -56,13 +58,19 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			}
 
 			@Override
+			public List<FundRateItem> getFundRateItems() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
 			public CompanyCode getCompanyCode() {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public Boolean getAutoCalculate() {
+			public Ins2Rate getChildContributionRate() {
 				// TODO Auto-generated method stub
 				return null;
 			}
