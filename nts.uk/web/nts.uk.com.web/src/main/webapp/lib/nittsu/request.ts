@@ -156,11 +156,46 @@
 
         return dfd.promise();
     }
+     
+    export function exportFile(path: string, data?: any, options?: any) {
+        let dfd = $.Deferred();
+        
+        ajax(path, data, options)
+            .then((res: any) => {
+                return deferred.repeat(conf => conf
+                    .task(() => specials.getAsyncTaskInfo(res.taskId))
+                    .while(info => info.pending || info.running)
+                    .pause(1000));
+            })
+            .done((res: any) => {
+                specials.donwloadFile(res.id);
+                dfd.resolve(res);
+            })
+            .fail(res => {
+                dfd.reject(res);
+            });
+        
+        return dfd.promise();
+    }
+            
+    export module specials {
+        
+        export function getAsyncTaskInfo(taskId: string) {
+            return ajax('/ntscommons/arc/task/async/' + taskId);
+        }
+        
+        export function donwloadFile(fileId: string) {
+            $('<iframe/>')
+                .attr('id', 'download-frame')
+                .appendTo('body')
+                .attr('src', resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId));
+        }
+    }
     
     export function jump(path: string, data?: any) {
         
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
-       
+        
         window.location.href = resolvePath(path);
     }
      
