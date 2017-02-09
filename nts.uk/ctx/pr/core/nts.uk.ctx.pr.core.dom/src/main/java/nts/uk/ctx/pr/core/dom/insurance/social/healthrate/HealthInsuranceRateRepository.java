@@ -7,6 +7,8 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+
 /**
  * The Interface HealthInsuranceRateRepository.
  */
@@ -50,4 +52,12 @@ public interface HealthInsuranceRateRepository {
 	 * @return the health insurance rate
 	 */
 	Optional<HealthInsuranceRate> findById(String id);
+
+	/**
+	 * Checks if is invalid date range.
+	 *
+	 * @param applyRange the apply range
+	 * @return true, if is invalid date range
+	 */
+	boolean isInvalidDateRange(MonthRange applyRange);
 }

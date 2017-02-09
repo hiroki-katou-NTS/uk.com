@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceService;
 
 /**
  * The Class UnitPrice.
@@ -34,27 +33,6 @@ public class UnitPrice extends AggregateRoot {
 	 */
 	public UnitPrice() {
 		super();
-	}
-
-	/**
-	 * Validate.
-	 *
-	 * @param service
-	 *            the service
-	 */
-	public void validate(UnitPriceService service) {
-		// Validate required item
-		service.validateRequiredItem(this);
-		// Validate required item
-		// if (StringUtil.isNullOrEmpty(code.v(), true) ||
-		// StringUtil.isNullOrEmpty(name.v(), true)) {
-		// throw new BusinessException("ER001");
-		// }
-
-		// Check duplicate code
-		service.checkDuplicateCode(this);
-		// TODO: Check duplicate code in create mode.
-		// // throw new BusinessException("ER005");
 	}
 
 	// =================== Memento State Support Method ===================

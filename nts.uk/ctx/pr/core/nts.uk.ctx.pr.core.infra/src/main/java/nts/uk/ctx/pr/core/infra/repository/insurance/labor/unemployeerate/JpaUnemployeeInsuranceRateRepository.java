@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 
@@ -79,6 +80,12 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	public UnemployeeInsuranceRate findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isInvalidDateRange(MonthRange applyRange) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

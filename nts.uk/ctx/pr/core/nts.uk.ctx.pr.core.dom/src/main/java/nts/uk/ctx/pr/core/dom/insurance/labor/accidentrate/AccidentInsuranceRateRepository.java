@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import java.util.List;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Interface AccidentInsuranceRateRepository.
  */
@@ -48,4 +50,12 @@ public interface AccidentInsuranceRateRepository {
 	 * @return the accident insurance rate
 	 */
 	AccidentInsuranceRate findById(String id);
+
+	/**
+	 * Checks if is invalid date range.
+	 *
+	 * @param startMonth the start month
+	 * @return true, if is invalid date range
+	 */
+	boolean isInvalidDateRange(YearMonth startMonth);
 }

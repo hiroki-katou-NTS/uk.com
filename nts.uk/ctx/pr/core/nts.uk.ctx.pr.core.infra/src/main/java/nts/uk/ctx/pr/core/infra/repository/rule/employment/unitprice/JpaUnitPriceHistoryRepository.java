@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 
@@ -79,6 +80,18 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	public Optional<UnitPriceHistory> findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryRepository#isInvalidDateRange(nts.arc.time.YearMonth)
+	 */
+	@Override
+	public boolean isInvalidDateRange(YearMonth startMonth) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.dom.insurance.social;
 
 import java.util.List;
 
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+
 /**
  * The Interface SocialInsuranceOfficeRepository.
  */
@@ -48,7 +50,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @return the social insurance office
 	 */
 	SocialInsuranceOffice findById(String id);
-	
+
 	/**
 	 * Find by office code.
 	 *
@@ -56,4 +58,12 @@ public interface SocialInsuranceOfficeRepository {
 	 * @return the social insurance office
 	 */
 	SocialInsuranceOffice findByOfficeCode(String officeCode);
+
+	/**
+	 * Checks if is duplicate code.
+	 *
+	 * @param code the code
+	 * @return true, if is duplicate code
+	 */
+	boolean isDuplicateCode(OfficeCode code);
 }

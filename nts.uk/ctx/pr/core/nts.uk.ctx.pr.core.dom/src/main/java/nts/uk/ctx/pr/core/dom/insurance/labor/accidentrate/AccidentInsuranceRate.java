@@ -10,7 +10,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
 
 /**
  * The Class AccidentInsuranceRate.
@@ -30,34 +29,6 @@ public class AccidentInsuranceRate extends AggregateRoot {
 
 	/** The short name. */
 	private Set<InsuBizRateItem> rateItems;
-
-	/**
-	 * Instantiates a new accident insurance rate.
-	 */
-	public AccidentInsuranceRate() {
-		super();
-	}
-
-	/**
-	 * Validate.
-	 *
-	 * @param service
-	 *            the service
-	 */
-	public void validate(AccidentInsuranceRateService service) {
-		// Validate required item
-		service.validateRequiredItem(this);
-		// if (StringUtil.isNullOrEmpty(unitPriceCode.v(), true) ||
-		// StringUtil.isNullOrEmpty(unitPriceName.v(), true)
-		// || applyRange == null || budget == null) {
-		// throw new BusinessException("ER001");
-		// }
-
-		// Check consistency date range.
-		service.validateDateRange(this);
-		// History after start date and time exists
-		// throw new BusinessException("ER010");
-	}
 
 	// =================== Memento State Support Method ===================
 

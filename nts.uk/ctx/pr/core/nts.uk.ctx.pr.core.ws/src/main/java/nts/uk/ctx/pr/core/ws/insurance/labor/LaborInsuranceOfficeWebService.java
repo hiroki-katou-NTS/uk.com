@@ -32,11 +32,12 @@ import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
+import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
 @Path("ctx/pr/core/insurance/labor")
 @Produces("application/json")
-public class LaborInsuranceOfficeService extends WebService {
+public class LaborInsuranceOfficeWebService extends WebService {
 
 	/** The add. */
 	// Find all LaborInsuranceOffice conection data
@@ -70,7 +71,8 @@ public class LaborInsuranceOfficeService extends WebService {
 	/**
 	 * Find by code.
 	 *
-	 * @param code the code
+	 * @param code
+	 *            the code
 	 * @return the labor insurance office dto
 	 */
 	// Find LaborInsuranceOffice By Code
@@ -86,85 +88,126 @@ public class LaborInsuranceOfficeService extends WebService {
 		}
 		return laborInsuranceOfficeDto;
 	}
-	
+
 	/**
 	 * Find all labor insurance office.
 	 *
 	 * @return the list
 	 */
-	//Find All LaborInsuranceOffice
+	// Find All LaborInsuranceOffice
 	public List<LaborInsuranceOffice> findAllLaborInsuranceOffice() {
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<LaborInsuranceOffice>();
-		LaborInsuranceOffice laborInsuranceOffice001 = new LaborInsuranceOffice();
-//		laborInsuranceOffice001.setCompanyCode(new CompanyCode("companyCode001"));
-//		laborInsuranceOffice001.setCode(new OfficeCode("000000000001"));
-//		laborInsuranceOffice001.setName(new OfficeName("XA事業所"));
-//		laborInsuranceOffice001.setShortName(new ShortName("shortName"));
-//		laborInsuranceOffice001.setPicName(new PicName("picName"));
-//		laborInsuranceOffice001.setPicPosition(new PicPosition("picPosition"));
-//		laborInsuranceOffice001.setPotalCode(new PotalCode("potalCode"));
-//		laborInsuranceOffice001.setPrefecture("prefecture");
-//		laborInsuranceOffice001.setAddress1st(new Address("address1st"));
-//		laborInsuranceOffice001.setAddress2nd(new Address("address2nd"));
-//		laborInsuranceOffice001.setKanaAddress1st(new KanaAddress("kanaAddress1st"));
-//		laborInsuranceOffice001.setKanaAddress2nd(new KanaAddress("kanaAddress2nd"));
-//		laborInsuranceOffice001.setPhoneNumber("phoneNumber");
-//		laborInsuranceOffice001.setCitySign("01");
-//		laborInsuranceOffice001.setOfficeMark("officeMark");
-//		laborInsuranceOffice001.setOfficeNoA("1234");
-//		laborInsuranceOffice001.setOfficeNoB("567890");
-//		laborInsuranceOffice001.setOfficeNoC("1");
-//		laborInsuranceOffice001.setMemo(new Memo("memo"));
+		LaborInsuranceOffice laborInsuranceOffice001 = new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
+			@Override
+			public Long getVersion() {
+				return 0L;
+			}
+
+			@Override
+			public ShortName getShortName() {
+				// TODO Auto-generated method stub
+				return new ShortName("shortName");
+			}
+
+			@Override
+			public String getPrefecture() {
+				return "prefecture";
+			}
+
+			@Override
+			public PotalCode getPotalCode() {
+				return new PotalCode("potalCode");
+			}
+
+			@Override
+			public PicPosition getPicPosition() {
+				return new PicPosition("picPosition");
+			}
+
+			@Override
+			public PicName getPicName() {
+				return new PicName("picName");
+			}
+
+			@Override
+			public String getPhoneNumber() {
+				return "4346234645624";
+			}
+
+			@Override
+			public String getOfficeNoC() {
+				return "OfficeNoC";
+			}
+
+			@Override
+			public String getOfficeNoB() {
+				return "OfficeNoB";
+			}
+
+			@Override
+			public String getOfficeNoA() {
+				return "OfficeNoA";
+			}
+
+			@Override
+			public String getOfficeMark() {
+				return "officeMark";
+			}
+
+			@Override
+			public OfficeName getName() {
+				return new OfficeName("XA事業所");
+			}
+
+			@Override
+			public Memo getMemo() {
+				return new Memo("memo");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress2nd() {
+				return new KanaAddress("kanaAddress2nd");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress1st() {
+				return new KanaAddress("kanaAddress1st");
+			}
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode("companyCode001");
+			}
+
+			@Override
+			public OfficeCode getCode() {
+				return new OfficeCode("000000000001");
+			}
+
+			@Override
+			public String getCitySign() {
+				return "01";
+			}
+
+			@Override
+			public Address getAddress2nd() {
+				return new Address("address2nd");
+			}
+
+			@Override
+			public Address getAddress1st() {
+				return new Address("address1st");
+			}
+		});
 		lstLaborInsuranceOffice.add(laborInsuranceOffice001);
-		LaborInsuranceOffice laborInsuranceOffice002 = new LaborInsuranceOffice();
-//		laborInsuranceOffice002.setCompanyCode(new CompanyCode("companyCode001"));
-//		laborInsuranceOffice002.setCode(new OfficeCode("000000000002"));
-//		laborInsuranceOffice002.setName(new OfficeName("B事業所"));
-//		laborInsuranceOffice002.setShortName(new ShortName("shortName"));
-//		laborInsuranceOffice002.setPicName(new PicName("picName"));
-//		laborInsuranceOffice002.setPicPosition(new PicPosition("picPosition"));
-//		laborInsuranceOffice002.setPotalCode(new PotalCode("potalCode"));
-//		laborInsuranceOffice002.setPrefecture("prefecture");
-//		laborInsuranceOffice002.setAddress1st(new Address("address1st"));
-//		laborInsuranceOffice002.setAddress2nd(new Address("address2nd"));
-//		laborInsuranceOffice002.setKanaAddress1st(new KanaAddress("kanaAddress1st"));
-//		laborInsuranceOffice002.setKanaAddress2nd(new KanaAddress("kanaAddress2nd"));
-//		laborInsuranceOffice002.setPhoneNumber("phoneNumber");
-//		laborInsuranceOffice002.setCitySign("01");
-//		laborInsuranceOffice002.setOfficeMark("officeMark");
-//		laborInsuranceOffice002.setOfficeNoA("1234");
-//		laborInsuranceOffice002.setOfficeNoB("567890");
-//		laborInsuranceOffice002.setOfficeNoC("1");
-//		laborInsuranceOffice002.setMemo(new Memo("memo"));
-		lstLaborInsuranceOffice.add(laborInsuranceOffice002);
-		LaborInsuranceOffice laborInsuranceOffice003 = new LaborInsuranceOffice();
-//		laborInsuranceOffice003.setCompanyCode(new CompanyCode("companyCode001"));
-//		laborInsuranceOffice003.setCode(new OfficeCode("000000000003"));
-//		laborInsuranceOffice003.setName(new OfficeName("C事業所"));
-//		laborInsuranceOffice003.setShortName(new ShortName("shortName"));
-//		laborInsuranceOffice003.setPicName(new PicName("picName"));
-//		laborInsuranceOffice003.setPicPosition(new PicPosition("picPosition"));
-//		laborInsuranceOffice003.setPotalCode(new PotalCode("potalCode"));
-//		laborInsuranceOffice003.setPrefecture("prefecture");
-//		laborInsuranceOffice003.setAddress1st(new Address("address1st"));
-//		laborInsuranceOffice003.setAddress2nd(new Address("address2nd"));
-//		laborInsuranceOffice003.setKanaAddress1st(new KanaAddress("kanaAddress1st"));
-//		laborInsuranceOffice003.setKanaAddress2nd(new KanaAddress("kanaAddress2nd"));
-//		laborInsuranceOffice003.setPhoneNumber("phoneNumber");
-//		laborInsuranceOffice003.setCitySign("01");
-//		laborInsuranceOffice003.setOfficeMark("officeMark");
-//		laborInsuranceOffice003.setOfficeNoA("1234");
-//		laborInsuranceOffice003.setOfficeNoB("567890");
-//		laborInsuranceOffice003.setOfficeNoC("1");
-//		laborInsuranceOffice003.setMemo(new Memo("memo"));
-		lstLaborInsuranceOffice.add(laborInsuranceOffice003);
 		return lstLaborInsuranceOffice;
 	}
-	
+
 	/**
 	 * Convert insurance office O in dto.
 	 *
-	 * @param laborInsuranceOffice the labor insurance office
+	 * @param laborInsuranceOffice
+	 *            the labor insurance office
 	 * @return the labor insurance office in dto
 	 */
 	public LaborInsuranceOfficeInDto convertInsuranceOfficeOInDto(LaborInsuranceOffice laborInsuranceOffice) {
@@ -177,7 +220,8 @@ public class LaborInsuranceOfficeService extends WebService {
 	/**
 	 * Convert labor insurance office dto.
 	 *
-	 * @param laborInsuranceOffice the labor insurance office
+	 * @param laborInsuranceOffice
+	 *            the labor insurance office
 	 * @return the labor insurance office dto
 	 */
 	public LaborInsuranceOfficeDto convertLaborInsuranceOfficeDto(LaborInsuranceOffice laborInsuranceOffice) {
@@ -202,7 +246,8 @@ public class LaborInsuranceOfficeService extends WebService {
 	/**
 	 * Adds the.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("add")
@@ -213,7 +258,8 @@ public class LaborInsuranceOfficeService extends WebService {
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -224,7 +270,8 @@ public class LaborInsuranceOfficeService extends WebService {
 	/**
 	 * Delete.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("delete")

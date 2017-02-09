@@ -5,8 +5,11 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.internal;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
+import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
 
 /**
@@ -14,6 +17,10 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsur
  */
 @Stateless
 public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateService {
+
+	/** The accident insurance rate repo. */
+	@Inject
+	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -24,8 +31,9 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateRequiredItem(AccidentInsuranceRate rate) {
-		// TODO Auto-generated method stub
-
+		if (rate.getApplyRange() == null) {
+			throw new BusinessException("ER001");
+		}
 	}
 
 	/*
@@ -37,8 +45,11 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateDateRange(AccidentInsuranceRate rate) {
-		// TODO Auto-generated method stub
-
+		// Check consistency date range.
+		// History after start date and time exists
+		if (accidentInsuranceRateRepo.isInvalidDateRange(rate.getApplyRange().getStartMonth())) {
+			throw new BusinessException("ER010");
+		}
 	}
 
 }

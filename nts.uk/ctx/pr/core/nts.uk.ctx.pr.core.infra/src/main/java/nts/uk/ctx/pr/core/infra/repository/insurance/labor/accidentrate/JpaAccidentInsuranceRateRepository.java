@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 
@@ -78,6 +79,12 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	public AccidentInsuranceRate findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isInvalidDateRange(YearMonth startMonth) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

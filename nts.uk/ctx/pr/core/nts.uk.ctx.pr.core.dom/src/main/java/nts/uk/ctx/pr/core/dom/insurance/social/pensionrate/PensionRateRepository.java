@@ -7,6 +7,8 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+
 /**
  * The Interface PensionRateRepository.
  */
@@ -49,4 +51,12 @@ public interface PensionRateRepository {
 	 * @return the pension rate
 	 */
 	Optional<PensionRate> findById(String id);
+
+	/**
+	 * Checks if is invalid date range.
+	 *
+	 * @param applyRange the apply range
+	 * @return true, if is invalid date range
+	 */
+	boolean isInvalidDateRange(MonthRange applyRange);
 }

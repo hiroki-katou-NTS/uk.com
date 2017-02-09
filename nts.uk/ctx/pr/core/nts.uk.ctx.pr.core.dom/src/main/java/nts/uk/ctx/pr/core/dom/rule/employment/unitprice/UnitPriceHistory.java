@@ -9,7 +9,6 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -67,27 +66,6 @@ public class UnitPriceHistory extends AggregateRoot {
 	/** The memo. */
 	@Setter
 	private Memo memo;
-
-	/**
-	 * Validate.
-	 *
-	 * @param service
-	 *            the service
-	 */
-	public void validate(UnitPriceHistoryService service) {
-		// Validate required item
-		service.validateRequiredItem(this);
-		// if (StringUtil.isNullOrEmpty(unitPriceCode.v(), true) ||
-		// StringUtil.isNullOrEmpty(unitPriceName.v(), true)
-		// || applyRange == null || budget == null) {
-		// throw new BusinessException("ER001");
-		// }
-
-		// Check consistency date range.
-		service.validateDateRange(this);
-		// History after start date and time exists
-		// throw new BusinessException("ER010");
-	}
 
 	// =================== Memento State Support Method ===================
 	/**
