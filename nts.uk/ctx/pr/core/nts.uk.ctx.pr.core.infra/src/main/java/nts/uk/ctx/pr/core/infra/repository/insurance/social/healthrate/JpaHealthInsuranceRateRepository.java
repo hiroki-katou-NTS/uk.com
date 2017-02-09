@@ -98,10 +98,20 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		rateItem.setPersonalRate(new Ins3Rate(new BigDecimal(40.900)));
 		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
 		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+		
 		List<HealthInsuranceRounding> list2 = new ArrayList<HealthInsuranceRounding>();
 		RoundingItem ri = new RoundingItem();
 		ri.setCompanyRoundAtr(RoundingMethod.Down4_Up5);
 		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
+		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
+		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
+		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 

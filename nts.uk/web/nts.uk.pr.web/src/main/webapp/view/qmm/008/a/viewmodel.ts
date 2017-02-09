@@ -207,7 +207,7 @@ module nts.uk.pr.view.qmm008.a {
                     if (data == null) {
                         return;
                     }
-                    // Set detail health.
+                    // TODO Set detail health.
                     self.healthModel().historyId = data.historyId;
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
@@ -231,7 +231,7 @@ module nts.uk.pr.view.qmm008.a {
                     if (data == null) {
                         return;
                     }
-                    // Set detail pension.
+                    //TODO Set detail pension.
                     self.pensionModel().historyId = data.historyId;
                     self.pensionModel().companyCode = data.companyCode;
                     self.pensionModel().officeCode(data.officeCode);
