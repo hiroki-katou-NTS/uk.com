@@ -1,4 +1,4 @@
-﻿module nts.uk.ui.validation {
+module nts.uk.ui.validation {
 
     export interface IValidator {
         validate(inputText: string): ValidationResult;
@@ -103,7 +103,7 @@
             var isDecimalNumber = false;
             if(this.option !== undefined){
                 isDecimalNumber = (this.option.decimallength > 0)
-                inputText = text.replaceAll(inputText, this.option.groupseperator, '');    
+                inputText = text.replaceAll(inputText.toString(), this.option.groupseperator, '');    
             }
             
             if (!ntsNumber.isNumber(inputText, isDecimalNumber)) {
