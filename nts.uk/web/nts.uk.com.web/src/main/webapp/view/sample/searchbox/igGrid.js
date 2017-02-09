@@ -53,17 +53,7 @@ __viewContext.ready(function () {
                 dataSource: self.dataSource
             });
             $("#grid").closest('.ui-iggrid').addClass('nts-gridlist');
-            $("#grid").on("selectionChanged", function () {
-                var selectedRows = $('#grid').igGrid("selectedRows");
-                var arr = [];
-                for (var i = 0; i < selectedRows.length; i++) {
-                    arr.push("" + selectedRows[i].id);
-                }
-                if (arr.length == 1) {
-                    $("#grid_scrollContainer").scrollTop(selectedRows[0].element.position().top);
-                }
-                self.selectedList(arr);
-            });
+            $("#grid").setupSearchScroll("igGrid", true);
         }
         ScreenModel.prototype.selectionChanged = function (evt, ui) {
             //console.log(evt.type);
