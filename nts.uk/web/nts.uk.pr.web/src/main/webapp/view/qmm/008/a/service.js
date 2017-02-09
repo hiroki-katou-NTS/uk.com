@@ -15,9 +15,9 @@ var nts;
                             var servicePath = {
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
-                                getAllRoundingItem: "list/rounding",
-                                getHealthInsuranceItemDetail: "health/list",
-                                getPensionItemDetail: "pension/list"
+                                getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
+                                getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/findPensionRate",
+                                getAllRoundingItem: "list/rounding"
                             };
                             function findInsuranceOffice(key) {
                                 var dfd = $.Deferred();
@@ -49,179 +49,28 @@ var nts;
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllRoundingItem;
                                 var data = null;
-                                var roundingList = [
-                                    new model.finder.RoundingItemDto('001', 'op1change'),
-                                    new model.finder.RoundingItemDto('002', 'op2'),
-                                    new model.finder.RoundingItemDto('003', 'op3')
-                                ];
+                                var roundingList = [];
                                 dfd.resolve(roundingList);
                                 return dfd.promise();
                             }
                             service.findAllRounding = findAllRounding;
                             function getHealthInsuranceItemDetail(code) {
                                 var dfd = $.Deferred();
-                                var findPath = servicePath.getHealthInsuranceItemDetail;
-                                if (code == "code1") {
-                                    var rateItems = [
-                                        new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                    ];
-                                    var roundingMethods = [
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "roundingname1"), new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundingname3")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
-                                    ];
-                                    var data = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 1, rateItems, roundingMethods, 150000);
-                                }
-                                else {
-                                    var rateItems = [
-                                        new model.finder.HealthInsuranceRateItemDto(333, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(23323, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(2334, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(2423, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(2523, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(1523, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(2263, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                        new model.finder.HealthInsuranceRateItemDto(2634, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                                    ];
-                                    var arrayRoundingMethod = [
-                                        new model.finder.RoundingItemDto("roundingcode1", "切り上げ"),
-                                        new model.finder.RoundingItemDto("roundingcode2", "切捨て"),
-                                        new model.finder.RoundingItemDto("roundingcode3", "四捨五入"),
-                                        new model.finder.RoundingItemDto("roundingcode4", "五捨五超入"),
-                                        new model.finder.RoundingItemDto("roundingcode5", "五捨六入")
-                                    ];
-                                    var roundingMethods = [
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                                    ];
-                                    var data = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 2, rateItems, roundingMethods, 20000);
-                                }
-                                var healthInsuranceRateDetailData = data;
-                                dfd.resolve(healthInsuranceRateDetailData);
+                                var findPath = servicePath.getHealthInsuranceItemDetail + "/" + code;
+                                nts.uk.request.ajax(findPath).done(function (data) {
+                                    var healthInsuranceRateDetailData = data;
+                                    dfd.resolve(healthInsuranceRateDetailData);
+                                });
                                 return dfd.promise();
                             }
                             service.getHealthInsuranceItemDetail = getHealthInsuranceItemDetail;
                             function getPensionItemDetail(code) {
                                 var dfd = $.Deferred();
-                                var findPath = servicePath.getPensionItemDetail;
-                                if (code == "code1") {
-                                    var rateItems = [
-                                        new model.finder.PensionRateItemDto(123, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(12, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(13423, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1523, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(123, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(12653, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(123, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1723, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1263, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1223, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1823, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(12223, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                    ];
-                                    var fundRateItems = [
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                    ];
-                                    var roundingMethods = [
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "roundingname1"), new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundingname3")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
-                                    ];
-                                    var data = new model.finder.PensionRateDto(1, "companyCode", "code1", "applyRange", 1, 1, rateItems, fundRateItems, roundingMethods, 150000, 150);
-                                }
-                                else {
-                                    var rateItems = [
-                                        new model.finder.PensionRateItemDto(234, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(12, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(13423, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1523, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(123, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(12653, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(123, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1723, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1263, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1223, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(1823, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                        new model.finder.PensionRateItemDto(12223, model.GroupType.Personal, model.PaymentType.Salary, model.InsuranceGender.Male),
-                                    ];
-                                    var fundRateItems = [
-                                        new model.finder.FundRateItemDto(111, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(11222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(2222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(2242, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(2223, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(2522, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                        new model.finder.FundRateItemDto(222, model.GroupType.Personal, model.ChargeType.Burden, model.InsuranceGender.Male, model.PaymentType.Salary),
-                                    ];
-                                    var roundingMethods = [
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("rounding1", "rouname1"), new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roungname2")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundinge3")]),
-                                        new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
-                                    ];
-                                    var data = new model.finder.PensionRateDto(1, "companyCode", "code1", "applyRange", 1, 2, rateItems, fundRateItems, roundingMethods, 200000, 1150);
-                                }
-                                var pensionRateDetailData = data;
-                                dfd.resolve(pensionRateDetailData);
+                                var findPath = servicePath.getPensionItemDetail + "/" + code;
+                                nts.uk.request.ajax(findPath).done(function (data) {
+                                    var pensionRateDetailData = data;
+                                    dfd.resolve(pensionRateDetailData);
+                                });
                                 return dfd.promise();
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
@@ -345,9 +194,7 @@ var nts;
                                     }());
                                     finder.HealthInsuranceAvgearnDto = HealthInsuranceAvgearnDto;
                                     var RoundingItemDto = (function () {
-                                        function RoundingItemDto(code, name) {
-                                            this.code = code;
-                                            this.name = name;
+                                        function RoundingItemDto() {
                                         }
                                         return RoundingItemDto;
                                     }());

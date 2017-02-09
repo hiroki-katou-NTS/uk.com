@@ -7,10 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.collection.ListUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -21,12 +18,6 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
  */
 @Getter
 public class HealthInsuranceRate extends AggregateRoot {
-
-	/** The Constant INSURANCE_RATE_ITEM_COUNT. */
-	private static final int INSURANCE_RATE_ITEM_COUNT = 8;
-
-	/** The Constant HEALTH_INSURANCE_ROUNDING_COUNT. */
-	private static final int HEALTH_INSURANCE_ROUNDING_COUNT = 4;
 
 	/** The history id. */
 	// historyId
@@ -52,49 +43,6 @@ public class HealthInsuranceRate extends AggregateRoot {
 
 	/** The rounding methods. */
 	private List<HealthInsuranceRounding> roundingMethods;
-
-	/**
-	 * Instantiates a new health insurance rate.
-	 */
-	public HealthInsuranceRate() {
-		super();
-	}
-
-	/**
-	 * @param historyId
-	 * @param companyCode
-	 * @param officeCode
-	 * @param applyRange
-	 * @param autoCalculate
-	 * @param maxAmount
-	 * @param rateItems
-	 * @param roundingMethods
-	 */
-	public HealthInsuranceRate(String historyId, CompanyCode companyCode, OfficeCode officeCode, MonthRange applyRange,
-			Boolean autoCalculate, CommonAmount maxAmount, List<InsuranceRateItem> rateItems,
-			List<HealthInsuranceRounding> roundingMethods) {
-		super();
-
-		// Validate required item
-		if (StringUtil.isNullOrEmpty(officeCode.v(), true) || applyRange == null || maxAmount == null
-				|| ListUtil.isEmpty(rateItems) || rateItems.size() != INSURANCE_RATE_ITEM_COUNT
-				|| ListUtil.isEmpty(roundingMethods) || roundingMethods.size() != HEALTH_INSURANCE_ROUNDING_COUNT) {
-			throw new BusinessException("ER001");
-		}
-
-		// TODO: Check consistency date range.
-		// History after start date and time exists
-		// throw new BusinessException("ER011"); ER0123!?
-
-		this.historyId = historyId;
-		this.companyCode = companyCode;
-		this.officeCode = officeCode;
-		this.applyRange = applyRange;
-		this.autoCalculate = autoCalculate;
-		this.maxAmount = maxAmount;
-		this.rateItems = rateItems;
-		this.roundingMethods = roundingMethods;
-	}
 
 	// =================== Memento State Support Method ===================
 	/**

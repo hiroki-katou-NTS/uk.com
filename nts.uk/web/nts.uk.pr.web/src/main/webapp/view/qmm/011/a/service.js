@@ -27,7 +27,8 @@ var nts;
                                 findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/find",
                                 detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/detail",
                                 addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
-                                updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update"
+                                updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
+                                findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
                             };
                             function addUnemployeeInsuranceRate(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto, companyCode) {
                                 var dfd = $.Deferred();
@@ -181,6 +182,7 @@ var nts;
                                 var unemployeeInsuranceRateDto;
                                 unemployeeInsuranceRateDto = new model.UnemployeeInsuranceRateDto();
                                 unemployeeInsuranceRateDto.historyInsurance = historyInsurance;
+                                unemployeeInsuranceRateDto.version = unemployeeInsuranceRateModel.version();
                                 unemployeeInsuranceRateDto.rateItems = [];
                                 unemployeeInsuranceRateDto.rateItems.push(service.convertUnemployeeInsuranceRateItemModelDTO(model.CareerGroupDto.Agroforestry, unemployeeInsuranceRateModel.unemployeeInsuranceRateItemAgroforestryModel));
                                 unemployeeInsuranceRateDto.rateItems.push(service.convertUnemployeeInsuranceRateItemModelDTO(model.CareerGroupDto.Contruction, unemployeeInsuranceRateModel.unemployeeInsuranceRateItemContructionModel));
@@ -198,6 +200,7 @@ var nts;
                                 var accidentInsuranceRateDto;
                                 accidentInsuranceRateDto = new model.AccidentInsuranceRateDto();
                                 accidentInsuranceRateDto.historyInsurance = historyInsurance;
+                                accidentInsuranceRateDto.version = accidentInsuranceRateModel.version();
                                 accidentInsuranceRateDto.rateItems = [];
                                 accidentInsuranceRateDto.rateItems.push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz1St, accidentInsuranceRateModel.accidentInsuranceRateBiz1StModel));
                                 accidentInsuranceRateDto.rateItems.push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz2Nd, accidentInsuranceRateModel.accidentInsuranceRateBiz2NdModel));
@@ -212,6 +215,18 @@ var nts;
                                 return accidentInsuranceRateDto;
                             }
                             service.convertAccidentInsuranceRateModelDTO = convertAccidentInsuranceRateModelDTO;
+                            function findAllInsuranceBusinessType(companyCode) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findAllInsuranceBusinessType + "/" + companyCode)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findAllInsuranceBusinessType = findAllInsuranceBusinessType;
                             var model;
                             (function (model) {
                                 var YearMonth = (function () {
@@ -339,6 +354,22 @@ var nts;
                                     TypeActionInsuranceRate[TypeActionInsuranceRate["update"] = 2] = "update";
                                 })(model.TypeActionInsuranceRate || (model.TypeActionInsuranceRate = {}));
                                 var TypeActionInsuranceRate = model.TypeActionInsuranceRate;
+                                var InsuranceBusinessTypeUpdateDto = (function () {
+                                    function InsuranceBusinessTypeUpdateDto(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th) {
+                                        this.bizNameBiz1St = bizNameBiz1St;
+                                        this.bizNameBiz2Nd = bizNameBiz2Nd;
+                                        this.bizNameBiz3Rd = bizNameBiz3Rd;
+                                        this.bizNameBiz4Th = bizNameBiz4Th;
+                                        this.bizNameBiz5Th = bizNameBiz5Th;
+                                        this.bizNameBiz6Th = bizNameBiz6Th;
+                                        this.bizNameBiz7Th = bizNameBiz7Th;
+                                        this.bizNameBiz8Th = bizNameBiz8Th;
+                                        this.bizNameBiz9Th = bizNameBiz9Th;
+                                        this.bizNameBiz10Th = bizNameBiz10Th;
+                                    }
+                                    return InsuranceBusinessTypeUpdateDto;
+                                }());
+                                model.InsuranceBusinessTypeUpdateDto = InsuranceBusinessTypeUpdateDto;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm011.a || (qmm011.a = {}));

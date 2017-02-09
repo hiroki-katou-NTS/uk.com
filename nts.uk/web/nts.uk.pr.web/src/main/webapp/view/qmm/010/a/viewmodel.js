@@ -11,6 +11,7 @@ var nts;
                     var a;
                     (function (a) {
                         var option = nts.uk.ui.option;
+                        var LaborInsuranceOfficeFindInDto = a.service.model.LaborInsuranceOfficeFindInDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -53,7 +54,7 @@ var nts;
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllLaborInsuranceOffice().done(function (data) {
+                                    a.service.findAllLaborInsuranceOffice("companyCode").done(function (data) {
                                         self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
                                         self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
                                         self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
@@ -66,7 +67,11 @@ var nts;
                                 ScreenModel.prototype.findInsuranceOffice = function (code) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findLaborInsuranceOffice(code).done(function (data) {
+                                    var laborInsuranceOfficeFindInDto;
+                                    laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
+                                    laborInsuranceOfficeFindInDto.code = code;
+                                    laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
+                                    a.service.findLaborInsuranceOffice(laborInsuranceOfficeFindInDto).done(function (data) {
                                         self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
                                         dfd.resolve(null);
                                     });
@@ -74,7 +79,11 @@ var nts;
                                 };
                                 ScreenModel.prototype.showInsuranceOffice = function (code) {
                                     var self = this;
-                                    a.service.findLaborInsuranceOffice(code).done(function (data) {
+                                    var laborInsuranceOfficeFindInDto;
+                                    laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
+                                    laborInsuranceOfficeFindInDto.code = code;
+                                    laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
+                                    a.service.findLaborInsuranceOffice(laborInsuranceOfficeFindInDto).done(function (data) {
                                         self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
                                     });
                                 };

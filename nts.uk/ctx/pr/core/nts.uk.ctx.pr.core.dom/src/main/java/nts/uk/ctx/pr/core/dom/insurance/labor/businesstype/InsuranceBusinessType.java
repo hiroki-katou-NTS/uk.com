@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.businesstype;
 
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 /**
  * The Class InsuranceBusinessType.
  */
-@Data
+@Getter
 public class InsuranceBusinessType extends AggregateRoot {
 
 	/** The company code. */

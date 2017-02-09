@@ -100,12 +100,13 @@ module nts.uk.pr.view.qmm011.a {
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
             private openEditInsuranceBusinessType() {
                 var self = this;
-                var historyId = self.selectionHistoryAccidentInsuranceRate();
-                nts.uk.ui.windows.setShared("historyId", historyId);
-                nts.uk.ui.windows.setShared("accidentInsuranceRateModel", self.accidentInsuranceRateModel);
-                nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
-                    //OnClose => call
+                service.findAllInsuranceBusinessType("companyCode001").done(data => {
+                    nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateDto", data);
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
+                        //OnClose => call
+                    });
                 });
+
             }
             //open dialog edit HistoryAccidentInsurance => show view model xhtml (action event edit)
             private openEditHistoryAccidentInsuranceRate() {
@@ -117,7 +118,7 @@ module nts.uk.pr.view.qmm011.a {
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
                 nts.uk.ui.windows.setShared("historyStart", self.historyAccidentInsuranceRateStart());
                 nts.uk.ui.windows.setShared("historyEnd", self.historyAccidentInsuranceRateEnd());
-                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
+                self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
                 nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(() => {
                     //OnClose => call
                     var updateHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryAccidentInsuranceDto");
@@ -306,6 +307,7 @@ module nts.uk.pr.view.qmm011.a {
             unemployeeInsuranceRateItemAgroforestryModel: UnemployeeInsuranceRateItemModel;
             unemployeeInsuranceRateItemContructionModel: UnemployeeInsuranceRateItemModel;
             unemployeeInsuranceRateItemOtherModel: UnemployeeInsuranceRateItemModel;
+            version: KnockoutObservable<number>;
 
             constructor(unemployeeInsuranceRate: UnemployeeInsuranceRateDto, rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
                 for (var rateItem of unemployeeInsuranceRate.rateItems) {
@@ -327,6 +329,7 @@ module nts.uk.pr.view.qmm011.a {
                             new UnemployeeInsuranceRateItemModel(rateItem.companySetting,
                                 rateItem.personalSetting, rateInputOptions, selectionRoundingMethod);
                     }
+                    this.version = ko.observable(unemployeeInsuranceRate.version);
                 }
             }
         }
@@ -355,6 +358,7 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateBiz8ThModel: AccidentInsuranceRateDetailModel;
             accidentInsuranceRateBiz9ThModel: AccidentInsuranceRateDetailModel;
             accidentInsuranceRateBiz10ThModel: AccidentInsuranceRateDetailModel;
+            version: KnockoutObservable<number>;
             constructor(accidentInsuranceRate: AccidentInsuranceRateDto,
                 rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
                 for (var rateItem of accidentInsuranceRate.rateItems) {
@@ -408,6 +412,7 @@ module nts.uk.pr.view.qmm011.a {
                         this.accidentInsuranceRateBiz10ThModel =
                             new AccidentInsuranceRateDetailModel(rateItem, rateInputOptions, selectionRoundingMethod);
                     }
+                    this.version = ko.observable(accidentInsuranceRate.version);
                 }
             }
         }

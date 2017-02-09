@@ -24,4 +24,7 @@ public class UnemployeeInsuranceRateDto {
 
 	/** The rate items. */
 	private List<UnemployeeInsuranceRateItemDto> rateItems;
+	
+	/** The version. */
+	private long version;
 }

@@ -17,14 +17,17 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 @Data
 public class PensionPremiumRateItem extends AggregateRoot {
 
-	/** The charge rates. */
-	private Set<PensionChargeRateItem> chargeRates;
-
 	/** The pay type. */
 	private PaymentType payType;
 
 	/** The gender type. */
 	private InsuranceGender genderType;
+
+	/** The raise charge rate. */
+	private PensionChargeRateItem raiseChargeRate;
+
+	/** The deduct charge rate. */
+	private PensionChargeRateItem deductChargeRate;
 
 	/**
 	 * Instantiates a new pension premium rate item.
@@ -34,16 +37,24 @@ public class PensionPremiumRateItem extends AggregateRoot {
 	}
 
 	/**
-	 * @param chargeRates
+	 * Instantiates a new pension premium rate item.
+	 *
 	 * @param payType
+	 *            the pay type
 	 * @param genderType
+	 *            the gender type
+	 * @param raiseChargeRate
+	 *            the raise charge rate
+	 * @param deductChargeRate
+	 *            the deduct charge rate
 	 */
-	public PensionPremiumRateItem(Set<PensionChargeRateItem> chargeRates, PaymentType payType,
-			InsuranceGender genderType) {
+	public PensionPremiumRateItem(PaymentType payType, InsuranceGender genderType,
+			PensionChargeRateItem raiseChargeRate, PensionChargeRateItem deductChargeRate) {
 		super();
-		this.chargeRates = chargeRates;
 		this.payType = payType;
 		this.genderType = genderType;
+		this.raiseChargeRate = raiseChargeRate;
+		this.deductChargeRate = deductChargeRate;
 	}
 
 }

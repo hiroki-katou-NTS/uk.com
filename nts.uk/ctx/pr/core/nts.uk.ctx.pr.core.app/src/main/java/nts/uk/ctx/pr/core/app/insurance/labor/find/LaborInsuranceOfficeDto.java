@@ -1,10 +1,19 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.find;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.core.app.company.find.CompanyDto;
+import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 
+/**
+ * The Class LaborInsuranceOfficeDto.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -46,4 +55,12 @@ public class LaborInsuranceOfficeDto {
 	private String officeNoC;
 	/** The memo. */
 	private String memo;
+
+	public static LaborInsuranceOfficeDto fromDomain(LaborInsuranceOffice domain) {
+		return new LaborInsuranceOfficeDto(domain.getCode().v(), domain.getName().v(), domain.getShortName().v(),
+				domain.getPicName().v(), domain.getPicPosition().v(), domain.getPotalCode().v(), domain.getPrefecture(),
+				domain.getAddress1st().v(), domain.getAddress2nd().v(), domain.getKanaAddress1st().v(),
+				domain.getKanaAddress2nd().v(), domain.getPhoneNumber(), domain.getCitySign(), domain.getOfficeMark(),
+				domain.getOfficeNoA(), domain.getOfficeNoB(), domain.getOfficeNoC(), domain.getMemo().v());
+	}
 }

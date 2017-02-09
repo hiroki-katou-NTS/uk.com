@@ -8,14 +8,15 @@ module nts.uk.pr.view.qmm008.i {
             rightShow: KnockoutObservable<boolean>;
             leftBtnText: KnockoutComputed<string>;
             rightBtnText: KnockoutComputed<string>;
+            listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
-
+                self.listAvgEarnLevelMasterSetting = ko.observableArray();
                 self.leftShow = ko.observable(true);
                 self.rightShow = ko.observable(true);
-                self.leftBtnText = ko.computed(function() { if (self.leftShow()) return "-"; return "+"; });
-                self.rightBtnText = ko.computed(function() { if (self.rightShow()) return "-"; return "+"; });
+                self.leftBtnText = ko.computed(function() { if (self.leftShow()) return "—"; return "+"; });
+                self.rightBtnText = ko.computed(function() { if (self.rightShow()) return "—"; return "+"; });
             }
 
             /**
@@ -24,7 +25,10 @@ module nts.uk.pr.view.qmm008.i {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                dfd.resolve();
+                commonService.getAvgEarnLevelMasterSettingList().done(data => {
+                    self.listAvgEarnLevelMasterSetting(data);
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 

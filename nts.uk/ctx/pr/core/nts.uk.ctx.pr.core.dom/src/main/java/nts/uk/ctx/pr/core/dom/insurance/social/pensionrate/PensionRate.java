@@ -7,26 +7,19 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.collection.ListUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
 
 /**
  * The Class PensionRate.
  */
 @Getter
 public class PensionRate extends AggregateRoot {
-	/** The fund rate item count. */
-	private final int FUND_RATE_ITEM_COUNT = 6;
-
-	/** The rounding method count. */
-	private final int ROUNDING_METHOD_COUNT = 4;
 
 	/** The history id. */
 	// historyId
@@ -57,49 +50,19 @@ public class PensionRate extends AggregateRoot {
 	private List<PensionRateRounding> roundingMethods;
 
 	/**
-	 * Instantiates a new pension rate.
+	 * Validate.
+	 *
+	 * @param service
+	 *            the service
 	 */
-	public PensionRate() {
-		super();
-	}
-
-	/**
-	 * @param historyId
-	 * @param companyCode
-	 * @param officeCode
-	 * @param applyRange
-	 * @param maxAmount
-	 * @param fundRateItems
-	 * @param premiumRateItems
-	 * @param childContributionRate
-	 * @param roundingMethods
-	 */
-	public PensionRate(String historyId, CompanyCode companyCode, OfficeCode officeCode, MonthRange applyRange,
-			CommonAmount maxAmount, List<FundRateItem> fundRateItems, List<PensionPremiumRateItem> premiumRateItems,
-			Ins2Rate childContributionRate, List<PensionRateRounding> roundingMethods) {
-		super();
-
+	public void validate(PensionRateService service) {
 		// Validate required item
-		if (StringUtil.isNullOrEmpty(officeCode.v(), true) || applyRange == null || maxAmount == null
-				|| childContributionRate == null || ListUtil.isEmpty(fundRateItems)
-				|| fundRateItems.size() != FUND_RATE_ITEM_COUNT || ListUtil.isEmpty(roundingMethods)
-				|| roundingMethods.size() != ROUNDING_METHOD_COUNT) {
-			throw new BusinessException("ER001");
-		}
+		service.validateRequiredItem(this);
 
-		// TODO: Check consistency date range.
+		// Check consistency date range.
+		service.validateDateRange(this);
 		// History after start date and time exists
 		// throw new BusinessException("ER011"); ER0123!?
-
-		this.historyId = historyId;
-		this.companyCode = companyCode;
-		this.officeCode = officeCode;
-		this.applyRange = applyRange;
-		this.maxAmount = maxAmount;
-		this.fundRateItems = fundRateItems;
-		this.premiumRateItems = premiumRateItems;
-		this.childContributionRate = childContributionRate;
-		this.roundingMethods = roundingMethods;
 	}
 
 	// =================== Memento State Support Method ===================

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 
@@ -90,6 +91,12 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	public SocialInsuranceOffice findByOfficeCode(String officeCode) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isDuplicateCode(OfficeCode code) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

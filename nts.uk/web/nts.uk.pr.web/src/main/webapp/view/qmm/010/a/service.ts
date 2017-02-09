@@ -9,10 +9,10 @@ module nts.uk.pr.view.qmm010.a {
         };
 
         //Function connection service FindAll Labor Insurance Office
-        export function findAllLaborInsuranceOffice(): JQueryPromise<Array<model.LaborInsuranceOfficeInDto>> {
+        export function findAllLaborInsuranceOffice(companyCode: string): JQueryPromise<Array<model.LaborInsuranceOfficeFindOutDto>> {
             var dfd = $.Deferred<Array<model.LaborInsuranceOfficeInDto>>();
-            nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
-                .done(function(res: Array<model.LaborInsuranceOfficeInDto>) {
+            nts.uk.request.ajax(paths.findAllLaborInsuranceOffice + "/" + companyCode)
+                .done(function(res: Array<model.LaborInsuranceOfficeFindOutDto>) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -22,9 +22,9 @@ module nts.uk.pr.view.qmm010.a {
             return dfd.promise();
         }
         //Function connection service findLaborInsuranceOffice By Code
-        export function findLaborInsuranceOffice(code: string): JQueryPromise<model.LaborInsuranceOfficeDto> {
+        export function findLaborInsuranceOffice(laborInsuranceOfficeFindInDto: model.LaborInsuranceOfficeFindInDto): JQueryPromise<model.LaborInsuranceOfficeDto> {
             var dfd = $.Deferred<model.LaborInsuranceOfficeDto>();
-            nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + code)
+            nts.uk.request.ajax(paths.findLaborInsuranceOffice, laborInsuranceOfficeFindInDto)
                 .done(function(res: model.LaborInsuranceOfficeDto) {
                     dfd.resolve(res);
                     //xyz
@@ -105,11 +105,18 @@ module nts.uk.pr.view.qmm010.a {
                 memo: string;
 
             }
-            export class LaborInsuranceOfficeInDto {
+            export class LaborInsuranceOfficeFindOutDto {
                 /** The code. officeCode*/
                 code: string;
                 /** The name. officeName*/
                 name: string;
+            }
+
+            export class LaborInsuranceOfficeFindInDto {
+                /** The code. officeCode */
+                code: string;
+                /** The company code. */
+                companyCode: string;
             }
 
         }

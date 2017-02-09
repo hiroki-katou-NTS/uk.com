@@ -11,26 +11,43 @@ var nts;
                     var e;
                     (function (e) {
                         var option = nts.uk.ui.option;
-                        var InsuranceBusinessTypeDto = e.service.model.InsuranceBusinessTypeDto;
+                        var InsuranceBusinessTypeUpdateDto = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeUpdateDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                                    self.accidentInsuranceRateModel = nts.uk.ui.windows.getShared("accidentInsuranceRateModel");
+                                    var insuranceBusinessTypeUpdateDto = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateDto");
+                                    self.insuranceBusinessTypeUpdateModel = ko.observable(new InsuranceBusinessTypeUpdateModel(insuranceBusinessTypeUpdateDto));
                                 }
                                 ScreenModel.prototype.updateInsuranceBusinessType = function () {
                                     var self = this;
                                     nts.uk.ui.windows.close();
                                     var insuranceBusinessType;
                                     insuranceBusinessType =
-                                        new InsuranceBusinessTypeDto(self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.insuranceBusinessType(), self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.insuranceBusinessType());
+                                        new InsuranceBusinessTypeUpdateDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(), self.insuranceBusinessTypeUpdateModel().bizNameBiz2Nd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz3Rd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz4Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz5Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz6Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz7Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz8Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th());
                                     e.service.updateInsuranceBusinessType(insuranceBusinessType);
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            var InsuranceBusinessTypeUpdateModel = (function () {
+                                function InsuranceBusinessTypeUpdateModel(insuranceBusinessTypeUpdateDto) {
+                                    this.bizNameBiz1St = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz1St);
+                                    this.bizNameBiz2Nd = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz2Nd);
+                                    this.bizNameBiz3Rd = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz3Rd);
+                                    this.bizNameBiz4Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz4Th);
+                                    this.bizNameBiz5Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz5Th);
+                                    this.bizNameBiz6Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz6Th);
+                                    this.bizNameBiz7Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz7Th);
+                                    this.bizNameBiz8Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz8Th);
+                                    this.bizNameBiz9Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz9Th);
+                                    this.bizNameBiz10Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz10Th);
+                                }
+                                return InsuranceBusinessTypeUpdateModel;
+                            }());
+                            viewmodel.InsuranceBusinessTypeUpdateModel = InsuranceBusinessTypeUpdateModel;
                         })(viewmodel = e.viewmodel || (e.viewmodel = {}));
                     })(e = qmm011.e || (qmm011.e = {}));
                 })(qmm011 = view.qmm011 || (view.qmm011 = {}));

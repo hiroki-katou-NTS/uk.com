@@ -50,7 +50,8 @@ public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateU
 		UnitPriceHistory unitPriceHistory = command.toDomain(companyCode);
 
 		// Validate
-		unitPriceHistory.validate(unitPriceHistoryService);
+		unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
+		unitPriceHistoryService.validateDateRange(unitPriceHistory);
 
 		// Insert into db.
 		unitPriceHistoryRepository.add(unitPriceHistory);

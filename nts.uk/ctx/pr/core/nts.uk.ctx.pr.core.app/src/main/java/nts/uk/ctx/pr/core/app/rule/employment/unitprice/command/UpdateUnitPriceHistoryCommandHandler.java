@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,6 +25,10 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 	/** The unit price history repo. */
 	@Inject
 	private UnitPriceHistoryRepository unitPriceHistoryRepo;
+
+	/** The unit price history service. */
+	@Inject
+	private UnitPriceHistoryService unitPriceHistoryService;
 
 	/*
 	 * (non-Javadoc)
@@ -49,7 +54,8 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 				unitPriceHistory.getUnitPriceCode());
 
 		// Validate
-		updatedHistory.validate();
+		unitPriceHistoryService.validateRequiredItem(updatedHistory);
+		unitPriceHistoryService.validateDateRange(updatedHistory);
 
 		// Update to db.
 		unitPriceHistoryRepo.update(updatedHistory);
