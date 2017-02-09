@@ -130,13 +130,14 @@ div.form-label {
 /*****************************
   NtsLinkButton
 *****************************/
-div.link-button {
+.link-button {
 	display: inline-block;
 	padding: 3px 12px;
 	background-color: $green_background_color;
 	color: #0D86D1;
 	text-decoration: underline;
 	cursor: pointer;
+	user-select: none;
 }
 
 

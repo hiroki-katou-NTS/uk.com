@@ -333,14 +333,15 @@ div.form-label.inline > i {
 /*****************************
   NtsLinkButton
 *****************************/
-/* line 133, ../sass/components/_commons.scss */
-div.link-button {
+/* line 132, ../sass/components/_commons.scss */
+.link-button {
   display: inline-block;
   padding: 3px 12px;
   background-color: #E0F59E;
   color: #0D86D1;
   text-decoration: underline;
   cursor: pointer;
+  user-select: none;
 }
 
 /*****************************
