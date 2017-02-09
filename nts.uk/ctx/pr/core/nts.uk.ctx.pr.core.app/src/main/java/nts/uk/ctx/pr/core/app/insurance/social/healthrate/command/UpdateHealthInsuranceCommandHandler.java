@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.health.command;
+package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

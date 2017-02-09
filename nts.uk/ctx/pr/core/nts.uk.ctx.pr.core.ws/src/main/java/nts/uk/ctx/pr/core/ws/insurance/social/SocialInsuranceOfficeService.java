@@ -24,7 +24,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.command.UpdateSocialOfficeCommand
 import nts.uk.ctx.pr.core.app.insurance.social.find.dto.HistoryDto;
 import nts.uk.ctx.pr.core.app.insurance.social.find.dto.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.insurance.social.find.dto.SocialInsuranceOfficeItemDto;
-import nts.uk.ctx.pr.core.app.insurance.social.pension.command.RegisterPensionCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
 
 /**
  * The Class SocialInsuranceOfficeService.
