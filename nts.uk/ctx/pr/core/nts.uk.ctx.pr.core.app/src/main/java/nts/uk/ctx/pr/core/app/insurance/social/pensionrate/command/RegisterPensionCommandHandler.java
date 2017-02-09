@@ -24,26 +24,26 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<RegisterPensionCommand> command) {
-		PensionRateDto pensionRateDto = command.getCommand().getPensionRate();
-	
-		// Convert to Dto
-		List<FundRateItem> fundRateItems = pensionRateDto.getFundRateItems().stream()
-				.map(item -> new FundRateItem(item.getPayType(),item.getGenderType(),item.getBurdenChargeRate(),item.getExemptionChargeRate()))
-				.collect(Collectors.toList());
-		
-		List<PensionPremiumRateItem> premiumRateItems = pensionRateDto.getPremiumRateItems().stream()
-				.map(item-> new PensionPremiumRateItem(item.getChargeRates(),item.getPayType(),item.getGenderType()))
-				.collect(Collectors.toList());
-		List<PensionRateRounding> roundingMethods = pensionRateDto.getRoundingMethods().stream()
-				.map(item -> new PensionRateRounding(item.getPayType(),item.getRoundAtrs()))
-				.collect(Collectors.toList());
-		//
-		PensionRate pensionRateDomain = new PensionRate(
-				pensionRateDto.getHistoryId(), pensionRateDto.getCompanyCode(), pensionRateDto.getOfficeCode(), pensionRateDto.getApplyRange(),
-				pensionRateDto.getMaxAmount(),fundRateItems,premiumRateItems,
-				pensionRateDto.getChildContributionRate(),roundingMethods
-				);
-		pensionService.add(pensionRateDomain);
+//		PensionRateDto pensionRateDto = command.getCommand().getPensionRate();
+//	
+//		// Convert to Dto
+//		List<FundRateItem> fundRateItems = pensionRateDto.getFundRateItems().stream()
+//				.map(item -> new FundRateItem(item.getPayType(),item.getGenderType(),item,item.getExemptionChargeRate()))
+//				.collect(Collectors.toList());
+//		
+//		List<PensionPremiumRateItem> premiumRateItems = pensionRateDto.getPremiumRateItems().stream()
+//				.map(item-> new PensionPremiumRateItem(item.getChargeRates(),item.getPayType(),item.getGenderType()))
+//				.collect(Collectors.toList());
+//		List<PensionRateRounding> roundingMethods = pensionRateDto.getRoundingMethods().stream()
+//				.map(item -> new PensionRateRounding(item.getPayType(),item.getRoundAtrs()))
+//				.collect(Collectors.toList());
+//		//
+//		PensionRate pensionRateDomain = new PensionRate(
+//				pensionRateDto.getHistoryId(), pensionRateDto.getCompanyCode(), pensionRateDto.getOfficeCode(), pensionRateDto.getApplyRange(),
+//				pensionRateDto.getMaxAmount(),fundRateItems,premiumRateItems,
+//				pensionRateDto.getChildContributionRate(),roundingMethods
+//				);
+//		pensionService.add(pensionRateDomain);
 		return;
 	}
 

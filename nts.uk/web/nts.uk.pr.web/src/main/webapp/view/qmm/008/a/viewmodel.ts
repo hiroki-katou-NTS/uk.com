@@ -117,6 +117,8 @@ module nts.uk.pr.view.qmm008.a {
                 self.fundInputEnable = ko.observable(true);
                 //subscribe change select office
                 self.officeSelectedCode.subscribe(function(officeSelectedCode: string) {
+                    //TODO check parent or child
+                    
                     if (officeSelectedCode != null || officeSelectedCode != undefined) {
 //                        alert(officeSelectedCode);
                         $.when(self.load(officeSelectedCode)).done(function() {
@@ -201,7 +203,6 @@ module nts.uk.pr.view.qmm008.a {
             public load(code: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                
                 service.getHealthInsuranceItemDetail(code).done(function(data: HealthInsuranceRateDto) {
                     if (data == null) {
                         return;
@@ -211,14 +212,14 @@ module nts.uk.pr.view.qmm008.a {
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
                     self.healthModel().autoCalculate(data.autoCalculate);
-                    self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].chargeRate);
-                    self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[1].chargeRate);
-                    self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[2].chargeRate);
-                    self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[3].chargeRate);
-                    self.healthModel().roundingMethods().healthSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
-                    self.healthModel().roundingMethods().healthSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
-                    self.healthModel().roundingMethods().healthBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
-                    self.healthModel().roundingMethods().healthBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
+                    self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].companyRate);
+                    self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[1].companyRate);
+                    self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[0].companyRate);
+                    self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[0].companyRate);
+//                    self.healthModel().roundingMethods().healthSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
+//                    self.healthModel().roundingMethods().healthSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
+//                    self.healthModel().roundingMethods().healthBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
+//                    self.healthModel().roundingMethods().healthBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
                     self.healthModel().maxAmount(data.maxAmount);
                     // Resolve
                     dfd.resolve();
@@ -247,10 +248,10 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].chargeRate);
                     self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].chargeRate);
                     
-                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs);
-                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs);
-                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs);
-                    self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(data.roundingMethods[0].roundAtrs);
+//                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs.companyRoundAtr);
+//                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs.personalRoundAtr);
+//                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs.companyRoundAtr);
+//                    self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(data.roundingMethods[0].roundAtrs.personalRoundAtr);
                     
                     self.pensionModel().maxAmount(data.maxAmount);
                     self.pensionModel().officeRate(data.officeRate);

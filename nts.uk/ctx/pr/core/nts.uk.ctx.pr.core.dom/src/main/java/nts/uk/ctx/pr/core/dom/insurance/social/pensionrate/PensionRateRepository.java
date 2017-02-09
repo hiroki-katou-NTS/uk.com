@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface PensionRateRepository.
@@ -47,5 +48,5 @@ public interface PensionRateRepository {
 	 * @param id the id
 	 * @return the pension rate
 	 */
-	PensionRate findById(String id);
+	Optional<PensionRate> findById(String id);
 }

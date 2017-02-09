@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionrate;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -78,7 +79,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 * #findById(java.lang.String)
 	 */
 	@Override
-	public PensionRate findById(String id) {
+	public Optional<PensionRate> findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

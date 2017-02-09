@@ -6,9 +6,9 @@ module nts.uk.pr.view.qmm008.a {
         var servicePath = {
             getAllOfficeItem: "pr/insurance/social/findall",
             getAllHistoryOfOffice: "pr/insurance/social/history",
-            getAllRoundingItem: "list/rounding",
-            getHealthInsuranceItemDetail:"health/list",
-            getPensionItemDetail:"pension/list"
+            getHealthInsuranceItemDetail:"ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
+            getPensionItemDetail:"pension/list",
+            getAllRoundingItem: "list/rounding"
         };
         /**
          * Function is used to load all InsuranceOfficeItem by key.
@@ -85,9 +85,9 @@ module nts.uk.pr.view.qmm008.a {
                 var data = null ;
                 // Convert json to model here.
                 var roundingList: Array<model.finder.RoundingItemDto> =[
-                    new model.finder.RoundingItemDto('001', 'op1change'),
-                    new model.finder.RoundingItemDto('002', 'op2'),
-                    new model.finder.RoundingItemDto('003', 'op3')
+//                    new model.finder.RoundingItemDto('001', 'op1change'),
+//                    new model.finder.RoundingItemDto('002', 'op2'),
+//                    new model.finder.RoundingItemDto('003', 'op3')
                 ];
 
                 // Resolve.
@@ -98,81 +98,78 @@ module nts.uk.pr.view.qmm008.a {
             return dfd.promise();
         }
         /**
-         * Function is used to load all task.
+         * Function is used to load health data of Office by office code.
          */
         export function getHealthInsuranceItemDetail(code:string): JQueryPromise<model.finder.HealthInsuranceRateDto> {
-
             // Init new dfd.
             var dfd = $.Deferred<model.finder.HealthInsuranceRateDto>();
-
-            var findPath = servicePath.getHealthInsuranceItemDetail;
-
+            var findPath = servicePath.getHealthInsuranceItemDetail+"/"+ code;
             // Call ajax.
-//            nts.request.ajax(findPath).done(function(data) {
-            //mock data
-            if(code=="code1")
-            {
-            var rateItems: Array<model.finder.HealthInsuranceRateItemDto> = [
-                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-            ];
-
-            var roundingMethods: Array<model.finder.RoundingDto> = [
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "roundingname1"),new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundingname3")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
-            ];
-            var data: model.finder.HealthInsuranceRateDto = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 1, rateItems, roundingMethods, 150000);
-            
-                }
-            else
-                {
-            var rateItems: Array<model.finder.HealthInsuranceRateItemDto> = [
-                new model.finder.HealthInsuranceRateItemDto(333, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(23323, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(2334, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(2423, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(2523, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(1523, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(2263, model.PaymentType.Salary, model.HealthInsuranceType.General),
-                new model.finder.HealthInsuranceRateItemDto(2634, model.PaymentType.Salary, model.HealthInsuranceType.General),
-            ];
-            var arrayRoundingMethod: Array<model.finder.RoundingItemDto> = [
-                new model.finder.RoundingItemDto("roundingcode1", "切り上げ"),
-                new model.finder.RoundingItemDto("roundingcode2", "切捨て"),
-                new model.finder.RoundingItemDto("roundingcode3", "四捨五入"),
-                new model.finder.RoundingItemDto("roundingcode4", "五捨五超入"),
-                new model.finder.RoundingItemDto("roundingcode5", "五捨六入")
-            ];
-            var roundingMethods: Array<model.finder.RoundingDto> = [
-                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
-            ];
-            var data: model.finder.HealthInsuranceRateDto = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 2, rateItems, roundingMethods, 20000);
-            }
+            nts.uk.request.ajax(findPath).done(function(data) {
+                
+//            if(code=="code1")
+//            {
+//            var rateItems: Array<model.finder.HealthInsuranceRateItemDto> = [
+//                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(223, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//            ];
+//
+//            var roundingMethods: Array<model.finder.RoundingDto> = [
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "roundingname1"),new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundingname3")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
+//            ];
+//            var data: model.finder.HealthInsuranceRateDto = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 1, rateItems, roundingMethods, 150000);
+//            
+//                }
+//            else
+//                {
+//            var rateItems: Array<model.finder.HealthInsuranceRateItemDto> = [
+//                new model.finder.HealthInsuranceRateItemDto(333, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(23323, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(2334, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(2423, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(123, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(2523, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(234, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(1523, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(2263, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//                new model.finder.HealthInsuranceRateItemDto(2634, model.PaymentType.Salary, model.HealthInsuranceType.General),
+//            ];
+//            var arrayRoundingMethod: Array<model.finder.RoundingItemDto> = [
+//                new model.finder.RoundingItemDto("roundingcode1", "切り上げ"),
+//                new model.finder.RoundingItemDto("roundingcode2", "切捨て"),
+//                new model.finder.RoundingItemDto("roundingcode3", "四捨五入"),
+//                new model.finder.RoundingItemDto("roundingcode4", "五捨五超入"),
+//                new model.finder.RoundingItemDto("roundingcode5", "五捨六入")
+//            ];
+//            var roundingMethods: Array<model.finder.RoundingDto> = [
+//                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, arrayRoundingMethod),
+//            ];
+//            var data: model.finder.HealthInsuranceRateDto = new model.finder.HealthInsuranceRateDto(1, "companyCode", "code1", "applyRange", 2, rateItems, roundingMethods, 20000);
+//            }
                 // Convert json to model here.
             var healthInsuranceRateDetailData: model.finder.HealthInsuranceRateDto = data;
 
                 // Resolve.
                 dfd.resolve(healthInsuranceRateDetailData);
-//            });
+            });
 
             // Ret promise.
             return dfd.promise();
@@ -239,10 +236,10 @@ module nts.uk.pr.view.qmm008.a {
                 new model.finder.FundRateItemDto(222,model.GroupType.Personal,model.ChargeType.Burden,model.InsuranceGender.Male,model.PaymentType.Salary),
                 ];
             var roundingMethods: Array<model.finder.RoundingDto> = [
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "roundingname1"),new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundingname3")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode1", "roundingname1"),new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundingname3")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
             ];
             var data: model.finder.PensionRateDto = new model.finder.PensionRateDto(1, "companyCode", "code1", "applyRange", 1,1, rateItems,fundRateItems, roundingMethods, 150000,150);
             
@@ -294,10 +291,10 @@ module nts.uk.pr.view.qmm008.a {
                 new model.finder.FundRateItemDto(222,model.GroupType.Personal,model.ChargeType.Burden,model.InsuranceGender.Male,model.PaymentType.Salary),
                 ];
             var roundingMethods: Array<model.finder.RoundingDto> = [
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("rounding1", "rouname1"),new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roungname2")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundinge3")]),
-                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("rounding1", "rouname1"),new model.finder.RoundingItemDto("roundingcode2", "roundingname2")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode2", "roungname2")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode3", "roundinge3")]),
+//                new model.finder.RoundingDto(model.PaymentType.Salary, [new model.finder.RoundingItemDto("roundingcode4", "roundingname4")]),
             ];
             var data: model.finder.PensionRateDto = new model.finder.PensionRateDto(1, "companyCode", "code1", "applyRange", 1,2, rateItems,fundRateItems, roundingMethods, 200000,1150);
                 
@@ -437,6 +434,8 @@ module nts.uk.pr.view.qmm008.a {
                     chargeRate: number; //value of person or company
                     payType: PaymentType;
                     healthInsuranceType: HealthInsuranceType;
+                    companyRate:number;
+                    personalRate:number;
                     constructor(chargeRate:number,payType:PaymentType,healthInsuranceType:HealthInsuranceType)
                     {
                         this.chargeRate=chargeRate;
@@ -456,8 +455,8 @@ module nts.uk.pr.view.qmm008.a {
                 //common class for health and pension
                 export class RoundingDto {
                     payType: PaymentType;
-                    roundAtrs: Array<RoundingItemDto>;
-                    constructor(payType: PaymentType,roundAtrs: Array<RoundingItemDto>){
+                    roundAtrs: RoundingItemDto;
+                    constructor(payType: PaymentType,roundAtrs: RoundingItemDto){
                         this.payType=payType;
                         this.roundAtrs= roundAtrs;
                     }
@@ -473,15 +472,19 @@ module nts.uk.pr.view.qmm008.a {
 //                    companyRoundAtr: number;
 //                    personalRoundAtr: number;
 //                }
-                export class RoundingItemDto {
-                    code: string;
-                    name: string;
-                    label: string;
-
-                    constructor(code: string, name: string) {
-                        this.code = code;
-                        this.name = name;
-                    }
+//                export class RoundingItemDto {
+//                    code: string;
+//                    name: string;
+//                    label: string;
+//
+//                    constructor(code: string, name: string) {
+//                        this.code = code;
+//                        this.name = name;
+//                    }
+//                }
+                export class RoundingItemDto{
+                    personalRoundAtr : string;
+                    companyRoundAtr :string;    
                 }
                 export class HealthInsuranceAvgearnValueDto {
                     healthGeneralMny: number;
