@@ -262,6 +262,7 @@ var nts;
                                             this.unemployeeInsuranceRateItemOtherModel =
                                                 new UnemployeeInsuranceRateItemModel(rateItem.companySetting, rateItem.personalSetting, rateInputOptions, selectionRoundingMethod);
                                         }
+                                        this.version = ko.observable(unemployeeInsuranceRate.version);
                                     }
                                 }
                                 return UnemployeeInsuranceRateModel;
@@ -322,6 +323,7 @@ var nts;
                                             this.accidentInsuranceRateBiz10ThModel =
                                                 new AccidentInsuranceRateDetailModel(rateItem, rateInputOptions, selectionRoundingMethod);
                                         }
+                                        this.version = ko.observable(accidentInsuranceRate.version);
                                     }
                                 }
                                 return AccidentInsuranceRateModel;

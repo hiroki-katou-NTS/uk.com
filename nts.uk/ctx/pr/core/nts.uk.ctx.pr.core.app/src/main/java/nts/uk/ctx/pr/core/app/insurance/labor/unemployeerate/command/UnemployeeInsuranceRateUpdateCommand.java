@@ -31,19 +31,20 @@ public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand {
 	 * @return the labor insurance office
 	 */
 	public UnemployeeInsuranceRate toDomain() {
+		UnemployeeInsuranceRateUpdateCommand command = this;
 		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate(
 				new UnemployeeInsuranceRateGetMemento() {
 
 					@Override
 					public Long getVersion() {
 						// TODO Auto-generated method stub
-						return null;
+						return command.unemployeeInsuranceRate.getVersion();
 					}
 
 					@Override
 					public Set<UnemployeeInsuranceRateItem> getRateItems() {
 						// TODO Auto-generated method stub
-						return null;
+						return command.convertSetUnemployeeInsuranceRateItem(command.unemployeeInsuranceRate);
 					}
 
 					@Override

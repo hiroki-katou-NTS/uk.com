@@ -30,29 +30,24 @@ public class BaseInsuranceCommand {
 	}
 
 	// String, String => MonthRange
-	public  MonthRange convertMonthRange(String historyStar, String historyEnd) {
+	public MonthRange convertMonthRange(String historyStar, String historyEnd) {
 		YearMonth yearMonth = convertYearMonth(historyStar);
 		MonthRange monthRange = MonthRange.range(yearMonth, yearMonth);
 		return monthRange;
 	}
 
-	// Default SetUnemployeeInsuranceRateItem
-	public  Set<UnemployeeInsuranceRateItem> defaultSetUnemployeeInsuranceRateItem() {
+	// Convert SetUnemployeeInsuranceRateItem
+	public Set<UnemployeeInsuranceRateItem> convertSetUnemployeeInsuranceRateItem(
+			UnemployeeInsuranceRateDto unemployeeInsuranceRate) {
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<UnemployeeInsuranceRateItem>();
-		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemAgroforestry = defaultUnemployeeInsuranceRateItem(
-				CareerGroup.Agroforestry);
-		setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItemAgroforestry);
-		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemContruction = defaultUnemployeeInsuranceRateItem(
-				CareerGroup.Contruction);
-		setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItemContruction);
-		UnemployeeInsuranceRateItem unemployeeInsuranceRateItemOther = defaultUnemployeeInsuranceRateItem(
-				CareerGroup.Other);
-		setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItemOther);
+		for(UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItemDto: unemployeeInsuranceRate.getRateItems()){
+			setUnemployeeInsuranceRateItem.add(convertUnemployeeInsuranceRateItem(unemployeeInsuranceRateItemDto));
+		}
 		return setUnemployeeInsuranceRateItem;
 	}
 
 	// Convert UnemployeeInsuranceRateItem
-	public  UnemployeeInsuranceRateItem convertUnemployeeInsuranceRateItem(
+	public UnemployeeInsuranceRateItem convertUnemployeeInsuranceRateItem(
 			UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItemDto) {
 		UnemployeeInsuranceRateItem unemployeeInsuranceRateItem = new UnemployeeInsuranceRateItem();
 		if (unemployeeInsuranceRateItemDto.getCareerGroup().equals(0)) {
@@ -78,7 +73,7 @@ public class BaseInsuranceCommand {
 	}
 
 	// Convert RoundingMethod
-	public  RoundingMethod convertRoundingMethod(Integer round) {
+	public RoundingMethod convertRoundingMethod(Integer round) {
 
 		if (round == 0) {
 			return RoundingMethod.RoundUp;

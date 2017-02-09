@@ -197,6 +197,7 @@ module nts.uk.pr.view.qmm011.a {
             var unemployeeInsuranceRateDto: model.UnemployeeInsuranceRateDto;
             unemployeeInsuranceRateDto = new model.UnemployeeInsuranceRateDto();
             unemployeeInsuranceRateDto.historyInsurance = historyInsurance;
+            unemployeeInsuranceRateDto.version = unemployeeInsuranceRateModel.version();
             unemployeeInsuranceRateDto.rateItems = [];
             unemployeeInsuranceRateDto.rateItems.push(service.convertUnemployeeInsuranceRateItemModelDTO(model.CareerGroupDto.Agroforestry, unemployeeInsuranceRateModel.unemployeeInsuranceRateItemAgroforestryModel));
             unemployeeInsuranceRateDto.rateItems.push(service.convertUnemployeeInsuranceRateItemModelDTO(model.CareerGroupDto.Contruction, unemployeeInsuranceRateModel.unemployeeInsuranceRateItemContructionModel));
@@ -218,6 +219,7 @@ module nts.uk.pr.view.qmm011.a {
             var accidentInsuranceRateDto: model.AccidentInsuranceRateDto;
             accidentInsuranceRateDto = new model.AccidentInsuranceRateDto();
             accidentInsuranceRateDto.historyInsurance = historyInsurance;
+            accidentInsuranceRateDto.version = accidentInsuranceRateModel.version();
             accidentInsuranceRateDto.rateItems = [];
             accidentInsuranceRateDto.rateItems.push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz1St, accidentInsuranceRateModel.accidentInsuranceRateBiz1StModel));
             accidentInsuranceRateDto.rateItems.push(service.convertInsuBizRateItemModelDTO(model.BusinessTypeEnumDto.Biz2Nd, accidentInsuranceRateModel.accidentInsuranceRateBiz2NdModel));
@@ -294,6 +296,7 @@ module nts.uk.pr.view.qmm011.a {
             export class UnemployeeInsuranceRateDto {
                 historyInsurance: HistoryUnemployeeInsuranceDto;
                 rateItems: UnemployeeInsuranceRateItemDto[];
+                version: number;
             }
 
             export class HistoryAccidentInsuranceDto extends HistoryInsuranceDto {
