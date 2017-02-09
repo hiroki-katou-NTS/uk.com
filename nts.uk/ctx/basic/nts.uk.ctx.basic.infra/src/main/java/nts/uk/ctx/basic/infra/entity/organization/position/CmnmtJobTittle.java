@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,15 +25,19 @@ public class CmnmtJobTittle implements Serializable{
 	@EmbeddedId
 	public CmnmtJobTittlePK cmnmtJobTittlePK;
 	
-	@Convert(converter = LocalDateToDBConverter.class)
-	@Basic(optional = false)
-	@Column(name ="STR_YM")
-	public LocalDate strYm;
+	public CmnmtJobTittlePK getCmnmtJobTittlePK() {
+		return cmnmtJobTittlePK;
+	}
 
 	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
-	@Column(name = "END_YM")
-	public LocalDate endYm;
+	@Column(name ="STR_D")
+	public LocalDate startDate;
+
+	@Convert(converter = LocalDateToDBConverter.class)
+	@Basic(optional = false)
+	@Column(name = "END_D")
+	public LocalDate endDate;
 	
 	@Basic(optional = false)
 	@Column(name = "MEMO")
@@ -45,5 +50,54 @@ public class CmnmtJobTittle implements Serializable{
 	@Basic(optional = false)
 	@Column(name ="JOB_OUT_CODE")
 	public String jobOutCode;
+	
+	public void setCmnmtJobTittlePK(CmnmtJobTittlePK cmnmtJobTittlePK) {
+		this.cmnmtJobTittlePK = cmnmtJobTittlePK;
+	}
+
+	public LocalDate getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(LocalDate startDate) {
+		this.startDate = startDate;
+	}
+
+	public LocalDate getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(LocalDate endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
+
+	public String getJobOutCode() {
+		return jobOutCode;
+	}
+
+	public void setJobOutCode(String jobOutCode) {
+		this.jobOutCode = jobOutCode;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 	
 }

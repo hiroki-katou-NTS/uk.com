@@ -102,7 +102,7 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		return qmnmtPayClass;
 	}
 	
-
+	
 	private PayClassification convertToDomain(QmnmtPayClass qmnmtPayClass) {
 		return new PayClassification(new PayClassificationName(qmnmtPayClass.getPayClassName()),
 				new PayClassificationCode(qmnmtPayClass.getQmnmtPayClassPK().getPayClassCode()),

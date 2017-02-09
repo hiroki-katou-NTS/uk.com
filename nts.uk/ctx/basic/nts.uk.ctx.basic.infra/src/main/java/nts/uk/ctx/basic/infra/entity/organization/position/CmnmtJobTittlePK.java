@@ -25,7 +25,7 @@ public class CmnmtJobTittlePK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name ="CCD")
-	public String companyCd;
+	public String companyCode;
 	
 	@Basic(optional = false)
 	@Column(name ="JOBCD")

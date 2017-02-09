@@ -24,9 +24,9 @@ public class PayClassificationFinder {
 
 	private PayClassificationDto convertToDto(PayClassification payClassification) {
 		PayClassificationDto payClassificationDto = new PayClassificationDto();
-		payClassificationDto.setPayClassificationCode(payClassification.getPayClassCode().toString());
-		payClassificationDto.setPayClassificationName(payClassification.getPayClassName().toString());
-		payClassificationDto.setMemo(payClassification.getMemo().toString());
+		payClassificationDto.setPayClassificationCode(payClassification.getPayClassCode().v());
+		payClassificationDto.setPayClassificationName(payClassification.getPayClassName().v());
+		payClassificationDto.setMemo(payClassification.getMemo().v());
 		return payClassificationDto;
 	}
 
