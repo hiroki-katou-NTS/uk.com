@@ -1,8 +1,7 @@
 module qmm002.c {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);
-        });
+        var screenModel = new qmm002.c.viewmodel.ScreenModel();
+        screenModel.startPage();
+        this.bind(screenModel);
     });
 }

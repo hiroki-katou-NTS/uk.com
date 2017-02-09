@@ -67,7 +67,7 @@ var nts;
                                             var x = self.getNode(codeChanged, undefined);
                                             if (x.parentCode !== null) {
                                                 self.currentEra(x);
-                                                self.nodeParent(self.getEra(codeChanged, x.parentCode));
+                                                self.nodeParent(self.getNode(codeChanged, x.parentCode));
                                             }
                                             else {
                                                 self.nodeParent(x);
@@ -119,7 +119,9 @@ var nts;
                                     nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                 };
                                 ScreenModel.prototype.OpenCdialog = function () {
+                                    var self = this;
                                     nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
+                                    nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                 };
                                 ScreenModel.prototype.OpenDdialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" });
