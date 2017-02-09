@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 
 /**
@@ -34,7 +35,8 @@ public class LaborInsuranceOfficeFinder {
 	 * @return the labor insurance office dto
 	 */
 	public LaborInsuranceOfficeDto find(String id, String companyCode) {
-		return LaborInsuranceOfficeDto.fromDomain(this.laborInsuranceOfficeRepository.findById(id, companyCode));
+		return LaborInsuranceOfficeDto
+				.fromDomain(this.laborInsuranceOfficeRepository.findById(new OfficeCode(id), companyCode));
 	}
 
 	/**

@@ -41,7 +41,7 @@ public interface LaborInsuranceOfficeRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<LaborInsuranceOffice> findAll(int companyCode);
+	List<LaborInsuranceOffice> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -49,7 +49,7 @@ public interface LaborInsuranceOfficeRepository {
 	 * @param id the id
 	 * @return the labor insurance office
 	 */
-	LaborInsuranceOffice findById(OfficeCode code);
+	LaborInsuranceOffice findById(OfficeCode code,String companyCode);
 
 	/**
 	 * Check duplicate code.
