@@ -279,36 +279,41 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /* line 61, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
-  height: 27px;
+  box-sizing: border-box;
+  height: 37px;
   border-style: solid;
   border-color: #97D155;
   border-width: 0 0 0 5px;
-  padding: 10px 10px 0 8px;
+  padding: 0 10px 0 8px;
 }
-/* line 84, ../sass/components/_commons.scss */
-div.form-label.broken {
-  padding-top: 0;
-  padding-bottom: 10px;
+/* line 83, ../sass/components/_commons.scss */
+div.form-label.broken label {
+  line-height: inherit;
+}
+/* line 86, ../sass/components/_commons.scss */
+div.form-label.inline {
+  height: 23px;
+  line-height: 23px;
 }
 /* line 89, ../sass/components/_commons.scss */
-div.form-label.inline {
-  height: 18px;
-  padding-top: 3px;
-  padding-bottom: 2px;
+div.form-label.inline label {
+  line-height: 23px;
 }
-/* line 95, ../sass/components/_commons.scss */
+/* line 92, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 99, ../sass/components/_commons.scss */
+/* line 96, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 103, ../sass/components/_commons.scss */
+/* line 100, ../sass/components/_commons.scss */
 div.form-label > label {
+  max-height: 100%;
   font-size: 14px;
+  line-height: 37px;
 }
-/* line 107, ../sass/components/_commons.scss */
+/* line 106, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -316,15 +321,15 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 114, ../sass/components/_commons.scss */
+/* line 113, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 118, ../sass/components/_commons.scss */
+/* line 117, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 123, ../sass/components/_commons.scss */
+/* line 122, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
