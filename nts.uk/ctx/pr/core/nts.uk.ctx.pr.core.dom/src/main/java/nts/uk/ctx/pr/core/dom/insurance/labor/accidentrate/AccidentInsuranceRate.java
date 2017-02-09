@@ -7,10 +7,10 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 import java.util.Set;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
 
 /**
  * The Class AccidentInsuranceRate.
@@ -39,34 +39,24 @@ public class AccidentInsuranceRate extends AggregateRoot {
 	}
 
 	/**
-	 * Instantiates a new accident insurance rate.
+	 * Validate.
 	 *
-	 * @param historyId
-	 *            the history id
-	 * @param companyCode
-	 *            the company code
-	 * @param applyRange
-	 *            the apply range
-	 * @param rateItems
-	 *            the rate items
+	 * @param service
+	 *            the service
 	 */
-	public AccidentInsuranceRate(String historyId, CompanyCode companyCode, MonthRange applyRange,
-			Set<InsuBizRateItem> rateItems) {
-		super();
-
+	public void validate(AccidentInsuranceRateService service) {
 		// Validate required item
-		if (applyRange == null) {
-			throw new BusinessException("ER001");
-		}
+		service.validateRequiredItem(this);
+		// if (StringUtil.isNullOrEmpty(unitPriceCode.v(), true) ||
+		// StringUtil.isNullOrEmpty(unitPriceName.v(), true)
+		// || applyRange == null || budget == null) {
+		// throw new BusinessException("ER001");
+		// }
 
-		// TODO: Check consistency date range.
+		// Check consistency date range.
+		service.validateDateRange(this);
 		// History after start date and time exists
 		// throw new BusinessException("ER010");
-
-		this.historyId = historyId;
-		this.companyCode = companyCode;
-		this.applyRange = applyRange;
-		this.rateItems = rateItems;
 	}
 
 	// =================== Memento State Support Method ===================

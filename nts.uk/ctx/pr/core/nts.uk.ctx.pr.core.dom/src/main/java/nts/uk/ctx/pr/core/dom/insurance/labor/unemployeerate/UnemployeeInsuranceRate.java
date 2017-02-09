@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
 
 /**
  * The Class UnemployeeInsuranceRate.
@@ -66,17 +67,35 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 		// History after start date and time exists
 		// throw new BusinessException("ER010");
 
-		// TODO: Check duplicate start date. !? in EAP file.
-		// throw new BusinessException("ER005");
-
 		this.historyId = historyId;
 		this.companyCode = companyCode;
 		this.applyRange = applyRange;
 		this.rateItems = rateItems;
 	}
 
-	// =================== Memento State Support Method ===================
+	/**
+	 * Validate.
+	 *
+	 * @param service
+	 *            the service
+	 */
+	public void validate(UnemployeeInsuranceRateService service) {
+		// Validate required item
+		service.validateRequiredItem(this);
+		// if (applyRange == null) {
+		// throw new BusinessException("ER001");
+		// }
 
+		// Check consistency date range.
+		service.validateDateRange(this);
+		// History after start date and time exists
+		// throw new BusinessException("ER010");
+
+		// TODO: Check duplicate start date. !? in EAP file.
+		// throw new BusinessException("ER005");
+	}
+
+	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new unemployee insurance rate.
 	 *
