@@ -32,7 +32,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensi
 @Path("pr/insurance/social")
 @Produces("application/json")
 @Stateless
-public class SocialInsuranceOfficeService extends WebService {
+public class SocialInsuranceOfficeWebService extends WebService {
 
 	@Inject
 	private RegisterSocialOfficeCommandHandler registerSocialOfficeCommandHandler;
