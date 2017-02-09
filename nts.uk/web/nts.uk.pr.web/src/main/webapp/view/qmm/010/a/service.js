@@ -19,9 +19,9 @@ var nts;
                                 updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
-                            function findAllLaborInsuranceOffice() {
+                            function findAllLaborInsuranceOffice(companyCode) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
+                                nts.uk.request.ajax(paths.findAllLaborInsuranceOffice + "/" + companyCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -31,9 +31,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllLaborInsuranceOffice = findAllLaborInsuranceOffice;
-                            function findLaborInsuranceOffice(code) {
+                            function findLaborInsuranceOffice(laborInsuranceOfficeFindInDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + code)
+                                nts.uk.request.ajax(paths.findLaborInsuranceOffice, laborInsuranceOfficeFindInDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -75,12 +75,18 @@ var nts;
                                     return LaborInsuranceOfficeDto;
                                 }());
                                 model.LaborInsuranceOfficeDto = LaborInsuranceOfficeDto;
-                                var LaborInsuranceOfficeInDto = (function () {
-                                    function LaborInsuranceOfficeInDto() {
+                                var LaborInsuranceOfficeFindOutDto = (function () {
+                                    function LaborInsuranceOfficeFindOutDto() {
                                     }
-                                    return LaborInsuranceOfficeInDto;
+                                    return LaborInsuranceOfficeFindOutDto;
                                 }());
-                                model.LaborInsuranceOfficeInDto = LaborInsuranceOfficeInDto;
+                                model.LaborInsuranceOfficeFindOutDto = LaborInsuranceOfficeFindOutDto;
+                                var LaborInsuranceOfficeFindInDto = (function () {
+                                    function LaborInsuranceOfficeFindInDto() {
+                                    }
+                                    return LaborInsuranceOfficeFindInDto;
+                                }());
+                                model.LaborInsuranceOfficeFindInDto = LaborInsuranceOfficeFindInDto;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm010.a || (qmm010.a = {}));

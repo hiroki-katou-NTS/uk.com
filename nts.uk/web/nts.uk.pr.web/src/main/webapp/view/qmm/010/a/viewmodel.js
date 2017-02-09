@@ -53,8 +53,9 @@ var nts;
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllLaborInsuranceOffice().done(function (data) {
+                                    a.service.findAllLaborInsuranceOffice("companyCode").done(function (data) {
                                         self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
+                                        console.log(data);
                                         self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
                                         self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
                                             self.showInsuranceOffice(selectCodeLstlaborInsuranceOffice);

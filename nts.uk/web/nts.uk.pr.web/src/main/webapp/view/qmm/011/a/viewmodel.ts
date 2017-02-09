@@ -100,12 +100,13 @@ module nts.uk.pr.view.qmm011.a {
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
             private openEditInsuranceBusinessType() {
                 var self = this;
-                var historyId = self.selectionHistoryAccidentInsuranceRate();
-                nts.uk.ui.windows.setShared("historyId", historyId);
-                nts.uk.ui.windows.setShared("accidentInsuranceRateModel", self.accidentInsuranceRateModel);
-                nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
-                    //OnClose => call
+                service.findAllInsuranceBusinessType("companyCode001").done(data => {
+                    nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateDto", data);
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
+                        //OnClose => call
+                    });
                 });
+
             }
             //open dialog edit HistoryAccidentInsurance => show view model xhtml (action event edit)
             private openEditHistoryAccidentInsuranceRate() {

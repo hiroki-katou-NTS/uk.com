@@ -39,7 +39,7 @@ public interface InsuranceBusinessTypeRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<InsuranceBusinessType> findAll(int companyCode);
+	List<InsuranceBusinessType> findAll(String companyCode);
 
 	/**
 	 * Find by id.
