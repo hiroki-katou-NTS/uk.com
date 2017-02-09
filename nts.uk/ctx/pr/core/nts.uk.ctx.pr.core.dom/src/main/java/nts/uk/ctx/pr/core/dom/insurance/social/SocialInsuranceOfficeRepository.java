@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
@@ -49,7 +50,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param id the id
 	 * @return the social insurance office
 	 */
-	SocialInsuranceOffice findById(String id);
+	Optional<SocialInsuranceOffice> findById(String id);
 
 	/**
 	 * Find by office code.

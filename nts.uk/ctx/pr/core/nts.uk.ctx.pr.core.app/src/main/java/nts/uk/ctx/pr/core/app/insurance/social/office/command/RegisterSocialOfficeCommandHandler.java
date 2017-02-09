@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.command;
+package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocialOfficeCommand> {
+public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterSocialOfficeCommand> {
 
 	@Inject
 	SocialInsuranceService insuranceSocialService;
@@ -23,26 +23,19 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 	@Override
 	@Transactional
-	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) {
-
-		UpdateSocialOfficeCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterSocialOfficeCommand> context) {
+		RegisterSocialOfficeCommand command = context.getCommand();
 		// Get the current company code.
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 		
-		// Convert Dto to Domain
+		//convert to domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
 		
-		//TODO validate
+		// Validate
+		// unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
+		// unitPriceHistoryService.validateDateRange(unitPriceHistory);
 		
-		SocialInsuranceOffice findOffice = socialInsuranceOfficeRepository
-				.findById(command.getCode().toString());
-		if (findOffice == null) {
-			// TODO show error message
-		} else {
-			insuranceSocialService.update(socialInsuranceOffice);
-		}
-		// TODO return item update
+		socialInsuranceOfficeRepository.add(socialInsuranceOffice);
 		return;
 	}
-
 }

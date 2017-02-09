@@ -1,4 +1,6 @@
-package nts.uk.ctx.pr.core.app.insurance.social.command;
+package nts.uk.ctx.pr.core.app.insurance.social.office.command;
+
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,14 +25,14 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocia
 	@Transactional
 	protected void handle(CommandHandlerContext<DeleteSocialOfficeCommand> command) {
 		
-		SocialInsuranceOffice findOffice = socialInsuranceOfficeRepository.findById(command.getCommand().getSocialInsuranceOfficeDto().getCode().toString());
+		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository.findById(command.getCommand().getSocialInsuranceOfficeDto().getCode().toString());
 		
 		if(findOffice==null)
 		{
 			//TODO show error message
 		}else
 		{
-			insuranceSocialService.remove(findOffice);
+			insuranceSocialService.remove(findOffice.get());
 		}
 		//TODO return item update
 		return;

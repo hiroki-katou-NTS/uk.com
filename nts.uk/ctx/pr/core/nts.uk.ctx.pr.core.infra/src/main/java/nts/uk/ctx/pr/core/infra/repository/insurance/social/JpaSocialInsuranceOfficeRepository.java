@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.social;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -79,8 +80,8 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 * findById(java.lang.String)
 	 */
 	@Override
-	public SocialInsuranceOffice findById(String id) {
-		// TODO Auto-generated method stub
+	public Optional<SocialInsuranceOffice> findById(String id) {
+		// TODO Mock data to send service 
 		return null;
 	}
 
