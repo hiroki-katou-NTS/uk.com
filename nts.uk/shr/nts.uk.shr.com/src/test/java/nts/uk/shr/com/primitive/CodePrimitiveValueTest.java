@@ -16,16 +16,16 @@ public class CodePrimitiveValueTest {
     
     @Test
     public void constructs_pad() {
-        SampleCode sampleCode = new SampleCode("ab");
+        SampleCode sampleCode = new SampleCode("ab  ");
         sampleCode.validate();
-        Assert.assertThat(sampleCode.v(), is("ab  "));
+        Assert.assertThat(sampleCode.v(), is("ab"));
     }
     
     @Test
     public void equal_true_with_pad() {
         SampleCode sampleCode = new SampleCode("ab");
         sampleCode.validate();
-        Assert.assertThat(sampleCode.equals("ab"), is(true));
+        Assert.assertThat(sampleCode.equals("ab "), is(true));
     }
     
     @Test

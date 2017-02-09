@@ -11,6 +11,9 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.option = {
+                value: ko.observable("2")
+            };
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),
@@ -58,6 +61,19 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2 })),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // NumberEditor
+            self.numbereditor2 = {
+                value: ko.observable(12),
+                constraint: '',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3,
+                    decimallength: 2,
+                    symbolChar: '%',
+                    symbolPosition: 'right' })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)

@@ -313,10 +313,10 @@ var nts;
                     return amount;
                 var result = amount.substring(leng);
                 var num = parseInt(amount.substring(0, leng));
-                var times = leng / 3;
-                for (var i = 1; i < times; i++) {
+                var times = Math.floor(leng / 3);
+                for (var i = 0; i < times; i++) {
                     var block = num % 1000;
-                    if (i > 1)
+                    if (i > 0)
                         result = padLeft("" + block, "0", 3) + "," + result;
                     else
                         result = padLeft("" + block, "0", 3) + result;
@@ -332,6 +332,17 @@ var nts;
                 return result + "円";
             }
             text_1.formatCurrency = formatCurrency;
+            function reverseDirection(direction) {
+                if (direction === "left")
+                    return "right";
+                else if (direction === "right")
+                    return "left";
+                else if (direction === "top")
+                    return "bottom";
+                else if (direction === "bottom")
+                    return "top";
+            }
+            text_1.reverseDirection = reverseDirection;
             var StringFormatter = (function () {
                 function StringFormatter(args) {
                     this.args = args;
