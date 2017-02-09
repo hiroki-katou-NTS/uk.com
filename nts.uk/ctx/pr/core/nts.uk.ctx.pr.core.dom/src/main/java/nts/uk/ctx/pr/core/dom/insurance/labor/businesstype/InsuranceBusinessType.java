@@ -23,7 +23,7 @@ public class InsuranceBusinessType extends AggregateRoot {
 
 	/** The biz name. */
 	private BusinessName bizName;
-	
+
 	/**
 	 * Instantiates a new insurance business type.
 	 */
@@ -38,7 +38,7 @@ public class InsuranceBusinessType extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public InsuranceBusinessType(InsuranceBusinessTypeMemento memento) {
+	public InsuranceBusinessType(InsuranceBusinessTypeGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.bizOrder = memento.getBizOrder();
 		this.bizName = memento.getBizName();
@@ -51,13 +51,11 @@ public class InsuranceBusinessType extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(InsuranceBusinessTypeMemento memento) {
+	public void saveToMemento(InsuranceBusinessTypeSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setBizOrder(this.bizOrder);
 		memento.setBizName(this.bizName);
 		memento.setVersion(this.getVersion());
 	}
-
-	
 
 }

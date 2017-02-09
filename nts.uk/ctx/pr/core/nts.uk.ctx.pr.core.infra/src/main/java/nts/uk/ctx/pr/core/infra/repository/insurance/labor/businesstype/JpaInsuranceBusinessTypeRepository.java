@@ -9,8 +9,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
 
@@ -23,19 +21,19 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 	@Override
 	public void add(InsuranceBusinessType type) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(InsuranceBusinessType type) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void remove(String id, Long version) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -49,7 +47,5 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 
 }

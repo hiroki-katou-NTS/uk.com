@@ -129,16 +129,16 @@ public class UnitPriceHistoryWebService extends WebService {
 				.fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
 				.fixPayAtrDaily(ApplySetting.Apply).fixPayAtrDayMonth(ApplySetting.Apply)
 				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.NotApply).memo("2").build());
-		mock.add(UnitPriceHistoryDto.builder().id("3").version(1).unitPriceCode("002").unitPriceName("宿直単価").startMonth("2016/04")
-				.endMonth("9999/04").budget(new BigDecimal(340)).fixPaySettingType(SettingType.Company)
-				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply)
+		mock.add(UnitPriceHistoryDto.builder().id("3").version(1).unitPriceCode("002").unitPriceName("宿直単価")
+				.startMonth("2016/04").endMonth("9999/04").budget(new BigDecimal(340))
+				.fixPaySettingType(SettingType.Company).fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.Apply)
 				.fixPayAtrDayMonth(ApplySetting.NotApply).fixPayAtrHourly(ApplySetting.Apply)
 				.fixPayAtrMonthly(ApplySetting.NotApply).memo("3").build());
-		mock.add(UnitPriceHistoryDto.builder().id("4").version(1).unitPriceCode("002").unitPriceName("宿直単価").startMonth("2015/04")
-				.endMonth("2016/03").budget(new BigDecimal(340)).fixPaySettingType(SettingType.Contract)
-				.fixPayAtr(ApplySetting.Apply).fixPayAtrDaily(ApplySetting.NotApply)
-				.fixPayAtrDayMonth(ApplySetting.Apply).fixPayAtrHourly(ApplySetting.NotApply)
-				.fixPayAtrMonthly(ApplySetting.Apply).memo("4").build());
+		mock.add(UnitPriceHistoryDto.builder().id("4").version(1).unitPriceCode("002").unitPriceName("宿直単価")
+				.startMonth("2015/04").endMonth("2016/03").budget(new BigDecimal(340))
+				.fixPaySettingType(SettingType.Contract).fixPayAtr(ApplySetting.Apply)
+				.fixPayAtrDaily(ApplySetting.NotApply).fixPayAtrDayMonth(ApplySetting.Apply)
+				.fixPayAtrHourly(ApplySetting.NotApply).fixPayAtrMonthly(ApplySetting.Apply).memo("4").build());
 		return mock;
 	}
 }

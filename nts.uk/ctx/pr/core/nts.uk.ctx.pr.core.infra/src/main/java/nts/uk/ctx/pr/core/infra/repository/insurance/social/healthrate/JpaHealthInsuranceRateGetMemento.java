@@ -2,19 +2,22 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
+package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
-import java.util.Set;
+import java.util.List;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateMemento;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 /**
  * The Class JpaAggrSchemaMemento.
  */
-public class JpaAccidentInsuranceRateMemento implements AccidentInsuranceRateMemento {
+public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetMemento {
 
 	// TODO: Object -> entity class.
 	protected Object typeValue;
@@ -25,7 +28,7 @@ public class JpaAccidentInsuranceRateMemento implements AccidentInsuranceRateMem
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaAccidentInsuranceRateMemento(Object typeValue) {
+	public JpaHealthInsuranceRateGetMemento(Object typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -42,13 +45,37 @@ public class JpaAccidentInsuranceRateMemento implements AccidentInsuranceRateMem
 	}
 
 	@Override
+	public OfficeCode getOfficeCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public MonthRange getApplyRange() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Set<InsuBizRateItem> getRateItems() {
+	public Boolean getAutoCalculate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CommonAmount getMaxAmount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<InsuranceRateItem> getRateItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<HealthInsuranceRounding> getRoundingMethods() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -57,36 +84,6 @@ public class JpaAccidentInsuranceRateMemento implements AccidentInsuranceRateMem
 	public Long getVersion() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setRateItems(Set<InsuBizRateItem> items) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

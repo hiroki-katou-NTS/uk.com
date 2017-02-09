@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 /**
  * The Interface HealthInsuranceRateMemento.
  */
-public interface HealthInsuranceRateMemento {
+public interface HealthInsuranceRateGetMemento {
 
 	/**
 	 * Gets the history id.
@@ -78,68 +78,5 @@ public interface HealthInsuranceRateMemento {
 	 * @return the version
 	 */
 	Long getVersion();
-
-	/**
-	 * Sets the history id.
-	 *
-	 * @param historyId the new history id
-	 */
-	void setHistoryId(String historyId);
-
-	/**
-	 * Sets the company code.
-	 *
-	 * @param companyCode the new company code
-	 */
-	void setCompanyCode(CompanyCode companyCode);
-
-	/**
-	 * Sets the office code.
-	 *
-	 * @param officeCode the new office code
-	 */
-	void setOfficeCode(OfficeCode officeCode);
-
-	/**
-	 * Sets the apply range.
-	 *
-	 * @param applyRange the new apply range
-	 */
-	void setApplyRange(MonthRange applyRange);
-
-	/**
-	 * Sets the auto calculate.
-	 *
-	 * @param autoCalculate the new auto calculate
-	 */
-	void setAutoCalculate(Boolean autoCalculate);
-
-	/**
-	 * Sets the max amount.
-	 *
-	 * @param maxAmount the new max amount
-	 */
-	void setMaxAmount(CommonAmount maxAmount);
-
-	/**
-	 * Sets the rate items.
-	 *
-	 * @param rateItems the new rate items
-	 */
-	void setRateItems(List<InsuranceRateItem> rateItems);
-
-	/**
-	 * Sets the rounding methods.
-	 *
-	 * @param roundingMethods the new rounding methods
-	 */
-	void setRoundingMethods(List<HealthInsuranceRounding> roundingMethods);
-
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
 
 }

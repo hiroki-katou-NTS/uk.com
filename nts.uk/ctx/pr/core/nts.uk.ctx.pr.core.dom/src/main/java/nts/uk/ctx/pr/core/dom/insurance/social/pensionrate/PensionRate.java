@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.ListUtil;
@@ -20,7 +20,7 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 /**
  * The Class PensionRate.
  */
-@Data
+@Getter
 public class PensionRate extends AggregateRoot {
 	/** The fund rate item count. */
 	private final int FUND_RATE_ITEM_COUNT = 6;
@@ -110,7 +110,7 @@ public class PensionRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public PensionRate(PensionRateMemento memento) {
+	public PensionRate(PensionRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
 		this.companyCode = memento.getCompanyCode();
 		this.officeCode = memento.getOfficeCode();
@@ -129,7 +129,7 @@ public class PensionRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(PensionRateMemento memento) {
+	public void saveToMemento(PensionRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
 		memento.setCompanyCode(this.companyCode);
 		memento.setOfficeCode(this.officeCode);

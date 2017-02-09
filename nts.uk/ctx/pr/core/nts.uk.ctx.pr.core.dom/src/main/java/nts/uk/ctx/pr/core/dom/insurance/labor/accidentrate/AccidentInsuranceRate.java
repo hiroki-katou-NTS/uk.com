@@ -6,17 +6,16 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Class AccidentInsuranceRate.
  */
-@Data
+@Getter
 public class AccidentInsuranceRate extends AggregateRoot {
 
 	/** The history id. */
@@ -78,7 +77,7 @@ public class AccidentInsuranceRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public AccidentInsuranceRate(AccidentInsuranceRateMemento memento) {
+	public AccidentInsuranceRate(AccidentInsuranceRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
 		this.companyCode = memento.getCompanyCode();
 		this.applyRange = memento.getApplyRange();
@@ -92,7 +91,7 @@ public class AccidentInsuranceRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(AccidentInsuranceRateMemento memento) {
+	public void saveToMemento(AccidentInsuranceRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
 		memento.setCompanyCode(this.companyCode);
 		memento.setApplyRange(this.applyRange);

@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.ListUtil;
@@ -19,8 +19,7 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 /**
  * The Class HealthInsuranceRate.
  */
-// TODO: @Data -> @Getter
-@Data
+@Getter
 public class HealthInsuranceRate extends AggregateRoot {
 
 	/** The Constant INSURANCE_RATE_ITEM_COUNT. */
@@ -104,7 +103,7 @@ public class HealthInsuranceRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public HealthInsuranceRate(HealthInsuranceRateMemento memento) {
+	public HealthInsuranceRate(HealthInsuranceRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
 		this.companyCode = memento.getCompanyCode();
 		this.officeCode = memento.getOfficeCode();
@@ -122,7 +121,7 @@ public class HealthInsuranceRate extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(HealthInsuranceRateMemento memento) {
+	public void saveToMemento(HealthInsuranceRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
 		memento.setCompanyCode(this.companyCode);
 		memento.setOfficeCode(this.officeCode);

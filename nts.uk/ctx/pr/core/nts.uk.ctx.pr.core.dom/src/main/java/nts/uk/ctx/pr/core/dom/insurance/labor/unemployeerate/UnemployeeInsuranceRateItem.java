@@ -36,7 +36,7 @@ public class UnemployeeInsuranceRateItem {
 	 * @param memento
 	 *            the memento
 	 */
-	public UnemployeeInsuranceRateItem(UnemployeeInsuranceRateItemMemento memento) {
+	public UnemployeeInsuranceRateItem(UnemployeeInsuranceRateItemGetMemento memento) {
 		this.careerGroup = memento.getCareerGroup();
 		this.companySetting = memento.getCompanySetting();
 		this.personalSetting = memento.getPersonalSetting();
@@ -48,7 +48,7 @@ public class UnemployeeInsuranceRateItem {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(UnemployeeInsuranceRateItemMemento memento) {
+	public void saveToMemento(UnemployeeInsuranceRateItemSetMemento memento) {
 		memento.setCareerGroup(this.careerGroup);
 		memento.setCompanySetting(this.companySetting);
 		memento.setPersonalSetting(this.personalSetting);

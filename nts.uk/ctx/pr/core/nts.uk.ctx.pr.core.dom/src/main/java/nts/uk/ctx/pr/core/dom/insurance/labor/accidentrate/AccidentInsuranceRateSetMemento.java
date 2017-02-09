@@ -12,42 +12,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 /**
  * The Interface AccidentInsuranceRateMemento.
  */
-public interface AccidentInsuranceRateMemento {
-
-	/**
-	 * Gets the history id.
-	 *
-	 * @return the history id
-	 */
-	String getHistoryId();
-
-	/**
-	 * Gets the company code.
-	 *
-	 * @return the company code
-	 */
-	CompanyCode getCompanyCode();
-
-	/**
-	 * Gets the apply range.
-	 *
-	 * @return the apply range
-	 */
-	MonthRange getApplyRange();
-
-	/**
-	 * Gets the rate items.
-	 *
-	 * @return the rate items
-	 */
-	Set<InsuBizRateItem> getRateItems();
-
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
+public interface AccidentInsuranceRateSetMemento {
 
 	/**
 	 * Sets the history id.

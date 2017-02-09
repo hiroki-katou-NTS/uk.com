@@ -194,7 +194,7 @@ public class SocialInsuranceOffice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public SocialInsuranceOffice(SocialInsuranceOfficeMemento memento) {
+	public SocialInsuranceOffice(SocialInsuranceOfficeGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
@@ -230,7 +230,7 @@ public class SocialInsuranceOffice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(SocialInsuranceOfficeMemento memento) {
+	public void saveToMemento(SocialInsuranceOfficeSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
