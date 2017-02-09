@@ -25,4 +25,6 @@ public class AccidentInsuranceRateDto {
 	/** The short name. */
 	private List<InsuBizRateItemDto> rateItems;
 
+	private long version;
+
 }

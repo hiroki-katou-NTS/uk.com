@@ -302,6 +302,7 @@ module nts.uk.pr.view.qmm011.a {
             export class AccidentInsuranceRateDto {
                 historyInsurance: HistoryUnemployeeInsuranceDto;
                 rateItems: InsuBizRateItemDto[];
+                version: number;
             }
             export class InsuBizRateItemDto {
                 /** The insu biz type. */

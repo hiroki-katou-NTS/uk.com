@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
+package nts.uk.ctx.core.app.insurance.labor.accidentrate.command;
 
 import java.util.Set;
 
@@ -69,7 +69,6 @@ public class AccidentInsuranceRateUpdateCommand extends BaseInsuranceCommand {
 			}
 		});
 		return accidentInsuranceRate;
-
 
 	}
 }
