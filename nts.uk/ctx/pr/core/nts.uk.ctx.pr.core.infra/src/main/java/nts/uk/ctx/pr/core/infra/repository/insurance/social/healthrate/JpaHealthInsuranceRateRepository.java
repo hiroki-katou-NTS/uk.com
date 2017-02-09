@@ -23,6 +23,7 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
@@ -104,7 +105,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
 		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
 		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
-		
+
 		List<HealthInsuranceRounding> list2 = new ArrayList<HealthInsuranceRounding>();
 		RoundingItem ri = new RoundingItem();
 		ri.setCompanyRoundAtr(RoundingMethod.Down4_Up5);
@@ -115,8 +116,61 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 
-		HealthInsuranceRate mock = new HealthInsuranceRate("1", new CompanyCode("Ｃ 事業所"), new OfficeCode("000000"), mr,
-				true, new CommonAmount(new BigDecimal(5)), list1, list2);
+		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
+
+			@Override
+			public Long getVersion() {
+				return 1l;
+			}
+
+			@Override
+			public List<HealthInsuranceRounding> getRoundingMethods() {
+				// TODO Auto-generated method stub
+				return list2;
+			}
+
+			@Override
+			public List<InsuranceRateItem> getRateItems() {
+				// TODO Auto-generated method stub
+				return list1;
+			}
+
+			@Override
+			public OfficeCode getOfficeCode() {
+				return new OfficeCode("000000");
+			}
+
+			@Override
+			public CommonAmount getMaxAmount() {
+				return new CommonAmount(new BigDecimal(5));
+			}
+
+			@Override
+			public String getHistoryId() {
+				return "a";
+			}
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode("Ｃ 事業所");
+			}
+
+			@Override
+			public Boolean getAutoCalculate() {
+				return true;
+			}
+
+			@Override
+			public MonthRange getApplyRange() {
+				return mr;
+			}
+		});
 		return Optional.of(mock);
+	}
+
+	@Override
+	public boolean isInvalidDateRange(MonthRange applyRange) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -26,6 +26,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 
@@ -96,21 +97,27 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 */
 	@Override
 	public Optional<PensionRate> findById(String id) {
-		
-		List<FundRateItem> fundRateItems = new ArrayList<FundRateItem>(); 
+
+		List<FundRateItem> fundRateItems = new ArrayList<FundRateItem>();
 		List<PensionPremiumRateItem> premiumRateItems = new ArrayList<PensionPremiumRateItem>();
 		List<PensionRateRounding> roundingMethods = new ArrayList<PensionRateRounding>();
-		
+
 		PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
 		pensionChargeRateItem.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
 		pensionChargeRateItem.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,pensionChargeRateItem,pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,pensionChargeRateItem,pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,pensionChargeRateItem,pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,pensionChargeRateItem,pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,pensionChargeRateItem,pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female,pensionChargeRateItem,pensionChargeRateItem));
-		
+		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
+				pensionChargeRateItem));
+		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
+				pensionChargeRateItem));
+		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
+				pensionChargeRateItem));
+		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
+				pensionChargeRateItem));
+		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
+				pensionChargeRateItem));
+		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
+				pensionChargeRateItem));
+
 		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem();
 		PensionChargeRateItem raiseChargeRate = new PensionChargeRateItem();
 		raiseChargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
@@ -119,7 +126,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		premiumRateItem.setPayType(PaymentType.Bonus);
 		premiumRateItem.setRaiseChargeRate(raiseChargeRate);
 		premiumRateItems.add(premiumRateItem);
-		
+
 		PensionRateRounding pensionRateRounding = new PensionRateRounding();
 		RoundingItem ri = new RoundingItem();
 		ri.setPersonalRoundAtr(RoundingMethod.Down4_Up5);
@@ -130,13 +137,68 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		roundingMethods.add(pensionRateRounding);
 		roundingMethods.add(pensionRateRounding);
 		roundingMethods.add(pensionRateRounding);
-		
+
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 
-		PensionRate mock = new PensionRate("String historyId", new CompanyCode("000000"), new OfficeCode("officeCode"), mr,
-				new CommonAmount(new BigDecimal(9)),fundRateItems,premiumRateItems,
-				new Ins2Rate(new BigDecimal(10)),roundingMethods);
+		PensionRate mock = new PensionRate(new PensionRateGetMemento() {
+
+			@Override
+			public Long getVersion() {
+				return 1l;
+			}
+
+			@Override
+			public List<PensionRateRounding> getRoundingMethods() {
+				return roundingMethods;
+			}
+
+			@Override
+			public List<PensionPremiumRateItem> getPremiumRateItems() {
+				return premiumRateItems;
+			}
+
+			@Override
+			public OfficeCode getOfficeCode() {
+				return new OfficeCode("office code");
+			}
+
+			@Override
+			public CommonAmount getMaxAmount() {
+				return new CommonAmount(new BigDecimal(5));
+			}
+
+			@Override
+			public String getHistoryId() {
+				return "history id";
+			}
+
+			@Override
+			public List<FundRateItem> getFundRateItems() {
+				return fundRateItems;
+			}
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode("company code");
+			}
+
+			@Override
+			public Ins2Rate getChildContributionRate() {
+				return new Ins2Rate(new BigDecimal(10));
+			}
+
+			@Override
+			public MonthRange getApplyRange() {
+				return mr;
+			}
+		});
 		return Optional.of(mock);
+	}
+
+	@Override
+	public boolean isInvalidDateRange(MonthRange applyRange) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
