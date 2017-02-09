@@ -4,33 +4,47 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-
 /**
- * The Interface WageLedgerOutputSettingRepository.
+ * The Interface WLOutputSettingRepository.
  */
 public interface WLOutputSettingRepository {
 	
+	
 	/**
-	 * Save.
+	 * Creates the.
 	 *
 	 * @param outputSetting the output setting
 	 */
-	void save(WageLedgerOutputSetting outputSetting);
+	void create(WLOutputSetting outputSetting);
+	
+	/**
+	 * Update.
+	 *
+	 * @param outputSetting the output setting
+	 */
+	void update(WLOutputSetting outputSetting);
 	
 	/**
 	 * Removes the.
 	 *
 	 * @param outputSetting the output setting
 	 */
-	void remove(WageLedgerOutputSetting outputSetting);
+	void remove(String code);
 	
 	/**
 	 * Find.
 	 *
 	 * @param code the code
 	 * @param companyCode the company code
-	 * @return the wage ledger output setting
+	 * @return the WL output setting
 	 */
-	WageLedgerOutputSetting find(WLOutputSettingCode code, CompanyCode companyCode);
+	WLOutputSetting find(String code, String companyCode);
+	
+	/**
+	 * Checks if is exist.
+	 *
+	 * @param code the code
+	 * @return true, if is exist
+	 */
+	boolean isExist(String code);
 }

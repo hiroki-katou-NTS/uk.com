@@ -16,14 +16,14 @@ public interface WLAggregateItemRepository {
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
-	void save(WageLedgerAggregateItem aggregateItem);
+	void save(WLAggregateItem aggregateItem);
 	
 	/**
 	 * Removes the.
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
-	void remove(WageLedgerAggregateItem aggregateItem);
+	void remove(WLAggregateItem aggregateItem);
 	
 	/**
 	 * Find.
@@ -32,5 +32,5 @@ public interface WLAggregateItemRepository {
 	 * @param companyCode the company code
 	 * @return the wage ledger aggregate item
 	 */
-	WageLedgerAggregateItem find(WLAggregateItemCode code, CompanyCode companyCode);
+	WLAggregateItem find(WLAggregateItemCode code, CompanyCode companyCode);
 }

@@ -2,25 +2,13 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.ws.wageledger.dto;
-
-import lombok.Builder;
+package nts.uk.ctx.pr.report.app.wageledger.command;
 
 /**
- * The Class SettingItemDto.
+ * The Class OutputSettingRemoveCommand.
  */
-@Builder
-public class SettingItemDto {
+public class OutputSettingRemoveCommand {
 	
 	/** The code. */
 	public String code;
-	
-	/** The name. */
-	public String name;
-	
-	/** The is aggregate. */
-	public Boolean isAggregateItem;
-	
-	/** The order number. */
-	public int orderNumber;
 }

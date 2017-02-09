@@ -9,19 +9,19 @@ import java.util.Set;
 import lombok.Getter;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
 /**
  * The Class WageLedgerAggregateItem.
  */
 @Getter
-public class WageLedgerAggregateItem {
+public class WLAggregateItem {
 	
 	/** The company code. */
 	private CompanyCode companyCode;
 	
 	/** The category. */
-	private WageLedgerCategory category;
+	private WLCategory category;
 	
 	/** The payment type. */
 	private PaymentType paymentType;

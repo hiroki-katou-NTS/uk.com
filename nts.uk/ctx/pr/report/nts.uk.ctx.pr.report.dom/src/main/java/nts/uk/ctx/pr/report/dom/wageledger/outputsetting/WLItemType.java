@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 /**
  * The Enum WageLedgerItemType.
  */
-public enum WageLedgerItemType {
+public enum WLItemType {
 	
 	/** The Master. */
 	Master(1),
@@ -23,7 +23,7 @@ public enum WageLedgerItemType {
 	 *
 	 * @param value the value
 	 */
-	private WageLedgerItemType(Integer value) {
+	private WLItemType(Integer value) {
 		this.value = value;
 	}
 }

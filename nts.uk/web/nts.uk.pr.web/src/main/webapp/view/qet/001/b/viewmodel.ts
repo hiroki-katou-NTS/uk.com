@@ -119,7 +119,7 @@ module qet001.b.viewmodel {
                 return;
             }
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
-                // TODO: 
+                
             }).fail(function(res) {
                 // TODO: Show message duplicate code.
                 nts.uk.ui.dialog.alert(res.message);
@@ -132,12 +132,18 @@ module qet001.b.viewmodel {
         public remove() {
             var self = this;
             // Check selected output setting.
-            if (self.outputSettings().outputSettingSelectedCode() == '') {
+            var selectedCode = self.outputSettings().outputSettingSelectedCode();
+            if (selectedCode == '') {
                 // TODO: Add error message '未選択エラー'.
                 nts.uk.ui.dialog.alert('未選択エラー');
                 return;
             }
-            // TODO: Call service to remove output setting.
+            service.removeOutputSetting(selectedCode).done(function() {
+                var selectedSetting = self.outputSettings().outputSettingList().filter(setting => setting.code == selectedCode)[0];
+                self.outputSettings().outputSettingList.remove(selectedSetting);
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
         }
         
         /**
@@ -359,7 +365,7 @@ module qet001.b.viewmodel {
             })[0];
             
             // Remove form master list.
-            self.masterItemList.shift();
+            self.masterItemList.remove(selectedItem);
             
             // Add to outputItems.
             self.outputItems.push({
@@ -381,7 +387,7 @@ module qet001.b.viewmodel {
             })[0];
             
             // Remove form master list.
-            self.aggregateItemsList.shift();
+            self.aggregateItemsList.remove(selectedItem);
             
             // Add to outputItems.
             self.outputItems.push({
