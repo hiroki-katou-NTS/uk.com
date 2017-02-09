@@ -1832,13 +1832,17 @@ var nts;
                      */
                     NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var jump = data.jump;
+                        var jump = ko.unwrap(data.jump);
+                        var action = data.action;
                         var linkText = $(element).text();
-                        var $linkButton = $(element).wrap('<div/>').parent().empty()
-                            .text(linkText)
+                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
                             .addClass('link-button')
                             .click(function () {
-                            alert(jump);
+                            event.preventDefault();
+                            if (!nts.uk.util.isNullOrUndefined(action))
+                                action.call(viewModel);
+                            else if (!nts.uk.util.isNullOrUndefined(jump))
+                                nts.uk.request.jump(jump);
                         });
                     };
                     /**
