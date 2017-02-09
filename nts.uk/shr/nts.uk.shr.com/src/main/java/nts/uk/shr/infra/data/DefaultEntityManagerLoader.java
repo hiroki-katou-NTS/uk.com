@@ -1,4 +1,4 @@
-package nts.uk.shr.com.data;
+package nts.uk.shr.infra.data;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
