@@ -119,15 +119,11 @@ public class SocialInsuranceOffice extends AggregateRoot {
 	public void validate(SocialInsuranceOfficeService service) {
 		// Validate required item
 		service.validateRequiredItem(this);
-		// if (StringUtil.isNullOrEmpty(code.v(), true) ||
-		// StringUtil.isNullOrEmpty(name.v(), true)
-		// || StringUtil.isNullOrEmpty(picPosition.v(), true)) {
-		// throw new BusinessException("ER001");
-		// }
+		
 
 		// Office code duplication check
 		service.checkDuplicateCode(this);
-		// throw new BusinessException("ER005");
+		
 	}
 
 	// =================== Memento State Support Method ===================

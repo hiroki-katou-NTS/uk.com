@@ -7,6 +7,8 @@ package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Interface UnitPriceHistoryRepository.
  */
@@ -49,4 +51,12 @@ public interface UnitPriceHistoryRepository {
 	 * @return the unit price history
 	 */
 	Optional<UnitPriceHistory> findById(String id);
+	
+	/**
+	 * Validate date range.
+	 *
+	 * @param startMonth the start month
+	 * @return true, if successful
+	 */
+	boolean isInvalidDateRange(YearMonth startMonth);
 }

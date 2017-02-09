@@ -8,7 +8,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceService;
 
 /**
  * The Class InsuranceBusinessType.

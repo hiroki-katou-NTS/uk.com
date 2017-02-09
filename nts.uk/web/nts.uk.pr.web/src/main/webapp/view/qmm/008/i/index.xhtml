@@ -26,131 +26,149 @@
 				<button class="large proceed">登録</button>
 				<button class="large">印刷</button>
 				<button class="large">再計算</button>
-				<button class="large" data-bind="click: closeDialog">閉じる</button>
+				<button class="large btn-close" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div class="contents-area">
-				<div style="margin-top: 20px;"
-					data-bind="ntsFormLabel: {required: true}">事業所 :</div>
+				<div data-bind="ntsFormLabel: {required: true}">事業所 :</div>
 				<span id="lblCode">code</span><span id="lblName">name</span>
-				<div style="margin-left: 200px; margin-top: 20px;"
+				<div style="margin-left: 200px"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
 				<span>(平成28年04月) ~ 9999/12</span>
 				<div style="padding-top: 30px;">
 					<table id="health_insurance_per_month">
 						<tbody>
 							<tr class="bg-green">
-								<th colspan="2" rowspan="2">数</th>
-								<th class="text_center" rowspan="4">標準月額</th>
-								<th class="text_center" colspan="2" rowspan="2">報酬月額</th>
-								<th
-									style="width: 17px; border-left: none; border-right: none; border-bottom: none;"
-									class="relative"><button class="toggle-expand"
+								<th colspan="2" rowspan="2">等級</th>
+								<th class="halign-center" rowspan="4">標準月額</th>
+								<th class="halign-center" colspan="2" rowspan="2">報酬月額</th>
+								<th class="border_none"><button class="small"
 										data-bind="click: leftToggle">
 										<span data-bind="text: leftBtnText"></span>
 									</button></th>
 								<th data-bind="css: { hidden: !leftShow() }"
-									style="border-left: none;" class="text_center" colspan="5">
-									厚生年金</th>
-								<th
-									style="width: 17px; border-left: none; border-right: none; border-bottom: none;"
-									class="relative"><button class="toggle-expand"
+									class="border-left-none halign-center" colspan="5">厚生年金</th>
+								<th class="border_none"><button class="small"
 										data-bind="click: rightToggle">
 										<span data-bind="text: rightBtnText"></span>
 									</button></th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									style="border-left: none;" class="text_center relative"
-									colspan="5">免除保険料</th>
-								<th class="text_center" rowspan="4">子ども子育 て拠出金</th>
-							</tr>
-							<tr class="bg-green">
-								<th data-bind="css: { hidden: leftShow() }"
-									style="border: none;"></th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center"
-									colspan="3">被保険者負担</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center"
-									colspan="3">事業主負担</th>
-								<th data-bind="css: { hidden: rightShow() }"
-									style="border: none;"></th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center" colspan="3">被保険者負担</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center" colspan="3">事業主負担</th>
-							</tr>
-							<tr class="bg-green">
-								<th class="text_center" rowspan="2">健保</th>
-								<th class="text_center" rowspan="2">厚保</th>
-								<th class="text_center" rowspan="2">以上</th>
-								<th class="text_center" rowspan="2">末満</th>
-
-								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">男子</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">女子</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">坑内員</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">男子</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">女子</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">坑内員</th>
-
-								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">男子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">女子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">坑内員</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">男子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">女子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">坑内員</th>
+									class="border-left-none halign-center" colspan="5">免除保険料</th>
+								<th class="halign-center" rowspan="4">子ども子育 て拠出金</th>
 							</tr>
 							<tr class="bg-green">
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }" class="text_center">40.900/1000</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center" colspan="3">被保険者負担</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center" colspan="3">事業主負担</th>
+								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center" colspan="3">被保険者負担</th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center" colspan="3">事業主負担</th>
+							</tr>
+							<tr class="bg-green">
+								<th class="halign-center" rowspan="2">健保</th>
+								<th class="halign-center" rowspan="2">厚保</th>
+								<th class="halign-center" rowspan="2">以上</th>
+								<th class="halign-center" rowspan="2">末満</th>
+
+								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">男子</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">女子</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">坑内員</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">男子</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">女子</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">坑内員</th>
 
 								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">40.900/1000</th>
+									class="halign-center">男子</th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">40.900/1000</th>
+									class="halign-center">女子</th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">40.900/1000</th>
+									class="halign-center">坑内員</th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">40.900/1000</th>
+									class="halign-center">男子</th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">40.900/1000</th>
+									class="halign-center">女子</th>
 								<th data-bind="css: { hidden: !rightShow() }"
-									class="text_center">40.900/1000</th>
+									class="halign-center">坑内員</th>
 							</tr>
-							<tr>
-								<td class="bg-green">1</td>
-								<td class="bg-green">1</td>
-								<td class="bg-green">58000</td>
-								<td class="bg-green"></td>
-								<td class="bg-green">63000</td>
-								<td data-bind="css: { hidden: leftShow() }"
-									class="bg-green border_none"></td>
-								<td data-bind="css: { hidden: !leftShow() }">1233</td>
-								<td data-bind="css: { hidden: !leftShow() }">4223</td>
-								<td data-bind="css: { hidden: !leftShow() }">1723</td>
-								<td data-bind="css: { hidden: !leftShow() }">5523</td>
-								<td data-bind="css: { hidden: !leftShow() }">2475</td>
-								<td data-bind="css: { hidden: !leftShow() }">1234</td>
+							<tr class="bg-green">
+								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !leftShow() }"
+									class="halign-center">40.900/1000</th>
 
-								<td data-bind="css: { hidden: rightShow() }"
-									class="bg-green border_none"></td>
-								<td data-bind="css: { hidden: !rightShow() }">1233</td>
-								<td data-bind="css: { hidden: !rightShow() }">4223</td>
-								<td data-bind="css: { hidden: !rightShow() }">1723</td>
-								<td data-bind="css: { hidden: !rightShow() }">5523</td>
-								<td data-bind="css: { hidden: !rightShow() }">2475</td>
-								<td data-bind="css: { hidden: !rightShow() }">1234</td>
+								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center">40.900/1000</th>
+								<th data-bind="css: { hidden: !rightShow() }"
+									class="halign-center">40.900/1000</th>
 							</tr>
+							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
+								<tr class="inp-money">
+									<td class="bg-green"><span data-bind="text: healthLevel"></span></td>
+									<td class="bg-green"><span data-bind="text: pensionLevel"></span></td>
+									<td class="bg-green"><span data-bind="text: avgEarn"></span></td>
+									<td class="bg-green"><span data-bind="text: salMin"></span></td>
+									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
+									<td data-bind="css: { hidden: $parent.leftShow() }"
+										class="bg-green border_none"></td>
+									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
+									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
+									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
+									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
+									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
+									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
+
+									<td data-bind="css: { hidden: $parent.rightShow() }"
+										class="bg-green border_none"></td>
+									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
+									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
+									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
+									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
+									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
+									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
+										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
+									<td><input data-bind="value: 555"></input></td>
+								</tr>
+							</com:ko-foreach>
 						</tbody>
 					</table>
 				</div>

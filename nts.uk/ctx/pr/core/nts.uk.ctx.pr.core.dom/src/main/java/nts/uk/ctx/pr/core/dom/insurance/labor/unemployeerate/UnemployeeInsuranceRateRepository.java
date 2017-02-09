@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import java.util.List;
 
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+
 /**
  * The Interface UnemployeeInsuranceRateRepository.
  */
@@ -48,4 +50,12 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @return the unemployee insurance rate
 	 */
 	UnemployeeInsuranceRate findById(String id);
+
+	/**
+	 * Checks if is invalid date range.
+	 *
+	 * @param applyRange the apply range
+	 * @return true, if is invalid date range
+	 */
+	boolean isInvalidDateRange(MonthRange applyRange);
 }

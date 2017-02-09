@@ -49,4 +49,12 @@ public interface UnitPriceRepository {
 	 * @return the unit price
 	 */
 	UnitPrice findById(String id);
+	
+	/**
+	 * Check duplicate code.
+	 *
+	 * @param code the code
+	 * @return true, if successful
+	 */
+	boolean isDuplicateCode(UnitPriceCode code);
 }

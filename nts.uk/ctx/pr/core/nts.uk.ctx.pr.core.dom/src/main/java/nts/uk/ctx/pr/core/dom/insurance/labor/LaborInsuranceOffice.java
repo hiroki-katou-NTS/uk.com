@@ -17,7 +17,6 @@ import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.labor.service.LaborInsuranceOfficeService;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -84,28 +83,7 @@ public class LaborInsuranceOffice extends AggregateRoot {
 	/** The memo. */
 	private Memo memo;
 
-	/**
-	 * Validate.
-	 *
-	 * @param service
-	 *            the service
-	 */
-	public void validate(LaborInsuranceOfficeService service) {
-		// Validate required item
-		service.validateRequiredItem(this);
-		// if (StringUtil.isNullOrEmpty(code.v(), true) ||
-		// StringUtil.isNullOrEmpty(name.v(), true)
-		// || StringUtil.isNullOrEmpty(picPosition.v(), true)) {
-		// throw new BusinessException("ER001");
-		// }
-
-		// Office code duplication check
-		service.checkDuplicateCode(this);
-		// throw new BusinessException("ER005");
-	}
-
 	// =================== Memento State Support Method ===================
-
 	/**
 	 * Instantiates a new labor insurance office.
 	 *

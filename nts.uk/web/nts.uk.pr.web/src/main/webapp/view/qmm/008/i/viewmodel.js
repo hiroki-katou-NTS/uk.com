@@ -12,20 +12,25 @@ var nts;
                     (function (i) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
+                                    self.listAvgEarnLevelMasterSetting = ko.observableArray();
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
-                                        return "-"; return "+"; });
+                                        return "—"; return "+"; });
                                     self.rightBtnText = ko.computed(function () { if (self.rightShow())
-                                        return "-"; return "+"; });
+                                        return "—"; return "+"; });
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    dfd.resolve();
+                                    commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
+                                        self.listAvgEarnLevelMasterSetting(data);
+                                        dfd.resolve();
+                                    });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.leftToggle = function () {

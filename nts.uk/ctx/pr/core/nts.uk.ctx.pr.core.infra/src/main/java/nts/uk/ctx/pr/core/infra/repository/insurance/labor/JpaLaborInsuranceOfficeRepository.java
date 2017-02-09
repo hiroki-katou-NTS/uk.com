@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 
@@ -70,17 +71,22 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
-	 * findById(java.lang.String)
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#findById(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
 	 */
 	@Override
-	public LaborInsuranceOffice findById(String id) {
+	public LaborInsuranceOffice findById(OfficeCode code) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#isDuplicateCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	 */
+	@Override
+	public boolean isDuplicateCode(OfficeCode code) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

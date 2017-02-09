@@ -7,10 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.gul.collection.ListUtil;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
@@ -23,11 +20,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateSe
  */
 @Getter
 public class PensionRate extends AggregateRoot {
-	/** The fund rate item count. */
-	private final int FUND_RATE_ITEM_COUNT = 6;
-
-	/** The rounding method count. */
-	private final int ROUNDING_METHOD_COUNT = 4;
 
 	/** The history id. */
 	// historyId
@@ -58,13 +50,6 @@ public class PensionRate extends AggregateRoot {
 	private List<PensionRateRounding> roundingMethods;
 
 	/**
-	 * Instantiates a new pension rate.
-	 */
-	public PensionRate() {
-		super();
-	}
-
-	/**
 	 * Validate.
 	 *
 	 * @param service
@@ -73,14 +58,6 @@ public class PensionRate extends AggregateRoot {
 	public void validate(PensionRateService service) {
 		// Validate required item
 		service.validateRequiredItem(this);
-		// if (StringUtil.isNullOrEmpty(officeCode.v(), true) || applyRange ==
-		// null || maxAmount == null
-		// || childContributionRate == null || ListUtil.isEmpty(fundRateItems)
-		// || fundRateItems.size() != FUND_RATE_ITEM_COUNT ||
-		// ListUtil.isEmpty(roundingMethods)
-		// || roundingMethods.size() != ROUNDING_METHOD_COUNT) {
-		// throw new BusinessException("ER001");
-		// }
 
 		// Check consistency date range.
 		service.validateDateRange(this);

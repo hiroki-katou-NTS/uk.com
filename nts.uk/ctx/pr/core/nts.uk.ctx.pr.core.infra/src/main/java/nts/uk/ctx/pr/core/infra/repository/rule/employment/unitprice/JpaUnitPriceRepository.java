@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
 
 /**
@@ -81,6 +82,20 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 	public UnitPrice findById(String id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository#
+	 * isDuplicateCode(nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceCode)
+	 */
+	@Override
+	public boolean isDuplicateCode(UnitPriceCode code) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

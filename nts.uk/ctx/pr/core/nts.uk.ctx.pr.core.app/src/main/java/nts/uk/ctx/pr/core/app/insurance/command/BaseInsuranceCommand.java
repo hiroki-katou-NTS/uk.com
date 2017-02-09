@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.core.app.insurance.command;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.GenerationType;
-
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
@@ -16,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
@@ -40,7 +39,7 @@ public class BaseInsuranceCommand {
 	public Set<UnemployeeInsuranceRateItem> convertSetUnemployeeInsuranceRateItem(
 			UnemployeeInsuranceRateDto unemployeeInsuranceRate) {
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<UnemployeeInsuranceRateItem>();
-		for(UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItemDto: unemployeeInsuranceRate.getRateItems()){
+		for (UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItemDto : unemployeeInsuranceRate.getRateItems()) {
 			setUnemployeeInsuranceRateItem.add(convertUnemployeeInsuranceRateItem(unemployeeInsuranceRateItemDto));
 		}
 		return setUnemployeeInsuranceRateItem;
@@ -162,10 +161,29 @@ public class BaseInsuranceCommand {
 	// Default InsuranceBusinessType
 	public InsuranceBusinessType detaultInsuranceBusinessType(String companyCode, String bizName,
 			BusinessTypeEnum bizOrder) {
-		InsuranceBusinessType insuranceBusinessType = new InsuranceBusinessType();
-		insuranceBusinessType.setBizOrder(bizOrder);
-		insuranceBusinessType.setBizName(new BusinessName(bizName));
-		insuranceBusinessType.setCompanyCode(new CompanyCode(companyCode));
+		InsuranceBusinessType insuranceBusinessType = new InsuranceBusinessType(new InsuranceBusinessTypeGetMemento() {
+
+			@Override
+			public Long getVersion() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode(companyCode);
+			}
+
+			@Override
+			public BusinessTypeEnum getBizOrder() {
+				return bizOrder;
+			}
+
+			@Override
+			public BusinessName getBizName() {
+				return new BusinessName(bizName);
+			}
+		});
 		return insuranceBusinessType;
 	}
 }
