@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsur
 
 @Path("pr/insurance/labor/accidentrate")
 @Produces("application/json")
-public class AccidentInsuranceRateService extends WebService {
+public class AccidentInsuranceRateWebService extends WebService {
 
 	/** The add. */
 	 @Inject

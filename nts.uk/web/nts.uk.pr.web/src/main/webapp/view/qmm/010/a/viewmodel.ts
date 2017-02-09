@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm010.a {
     import option = nts.uk.ui.option;
     import LaborInsuranceOfficeDto = service.model.LaborInsuranceOfficeDto;
     import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
+    import LaborInsuranceOfficeFindInDto = service.model.LaborInsuranceOfficeFindInDto;
     export module viewmodel {
         export class ScreenModel {
             //ojbect value binding
@@ -56,7 +57,6 @@ module nts.uk.pr.view.qmm010.a {
                 var dfd = $.Deferred<any>();
                 service.findAllLaborInsuranceOffice("companyCode").done(data => {
                     self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
-                    console.log(data);
                     self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
                     self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
                         self.showInsuranceOffice(selectCodeLstlaborInsuranceOffice);
@@ -69,7 +69,11 @@ module nts.uk.pr.view.qmm010.a {
             private findInsuranceOffice(code: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findLaborInsuranceOffice(code).done(data => {
+                var laborInsuranceOfficeFindInDto: LaborInsuranceOfficeFindInDto;
+                laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
+                laborInsuranceOfficeFindInDto.code = code;
+                laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
+                service.findLaborInsuranceOffice(laborInsuranceOfficeFindInDto).done(data => {
                     self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
                     dfd.resolve(null);
                 });
@@ -78,7 +82,11 @@ module nts.uk.pr.view.qmm010.a {
             //show InsuranceOffice
             private showInsuranceOffice(code: string) {
                 var self = this;
-                service.findLaborInsuranceOffice(code).done(data => {
+                 var laborInsuranceOfficeFindInDto: LaborInsuranceOfficeFindInDto;
+                laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
+                laborInsuranceOfficeFindInDto.code = code;
+                laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
+                service.findLaborInsuranceOffice(laborInsuranceOfficeFindInDto).done(data => {
                     self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
                 });
             }
