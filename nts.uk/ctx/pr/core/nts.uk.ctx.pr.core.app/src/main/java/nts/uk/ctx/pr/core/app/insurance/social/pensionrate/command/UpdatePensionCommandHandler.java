@@ -13,31 +13,35 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateSe
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensionCommand> {
+public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCommand> {
 
 	@Inject
-	PensionRateService pensionRateService;
-	@Inject
-	PensionRateRepository pensionRateRepository;
+	private PensionRateService pensionRateService;
+	private PensionRateRepository pensionRateRepository;
 
 	@Override
 	@Transactional
-	protected void handle(CommandHandlerContext<RegisterPensionCommand> context) {
+	protected void handle(CommandHandlerContext<UpdatePensionCommand> context) {
 		// Get command.
-		RegisterPensionCommand command = context.getCommand();
+		UpdatePensionCommand command = context.getCommand();
 
 		// Get the current company code.
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
+		// Get the history.
+		PensionRate pensionRate = pensionRateRepository.findById(command.getHistoryId()).get();
+
 		// Transfer data
-		PensionRate pensionRate = command.toDomain(companyCode);
+		PensionRate updatedPensionRate = command.toDomain(companyCode, pensionRate.getHistoryId(),
+				pensionRate.getOfficeCode());
 
 		// Validate
-		pensionRateService.validateDateRange(pensionRate);
-		pensionRateService.validateRequiredItem(pensionRate);
+		pensionRateService.validateRequiredItem(updatedPensionRate);
+		pensionRateService.validateDateRange(updatedPensionRate);
 
-		// Insert into db.
-		pensionRateRepository.add(pensionRate);
+		// Update to db.
+		pensionRateRepository.update(updatedPensionRate);
+
 	}
 
 }
