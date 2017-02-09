@@ -27,9 +27,11 @@
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<h1>Up down</h1>
+					<h2>Swap list case</h2>
 					<div>
 						<div id="swap-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
@@ -50,6 +52,7 @@
 						</div>
 						<div id="swap-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: currentCodeListSwap,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
@@ -59,6 +62,7 @@
 					</div>
 					<br />
 					<hr />
+					<h2>Multiple select grid case</h2>
 					<div>
 						<div style="display: inline-block;">
 							<table id="grid-test"
@@ -74,6 +78,7 @@
 						</div>
 						<div id="grid-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#grid-test',
 									type: 'grid'
@@ -82,7 +87,32 @@
 					</div>
 					<br />
 					<hr />
-
+					<h2>Single select grid case</h2>
+					<div>
+						<div style="display: inline-block;">
+							<table id="grid-test-single"
+								data-bind="ntsGridList: {
+										height: 300,
+										dataSource: itemsSwap,
+										primaryKey: 'code',
+										columns: columns,
+										value: testSingle,
+										multiple: false
+									}"
+								class=""></table>
+						</div>
+						<div id="grid-up-down"
+							data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
+									primaryKey: 'code',
+									comId: '#grid-test-single',
+									type: 'grid'
+								}"
+							class=""></div>
+					</div>
+					<br />
+					<hr />
+					<h2>Tree view grid case</h2>
 					<div>
 						<div style="display: inline-block;">
 							<table id="treegrid"
@@ -103,6 +133,7 @@
 						</div>
 						<div id="tree-up-down"
 							data-bind="ntsUpDown: {
+									targetSource: items1,
 									primaryKey: 'code',
 									comId: '#treegrid',
 									type: 'tree', 
