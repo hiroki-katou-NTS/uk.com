@@ -1514,7 +1514,7 @@ module nts.uk.ui.koExtentions {
      * Grid scroll helper functions
      * 
      */
-    function calculateIndex(options, id, key) {
+    export function calculateIndex(options, id, key) {
         if (!id) return 0;
         var index = 0;
         for (var i = 0; i < options.length; i++) {

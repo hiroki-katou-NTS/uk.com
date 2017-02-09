@@ -1498,6 +1498,7 @@ var nts;
                     }
                     return index;
                 }
+                koExtentions.calculateIndex = calculateIndex;
                 /**
                  * GridList binding handler
                  */
