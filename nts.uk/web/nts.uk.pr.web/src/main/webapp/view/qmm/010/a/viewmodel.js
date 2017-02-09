@@ -31,23 +31,6 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 120 }
                                     ]);
                                     self.enableButton = ko.observable(true);
-                                    self.items = ko.observableArray([]);
-                                    var str = ['a0', 'b0', 'c0', 'd0'];
-                                    for (var j = 0; j < 4; j++) {
-                                        for (var i = 1; i < 51; i++) {
-                                            var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                                            this.items.push(new ItemModel(code, code, code, code));
-                                        }
-                                    }
-                                    self.columns = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 100 },
-                                        { headerText: '名称', prop: 'name', width: 230 },
-                                        { headerText: '説明', prop: 'description', width: 150 },
-                                        { headerText: '説明1', prop: 'other1', width: 150 },
-                                        { headerText: '説明2', prop: 'other2', width: 150 }
-                                    ]);
-                                    self.currentCode = ko.observable();
-                                    self.currentCodeList = ko.observableArray([]);
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
@@ -204,17 +187,6 @@ var nts;
                                 return LaborInsuranceOfficeModel;
                             }());
                             viewmodel.LaborInsuranceOfficeModel = LaborInsuranceOfficeModel;
-                            var ItemModel = (function () {
-                                function ItemModel(code, name, description, other1, other2) {
-                                    this.code = code;
-                                    this.name = name;
-                                    this.description = description;
-                                    this.other1 = other1;
-                                    this.other2 = other2 || other1;
-                                }
-                                return ItemModel;
-                            }());
-                            viewmodel.ItemModel = ItemModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm010.a || (qmm010.a = {}));
                 })(qmm010 = view.qmm010 || (view.qmm010 = {}));

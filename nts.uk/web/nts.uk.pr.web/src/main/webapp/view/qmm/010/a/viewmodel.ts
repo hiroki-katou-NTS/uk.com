@@ -12,10 +12,6 @@ module nts.uk.pr.view.qmm010.a {
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
             textSearch: any;
             enableButton: KnockoutObservable<boolean>;
-            items: KnockoutObservableArray<ItemModel>;
-            columns: KnockoutObservableArray<any>;
-            currentCode: KnockoutObservable<any>;
-            currentCodeList: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
                 self.textSearch = {
@@ -33,23 +29,6 @@ module nts.uk.pr.view.qmm010.a {
                 ]);
                 self.enableButton = ko.observable(true);
 
-                self.items = ko.observableArray([]);
-                var str = ['a0', 'b0', 'c0', 'd0'];
-                for (var j = 0; j < 4; j++) {
-                    for (var i = 1; i < 51; i++) {
-                        var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                        this.items.push(new ItemModel(code, code, code, code));
-                    }
-                }
-                self.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'code', width: 100 },
-                    { headerText: '名称', prop: 'name', width: 230 },
-                    { headerText: '説明', prop: 'description', width: 150 },
-                    { headerText: '説明1', prop: 'other1', width: 150 },
-                    { headerText: '説明2', prop: 'other2', width: 150 }
-                ]);
-                self.currentCode = ko.observable();
-                self.currentCodeList = ko.observableArray([]);
             }
             private resetValueLaborInsurance() {
                 var self = this;
@@ -230,20 +209,6 @@ module nts.uk.pr.view.qmm010.a {
                         textalign: "left"
                     })),
                 });
-            }
-        }
-        export class ItemModel {
-            code: string;
-            name: string;
-            description: string;
-            other1: string;
-            other2: string;
-            constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
-                this.code = code;
-                this.name = name;
-                this.description = description;
-                this.other1 = other1;
-                this.other2 = other2 || other1;
             }
         }
 
