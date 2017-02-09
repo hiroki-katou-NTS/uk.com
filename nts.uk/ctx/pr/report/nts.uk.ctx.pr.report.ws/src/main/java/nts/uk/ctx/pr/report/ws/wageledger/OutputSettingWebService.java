@@ -14,13 +14,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingCommand;
+import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingRemoveCommand;
+import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingRemoveCommandHandler;
+import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommandHandler;
+import nts.uk.ctx.pr.report.app.wageledger.find.dto.CategorySettingDto;
+import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
+import nts.uk.ctx.pr.report.app.wageledger.find.dto.SettingItemDto;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
-import nts.uk.ctx.pr.report.ws.wageledger.dto.CategorySettingDto;
-import nts.uk.ctx.pr.report.ws.wageledger.dto.OutputSettingDto;
-import nts.uk.ctx.pr.report.ws.wageledger.dto.SettingItemDto;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
 /**
  * The Class OutputSettingWebService.
@@ -29,8 +31,13 @@ import nts.uk.ctx.pr.report.ws.wageledger.dto.SettingItemDto;
 @Produces("application/json")
 public class OutputSettingWebService extends WebService{
 	
+	/** The save handler. */
 	@Inject
-	private OutputSettingSaveCommandHandler handler;
+	private OutputSettingSaveCommandHandler saveHandler;
+	
+	/** The remove handler. */
+	@Inject
+	private OutputSettingRemoveCommandHandler removeHandler;
 	
 	/**
 	 * Find all.
@@ -72,12 +79,12 @@ public class OutputSettingWebService extends WebService{
 		}
 		List<CategorySettingDto> categories = new ArrayList<>();
 		categories.add(CategorySettingDto.builder()
-				.category(WageLedgerCategory.Payment)
+				.category(WLCategory.Payment)
 				.paymentType(PaymentType.Salary)
 				.outputItems(settingItemDtos)
 				.build());
 		categories.add(CategorySettingDto.builder()
-				.category(WageLedgerCategory.Deduction)
+				.category(WLCategory.Deduction)
 				.paymentType(PaymentType.Salary)
 				.outputItems(settingItemDtos)
 				.build());
@@ -96,8 +103,18 @@ public class OutputSettingWebService extends WebService{
 	 */
 	@POST
 	@Path("save")
-	public void save(OutputSettingCommand command) {
-		this.handler.handle(command);
+	public void save(OutputSettingSaveCommand command) {
+		this.saveHandler.handle(command);
 	}
 	
+	/**
+	 * Removes the.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("remove")
+	public void remove(OutputSettingRemoveCommand command) {
+		this.removeHandler.handle(command);
+	}
 }

@@ -4,16 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.find;
 
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 
 /**
  * The Class LaborInsuranceOfficeFindDto. Search LaborInsuranceOffice data base
  */
+@Data
+@Builder
 @AllArgsConstructor
-public class LaborInsuranceOfficeFindOutDto implements Serializable{
+@NoArgsConstructor
+public class LaborInsuranceOfficeFindOutDto{
 	/** The code. officeCode */
 	private String code;
 	/** The name. officeName */

@@ -9,6 +9,7 @@ var qet001;
                 findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
                 findMasterItems: '???',
                 saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
+                removeOutputSetting: 'ctx/pr/report/wageledger/outputsetting/remove',
             };
             function findOutputSettingDetail(settingCode) {
                 return nts.uk.request.ajax(servicePath.findOutputSettingDetail + '/' + settingCode);
@@ -34,6 +35,10 @@ var qet001;
                 return nts.uk.request.ajax(servicePath.saveOutputSetting, data);
             }
             service.saveOutputSetting = saveOutputSetting;
+            function removeOutputSetting(code) {
+                return nts.uk.request.ajax(servicePath.removeOutputSetting, { code: code });
+            }
+            service.removeOutputSetting = removeOutputSetting;
             function findMasterItems() {
                 var dfd = $.Deferred();
                 var data = [];

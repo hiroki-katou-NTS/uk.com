@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.report.ws.wageledger.dto;
 
 import lombok.Builder;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
 /**
  * The Class AggregateItemDto.
@@ -24,7 +24,7 @@ public class AggregateItemDto {
 	public PaymentType paymentType;
 	
 	/** The category. */
-	public WageLedgerCategory category;
+	public WLCategory category;
 	
 	/** The show name zero value. */
 	public boolean showNameZeroValue;

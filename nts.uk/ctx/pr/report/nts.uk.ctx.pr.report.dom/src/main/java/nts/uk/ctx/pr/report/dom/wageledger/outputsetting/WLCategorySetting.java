@@ -9,22 +9,22 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
 /**
  * The Class WageLedgerCategorySetting.
  */
 @Getter
-public class WageLedgerCategorySetting {
+public class WLCategorySetting {
 	
 	/** The category. */
-	private WageLedgerCategory category;
+	private WLCategory category;
 	
 	/** The payment type. */
 	private PaymentType paymentType;
 	
 	/** The output items. */
-	private List<WageLedgerSettingItem> outputItems;
+	private List<WLSettingItem> outputItems;
 
 	/**
 	 * Instantiates a new wage ledger category setting.
@@ -33,11 +33,21 @@ public class WageLedgerCategorySetting {
 	 * @param paymentType the payment type
 	 * @param outputItems the output items
 	 */
-	public WageLedgerCategorySetting(WageLedgerCategory category, PaymentType paymentType,
-			List<WageLedgerSettingItem> outputItems) {
+	public WLCategorySetting(WLCategorySettingGetMemento memento) {
 		super();
-		this.category = category;
-		this.paymentType = paymentType;
-		this.outputItems = outputItems;
+		this.category = memento.getCategory();
+		this.paymentType = memento.getPaymentType();
+		this.outputItems = memento.getOutputItems();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WLCategorySettingSetMemento memento) {
+		memento.setCategory(this.category);
+		memento.setOutputItems(this.outputItems);
+		memento.setPaymentType(this.paymentType);
 	}
 }

@@ -8,6 +8,7 @@ module qet001.b {
             findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
             findMasterItems: '???',
             saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
+            removeOutputSetting: 'ctx/pr/report/wageledger/outputsetting/remove',
         }
         
         /**
@@ -24,6 +25,9 @@ module qet001.b {
             return nts.uk.request.ajax(servicePath.findAggregateItems);
         }
         
+        /**
+         * Save Output setting to DB.
+         */
         export function saveOutputSetting(settingDetail: viewmodel.OutputSettingDetail) : JQueryPromise<void> {
             var categorySettingData = [];
             // Set order number to item list.
@@ -39,6 +43,13 @@ module qet001.b {
                 categorySettings: ko.toJS(settingDetail.categorySettings()),
             };
             return nts.uk.request.ajax(servicePath.saveOutputSetting, data);
+        }
+        
+        /**
+         * Remove Output setting to DB.
+         */
+        export function removeOutputSetting(code: string) : JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeOutputSetting, {code: code});
         }
         
         /**

@@ -115,7 +115,6 @@ module nts.uk.pr.view.qmm010.a {
             export class LaborInsuranceOfficeFindInDto {
                 /** The code. officeCode */
                 code: string;
-
                 /** The company code. */
                 companyCode: string;
             }

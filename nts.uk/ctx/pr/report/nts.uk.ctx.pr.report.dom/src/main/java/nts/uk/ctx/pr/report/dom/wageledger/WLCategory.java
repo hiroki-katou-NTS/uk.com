@@ -7,22 +7,22 @@ package nts.uk.ctx.pr.report.dom.wageledger;
 /**
  * The Enum Category.
  */
-public enum WageLedgerCategory {
+public enum WLCategory {
 	
 	/** The Salary payment. */
-	Payment(1, "支給"),
+	Payment(1, "Payment"),
 	
 	/** The Salary deduction. */
-	Deduction(2, "控除"),
+	Deduction(2, "Deduction"),
 	
 	/** The Salary attendance. */
-	Attendance(3, "勤怠");
+	Attendance(3, "Attendance");
 	
 	/** The value. */
 	public final Integer value;
 
 	/** The description. */
-	public final String description;
+	public final String name;
 
 	/**
 	 * Instantiates a new category.
@@ -30,8 +30,25 @@ public enum WageLedgerCategory {
 	 * @param value the value
 	 * @param description the description
 	 */
-	private WageLedgerCategory(Integer value, String description) {
+	private WLCategory(Integer value, String name) {
 		this.value = value;
-		this.description = description;
+		this.name = name;
+	}
+	
+	public static WLCategory valueOfName(String name) {
+		// Invalid object.
+		if (name == null) {
+			return null;
+		}
+
+		// Find value.
+		for (WLCategory val : WLCategory.values()) {
+			if (val.name == name) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

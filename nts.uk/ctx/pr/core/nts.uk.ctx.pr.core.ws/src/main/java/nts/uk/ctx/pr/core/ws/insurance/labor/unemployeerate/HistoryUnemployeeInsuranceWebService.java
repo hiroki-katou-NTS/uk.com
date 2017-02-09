@@ -20,7 +20,7 @@ import nts.uk.ctx.pr.core.ws.insurance.labor.HistoryInsurance;
 
 @Path("pr/insurance/labor/unemployeerate/history")
 @Produces("application/json")
-public class HistoryUnemployeeInsuranceService extends WebService {
+public class HistoryUnemployeeInsuranceWebService extends WebService {
 
 	/**
 	 * Find all history.

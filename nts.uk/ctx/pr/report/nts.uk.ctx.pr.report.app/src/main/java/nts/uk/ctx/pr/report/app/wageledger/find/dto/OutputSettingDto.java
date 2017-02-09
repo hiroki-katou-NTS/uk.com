@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.ws.wageledger.dto;
+package nts.uk.ctx.pr.report.app.wageledger.find.dto;
 
 import java.util.List;
 

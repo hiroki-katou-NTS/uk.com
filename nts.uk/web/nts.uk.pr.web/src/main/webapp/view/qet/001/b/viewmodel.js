@@ -94,10 +94,17 @@ var qet001;
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
-                    if (self.outputSettings().outputSettingSelectedCode() == '') {
+                    var selectedCode = self.outputSettings().outputSettingSelectedCode();
+                    if (selectedCode == '') {
                         nts.uk.ui.dialog.alert('未選択エラー');
                         return;
                     }
+                    b.service.removeOutputSetting(selectedCode).done(function () {
+                        var selectedSetting = self.outputSettings().outputSettingList().filter(function (setting) { return setting.code == selectedCode; })[0];
+                        self.outputSettings().outputSettingList.remove(selectedSetting);
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 ScreenModel.prototype.loadOutputSettingDetail = function (selectedCode) {
                     var dfd = $.Deferred();
@@ -252,7 +259,7 @@ var qet001;
                     var selectedItem = self.masterItemList().filter(function (item) {
                         return item.code == self.masterItemSelected();
                     })[0];
-                    self.masterItemList.shift();
+                    self.masterItemList.remove(selectedItem);
                     self.outputItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
@@ -268,7 +275,7 @@ var qet001;
                     var selectedItem = self.aggregateItemsList().filter(function (item) {
                         return item.code == self.aggregateItemSelected();
                     })[0];
-                    self.aggregateItemsList.shift();
+                    self.aggregateItemsList.remove(selectedItem);
                     self.outputItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,

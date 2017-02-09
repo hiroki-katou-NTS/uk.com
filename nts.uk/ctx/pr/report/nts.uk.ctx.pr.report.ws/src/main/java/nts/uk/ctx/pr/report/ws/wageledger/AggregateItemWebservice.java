@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WageLedgerCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.ws.wageledger.dto.AggregateItemDto;
 
 @Path("ctx/pr/report/wageledger/aggregateitem")
@@ -28,7 +28,7 @@ public class AggregateItemWebservice extends WebService{
 					.showNameZeroValue(i % 2 != 0)
 					.showValueZeroValue(i % 2 == 0)
 					.paymentType(PaymentType.Salary)
-					.category(WageLedgerCategory.Payment)
+					.category(WLCategory.Payment)
 					.build());
 			dtos.add(AggregateItemDto.builder()
 					.code("AGR" + i)
@@ -36,7 +36,7 @@ public class AggregateItemWebservice extends WebService{
 					.showNameZeroValue(i % 2 != 0)
 					.showValueZeroValue(i % 2 == 0)
 					.paymentType(PaymentType.Salary)
-					.category(WageLedgerCategory.Deduction)
+					.category(WLCategory.Deduction)
 					.build());
 		}
 		return dtos;
