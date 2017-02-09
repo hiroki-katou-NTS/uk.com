@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.command;
+package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import lombok.Getter;
 import lombok.Setter;

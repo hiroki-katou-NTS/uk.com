@@ -1,9 +1,14 @@
-package nts.uk.ctx.pr.core.app.insurance.social.find.dto;
+package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
+import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
-import nts.uk.shr.com.primitive.Memo;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 
+@Builder
+@Getter
+@Setter
 @Data
 public class SocialInsuranceOfficeDto {
 
@@ -83,5 +88,17 @@ public class SocialInsuranceOfficeDto {
 	public String healthInsuAssoCode;
 
 	/** The memo. */
-	public Memo memo;
+	public String memo;
+	
+	public static SocialInsuranceOfficeDto fromDomain(SocialInsuranceOffice domain) {
+		return new SocialInsuranceOfficeDto(domain.getCompanyCode().v(), domain.getCode().v(), domain.getName().v(),
+				domain.getShortName().v(), domain.getPicName().v(), domain.getPicPosition().v(),
+				domain.getPotalCode().v(), domain.getPrefecture(), domain.getAddress1st().v(),
+				domain.getAddress2nd().v(), domain.getKanaAddress1st().v(), domain.getKanaAddress2nd().v(),
+				domain.getPhoneNumber(), domain.getHealthInsuOfficeRefCode1st(), domain.getHealthInsuOfficeRefCode2nd(),
+				domain.getPensionOfficeRefCode1st(), domain.getPensionOfficeRefCode2nd(),
+				domain.getWelfarePensionFundCode(), domain.getOfficePensionFundCode(), domain.getHealthInsuCityCode(),
+				domain.getHealthInsuOfficeSign(), domain.getPensionCityCode(), domain.getPensionOfficeSign(),
+				domain.getHealthInsuOfficeCode(), domain.getHealthInsuAssoCode(), domain.getMemo().v());
+	}
 }

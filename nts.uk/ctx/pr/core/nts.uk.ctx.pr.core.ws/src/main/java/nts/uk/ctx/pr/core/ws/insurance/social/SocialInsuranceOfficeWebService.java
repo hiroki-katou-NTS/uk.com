@@ -15,15 +15,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.social.command.DeleteSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.command.DeleteSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.command.RegisterSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.command.RegisterSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.command.UpdateSocialOfficeCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.command.UpdateSocialOfficeCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.find.dto.HistoryDto;
-import nts.uk.ctx.pr.core.app.insurance.social.find.dto.SocialInsuranceOfficeDto;
-import nts.uk.ctx.pr.core.app.insurance.social.find.dto.SocialInsuranceOfficeItemDto;
+import nts.uk.ctx.pr.core.app.insurance.social.office.command.DeleteSocialOfficeCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.office.command.DeleteSocialOfficeCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.office.command.RegisterSocialOfficeCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.office.command.RegisterSocialOfficeCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.office.command.UpdateSocialOfficeCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.office.command.UpdateSocialOfficeCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.office.find.HistoryDto;
+import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeDto;
+import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeFinder;
+import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
 
 /**
@@ -42,7 +43,9 @@ public class SocialInsuranceOfficeWebService extends WebService {
 	private DeleteSocialOfficeCommandHandler deleteSocialOfficeCommandHandler;
 	@Inject
 	private RegisterPensionCommandHandler registerPensionCommandHandler;
-
+	
+	@Inject
+	private SocialInsuranceOfficeFinder socialInsuranceOfficeFinder;
 	// Find all SocialInsuranceOffice conection data
 	@POST
 	@Path("findall")
@@ -66,27 +69,27 @@ public class SocialInsuranceOfficeWebService extends WebService {
 	@POST
 	@Path("find/{officeCode}")
 	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
-		
-		List<SocialInsuranceOfficeDto> lstOffice = new ArrayList<SocialInsuranceOfficeDto>();
-		SocialInsuranceOfficeDto officeDtoResult = new SocialInsuranceOfficeDto();
-		SocialInsuranceOfficeDto office1 = new SocialInsuranceOfficeDto();
-		office1.setCode("000000000001");
-		office1.setName("A 事業所");
-		lstOffice.add(office1);
-		SocialInsuranceOfficeDto office2 = new SocialInsuranceOfficeDto();
-		office2.setCode("000000000002");
-		office2.setName("B 事業所");
-		lstOffice.add(office2);
-		SocialInsuranceOfficeDto office3 = new SocialInsuranceOfficeDto();
-		office3.setCode("000000000003");
-		office3.setName("C 事業所");
-		lstOffice.add(office3);
-		for (SocialInsuranceOfficeDto OfficeDto : lstOffice) {
- 			if (OfficeDto.getCode().toString().equals(officeCode)) {
- 				officeDtoResult = OfficeDto;
- 			}
-		}
-		return officeDtoResult;
+		return socialInsuranceOfficeFinder.find(officeCode).get();
+//		List<SocialInsuranceOfficeDto> lstOffice = new ArrayList<SocialInsuranceOfficeDto>();
+//		SocialInsuranceOfficeDto officeDtoResult = new SocialInsuranceOfficeDto();
+//		SocialInsuranceOfficeDto office1 = new SocialInsuranceOfficeDto();
+//		office1.setCode("000000000001");
+//		office1.setName("A 事業所");
+//		lstOffice.add(office1);
+//		SocialInsuranceOfficeDto office2 = new SocialInsuranceOfficeDto();
+//		office2.setCode("000000000002");
+//		office2.setName("B 事業所");
+//		lstOffice.add(office2);
+//		SocialInsuranceOfficeDto office3 = new SocialInsuranceOfficeDto();
+//		office3.setCode("000000000003");
+//		office3.setName("C 事業所");
+//		lstOffice.add(office3);
+//		for (SocialInsuranceOfficeDto OfficeDto : lstOffice) {
+// 			if (OfficeDto.getCode().toString().equals(officeCode)) {
+// 				officeDtoResult = OfficeDto;
+// 			}
+//		}
+//		return officeDtoResult;
 	}
 	
 	@POST

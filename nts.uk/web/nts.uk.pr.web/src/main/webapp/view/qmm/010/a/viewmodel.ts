@@ -28,6 +28,7 @@ module nts.uk.pr.view.qmm010.a {
                     { headerText: '名称', prop: 'name', width: 120 }
                 ]);
                 self.enableButton = ko.observable(true);
+
             }
             private resetValueLaborInsurance() {
                 var self = this;
@@ -82,7 +83,7 @@ module nts.uk.pr.view.qmm010.a {
             //show InsuranceOffice
             private showInsuranceOffice(code: string) {
                 var self = this;
-                 var laborInsuranceOfficeFindInDto: LaborInsuranceOfficeFindInDto;
+                var laborInsuranceOfficeFindInDto: LaborInsuranceOfficeFindInDto;
                 laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
                 laborInsuranceOfficeFindInDto.code = code;
                 laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
@@ -210,5 +211,6 @@ module nts.uk.pr.view.qmm010.a {
                 });
             }
         }
+
     }
 }
