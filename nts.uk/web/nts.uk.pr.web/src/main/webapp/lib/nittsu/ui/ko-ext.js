@@ -1469,27 +1469,6 @@ var nts;
                     return ListBoxBindingHandler;
                 }());
                 /**
-<<<<<<< HEAD
-                 * Grid scroll helper functions
-                 *
-                 */
-                function calculateIndex(options, id, key) {
-                    if (!id)
-                        return 0;
-                    var index = 0;
-                    for (var i = 0; i < options.length; i++) {
-                        var item = options[i];
-                        if (item[key] == id) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    return index;
-                }
-                koExtentions.calculateIndex = calculateIndex;
-                /**
-=======
->>>>>>> d8a4ef86db45496597a6bd9bfe91e8d6e9cdf702
                  * GridList binding handler
                  */
                 var NtsGridListBindingHandler = (function () {
