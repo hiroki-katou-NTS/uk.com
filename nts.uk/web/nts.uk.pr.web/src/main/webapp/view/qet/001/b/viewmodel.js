@@ -26,6 +26,7 @@ var qet001;
                     this.reportItemSelected = ko.observable(null);
                     this.aggregateItemsList = [];
                     this.masterItemList = [];
+                    this.hasUpdate = ko.observable(false);
                     var self = this;
                     self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
                         self.isLoading(true);
@@ -88,6 +89,7 @@ var qet001;
                         return;
                     }
                     b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
+                        nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });
@@ -100,6 +102,7 @@ var qet001;
                         return;
                     }
                     b.service.removeOutputSetting(selectedCode).done(function () {
+                        nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         var selectedSetting = self.outputSettings().outputSettingList().filter(function (setting) { return setting.code == selectedCode; })[0];
                         self.outputSettings().outputSettingList.remove(selectedSetting);
                     }).fail(function (res) {

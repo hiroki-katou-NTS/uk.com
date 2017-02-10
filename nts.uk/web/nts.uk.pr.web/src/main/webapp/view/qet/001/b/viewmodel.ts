@@ -14,6 +14,7 @@ module qet001.b.viewmodel {
         aggregateItemsList: service.Item[];
         masterItemList: service.Item[];
         isLoading: KnockoutObservable<boolean>;
+        hasUpdate: KnockoutObservable<boolean>;
         
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
@@ -36,6 +37,7 @@ module qet001.b.viewmodel {
             this.reportItemSelected = ko.observable(null);
             this.aggregateItemsList = [];
             this.masterItemList = [];
+            this.hasUpdate = ko.observable(false);
             
             var self = this;
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
@@ -119,7 +121,7 @@ module qet001.b.viewmodel {
                 return;
             }
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
-                
+                nts.uk.ui.windows.setShared('isHasUpdate', true, false);
             }).fail(function(res) {
                 // TODO: Show message duplicate code.
                 nts.uk.ui.dialog.alert(res.message);
@@ -139,6 +141,7 @@ module qet001.b.viewmodel {
                 return;
             }
             service.removeOutputSetting(selectedCode).done(function() {
+                nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                 var selectedSetting = self.outputSettings().outputSettingList().filter(setting => setting.code == selectedCode)[0];
                 self.outputSettings().outputSettingList.remove(selectedSetting);
             }).fail(function(res) {
