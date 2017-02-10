@@ -5,6 +5,10 @@ var nts;
         var request;
         (function (request) {
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
+            var WEB_APP_NAME = {
+                com: 'nts.uk.com.web',
+                pr: 'nts.uk.pr.web'
+            };
             var QueryString = (function () {
                 function QueryString() {
                     this.items = {};
@@ -109,13 +113,19 @@ var nts;
                 return Locator;
             }());
             request.Locator = Locator;
-            function ajax(path, data, options) {
+            function ajax(webAppId, path, data, options) {
+                if (typeof arguments[1] !== 'string') {
+                    return ajax.apply(null, _.concat(location.currentAppId, arguments));
+                }
                 var dfd = $.Deferred();
                 options = options || {};
                 if (typeof data === 'object') {
                     data = JSON.stringify(data);
                 }
-                var webserviceLocator = location.ajaxRoot.mergeRelativePath(path);
+                var webserviceLocator = location.siteRoot
+                    .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
+                    .mergeRelativePath(location.ajaxRootDir)
+                    .mergeRelativePath(path);
                 $.ajax({
                     type: options.method || 'POST',
                     contentType: options.contentType || 'application/json',
@@ -186,7 +196,15 @@ var nts;
             (function (location) {
                 location.current = new Locator(window.location.href);
                 location.appRoot = location.current.mergeRelativePath(__viewContext.rootPath);
-                location.ajaxRoot = location.appRoot.mergeRelativePath('webapi/');
+                location.siteRoot = location.appRoot.mergeRelativePath('../');
+                location.ajaxRootDir = 'webapi/';
+                var currentAppName = _.takeRight(location.appRoot.serialize().split('/'), 2)[0];
+                for (var id in WEB_APP_NAME) {
+                    if (currentAppName === WEB_APP_NAME[id]) {
+                        location.currentAppId = id;
+                        break;
+                    }
+                }
             })(location = request.location || (request.location = {}));
             ;
         })(request = uk.request || (uk.request = {}));

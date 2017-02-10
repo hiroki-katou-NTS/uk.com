@@ -78,5 +78,5 @@ html, body{background: #ffdddd url(valentine-bg.jpg) center center; background-s
 #side-menu a:hover{background-color:rgba(255,255,255,0.1);}
 #side-menu a.active{background-color: #fff;color: #c72661;}
 #search-menu{border:none;color:#fff;background:rgba(255,255,255,0.15);}
-#content{background: rgba(255, 255, 255, 0.65);}
+#content{background: rgba(255, 255, 255, 1);}
 .feature-box > .content{background:#fff;}

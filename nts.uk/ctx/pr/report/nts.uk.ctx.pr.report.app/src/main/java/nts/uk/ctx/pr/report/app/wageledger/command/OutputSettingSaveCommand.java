@@ -7,9 +7,7 @@ package nts.uk.ctx.pr.report.app.wageledger.command;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.CategorySettingDto;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
@@ -22,8 +20,6 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
  * The Class OutputSettingCommand.
  */
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class OutputSettingSaveCommand {
 	/** The code. */
 	public String code;

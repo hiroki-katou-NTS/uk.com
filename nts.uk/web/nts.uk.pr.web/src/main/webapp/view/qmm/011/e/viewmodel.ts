@@ -18,7 +18,6 @@ module nts.uk.pr.view.qmm011.e {
             }
             updateInsuranceBusinessType() {
                 var self = this;
-                nts.uk.ui.windows.close();
                 var insuranceBusinessType: InsuranceBusinessTypeUpdateDto;
                 insuranceBusinessType =
                     new InsuranceBusinessTypeUpdateDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(),
@@ -32,7 +31,10 @@ module nts.uk.pr.view.qmm011.e {
                         self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(),
                         self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th(),
                         self.insuranceBusinessTypeUpdateModel().version());
-                service.updateInsuranceBusinessType(insuranceBusinessType);
+                service.updateInsuranceBusinessType(insuranceBusinessType).done(data => {
+                    nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateModel", self.insuranceBusinessTypeUpdateModel());
+                    nts.uk.ui.windows.close();
+                });
 
             }
         }
