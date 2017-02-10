@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.layout.LayoutName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="btn_001" class="button separate-button fix-button">BTN_001</button>
+				<button id="btn_002"
+					class="button proceed separate-button fix-button">BTN_002</button>
+				<button id="btn_003" class="button separate-button fix-button">BTN_003</button>
+				<button id="btn_004" class="button separate-button fix-button">BTN_004</button>
+				<button id="btn_005"
+					class="button danger separate-button fix-button">BTN_005</button>
+			</div>
+			<div id="contents-area">
+				<div id="left-content" class="bg-green caret-right caret-background">
+
+					<button id="btn_005">BTN_006</button>
+					<button id="btn_006" class="button danger">BTN_007</button>
+					<br /> <br />
+					<div data-bind="with: listbox">
+						<div id="list-box"
+							data-bind="ntsListBox: { 
+												options: itemList,
+												primaryKey: 'code',
+												primaryText: 'name',
+												multiple: true,
+												value: selectedCodes,
+												enable: isEnable(),
+												rows: 3,
+												required: false,
+												columns: [
+													{ prop: 'code', length: 12 }
+													
+												]}"></div>
+					</div>
+					<br /> <br />
+
+					<div class="cf" data-bind="with: searchboxx">
+						<div style="float: left">
+							<div
+								data-bind="ntsSearchBox: {
+						comId: 'single-list',
+						items: dataSource, 		
+						selected: currentCode, 
+						selectedKey: 'code', 
+						childField: 'childs', 
+						fields: ['name', 'code']}" />
+							<BR />
+							<table id="single-list"
+								data-bind="ntsGridList: {
+											width: 300,
+											height: 300,
+											options: dataSource,
+											optionsValue: 'code',
+											columns: columns,
+											multiple: false,
+											value: currentCode}"
+								class="cf">
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+				<div id="right-content">
+					<table class = "table_content">
+						<tr>
+							<th style="width: 80px"></th>
+							<th style="width: 80px"></th>
+						</tr>
+						<tr>
+							<td class ="abc" data-bind="with: label_002" >
+								<div data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">レイアウトコード</div>
+							</td>
+							<td>
+								<div>
+									<input id="INP_002" data-bind="value: inp_002 , enable: hasCellphone" type="text" /> 
+									<input id="INP_003" data-bind="value: inp_003" type="text" />
+								</div>
+
+							</td>
+
+						</tr>
+						<tr>
+							<td data-bind="with: label_003">
+								<div data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">レイアウトコード</div>
+							</td>
+							<td data-bind="with: selectbox">
+								<div data-bind="ntsRadioBoxGroup: {
+												options: itemList,
+												optionsValue: 'id',
+												optionsText: 'name',
+												value: selectedId,
+												enable: enable}">
+								</div>
+							</td>
+
+						</tr>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

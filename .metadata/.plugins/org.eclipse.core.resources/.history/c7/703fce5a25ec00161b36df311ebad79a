@@ -1,0 +1,111 @@
+@CHARSET "UTF-8";
+
+.valign-center{vertical-align: middle !important;}
+
+.separate-button {
+	margin-left: 10px;
+}
+
+.fix-button {
+	min-width: 75px;
+}
+
+.fix-input {
+	width: 150px;
+}
+
+#btn_003 {
+	margin-left: 110px;
+}
+
+#left-content {
+	margin-left: 10px;
+	margin-top: 12px;
+	padding: 20px;
+	float: left;
+	min-height: 600px;
+}
+caret-bottom.outline{
+	margin-left: 10px;
+	margin-top: 12px;
+}
+
+#right-content {
+	margin-left: 20px;
+	float: left;
+	min-height: 600px;
+	width: 60%;
+}
+
+#lbl_002 {
+	margin-bottom: 10px;
+}
+
+#btn_006 {
+	margin-left: 120px;
+}
+
+#lst_001 {
+	margin-top: 10px;
+}
+
+#listbox2 {
+	width: 120px;
+}
+
+#INP_002{
+	width: 20%;
+}
+
+#INP_003{
+	width: 40%;
+}
+
+.input_002 {
+	display: inline-block;
+}
+
+
+.table_content td {
+	border: solid transparent;
+	border-width: 0 10px 10px 0;
+	vertical-align: top;
+}
+
+
+
+.ntsRadioBox {
+    width: 100%;
+}
+
+.lst_003 {
+	display: inline-block;
+	height: 185px;
+	overflow-y: scroll;
+}
+
+.row {
+	border: 1px solid #aaa;
+	border-bottom: 0;
+	padding: 2px;
+}
+
+.row:last-child {
+	border-bottom: 1px solid #aaa;
+}
+
+.line {
+	display: inline-block;
+}
+
+.left-line {
+	width: 150px;
+}
+
+.input_005{
+	    height: 88px !important; 
+}
+
+button.nts-switch-button {
+    margin-bottom: 0px;
+}

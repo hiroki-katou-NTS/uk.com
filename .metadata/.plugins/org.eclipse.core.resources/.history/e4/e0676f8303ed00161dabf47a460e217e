@@ -1,0 +1,49 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.app.commands.position.laitv;
+
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.organization.position.laitv.Position;
+import nts.uk.shr.com.context.AppContexts;
+
+/**
+ *  AddPositionCommand
+ *  @author laitv
+ *
+ */
+
+public class AddPositionCommand {
+	
+	private Date endDate;
+
+	/**		 */
+	private Date startDate;
+
+	/**		 */
+	private String jobCode;
+
+	/** 		*/
+	private String jobName;
+
+	/** 		*/
+	private String jobOutCode;
+
+	/** 		*/
+	private String companyCode;
+
+	/** 		*/
+	private String memo;
+
+	
+	public Position toDomain() {
+		return  Position.createSimpleFromJavaType(GeneralDate.legacyDate(this.endDate),GeneralDate.legacyDate(this.startDate), this.jobCode,
+				this.jobName, this.jobOutCode, AppContexts.user().companyCode(), this.memo);
+
+	}
+
+}

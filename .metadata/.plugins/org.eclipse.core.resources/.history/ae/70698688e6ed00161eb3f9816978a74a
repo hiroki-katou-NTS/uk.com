@@ -1,0 +1,121 @@
+module cmm014.a.viewmodel {
+
+    export class ScreenModel {
+        //        classificationCode: KnockoutObservable<string>;
+        //        classificationName: KnockoutObservable<string>;
+        //        classificationMemo: KnockoutObservable<string>;
+        //        classificationList: KnockoutObservableArray<Classification>;
+        dataSource: KnockoutObservableArray<Classification>;
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        currentCode: KnockoutObservable<any>;
+        currentCodeList: KnockoutObservableArray<any>;
+        currentItem: KnockoutObservable<any>;
+        selectedClassificationCode: any;
+        texteditorcode: any;
+        INP_002_code: any;
+        INP_002_enable: any;
+        texteditorname: any;
+        multilineeditor: any;
+
+        constructor() {
+            var self = this;
+            //            self.classificationCode = ko.observable("");
+            //            self.classificationName = ko.observable("");
+            //            self.classificationMemo = ko.observable("");
+            //            self.classificationList = ko.observableArray([]);
+            self.selectedClassificationCode = ko.observable(null);
+
+            self.dataSource = ko.observableArray([
+                new Classification('A000001', '1基本給'),
+                new Classification('A000002', '2基本給'),
+                new Classification('A000003', '3基12本'),
+                new Classification('A000004', '基12本'),
+                new Classification('A000005', '基12本'),
+                new Classification('A000006', '基12本'),
+                new Classification('A000007', '基12本'),
+                new Classification('A000008', '基12本'),
+                new Classification('A000009', '基12本'),
+                new Classification('A000010', '基12本')
+
+            ]);
+            self.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'classificationCode', width: 100 },
+                { headerText: '名称', prop: 'classificationName', width: 80 }
+
+            ]);
+
+            self.currentCode = ko.observable("");
+            self.currentCodeList = ko.observableArray([]);
+            self.currentItem = ko.observable("");
+
+            self.INP_002_code = ko.observable('');
+            self.INP_002_enable = ko.observable(false);
+
+            self.texteditorname = {
+                value: ko.observable('Name'),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    width: "150px",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+
+            self.multilineeditor = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                    resizeable: true,
+                    placeholder: "Placeholder for text editor",
+                    width: "350px",
+                    textalign: "left"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+
+            self.currentCode.subscribe((function(codeChanged) {
+                self.currentItem(self.findObj(codeChanged));
+                self.INP_002_code(self.currentItem().classificationCode);
+                console.log(self.currentItem());
+            }));
+
+
+
+
+        }
+
+        findObj(value: string): any {
+            let self = this;
+            var itemModel = null;
+            _.find(self.dataSource(), function(obj: Classification) {
+                if (obj.classificationCode == value) {
+                    itemModel = obj;
+                }
+            })
+            return itemModel;
+        }
+
+        start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            dfd.resolve();
+            return dfd.promise();
+        }
+    }
+
+    class Classification {
+        classificationCode: string;
+        classificationName: string;
+        classificationMemo: string;
+        constructor(classificationCode: string, classificationName: string) {
+            this.classificationCode = classificationCode;
+            this.classificationName = classificationName;
+        }
+    }
+}

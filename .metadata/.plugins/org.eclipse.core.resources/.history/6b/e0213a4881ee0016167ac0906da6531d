@@ -1,0 +1,116 @@
+module cmm014.a.viewmodel {
+
+    export class ScreenModel {
+
+        dataSource: KnockoutObservableArray<Classification>;
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        currentCode: KnockoutObservable<any>;
+        currentCodeList: KnockoutObservableArray<any>;
+        currentItem: KnockoutObservable<any>;
+
+        INP_002_code: any;
+        INP_002_enable: any;
+        INP_003_name: any;
+        INP_004_notes: any;
+
+        constructor() {
+            var self = this;
+            self.dataSource = ko.observableArray([
+                new Classification('A000001', '1基本給'),
+                new Classification('A000002', '2基本給'),
+                new Classification('A000003', '3基12本'),
+                new Classification('A000004', '基12本'),
+                new Classification('A000005', '基12本'),
+                new Classification('A000006', '基12本'),
+                new Classification('A000007', '基12本'),
+                new Classification('A000008', '基12本'),
+                new Classification('A000009', '基12本'),
+                new Classification('A000010', '基12本')
+
+            ]);
+            self.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'classificationCode', width: 100 },
+                { headerText: '名称', prop: 'classificationName', width: 80 }
+
+            ]);
+            self.currentCode = ko.observable(self.dataSource()[0].classificationCode);
+            self.currentCodeList = ko.observableArray([]);
+            self.currentItem = ko.observable("");
+
+            self.INP_002_code = ko.observable(self.dataSource()[0].classificationCode);
+            self.INP_002_enable = ko.observable(false);
+            self.INP_003_name = ko.observable(self.dataSource()[0].classificationName);
+            self.INP_004_notes = ko.observable('');
+
+
+            self.currentCode.subscribe((function(codeChanged) {
+                self.currentItem(self.findObj(codeChanged));
+                if (self.currentItem() != null) {
+                    self.INP_002_code(self.currentItem().classificationCode);
+                    self.INP_003_name(self.currentItem().classificationName);
+                }
+            }));
+
+
+
+
+        }
+
+        findObj(value: string): any {
+            let self = this;
+            var itemModel = null;
+            _.find(self.dataSource(), function(obj: Classification) {
+                if (obj.classificationCode == value) {
+                    itemModel = obj;
+                }
+            })
+            return itemModel;
+        }
+
+        initRegisterClassification() {
+            var self = this;
+            self.INP_002_enable(true);
+            self.INP_002_code("");
+            self.INP_003_name("");
+            self.currentCode(null);
+        }
+
+        checkInput(): boolean {
+            var self = this;
+            if (self.INP_002_code() == '' || self.INP_003_name() == '') {
+                console.log("input is null");
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        RegisterClassification() {
+            var self = this;
+            if (self.checkInput()) {
+                console.log("Insert(đăng ký mới) or Update Classification");
+                for (let i1 = 0; i1 < self.dataSource.length; i1++) {
+                    console.log(self.dataSource()[i1].classificationCode);
+                
+            }
+
+        }
+
+        start(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            dfd.resolve();
+            return dfd.promise();
+        }
+    }
+
+    class Classification {
+        classificationCode: string;
+        classificationName: string;
+        classificationMemo: string;
+        constructor(classificationCode: string, classificationName: string) {
+            this.classificationCode = classificationCode;
+            this.classificationName = classificationName;
+        }
+    }
+}

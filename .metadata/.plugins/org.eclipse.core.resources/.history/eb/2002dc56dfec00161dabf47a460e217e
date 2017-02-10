@@ -1,0 +1,44 @@
+package nts.uk.ctx.basic.app.find.position.laitv;
+
+import java.util.Date;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Value;
+import nts.uk.ctx.basic.organization.position.laitv.Position;
+import nts.uk.shr.com.primitive.Memo;
+
+@Getter
+@Setter
+
+public class PositionDto {
+
+	/** 	*/
+	Date endDate;
+
+	/**		 */
+	Date startDate;
+
+	/**		 */
+	String jobCode;
+
+	/** 		*/
+	String jobName;
+
+	/** 		*/
+	String jobOutCode;
+
+	/** 		*/
+	String companyCode;
+
+	/** 		*/
+	String memo;
+
+	public static PositionDto fromDomain(Position domain) {
+
+		return new PositionDto(domain.getEndDate().date(), domain.getStartDate().date(), domain.getJobCode().v(),
+				domain.getJobName().v(), domain.getJobOutCode().v(), domain.getCompanyCode(), domain.getMemo().v());
+
+	}
+
+}

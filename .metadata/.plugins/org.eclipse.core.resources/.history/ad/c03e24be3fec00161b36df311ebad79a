@@ -1,0 +1,24 @@
+/**
+ * 
+ */
+package nts.uk.ctx.pr.core.infra.repository.organization.laitv;
+
+import nts.uk.ctx.basic.infra.entity.organization.position.laitv.CmnmtJobTitle_ba;
+import nts.uk.ctx.basic.organization.position_ba.Position_ba;
+
+/**
+ * @author laitv
+ *
+ */
+
+public class JpaPositionRepository_ba {
+
+	private final String SELECT_NO_WHERE = "SELECT c FROM CmmtJobTitle c ";
+	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.cmmtJobTitlePK.ccd = :companyCode ";
+	private final String SELECT_DETAIL = SELECT_ALL_BY_COMPANY + " AND c.cmmtJobTitlePK.jobCd = :jobCode ";
+
+	
+	private static Position_ba toDomain(CmnmtJobTitle_ba cmnmtJobTitle_ba){
+		return null;}
+
+}

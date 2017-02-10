@@ -1,0 +1,32 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.app.find.position.laitv;
+
+import java.util.Date;
+
+import nts.uk.ctx.basic.organization.position_ba.Position_ba;
+
+/**
+ * @author laitv
+ *
+ */
+public class PositionDto_ba {
+	 Date endDate;
+	 
+	 Date startDate ;
+	 
+	 String companyCode ;
+	 
+	 String jobCode ;
+	 
+	 String jobName;
+	 
+	 String meMo;
+	 
+	 String jobOutCode;
+	 
+	 public static PositionDto_ba fromDomain(Position_ba domain){
+		 return null;
+	 }
+}

@@ -1,0 +1,62 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.infra.entity.organization.position.laitv;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+/**
+ * @author laitv
+ *
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@Entity
+@Table(name = "CMNMT_JOB_TITLE")
+public class CmnmtJobTitle_ba implements Serializable {
+
+	/**
+	* 
+	*/
+	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	CmnmtJobTitle_ba cmnmtJobTitle_ba;
+	
+	@Basic(optional = false)
+	@Column(name = "END_D")
+	public Date endDate;
+
+	@Basic(optional = false)
+	@Column(name = "STR_D")
+	public Date startDate;
+
+	
+	@Basic(optional = false)
+	@Column(name = "JOB_OUT_CD")
+	public String jobOutCode;
+	
+
+	@Basic(optional = false)
+	@Column(name = "JOBNAME")
+	public String jobName;
+
+	@Basic(optional = false)
+	@Column(name = "MEMO")
+	public String meMo;
+
+}

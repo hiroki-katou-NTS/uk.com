@@ -1,0 +1,25 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.organization.position_ba;
+
+import nts.arc.primitive.StringPrimitiveValue;
+
+/**
+ * @author laitv
+ *
+ */
+
+public class JobCode_ba extends StringPrimitiveValue<PrimitiveValue<String>>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public JobCode_ba(String rawValue) {
+		super(rawValue);
+		// TODO Auto-generated constructor stub
+	}
+
+}

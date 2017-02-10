@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package nts.uk.ctx.pr.core.infra.repository.organization.laitv;
+
+/**
+ * @author laitv
+ *
+ */
+public class JpaPositionRepository_ba {
+	
+	
+
+}

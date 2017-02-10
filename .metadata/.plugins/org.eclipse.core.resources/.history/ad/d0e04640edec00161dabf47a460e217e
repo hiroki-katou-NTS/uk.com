@@ -1,0 +1,22 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.app.find.position.laitv;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.basic.organization.position_ba.PositionRepository_ba;
+
+/**
+ * @author laitv
+ *
+ */
+@Stateless
+public class PositionFinder_ba {
+	
+	@Inject
+	PositionRepository_ba positionRepository_ba;
+	
+
+}

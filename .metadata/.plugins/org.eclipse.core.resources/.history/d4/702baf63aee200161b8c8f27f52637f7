@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+.separate-button {
+	margin-left: 10px;
+}
+
+.fix-button {
+	min-width: 75px;
+}
+
+.fix-input {
+	width: 150px;
+}
+
+#btn_003 {
+	margin-left: 110px;
+}
+
+#left-content {
+	margin-left: 10px;
+	padding: 20px;
+	float: left;
+	min-height: 600px;
+}
+
+#right-content {
+	margin-left: 20px;
+	float: left;
+	min-height: 600px;
+	width: 38%;
+}
+
+#lbl_002 {
+	margin-bottom: 10px;
+}
+
+#btn_006 {
+	margin-left: 120px;
+}
+
+#lst_001 {
+	margin-top: 10px;
+}
+
+#listbox2 {
+	width: 120px;
+}

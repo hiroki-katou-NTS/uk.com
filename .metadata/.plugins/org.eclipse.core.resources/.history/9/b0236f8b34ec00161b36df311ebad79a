@@ -1,0 +1,18 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.organization.position_ba;
+
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
+
+/**
+ * @author laitv
+ *
+ */
+@StringCharType(CharType.ALPHABET)
+@StringMaxLength(500)
+public class ExternalCode_ba {
+
+}

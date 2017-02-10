@@ -1,0 +1,18 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.infra.entity.organization.position.laitv;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author laitv
+ *
+ */
+
+@AllArgsConstructor
+@NoArgsConstructor
+public class CmnmtJobTitle_PK_ba {
+
+}

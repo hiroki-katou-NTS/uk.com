@@ -1,0 +1,34 @@
+module cmm014.a.service {
+    var paths = {
+        getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym",
+        createlayouthistory: "pr/proto/layout/createlayouthistory"
+    }
+
+    /**
+     * Get list layout master new history
+     */
+    export function getAllClassifacation(): JQueryPromise<Array<model.LayoutMasterDto>> {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.getLayoutInfor)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+
+    
+
+    export module model {
+        // layout
+        export class ClassificationDto {
+            checkContinue: Boolean;
+            classificationCode: string;
+            classificationName: string;
+            memo: string;
+        }
+
+    }
+}

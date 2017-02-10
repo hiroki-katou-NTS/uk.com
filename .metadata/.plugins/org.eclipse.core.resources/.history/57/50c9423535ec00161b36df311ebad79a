@@ -1,0 +1,29 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.organization.position_ba;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.primitive.Memo;
+
+/**
+ * @author laitv
+ *
+ */
+public class Position_ba {
+
+	GeneralDate endDate;
+	
+	GeneralDate startDate;
+	
+	JobCode_ba jobCode;
+	
+	JobName_ba jobName;
+	
+	ExternalCode_ba jobOutCode;
+	
+	Memo memo;
+	
+	String companyCode;
+	
+}

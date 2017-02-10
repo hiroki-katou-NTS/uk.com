@@ -1,0 +1,15 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.organization.position_ba;
+
+import java.util.List;
+
+/**
+ * @author laitv
+ *
+ */
+public interface PositionRepository_ba {
+
+	List<Position_ba> getAllPosition (String compoanyCode);
+}

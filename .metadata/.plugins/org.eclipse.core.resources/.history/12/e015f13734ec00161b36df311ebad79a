@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package nts.uk.ctx.basic.organization.position_ba;
+
+import nts.arc.primitive.StringPrimitiveValue;
+
+/**
+ * @author laitv
+ *
+ */
+public class JobName_ba extends StringPrimitiveValue<PrimitiveValue<String>>{
+
+}

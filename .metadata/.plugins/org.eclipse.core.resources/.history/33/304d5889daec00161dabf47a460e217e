@@ -1,0 +1,37 @@
+/**
+ * 
+ */
+package nts.uk.ctx.pr.core.infra.repository.organization.laitv;
+
+import lombok.val;
+import nts.uk.ctx.basic.infra.entity.organization.position.laitv.CmnmtJobTitle_PK_ba;
+import nts.uk.ctx.basic.infra.entity.organization.position.laitv.CmnmtJobTitle_ba;
+import nts.uk.ctx.basic.organization.position_ba.Position_ba;
+
+/**
+ * @author laitv
+ *
+ */
+
+public class JpaPositionRepository_ba {
+
+	private final String SELECT_NO_WHERE = "SELECT c FROM CmmtJobTitle c ";
+	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.cmmtJobTitlePK.ccd = :companyCode ";
+	private final String SELECT_DETAIL = SELECT_ALL_BY_COMPANY + " AND c.cmmtJobTitlePK.jobCd = :jobCode ";
+
+	private static Position_ba toDomain(CmnmtJobTitle_ba entity) {
+		val position = Position_ba.createSimpleFromJavaType(entity.endDate, entity.startDate,
+				entity.cmnmtJobTitle_pk_ba.jobCode, entity.jobName, entity.jobOutCode, entity.meMo,
+				entity.cmnmtJobTitle_pk_ba.companyCode);
+		return position;
+
+	}
+	
+	private static CmnmtJobTitle_ba toEntity(Position_ba domain){
+		
+		val entity = new CmnmtJobTitle_ba();
+		entity.cmnmtJobTitle_pk_ba = new CmnmtJobTitle_PK_ba();
+		return null;
+	}
+
+}
