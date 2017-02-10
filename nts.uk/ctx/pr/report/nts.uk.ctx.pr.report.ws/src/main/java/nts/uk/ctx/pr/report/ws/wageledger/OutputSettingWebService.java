@@ -18,11 +18,8 @@ import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingRemoveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingRemoveCommandHandler;
 import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommandHandler;
-import nts.uk.ctx.pr.report.app.wageledger.find.dto.CategorySettingDto;
+import nts.uk.ctx.pr.report.app.wageledger.find.OutputSettingFinder;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
-import nts.uk.ctx.pr.report.app.wageledger.find.dto.SettingItemDto;
-import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
 /**
  * The Class OutputSettingWebService.
@@ -38,6 +35,10 @@ public class OutputSettingWebService extends WebService{
 	/** The remove handler. */
 	@Inject
 	private OutputSettingRemoveCommandHandler removeHandler;
+	
+	/** The finder. */
+	@Inject
+	private OutputSettingFinder finder;
 	
 	/**
 	 * Find all.
@@ -68,32 +69,7 @@ public class OutputSettingWebService extends WebService{
 	@POST
 	@Path("find/{code}")
 	public OutputSettingDto findDetail(@PathParam("code") String code) {
-		int codeInt = Integer.parseInt(code.substring(code.length() - 1, code.length()));
-		List<SettingItemDto> settingItemDtos = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
-			settingItemDtos.add(SettingItemDto.builder()
-					.code("ITEM" + i)
-					.name("item " + i)
-					.orderNumber(i)
-					.isAggregateItem(i % 2 == 0).build());
-		}
-		List<CategorySettingDto> categories = new ArrayList<>();
-		categories.add(CategorySettingDto.builder()
-				.category(WLCategory.Payment)
-				.paymentType(PaymentType.Salary)
-				.outputItems(settingItemDtos)
-				.build());
-		categories.add(CategorySettingDto.builder()
-				.category(WLCategory.Deduction)
-				.paymentType(PaymentType.Salary)
-				.outputItems(settingItemDtos)
-				.build());
-		return OutputSettingDto.builder()
-				.code(code)
-				.name("Output setting " + codeInt)
-				.isOnceSheetPerPerson(false)
-				.categorySettings(categories)
-				.build();
+		return this.finder.find(code);
 	}
 	
 	/**
