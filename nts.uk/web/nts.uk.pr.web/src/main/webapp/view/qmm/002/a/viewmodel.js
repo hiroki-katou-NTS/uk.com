@@ -46,7 +46,7 @@ var nts;
                                             textalign: "left"
                                         })),
                                         required: ko.observable(true),
-                                        enable: ko.observable(false),
+                                        enable: ko.observable(true),
                                         readonly: ko.observable(false)
                                     };
                                     self.A_INP_006 = {
@@ -64,7 +64,7 @@ var nts;
                                     };
                                     self.currentEra = ko.observable(''),
                                         self.singleSelectedCode.subscribe(function (codeChanged) {
-                                            var x = self.getEra(codeChanged, undefined);
+                                            var x = self.getNode(codeChanged, undefined);
                                             if (x.parentCode !== null) {
                                                 self.currentEra(x);
                                                 self.nodeParent(self.getEra(codeChanged, x.parentCode));
@@ -116,7 +116,7 @@ var nts;
                                 ScreenModel.prototype.OpenBdialog = function () {
                                     var self = this;
                                     nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" });
-                                    nts.uk.ui.windows.setShared('listItem', self.lst_001);
+                                    nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                 };
                                 ScreenModel.prototype.OpenCdialog = function () {
                                     nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
@@ -133,7 +133,6 @@ var nts;
                                         branchKnName: self.A_INP_005.value(),
                                         memo: self.A_INP_006.value()
                                     };
-                                    var dfd = $.Deferred();
                                     a.service.addBank(self.isCreated(), branchInfo).done(function () {
                                         // reload tree
                                         self.getBankList();
@@ -141,15 +140,15 @@ var nts;
                                         alert(error.message);
                                     });
                                 };
-                                ScreenModel.prototype.getEra = function (codeNew, parentId) {
+                                ScreenModel.prototype.getNode = function (codeNew, parentId) {
                                     var self = this;
                                     self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                     var node = _.find(self.lst_002(), function (item) {
-                                        return item.code == codeNew;
+                                        return item.treeCode == codeNew;
                                     });
                                     if (parentId !== undefined) {
                                         node = _.find(self.lst_002(), function (item) {
-                                            return item.code == node.parentCode;
+                                            return item.treeCode == node.parentCode;
                                         });
                                     }
                                     return node;
@@ -175,9 +174,9 @@ var nts;
                                         var list001 = [];
                                         _.forEach(data, function (itemBank) {
                                             var childs = _.map(itemBank.bankBranch, function (item) {
-                                                return new BankInfo(item["bankBrandCode"], item["bankBrandName"], item["bankBrandNameKana"], item["memo"], null, itemBank.bankCode);
+                                                return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
                                             });
-                                            list001.push(new BankInfo(itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
+                                            list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
                                         });
                                         self.lst_001(list001);
                                         dfd.resolve(list001);
@@ -186,11 +185,23 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.removeBranch = function () {
+                                    var self = this;
+                                    a.service.removeBranch(self.nodeParent().code, self.A_INP_003.value()).done(function () {
+                                        // reload tree
+                                        self.getBankList();
+                                        self.cleanBranch();
+                                    }).fail(function (error) {
+                                        alert(error.message);
+                                    });
+                                };
+                                ;
                                 ScreenModel.prototype.cleanBranch = function () {
                                     var self = this;
                                     self.A_INP_003.value('');
                                     self.A_INP_004.value('');
                                     self.A_INP_005.value('');
+                                    self.A_INP_006.value('');
                                     self.A_INP_003.enable(true);
                                     self.isCreated(true);
                                 };
@@ -198,8 +209,9 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var BankInfo = (function () {
-                                function BankInfo(code, name, nameKata, memo, childs, parentCode) {
+                                function BankInfo(treeCode, code, name, nameKata, memo, childs, parentCode) {
                                     var self = this;
+                                    self.treeCode = treeCode;
                                     self.code = code;
                                     self.name = name;
                                     self.nameKata = nameKata;

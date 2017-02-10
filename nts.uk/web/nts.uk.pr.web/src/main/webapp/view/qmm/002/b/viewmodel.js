@@ -20,13 +20,11 @@ var nts;
                                     self.selectedCodes.subscribe(function (val) {
                                         console.log(val);
                                     });
-                                    console.log(nts.uk.ui.windows.getShared('listItem'));
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
-                                    b.service.getBankList().done(function (result) {
-                                        self.lst_001(result);
-                                    });
+                                    var list = nts.uk.ui.windows.getShared('listItem');
+                                    self.lst_001(list);
                                 };
                                 ScreenModel.prototype.excute = function () {
                                     var self = this;

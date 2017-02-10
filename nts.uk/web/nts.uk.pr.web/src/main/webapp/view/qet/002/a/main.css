@@ -25,8 +25,8 @@ span#japan-year {
 }
 .select-target-year {
 	width: 600px;
-	height: 30px;
-	border: solid 1px #B1B1B1;
+	height: 36px;
+	border: solid 2px #B1B1B1;
 	border-radius: 5px;
 	padding-top: 5px;
 	padding-left: 5px;
@@ -42,14 +42,14 @@ span#year-label {
 
 
 .search-employee {
-    border: solid 1px #B1B1B1;
+    border: solid 2px #B1B1B1;
     width: 655px;
     min-height: 500px;
     margin-top: 10px;
     border-radius: 5px;
 }
 div#detail-process {
-    border: solid 1px #b1b1b1;
+    border: solid 2px #b1b1b1;
     width: 475px;
     height: 530px;
     border-radius: 5px;
@@ -67,4 +67,7 @@ div#upper-limit-checkbox {
 
 div#payment-range {
     margin-top: 20px;
+}
+#detail-process-label{
+	font-size: 21px;
 }

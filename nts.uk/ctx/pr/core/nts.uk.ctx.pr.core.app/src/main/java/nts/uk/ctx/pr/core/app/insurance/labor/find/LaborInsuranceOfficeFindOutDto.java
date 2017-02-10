@@ -4,10 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.find;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 
 /**
@@ -15,8 +13,6 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
  */
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class LaborInsuranceOfficeFindOutDto{
 	/** The code. officeCode */
 	private String code;

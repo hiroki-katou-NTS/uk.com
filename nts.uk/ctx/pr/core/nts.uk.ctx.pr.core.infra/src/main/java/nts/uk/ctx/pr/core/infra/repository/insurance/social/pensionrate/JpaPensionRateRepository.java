@@ -83,7 +83,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 * #findAll(int)
 	 */
 	@Override
-	public List<PensionRate> findAll(int companyCode) {
+	public List<PensionRate> findAll(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

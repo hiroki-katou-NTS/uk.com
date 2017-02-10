@@ -444,7 +444,7 @@ module nts.uk.ui.koExtentions {
             });
             $input.change(function(event) {
                 var searchTerm = $input.val();
-                searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
+                searchBox.data("searchResult", filteredArray(ko.unwrap(data.items), searchTerm, fields, childField));
             });
             $button.click(nextSearch);
         }
@@ -1897,14 +1897,18 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
             var data = valueAccessor();
-            var jump = data.jump;
-
+            var jump = ko.unwrap(data.jump);
+            var action = data.action;
+            
             var linkText = $(element).text();
-            var $linkButton = $(element).wrap('<div/>').parent().empty()
-                .text(linkText)
+            var $linkButton = $(element).wrap('<div class="ntsControl"/>')
                 .addClass('link-button')
                 .click(function() {
-                    alert(jump);
+                    event.preventDefault();
+                    if (!nts.uk.util.isNullOrUndefined(action))
+                        action.call(viewModel);
+                    else if(!nts.uk.util.isNullOrUndefined(jump))
+                        nts.uk.request.jump(jump);
                 });
         }
 

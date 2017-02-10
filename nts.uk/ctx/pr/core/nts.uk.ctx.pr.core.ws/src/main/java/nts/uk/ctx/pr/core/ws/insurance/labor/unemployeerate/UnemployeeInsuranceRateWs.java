@@ -25,7 +25,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class UnemployeeInsuranceRateService.
+ * The Class UnemployeeInsuranceRateWs.
  */
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")

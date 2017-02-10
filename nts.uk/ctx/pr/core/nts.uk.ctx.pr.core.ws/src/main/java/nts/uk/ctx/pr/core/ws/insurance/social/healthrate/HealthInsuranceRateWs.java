@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRa
 
 @Path("ctx/pr/core/insurance/social/healthrate")
 @Produces("application/json")
-public class HealthInsuranceRateWebService extends WebService {
+public class HealthInsuranceRateWs extends WebService {
 
 	@Inject
 	private AvgEarnLevelMasterSettingFinder avgEarnLevelMasterSettingFinder;

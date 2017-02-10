@@ -1,12 +1,13 @@
 module nts.uk.pr.view.qmm011.e {
+    import InsuranceBusinessTypeUpdateDto= nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeUpdateDto;
     export module service {
         var paths: any = {
             updateInsuranceBusinessType: "pr/insurance/labor/businesstype/update"
 
         };
-        export function updateInsuranceBusinessType(insuranceBusinessType: model.InsuranceBusinessTypeDto) {
+        export function updateInsuranceBusinessType(insuranceBusinessType: InsuranceBusinessTypeUpdateDto) {
             var dfd = $.Deferred<any>();
-            var data = { insuranceBusinessType: insuranceBusinessType, comanyCode: "CC0001" };
+            var data = { insuranceBusinessType: insuranceBusinessType, companyCode: "CC0001" };
             nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
@@ -16,9 +17,6 @@ module nts.uk.pr.view.qmm011.e {
                     dfd.reject(res);
                 })
 
-        }
-        export module model {
-           
         }
     }
 }

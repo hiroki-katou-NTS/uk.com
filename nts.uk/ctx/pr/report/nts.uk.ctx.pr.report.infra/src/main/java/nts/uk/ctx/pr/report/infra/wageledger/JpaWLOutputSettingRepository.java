@@ -50,7 +50,7 @@ public class JpaWLOutputSettingRepository implements WLOutputSettingRepository {
 	 * #find(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public WLOutputSetting find(String code, String companyCode) {
+	public WLOutputSetting findByCode(String code, String companyCode) {
 		return null;
 	}
 
@@ -63,5 +63,4 @@ public class JpaWLOutputSettingRepository implements WLOutputSettingRepository {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
