@@ -65,6 +65,9 @@ nts.uk/.metadata/version.ini
 nts.uk/pr/nts.uk.pr.web/WebContent/META-INF/MANIFEST.MF
 gradle_eclipse_all.bat
 gradle_eclipse_one.bat
+<<<<<<< HEAD
+nts.uk/
+=======
 nts.uk/pr/file/nts.uk.pr.file.infra/bin/META-INF/beans.xml
 nts.uk/pr/file/nts.uk.pr.file.infra/bin/nts/uk/pr/file/infra/company/CompanyDto.class
 nts.uk/pr/file/nts.uk.pr.file.infra/bin/nts/uk/pr/file/infra/company/CompanyPrintFileGenerator.class
@@ -365,3 +368,4 @@ nts.uk/pr/shr/nts.uk.shr.com/bin/nts/uk/shr/infra/web/component/knockout/KoForea
 nts.uk/pr/shr/nts.uk.shr.com/bin/nts/uk/shr/infra/web/component/knockout/KoIf.class
 nts.uk/pr/shr/nts.uk.shr.com/bin/nts/uk/shr/infra/web/component/validation/Helper.class
 nts.uk/pr/shr/nts.uk.shr.com/bin/nts/uk/shr/infra/web/component/validation/ValidatorScript.class
+>>>>>>> 09021494527afba3e0c8982c0468e8913af9a7bf
