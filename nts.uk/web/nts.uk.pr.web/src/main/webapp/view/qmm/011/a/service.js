@@ -62,9 +62,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateUnemployeeInsuranceRate = updateUnemployeeInsuranceRate;
-                            function findAllHisotryUnemployeeInsuranceRate() {
+                            function findAllHisotryUnemployeeInsuranceRate(companyCode) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
+                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate + "/" + companyCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -74,9 +74,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHisotryUnemployeeInsuranceRate = findAllHisotryUnemployeeInsuranceRate;
-                            function findHisotryUnemployeeInsuranceRate(historyId) {
+                            function findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate, historyUnemployeeInsuranceFindInDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -287,6 +287,12 @@ var nts;
                                     return HistoryUnemployeeInsuranceDto;
                                 }(HistoryInsuranceDto));
                                 model.HistoryUnemployeeInsuranceDto = HistoryUnemployeeInsuranceDto;
+                                var HistoryUnemployeeInsuranceFindInDto = (function () {
+                                    function HistoryUnemployeeInsuranceFindInDto() {
+                                    }
+                                    return HistoryUnemployeeInsuranceFindInDto;
+                                }());
+                                model.HistoryUnemployeeInsuranceFindInDto = HistoryUnemployeeInsuranceFindInDto;
                                 var UnemployeeInsuranceRateDto = (function () {
                                     function UnemployeeInsuranceRateDto() {
                                     }

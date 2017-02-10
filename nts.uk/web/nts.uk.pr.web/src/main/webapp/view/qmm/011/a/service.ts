@@ -54,9 +54,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service FindAll Labor Insurance Office
-        export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<model.HistoryUnemployeeInsuranceDto>> {
+        export function findAllHisotryUnemployeeInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryUnemployeeInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryUnemployeeInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
+            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate + "/" + companyCode)
                 .done(function(res: Array<model.HistoryUnemployeeInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -67,9 +67,10 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service Find History By historyId
-        export function findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<model.HistoryUnemployeeInsuranceDto> {
+        export function findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto: model.HistoryUnemployeeInsuranceFindInDto)
+            : JQueryPromise<model.HistoryUnemployeeInsuranceDto> {
             var dfd = $.Deferred<model.HistoryUnemployeeInsuranceDto>();
-            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate, historyUnemployeeInsuranceFindInDto)
                 .done(function(res: model.HistoryUnemployeeInsuranceDto) {
                     dfd.resolve(res);
                     //xyz
@@ -306,6 +307,10 @@ module nts.uk.pr.view.qmm011.a {
             }
             export class HistoryUnemployeeInsuranceDto extends HistoryInsuranceDto {
 
+            }
+            export class HistoryUnemployeeInsuranceFindInDto {
+                historyId: string;
+                companyCode: string;
             }
             export class UnemployeeInsuranceRateDto {
                 historyInsurance: HistoryUnemployeeInsuranceDto;

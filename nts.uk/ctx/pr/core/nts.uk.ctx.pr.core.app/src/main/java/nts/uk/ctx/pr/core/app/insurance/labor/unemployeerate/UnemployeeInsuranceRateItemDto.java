@@ -4,16 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+/**
+ * The Class UnemployeeInsuranceRateItemDto.
+ */
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-
 public class UnemployeeInsuranceRateItemDto {
 	/** The career group. */
 	private Integer careerGroup;

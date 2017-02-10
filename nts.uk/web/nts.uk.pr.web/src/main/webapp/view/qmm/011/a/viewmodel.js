@@ -13,6 +13,7 @@ var nts;
                         var option = nts.uk.ui.option;
                         var RoundingMethodDto = a.service.model.RoundingMethodDto;
                         var HistoryUnemployeeInsuranceDto = a.service.model.HistoryUnemployeeInsuranceDto;
+                        var HistoryUnemployeeInsuranceFindInDto = a.service.model.HistoryUnemployeeInsuranceFindInDto;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
@@ -46,7 +47,11 @@ var nts;
                                 ScreenModel.prototype.openEditHistoryUnemployeeInsuranceRate = function () {
                                     var self = this;
                                     var historyId = self.selectionHistoryUnemployeeInsuranceRate();
-                                    a.service.findHisotryUnemployeeInsuranceRate(historyId).done(function (data) {
+                                    var historyUnemployeeInsuranceFindInDto;
+                                    historyUnemployeeInsuranceFindInDto = new HistoryUnemployeeInsuranceFindInDto();
+                                    historyUnemployeeInsuranceFindInDto.historyId = historyId;
+                                    historyUnemployeeInsuranceFindInDto.companyCode = "companyCode001";
+                                    a.service.findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto).done(function (data) {
                                         nts.uk.ui.windows.setShared("historyId", data.historyId);
                                         nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
                                         nts.uk.ui.windows.setShared("historyEnd", data.endMonthRage);
@@ -160,7 +165,7 @@ var nts;
                                 ScreenModel.prototype.findAllHisotryUnemployeeInsuranceRate = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllHisotryUnemployeeInsuranceRate().done(function (data) {
+                                    a.service.findAllHisotryUnemployeeInsuranceRate("companyCode001").done(function (data) {
                                         self.lstHistoryUnemployeeInsuranceRate = ko.observableArray(data);
                                         self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
                                         self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
@@ -177,7 +182,11 @@ var nts;
                                 ScreenModel.prototype.findHisotryUnemployeeInsuranceRate = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findHisotryUnemployeeInsuranceRate(historyId).done(function (data) {
+                                    var historyUnemployeeInsuranceFindInDto;
+                                    historyUnemployeeInsuranceFindInDto = new HistoryUnemployeeInsuranceFindInDto();
+                                    historyUnemployeeInsuranceFindInDto.historyId = historyId;
+                                    historyUnemployeeInsuranceFindInDto.companyCode = "companyCode001";
+                                    a.service.findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto).done(function (data) {
                                         self.historyUnemployeeInsuranceRateStart(data.startMonthRage);
                                         self.historyUnemployeeInsuranceRateEnd(data.endMonthRage);
                                         dfd.resolve(null);

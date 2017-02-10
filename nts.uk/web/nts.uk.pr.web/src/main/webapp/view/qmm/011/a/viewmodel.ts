@@ -2,6 +2,7 @@ module nts.uk.pr.view.qmm011.a {
     import option = nts.uk.ui.option;
     import RoundingMethodDto = service.model.RoundingMethodDto;
     import HistoryUnemployeeInsuranceDto = service.model.HistoryUnemployeeInsuranceDto;
+    import HistoryUnemployeeInsuranceFindInDto = service.model.HistoryUnemployeeInsuranceFindInDto;
     import MonthRange = service.model.MonthRange;
     import YearMonth = service.model.YearMonth;
     import UnemployeeInsuranceRateItemSettingDto = service.model.UnemployeeInsuranceRateItemSettingDto;
@@ -68,7 +69,11 @@ module nts.uk.pr.view.qmm011.a {
             private openEditHistoryUnemployeeInsuranceRate() {
                 var self = this;
                 var historyId = self.selectionHistoryUnemployeeInsuranceRate();
-                service.findHisotryUnemployeeInsuranceRate(historyId).done(data => {
+                var historyUnemployeeInsuranceFindInDto: HistoryUnemployeeInsuranceFindInDto;
+                historyUnemployeeInsuranceFindInDto = new HistoryUnemployeeInsuranceFindInDto();
+                historyUnemployeeInsuranceFindInDto.historyId = historyId;
+                historyUnemployeeInsuranceFindInDto.companyCode = "companyCode001";
+                service.findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto).done(data => {
                     nts.uk.ui.windows.setShared("historyId", data.historyId);
                     nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
                     nts.uk.ui.windows.setShared("historyEnd", data.endMonthRage);
@@ -210,7 +215,7 @@ module nts.uk.pr.view.qmm011.a {
             private findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findAllHisotryUnemployeeInsuranceRate().done(data => {
+                service.findAllHisotryUnemployeeInsuranceRate("companyCode001").done(data => {
                     self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceDto>(data);
                     self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
                     self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
@@ -229,7 +234,11 @@ module nts.uk.pr.view.qmm011.a {
             private findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findHisotryUnemployeeInsuranceRate(historyId).done(data => {
+                var historyUnemployeeInsuranceFindInDto: HistoryUnemployeeInsuranceFindInDto;
+                historyUnemployeeInsuranceFindInDto = new HistoryUnemployeeInsuranceFindInDto();
+                historyUnemployeeInsuranceFindInDto.historyId = historyId;
+                historyUnemployeeInsuranceFindInDto.companyCode = "companyCode001";
+                service.findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto).done(data => {
                     self.historyUnemployeeInsuranceRateStart(data.startMonthRage);
                     self.historyUnemployeeInsuranceRateEnd(data.endMonthRage);
                     dfd.resolve(null);
