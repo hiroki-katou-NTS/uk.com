@@ -18,8 +18,8 @@ import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.infra.file.FileGenerator;
-import nts.arc.layer.infra.file.FileGeneratorContext;
+import nts.arc.layer.infra.file.export.FileGenerator;
+import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.pr.file.infra.paymentdata.result.DetailItemDto;
 import nts.uk.pr.file.infra.paymentdata.result.LayoutMasterCategoryDto;
 import nts.uk.pr.file.infra.paymentdata.result.LineDto;
@@ -38,7 +38,7 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 			// create workbook
 			WorkbookDesigner designer = new WorkbookDesigner();
 			String saveFile = File.createTempFile("ukrp", "給与支給明細書.pdf").getPath();
-			OutputStream output = context.createOutputFileStream(saveFile);
+			OutputStream output = this.createNewFile(context, saveFile);
 			Workbook workbook = null;
 			try {
 				workbook = new Workbook(Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName));

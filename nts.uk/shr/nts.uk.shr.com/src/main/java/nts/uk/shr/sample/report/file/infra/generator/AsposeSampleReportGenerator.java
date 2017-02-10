@@ -1,4 +1,4 @@
-package nts.uk.shr.sample.report.infra;
+package nts.uk.shr.sample.report.file.infra.generator;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,9 +10,10 @@ import com.aspose.cells.WorkbookDesigner;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGenerator;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.shr.sample.report.app.SampleReportDataRepository;
 
 @Stateless
-public class SampleReportGenerator extends FileGenerator {
+public class AsposeSampleReportGenerator extends FileGenerator {
 	
 	@Inject
 	private SampleReportDataRepository repository;

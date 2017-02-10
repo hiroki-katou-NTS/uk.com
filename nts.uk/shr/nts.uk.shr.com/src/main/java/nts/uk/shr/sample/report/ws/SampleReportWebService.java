@@ -6,14 +6,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.shr.sample.report.infra.SampleReportGenerator;
+import nts.uk.shr.sample.report.file.infra.generator.AsposeSampleReportGenerator;
 
 @Path("/sample/report")
 @Produces("application/json")
 public class SampleReportWebService {
 
 	@Inject
-	private SampleReportGenerator generator;
+	private AsposeSampleReportGenerator generator;
 	
 	@POST
 	@Path("generate")
