@@ -66,7 +66,7 @@
 					   <div style="width: 176px;" data-bind="ntsFormLabel: { required: true }">
 							<label id="A_LBL_003">会社コード</label>
 						</div>
-						<input id="A_INP_002" data-bind="enable: true, value:currentCode()"  class="input-table"/>
+						<input id="A_INP_002" data-bind="enable: true, value:currentCompanyDto().companyCode"  class="input-table"/>
 						<div class="bg-yellow">
 						<div data-bind="ntsCheckBox: {checked: checked2, text: 'この会社を廃止する' }" class="cf minimalist ntsCheckBox-right"></div>
 						<button style="width: 25px; height: 25px; margin-left: 20px;" data-bind="click: ClickSel001">?</button>
@@ -152,7 +152,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="B_INP_002" type="text" data-bind="value: currentCompanyDto().companyName" class="input-table"/>
+								<input id="B_INP_002" type="text" data-bind="value: currentCompanyDto().presidentName" class="input-table"/>
 								</th>
 							</tr>
 							<!--  3  -->
@@ -165,7 +165,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="B_INP_003" value="会社代表者職位" class="input-table"/>
+								<input id="B_INP_003" type="text"  data-bind="value: currentCompanyDto().presidentJobTitle" class="input-table"/>
 								</th>
 							</tr>	
 												
@@ -184,7 +184,7 @@
 								</th>
 
 								<th colspan="1" class="th-col-sub">
-								<input id="C_INP_001" class="input-table" value="420-0008"/>
+								<input id="C_INP_001" class="input-table" type="text" data-bind="value: currentCompanyDto().postal"/>
 								</th>
 
 								<th colspan="1">
@@ -232,7 +232,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="C_INP_004" value="UKシステム（株）"  class="input-table" style="margin-bottom: 10px;"/>
+								<input id="C_INP_004"  type="text" data-bind="value: currentCompanyDto().address1"  class="input-table" style="margin-bottom: 10px;"/>
 								</th>
 							</tr>	
 							<!--  5 -->	
@@ -242,7 +242,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="C_INP_005" value="UKシステム（株）" class="input-table"/>
+								<input id="C_INP_005" type="text" data-bind="value: currentCompanyDto().address2" class="input-table"/>
 								</th>
 							</tr>		
 							<!--  6 -->	
@@ -261,7 +261,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="C_INP_004" value="UKシステム（株）"  class="input-table" style="margin-bottom: 10px;"/>
+								<input id="C_INP_004" type="text" data-bind="value: currentCompanyDto().addressKana1"  class="input-table" style="margin-bottom: 10px;"/>
 								</th>
 							</tr>	
 							<!--  8 -->	
@@ -271,7 +271,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="C_INP_005" value="UKシステム（株）" class="input-table" />
+								<input id="C_INP_005" type="text" data-bind="value: currentCompanyDto().addressKana2" class="input-table" />
 								</th>
 							</tr>	
 							<!-- 9 -->	
@@ -284,7 +284,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="C_INP_006" value="052-249-9200" class="input-table" />
+								<input id="C_INP_006" type="text" data-bind="value: currentCompanyDto().telephoneNo" class="input-table" />
 								</th>
 							</tr>	
 							<!--  10  -->	
@@ -294,7 +294,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="C_INP_007" value="052-249-9100" class="input-table" />
+								<input id="C_INP_007" type="text" data-bind="value: currentCompanyDto().faxNo" class="input-table" />
 								</th>
 							</tr>
 																									

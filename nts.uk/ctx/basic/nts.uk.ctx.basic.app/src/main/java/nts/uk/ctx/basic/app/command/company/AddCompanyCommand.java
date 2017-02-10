@@ -11,6 +11,7 @@ import nts.uk.ctx.basic.dom.company.Company;
 public class AddCompanyCommand {
     private String companyCode;
     private String companyName;
+    private String companyNameGlobal;
     private String address1;
     private String address2;
     private String addressKana1;
@@ -22,6 +23,7 @@ public class AddCompanyCommand {
     private int displayAttribute;
     private String faxNo;
     private String postal;
+    private String presidentName;
     private String presidentJobTitle;
     private String telephoneNo;
     private int termBeginMon;
@@ -45,8 +47,9 @@ public class AddCompanyCommand {
 	private int use_Rs09_Set;
 	private int use_Rs10_Set;
 	public Company toDomain(){
-		return Company.createFromJavaType(companyCode, companyName, companyNameAbb, 
-				 companyNameKana, corporateMyNumber, faxNo, postal, presidentJobTitle, telephoneNo,
+		return Company.createFromJavaType(companyCode, companyName,companyNameGlobal, companyNameAbb, 
+				 companyNameKana, corporateMyNumber, faxNo, postal, 
+				 presidentName, 	presidentJobTitle, telephoneNo,
 				 depWorkPlaceSet,displayAttribute, address1, address2, addressKana1, addressKana2, termBeginMon,
 				 use_Gr_Set,use_Kt_Set, use_Qy_Set, use_Jj_Set, use_Ac_Set, use_Gw_Set,use_Hc_Set,use_Lc_Set,
 				 use_Bi_Set,use_Rs01_Set, use_Rs02_Set, use_Rs03_Set,use_Rs04_Set, use_Rs05_Set,

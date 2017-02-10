@@ -86,9 +86,10 @@ module cmm001.a.service {
                     displayAttribute: number; // cot thu 3
                     faxNo: string;
                     postal: string;
+                    presidentName: string;
                     presidentJobTitle: string;
                     telephoneNo: string;
-                    termBeginMon: number;
+                    termBeginMon: number;   
                     use_Gr_Set: number;
                     use_kt_Set: number;
                     use_Qy_Set: number;

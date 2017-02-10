@@ -21,17 +21,18 @@ import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
 	private static final String SEL_1 = "SELECT e FROM CmnmtCompany e";
-	//private static final String SEL_2 = SEL_1 + "WHERE  e.cmnmtCompanyPK.companyCd = : companyCd";
+
+	// private static final String SEL_2 = SEL_1 + "WHERE
+	// e.cmnmtCompanyPK.companyCd = : companyCd";
 	private final Company toDomain(CmnmtCompany entity) {
-		val domain = Company.createFromJavaType(
-				entity.cmnmtCompanyPk.companyCd, entity.cName, entity.cName_Abb,
-				entity.cName_Kana, entity.cmyNo, entity.fax_No, entity.postal, entity.president_Job_Title,
-				entity.tel_No, entity.dep_Work_Place_Set, entity.disp_Atr, entity.address1, entity.address2,
-				entity.kn_Address1, entity.kn_Address2, entity.term_Begin_Mon, entity.use_Gr_Set, entity.use_Kt_Set,
-				entity.use_Qy_Set, entity.use_Jj_Set, entity.use_Ac_Set, entity.use_Gw_Set, entity.use_Hc_Set,
-				entity.use_Lc_Set, entity.use_Bi_Set, entity.use_Rs01_Set, entity.use_Rs02_Set, entity.use_Rs03_Set,
-				entity.use_Rs04_Set, entity.use_Rs05_Set, entity.use_Rs06_Set, entity.use_Rs07_Set, entity.use_Rs08_Set,
-				entity.use_Rs09_Set, entity.use_Rs10_Set);
+		val domain = Company.createFromJavaType(entity.cmnmtCompanyPk.companyCd, entity.cName, entity.cName_E,
+				entity.cName_Abb, entity.cName_Kana, entity.cmyNo, entity.fax_No, entity.postal, entity.president_Name,
+				entity.president_Job_Title, entity.tel_No, entity.dep_Work_Place_Set, entity.disp_Atr, entity.address1,
+				entity.address2, entity.kn_Address1, entity.kn_Address2, entity.term_Begin_Mon, entity.use_Gr_Set,
+				entity.use_Kt_Set, entity.use_Qy_Set, entity.use_Jj_Set, entity.use_Ac_Set, entity.use_Gw_Set,
+				entity.use_Hc_Set, entity.use_Lc_Set, entity.use_Bi_Set, entity.use_Rs01_Set, entity.use_Rs02_Set,
+				entity.use_Rs03_Set, entity.use_Rs04_Set, entity.use_Rs05_Set, entity.use_Rs06_Set, entity.use_Rs07_Set,
+				entity.use_Rs08_Set, entity.use_Rs09_Set, entity.use_Rs10_Set);
 		return domain;
 	}
 
@@ -39,10 +40,12 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		CmnmtCompany entity = new CmnmtCompany();
 		entity.cmnmtCompanyPk = new CmnmtCompanyPK(domain.getCompanyCode().v());
 		entity.cName = domain.getCompanyName().v();
+		entity.cName_E = domain.getCompanyNameGlobal().v();
 		entity.cName_Abb = domain.getCompanyNameAbb().v();
 		entity.cName_Kana = domain.getCompanyNameKana().v();
 		entity.disp_Atr = domain.getDisplayAttribute().value;
 		entity.cmyNo = domain.getCorporateMyNumber().v();
+		entity.president_Name = domain.getPresidentName().v();
 		entity.president_Job_Title = domain.getPresidentJobTitle().v();
 		entity.postal = domain.getPostal().v();
 		entity.address1 = domain.getAddress().getAddress1().v();
@@ -77,24 +80,20 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	@Override
 	public Optional<Company> getCompanyDetail(String companyCode) {
-		try{
-		 return this.queryProxy().find(new CmnmtCompanyPK(companyCode), CmnmtCompany.class)
-				 .map(c -> toDomain(c));
-		}catch (Exception e) {
+		try {
+			return this.queryProxy().find(new CmnmtCompanyPK(companyCode), CmnmtCompany.class).map(c -> toDomain(c));
+		} catch (Exception e) {
 			throw e;
 		}
-		
+
 	}
 
 	@Override
 	public List<Company> getAllCompanys() {
-		try{
-//			System.out.println("hehe"+this.queryProxy().query(SEL_1, CmnmtCompany.class).getList(c-> toDomain(c)));
-//			System.out.println("hehe");
-			return this.queryProxy().query(SEL_1, CmnmtCompany.class)
-					   .getList(c-> toDomain(c));
-			
-		}catch(Exception e){
+		try {
+			return this.queryProxy().query(SEL_1, CmnmtCompany.class).getList(c -> toDomain(c));
+
+		} catch (Exception e) {
 			throw e;
 		}
 
@@ -102,21 +101,22 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	@Override
 	public void add(Company company) {
-		try{
+		try {
 			this.commandProxy().insert(toEntity(company));
-		}catch (Exception e) {
-			throw(e);
+		} catch (Exception e) {
+			throw (e);
 		}
 	}
 
 	@Override
 	public void update(Company company) {
-		try{
+		try {
 			this.commandProxy().update(toEntity(company));
-		}catch (Exception e) {
-			throw(e);
+		} catch (Exception e) {
+			throw (e);
 		}
 	}
+
 	@Override
 	public void delete(String companyCode) {
 		val objKey = new CmnmtCompanyPK();

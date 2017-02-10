@@ -1,9 +1,10 @@
 module cmm001.a {
     export class ScreenModel {
-        // data of items list - tree grid\
+        // data of items list - tree grid
         items: KnockoutObservableArray<Company>;
         item1s: KnockoutObservableArray<Company>;
         columns2: KnockoutObservableArray<any>;
+        columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCompanyDto: KnockoutObservable<cmm001.a.service.model.CompanyDto>;
         currentCodeList: KnockoutObservableArray<any>;
@@ -31,7 +32,6 @@ module cmm001.a {
         textSearch: string = "";
         //company from database
         companys: KnockoutObservableArray<cmm001.a.service.model.CompanyDto>;
-        test: KnockoutObservableArray<cmm001.a.service.model.CompanyDto>;
         constructor() {
             let self = this;
             let node: Company;
@@ -83,38 +83,30 @@ module cmm001.a {
 
             });
             self.checked1.subscribe(function(newValue) {
-                        if (newValue == true) {
-                            console.log(newValue);
-                            self.columns2([]);
-                            console.log(self.columns2());
-                            self.columns2 = ko.observableArray([
-                                { headerText: '会社コード', prop: 'code', width: 80 },
-                                { headerText: '名称', prop: 'name', width: 200 },
-                                { headerText: '廃止', prop: 'description', width: 50, hidden: true }
-                            ]);
-                            
-                        }
+                console.log(self.items());
+                if (newValue) {
+                    self.columns2()[2].hidden = true;
+                    $(function() {
+                        $("#single-list").igGrid({
+                            options: self.items(),
+                            optionsValue: 'code',
+                            columns: self.columns2(),
 
+                        });
+                    });
+                } else {
+                    self.columns2()[2].hidden = false;
+                    $(function() {
+                        $("#single-list").igGrid({
+                            options: self.items(),
+                            optionsValue: 'code',
+                            columns: self.columns2(),
 
-                //                self.item1s = ko.observableArray([
-                //                    new Company('01', '日通システム株式会社', ''),
-                //                    new Company('02', '有限会社日通ベトナム', ''),
-                //                    new Company('03', 'UKシステム株式会社', ''),
-                //                    new Company('04', '○○株式会社', '<i class="icon icon-close"></i>')
-                //                ]);
-                //                if (newValue) {
-                //                    _.remove(self.item1s(), function(value) {
-                //                        return value.description === '<i class="icon icon-close"></i>';
-                //                    });
-                //                    self.items(self.item1s());
-                //                    console.log(self.items());
-                //                } else {
-                //                    console.log(self.item1s());
-                //                    self.items(self.item1s());
-                //                    console.log(self.items());
-                //
-                //                }
+                        });
+                    });
+                }
             });
+            console.log(self.checked1());
 
         }
 
@@ -125,8 +117,6 @@ module cmm001.a {
                 if (!node) {
                     if (obj.code == newValue) {
                         node = obj;
-                        // self.currentNode(node);
-
                     }
                 }
             });
@@ -156,12 +146,14 @@ module cmm001.a {
             let self = this;
             self.checked1 = ko.observable(false);
             self.items = ko.observableArray([]);
-
-            self.columns2 = ko.observableArray([
+            self.columns = ko.observableArray([
                 { headerText: '会社コード', prop: 'code', width: 80 },
                 { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '廃止', prop: 'description', width: 50, hidden: false}
+                { headerText: '廃止', prop: 'description', width: 50, hidden: false }
             ]);
+            self.columns2 = ko.observableArray([]);
+            self.columns2(self.columns());
+            console.log(self.columns2());
 
             self.currentCode = ko.observable("0001");
             self.currentCodeList = ko.observableArray(null);
@@ -255,6 +247,7 @@ module cmm001.a {
                 if (companies.length > 0) {
                     self.companys(companies);
                     self.buildGridDataSource(self.companys());
+
                 }
                 dfd.resolve();
             });
