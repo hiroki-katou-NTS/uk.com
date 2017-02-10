@@ -7,16 +7,16 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.service.insurance.social.SocialInsuranceService;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.service.SocialInsuranceOfficeService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterSocialOfficeCommand> {
 
 	@Inject
-	SocialInsuranceService insuranceSocialService;
+	SocialInsuranceOfficeService insuranceSocialService;
 
 	@Inject
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
@@ -32,8 +32,8 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
 		
 		// Validate
-		// unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
-		// unitPriceHistoryService.validateDateRange(unitPriceHistory);
+		insuranceSocialService.validateRequiredItem(socialInsuranceOffice);
+		insuranceSocialService.checkDuplicateCode(socialInsuranceOffice);
 		
 		socialInsuranceOfficeRepository.add(socialInsuranceOffice);
 		return;

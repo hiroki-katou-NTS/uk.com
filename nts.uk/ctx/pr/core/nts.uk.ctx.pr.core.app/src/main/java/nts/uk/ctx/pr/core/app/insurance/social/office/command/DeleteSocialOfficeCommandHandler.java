@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.app.service.insurance.social.SocialInsuranceService;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 
@@ -16,23 +15,21 @@ import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocialOfficeCommand>  {
 	
 	@Inject
-	SocialInsuranceService insuranceSocialService;
-	
-	@Inject
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<DeleteSocialOfficeCommand> command) {
+		String officeCode = command.getCommand().getSocialInsuranceOfficeDto().code;
 		
-		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository.findById(command.getCommand().getSocialInsuranceOfficeDto().code);
+		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository.findById(officeCode);
 		
 		if(findOffice==null)
 		{
 			//TODO show error message
 		}else
 		{
-			insuranceSocialService.remove(findOffice.get());
+			socialInsuranceOfficeRepository.remove(officeCode,0L);
 		}
 		//TODO return item update
 		return;

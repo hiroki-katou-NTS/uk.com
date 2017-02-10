@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,9 +78,428 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 * findAll(int)
 	 */
 	@Override
-	public List<SocialInsuranceOffice> findAll(int companyCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SocialInsuranceOffice> findAll(String companyCode) {
+		// Mock
+		List<SocialInsuranceOffice> listSocialInsuranceOffice = new ArrayList<SocialInsuranceOffice>();
+
+		SocialInsuranceOffice socialInsuranceOffice1 = new SocialInsuranceOffice(new SocialInsuranceOfficeGetMemento() {
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode("00000");
+			}
+
+			@Override
+			public OfficeCode getCode() {
+				return new OfficeCode("officeCode1");
+			}
+
+			@Override
+			public OfficeName getName() {
+				return new OfficeName("OfficeName1");
+			}
+
+			@Override
+			public ShortName getShortName() {
+				return new ShortName("sn");
+			}
+
+			@Override
+			public PicName getPicName() {
+				return new PicName("s");
+			}
+
+			@Override
+			public PicPosition getPicPosition() {
+				return new PicPosition("e");
+			}
+
+			@Override
+			public PotalCode getPotalCode() {
+				return new PotalCode("t");
+			}
+
+			@Override
+			public String getPrefecture() {
+				return "f";
+			}
+
+			@Override
+			public Address getAddress1st() {
+				return new Address("");
+			}
+
+			@Override
+			public Address getAddress2nd() {
+				return new Address("");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress1st() {
+				return new KanaAddress("");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress2nd() {
+				return new KanaAddress("");
+			}
+
+			@Override
+			public String getPhoneNumber() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeRefCode1st() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeRefCode2nd() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeRefCode1st() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeRefCode2nd() {
+				return "";
+			}
+
+			@Override
+			public String getWelfarePensionFundCode() {
+				return "";
+			}
+
+			@Override
+			public String getOfficePensionFundCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuCityCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeSign() {
+				return "";
+			}
+
+			@Override
+			public String getPensionCityCode() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeSign() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuAssoCode() {
+				return "";
+			}
+
+			@Override
+			public Memo getMemo() {
+				return new Memo("");
+			}
+
+			@Override
+			public Long getVersion() {
+				return 0L;
+			}
+		});
+		
+		SocialInsuranceOffice socialInsuranceOffice2 = new SocialInsuranceOffice(new SocialInsuranceOfficeGetMemento() {
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode("00001");
+			}
+
+			@Override
+			public OfficeCode getCode() {
+				return new OfficeCode("officeCode2");
+			}
+
+			@Override
+			public OfficeName getName() {
+				return new OfficeName("OfficeName2");
+			}
+
+			@Override
+			public ShortName getShortName() {
+				return new ShortName("sn");
+			}
+
+			@Override
+			public PicName getPicName() {
+				return new PicName("s");
+			}
+
+			@Override
+			public PicPosition getPicPosition() {
+				return new PicPosition("e");
+			}
+
+			@Override
+			public PotalCode getPotalCode() {
+				return new PotalCode("t");
+			}
+
+			@Override
+			public String getPrefecture() {
+				return "f";
+			}
+
+			@Override
+			public Address getAddress1st() {
+				return new Address("");
+			}
+
+			@Override
+			public Address getAddress2nd() {
+				return new Address("");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress1st() {
+				return new KanaAddress("");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress2nd() {
+				return new KanaAddress("");
+			}
+
+			@Override
+			public String getPhoneNumber() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeRefCode1st() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeRefCode2nd() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeRefCode1st() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeRefCode2nd() {
+				return "";
+			}
+
+			@Override
+			public String getWelfarePensionFundCode() {
+				return "";
+			}
+
+			@Override
+			public String getOfficePensionFundCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuCityCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeSign() {
+				return "";
+			}
+
+			@Override
+			public String getPensionCityCode() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeSign() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuAssoCode() {
+				return "";
+			}
+
+			@Override
+			public Memo getMemo() {
+				return new Memo("");
+			}
+
+			@Override
+			public Long getVersion() {
+				return 0L;
+			}
+		});
+		
+		SocialInsuranceOffice socialInsuranceOffice3 = new SocialInsuranceOffice(new SocialInsuranceOfficeGetMemento() {
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return new CompanyCode("00002");
+			}
+
+			@Override
+			public OfficeCode getCode() {
+				return new OfficeCode("officeCode3");
+			}
+
+			@Override
+			public OfficeName getName() {
+				return new OfficeName("OfficeName3");
+			}
+
+			@Override
+			public ShortName getShortName() {
+				return new ShortName("sn");
+			}
+
+			@Override
+			public PicName getPicName() {
+				return new PicName("s");
+			}
+
+			@Override
+			public PicPosition getPicPosition() {
+				return new PicPosition("e");
+			}
+
+			@Override
+			public PotalCode getPotalCode() {
+				return new PotalCode("t");
+			}
+
+			@Override
+			public String getPrefecture() {
+				return "f";
+			}
+
+			@Override
+			public Address getAddress1st() {
+				return new Address("");
+			}
+
+			@Override
+			public Address getAddress2nd() {
+				return new Address("");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress1st() {
+				return new KanaAddress("");
+			}
+
+			@Override
+			public KanaAddress getKanaAddress2nd() {
+				return new KanaAddress("");
+			}
+
+			@Override
+			public String getPhoneNumber() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeRefCode1st() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeRefCode2nd() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeRefCode1st() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeRefCode2nd() {
+				return "";
+			}
+
+			@Override
+			public String getWelfarePensionFundCode() {
+				return "";
+			}
+
+			@Override
+			public String getOfficePensionFundCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuCityCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeSign() {
+				return "";
+			}
+
+			@Override
+			public String getPensionCityCode() {
+				return "";
+			}
+
+			@Override
+			public String getPensionOfficeSign() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuOfficeCode() {
+				return "";
+			}
+
+			@Override
+			public String getHealthInsuAssoCode() {
+				return "";
+			}
+
+			@Override
+			public Memo getMemo() {
+				return new Memo("");
+			}
+
+			@Override
+			public Long getVersion() {
+				return 0L;
+			}
+		});
+		
+		listSocialInsuranceOffice.add(socialInsuranceOffice1);
+		listSocialInsuranceOffice.add(socialInsuranceOffice2);
+		listSocialInsuranceOffice.add(socialInsuranceOffice3);
+		return listSocialInsuranceOffice;
 	}
 
 	/*
@@ -92,6 +512,19 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	@Override
 	public Optional<SocialInsuranceOffice> findById(String id) {
 		// TODO Mock data to send service
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository#
+	 * findByOfficeCode(java.lang.String)
+	 */
+	@Override
+	public Optional<SocialInsuranceOffice> findByOfficeCode(String officeCode) {
+		// TODO Auto-generated method stub
 		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(new SocialInsuranceOfficeGetMemento() {
 
 			@Override
@@ -231,19 +664,6 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		});
 
 		return Optional.of(socialInsuranceOffice);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository#
-	 * findByOfficeCode(java.lang.String)
-	 */
-	@Override
-	public SocialInsuranceOffice findByOfficeCode(String officeCode) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
