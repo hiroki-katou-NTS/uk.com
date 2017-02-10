@@ -1,7 +1,13 @@
-﻿module nts.uk.request {
+module nts.uk.request {
     
     export var STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
-
+    
+    export type WebAppId = 'com' | 'pr';
+    const WEB_APP_NAME = {
+        com: 'nts.uk.com.web',
+        pr: 'nts.uk.pr.web'
+    };
+    
     export class QueryString {
 
         items: { [key: string]: any };
@@ -130,7 +136,13 @@
         }
     }
     
-    export function ajax(path: string, data?: any, options?: any) {
+    export function ajax(path: string, data?: any, options?: any);
+    export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any)  {
+        
+        if (typeof arguments[1] !== 'string' ) {
+            return ajax.apply(null, _.concat(location.currentAppId, arguments));
+        }
+        
         var dfd = $.Deferred();
         options = options || {};
 
@@ -138,7 +150,10 @@
             data = JSON.stringify(data);
         }
 
-        var webserviceLocator = location.ajaxRoot.mergeRelativePath(path);
+        var webserviceLocator = location.siteRoot
+            .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
+            .mergeRelativePath(location.ajaxRootDir)
+            .mergeRelativePath(path);
 
         $.ajax({
             type: options.method || 'POST',
@@ -156,6 +171,7 @@
 
         return dfd.promise();
     }
+
      
     export function exportFile(path: string, data?: any, options?: any) {
         let dfd = $.Deferred();
@@ -192,13 +208,14 @@
         }
     }
     
+    
     export function jump(path: string, data?: any) {
         
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
         
         window.location.href = resolvePath(path);
     }
-     
+    
     export function resolvePath(path: string) {
         var destination: Locator;
         if (path.charAt(0) === '/') {
@@ -213,7 +230,17 @@
     export module location {
         export var current = new Locator(window.location.href);
         export var appRoot = current.mergeRelativePath(__viewContext.rootPath);
-        export var ajaxRoot = appRoot.mergeRelativePath('webapi/')
+        export var siteRoot = appRoot.mergeRelativePath('../');
+        export var ajaxRootDir = 'webapi/';
+        
+        var currentAppName = _.takeRight(appRoot.serialize().split('/'), 2)[0];
+        export var currentAppId: WebAppId;
+        for (var id in WEB_APP_NAME) {
+            if (currentAppName === WEB_APP_NAME[id]) {
+                currentAppId = <WebAppId> id;
+                break;
+            }
+        }
     };
 
 }
