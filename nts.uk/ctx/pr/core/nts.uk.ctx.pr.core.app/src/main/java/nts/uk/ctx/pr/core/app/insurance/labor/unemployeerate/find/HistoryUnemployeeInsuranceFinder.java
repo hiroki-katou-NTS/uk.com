@@ -24,6 +24,12 @@ public class HistoryUnemployeeInsuranceFinder {
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
 	public List<HistoryUnemployeeInsuranceDto> findAll(String companyCode) {
 		List<HistoryUnemployeeInsuranceDto> lstHistoryUnemployeeInsurance = new ArrayList<>();
 		for (UnemployeeInsuranceRate unemployeeInsuranceRate : unemployeeInsuranceRateRepository.findAll(companyCode)) {
@@ -32,6 +38,13 @@ public class HistoryUnemployeeInsuranceFinder {
 		return lstHistoryUnemployeeInsurance;
 	}
 
+	/**
+	 * Find.
+	 *
+	 * @param companyCode the company code
+	 * @param historyId the history id
+	 * @return the history unemployee insurance dto
+	 */
 	public HistoryUnemployeeInsuranceDto find(String companyCode, String historyId) {
 		return HistoryUnemployeeInsuranceDto
 				.fromDomain(unemployeeInsuranceRateRepository.findById(historyId, companyCode));

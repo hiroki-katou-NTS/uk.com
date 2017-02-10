@@ -130,9 +130,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateAccidentInsuranceRate = updateAccidentInsuranceRate;
-                            function findAllHistoryAccidentInsuranceRate() {
+                            function findAllHistoryAccidentInsuranceRate(companyCode) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
+                                nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -142,9 +142,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHistoryAccidentInsuranceRate = findAllHistoryAccidentInsuranceRate;
-                            function findHistoryAccidentInsuranceRate(historyId) {
+                            function findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate, historyAccidentInsuranceRateFindInDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -313,6 +313,12 @@ var nts;
                                     return AccidentInsuranceRateDto;
                                 }());
                                 model.AccidentInsuranceRateDto = AccidentInsuranceRateDto;
+                                var HistoryAccidentInsuranceRateFindInDto = (function () {
+                                    function HistoryAccidentInsuranceRateFindInDto() {
+                                    }
+                                    return HistoryAccidentInsuranceRateFindInDto;
+                                }());
+                                model.HistoryAccidentInsuranceRateFindInDto = HistoryAccidentInsuranceRateFindInDto;
                                 var InsuBizRateItemDto = (function () {
                                     function InsuBizRateItemDto(insuBizType, insuRate, insuRound, insuranceBusinessType) {
                                         this.insuBizType = insuBizType;

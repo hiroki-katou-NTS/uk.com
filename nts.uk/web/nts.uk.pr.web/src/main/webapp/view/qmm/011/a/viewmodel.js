@@ -18,6 +18,7 @@ var nts;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
                         var HistoryAccidentInsuranceDto = a.service.model.HistoryAccidentInsuranceDto;
+                        var HistoryAccidentInsuranceRateFindInDto = a.service.model.HistoryAccidentInsuranceRateFindInDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var viewmodel;
                         (function (viewmodel) {
@@ -196,7 +197,11 @@ var nts;
                                 ScreenModel.prototype.findHistoryAccidentInsuranceRate = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findHistoryAccidentInsuranceRate(historyId).done(function (data) {
+                                    var historyAccidentInsuranceRateFindInDto;
+                                    historyAccidentInsuranceRateFindInDto = new HistoryAccidentInsuranceRateFindInDto();
+                                    historyAccidentInsuranceRateFindInDto.historyId = historyId;
+                                    historyAccidentInsuranceRateFindInDto.companyCode = "companyCode001";
+                                    a.service.findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto).done(function (data) {
                                         self.historyAccidentInsuranceRateStart(data.startMonthRage);
                                         self.historyAccidentInsuranceRateEnd(data.endMonthRage);
                                         dfd.resolve(null);
@@ -215,7 +220,7 @@ var nts;
                                 ScreenModel.prototype.findAllHistoryAccidentInsuranceRate = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllHistoryAccidentInsuranceRate().done(function (data) {
+                                    a.service.findAllHistoryAccidentInsuranceRate("companyCode001").done(function (data) {
                                         self.lstHistoryAccidentInsuranceRate = ko.observableArray(data);
                                         self.selectionHistoryAccidentInsuranceRate = ko.observable(data[0].historyId);
                                         self.historyAccidentInsuranceRateStart = ko.observable(data[0].startMonthRage);

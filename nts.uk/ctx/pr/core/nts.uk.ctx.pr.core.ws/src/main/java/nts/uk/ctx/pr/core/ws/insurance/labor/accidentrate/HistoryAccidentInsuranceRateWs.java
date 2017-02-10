@@ -7,21 +7,26 @@ package nts.uk.ctx.pr.core.ws.insurance.labor.accidentrate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.InsuBizRateItemDto;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.HistoryAccidentInsuranceRateFindInDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.HistoryAccidentInsuranceRateF‌inder;
 
 @Path("pr/insurance/labor/accidentrate/history")
 @Produces("application/json")
 public class HistoryAccidentInsuranceRateWs extends WebService {
+
+	/** The find. */
+	@Inject
+	private HistoryAccidentInsuranceRateF‌inder find;
 
 	/**
 	 * Find all history.
@@ -29,76 +34,9 @@ public class HistoryAccidentInsuranceRateWs extends WebService {
 	 * @return the list
 	 */
 	@POST
-	@Path("findall")
-	public List<HistoryAccidentInsuranceRateDto> findAllHistory() {
-		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRate = new ArrayList<HistoryAccidentInsuranceRateDto>();
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate006 = new HistoryAccidentInsuranceRateDto();
-		MonthRange monthRange006 = MonthRange.range(new YearMonth(2016 * 100 + 4), new YearMonth(9999 * 100 + 12));
-		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate006.setHistoryId("historyId006");
-		historyAccidentInsuranceRate006
-				.setStartMonthRage(historyAccidentInsuranceRate006.convertMonth(monthRange006.getStartMonth()));
-		historyAccidentInsuranceRate006
-				.setEndMonthRage(historyAccidentInsuranceRate006.convertMonth(monthRange006.getEndMonth()));
-		historyAccidentInsuranceRate006.setInforMonthRage(historyAccidentInsuranceRate006.getStartMonthRage() + " ~ "
-				+ historyAccidentInsuranceRate006.getEndMonthRage());
-		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate006);
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate005 = new HistoryAccidentInsuranceRateDto();
-		MonthRange monthRange005 = MonthRange.range(new YearMonth(2015 * 100 + 10), new YearMonth(2016 * 100 + 3));
-		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate005.setHistoryId("historyId005");
-		historyAccidentInsuranceRate005
-				.setStartMonthRage(historyAccidentInsuranceRate005.convertMonth(monthRange005.getStartMonth()));
-		historyAccidentInsuranceRate005
-				.setEndMonthRage(historyAccidentInsuranceRate005.convertMonth(monthRange005.getEndMonth()));
-		historyAccidentInsuranceRate005.setInforMonthRage(historyAccidentInsuranceRate005.getStartMonthRage() + " ~ "
-				+ historyAccidentInsuranceRate005.getEndMonthRage());
-		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate005);
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate004 = new HistoryAccidentInsuranceRateDto();
-		MonthRange monthRange004 = MonthRange.range(new YearMonth(2015 * 100 + 4), new YearMonth(2015 * 100 + 9));
-		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate004.setHistoryId("historyId004");
-		historyAccidentInsuranceRate004
-				.setStartMonthRage(historyAccidentInsuranceRate004.convertMonth(monthRange004.getStartMonth()));
-		historyAccidentInsuranceRate004
-				.setEndMonthRage(historyAccidentInsuranceRate004.convertMonth(monthRange004.getEndMonth()));
-		historyAccidentInsuranceRate004.setInforMonthRage(historyAccidentInsuranceRate004.getStartMonthRage() + " ~ "
-				+ historyAccidentInsuranceRate004.getEndMonthRage());
-		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate004);
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate003 = new HistoryAccidentInsuranceRateDto();
-		MonthRange monthRange003 = MonthRange.range(new YearMonth(2014 * 100 + 9), new YearMonth(2015 * 100 + 3));
-		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate003.setHistoryId("historyId003");
-		historyAccidentInsuranceRate003
-				.setStartMonthRage(historyAccidentInsuranceRate003.convertMonth(monthRange003.getStartMonth()));
-		historyAccidentInsuranceRate003
-				.setEndMonthRage(historyAccidentInsuranceRate003.convertMonth(monthRange003.getEndMonth()));
-		historyAccidentInsuranceRate003.setInforMonthRage(historyAccidentInsuranceRate003.getStartMonthRage() + " ~ "
-				+ historyAccidentInsuranceRate003.getEndMonthRage());
-		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate003);
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate002 = new HistoryAccidentInsuranceRateDto();
-		MonthRange monthRange002 = MonthRange.range(new YearMonth(2014 * 100 + 4), new YearMonth(2014 * 100 + 8));
-		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate002.setHistoryId("historyId002");
-		historyAccidentInsuranceRate002
-				.setStartMonthRage(historyAccidentInsuranceRate002.convertMonth(monthRange002.getStartMonth()));
-		historyAccidentInsuranceRate002
-				.setEndMonthRage(historyAccidentInsuranceRate002.convertMonth(monthRange002.getEndMonth()));
-		historyAccidentInsuranceRate002.setInforMonthRage(historyAccidentInsuranceRate002.getStartMonthRage() + " ~ "
-				+ historyAccidentInsuranceRate002.getEndMonthRage());
-		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate002);
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate001 = new HistoryAccidentInsuranceRateDto();
-		MonthRange monthRange001 = MonthRange.range(new YearMonth(2013 * 100 + 4), new YearMonth(2014 * 100 + 3));
-		// historyAccidentInsuranceRate006.setMonthRage(monthRange006);
-		historyAccidentInsuranceRate001.setHistoryId("historyId001");
-		historyAccidentInsuranceRate001
-				.setStartMonthRage(historyAccidentInsuranceRate001.convertMonth(monthRange001.getStartMonth()));
-		historyAccidentInsuranceRate001
-				.setEndMonthRage(historyAccidentInsuranceRate001.convertMonth(monthRange001.getEndMonth()));
-		historyAccidentInsuranceRate001.setInforMonthRage(historyAccidentInsuranceRate001.getStartMonthRage() + " ~ "
-				+ historyAccidentInsuranceRate001.getEndMonthRage());
-		lstHistoryAccidentInsuranceRate.add(historyAccidentInsuranceRate001);
-		return lstHistoryAccidentInsuranceRate;
+	@Path("findall/{companyCode}")
+	public List<HistoryAccidentInsuranceRateDto> findAllHistory(@PathParam("companyCode") String companyCode) {
+		return find.findAll(companyCode);
 	}
 
 	/**
@@ -109,16 +47,10 @@ public class HistoryAccidentInsuranceRateWs extends WebService {
 	 * @return the history accident insurance rate dto
 	 */
 	@POST
-	@Path("find/{historyId}")
-	public HistoryAccidentInsuranceRateDto findHistory(@PathParam("historyId") String historyId) {
-		HistoryAccidentInsuranceRateDto historyAccidentInsuranceRate = new HistoryAccidentInsuranceRateDto();
-		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRate = findAllHistory();
-		for (HistoryAccidentInsuranceRateDto history : lstHistoryAccidentInsuranceRate) {
-			if (history.getHistoryId().equals(historyId)) {
-				historyAccidentInsuranceRate = history;
-			}
-		}
-		return historyAccidentInsuranceRate;
+	@Path("find")
+	public HistoryAccidentInsuranceRateDto findHistory(
+			HistoryAccidentInsuranceRateFindInDto historyAccidentInsuranceRateFindInDto) {
+		return find.find(historyAccidentInsuranceRateFindInDto);
 	}
 
 	/**

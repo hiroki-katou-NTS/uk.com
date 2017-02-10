@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm011.a {
     import TypeHistory = service.model.TypeHistory;
     import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
     import HistoryAccidentInsuranceDto = service.model.HistoryAccidentInsuranceDto;
+    import HistoryAccidentInsuranceRateFindInDto = service.model.HistoryAccidentInsuranceRateFindInDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
@@ -249,7 +250,11 @@ module nts.uk.pr.view.qmm011.a {
             private findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findHistoryAccidentInsuranceRate(historyId).done(data => {
+                var historyAccidentInsuranceRateFindInDto: HistoryAccidentInsuranceRateFindInDto;
+                historyAccidentInsuranceRateFindInDto = new HistoryAccidentInsuranceRateFindInDto();
+                historyAccidentInsuranceRateFindInDto.historyId = historyId;
+                historyAccidentInsuranceRateFindInDto.companyCode = "companyCode001";
+                service.findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto).done(data => {
                     self.historyAccidentInsuranceRateStart(data.startMonthRage);
                     self.historyAccidentInsuranceRateEnd(data.endMonthRage);
                     dfd.resolve(null);
@@ -270,7 +275,7 @@ module nts.uk.pr.view.qmm011.a {
             private findAllHistoryAccidentInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findAllHistoryAccidentInsuranceRate().done(data => {
+                service.findAllHistoryAccidentInsuranceRate("companyCode001").done(data => {
                     self.lstHistoryAccidentInsuranceRate = ko.observableArray<HistoryAccidentInsuranceDto>(data);
                     self.selectionHistoryAccidentInsuranceRate = ko.observable(data[0].historyId);
                     self.historyAccidentInsuranceRateStart = ko.observable(data[0].startMonthRage);

@@ -135,9 +135,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find All HistoryAccidentInsurance 
-        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
+        export function findAllHistoryAccidentInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryAccidentInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
+            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
                 .done(function(res: Array<model.HistoryAccidentInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -148,9 +148,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find HistoryAccidentInsurance
-        export function findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<model.HistoryAccidentInsuranceDto> {
+        export function findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto: model.HistoryAccidentInsuranceRateFindInDto): JQueryPromise<model.HistoryAccidentInsuranceDto> {
             var dfd = $.Deferred<model.HistoryAccidentInsuranceDto>();
-            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
+            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate, historyAccidentInsuranceRateFindInDto)
                 .done(function(res: model.HistoryAccidentInsuranceDto) {
                     dfd.resolve(res);
                     //xyz
@@ -325,6 +325,10 @@ module nts.uk.pr.view.qmm011.a {
                 historyInsurance: HistoryUnemployeeInsuranceDto;
                 rateItems: InsuBizRateItemDto[];
                 version: number;
+            }
+            export class HistoryAccidentInsuranceRateFindInDto {
+                historyId: string;
+                companyCode: string;
             }
             export class InsuBizRateItemDto {
                 /** The insu biz type. */
