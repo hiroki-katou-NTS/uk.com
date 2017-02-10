@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.find;
 
 import java.util.List;
@@ -7,20 +11,47 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 
+/**
+ * The Class UnitPriceHistoryFinder.
+ */
 @Stateless
 public class UnitPriceHistoryFinder {
 
+	/** The repository. */
 	@Inject
-	private UnitPriceHistoryRepository repository;
+	private UnitPriceHistoryRepository unitPriceHistoryRepo;
 
+	/**
+	 * Find.
+	 *
+	 * @param id
+	 *            the id
+	 * @return the optional
+	 */
 	public Optional<UnitPriceHistoryDto> find(String id) {
-		return repository.findById(id).map(domain -> UnitPriceHistoryDto.fromDomain(domain));
+		Optional<UnitPriceHistory> unitPriceHistory = unitPriceHistoryRepo.findById(id);
+		UnitPriceHistoryDto dto = UnitPriceHistoryDto.builder().build();
+		if (unitPriceHistory.isPresent()) {
+			unitPriceHistory.get().saveToMemento(dto);
+		}
+		return Optional.ofNullable(dto);
 	}
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @return the list
+	 */
 	public List<UnitPriceHistoryDto> findAll(String companyCode) {
-		return repository.findAll(companyCode).stream().map(domain -> UnitPriceHistoryDto.fromDomain(domain))
-				.collect(Collectors.toList());
+		return unitPriceHistoryRepo.findAll(companyCode).stream().map(domain -> {
+			UnitPriceHistoryDto dto = UnitPriceHistoryDto.builder().build();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }
