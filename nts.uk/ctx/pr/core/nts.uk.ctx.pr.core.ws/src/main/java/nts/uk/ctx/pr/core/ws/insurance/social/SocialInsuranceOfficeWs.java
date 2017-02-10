@@ -46,24 +46,11 @@ public class SocialInsuranceOfficeWs extends WebService {
 	
 	@Inject
 	private SocialInsuranceOfficeFinder socialInsuranceOfficeFinder;
-	// Find all SocialInsuranceOffice conection data
+	
 	@POST
 	@Path("findall")
-	public List<SocialInsuranceOfficeItemDto> findAll() {
-		List<SocialInsuranceOfficeItemDto> lstSocialInsuranceOfficeIn = new ArrayList<SocialInsuranceOfficeItemDto>();
-		SocialInsuranceOfficeItemDto socialInsuranceOffice001 = new SocialInsuranceOfficeItemDto();
-		socialInsuranceOffice001.setCode("000000000001");
-		socialInsuranceOffice001.setName("A 事業所");
-		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice001);
-		SocialInsuranceOfficeItemDto socialInsuranceOffice002 = new SocialInsuranceOfficeItemDto();
-		socialInsuranceOffice002.setCode("000000000002");
-		socialInsuranceOffice002.setName("B 事業所");
-		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice002);
-		SocialInsuranceOfficeItemDto socialInsuranceOffice003 = new SocialInsuranceOfficeItemDto();
-		socialInsuranceOffice003.setCode("000000000003");
-		socialInsuranceOffice003.setName("C 事業所");
-		lstSocialInsuranceOfficeIn.add(socialInsuranceOffice003);
-		return lstSocialInsuranceOfficeIn;
+	public List<SocialInsuranceOfficeItemDto> findAll(String companyCode) {
+		return socialInsuranceOfficeFinder.findAll(companyCode);
 	}
 
 	@POST
@@ -80,15 +67,15 @@ public class SocialInsuranceOfficeWs extends WebService {
 		HistoryDto returnHistory = new HistoryDto();
 		
 		HistoryDto history1 = new HistoryDto();
-		history1.setCode("000000000001");
+		history1.setCode("00000");
 		history1.setName("2015");
 		lstHistory.add(history1);
 		HistoryDto history2 = new HistoryDto();
-		history2.setCode("000000000002");
+		history2.setCode("00002");
 		history2.setName("2016");
 		lstHistory.add(history2);
 		HistoryDto history3 = new HistoryDto();
-		history3.setCode("000000000003");
+		history3.setCode("00003");
 		history3.setName("2017");
 		lstHistory.add(history3);
 		
@@ -120,11 +107,4 @@ public class SocialInsuranceOfficeWs extends WebService {
 		this.deleteSocialOfficeCommandHandler.handle(command);
 		return;
 	}
-	@POST
-	@Path("list/office")
-	public void listOffice()
-	{
-		return;
-	}
-
 }

@@ -42,7 +42,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<SocialInsuranceOffice> findAll(int companyCode);
+	List<SocialInsuranceOffice> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -58,7 +58,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param officeCode the office code
 	 * @return the social insurance office
 	 */
-	SocialInsuranceOffice findByOfficeCode(String officeCode);
+	Optional<SocialInsuranceOffice> findByOfficeCode(String officeCode);
 
 	/**
 	 * Checks if is duplicate code.
