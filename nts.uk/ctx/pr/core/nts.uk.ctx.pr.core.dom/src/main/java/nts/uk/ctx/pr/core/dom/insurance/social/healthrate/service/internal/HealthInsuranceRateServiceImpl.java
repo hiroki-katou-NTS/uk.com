@@ -24,7 +24,7 @@ public class HealthInsuranceRateServiceImpl implements HealthInsuranceRateServic
 	private static final int INSURANCE_RATE_ITEM_COUNT = 8;
 
 	/** The Constant HEALTH_INSURANCE_ROUNDING_COUNT. */
-	private static final int HEALTH_INSURANCE_ROUNDING_COUNT = 4;
+	private static final int HEALTH_INSURANCE_ROUNDING_COUNT = 2;
 
 	/** The health insurance rate repo. */
 	@Inject

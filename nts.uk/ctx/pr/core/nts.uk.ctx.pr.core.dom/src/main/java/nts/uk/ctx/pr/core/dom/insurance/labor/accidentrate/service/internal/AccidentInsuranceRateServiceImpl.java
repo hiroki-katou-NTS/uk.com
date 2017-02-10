@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
@@ -17,6 +18,9 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsur
  */
 @Stateless
 public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateService {
+
+	/** The rate item count. */
+	private final int RATE_ITEM_COUNT = 10;
 
 	/** The accident insurance rate repo. */
 	@Inject
@@ -31,7 +35,8 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateRequiredItem(AccidentInsuranceRate rate) {
-		if (rate.getApplyRange() == null) {
+		if (rate.getApplyRange() == null || ListUtil.isEmpty(rate.getRateItems())
+				|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}

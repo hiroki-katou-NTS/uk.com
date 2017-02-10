@@ -5,11 +5,13 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The Class UnemployeeInsuranceRateItem.
  */
 @Data
+@EqualsAndHashCode(of = { "careerGroup" })
 public class UnemployeeInsuranceRateItem {
 
 	/** The career group. */

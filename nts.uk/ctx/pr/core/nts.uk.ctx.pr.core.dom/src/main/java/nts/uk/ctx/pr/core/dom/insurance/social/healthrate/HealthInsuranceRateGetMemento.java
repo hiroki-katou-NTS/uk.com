@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import java.util.List;
+import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -63,14 +63,14 @@ public interface HealthInsuranceRateGetMemento {
 	 *
 	 * @return the rate items
 	 */
-	List<InsuranceRateItem> getRateItems();
+	Set<InsuranceRateItem> getRateItems();
 
 	/**
 	 * Gets the rounding methods.
 	 *
 	 * @return the rounding methods
 	 */
-	List<HealthInsuranceRounding> getRoundingMethods();
+	Set<HealthInsuranceRounding> getRoundingMethods();
 
 	/**
 	 * Gets the version.

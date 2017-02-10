@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -39,10 +39,10 @@ public class HealthInsuranceRate extends AggregateRoot {
 	private CommonAmount maxAmount;
 
 	/** The rate items. */
-	private List<InsuranceRateItem> rateItems;
+	private Set<InsuranceRateItem> rateItems;
 
 	/** The rounding methods. */
-	private List<HealthInsuranceRounding> roundingMethods;
+	private Set<HealthInsuranceRounding> roundingMethods;
 
 	// =================== Memento State Support Method ===================
 	/**

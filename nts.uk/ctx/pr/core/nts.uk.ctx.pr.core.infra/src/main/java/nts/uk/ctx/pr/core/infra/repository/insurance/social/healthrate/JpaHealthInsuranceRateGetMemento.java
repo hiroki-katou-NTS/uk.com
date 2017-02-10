@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
-import java.util.List;
+import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -69,13 +69,13 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	}
 
 	@Override
-	public List<InsuranceRateItem> getRateItems() {
+	public Set<InsuranceRateItem> getRateItems() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<HealthInsuranceRounding> getRoundingMethods() {
+	public Set<HealthInsuranceRounding> getRoundingMethods() {
 		// TODO Auto-generated method stub
 		return null;
 	}
