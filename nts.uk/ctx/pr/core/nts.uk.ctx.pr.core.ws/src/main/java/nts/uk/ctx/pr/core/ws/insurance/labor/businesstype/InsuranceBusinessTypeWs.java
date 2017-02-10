@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.InsuranceBusines
 
 @Path("pr/insurance/labor/businesstype")
 @Produces("application/json")
-public class InsuranceBusinessTypeWebService {
+public class InsuranceBusinessTypeWs {
 
 	/** The update. */
 	@Inject

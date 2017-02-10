@@ -29,7 +29,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
  */
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")
-public class UnemployeeInsuranceRateWebService extends WebService {
+public class UnemployeeInsuranceRateWs extends WebService {
 
 	/** The add. */
 	@Inject
