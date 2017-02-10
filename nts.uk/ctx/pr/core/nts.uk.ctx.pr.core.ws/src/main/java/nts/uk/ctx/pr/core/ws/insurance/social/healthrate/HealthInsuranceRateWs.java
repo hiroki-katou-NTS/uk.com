@@ -13,8 +13,6 @@ import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealth
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.AvgEarnLevelMasterSettingDto;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.AvgEarnLevelMasterSettingFinder;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnFinder;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
@@ -25,8 +23,6 @@ import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRa
 public class HealthInsuranceRateWs extends WebService {
 
 	@Inject
-	private AvgEarnLevelMasterSettingFinder avgEarnLevelMasterSettingFinder;
-	@Inject
 	private HealthInsuranceRateFinder healthInsuranceRateFinder;
 	@Inject
 	private HealthInsuranceAvgearnFinder healthInsuranceAvgearnFinder;
@@ -34,12 +30,6 @@ public class HealthInsuranceRateWs extends WebService {
 	private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
 	@Inject
 	private UpdateHealthInsuranceCommandHandler updateHealthInsuranceCommandHandler;
-
-	@POST
-	@Path("getAvgEarnLevelMasterSettingList")
-	public List<AvgEarnLevelMasterSettingDto> getAvgEarnLevelMasterSettingList() {
-		return avgEarnLevelMasterSettingFinder.findAll();
-	}
 
 	@POST
 	@Path("findHealthInsuranceAvgearn/{id}")
@@ -64,10 +54,10 @@ public class HealthInsuranceRateWs extends WebService {
 	public void update(UpdateHealthInsuranceCommand command) {
 		updateHealthInsuranceCommandHandler.handle(command);
 	}
-	
+
 	@POST
 	@Path("updateHealthInsuranceAvgearn")
 	public void updateHealthInsuranceAvgearn() {
-		
+
 	}
 }

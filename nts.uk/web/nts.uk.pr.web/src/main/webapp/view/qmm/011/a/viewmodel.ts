@@ -15,6 +15,7 @@ module nts.uk.pr.view.qmm011.a {
     import HistoryAccidentInsuranceDto = service.model.HistoryAccidentInsuranceDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
+    import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
     export module viewmodel {
         export class ScreenModel {
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>;
@@ -104,6 +105,10 @@ module nts.uk.pr.view.qmm011.a {
                     nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateDto", data);
                     nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
                         //OnClose => call
+                        var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
+                        if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
+                            self.updateInsuranceBusinessTypeAccidentInsurance(insuranceBusinessTypeUpdateModel);
+                        }
                     });
                 });
 
@@ -280,6 +285,20 @@ module nts.uk.pr.view.qmm011.a {
                 });
                 return dfd.promise();
             }
+            //
+            private updateInsuranceBusinessTypeAccidentInsurance(insuranceBusinessTypeUpdateModel: InsuranceBusinessTypeUpdateModel) {
+                var self = this;
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz1St());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz2Nd());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz3Rd());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz4Th());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz5Th());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz6Th());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz7Th());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz8Th());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz9Th());
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz10Th());
+            }
         }
 
         export class UnemployeeInsuranceRateItemSettingModel {
@@ -335,7 +354,7 @@ module nts.uk.pr.view.qmm011.a {
         }
         export class AccidentInsuranceRateDetailModel {
             insuRate: KnockoutObservable<number>;
-            insuRound: KnockoutObservable<string>;
+            insuRound: KnockoutObservable<number>;
             insuranceBusinessType: KnockoutObservable<string>;
             rateInputOptions: any;
             selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>;
@@ -345,6 +364,12 @@ module nts.uk.pr.view.qmm011.a {
                 this.rateInputOptions = rateInputOptions;
                 this.selectionRoundingMethod = selectionRoundingMethod;
                 this.insuranceBusinessType = ko.observable(insuBizRateItem.insuranceBusinessType);
+            }
+            //Fuction update value insuranceBusinessType
+            updateInsuranceBusinessType(insuranceBusinessType: string) {
+                if (this.insuranceBusinessType() != null && this.insuranceBusinessType() != undefined) {
+                    this.insuranceBusinessType(insuranceBusinessType);
+                }
             }
         }
         export class AccidentInsuranceRateModel {

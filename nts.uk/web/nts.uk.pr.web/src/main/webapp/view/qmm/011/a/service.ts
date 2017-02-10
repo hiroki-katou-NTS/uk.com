@@ -327,10 +327,10 @@ module nts.uk.pr.view.qmm011.a {
                 /** The insu rate. */
                 insuRate: number;
                 /** The insu round. */
-                insuRound: string;
+                insuRound: number;
                 /** The insurance business type. */
                 insuranceBusinessType: string;
-                constructor(insuBizType: number, insuRate: number, insuRound: string, insuranceBusinessType: string) {
+                constructor(insuBizType: number, insuRate: number, insuRound: number, insuranceBusinessType: string) {
                     this.insuBizType = insuBizType;
                     this.insuRate = insuRate;
                     this.insuRound = insuRound;

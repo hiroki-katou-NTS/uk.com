@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 
 // TODO: Auto-generated Javadoc
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class AccidentInsuranceRateDto {
 	/** The history id. */
 	// historyId

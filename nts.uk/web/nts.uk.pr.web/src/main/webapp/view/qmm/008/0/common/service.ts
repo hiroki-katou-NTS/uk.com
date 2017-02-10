@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm008._0.common {
          *  Service paths
          */
         var paths: any = {
-            getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/healthrate/getAvgEarnLevelMasterSettingList",
+            getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/getAvgEarnLevelMasterSettingList",
         };
         /**
         *  Get AvgEarnLevelMasterSetting list 
