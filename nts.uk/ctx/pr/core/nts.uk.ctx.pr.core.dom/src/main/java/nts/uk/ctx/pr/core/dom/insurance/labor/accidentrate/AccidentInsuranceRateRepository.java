@@ -41,7 +41,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AccidentInsuranceRate> findAll(int companyCode);
+	List<AccidentInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -49,7 +49,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @return the accident insurance rate
 	 */
-	AccidentInsuranceRate findById(String id);
+	AccidentInsuranceRate findById(String companyCode,String historyId);
 
 	/**
 	 * Checks if is invalid date range.

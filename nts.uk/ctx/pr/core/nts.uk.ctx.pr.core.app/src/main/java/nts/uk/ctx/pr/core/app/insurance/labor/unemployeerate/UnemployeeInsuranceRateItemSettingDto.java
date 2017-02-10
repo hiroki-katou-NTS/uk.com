@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class UnemployeeInsuranceRateItemSettingDto {
 	
 	/** The round atr. */
