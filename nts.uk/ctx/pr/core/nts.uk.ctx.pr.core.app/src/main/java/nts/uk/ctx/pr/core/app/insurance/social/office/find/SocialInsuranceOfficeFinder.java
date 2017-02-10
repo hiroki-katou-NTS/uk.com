@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 
 @Stateless
@@ -14,9 +15,11 @@ public class SocialInsuranceOfficeFinder {
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	public Optional<SocialInsuranceOfficeDto> find(String code) {
-		Optional<SocialInsuranceOfficeDto> dto = this.socialInsuranceOfficeRepository.findById(code)
-				.map(domain -> SocialInsuranceOfficeDto.fromDomain(domain));
-		// mock data
-		return dto;
+		Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeRepository.findById(code);
+		SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
+		if (socialInsuranceOffice.isPresent()) {
+			socialInsuranceOffice.get().saveToMemento(dto);
+		}
+		return Optional.ofNullable(dto);
 	}
 }

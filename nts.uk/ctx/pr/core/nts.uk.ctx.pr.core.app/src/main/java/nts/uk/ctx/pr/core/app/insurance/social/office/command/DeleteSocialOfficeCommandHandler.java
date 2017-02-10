@@ -25,7 +25,7 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocia
 	@Transactional
 	protected void handle(CommandHandlerContext<DeleteSocialOfficeCommand> command) {
 		
-		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository.findById(command.getCommand().getSocialInsuranceOfficeDto().getCode().toString());
+		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository.findById(command.getCommand().getSocialInsuranceOfficeDto().code);
 		
 		if(findOffice==null)
 		{

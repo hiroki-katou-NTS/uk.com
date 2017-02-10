@@ -1,16 +1,20 @@
 package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
 import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.PicName;
+import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
+import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
+import nts.uk.ctx.pr.core.dom.insurance.ShortName;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento;
+import nts.uk.shr.com.primitive.Memo;
 
 @Builder
-@Getter
-@Setter
-@Data
-public class SocialInsuranceOfficeDto {
+public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento {
 
 	/** The company code. */
 	public String companyCode;
@@ -89,16 +93,167 @@ public class SocialInsuranceOfficeDto {
 
 	/** The memo. */
 	public String memo;
-	
-	public static SocialInsuranceOfficeDto fromDomain(SocialInsuranceOffice domain) {
-		return new SocialInsuranceOfficeDto(domain.getCompanyCode().v(), domain.getCode().v(), domain.getName().v(),
-				domain.getShortName().v(), domain.getPicName().v(), domain.getPicPosition().v(),
-				domain.getPotalCode().v(), domain.getPrefecture(), domain.getAddress1st().v(),
-				domain.getAddress2nd().v(), domain.getKanaAddress1st().v(), domain.getKanaAddress2nd().v(),
-				domain.getPhoneNumber(), domain.getHealthInsuOfficeRefCode1st(), domain.getHealthInsuOfficeRefCode2nd(),
-				domain.getPensionOfficeRefCode1st(), domain.getPensionOfficeRefCode2nd(),
-				domain.getWelfarePensionFundCode(), domain.getOfficePensionFundCode(), domain.getHealthInsuCityCode(),
-				domain.getHealthInsuOfficeSign(), domain.getPensionCityCode(), domain.getPensionOfficeSign(),
-				domain.getHealthInsuOfficeCode(), domain.getHealthInsuAssoCode(), domain.getMemo().v());
+
+//	public static SocialInsuranceOfficeDto fromDomain(SocialInsuranceOffice domain) {
+//		return new SocialInsuranceOfficeDto(domain.getCompanyCode().v(), domain.getCode().v(), domain.getName().v(),
+//				domain.getShortName().v(), domain.getPicName().v(), domain.getPicPosition().v(),
+//				domain.getPotalCode().v(), domain.getPrefecture(), domain.getAddress1st().v(),
+//				domain.getAddress2nd().v(), domain.getKanaAddress1st().v(), domain.getKanaAddress2nd().v(),
+//				domain.getPhoneNumber(), domain.getHealthInsuOfficeRefCode1st(), domain.getHealthInsuOfficeRefCode2nd(),
+//				domain.getPensionOfficeRefCode1st(), domain.getPensionOfficeRefCode2nd(),
+//				domain.getWelfarePensionFundCode(), domain.getOfficePensionFundCode(), domain.getHealthInsuCityCode(),
+//				domain.getHealthInsuOfficeSign(), domain.getPensionCityCode(), domain.getPensionOfficeSign(),
+//				domain.getHealthInsuOfficeCode(), domain.getHealthInsuAssoCode(), domain.getMemo().v());
+//	}
+
+	@Override
+	public void setCompanyCode(CompanyCode companyCode) {
+		this.companyCode = companyCode.v();
+	}
+
+	@Override
+	public void setCode(OfficeCode code) {
+		this.code = code.v();
+	}
+
+	@Override
+	public void setName(OfficeName name) {
+		this.name = name.v();
+	}
+
+	@Override
+	public void setShortName(ShortName shortName) {
+		this.shortName = shortName.v();
+	}
+
+	@Override
+	public void setPicName(PicName picName) {
+		this.picName = picName.v();
+	}
+
+	@Override
+	public void setPicPosition(PicPosition picPosition) {
+		this.picPosition = picPosition.v();
+	}
+
+	@Override
+	public void setPotalCode(PotalCode potalCode) {
+		this.potalCode = potalCode.v();
+	}
+
+	@Override
+	public void setPrefecture(String prefecture) {
+		this.prefecture = prefecture;
+	}
+
+	@Override
+	public void setAddress1st(Address address1st) {
+		this.address1st = address1st.v();
+	}
+
+	@Override
+	public void setAddress2nd(Address address2nd) {
+
+		this.address2nd = address2nd.v();
+	}
+
+	@Override
+	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
+
+		this.kanaAddress1st = kanaAddress1st.v();
+	}
+
+	@Override
+	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
+
+		this.kanaAddress2nd = kanaAddress2nd.v();
+	}
+
+	@Override
+	public void setPhoneNumber(String phoneNumber) {
+
+		this.phoneNumber = phoneNumber;
+	}
+
+	@Override
+	public void setHealthInsuOfficeRefCode1st(String healthInsuOfficeRefCode1st) {
+
+		this.healthInsuOfficeRefCode1st = healthInsuOfficeRefCode1st;
+	}
+
+	@Override
+	public void setHealthInsuOfficeRefCode2nd(String healthInsuOfficeRefCode2nd) {
+
+		this.healthInsuOfficeRefCode2nd = healthInsuOfficeRefCode2nd;
+	}
+
+	@Override
+	public void setPensionOfficeRefCode1st(String pensionOfficeRefCode1st) {
+
+		this.pensionOfficeRefCode1st = pensionOfficeRefCode1st;
+	}
+
+	@Override
+	public void setPensionOfficeRefCode2nd(String pensionOfficeRefCode2nd) {
+
+		this.pensionOfficeRefCode2nd = pensionOfficeRefCode2nd;
+	}
+
+	@Override
+	public void setWelfarePensionFundCode(String welfarePensionFundCode) {
+
+		this.welfarePensionFundCode = welfarePensionFundCode;
+	}
+
+	@Override
+	public void setOfficePensionFundCode(String officePensionFundCode) {
+
+		this.officePensionFundCode = officePensionFundCode;
+	}
+
+	@Override
+	public void setHealthInsuCityCode(String healthInsuCityCode) {
+
+		this.healthInsuCityCode = healthInsuCityCode;
+	}
+
+	@Override
+	public void setHealthInsuOfficeSign(String healthInsuOfficeSign) {
+
+		this.healthInsuOfficeSign = healthInsuOfficeSign;
+	}
+
+	@Override
+	public void setPensionCityCode(String pensionCityCode) {
+
+		this.pensionCityCode = pensionCityCode;
+	}
+
+	@Override
+	public void setPensionOfficeSign(String pensionOfficeSign) {
+
+		this.pensionOfficeSign = pensionOfficeSign;
+	}
+
+	@Override
+	public void setHealthInsuOfficeCode(String healthInsuOfficeCode) {
+
+		this.healthInsuOfficeCode = healthInsuOfficeCode;
+	}
+
+	@Override
+	public void setHealthInsuAssoCode(String healthInsuAssoCode) {
+
+		this.healthInsuAssoCode = healthInsuAssoCode;
+	}
+
+	@Override
+	public void setMemo(Memo memo) {
+
+		this.memo = memo.v();
+	}
+
+	@Override
+	public void setVersion(Long version) {
 	}
 }
