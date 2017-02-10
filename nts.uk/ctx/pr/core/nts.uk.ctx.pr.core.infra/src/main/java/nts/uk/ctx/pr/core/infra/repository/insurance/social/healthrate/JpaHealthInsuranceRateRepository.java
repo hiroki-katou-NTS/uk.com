@@ -5,9 +5,10 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.ejb.Stateless;
 
@@ -93,7 +94,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 */
 	@Override
 	public Optional<HealthInsuranceRate> findById(String id) {
-		List<InsuranceRateItem> list1 = new ArrayList<InsuranceRateItem>();
+		Set<InsuranceRateItem> list1 = new HashSet<InsuranceRateItem>();
 		HealthChargeRateItem rateItem = new HealthChargeRateItem();
 		rateItem.setCompanyRate(new Ins3Rate(new BigDecimal(40.900)));
 		rateItem.setPersonalRate(new Ins3Rate(new BigDecimal(40.900)));
@@ -106,7 +107,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
 		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
 
-		List<HealthInsuranceRounding> list2 = new ArrayList<HealthInsuranceRounding>();
+		Set<HealthInsuranceRounding> list2 = new HashSet<HealthInsuranceRounding>();
 		RoundingItem ri = new RoundingItem();
 		ri.setCompanyRoundAtr(RoundingMethod.Down4_Up5);
 		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
@@ -124,13 +125,13 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 			}
 
 			@Override
-			public List<HealthInsuranceRounding> getRoundingMethods() {
+			public Set<HealthInsuranceRounding> getRoundingMethods() {
 				// TODO Auto-generated method stub
 				return list2;
 			}
 
 			@Override
-			public List<InsuranceRateItem> getRateItems() {
+			public Set<InsuranceRateItem> getRateItems() {
 				// TODO Auto-generated method stub
 				return list1;
 			}

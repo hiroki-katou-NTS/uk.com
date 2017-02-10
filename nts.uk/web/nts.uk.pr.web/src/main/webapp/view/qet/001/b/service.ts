@@ -29,6 +29,7 @@ module qet001.b {
          * Save Output setting to DB.
          */
         export function saveOutputSetting(settingDetail: viewmodel.OutputSettingDetail) : JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var categorySettingData = [];
             // Set order number to item list.
             settingDetail.categorySettings().forEach(setting => {
@@ -42,14 +43,25 @@ module qet001.b {
                 onceSheetPerPerson: settingDetail.isPrintOnePageEachPer(),
                 categorySettings: ko.toJS(settingDetail.categorySettings()),
             };
-            return nts.uk.request.ajax(servicePath.saveOutputSetting, data);
+            nts.uk.request.ajax(servicePath.saveOutputSetting, data).done(function(){
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+            return dfd.promise();
         }
         
         /**
          * Remove Output setting to DB.
          */
         export function removeOutputSetting(code: string) : JQueryPromise<void> {
-            return nts.uk.request.ajax(servicePath.removeOutputSetting, {code: code});
+            var dfd = $.Deferred<void>();
+            nts.uk.request.ajax(servicePath.removeOutputSetting, {code: code}).done(function(){
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+            return dfd.promise()
         }
         
         /**

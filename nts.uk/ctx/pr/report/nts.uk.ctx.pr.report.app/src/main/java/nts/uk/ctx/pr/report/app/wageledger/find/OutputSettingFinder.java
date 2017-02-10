@@ -73,4 +73,22 @@ public class OutputSettingFinder {
 		// TODO: Find item name in Setting items.
 		return dto;
 	}
+	
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
+	public List<OutputSettingDto> findAll(){
+		// Mock data.
+		List<OutputSettingDto> dtos = new ArrayList<>();
+		for (int i = 0; i <= 10; i++) {
+			dtos.add(OutputSettingDto.builder()
+					.code("00" + i)
+					.name("Output setting " + i)
+					.isOnceSheetPerPerson(true)
+					.build());
+		}
+		return dtos;		
+	};
 }

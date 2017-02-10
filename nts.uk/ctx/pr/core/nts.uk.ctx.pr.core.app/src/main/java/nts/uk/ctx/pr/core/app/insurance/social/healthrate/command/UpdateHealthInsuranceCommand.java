@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
-import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,13 +26,13 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			}
 
 			@Override
-			public List<HealthInsuranceRounding> getRoundingMethods() {
+			public Set<HealthInsuranceRounding> getRoundingMethods() {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public List<InsuranceRateItem> getRateItems() {
+			public Set<InsuranceRateItem> getRateItems() {
 				// TODO Auto-generated method stub
 				return null;
 			}
