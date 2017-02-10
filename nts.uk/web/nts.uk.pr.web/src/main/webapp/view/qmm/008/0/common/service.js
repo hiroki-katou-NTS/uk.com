@@ -15,7 +15,7 @@ var nts;
                             var service;
                             (function (service) {
                                 var paths = {
-                                    getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/healthrate/getAvgEarnLevelMasterSettingList",
+                                    getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/getAvgEarnLevelMasterSettingList",
                                 };
                                 function getAvgEarnLevelMasterSettingList() {
                                     var dfd = $.Deferred();
@@ -31,8 +31,8 @@ var nts;
                                 service.getAvgEarnLevelMasterSettingList = getAvgEarnLevelMasterSettingList;
                                 function convertToAvgEarnLevelMasterSettingModel(listDto) {
                                     var salMin = 0;
-                                    for (var i in listDto) {
-                                        var dto = listDto[i];
+                                    for (var i_1 in listDto) {
+                                        var dto = listDto[i_1];
                                         dto['salMin'] = salMin;
                                         salMin = dto.salLimit;
                                     }
