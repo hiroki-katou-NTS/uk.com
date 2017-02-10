@@ -4,30 +4,28 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
-import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 
 /**
- * The Class OutputSettingRemoveCommandHandler.
+ * The Class AggregateItemRemoveCommandHandler.
  */
-@Stateless
-public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSettingRemoveCommand>{
+public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateItemRemoveCommand>{
 	
 	/** The repository. */
 	@Inject
-	private WLOutputSettingRepository repository;
+	private WLAggregateItemRepository repository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<OutputSettingRemoveCommand> context) {
-		this.repository.remove(new WLOutputSettingCode(context.getCommand().code));
+	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
+		this.repository.remove(new WLAggregateItemCode(context.getCommand().code));
 	}
 
 }

@@ -16,14 +16,21 @@ public interface WLAggregateItemRepository {
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
-	void save(WLAggregateItem aggregateItem);
+	void create(WLAggregateItem aggregateItem);
+	
+	/**
+	 * Update.
+	 *
+	 * @param aggregateItem the aggregate item
+	 */
+	void update(WLAggregateItem aggregateItem);
 	
 	/**
 	 * Removes the.
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
-	void remove(WLAggregateItem aggregateItem);
+	void remove(WLAggregateItemCode code);
 	
 	/**
 	 * Find.
@@ -40,5 +47,5 @@ public interface WLAggregateItemRepository {
 	 * @param code the code
 	 * @return true, if is exist
 	 */
-	boolean isExist(String code);
+	boolean isExist(WLAggregateItemCode code);
 }

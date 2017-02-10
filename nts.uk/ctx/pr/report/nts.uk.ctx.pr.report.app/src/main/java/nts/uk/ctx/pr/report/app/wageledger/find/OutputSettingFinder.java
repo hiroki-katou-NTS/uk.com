@@ -13,9 +13,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.CategorySettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.SettingItemDto;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,7 +38,8 @@ public class OutputSettingFinder {
 	 * @return the output setting dto
 	 */
 	public OutputSettingDto find(String code) {
-		WLOutputSetting outputSetting = this.repository.findByCode(null, AppContexts.user().companyCode());
+		WLOutputSetting outputSetting = this.repository.findByCode(new WLOutputSettingCode(code),
+				new CompanyCode(AppContexts.user().companyCode()));
 		
 		// Fake data.
 		if (outputSetting == null) {

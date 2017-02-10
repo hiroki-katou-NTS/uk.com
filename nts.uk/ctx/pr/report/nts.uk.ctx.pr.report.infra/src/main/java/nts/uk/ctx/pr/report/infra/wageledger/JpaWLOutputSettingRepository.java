@@ -6,7 +6,9 @@ package nts.uk.ctx.pr.report.infra.wageledger;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 
 /**
@@ -15,52 +17,35 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingReposito
 @Stateless
 public class JpaWLOutputSettingRepository implements WLOutputSettingRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository
-	 * #create(nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting)
-	 */
 	@Override
 	public void create(WLOutputSetting outputSetting) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository
-	 * #update(nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting)
-	 */
 	@Override
 	public void update(WLOutputSetting outputSetting) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository
-	 * #remove(nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting)
-	 */
 	@Override
-	public void remove(String code) {
+	public void remove(WLOutputSettingCode code) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository
-	 * #find(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public WLOutputSetting findByCode(String code, String companyCode) {
+	public WLOutputSetting findByCode(WLOutputSettingCode code, CompanyCode companyCode) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository
-	 * #isExist(java.lang.String)
-	 */
 	@Override
-	public boolean isExist(String code) {
+	public boolean isExist(WLOutputSettingCode code) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
 }
