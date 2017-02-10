@@ -33,11 +33,43 @@ public class WLAggregateItem {
 	private WLAggregateItemName name;
 	
 	/** The show name zero value. */
-	private boolean showNameZeroValue;
+	private Boolean showNameZeroValue;
 	
 	/** The show value zero value. */
-	private boolean showValueZeroValue;
+	private Boolean showValueZeroValue;
 	
 	/** The sub items. */
 	private Set<String> subItems;
+	
+	/**
+	 * Instantiates a new WL aggregate item.
+	 *
+	 * @param memento the memento
+	 */
+	public WLAggregateItem(WLAggregateItemGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.category = memento.getCategory();
+		this.paymentType = memento.getPaymentType();
+		this.code = memento.getCode();
+		this.name = memento.getName();
+		this.showNameZeroValue = memento.getShowNameZeroValue();
+		this.showValueZeroValue = memento.getShowValueZeroValue();
+		this.subItems = memento.getSubItems();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WLAggregateItemSetMemento memento) {
+		memento.setCategory(this.category);
+		memento.setCode(this.code);
+		memento.setCompanyCode(this.companyCode);
+		memento.setName(this.name);
+		memento.setPaymentType(this.paymentType);
+		memento.setShowNameZeroValue(this.showNameZeroValue);
+		memento.setShowValueZeroValue(this.showValueZeroValue);
+		memento.setSubItems(this.subItems);
+	}
 }

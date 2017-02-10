@@ -33,4 +33,12 @@ public interface WLAggregateItemRepository {
 	 * @return the wage ledger aggregate item
 	 */
 	WLAggregateItem find(WLAggregateItemCode code, CompanyCode companyCode);
+	
+	/**
+	 * Checks if is exist.
+	 *
+	 * @param code the code
+	 * @return true, if is exist
+	 */
+	boolean isExist(String code);
 }

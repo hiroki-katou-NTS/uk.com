@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento;
@@ -15,8 +13,6 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento
  * The Class SettingItemDto.
  */
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class SettingItemDto {
 	/** The linkage code. */
 	public String code;

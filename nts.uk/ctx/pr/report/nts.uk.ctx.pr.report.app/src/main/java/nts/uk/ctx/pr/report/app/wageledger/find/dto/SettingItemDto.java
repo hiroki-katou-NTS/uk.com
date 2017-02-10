@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.find.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemSetMemento;
@@ -13,7 +12,6 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemSetMemento
  * The Class SettingItemDto.
  */
 @Builder
-@AllArgsConstructor
 public class SettingItemDto implements WLSettingItemSetMemento{
 	
 	/** The code. */
