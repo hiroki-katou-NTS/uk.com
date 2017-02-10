@@ -17,7 +17,9 @@ public class SampleReportWebService {
 	
 	@POST
 	@Path("generate")
-	public SampleReportResult generate() {
-		return new SampleReportResult(this.generator.start("this is parameter").getTaskId());
+	public FileGeneratorContext generate() {
+		
+		// send parameters as variable arguments
+		return this.generator.start("this is parameter");
 	}
 }

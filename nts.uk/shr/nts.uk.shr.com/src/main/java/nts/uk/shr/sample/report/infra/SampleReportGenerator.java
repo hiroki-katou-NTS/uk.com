@@ -1,7 +1,5 @@
 package nts.uk.shr.sample.report.infra;
 
-import java.io.IOException;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -21,13 +19,16 @@ public class SampleReportGenerator extends FileGenerator {
 
 	@Override
 	protected void generate(FileGeneratorContext context) {
-		try (val templateFile = this.getClass().getClassLoader().getResourceAsStream("report/SampleReport.xlsx")) {
+		
+		// String parameter = context.getParameterAt(0); -> "this is parameter"
+		
+		try (val templateFile = this.getResourceAsStream("report/SampleReport.xlsx")) {
 			
-			Workbook workBook = new Workbook(templateFile);
+			val workBook = new Workbook(templateFile);
 			
 			val items = this.repository.getItems();
 			
-			WorkbookDesigner designer = new WorkbookDesigner(workBook);
+			val designer = new WorkbookDesigner(workBook);
 			designer.setDataSource("item", items);
 			
 			designer.process();
@@ -35,6 +36,7 @@ public class SampleReportGenerator extends FileGenerator {
 			workBook.save(this.createNewFile(context, "サンプル帳票.pdf"), SaveFormat.PDF);
 			
 		} catch (Exception e) {
+			// rethrow exceptions from Aspose
 			throw new RuntimeException(e);
 		}
 	}
