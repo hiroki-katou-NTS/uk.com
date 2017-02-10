@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.ws.wageledger;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,16 +47,7 @@ public class OutputSettingWebService extends WebService{
 	@POST
 	@Path("findAll")
 	public List<OutputSettingDto> findAll(){
-		// Mock data.
-		List<OutputSettingDto> dtos = new ArrayList<>();
-		for (int i = 0; i <= 10; i++) {
-			dtos.add(OutputSettingDto.builder()
-					.code("00" + i)
-					.name("Output setting " + i)
-					.isOnceSheetPerPerson(true)
-					.build());
-		}
-		return dtos;
+		return this.finder.findAll();
 	}
 	
 	/**

@@ -20,6 +20,7 @@ var qet001;
             }
             service.findAggregateItems = findAggregateItems;
             function saveOutputSetting(settingDetail) {
+                var dfd = $.Deferred();
                 var categorySettingData = [];
                 settingDetail.categorySettings().forEach(function (setting) {
                     for (var i = 0; i < setting.outputItems().length; i++) {
@@ -32,11 +33,22 @@ var qet001;
                     onceSheetPerPerson: settingDetail.isPrintOnePageEachPer(),
                     categorySettings: ko.toJS(settingDetail.categorySettings()),
                 };
-                return nts.uk.request.ajax(servicePath.saveOutputSetting, data);
+                nts.uk.request.ajax(servicePath.saveOutputSetting, data).done(function () {
+                    dfd.resolve();
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.saveOutputSetting = saveOutputSetting;
             function removeOutputSetting(code) {
-                return nts.uk.request.ajax(servicePath.removeOutputSetting, { code: code });
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(servicePath.removeOutputSetting, { code: code }).done(function () {
+                    dfd.resolve();
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
             }
             service.removeOutputSetting = removeOutputSetting;
             function findMasterItems() {
