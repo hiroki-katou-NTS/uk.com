@@ -8,21 +8,17 @@ module nts.uk.pr.view.qmm008.c {
         };
 
         /**
-         * Function is used to load office detail
+         * Function is used to load office detail by office code
          */
         export function getOfficeItemDetail(code: string): JQueryPromise<model.finder.OfficeItemDto> {
-
             // Init new dfd.
             var dfd = $.Deferred<model.finder.OfficeItemDto>();
-
             var findPath = servicePath.getOfficeDetailData + "/" + code;
-
             // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data: model.finder.OfficeItemDto) {
                 // Resolve.
                 dfd.resolve(data);
             });
-
             // Ret promise.
             return dfd.promise();
         }

@@ -1,75 +1,236 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.find;
 
 import java.math.BigDecimal;
 
 import lombok.Builder;
-import lombok.Getter;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistorySetMemento;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
+import nts.uk.shr.com.primitive.Memo;
 
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
 @Builder
-@Getter
-public class UnitPriceHistoryDto {
+public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
+
 	/** The id. */
-	private String id;
+	public String id;
 
 	/** The version. */
-	private long version;
+	public long version;
 
 	/** The company code. */
-	private String companyCode;
+	public String companyCode;
 
 	/** The unit price code. */
-	private String unitPriceCode;
+	public String unitPriceCode;
 
 	/** The unit price name. */
-	private String unitPriceName;
+	public String unitPriceName;
 
 	/** The start month. */
-	private String startMonth;
+	public String startMonth;
 
 	/** The end month. */
-	private String endMonth;
+	public String endMonth;
 
 	/** The budget. */
-	private BigDecimal budget;
+	public BigDecimal budget;
 
 	/** The fix pay setting type. */
-	private SettingType fixPaySettingType;
+	public SettingType fixPaySettingType;
 
 	/** The fix pay atr. */
-	private ApplySetting fixPayAtr;
+	public ApplySetting fixPayAtr;
 
 	/** The fix pay atr monthly. */
-	private ApplySetting fixPayAtrMonthly;
+	public ApplySetting fixPayAtrMonthly;
 
 	/** The fix pay atr day month. */
-	private ApplySetting fixPayAtrDayMonth;
+	public ApplySetting fixPayAtrDayMonth;
 
 	/** The fix pay atr daily. */
-	private ApplySetting fixPayAtrDaily;
+	public ApplySetting fixPayAtrDaily;
 
 	/** The fix pay atr hourly. */
-	private ApplySetting fixPayAtrHourly;
+	public ApplySetting fixPayAtrHourly;
 
 	/** The memo. */
-	private String memo;
+	public String memo;
 
-	/**
-	 * From domain.
-	 *
-	 * @param domain
-	 *            the domain
-	 * @return the unit price history dto
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setId(java.lang.String)
 	 */
-	public static UnitPriceHistoryDto fromDomain(UnitPriceHistory domain) {
-		return new UnitPriceHistoryDto(domain.getId(), domain.getVersion(), domain.getCompanyCode().v(),
-				domain.getUnitPriceCode().v(), domain.getUnitPriceName().v(),
-				domain.getApplyRange().getStartMonth().toString(), domain.getApplyRange().getEndMonth().toString(),
-				domain.getBudget().v(), domain.getFixPaySettingType(), domain.getFixPayAtr(),
-				domain.getFixPayAtrMonthly(), domain.getFixPayAtrDayMonth(), domain.getFixPayAtrDaily(),
-				domain.getFixPayAtrHourly(), domain.getMemo().v());
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.
+	 * CompanyCode)
+	 */
+	@Override
+	public void setCompanyCode(CompanyCode companyCode) {
+		this.companyCode = companyCode.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setUnitPriceCode(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.UnitPriceCode)
+	 */
+	@Override
+	public void setUnitPriceCode(UnitPriceCode unitPriceCode) {
+		this.unitPriceCode = unitPriceCode.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setUnitPriceName(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.UnitPriceName)
+	 */
+	@Override
+	public void setUnitPriceName(UnitPriceName unitPriceName) {
+		this.unitPriceName = unitPriceName.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.insurance
+	 * .MonthRange)
+	 */
+	@Override
+	public void setApplyRange(MonthRange applyRange) {
+		this.startMonth = applyRange.getStartMonth().toString();
+		this.endMonth = applyRange.getEndMonth().toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setBudget(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.Money)
+	 */
+	@Override
+	public void setBudget(Money budget) {
+		this.budget = budget.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPaySettingType(nts.uk.ctx.pr.core.dom.
+	 * rule.employment.unitprice.SettingType)
+	 */
+	@Override
+	public void setFixPaySettingType(SettingType fixPaySettingType) {
+		this.fixPaySettingType = fixPaySettingType;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtr(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.ApplySetting)
+	 */
+	@Override
+	public void setFixPayAtr(ApplySetting fixPayAtr) {
+		this.fixPayAtr = fixPayAtr;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrMonthly(nts.uk.ctx.pr.core.dom.
+	 * rule.employment.unitprice.ApplySetting)
+	 */
+	@Override
+	public void setFixPayAtrMonthly(ApplySetting fixPayAtrMonthly) {
+		this.fixPayAtrMonthly = fixPayAtrMonthly;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrDayMonth(nts.uk.ctx.pr.core.dom.
+	 * rule.employment.unitprice.ApplySetting)
+	 */
+	@Override
+	public void setFixPayAtrDayMonth(ApplySetting fixPayAtrDayMonth) {
+		this.fixPayAtrDayMonth = fixPayAtrDayMonth;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrDaily(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.ApplySetting)
+	 */
+	@Override
+	public void setFixPayAtrDaily(ApplySetting fixPayAtrDaily) {
+		this.fixPayAtrDaily = fixPayAtrDaily;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrHourly(nts.uk.ctx.pr.core.dom.rule
+	 * .employment.unitprice.ApplySetting)
+	 */
+	@Override
+	public void setFixPayAtrHourly(ApplySetting fixPayAtrHourly) {
+		this.fixPayAtrHourly = fixPayAtrHourly;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setMemo(nts.uk.shr.com.primitive.Memo)
+	 */
+	@Override
+	public void setMemo(Memo memo) {
+		this.memo = memo.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setVersion(java.lang.Long)
+	 */
+	@Override
+	public void setVersion(Long version) {
 	}
 
 }

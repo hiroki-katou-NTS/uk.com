@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class LaborInsuranceOfficeFindInDto {
 	/** The code. officeCode */
 	private String code;

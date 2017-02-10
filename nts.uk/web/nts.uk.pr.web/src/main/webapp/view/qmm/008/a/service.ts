@@ -184,20 +184,20 @@ module nts.uk.pr.view.qmm008.a {
                     applyRange: string;
                     autoCalculate: number;
                     fundInputOption: number;
-                    rateItems: Array<PensionRateItemDto>;
+                    premiumRateItems: Array<PensionRateItemDto>;
                     fundRateItems: Array<FundRateItemDto>;
                     roundingMethods: Array<RoundingDto>;
                     maxAmount: number;
                     officeRate: number;
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: number, companyCode: string, officeCode: string, applyRange: string, autoCalculate: number, funInputOption: number, rateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, officeRate: number) {
+                    constructor(historyId: number, companyCode: string, officeCode: string, applyRange: string, autoCalculate: number, funInputOption: number, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, officeRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;
                         this.applyRange = applyRange;
                         this.autoCalculate = autoCalculate;
                         this.fundInputOption = funInputOption;
-                        this.rateItems = rateItems;
+                        this.premiumRateItems = premiumRateItems;
                         this.fundRateItems = fundRateItems;
                         this.roundingMethods = roundingMethods;
                         this.maxAmount = maxAmount;
@@ -205,13 +205,15 @@ module nts.uk.pr.view.qmm008.a {
                     }
                 }
                 export class PensionRateItemDto {
-                    chargeRate: number;
-                    groupType: GroupType;
+                    pensionDeductCompanyRate: number;
+                    pensionDeductPersonalRate: number;
+                    pensionRaiseCompanyRate: number;
+                    pensionRaisePersonalRate:number;
                     genderType: InsuranceGender;
                     payType: PaymentType;
-                    constructor(chargeRate: number, groupType: GroupType, payType: PaymentType, genderType: InsuranceGender) {
-                        this.chargeRate = chargeRate;
-                        this.groupType = groupType;
+                    constructor(payType: PaymentType, genderType: InsuranceGender) {
+//                        this.chargeRate = chargeRate;
+//                        this.groupType = groupType;
                         this.payType = payType;
                         this.genderType = genderType;
                     }

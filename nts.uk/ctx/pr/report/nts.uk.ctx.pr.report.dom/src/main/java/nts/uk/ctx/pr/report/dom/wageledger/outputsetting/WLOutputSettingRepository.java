@@ -38,7 +38,7 @@ public interface WLOutputSettingRepository {
 	 * @param companyCode the company code
 	 * @return the WL output setting
 	 */
-	WLOutputSetting find(String code, String companyCode);
+	WLOutputSetting findByCode(String code, String companyCode);
 	
 	/**
 	 * Checks if is exist.

@@ -5,56 +5,103 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento;
 
 @Builder
-@Getter
-@Setter
-public class PensionRateDto {
+public class PensionRateDto implements PensionRateSetMemento {
 	/** The history id. */
-	// historyId
-	private String historyId;
+	public String historyId;
 
 	/** The company code. */
-	private String companyCode;
+	public String companyCode;
 
 	/** The office code. */
-	private String officeCode;
+	public String officeCode;
 
 	/** The start month. */
-	private String startMonth;
+	public String startMonth;
 
 	/** The end month. */
-	private String endMonth;
+	public String endMonth;
 
 	/** The max amount. */
-	private BigDecimal maxAmount;
+	public BigDecimal maxAmount;
 
 	/** The fund rate items. */
-	private List<FundRateItemDto> fundRateItems;
+	public List<FundRateItemDto> fundRateItems;
 
 	/** The premium rate items. */
-	private List<PensionPremiumRateItemDto> premiumRateItems;
+	public List<PensionPremiumRateItemDto> premiumRateItems;
 
 	/** The child contribution rate. */
-	private BigDecimal childContributionRate;
+	public BigDecimal childContributionRate;
 
 	/** The rounding methods. */
-	private List<PensionRateRounding> roundingMethods;
-	
-	public static PensionRateDto fromDomain(PensionRate domain) {
-		return new PensionRateDto(domain.getHistoryId(), domain.getCompanyCode().v(), domain.getOfficeCode().v(),
-				domain.getApplyRange().getStartMonth().toString(), domain.getApplyRange().getEndMonth().toString(),
-				domain.getMaxAmount().v(),
-				domain.getFundRateItems().stream()
-						.map(fundRateItemDomain -> FundRateItemDto.fromDomain(fundRateItemDomain))
-						.collect(Collectors.toList()),
-				domain.getPremiumRateItems().stream()
-						.map(premiumRateItemDomain -> PensionPremiumRateItemDto.fromDomain(premiumRateItemDomain))
-						.collect(Collectors.toList()),
-				domain.getChildContributionRate().v(), domain.getRoundingMethods());
+	public List<PensionRateRounding> roundingMethods;
+
+	@Override
+	public void setHistoryId(String historyId) {
+		this.historyId = historyId;
+
+	}
+
+	@Override
+	public void setCompanyCode(CompanyCode companyCode) {
+		this.companyCode = companyCode.v();
+
+	}
+
+	@Override
+	public void setOfficeCode(OfficeCode officeCode) {
+		this.officeCode = officeCode.v();
+
+	}
+
+	@Override
+	public void setApplyRange(MonthRange applyRange) {
+		this.startMonth = applyRange.getStartMonth().toString();
+	}
+
+	@Override
+	public void setMaxAmount(CommonAmount maxAmount) {
+		this.maxAmount = maxAmount.v();
+
+	}
+
+	@Override
+	public void setFundRateItems(List<FundRateItem> fundRateItems) {
+		this.fundRateItems = fundRateItems.stream().map(item -> FundRateItemDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void setPremiumRateItems(List<PensionPremiumRateItem> premiumRateItems) {
+		this.premiumRateItems = premiumRateItems.stream().map(item -> PensionPremiumRateItemDto.fromDomain(item))
+				.collect(Collectors.toList());
+
+	}
+
+	@Override
+	public void setChildContributionRate(Ins2Rate childContributionRate) {
+		this.childContributionRate = childContributionRate.v();
+	}
+
+	@Override
+	public void setRoundingMethods(List<PensionRateRounding> roundingMethods) {
+		this.roundingMethods = roundingMethods;
+	}
+
+	@Override
+	public void setVersion(Long version) {
+		// TODO Auto-generated method stub
+
 	}
 }

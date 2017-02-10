@@ -15,7 +15,8 @@ var nts;
                             var paths = {
                                 getBankList: "basic/system/bank/find/all",
                                 addBranchList: "basic/system/bank/branch/add",
-                                updateBranchList: "basic/system/bank/branch/update"
+                                updateBranchList: "basic/system/bank/branch/update",
+                                removeBranch: "basic/system/bank/branch/remove"
                             };
                             function getBankList() {
                                 var dfd = $.Deferred();
@@ -42,6 +43,23 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addBank = addBank;
+                            function removeBranch(bankCode, branchCode) {
+                                var dfd = $.Deferred();
+                                var path = paths.removeBranch;
+                                var obj = {
+                                    bankCode: bankCode,
+                                    branchCode: branchCode
+                                };
+                                nts.uk.request.ajax("com", path, obj)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.removeBranch = removeBranch;
                         })(service = a.service || (a.service = {}));
                     })(a = qmm002_1.a || (qmm002_1.a = {}));
                 })(qmm002_1 = view.qmm002_1 || (view.qmm002_1 = {}));

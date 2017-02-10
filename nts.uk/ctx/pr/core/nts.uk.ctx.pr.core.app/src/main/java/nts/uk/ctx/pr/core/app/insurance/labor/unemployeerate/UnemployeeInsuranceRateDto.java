@@ -11,8 +11,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
+/**
+ * The Class UnemployeeInsuranceRateDto.
+ */
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UnemployeeInsuranceRateDto {
@@ -27,4 +30,6 @@ public class UnemployeeInsuranceRateDto {
 	
 	/** The version. */
 	private long version;
+	
+	
 }

@@ -47,7 +47,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		}
 		
 		// Case update.
-		WLOutputSetting outputSetting = this.repository.find(command.code, companyCode);
+		WLOutputSetting outputSetting = this.repository.findByCode(command.code, companyCode);
 		if (outputSetting == null) {
 			throw new IllegalStateException("Output Setting is not found");
 		}

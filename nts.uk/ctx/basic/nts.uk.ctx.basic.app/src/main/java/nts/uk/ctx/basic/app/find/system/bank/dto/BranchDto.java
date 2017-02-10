@@ -6,8 +6,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class BranchDto {
-	private String bankBrandCode;
-	private String bankBrandName;
-	private String bankBrandNameKana;
+	private String bankBranchCode;
+	private String bankBranchName;
+	private String bankBranchNameKana;
 	private String memo;
 }

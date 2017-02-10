@@ -355,7 +355,7 @@ var nts;
                                 })(model.TypeActionInsuranceRate || (model.TypeActionInsuranceRate = {}));
                                 var TypeActionInsuranceRate = model.TypeActionInsuranceRate;
                                 var InsuranceBusinessTypeUpdateDto = (function () {
-                                    function InsuranceBusinessTypeUpdateDto(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th) {
+                                    function InsuranceBusinessTypeUpdateDto(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th, version) {
                                         this.bizNameBiz1St = bizNameBiz1St;
                                         this.bizNameBiz2Nd = bizNameBiz2Nd;
                                         this.bizNameBiz3Rd = bizNameBiz3Rd;
@@ -366,6 +366,7 @@ var nts;
                                         this.bizNameBiz8Th = bizNameBiz8Th;
                                         this.bizNameBiz9Th = bizNameBiz9Th;
                                         this.bizNameBiz10Th = bizNameBiz10Th;
+                                        this.version = version;
                                     }
                                     return InsuranceBusinessTypeUpdateDto;
                                 }());
