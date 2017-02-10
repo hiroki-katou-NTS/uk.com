@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<div class="divLine">
+					<label id="E_LBL_001">01</label>
+				</div>
+				<div class="divLine">
+					<table id="E_LST_001"
+						data-bind="ntsGridList: {
+							width: 550,
+							height: 52,
+							dataSource: items_E_LST_001,
+							primaryKey: 'code',
+							columns: columns_E_LST_001,
+							multiple: false,
+							value: currentCode_E_LST_001
+						}">
+					</table>
+				</div>
+				<div class="divLine">
+					<label id="E_LBL_002">01</label>
+				</div>
+				<div class="divLine">
+					<table id="E_LST_002"
+						data-bind="ntsGridList: {
+							width: 550,
+							height: 75,
+							dataSource: items_E_LST_002,
+							primaryKey: 'code',
+							columns: columns_E_LST_002,
+							multiple: false,
+							value: currentCode_E_LST_002
+						}">
+					</table>
+				</div>
+				<div class="divLine">
+					<button id="E_BTN_001">履歴追加</button>
+				</div>
+				<div class="divLine">
+					<table id="E_LST_003"
+						data-bind="ntsGridList: {
+							width: 610,
+							height: 150,
+							dataSource: items_E_LST_003,
+							primaryKey: 'code',
+							columns: columns_E_LST_003,
+							multiple: false,
+							value: currentCode_E_LST_003
+						}">
+					</table>
+				</div>
+			</div>
+			<div id="contents-area">
+				<button class="large" id="E_BTN_002">履歴追加</button>
+				<button class="large" id="E_BTN_003">履歴追加</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

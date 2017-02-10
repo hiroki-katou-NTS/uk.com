@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.layout.LayoutName
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div id="D_BTN_001">
+					<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>
+				</div>
+				<button id="D_BTN_002">履歴追加</button>
+			</div>
+
+			<div id="contents-area" class="cf">
+				<div class="nts-left-content"></div>
+				<div class="nts-right-content">
+					<div class="divLine">
+						<label id="D_LBL_001">01</label> <label id="D_LBL_002">02</label>
+					</div>
+					<div class="divLine">
+						<label id="D_LBL_003">01</label>
+					</div>
+					<div class="divLine">
+						<div class="divLine-col-1">
+							<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+						</div>
+						<div class="divLine-col-2">
+							<label id="D_LBL_005">01</label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLine-col-1">
+							<div id="D_LBL_006" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+						</div>
+						<div class="divLine-col-2">
+							<label id="D_LBL_007">01</label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLine-col-1">
+							<div id="D_LBL_008" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+						</div>
+						<div class="divLine-col-2">
+							<label id="D_LBL_009">01</label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLine-col-1">
+							<div id="D_LBL_010" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+						</div>
+						<div class="divLine-col-2">
+							<div class="cf" id="D_SEL_001"
+								data-bind="ntsSwitchButton: {
+									options: roundingRules_D_SEL_001,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: selectedRuleCode_D_SEL_001,
+									enable: true }">
+							</div>
+						</div>
+					</div>
+					<div class="divLine">
+					<table id="D_LST_001"></table>
+					<!-- 	<table id="D_LST_001"
+							data-bind="ntsGridList: {
+							width: 800,
+							height: 380,
+							dataSource: items_D_LST_001,
+							primaryKey: 'code',
+							columns: columns_D_LST_001,
+							multiple: false,
+							value: currentCode_D_LST_001}">
+						</table> -->
+						<button id="D_BTN_001" class="proceed x-large">履歴追加</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

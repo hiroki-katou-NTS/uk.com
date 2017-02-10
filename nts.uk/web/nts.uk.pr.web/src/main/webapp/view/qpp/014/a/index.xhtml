@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.layout.LayoutName
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area"></div>
+
+			<div id="contents-area" class="cf">
+				<div id="divLine">
+					<div id="A_LBL_003" data-bind="ntsFormLabel: {required: true}">対象となる処理区分を選択</div>
+					<div id="A_SEL_001"
+						data-bind="ntsComboBox: {
+								options: itemList_A_SEL_001,
+								optionsValue: 'code',
+								value: selectedCode_A_SEL_001,
+								optionsText: 'name',
+								editable: true,
+								enable: true,
+								columns: [
+									{ prop: 'code', length: 4 },
+									{ prop: 'name', length: 10 },
+								]}">
+					</div>
+				</div>
+				<div id="divLine">
+					<label id="A_LBL_002">02</label>
+				</div>
+				<div id="divLine">
+					<button id="A_BTN_001">01</button>
+					<button id="A_BTN_002">02</button>
+				</div>
+
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

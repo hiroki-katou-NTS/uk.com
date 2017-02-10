@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+@import url("../a/base.css");
+
+#contents-area {
+	width: 1300px;
+	padding: 20px 0px 0px 30px;
+}
+
+.nts-left-content {
+	float: left;
+	width: 250px;
+	min-height: 1px;
+	padding: 10px;
+}
+
+.nts-right-content {
+	float: left;
+	padding: 20px;
+	width: 900px;
+}
+
+#functions-area {
+	padding: 10px 0px 5px 10px;
+}
+
+#functions-area>* {
+	display: inline-block;
+}
+
+#A_BTN_001 {
+	width: 300px;
+	height: 360px;
+}
+
+#A_BTN_002 {
+	vertical-align: top;
+	width: 300px;
+	height: 100px;
+	margin-left: 30px;
+}
+
+#A_SEL_001 {
+	vertical-align: middle;
+    min-width: 200px !important;
+    width: 200px ;
+}

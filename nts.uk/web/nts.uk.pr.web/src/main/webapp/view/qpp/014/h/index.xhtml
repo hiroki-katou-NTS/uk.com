@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
+<body>
+
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.layout.LayoutName
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<div id="B_BTN_001">
+					<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>
+				</div>
+				<button id="B_BTN_002">履歴追加</button>
+			</div>
+
+			<div id="contents-area" class="cf">
+				<div class="nts-left-content"></div>
+				<div class="nts-right-content">
+					<div class="divLine">
+						<label id="H_LBL_001">01</label>
+					</div>
+					<div class="divLine">
+						<label id="H_LBL_002">02</label>
+					</div>
+					<hr id="H_HR_001" />
+					<div class="divLine">
+						<div class="divLine-col-1">
+							<div id="H_LBL_003" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+						</div>
+						<div class="divLine-col-2">
+							<label id="H_LBL_004">04</label> <label id="H_LBL_005">05</label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLine-col-1">
+							<div id="H_LBL_006" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+						</div>
+						<div class="divLine-col-2">
+							<div id="H_INP_001"
+								data-bind="ntsDatePicker: { value: date_H_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+							<label id="H_LBL_007">07</label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div id="H_LBL_008" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+					</div>
+					<div class="divLine">
+						<table id="H_LST_001"
+							data-bind="ntsGridList: {
+							width: 550,
+							height: 270,
+							dataSource: items_H_LST_001,
+							primaryKey: 'code',
+							columns: columns_H_LST_001,
+							multiple: false,
+							value: currentCode_H_LST_001}">
+						</table>
+					</div>
+					<div class="divLine" style="width: 100%">
+						<button id="H_BTN_001" class="x-large proceed">X-large</button>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
