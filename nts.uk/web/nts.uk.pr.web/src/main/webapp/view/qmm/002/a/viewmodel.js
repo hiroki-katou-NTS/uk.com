@@ -124,7 +124,10 @@ var nts;
                                     nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                 };
                                 ScreenModel.prototype.OpenDdialog = function () {
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" });
+                                    var self = this;
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" }).onClosed(function () {
+                                        self.getBankList();
+                                    });
                                 };
                                 ScreenModel.prototype.addBranch = function () {
                                     var self = this;

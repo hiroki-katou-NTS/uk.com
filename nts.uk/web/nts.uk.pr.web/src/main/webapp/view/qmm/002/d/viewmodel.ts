@@ -71,6 +71,11 @@ module qmm002.d.viewmodel {
             });
         }
         
+        close() {
+            var self = this;
+            nts.uk.ui.windows.close();
+        }
+        
         Delete(): any {
             var self = this;
             var bankInfo = {
