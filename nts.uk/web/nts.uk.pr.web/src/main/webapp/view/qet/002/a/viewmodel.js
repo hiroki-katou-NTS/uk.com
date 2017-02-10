@@ -57,7 +57,17 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var AccumulatedPaymentResultViewModel = (function () {
-                                function AccumulatedPaymentResultViewModel() {
+                                function AccumulatedPaymentResultViewModel(empDesignation, empCode, empName, taxAmount, socialInsuranceAmount, widthHoldingTaxAmount, enrollmentStatus, directionalStatus, amountAfterTaxDeduction) {
+                                    var self = this;
+                                    self.empDesignation = empDesignation;
+                                    self.empCode = empCode;
+                                    self.empName = empName;
+                                    self.taxAmount = taxAmount;
+                                    self.socialInsuranceAmount = socialInsuranceAmount;
+                                    self.widthHoldingTaxAmount = widthHoldingTaxAmount;
+                                    self.enrollmentStatus = enrollmentStatus;
+                                    self.directionalStatus = directionalStatus;
+                                    self.amountAfterTaxDeduction = amountAfterTaxDeduction;
                                 }
                                 return AccumulatedPaymentResultViewModel;
                             }());
