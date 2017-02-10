@@ -125,6 +125,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		premiumRateItem.setGenderType(InsuranceGender.Female);
 		premiumRateItem.setPayType(PaymentType.Bonus);
 		premiumRateItem.setRaiseChargeRate(raiseChargeRate);
+		premiumRateItem.setDeductChargeRate(raiseChargeRate);
 		premiumRateItems.add(premiumRateItem);
 
 		PensionRateRounding pensionRateRounding = new PensionRateRounding();

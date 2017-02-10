@@ -18,13 +18,13 @@ public class PensionPremiumRateItemDto {
 	/** The gender type. */
 	private InsuranceGender genderType;
 
-	public BigDecimal pensionRaisePersonalRate;
+	private BigDecimal pensionRaisePersonalRate;
 
-	public BigDecimal pensionRaiseCompanyRate;
+	private BigDecimal pensionRaiseCompanyRate;
 
-	public BigDecimal pensionDeductPersonalRate;
+	private BigDecimal pensionDeductPersonalRate;
 
-	public BigDecimal pensionDeductCompanyRate;
+	private BigDecimal pensionDeductCompanyRate;
 
 	public static PensionPremiumRateItemDto fromDomain(PensionPremiumRateItem domain) {
 		return new PensionPremiumRateItemDto(domain.getPayType(), domain.getGenderType(),

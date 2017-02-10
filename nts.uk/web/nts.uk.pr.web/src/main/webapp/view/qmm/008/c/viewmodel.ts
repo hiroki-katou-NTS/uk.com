@@ -3,6 +3,8 @@ module nts.uk.pr.view.qmm008.c {
         
         import InsuranceOfficeItemDto = qmm008.a.service.model.finder.InsuranceOfficeItemDto;
         import aservice =  nts.uk.pr.view.qmm008.a.service;
+        import OfficeItemDto = qmm008.c.service.model.finder.OfficeItemDto;
+        
         export class ScreenModel {
             // for left list
             officeItems: KnockoutObservableArray<ItemModel>;
@@ -102,12 +104,33 @@ module nts.uk.pr.view.qmm008.c {
             public load(officeCode: string) : JQueryPromise<any>
             {
                 var self = this;
-                service.getOfficeItemDetail(officeCode).done(function(data: any){
-                    //TODO Convert data get from service to screen
+                service.getOfficeItemDetail(officeCode).done(function(data: OfficeItemDto){
+                    //Convert data get from service to screen
                     self.officeModel().officeCode(data.code);
                     self.officeModel().officeName(data.name);
-                    self.officeModel().healthInsuOfficeRefCode1st(data.code);
-                    self.officeModel().healthInsuOfficeRefCode2nd(data.name);
+                    self.officeModel().shortName(data.shortName);
+                    self.officeModel().PicName(data.picName);
+                    self.officeModel().PicPosition(data.picPosition);
+                    self.officeModel().portCode(data.potalCode);
+                    self.officeModel().prefecture(data.prefecture);
+                    self.officeModel().address1st(data.address1st);
+                    self.officeModel().kanaAddress1st(data.kanaAddress1st);
+                    self.officeModel().address2nd(data.address2nd);
+                    self.officeModel().kanaAddress2nd(data.kanaAddress2nd);
+                    self.officeModel().phoneNumber(data.phoneNumber);
+                    self.officeModel().healthInsuOfficeRefCode1st(data.healthInsuOfficeRefCode1st);
+                    self.officeModel().healthInsuOfficeRefCode2nd(data.healthInsuOfficeRefCode2nd);
+                    self.officeModel().pensionOfficeRefCode1st(data.pensionOfficeRefCode1st);
+                    self.officeModel().pensionOfficeRefCode2nd(data.pensionOfficeRefCode2nd);
+                    self.officeModel().welfarePensionFundCode(data.welfarePensionFundCode);
+                    self.officeModel().officePensionFundCode(data.officePensionFundCode);
+                    self.officeModel().healthInsuCityCode(data.healthInsuCityCode);
+                    self.officeModel().healthInsuOfficeSign(data.healthInsuOfficeSign);
+                    self.officeModel().pensionCityCode(data.pensionCityCode);
+                    self.officeModel().pensionOfficeSign(data.pensionOfficeSign);
+                    self.officeModel().healthInsuOfficeCode(data.healthInsuOfficeCode);
+                    self.officeModel().healthInsuAssoCode(data.healthInsuAssoCode);
+                    self.officeModel().memo(data.memo);
                 });   
             }
             public convertDatatoList(data: Array<InsuranceOfficeItemDto>): Array<ItemModel>
