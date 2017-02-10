@@ -59,8 +59,8 @@
   NtsFormLabel
 *****************************/
 div.form-label {
-	$_label_height: 27px;
-	$_label_height_inline: 18px;
+	$_label_height: 37px;
+	$_label_height_inline: 23px;
 	
 	$_label_ribbon_width: 5px;
 	$_label_ribbon_color_normal: $green_formlabel_color;
@@ -70,26 +70,23 @@ div.form-label {
 	$_label_font_size: $bfs * 1.4;
 	$_constraint_font_size: $bfs * 1.2;
 	$_constraint_font_color: #777777;
-	
-	$_margin_if_single_row: $_label_height - $_label_font_size - 3px;
-	$_margin_if_inline: $_label_height_inline - $_label_font_size - 1px;
-	
+		
 	display: inline-block;
+	box-sizing: border-box;
 	height: $_label_height;
 	border-style: solid;
 	border-color: $_label_ribbon_color_normal;
 	border-width: 0 0 0 $_label_ribbon_width;
-	padding: $_margin_if_single_row 10px 0 8px;
+	padding: 0 10px 0 8px;
 	
 	&.broken {
-		padding-top: 0;
-		padding-bottom: $_margin_if_single_row;
+		label {line-height: inherit;}
 	}
 	
 	&.inline {
 		height: $_label_height_inline;
-		padding-top: $_margin_if_inline;
-		padding-bottom: 2px;
+		line-height: $_label_height_inline;
+		label {line-height: $_label_height_inline;}
 	}
 	
 	&.required {
@@ -101,7 +98,9 @@ div.form-label {
 	}
 	
 	> label {
+		max-height: 100%;
 		font-size: $_label_font_size;
+		line-height: $_label_height;
 	}
 	
 	> i {
@@ -130,13 +129,14 @@ div.form-label {
 /*****************************
   NtsLinkButton
 *****************************/
-div.link-button {
+.link-button {
 	display: inline-block;
 	padding: 3px 12px;
 	background-color: $green_background_color;
 	color: #0D86D1;
 	text-decoration: underline;
 	cursor: pointer;
+	user-select: none;
 }
 
 

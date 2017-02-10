@@ -51,8 +51,9 @@ public class JpaBankBranchRepository extends JpaRepository implements BankBranch
 	}
 
 	@Override
-	public void remove(BankBranch bank) {
-		this.commandProxy().remove(toEntity(bank));
+	public void remove(String companyCode, String bankCode, String branchCode) {
+		CbkmtBranchPK key = new CbkmtBranchPK(companyCode, bankCode, branchCode);
+		this.commandProxy().remove(CbkmtBranch.class, key);
 		
 	}
 	
@@ -74,5 +75,5 @@ public class JpaBankBranchRepository extends JpaRepository implements BankBranch
        				 x.branchKnName, 
        				 x.memo));
 	}
-	
+
 }

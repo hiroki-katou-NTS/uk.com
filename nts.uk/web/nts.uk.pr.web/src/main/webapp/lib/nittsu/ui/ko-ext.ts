@@ -8,11 +8,9 @@ module nts.uk.ui.koExtentions {
             var setValue: (newText: string) => {} = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            var atomWidth = 9;
-            //9 * 160 = 1440 max width, TextEditor shouldnt reach this width
-            // need to consider more
-            if (constraint && constraint.maxLength) {
-                var autoWidth = constraint.maxLength <= 160 ? constraint.maxLength * atomWidth : "100%";
+            var characterWidth: number = 9;
+            if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                var autoWidth = constraint.maxLength * characterWidth;
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
@@ -446,7 +444,7 @@ module nts.uk.ui.koExtentions {
             });
             $input.change(function(event) {
                 var searchTerm = $input.val();
-                searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
+                searchBox.data("searchResult", filteredArray(ko.unwrap(data.items), searchTerm, fields, childField));
             });
             $button.click(nextSearch);
         }

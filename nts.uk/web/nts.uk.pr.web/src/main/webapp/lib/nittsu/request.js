@@ -5,10 +5,6 @@ var nts;
         var request;
         (function (request) {
             request.STORAGE_KEY_TRANSFER_DATA = "nts.uk.request.STORAGE_KEY_TRANSFER_DATA";
-            var WEB_APP_NAME = {
-                com: 'nts.uk.com.web',
-                pr: 'nts.uk.pr.web'
-            };
             var QueryString = (function () {
                 function QueryString() {
                     this.items = {};
@@ -113,19 +109,13 @@ var nts;
                 return Locator;
             }());
             request.Locator = Locator;
-            function ajax(webAppId, path, data, options) {
-                if (typeof arguments[1] !== 'string') {
-                    return ajax.apply(null, _.concat(location.currentAppId, arguments));
-                }
+            function ajax(path, data, options) {
                 var dfd = $.Deferred();
                 options = options || {};
                 if (typeof data === 'object') {
                     data = JSON.stringify(data);
                 }
-                var webserviceLocator = location.siteRoot
-                    .mergeRelativePath(WEB_APP_NAME[webAppId] + '/')
-                    .mergeRelativePath(location.ajaxRootDir)
-                    .mergeRelativePath(path);
+                var webserviceLocator = location.ajaxRoot.mergeRelativePath(path);
                 $.ajax({
                     type: options.method || 'POST',
                     contentType: options.contentType || 'application/json',
@@ -143,6 +133,39 @@ var nts;
                 return dfd.promise();
             }
             request.ajax = ajax;
+            function exportFile(path, data, options) {
+                var dfd = $.Deferred();
+                ajax(path, data, options)
+                    .then(function (res) {
+                    return uk.deferred.repeat(function (conf) { return conf
+                        .task(function () { return specials.getAsyncTaskInfo(res.taskId); })
+                        .while(function (info) { return info.pending || info.running; })
+                        .pause(1000); });
+                })
+                    .done(function (res) {
+                    specials.donwloadFile(res.id);
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.exportFile = exportFile;
+            var specials;
+            (function (specials) {
+                function getAsyncTaskInfo(taskId) {
+                    return ajax('/ntscommons/arc/task/async/' + taskId);
+                }
+                specials.getAsyncTaskInfo = getAsyncTaskInfo;
+                function donwloadFile(fileId) {
+                    $('<iframe/>')
+                        .attr('id', 'download-frame')
+                        .appendTo('body')
+                        .attr('src', resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId));
+                }
+                specials.donwloadFile = donwloadFile;
+            })(specials = request.specials || (request.specials = {}));
             function jump(path, data) {
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
                 window.location.href = resolvePath(path);
@@ -163,15 +186,7 @@ var nts;
             (function (location) {
                 location.current = new Locator(window.location.href);
                 location.appRoot = location.current.mergeRelativePath(__viewContext.rootPath);
-                location.siteRoot = location.appRoot.mergeRelativePath('../');
-                location.ajaxRootDir = 'webapi/';
-                var currentAppName = _.takeRight(location.appRoot.serialize().split('/'), 2)[0];
-                for (var id in WEB_APP_NAME) {
-                    if (currentAppName === WEB_APP_NAME[id]) {
-                        location.currentAppId = id;
-                        break;
-                    }
-                }
+                location.ajaxRoot = location.appRoot.mergeRelativePath('webapi/');
             })(location = request.location || (request.location = {}));
             ;
         })(request = uk.request || (uk.request = {}));

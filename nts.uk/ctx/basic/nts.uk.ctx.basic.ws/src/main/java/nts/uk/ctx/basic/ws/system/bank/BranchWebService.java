@@ -8,6 +8,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.system.bank.branch.AddBranchCommand;
 import nts.uk.ctx.basic.app.command.system.bank.branch.AddBranchCommandHandler;
+import nts.uk.ctx.basic.app.command.system.bank.branch.RemoveBranchCommand;
+import nts.uk.ctx.basic.app.command.system.bank.branch.RemoveBranchCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.branch.UpdateBranchCommand;
 import nts.uk.ctx.basic.app.command.system.bank.branch.UpdateBranchCommandHandler;
 
@@ -19,6 +21,9 @@ public class BranchWebService extends WebService {
 	
 	@Inject
 	private UpdateBranchCommandHandler updateBranchCommandHandler;
+	
+	@Inject
+	private RemoveBranchCommandHandler removeBranchCommandHandler;
     
 	@POST
 	@Path("add")
@@ -30,5 +35,11 @@ public class BranchWebService extends WebService {
 	@Path("update")
 	public void update(UpdateBranchCommand command){
 	   this.updateBranchCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(RemoveBranchCommand command){
+		this.removeBranchCommandHandler.handle(command);		
 	}
 }
