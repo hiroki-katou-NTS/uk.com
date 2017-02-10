@@ -27,7 +27,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
  */
 @Path("pr/proto/unitprice")
 @Produces("application/json")
-public class UnitPriceHistoryWebService extends WebService {
+public class UnitPriceHistoryWs extends WebService {
 
 	/** The unit price history finder. */
 	@Inject
@@ -69,7 +69,7 @@ public class UnitPriceHistoryWebService extends WebService {
 		List<UnitPriceHistoryDto> mock = getMockData();
 		UnitPriceHistoryDto dto = UnitPriceHistoryDto.builder().build();
 		for (UnitPriceHistoryDto i : mock) {
-			if (id.equals(i.getId())) {
+			if (id.equals(i.id)) {
 				dto = i;
 			}
 		}

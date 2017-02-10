@@ -111,14 +111,14 @@ var nts;
                                     }());
                                     finder.InsuranceOfficeItemDto = InsuranceOfficeItemDto;
                                     var PensionRateDto = (function () {
-                                        function PensionRateDto(historyId, companyCode, officeCode, applyRange, autoCalculate, funInputOption, rateItems, fundRateItems, roundingMethods, maxAmount, officeRate) {
+                                        function PensionRateDto(historyId, companyCode, officeCode, applyRange, autoCalculate, funInputOption, premiumRateItems, fundRateItems, roundingMethods, maxAmount, officeRate) {
                                             this.historyId = historyId;
                                             this.companyCode = companyCode;
                                             this.officeCode = officeCode;
                                             this.applyRange = applyRange;
                                             this.autoCalculate = autoCalculate;
                                             this.fundInputOption = funInputOption;
-                                            this.rateItems = rateItems;
+                                            this.premiumRateItems = premiumRateItems;
                                             this.fundRateItems = fundRateItems;
                                             this.roundingMethods = roundingMethods;
                                             this.maxAmount = maxAmount;
@@ -128,9 +128,7 @@ var nts;
                                     }());
                                     finder.PensionRateDto = PensionRateDto;
                                     var PensionRateItemDto = (function () {
-                                        function PensionRateItemDto(chargeRate, groupType, payType, genderType) {
-                                            this.chargeRate = chargeRate;
-                                            this.groupType = groupType;
+                                        function PensionRateItemDto(payType, genderType) {
                                             this.payType = payType;
                                             this.genderType = genderType;
                                         }

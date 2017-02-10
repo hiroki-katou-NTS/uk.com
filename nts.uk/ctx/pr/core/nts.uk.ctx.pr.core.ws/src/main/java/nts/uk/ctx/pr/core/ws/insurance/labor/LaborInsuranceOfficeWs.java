@@ -45,7 +45,7 @@ import nts.uk.shr.com.primitive.Memo;
  */
 @Path("ctx/pr/core/insurance/labor")
 @Produces("application/json")
-public class LaborInsuranceOfficeWebService extends WebService {
+public class LaborInsuranceOfficeWs extends WebService {
 
 	/** The find. */
 	@Inject

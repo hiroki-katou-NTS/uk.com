@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionRateFinde
 
 @Path("ctx/pr/core/insurance/social/pensionrate")
 @Produces("application/json")
-public class PensionRateWebservice extends WebService {
+public class PensionRateWs extends WebService {
 	@Inject
 	private PensionRateFinder pensionRateFinder;
 	@POST

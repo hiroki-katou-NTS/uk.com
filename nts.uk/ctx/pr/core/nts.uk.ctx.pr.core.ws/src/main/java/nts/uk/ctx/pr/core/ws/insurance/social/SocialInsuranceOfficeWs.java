@@ -33,7 +33,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensi
 @Path("pr/insurance/social")
 @Produces("application/json")
 @Stateless
-public class SocialInsuranceOfficeWebService extends WebService {
+public class SocialInsuranceOfficeWs extends WebService {
 
 	@Inject
 	private RegisterSocialOfficeCommandHandler registerSocialOfficeCommandHandler;
@@ -70,26 +70,6 @@ public class SocialInsuranceOfficeWebService extends WebService {
 	@Path("find/{officeCode}")
 	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
 		return socialInsuranceOfficeFinder.find(officeCode).get();
-//		List<SocialInsuranceOfficeDto> lstOffice = new ArrayList<SocialInsuranceOfficeDto>();
-//		SocialInsuranceOfficeDto officeDtoResult = new SocialInsuranceOfficeDto();
-//		SocialInsuranceOfficeDto office1 = new SocialInsuranceOfficeDto();
-//		office1.setCode("000000000001");
-//		office1.setName("A 事業所");
-//		lstOffice.add(office1);
-//		SocialInsuranceOfficeDto office2 = new SocialInsuranceOfficeDto();
-//		office2.setCode("000000000002");
-//		office2.setName("B 事業所");
-//		lstOffice.add(office2);
-//		SocialInsuranceOfficeDto office3 = new SocialInsuranceOfficeDto();
-//		office3.setCode("000000000003");
-//		office3.setName("C 事業所");
-//		lstOffice.add(office3);
-//		for (SocialInsuranceOfficeDto OfficeDto : lstOffice) {
-// 			if (OfficeDto.getCode().toString().equals(officeCode)) {
-// 				officeDtoResult = OfficeDto;
-// 			}
-//		}
-//		return officeDtoResult;
 	}
 	
 	@POST
