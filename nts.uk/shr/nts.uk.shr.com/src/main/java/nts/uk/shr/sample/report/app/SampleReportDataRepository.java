@@ -1,4 +1,4 @@
-package nts.uk.shr.sample.report.infra;
+package nts.uk.shr.sample.report.app;
 
 import java.util.Arrays;
 import java.util.List;
