@@ -35,7 +35,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: print">選択社員印刷ボタン</button>
+					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: printData">選択社員印刷ボタン</button>
 					<button id="print-excution-log-button">印刷実行ログボタン</button>
 					<label>累計支給額チェックリスト</label>
 				</div>
@@ -46,7 +46,7 @@
 						<td id="contents-left">
 							<div class="select-target-year">
 								<div class="label" id="target-year-label">対象年度</div>
-								<input id="target-year-input" for="target-year-label" data-bind="ntsNumberEditor: {
+								<input id="target-year-input" for="target-year-label" class="save-error" data-bind="ntsNumberEditor: {
 										value: targetYear,
 										constraint: 'TargetYear',
 										option: {
@@ -65,7 +65,7 @@
 									<div id="payment-range-label" data-bind="ntsFormLabel: {required: true}">課税対象支給額の範囲指定</div>
 									<div id="payment-range-input">
 										<div id="lower-limit-checkbox" data-bind="ntsCheckBox: { checked: isLowerLimit }"></div>
-										<input
+										<input class="save-error" id="lower-limit-input"
 											data-bind="ntsNumberEditor: {
 												value: lowerLimitValue,
 												option: {
@@ -78,7 +78,7 @@
 												enable: isLowerLimit()}" />
 										<label>以上 ～</label>
 										<div id="upper-limit-checkbox" data-bind="ntsCheckBox: { checked: isUpperLimit }"></div>
-										<input data-bind="ntsNumberEditor: {
+										<input class="save-error" id="upper-limit-input" data-bind="ntsNumberEditor: {
 												value: upperLimitValue,
 												option: {
 													decimallength: 0,
