@@ -1,7 +1,5 @@
 package nts.uk.ctx.basic.dom.company;
 
-import javax.persistence.EnumType;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -131,6 +129,7 @@ public class Company extends AggregateRoot{
 	{
 		if (companyCode.isEmpty()|| companyName.isEmpty()||
 				companyNameAbb.isEmpty()) {
+			//TODO-LanLT
 			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
 		}
 		 Company company= new Company(new CompanyCode(companyCode),

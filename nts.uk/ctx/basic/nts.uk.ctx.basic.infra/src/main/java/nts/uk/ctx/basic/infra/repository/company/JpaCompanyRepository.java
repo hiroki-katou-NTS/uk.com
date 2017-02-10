@@ -20,7 +20,7 @@ import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
 @Stateless
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
-	private static final String SEL_1 = "SELECT e FROM cmtmtCompany e";
+	private static final String SEL_1 = "SELECT e FROM CmnmtCompany e";
 	//private static final String SEL_2 = SEL_1 + "WHERE  e.cmnmtCompanyPK.companyCd = : companyCd";
 	private final Company toDomain(CmnmtCompany entity) {
 		val domain = Company.createFromJavaType(
@@ -89,6 +89,8 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	@Override
 	public List<Company> getAllCompanys() {
 		try{
+//			System.out.println("hehe"+this.queryProxy().query(SEL_1, CmnmtCompany.class).getList(c-> toDomain(c)));
+//			System.out.println("hehe");
 			return this.queryProxy().query(SEL_1, CmnmtCompany.class)
 					   .getList(c-> toDomain(c));
 			

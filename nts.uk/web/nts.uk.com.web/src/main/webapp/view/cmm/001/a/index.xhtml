@@ -10,9 +10,10 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" />
 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" />
-			<com:scriptfile path="viewmodel.js" />
-            <com:scriptfile path="start.js" />
+			
             <com:scriptfile path="service.js" />
+            <com:scriptfile path="viewmodel.js" />
+            <com:scriptfile path="start.js" />
 			<com:stylefile path="main.css" />
 
 		</ui:define>
@@ -85,7 +86,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="A_INP_003" type="text" data-bind="value: currentNode().name" class="input-table"/>
+								<input id="A_INP_003" type="text" data-bind="value: currentCompanyDto().companyName" class="input-table"/>
 								</th>
 							</tr>
 	                        <tr style="margin-top: 10px;">
@@ -96,7 +97,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="A_INP_004" value="ﾕｰｹｰｼｽﾃﾑｶﾌﾞｼｷｶﾞｲｼｬ" class="input-table" style="margin-bottom: 10px;"/>
+								<input id="A_INP_004" type="text" data-bind="value:  currentCompanyDto().companyNameKana" class="input-table" style="margin-bottom: 10px;"/>
 								</th>
 							</tr>
 							<!--  3  -->
@@ -109,7 +110,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="A_INP_005" value="UKシステム（株）" class="input-table" style="margin-bottom: 10px;"/>
+								<input id="A_INP_005" type="text" data-bind="value: currentCompanyDto().companyNameAbb" class="input-table" style="margin-bottom: 10px;"/>
 								</th>
 							</tr>
 												
@@ -138,7 +139,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="B_INP_001" value="1234567890123" class="input-table"/>
+								<input id="B_INP_001" type="text" data-bind="value: currentCompanyDto().corporateMyNumber" class="input-table"/>
 								</th>
 							</tr>
 							<!--  2  -->
@@ -151,7 +152,7 @@
 								</th>
 
 								<th colspan="2" class="th-col2">
-								<input id="B_INP_002" value="代表者名" class="input-table"/>
+								<input id="B_INP_002" type="text" data-bind="value: currentCompanyDto().companyName" class="input-table"/>
 								</th>
 							</tr>
 							<!--  3  -->

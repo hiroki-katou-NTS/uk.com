@@ -26,15 +26,6 @@ public class CompanyFinder {
 		
 	}
 	
-	public void add(Company company){
-		 this.companyRepository.add(company);
-	}
-	public void delete(String companyCode){
-		this.companyRepository.delete(companyCode);
-	}
-	public void update(Company company){
-		this.companyRepository.update(company);
-	}
 	
     
 }

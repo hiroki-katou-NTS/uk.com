@@ -11,5 +11,5 @@ public enum DisplayAttribute {
 	//1:区別する"
 	DO_DISTINGUISH(1);
 
-	 public final int value;  
+	public final int value;
 }
