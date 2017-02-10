@@ -19,6 +19,9 @@ import nts.uk.ctx.pr.core.dom.insurance.ShortName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * The Class LaborInsuranceOfficeDeleteCommand.
+ */
 @Getter
 @Setter
 public class LaborInsuranceOfficeDeleteCommand {

@@ -22,6 +22,7 @@ public class InsuranceBusinessTypeFinder {
 	private InsuranceBusinessTypeRepository insuranceBusinessTypeRepository;
 
 	public InsuranceBusinessTypeUpdateDto findAll(String companyCode) {
-		return InsuranceBusinessTypeUpdateDto.fromDomain(this.insuranceBusinessTypeRepository.findAll(companyCode));
+		return InsuranceBusinessTypeUpdateDto.fromDomain(this.insuranceBusinessTypeRepository.findAll(companyCode),
+				11L);
 	}
 }

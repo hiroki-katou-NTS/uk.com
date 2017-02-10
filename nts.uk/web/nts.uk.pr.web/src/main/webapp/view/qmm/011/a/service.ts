@@ -403,8 +403,10 @@ module nts.uk.pr.view.qmm011.a {
                 bizNameBiz9Th: string;
                 /** The biz name biz 10 th. */
                 bizNameBiz10Th: string;
+                /** version*/
+                version: number;
                 constructor(bizNameBiz1St: string, bizNameBiz2Nd: string, bizNameBiz3Rd: string, bizNameBiz4Th: string, bizNameBiz5Th: string,
-                    bizNameBiz6Th: string, bizNameBiz7Th: string, bizNameBiz8Th: string, bizNameBiz9Th: string, bizNameBiz10Th: string) {
+                    bizNameBiz6Th: string, bizNameBiz7Th: string, bizNameBiz8Th: string, bizNameBiz9Th: string, bizNameBiz10Th: string, version: number) {
                     this.bizNameBiz1St = bizNameBiz1St;
                     this.bizNameBiz2Nd = bizNameBiz2Nd;
                     this.bizNameBiz3Rd = bizNameBiz3Rd;
@@ -415,6 +417,7 @@ module nts.uk.pr.view.qmm011.a {
                     this.bizNameBiz8Th = bizNameBiz8Th;
                     this.bizNameBiz9Th = bizNameBiz9Th;
                     this.bizNameBiz10Th = bizNameBiz10Th;
+                    this.version = version;
                 }
             }
         }

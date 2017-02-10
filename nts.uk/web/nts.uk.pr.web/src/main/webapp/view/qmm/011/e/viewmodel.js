@@ -26,7 +26,7 @@ var nts;
                                     nts.uk.ui.windows.close();
                                     var insuranceBusinessType;
                                     insuranceBusinessType =
-                                        new InsuranceBusinessTypeUpdateDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(), self.insuranceBusinessTypeUpdateModel().bizNameBiz2Nd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz3Rd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz4Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz5Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz6Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz7Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz8Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th());
+                                        new InsuranceBusinessTypeUpdateDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(), self.insuranceBusinessTypeUpdateModel().bizNameBiz2Nd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz3Rd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz4Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz5Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz6Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz7Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz8Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th(), self.insuranceBusinessTypeUpdateModel().version());
                                     e.service.updateInsuranceBusinessType(insuranceBusinessType);
                                 };
                                 return ScreenModel;
@@ -44,6 +44,7 @@ var nts;
                                     this.bizNameBiz8Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz8Th);
                                     this.bizNameBiz9Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz9Th);
                                     this.bizNameBiz10Th = ko.observable(insuranceBusinessTypeUpdateDto.bizNameBiz10Th);
+                                    this.version = ko.observable(insuranceBusinessTypeUpdateDto.version);
                                 }
                                 return InsuranceBusinessTypeUpdateModel;
                             }());

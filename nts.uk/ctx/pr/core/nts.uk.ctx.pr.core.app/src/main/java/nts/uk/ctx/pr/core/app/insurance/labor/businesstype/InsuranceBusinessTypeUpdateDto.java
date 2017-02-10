@@ -52,7 +52,7 @@ public class InsuranceBusinessTypeUpdateDto {
 	/** The version. */
 	private long version;
 
-	public static InsuranceBusinessTypeUpdateDto fromDomain(List<InsuranceBusinessType> domain) {
+	public static InsuranceBusinessTypeUpdateDto fromDomain(List<InsuranceBusinessType> domain, long version) {
 		InsuranceBusinessTypeUpdateDto insuranceBusinessTypeUpdateDto = new InsuranceBusinessTypeUpdateDto();
 		for (InsuranceBusinessType insuranceBusinessType : domain) {
 			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz1St)) {
@@ -86,6 +86,7 @@ public class InsuranceBusinessTypeUpdateDto {
 				insuranceBusinessTypeUpdateDto.setBizNameBiz10Th(insuranceBusinessType.getBizName().v());
 			}
 		}
+		insuranceBusinessTypeUpdateDto.setVersion(version);
 		return insuranceBusinessTypeUpdateDto;
 	}
 }

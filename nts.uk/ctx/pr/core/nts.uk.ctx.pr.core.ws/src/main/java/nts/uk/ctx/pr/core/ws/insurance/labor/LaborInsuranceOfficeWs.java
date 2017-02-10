@@ -123,11 +123,4 @@ public class LaborInsuranceOfficeWs extends WebService {
 		this.delete.handle(command);
 	}
 
-	/**
-	 * Detail hitory.
-	 *
-	 * @param historyId
-	 *            the history id
-	 * @return the accident insurance rate dto
-	 */
 }
