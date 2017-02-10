@@ -8,11 +8,9 @@ module nts.uk.ui.koExtentions {
             var setValue: (newText: string) => {} = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
-            var atomWidth = 9;
-            //9 * 160 = 1440 max width, TextEditor shouldnt reach this width
-            // need to consider more
-            if (constraint && constraint.maxLength) {
-                var autoWidth = constraint.maxLength <= 160 ? constraint.maxLength * atomWidth : "100%";
+            var characterWidth: number = 9;
+            if (constraint && constraint.maxLength && !$input.is("textarea")) {
+                var autoWidth = constraint.maxLength * characterWidth;
                 $input.width(autoWidth);
             }
             $input.addClass('nts-editor').addClass("nts-input");
@@ -184,8 +182,13 @@ module nts.uk.ui.koExtentions {
                 $parent.addClass("symbol").addClass(
                     option.currencyposition === 'left' ? 'symbol-left' : 'symbol-right');
                 $input.width(width);
-                var format = option.currencyformat === "JPY" ? "\u00A5" : '$'
+                var format = option.currencyformat === "JPY" ? "\u00A5" : '$';
                 $parent.attr("data-content", format);
+            }else if(option.symbolChar !== undefined && option.symbolChar !== "" && option.symbolPosition !== undefined){
+                $parent.addClass("symbol").addClass(
+                    option.symbolPosition === 'right' ? 'symbol-right' : 'symbol-left');
+                $input.width(width);
+                $parent.attr("data-content", option.symbolChar);
             }
         }
 
@@ -347,7 +350,7 @@ module nts.uk.ui.koExtentions {
         });
         return filtered;
     };
-    var getNextItem = function(selected, arr, selectedKey, compareKey, isArray) {
+    var getNextItem = function(selected, arr, searchResult, selectedKey, isArray) {
         //        console.log(selected + "," + selectedKey + "," + compareKey);
         //        console.log(isArray);
         var current = null;
@@ -355,21 +358,24 @@ module nts.uk.ui.koExtentions {
             if (selected.length > 0) current = selected[0];
         } else if (selected !== undefined && selected !== '' && selected !== null) {
             current = selected;
-        }
-        //        console.log("current = "  + current);
-        if (arr.length > 0) {
+        }      
+        if (searchResult.length > 0) {
             if (current) {
-
-                for (var i = 0; i < arr.length - 1; i++) {
-                    var item = arr[i];
-                    if (selectedKey) {
-                        //                        console.log(i);
-                        if (item[selectedKey] == current) return arr[i + 1][selectedKey];
-                    } else if (item[compareKey] == current[compareKey]) return arr[i + 1];
+                var currentIndex = nts.uk.util.findIndex(arr, current, selectedKey);
+                var nextIndex = 0;
+                var found = false;
+                for (var i = 0; i < searchResult.length; i++) {
+                    var item = searchResult[i];
+                    var itemIndex = nts.uk.util.findIndex(arr,item[selectedKey], selectedKey);    
+                    if(!found && itemIndex >= currentIndex + 1) {
+                        found = true;
+                        nextIndex = i;
+                    }          
+                    if ((i < searchResult.length - 1) && item[selectedKey] == current) return searchResult[i + 1][selectedKey];                 
                 }
+                return searchResult[nextIndex][selectedKey];   
             }
-            if (selectedKey) return arr[0][selectedKey];
-            return arr[0];
+            return searchResult[0][selectedKey];
         }
         return undefined;
     }
@@ -404,22 +410,17 @@ module nts.uk.ui.koExtentions {
                 var filtArr = searchBox.data("searchResult");
                 var compareKey = fields[0];
                 var isArray = $.isArray(selected());
-                var selectedItem = getNextItem(selected(), filtArr, selectedKey, compareKey, isArray);
+                var selectedItem = getNextItem(selected(), nts.uk.util.flatArray(arr, childField), filtArr, selectedKey, isArray);
                 //                console.log(selectedItem);
                 if (data.mode) {
                     if(data.mode == 'igGrid') {
                         var selectArr = []; selectArr.push("" + selectedItem);
                         component.ntsGridList("setSelected", selectArr);
-                        component.trigger("selectionChanged");
+                        data.selected(selectArr);
+                        component.trigger("selectChange");
                     } else if(data.mode == 'igTree') {
                         var liItem = $("li[data-value='" + selectedItem + "']");
-                        var ulParent = liItem.parent();
-                        if(!ulParent.is(":visible")) {
-                            ulParent.css("display", "block");
-                            var spanSibling = ulParent.siblings("span[data-role='expander']");
-                            spanSibling.removeClass("ui-icon-triangle-1-e");
-                            spanSibling.addClass("ui-icon-triangle-1-s");
-                        }
+                        component.igTree("expandToNode", liItem);                   
                         component.igTree("select", liItem); 
                     }
                 } else {
@@ -443,7 +444,7 @@ module nts.uk.ui.koExtentions {
             });
             $input.change(function(event) {
                 var searchTerm = $input.val();
-                searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
+                searchBox.data("searchResult", filteredArray(ko.unwrap(data.items), searchTerm, fields, childField));
             });
             $button.click(nextSearch);
         }
@@ -1268,20 +1269,10 @@ module nts.uk.ui.koExtentions {
                     selected: function(event, ui) {
                     },
                     stop: function(event, ui) {
-                        // If not Multi Select.
-                        if (!isMultiSelect) {
-                            $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
-                            $(event.target).children('li').children('.ui-selected').removeClass('ui-selected');
-                        }
                         // Add selected value.
-                        var data: any = isMultiSelect ? [] : '';
+                        var data = [];
                         $("li.ui-selected", container).each(function(index, opt) {
-                            var optValue = $(opt).data('value');
-                            if (!isMultiSelect) {
-                                data = optValue;
-                                return;
-                            }
-                            data[index] = optValue;
+                            data[index] = $(opt).data('value');
                         });
                         container.data('value', data);
 
@@ -1292,35 +1283,32 @@ module nts.uk.ui.koExtentions {
                         //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                     },
                     selecting: function(event, ui) {
-                        if (isMultiSelect) {
-                            if ((<any>event).shiftKey) {
-                                if ($(ui.selecting).attr("clicked") !== "true") {
-                                    var source = container.find("li");
-                                    var clicked = _.find(source, function(row) {
-                                        return $(row).attr("clicked") === "true";
+                        if ((<any>event).shiftKey) {
+                            if ($(ui.selecting).attr("clicked") !== "true") {
+                                var source = container.find("li");
+                                var clicked = _.find(source, function(row) {
+                                    return $(row).attr("clicked") === "true";
+                                });
+                                if (clicked === undefined) {
+                                    $(ui.selecting).attr("clicked", "true");
+                                } else {
+                                    container.find("li").attr("clicked", "");
+                                    $(ui.selecting).attr("clicked", "true");
+                                    var start = parseInt($(clicked).attr("data-idx"));
+                                    var end = parseInt($(ui.selecting).attr("data-idx"));
+                                    var max = start > end ? start : end;
+                                    var min = start < end ? start : end;
+                                    var range = _.filter(source, function(row) {
+                                        var index = parseInt($(row).attr("data-idx"));
+                                        return index >= min && index <= max;
                                     });
-                                    if (clicked === undefined) {
-                                        $(ui.selecting).attr("clicked", "true");
-                                    } else {
-                                        container.find("li").attr("clicked", "");
-                                        $(ui.selecting).attr("clicked", "true");
-                                        var start = parseInt($(clicked).attr("data-idx"));
-                                        var end = parseInt($(ui.selecting).attr("data-idx"));
-                                        var max = start > end ? start : end;
-                                        var min = start < end ? start : end;
-                                        var range = _.filter(source, function(row) {
-                                            var index = parseInt($(row).attr("data-idx"));
-                                            return index >= min && index <= max;
-                                        });
-                                        $(range).addClass("ui-selected");
-                                    }
+                                    $(range).addClass("ui-selected");
                                 }
-                            } else if (!(<any>event).ctrlKey) {
-                                container.find("li").attr("clicked", "");
-                                $(ui.selecting).attr("clicked", "true");
                             }
+                        } else if (!(<any>event).ctrlKey) {
+                            container.find("li").attr("clicked", "");
+                            $(ui.selecting).attr("clicked", "true");
                         }
-
                     }
                 });
             } else {
@@ -1334,7 +1322,7 @@ module nts.uk.ui.koExtentions {
                 var itemsSelected: any = container.data('value');
 
                 data.value(itemsSelected);
-                container.data("selected", typeof itemsSelected === "string" ? itemsSelected : itemsSelected.slice());
+                container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
 
             }));
 
@@ -1386,9 +1374,9 @@ module nts.uk.ui.koExtentions {
             var originalSelected = container.data("selected");
 
             // Check selected code.
-            if (!isMultiSelect && options.filter(item => getOptionValue(item) === selectedValue).length == 0) {
-                selectedValue = '';
-            }
+//            if (!isMultiSelect && options.filter(item => getOptionValue(item) === selectedValue).length == 0) {
+//                selectedValue = '';
+//            }
 
             if (!_.isEqual(originalOptions, options) || init) {
                 if (!init) {
@@ -1397,13 +1385,13 @@ module nts.uk.ui.koExtentions {
                         var optValue = $(option).data('value');
                         // Check if btn is contained in options.
                         var foundFlag = _.findIndex(options, function(opt) {
-                            return getOptionValue(opt) == optValue;
+                            return getOptionValue(opt) === optValue;
                         }) !== -1;
                         if (!foundFlag) {
 
                             // Remove selected if not found option.
                             selectedValue = jQuery.grep(selectedValue, function(value: string) {
-                                return value != optValue;
+                                return value !== optValue;
                             });
                             option.remove();
                             return;
@@ -1416,7 +1404,7 @@ module nts.uk.ui.koExtentions {
                     // Check option is Selected
                     var isSelected: boolean = false;
                     if (isMultiSelect) {
-                        isSelected = (<Array<string>>selectedValue).indexOf(getOptionValue(item)) != -1;
+                        isSelected = (<Array<any>>selectedValue).indexOf(getOptionValue(item)) !== -1;
                     } else {
                         isSelected = selectedValue === getOptionValue(item);
                     }
@@ -1430,7 +1418,7 @@ module nts.uk.ui.koExtentions {
                         var itemTemplate: string = '';
                         if (columns && columns.length > 0) {
                             columns.forEach((col, cIdx) => {
-                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.prop] + '</div>';
+                                itemTemplate += '<div class="nts-column nts-list-box-column-' + cIdx + '">' + item[col.key !== undefined ? col.key : col.prop] + '</div>';
                             });
                         } else {
                             itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
@@ -1509,23 +1497,6 @@ module nts.uk.ui.koExtentions {
         }
     }
 
-
-    /**
-     * Grid scroll helper functions
-     * 
-     */
-    function calculateIndex(options, id, key) {
-        if (!id) return 0;
-        var index = 0;
-        for (var i = 0; i < options.length; i++) {
-            var item = options[i];
-            if (item[key] == id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
     /**
      * GridList binding handler
      */
@@ -1586,25 +1557,7 @@ module nts.uk.ui.koExtentions {
 
             });
             var gridId = $grid.attr('id');
-            $grid.on("selectChange", function() {
-                var scrollContainer = $("#" + gridId + "_scrollContainer");
-                var row1 = null;
-                var selectedRows = $grid.igGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0)
-                    row1 = $grid.igGrid("selectedRows")[0].id;
-                else {
-                    var selectedRow: any = $grid.igGrid("selectedRow");
-                    if (selectedRow && selectedRow.id) {
-                        row1 = (<any>$grid.igGrid("selectedRow")).id;
-                    }
-                }
-                if (row1 && row1 !== 'undefined') {
-                    //console.log(row1);
-                    var topPos = calculateIndex(options, row1, optionsValue);
-                    $grid.igGrid('virtualScrollTo', topPos);
-                    //                    console.log(topPos);
-                }
-            });
+            $grid.setupSearchScroll("igGrid", true);
         }
 
         update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
@@ -1713,19 +1666,7 @@ module nts.uk.ui.koExtentions {
             });
             var treeGridId = $treegrid.attr('id');
             $(element).closest('.ui-igtreegrid').addClass('nts-treegridview');
-            $treegrid.on("selectChange", function() {
-                var scrollContainer = $("#" + treeGridId + "_scroll");
-                var row1 = undefined;
-                var selectedRows = $treegrid.igTreeGrid("selectedRows");
-                if (selectedRows && selectedRows.length > 0) {
-                    row1 = $treegrid.igTreeGrid("selectedRows")[0].id;
-                }
-                if (row1 !== undefined) {
-                    var index = calculateIndex(nts.uk.util.flatArray(options, optionsChild), row1, optionsValue);
-                    var rowHeight = $('#' + treeGridId + "_" + row1).height();
-                    scrollContainer.scrollTop(rowHeight * index);
-                }
-            });
+            $treegrid.setupSearchScroll("igTreeGrid");
         }
 
         /**
@@ -1956,14 +1897,18 @@ module nts.uk.ui.koExtentions {
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
 
             var data = valueAccessor();
-            var jump = data.jump;
-
+            var jump = ko.unwrap(data.jump);
+            var action = data.action;
+            
             var linkText = $(element).text();
-            var $linkButton = $(element).wrap('<div/>').parent().empty()
-                .text(linkText)
+            var $linkButton = $(element).wrap('<div class="ntsControl"/>')
                 .addClass('link-button')
                 .click(function() {
-                    alert(jump);
+                    event.preventDefault();
+                    if (!nts.uk.util.isNullOrUndefined(action))
+                        action.call(viewModel);
+                    else if(!nts.uk.util.isNullOrUndefined(jump))
+                        nts.uk.request.jump(jump);
                 });
         }
 
@@ -2484,12 +2429,20 @@ module nts.uk.ui.koExtentions {
             $down.text("Down");
 
             var move = function(upDown, $targetElement) {
-                var selectedRaw = $targetElement.igGrid("selectedRows");
-//                var targetSource = ko.unwrap(data.targetSource);
+                var multySelectedRaw = $targetElement.igGrid("selectedRows");
+                var singleSelectedRaw = $targetElement.igGrid("selectedRow");
+                var selected = [];
+                if(multySelectedRaw !== null) {
+                    selected = _.filter(multySelectedRaw, function(item) {
+                        return item["index"] >= 0;
+                    });    
+                } else if (singleSelectedRaw !== null) {
+                    selected.push(singleSelectedRaw);
+                } else {
+                    return;    
+                }
+                
                 var source = _.cloneDeep($targetElement.igGrid("option", "dataSource"));
-                var selected = _.filter(selectedRaw, function(item) {
-                    return item["index"] >= 0;
-                });
                 var group = 1;
                 var grouped = { "group1": [] };
                 if (selected.length > 0) {
@@ -2532,11 +2485,21 @@ module nts.uk.ui.koExtentions {
             }
 
             var moveTree = function(upDown, $targetElement) {
-                var selectedRaw = $targetElement.igTreeGrid("selectedRows");
-                if (selectedRaw.length !== 1) {
-                    return;
+                var multiSelectedRaw = $targetElement.igTreeGrid("selectedRows");
+                var singleSelectedRaw = $targetElement.igTreeGrid("selectedRow");
+//                var targetSource = ko.unwrap(data.targetSource);
+                var selected;
+                if(multiSelectedRaw !== null) {
+                    if (multiSelectedRaw.length !== 1) {
+                        return;
+                    }
+                    selected = multiSelectedRaw[0];  
+                } else if (singleSelectedRaw !== null) {
+                    selected.push(singleSelectedRaw);
+                } else {
+                    return;    
                 }
-                var selected = selectedRaw[0];
+                
                 if (selected["index"] < 0) {
                     return;
                 }
