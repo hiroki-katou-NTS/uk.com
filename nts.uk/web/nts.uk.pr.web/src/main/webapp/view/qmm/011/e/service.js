@@ -25,6 +25,7 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
+                                return dfd.promise();
                             }
                             service.updateInsuranceBusinessType = updateInsuranceBusinessType;
                         })(service = e.service || (e.service = {}));
