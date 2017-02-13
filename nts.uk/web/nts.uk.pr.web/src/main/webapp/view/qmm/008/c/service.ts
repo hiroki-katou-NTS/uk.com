@@ -4,7 +4,9 @@ module nts.uk.pr.view.qmm008.c {
 
         // Service paths.
         var servicePath = {
-            getOfficeDetailData: "pr/insurance/social/find"
+            getOfficeDetailData: "pr/insurance/social/find",
+            updateOffice: "pr/insurance/social/update",
+            regiterOffice: "pr/insurance/social/register",
         };
 
         /**
@@ -21,6 +23,22 @@ module nts.uk.pr.view.qmm008.c {
             });
             // Ret promise.
             return dfd.promise();
+        }
+
+        /**
+         * Function is used to register office data
+         */
+        export function register(data: model.finder.OfficeItemDto): JQueryPromise<model.finder.OfficeItemDto> {
+
+            return nts.uk.request.ajax(servicePath.regiterOffice, data);
+        }
+
+        /**
+         * Function is used to update office data
+         */
+        export function update(data: model.finder.OfficeItemDto): JQueryPromise<model.finder.OfficeItemDto> {
+
+            return nts.uk.request.ajax(servicePath.updateOffice, data);
         }
 
         /**
@@ -60,6 +78,41 @@ module nts.uk.pr.view.qmm008.c {
                     healthInsuOfficeCode: string;
                     healthInsuAssoCode: string;
                     memo: string;
+                    constructor(companyCode: string, code: string, name: string,
+                        shortName: string,
+                        picName: string,
+                        picPosition: string,
+                        potalCode: string,
+                        prefecture: string,
+                        address1st: string,
+                        address2nd: string,
+                        kanaAddress1st: string,
+                        kanaAddress2nd: string,
+                        phoneNumber: string,
+                        healthInsuOfficeRefCode1st: string,
+                        healthInsuOfficeRefCode2nd: string,
+                        pensionOfficeRefCode1st: string,
+                        pensionOfficeRefCode2nd: string,
+                        welfarePensionFundCode: string,
+                        officePensionFundCode: string,
+                        healthInsuCityCode: string,
+                        healthInsuOfficeSign: string,
+                        pensionCityCode: string,
+                        pensionOfficeSign: string,
+                        healthInsuOfficeCode: string,
+                        healthInsuAssoCode: string,
+                        memo: string) {
+                        this.companyCode = companyCode; this.code = code; this.name = name;
+                        this.shortName = shortName; this.picName = picName; this.picPosition = picPosition;
+                        this, potalCode = potalCode; this.prefecture = prefecture; this.address1st = address1st;
+                        this.address2nd = address2nd; this.kanaAddress1st = kanaAddress1st; this.kanaAddress2nd = kanaAddress2nd;
+                        this.phoneNumber = phoneNumber; this.healthInsuOfficeRefCode1st = healthInsuOfficeRefCode1st; this.healthInsuOfficeRefCode2nd = healthInsuOfficeRefCode2nd;
+                        this.pensionOfficeRefCode1st = pensionOfficeRefCode1st; this.pensionOfficeRefCode2nd = pensionOfficeRefCode2nd;
+                        this.welfarePensionFundCode = welfarePensionFundCode; this.officePensionFundCode = officePensionFundCode;
+                        this.healthInsuCityCode = healthInsuCityCode; this.healthInsuOfficeSign = healthInsuOfficeSign;
+                        this.pensionCityCode = pensionCityCode; this.pensionOfficeSign = pensionOfficeSign;
+                        this.healthInsuOfficeCode = healthInsuOfficeCode; this.healthInsuAssoCode = healthInsuAssoCode
+                    }
                 }
             }
         }

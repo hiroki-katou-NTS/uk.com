@@ -49,7 +49,13 @@ var nts;
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllRoundingItem;
                                 var data = null;
-                                var roundingList = [];
+                                var roundingList = [
+                                    new model.finder.Enum('1', 'RoundUp'),
+                                    new model.finder.Enum('2', 'Truncation'),
+                                    new model.finder.Enum('3', 'RoundDown'),
+                                    new model.finder.Enum('4', 'Down5_Up6'),
+                                    new model.finder.Enum('5', 'Down4_Up5')
+                                ];
                                 dfd.resolve(roundingList);
                                 return dfd.promise();
                             }
@@ -185,24 +191,20 @@ var nts;
                                         return RoundingDto;
                                     }());
                                     finder.RoundingDto = RoundingDto;
-                                    var HealthInsuranceAvgearnDto = (function () {
-                                        function HealthInsuranceAvgearnDto() {
+                                    var Enum = (function () {
+                                        function Enum(code, name) {
+                                            this.code = code;
+                                            this.name = name;
                                         }
-                                        return HealthInsuranceAvgearnDto;
+                                        return Enum;
                                     }());
-                                    finder.HealthInsuranceAvgearnDto = HealthInsuranceAvgearnDto;
+                                    finder.Enum = Enum;
                                     var RoundingItemDto = (function () {
                                         function RoundingItemDto() {
                                         }
                                         return RoundingItemDto;
                                     }());
                                     finder.RoundingItemDto = RoundingItemDto;
-                                    var HealthInsuranceAvgearnValueDto = (function () {
-                                        function HealthInsuranceAvgearnValueDto() {
-                                        }
-                                        return HealthInsuranceAvgearnValueDto;
-                                    }());
-                                    finder.HealthInsuranceAvgearnValueDto = HealthInsuranceAvgearnValueDto;
                                 })(finder = model.finder || (model.finder = {}));
                                 (function (PaymentType) {
                                     PaymentType[PaymentType["Salary"] = 0] = "Salary";
@@ -232,6 +234,14 @@ var nts;
                                     GroupType[GroupType["Company"] = 1] = "Company";
                                 })(model.GroupType || (model.GroupType = {}));
                                 var GroupType = model.GroupType;
+                                (function (Rounding) {
+                                    Rounding[Rounding["RoundUp"] = 0] = "RoundUp";
+                                    Rounding[Rounding["Truncation"] = 1] = "Truncation";
+                                    Rounding[Rounding["RoundDown"] = 2] = "RoundDown";
+                                    Rounding[Rounding["Down5_Up6"] = 3] = "Down5_Up6";
+                                    Rounding[Rounding["Down4_Up5"] = 4] = "Down4_Up5";
+                                })(model.Rounding || (model.Rounding = {}));
+                                var Rounding = model.Rounding;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm008.a || (qmm008.a = {}));

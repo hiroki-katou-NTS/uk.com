@@ -126,92 +126,92 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 			@Override
 			public Address getAddress1st() {
-				return new Address("");
+				return new Address("add");
 			}
 
 			@Override
 			public Address getAddress2nd() {
-				return new Address("");
+				return new Address("add");
 			}
 
 			@Override
 			public KanaAddress getKanaAddress1st() {
-				return new KanaAddress("");
+				return new KanaAddress("addd");
 			}
 
 			@Override
 			public KanaAddress getKanaAddress2nd() {
-				return new KanaAddress("");
+				return new KanaAddress("dd");
 			}
 
 			@Override
 			public String getPhoneNumber() {
-				return "";
+				return "0123445";
 			}
 
 			@Override
 			public String getHealthInsuOfficeRefCode1st() {
-				return "";
+				return "HealthInsuOfficeRefCode1st";
 			}
 
 			@Override
 			public String getHealthInsuOfficeRefCode2nd() {
-				return "";
+				return "HealthInsuOfficeRefCode2nd";
 			}
 
 			@Override
 			public String getPensionOfficeRefCode1st() {
-				return "";
+				return "getPensionOfficeRefCode1st";
 			}
 
 			@Override
 			public String getPensionOfficeRefCode2nd() {
-				return "";
+				return "getPensionOfficeRefCode2nd";
 			}
 
 			@Override
 			public String getWelfarePensionFundCode() {
-				return "";
+				return "getWelfarePensionFundCode";
 			}
 
 			@Override
 			public String getOfficePensionFundCode() {
-				return "";
+				return "getOfficePensionFundCode";
 			}
 
 			@Override
 			public String getHealthInsuCityCode() {
-				return "";
+				return "getHealthInsuCityCod";
 			}
 
 			@Override
 			public String getHealthInsuOfficeSign() {
-				return "";
+				return "getHealthInsuOfficeSign";
 			}
 
 			@Override
 			public String getPensionCityCode() {
-				return "";
+				return "getPensionCityCode";
 			}
 
 			@Override
 			public String getPensionOfficeSign() {
-				return "";
+				return "getPensionOfficeSign";
 			}
 
 			@Override
 			public String getHealthInsuOfficeCode() {
-				return "";
+				return "getHealthInsuOfficeCode";
 			}
 
 			@Override
 			public String getHealthInsuAssoCode() {
-				return "";
+				return "getHealthInsuAssoCode";
 			}
 
 			@Override
 			public Memo getMemo() {
-				return new Memo("");
+				return new Memo("getMemo");
 			}
 
 			@Override
@@ -254,7 +254,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 			@Override
 			public PotalCode getPotalCode() {
-				return new PotalCode("t");
+				return new PotalCode("12");
 			}
 
 			@Override
@@ -534,12 +534,18 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 			@Override
 			public OfficeCode getCode() {
-				return new OfficeCode("officeCode");
+				if (officeCode.equals("officeCode1"))
+					return new OfficeCode("officeCode");
+				else
+					return new OfficeCode("officeCode#");
 			}
 
 			@Override
 			public OfficeName getName() {
-				return new OfficeName("OfficeName");
+				if (officeCode.equals("officeCode1"))
+					return new OfficeName("OfficeName");
+				else
+					return new OfficeName("OfficeName#");
 			}
 
 			@Override

@@ -29,7 +29,7 @@
 			<div id="contents-area">
 				<div id="content" class="cf">
 					<div class="sidebar-content-header">
-						<button class="proceed">新規</button>
+						<button data-bind = "click: addNew" class="proceed">新規</button>
 						<button>登録</button>
 						<button>印刷</button>
 						<button class="danger">削除</button>
@@ -70,7 +70,8 @@
 														<input
 															data-bind="ntsTextEditor: {
 														value: officeCode , 
-														option: $parent.textInputOption}" />
+														option: $parent.textInputOption,
+														enable : $parent.enabled}" />
 													</div></td>
 												<td colspan="2" class="border_none padding_top padding_left"><div>
 														<input
