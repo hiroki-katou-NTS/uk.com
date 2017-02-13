@@ -2,14 +2,14 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
-@Data
-@AllArgsConstructor
+@Builder
+@Getter
 public class InsuranceRateItemDto {
 	/** The pay type. */
 	private PaymentType payType;

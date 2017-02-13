@@ -22,7 +22,7 @@ var nts;
                             service.updatePensionAvgearn = updatePensionAvgearn;
                             function findPensionAvgearn(id) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+                                nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })

@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 
@@ -14,12 +13,10 @@ public class HealthInsuranceRateFinder {
 
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
-	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	public Optional<HealthInsuranceRateDto> find(String id) {
 		Optional<HealthInsuranceRate> healthInsuranceRate = healthInsuranceRateRepository.findById(id);
-		HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().build();
+		HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().officeName("Ｃ 事業所").build();
 		if (healthInsuranceRate.isPresent()) {
 			healthInsuranceRate.get().saveToMemento(dto);
 		}

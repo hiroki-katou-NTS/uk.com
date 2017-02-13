@@ -47,6 +47,19 @@ module nts.uk.pr.view.qmm010.a {
                     dfd.reject(res);
                 })
         }
+        //Function connection service update LaborInsuranceOffice
+        export function updateLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string) {
+            var dfd = $.Deferred<any>();
+            var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+            nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+        }
         //Function connection service delete LaborInsuranceOffice  
         export function deleteLaborInsuranceOffice(code: string, companyCode: string) {
             var dfd = $.Deferred<any>();
@@ -117,6 +130,10 @@ module nts.uk.pr.view.qmm010.a {
                 code: string;
                 /** The company code. */
                 companyCode: string;
+            }
+            export enum TypeActionLaborInsuranceOffice {
+                add = 1,
+                update = 2
             }
 
         }

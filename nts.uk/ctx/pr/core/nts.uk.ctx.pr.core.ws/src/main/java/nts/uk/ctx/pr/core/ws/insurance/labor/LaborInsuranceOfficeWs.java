@@ -41,7 +41,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class LaborInsuranceOfficeWebService.
+ * The Class LaborInsuranceOfficeWs.
  */
 @Path("ctx/pr/core/insurance/labor")
 @Produces("application/json")
