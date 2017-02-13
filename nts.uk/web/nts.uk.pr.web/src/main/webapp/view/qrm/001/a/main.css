@@ -55,6 +55,7 @@
 	font-size: 20px; 
 	color: #c5c5c5;
 }
+#profile-div div:NTH-CHILD(3) { width: 130px; }
 #profile-div div:NTH-CHILD(4) img{
 	width: 30px;
     height: 30px;
@@ -70,7 +71,8 @@
 	border-right: 1px solid #c5c5c5;
 }
 #profile-div div:NTH-CHILD(6) {
-	width: 110px;
+	vertical-align: middle;
+    padding-left: 15px;
 }
 
 .column1 { width: 100px; }
@@ -106,6 +108,7 @@ table { margin-top: -4px; }
 
 #hr-12 { width: 98px; }
 #table-12 { width: 100px; }
+#table-12 tbody tr { height: 24px; }
 
 #hr-1 { width: 438px; }
 #table-1 { width: 440px; }
@@ -121,9 +124,8 @@ table { margin-top: -4px; }
 
 #hr-3 { width: 498px; }
 #table-3 { width: 500px; }
+#table-3 tbody tr { height: 24px; }
 #table-3 tbody td:NTH-CHILD(1) { width: 100px; }
-#table-3 tbody td:NTH-CHILD(3), #combo-box2 { width: 100px; height: 18px; }
-#table-3 tbody td:NTH-CHILD(4), #combo-box3 { width: 130px; height: 18px; }
 
 #hr-4, #hr-5, #hr-6 { width: 163px; }
 #table-4, #table-5, #table-6 { width: 165px; }

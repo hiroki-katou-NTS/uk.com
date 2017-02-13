@@ -50,7 +50,7 @@
 							<span>対象データ</span>
 						</div>
 						<div class="cell">
-							
+							<span data-bind="ntsDatePicker: {value: date, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></span>
 						</div>
 					</div>
 					<div>
@@ -92,7 +92,7 @@
 											<td>
 												<div id="combo-box1" data-bind="ntsComboBox: {
 													options: selectList1,
-													optionsValue: 'code',
+													optionsValue: 'name',
 													value: employeeInfo().trialPeriod,
 													optionsText: 'name',
 													enable: true }"></div>	
@@ -276,7 +276,7 @@
 											<td>
 												<span id="combo-box4" data-bind="ntsComboBox: {
 													options: selectList4,
-													optionsValue: 'code',
+													optionsValue: 'name',
 													value: employeeInfo().retirementIncome,
 													optionsText: 'name',
 													enable: true }"></span>	
@@ -284,7 +284,7 @@
 											<td>
 												<div id="combo-box5" data-bind="ntsComboBox: {
 													options: selectList5,
-													optionsValue: 'code',
+													optionsValue: 'name',
 													value: employeeInfo().taxCalculationMethod,
 													optionsText: 'name',
 													enable: true }"></div>	
@@ -348,19 +348,20 @@
 										<th>振込金額</th>
 									</tr>
 								</thead>
-								<tbody data-bind="foreach: paytransfer">
+								
+								<tbody data-bind="foreach: currentPaytransfer">
 									<tr>
 										<td>
 											<span id="combo-box4" data-bind="ntsComboBox: {
-													options: $parent.setSelect,
-													optionsValue: 'code',
-													value: index,
+													options: $parent.selectList10()[$index()],
+													optionsValue: 'name',
+													value: dataSetName,
 													optionsText: 'name',
 													enable: true }"></span>	
 										</td>
-										<td><span data-bind="text: index()?$parent.paytransfer()[index()-1].bankName:null, visible: useFlag"></span></td>
-										<td><span data-bind="text: index()?$parent.paytransfer()[index()-1].branchName:null, visible: useFlag"></span></td>
-										<td><span data-bind="text: index()?$parent.paytransfer()[index()-1].accountNumber:null, visible: useFlag"></span></td>
+										<td><span data-bind="text: bankName, visible: Boolean(dataSetName()!=='使用しない')"></span></td>
+										<td><span data-bind="text: branchName, visible: Boolean(dataSetName()!=='使用しない')"></span></td>
+										<td><span data-bind="text: accountNumber, visible: Boolean(dataSetName()!=='使用しない')"></span></td>
 										<td>
 											<span>
 												<input data-bind="ntsTextEditor: {
@@ -368,7 +369,7 @@
 													constraint: 'ResidenceCode',
 													option: { textmode: 'text', textalign: 'center' },
 													required: true,
-													enable: useFlag }" />
+													enable: Boolean(dataSetName()!=='使用しない') }" />
 											</span>
 										</td>
 									</tr>
