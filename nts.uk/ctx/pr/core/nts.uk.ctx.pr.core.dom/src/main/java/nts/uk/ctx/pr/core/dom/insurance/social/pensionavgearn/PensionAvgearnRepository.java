@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import java.util.List;
 

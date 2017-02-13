@@ -2,8 +2,8 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceAvgearn;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceAvgearnValue;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
 @Builder
 @Getter

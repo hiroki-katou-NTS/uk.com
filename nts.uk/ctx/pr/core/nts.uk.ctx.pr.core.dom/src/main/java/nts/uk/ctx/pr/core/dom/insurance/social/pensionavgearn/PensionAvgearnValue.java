@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import lombok.Data;
 import nts.arc.error.BusinessException;

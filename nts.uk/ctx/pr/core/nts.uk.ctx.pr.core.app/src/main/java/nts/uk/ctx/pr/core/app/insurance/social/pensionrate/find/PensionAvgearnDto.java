@@ -3,8 +3,8 @@ package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find;
 import lombok.Builder;
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionAvgearn;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionAvgearnValue;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
 @Builder
 @Getter

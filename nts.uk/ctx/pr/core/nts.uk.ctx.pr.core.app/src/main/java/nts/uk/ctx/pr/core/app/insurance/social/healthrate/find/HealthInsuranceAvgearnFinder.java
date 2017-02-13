@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceAvgearnRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 
 @Stateless
 public class HealthInsuranceAvgearnFinder {

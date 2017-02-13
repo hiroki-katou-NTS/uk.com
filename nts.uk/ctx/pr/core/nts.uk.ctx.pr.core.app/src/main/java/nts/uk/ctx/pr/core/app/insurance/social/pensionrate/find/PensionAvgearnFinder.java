@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionAvgearnRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
 
 @Stateless
 public class PensionAvgearnFinder {
