@@ -32,6 +32,7 @@ var qet001;
                     name: settingDetail.settingName(),
                     onceSheetPerPerson: settingDetail.isPrintOnePageEachPer(),
                     categorySettings: ko.toJS(settingDetail.categorySettings()),
+                    createMode: settingDetail.isCreateMode()
                 };
                 nts.uk.request.ajax(servicePath.saveOutputSetting, data).done(function () {
                     dfd.resolve();

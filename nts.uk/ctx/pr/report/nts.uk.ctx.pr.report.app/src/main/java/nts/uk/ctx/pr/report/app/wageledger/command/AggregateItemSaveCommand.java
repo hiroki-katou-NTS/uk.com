@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Builder;
 import lombok.val;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
@@ -21,7 +20,6 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
 /**
  * The Class AggregateItemSaveCommand.
  */
-@Builder
 public class AggregateItemSaveCommand {
 	
 	/** The category. */

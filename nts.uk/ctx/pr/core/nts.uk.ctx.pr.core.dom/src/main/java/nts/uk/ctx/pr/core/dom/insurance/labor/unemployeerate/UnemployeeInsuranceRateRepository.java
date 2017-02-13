@@ -41,7 +41,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnemployeeInsuranceRate> findAll(int companyCode);
+	List<UnemployeeInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -49,7 +49,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @return the unemployee insurance rate
 	 */
-	UnemployeeInsuranceRate findById(String id);
+	UnemployeeInsuranceRate findById(String id,String companyCode);
 
 	/**
 	 * Checks if is invalid date range.
@@ -58,4 +58,5 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @return true, if is invalid date range
 	 */
 	boolean isInvalidDateRange(MonthRange applyRange);
+
 }

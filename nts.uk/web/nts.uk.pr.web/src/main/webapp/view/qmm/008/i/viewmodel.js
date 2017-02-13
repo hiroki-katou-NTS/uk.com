@@ -16,7 +16,8 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.listAvgEarnLevelMasterSetting = ko.observableArray();
+                                    self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
+                                    self.listPensionAvgearn = ko.observableArray([]);
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -32,6 +33,18 @@ var nts;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    var data = [];
+                                    self.listPensionAvgearn().forEach(function (item) {
+                                        data.push(ko.toJS(item));
+                                    });
+                                    return data;
+                                };
+                                ScreenModel.prototype.save = function () {
+                                    var self = this;
+                                    i.service.updatePensionAvgearn(this.collectData());
                                 };
                                 ScreenModel.prototype.leftToggle = function () {
                                     this.leftShow(!this.leftShow());

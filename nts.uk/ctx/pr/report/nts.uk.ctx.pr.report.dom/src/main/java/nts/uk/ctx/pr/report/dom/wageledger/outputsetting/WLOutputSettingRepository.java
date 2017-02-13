@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+
 /**
  * The Interface WLOutputSettingRepository.
  */
@@ -29,7 +31,7 @@ public interface WLOutputSettingRepository {
 	 *
 	 * @param outputSetting the output setting
 	 */
-	void remove(String code);
+	void remove(WLOutputSettingCode code);
 	
 	/**
 	 * Find.
@@ -38,7 +40,7 @@ public interface WLOutputSettingRepository {
 	 * @param companyCode the company code
 	 * @return the WL output setting
 	 */
-	WLOutputSetting findByCode(String code, String companyCode);
+	WLOutputSetting findByCode(WLOutputSettingCode code, CompanyCode companyCode);
 	
 	/**
 	 * Checks if is exist.
@@ -46,5 +48,5 @@ public interface WLOutputSettingRepository {
 	 * @param code the code
 	 * @return true, if is exist
 	 */
-	boolean isExist(String code);
+	boolean isExist(WLOutputSettingCode code);
 }

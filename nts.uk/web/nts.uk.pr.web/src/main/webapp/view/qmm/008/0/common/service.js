@@ -15,7 +15,7 @@ var nts;
                             var service;
                             (function (service) {
                                 var paths = {
-                                    getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/social/getAvgEarnLevelMasterSettingList",
+                                    getAvgEarnLevelMasterSettingList: "ctx/pr/core/insurance/avgearnmaster/find",
                                 };
                                 function getAvgEarnLevelMasterSettingList() {
                                     var dfd = $.Deferred();

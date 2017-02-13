@@ -9,10 +9,12 @@ module nts.uk.pr.view.qmm008.i {
             leftBtnText: KnockoutComputed<string>;
             rightBtnText: KnockoutComputed<string>;
             listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
+            listPensionAvgearn: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
-                self.listAvgEarnLevelMasterSetting = ko.observableArray();
+                self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
+                self.listPensionAvgearn = ko.observableArray([]);
                 self.leftShow = ko.observable(true);
                 self.rightShow = ko.observable(true);
                 self.leftBtnText = ko.computed(function() { if (self.leftShow()) return "—"; return "+"; });
@@ -27,9 +29,28 @@ module nts.uk.pr.view.qmm008.i {
                 var dfd = $.Deferred();
                 commonService.getAvgEarnLevelMasterSettingList().done(data => {
                     self.listAvgEarnLevelMasterSetting(data);
+                    /**
+                     * service.findPensionAvgearn('a').done(zz => {
+                        self.listPensionAvgearn(zz);
+                    });
+                     */
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+
+            private collectData(): any {
+                var self = this;
+                var data = [];
+                self.listPensionAvgearn().forEach(item => {
+                    data.push(ko.toJS(item));
+                });
+                return data;
+            }
+
+            private save() {
+                var self = this;
+                service.updatePensionAvgearn(this.collectData());
             }
 
             private leftToggle() {

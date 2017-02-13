@@ -37,7 +37,15 @@ var qet001;
                 ScreenModel.prototype.goToOutputSetting = function () {
                     nts.uk.ui.windows.setShared('selectedCode', this.outputSettingSelectedCode(), true);
                     nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
-                    nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" }).onClosed(function () {
+                        if (nts.uk.ui.windows.getShared('isHasUpdate')) {
+                            self.loadAllOutputSetting();
+                        }
+                    });
+                };
+                ScreenModel.prototype.goToAggregateItemPage = function () {
+                    nts.uk.ui.windows.sub.modal("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" });
                 };
                 ScreenModel.prototype.print = function () {
                     var self = this;

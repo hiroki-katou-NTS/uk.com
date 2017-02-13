@@ -11,7 +11,9 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,7 +38,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		
 		if (command.isCreateMode) {
 			// Check exist.
-			if (this.repository.isExist(command.code)) {
+			if (this.repository.isExist(new WLOutputSettingCode(command.code))) {
 				throw new BusinessException("ER026");
 			}
 			
@@ -47,10 +49,12 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		}
 		
 		// Case update.
-		WLOutputSetting outputSetting = this.repository.findByCode(command.code, companyCode);
+		WLOutputSetting outputSetting = this.repository.findByCode(new WLOutputSettingCode(command.code), 
+				new CompanyCode(companyCode));
 		if (outputSetting == null) {
-			throw new IllegalStateException("Output Setting is not found");
+//			throw new IllegalStateException("Output Setting is not found");
 		}
+		outputSetting = command.toDomain(companyCode);
 		this.repository.update(outputSetting);
 	}
 

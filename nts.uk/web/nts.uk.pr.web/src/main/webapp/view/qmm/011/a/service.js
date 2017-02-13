@@ -62,9 +62,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateUnemployeeInsuranceRate = updateUnemployeeInsuranceRate;
-                            function findAllHisotryUnemployeeInsuranceRate() {
+                            function findAllHisotryUnemployeeInsuranceRate(companyCode) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
+                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate + "/" + companyCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -74,9 +74,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHisotryUnemployeeInsuranceRate = findAllHisotryUnemployeeInsuranceRate;
-                            function findHisotryUnemployeeInsuranceRate(historyId) {
+                            function findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate, historyUnemployeeInsuranceFindInDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -130,9 +130,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateAccidentInsuranceRate = updateAccidentInsuranceRate;
-                            function findAllHistoryAccidentInsuranceRate() {
+                            function findAllHistoryAccidentInsuranceRate(companyCode) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
+                                nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -142,9 +142,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHistoryAccidentInsuranceRate = findAllHistoryAccidentInsuranceRate;
-                            function findHistoryAccidentInsuranceRate(historyId) {
+                            function findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate, historyAccidentInsuranceRateFindInDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -287,6 +287,12 @@ var nts;
                                     return HistoryUnemployeeInsuranceDto;
                                 }(HistoryInsuranceDto));
                                 model.HistoryUnemployeeInsuranceDto = HistoryUnemployeeInsuranceDto;
+                                var HistoryUnemployeeInsuranceFindInDto = (function () {
+                                    function HistoryUnemployeeInsuranceFindInDto() {
+                                    }
+                                    return HistoryUnemployeeInsuranceFindInDto;
+                                }());
+                                model.HistoryUnemployeeInsuranceFindInDto = HistoryUnemployeeInsuranceFindInDto;
                                 var UnemployeeInsuranceRateDto = (function () {
                                     function UnemployeeInsuranceRateDto() {
                                     }
@@ -307,6 +313,12 @@ var nts;
                                     return AccidentInsuranceRateDto;
                                 }());
                                 model.AccidentInsuranceRateDto = AccidentInsuranceRateDto;
+                                var HistoryAccidentInsuranceRateFindInDto = (function () {
+                                    function HistoryAccidentInsuranceRateFindInDto() {
+                                    }
+                                    return HistoryAccidentInsuranceRateFindInDto;
+                                }());
+                                model.HistoryAccidentInsuranceRateFindInDto = HistoryAccidentInsuranceRateFindInDto;
                                 var InsuBizRateItemDto = (function () {
                                     function InsuBizRateItemDto(insuBizType, insuRate, insuRound, insuranceBusinessType) {
                                         this.insuBizType = insuBizType;

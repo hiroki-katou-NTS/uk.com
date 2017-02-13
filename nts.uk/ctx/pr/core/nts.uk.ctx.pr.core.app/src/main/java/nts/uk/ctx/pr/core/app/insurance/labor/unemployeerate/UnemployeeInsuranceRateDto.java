@@ -6,18 +6,12 @@ package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * The Class UnemployeeInsuranceRateDto.
  */
-@Builder
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UnemployeeInsuranceRateDto {
 
 	/** The history insurance. */

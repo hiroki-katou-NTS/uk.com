@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 import java.util.List;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface AccidentInsuranceRateRepository.
@@ -41,7 +42,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AccidentInsuranceRate> findAll(int companyCode);
+	List<AccidentInsuranceRate> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by id.
@@ -49,7 +50,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @return the accident insurance rate
 	 */
-	AccidentInsuranceRate findById(String id);
+	AccidentInsuranceRate findById(CompanyCode companyCode, String historyId);
 
 	/**
 	 * Checks if is invalid date range.
@@ -57,5 +58,5 @@ public interface AccidentInsuranceRateRepository {
 	 * @param startMonth the start month
 	 * @return true, if is invalid date range
 	 */
-	boolean isInvalidDateRange(YearMonth startMonth);
+	boolean isInvalidDateRange(CompanyCode companyCode, YearMonth startMonth);
 }

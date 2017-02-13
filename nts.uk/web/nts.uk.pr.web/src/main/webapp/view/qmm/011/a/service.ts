@@ -54,9 +54,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service FindAll Labor Insurance Office
-        export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<model.HistoryUnemployeeInsuranceDto>> {
+        export function findAllHisotryUnemployeeInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryUnemployeeInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryUnemployeeInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
+            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate + "/" + companyCode)
                 .done(function(res: Array<model.HistoryUnemployeeInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -67,9 +67,10 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service Find History By historyId
-        export function findHisotryUnemployeeInsuranceRate(historyId: string): JQueryPromise<model.HistoryUnemployeeInsuranceDto> {
+        export function findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto: model.HistoryUnemployeeInsuranceFindInDto)
+            : JQueryPromise<model.HistoryUnemployeeInsuranceDto> {
             var dfd = $.Deferred<model.HistoryUnemployeeInsuranceDto>();
-            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate, historyUnemployeeInsuranceFindInDto)
                 .done(function(res: model.HistoryUnemployeeInsuranceDto) {
                     dfd.resolve(res);
                     //xyz
@@ -134,9 +135,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find All HistoryAccidentInsurance 
-        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
+        export function findAllHistoryAccidentInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryAccidentInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
+            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
                 .done(function(res: Array<model.HistoryAccidentInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -147,9 +148,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find HistoryAccidentInsurance
-        export function findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<model.HistoryAccidentInsuranceDto> {
+        export function findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto: model.HistoryAccidentInsuranceRateFindInDto): JQueryPromise<model.HistoryAccidentInsuranceDto> {
             var dfd = $.Deferred<model.HistoryAccidentInsuranceDto>();
-            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
+            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate, historyAccidentInsuranceRateFindInDto)
                 .done(function(res: model.HistoryAccidentInsuranceDto) {
                     dfd.resolve(res);
                     //xyz
@@ -307,6 +308,10 @@ module nts.uk.pr.view.qmm011.a {
             export class HistoryUnemployeeInsuranceDto extends HistoryInsuranceDto {
 
             }
+            export class HistoryUnemployeeInsuranceFindInDto {
+                historyId: string;
+                companyCode: string;
+            }
             export class UnemployeeInsuranceRateDto {
                 historyInsurance: HistoryUnemployeeInsuranceDto;
                 rateItems: UnemployeeInsuranceRateItemDto[];
@@ -320,6 +325,10 @@ module nts.uk.pr.view.qmm011.a {
                 historyInsurance: HistoryUnemployeeInsuranceDto;
                 rateItems: InsuBizRateItemDto[];
                 version: number;
+            }
+            export class HistoryAccidentInsuranceRateFindInDto {
+                historyId: string;
+                companyCode: string;
             }
             export class InsuBizRateItemDto {
                 /** The insu biz type. */

@@ -49,7 +49,17 @@ module qet001.a.viewmodel {
         public goToOutputSetting() {
             nts.uk.ui.windows.setShared('selectedCode', this.outputSettingSelectedCode(), true);
             nts.uk.ui.windows.setShared('outputSettings', this.outputSettings(), true);
-            nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" });
+            var self = this;
+            nts.uk.ui.windows.sub.modal("/view/qet/001/b/index.xhtml", { title: "出カ項目の設定" }).onClosed(function() {
+                if (nts.uk.ui.windows.getShared('isHasUpdate')) {
+                    // Reload output setting list.
+                    self.loadAllOutputSetting();
+                }
+            });
+        }
+        
+        public goToAggregateItemPage() {
+            nts.uk.ui.windows.sub.modal("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" })
         }
         
         public print() {

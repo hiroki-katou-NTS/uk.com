@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 
 /**
@@ -26,7 +27,7 @@ public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSett
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<OutputSettingRemoveCommand> context) {
-		this.repository.remove(context.getCommand().code);
+		this.repository.remove(new WLOutputSettingCode(context.getCommand().code));
 	}
 
 }

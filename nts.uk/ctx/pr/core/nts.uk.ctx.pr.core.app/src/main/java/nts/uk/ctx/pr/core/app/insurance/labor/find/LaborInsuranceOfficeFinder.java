@@ -6,12 +6,12 @@ package nts.uk.ctx.pr.core.app.insurance.labor.find;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
@@ -28,17 +28,17 @@ public class LaborInsuranceOfficeFinder {
 	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
 
 	/**
-	 * Find.
+	 * Find by id.
 	 *
-	 * @param id
-	 *            the id
+	 * @param officeCode
+	 *            the office code
 	 * @param companyCode
 	 *            the company code
 	 * @return the labor insurance office dto
 	 */
 	public LaborInsuranceOfficeDto findById(String officeCode, String companyCode) {
-		return LaborInsuranceOfficeDto
-				.fromDomain(this.laborInsuranceOfficeRepository.findById(new OfficeCode(officeCode), companyCode));
+		return LaborInsuranceOfficeDto.fromDomain(
+				this.laborInsuranceOfficeRepository.findById(new CompanyCode(companyCode), new OfficeCode(officeCode)));
 	}
 
 	/**
@@ -50,7 +50,8 @@ public class LaborInsuranceOfficeFinder {
 	 */
 	public List<LaborInsuranceOfficeFindOutDto> findAll(String companyCode) {
 		List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto = new ArrayList<>();
-		for (LaborInsuranceOffice laborInsuranceOffice : this.laborInsuranceOfficeRepository.findAll(companyCode)) {
+		for (LaborInsuranceOffice laborInsuranceOffice : this.laborInsuranceOfficeRepository
+				.findAll(new CompanyCode(companyCode))) {
 			lstLaborInsuranceOfficeFindOutDto.add(LaborInsuranceOfficeFindOutDto.fromDomain(laborInsuranceOffice));
 		}
 		return lstLaborInsuranceOfficeFindOutDto;

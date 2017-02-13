@@ -5,9 +5,31 @@ module nts.uk.pr.view.qmm008.i {
          *  Service paths
          */
         var paths: any = {
-            saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
-            getListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
+            updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
+            findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
         };
+
+        /**
+         *  Save List Health Insurance Average Earn
+         */
+        export function updatePensionAvgearn(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updatePensionAvgearn, list);
+        }
+
+        /**
+        *  Find PensionAvgearn by historyId
+        */
+        export function findPensionAvgearn(id: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+                .done(res => {
+                    dfd.resolve(res);
+                })
+                .fail(res => {
+                    dfd.reject(res);
+                })
+            return dfd.promise();;
+        }
 
         /**
         * Model namespace.

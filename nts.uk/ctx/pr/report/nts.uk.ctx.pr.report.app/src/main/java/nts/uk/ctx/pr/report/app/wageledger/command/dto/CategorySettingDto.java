@@ -7,14 +7,12 @@ package nts.uk.ctx.pr.report.app.wageledger.command.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Builder;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySettingGetMemento;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
 
-@Builder
 public class CategorySettingDto {
 	/** The category. */
 	public String category;
