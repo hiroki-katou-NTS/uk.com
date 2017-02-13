@@ -5,7 +5,7 @@
 	margin-top: 10px;
 }
 
-.right-content{
+.right-content {
 	float: left;
 	margin-left: 100px;
 }
@@ -23,7 +23,7 @@
 #A_BTN_003 {
 	padding: 0px 20px;
 	background-color: rgb(241, 247, 205);
-	margin:0px 20px;
+	margin: 0px 20px;
 }
 
 #A_BTN_004 {
@@ -38,15 +38,29 @@
 	margin: 0px 5px
 }
 
-.config{
+.config {
 	width: 180px;
-    height: 30px;
-    padding: 12px;
-    border-radius: 5px;
+	height: 30px;
+	padding: 12px;
+	border-radius: 5px;
 }
 
 .control-group {
 	padding: 8px;
 	border: 1px solid rgba(79, 79, 79, 0.85);
 	width: 1150px
+}
+
+.ui-widget-header {
+	border: none;
+	background: none;
+}
+
+.ui-iggrid .ui-iggrid-toolbar .ui-iggrid-results {
+	margin-right: 85px;
+}
+
+#grid_Jun, #grid_Jul, #grid_Aug, #grid_Sep, #grid_Oct, #grid_Nov,
+	#grid_Dec, #grid_Jan, #grid_Feb, #grid_Mar, #grid_Apr, #grid_May {
+	text-align: center
 }
