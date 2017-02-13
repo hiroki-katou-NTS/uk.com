@@ -10,6 +10,7 @@
 	<ui:composition template="/master/sidebar.xhtml">
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 900, height: 700 };</script>
+			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -19,8 +20,6 @@
 			<ul class="navigator">
 				<li><a href="#tabpanel-1" class="active">納付書の印刷</a></li>
 				<li><a href="#tabpanel-2">納付データの出力</a></li>
-				<!-- 	<li><a href="#tabpanel-3">切断</a></li>
-					<li><a href="#tabpanel-4">接続</a></li> -->
 			</ul>
 		</ui:define>
 
@@ -29,8 +28,7 @@
 				<div class="sidebar-content-header">
 					<span class="title">納付書の印刷</span>
 					<button class="proceed" id="B_BTN_001">印刷（PDF)</button>
-					<button id="B_BTN_002"
-						onclick="OpenModeSubWindow('/view/qpp/011/f/index.xhtml',{height: 550, width: 740,dialogClass: 'no-close'})">住民税チェックリスト</button>
+					<button id="B_BTN_002" data-bind="click: openFDialog">住民税チェックリスト</button>
 					<button id="B_BTN_003">印刷実行ログ</button>
 				</div>
 				<div class="contents-area">
@@ -58,16 +56,16 @@
 							]}">
 							</div>
 							<div style="clear: both;">
-								<div id="B_LBL_004" data-bind="ntsFormLabel: {  required: true }">対象年月
-								</div>
+								<div id="B_LBL_004"
+									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
 								<input id="B_INP_001" type="text"></input> <span id="B_LBL_005"
 									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
 									id="B_LBL_006" style="float: left">納付書印刷の設定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
-								<div id="B_LBL_007" data-bind="ntsFormLabel: {  required: true }">指定年月
-								</div>
+								<div id="B_LBL_007"
+									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
 								<input id="B_INP_002" type="text"></input> <span id="B_LBL_008"
 									style="float: left">指定年月和暦 </span>
 							</div>
@@ -82,7 +80,7 @@
 							<div style="clear: both;">
 								<div id="B_LBL_012" data-bind="ntsFormLabel: {  }">詳細設定</div>
 								<button id="B_BTN_004" class="large"
-									onclick="OpenModeSubWindow('/view/qpp/011/d/index.xhtml',{height: 550, width: 1000,dialogClass: 'no-close'})">納付書詳細設定</button>
+									data-bind="click: openDDialog">納付書詳細設定</button>
 							</div>
 						</div>
 						<div style="float: left; margin-left: 120px;">
@@ -92,11 +90,11 @@
 									data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
-								options: items,
+								options: gridListItems_B_LST_001,
 								optionsValue: 'code',
-								columns: columns,
+								columns: columns_B_LST_001,
 								multiple: true,
-								value: currentCodeList
+								value: currentCodeList_B_LST_001
 							}"></table>
 							</div>
 						</div>
@@ -140,16 +138,16 @@
 							]}">
 							</div>
 							<div style="clear: both;">
-								<div id="C_LBL_004" data-bind="ntsFormLabel: {  required: true }">対象年月
-								</div>
+								<div id="C_LBL_004"
+									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
 								<input id="C_INP_001" type="text"></input> <span id="C_LBL_005"
 									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
 									id="C_LBL_006" style="float: left">振込の指定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
-								<div id="C_LBL_007" data-bind="ntsFormLabel: {  required: true }">指定年月
-								</div>
+								<div id="C_LBL_007"
+									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
 								<input id="C_INP_002" type="text"></input> <span id="C_LBL_008"
 									style="float: left">指定年月和暦 </span>
 							</div>
@@ -194,9 +192,9 @@
 							<div style="clear: both;">
 								<div class="floatLeft" id="C_LBL_013"
 									data-bind="ntsFormLabel: {  required: true }">種別コード</div>
-								<div id="C_INP_004"  data-bind="with: numbereditor">
+								<div id="C_INP_004" data-bind="with: numbereditor">
 									<input
-									data-bind="ntsNumberEditor: {
+										data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
@@ -213,11 +211,11 @@
 									data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
-								options: items,
+								options: gridListItems_C_LST_001,
 								optionsValue: 'code',
-								columns: columns,
+								columns: columns_C_LST_001,
 								multiple: true,
-								value: currentCodeList
+								value: currentCodeList_C_LST_001
 							}"></table>
 							</div>
 						</div>

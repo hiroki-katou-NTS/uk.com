@@ -9,6 +9,7 @@
 
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -17,8 +18,9 @@
 		<ui:define name="content">
 
 			<div id="content-header">
-				<button class="proceed" onclick="submitInfo()" id="F_BTN_001">印刷（PDF)</button>
-				<button id="F_BTN_002" onclick="closeDialog()">閉じる</button>
+				<button class="proceed" data-bind="click: submitDialog"
+					id="F_BTN_001">印刷（PDF)</button>
+				<button id="F_BTN_002" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div class="floatLeft" style="width: 300px;">
@@ -45,11 +47,11 @@
 							data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
-								options: items,
+								options: gridListItems_F_LST_001,
 								optionsValue: 'code',
-								columns: columns,
+								columns: columns_F_LST_001,
 								multiple: false,
-								value: currentCodeList
+								value: currentCodeList_F_LST_001
 							}"></table>
 					</div>
 				</div>

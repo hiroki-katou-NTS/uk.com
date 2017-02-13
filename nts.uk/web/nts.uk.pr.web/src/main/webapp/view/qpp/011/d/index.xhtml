@@ -9,6 +9,7 @@
 
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -17,9 +18,9 @@
 		<ui:define name="content">
 
 			<div id="content-header">
-				<button class="proceed" onclick="submitInfo()" id="D_BTN_001">登録ボタン
-				</button>
-				<button id="D_BTN_002" onclick="closeDialog()">閉じるボタン</button>
+				<button class="proceed" data-bind="click: submitDialog"
+					id="D_BTN_001">登録ボタン</button>
+				<button id="D_BTN_002" data-bind="click: closeDialog">閉じるボタン</button>
 			</div>
 			<div id="contents-area">
 				<div class="floatLeft fullHeight">
@@ -29,8 +30,8 @@
 							<div id="D_SCH_001" style="width: 100px"
 								data-bind="ntsSearchBox: {
 								comId: 'D_LST_001',
-								items: items, 
-								selected: gridListCurrentCode, 
+								items: gridListItems_D_LST_001, 
+								selected: gridListCurrentCode_D_LST_001, 
 								selectedKey: 'code', 
 								filteredItems: filteredData, 
 								fields: ['name', 'code']}" />
@@ -40,11 +41,11 @@
 								data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
-								options: items,
+								options: gridListItems_D_LST_001,
 								optionsValue: 'code',
-								columns: columns,
+								columns: columns_D_LST_001,
 								multiple: false,
-								value: gridListCurrentCode
+								value: gridListCurrentCode_D_LST_001
 							}"></table>
 						</div>
 					</div>
@@ -62,7 +63,8 @@
 							<label id="D_LBL_004">領収書、納入書、納入済通知書 </label>
 							<hr style="margin-left: -10px;"></hr>
 							<div class="clearBoth floatLeft">
-								<div id="D_LBL_006" class="floatLeft" data-bind="ntsFormLabel: { }">
+								<div id="D_LBL_006" class="floatLeft"
+									data-bind="ntsFormLabel: { }">
 									給与分 <br /> <span>（数値10桁）</span>
 
 
@@ -79,7 +81,8 @@
 								</div>
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
-								<div id="D_LBL_007"  class="floatLeft" data-bind="ntsFormLabel: { }">
+								<div id="D_LBL_007" class="floatLeft"
+									data-bind="ntsFormLabel: { }">
 									退職所得分<br /> <span>（数値10桁）</span>
 
 								</div>
@@ -95,7 +98,8 @@
 								</div>
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
-								<div id="D_LBL_008" class="floatLeft" data-bind="ntsFormLabel: { }">
+								<div id="D_LBL_008" class="floatLeft"
+									data-bind="ntsFormLabel: { }">
 									遅延金<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_004" data-bind="with: currencyeditor">
@@ -110,7 +114,8 @@
 								</div>
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
-								<div id="D_LBL_009" class="floatLeft" data-bind="ntsFormLabel: { }">
+								<div id="D_LBL_009" class="floatLeft"
+									data-bind="ntsFormLabel: { }">
 									督促手数料<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_005" data-bind="with: currencyeditor">

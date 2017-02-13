@@ -9,6 +9,7 @@
 
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -28,8 +29,9 @@
 					enable: enable }"></div>
 			</div>
 			<div id="contents-area">
-				<button class="proceed" onclick="submitInfo()" id="E_BTN_001">設定</button>
-				<button id="E_BTN_002" onclick="closeDialog()">キャンセル</button>
+				<button class="proceed" data-bind="click: submitDialog"
+					id="E_BTN_001">設定</button>
+				<button id="E_BTN_002" data-bind="click: closeDialog">キャンセル</button>
 			</div>
 		</ui:define>
 	</ui:composition>
