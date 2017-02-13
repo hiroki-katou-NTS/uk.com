@@ -35,7 +35,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymentDataCommand> {
 
-	/** CompanyRepository */
+	/** paymentDataRepository */
 	@Inject
 	private PaymentDataRepository paymentDataRepository;
 
@@ -127,12 +127,13 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 						.find(payment.getCompanyCode().v(), item.getCategoryAtr(), item.getItemCode()).get();
 				
 				DetailItem detailItem = DetailItem.createFromJavaType(item.getItemCode(), item.getValue(),
-						item.getCorrectFlag(), item.getSocialInsuranceAtr(), item.getLaborInsuranceAtr(),
-						item.getCategoryAtr(), item.getDeductAtr(), item.getLinePosition(), item.getColumnPosition());
+						item.getCorrectFlag(), mItem.getSocialInsuranceAtr().value, mItem.getLaborInsuranceAtr().value,
+						item.getCategoryAtr(), mItem.getDeductAttribute().value, item.getLinePosition(), item.getColumnPosition());
 
 				detailItem.additionalInfo(mItem.getLimitMoney().v(), mItem.getFixedPaidAtr().value,
 						mItem.getAvgPaidAtr().value, mItem.getItemAtr().value);
 				detailItem.addCommuteData(item.getCommuteAllowTaxImpose(), item.getCommuteAllowMonth(), item.getCommuteAllowFraction());
+				detailItem.additionalInfo(mItem.getTaxAtr());
 				
 				if (item.isCreated()) {
 					this.paymentDataRepository.updateDetail(payment, detailItem);
