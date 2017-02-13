@@ -47,6 +47,6 @@ public class HistoryUnemployeeInsuranceFinder {
 	 */
 	public HistoryUnemployeeInsuranceDto find(String companyCode, String historyId) {
 		return HistoryUnemployeeInsuranceDto
-				.fromDomain(unemployeeInsuranceRateRepository.findById(historyId, companyCode));
+				.fromDomain(unemployeeInsuranceRateRepository.findById(companyCode, historyId));
 	}
 }

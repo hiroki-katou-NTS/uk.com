@@ -81,9 +81,10 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Funtion connection service detail by historyId 
-        export function detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<model.UnemployeeInsuranceRateDto> {
+        export function detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto: model.UnemployeeInsuranceFindInDto)
+            : JQueryPromise<model.UnemployeeInsuranceRateDto> {
             var dfd = $.Deferred<model.UnemployeeInsuranceRateDto>();
-            nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
+            nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate, unemployeeInsuranceFindInDto)
                 .done(function(res: model.UnemployeeInsuranceRateDto) {
                     dfd.resolve(res);
                     //xyz
@@ -320,6 +321,10 @@ module nts.uk.pr.view.qmm011.a {
 
             export class HistoryAccidentInsuranceDto extends HistoryInsuranceDto {
 
+            }
+            export class UnemployeeInsuranceFindInDto {
+                historyId: string;
+                companyCode: string;
             }
             export class AccidentInsuranceRateDto {
                 historyInsurance: HistoryUnemployeeInsuranceDto;

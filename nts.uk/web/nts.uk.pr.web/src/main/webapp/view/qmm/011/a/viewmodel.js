@@ -14,6 +14,7 @@ var nts;
                         var RoundingMethodDto = a.service.model.RoundingMethodDto;
                         var HistoryUnemployeeInsuranceDto = a.service.model.HistoryUnemployeeInsuranceDto;
                         var HistoryUnemployeeInsuranceFindInDto = a.service.model.HistoryUnemployeeInsuranceFindInDto;
+                        var UnemployeeInsuranceFindInDto = a.service.model.UnemployeeInsuranceFindInDto;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
@@ -211,7 +212,11 @@ var nts;
                                 ScreenModel.prototype.detailHistoryUnemployeeInsuranceRate = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.detailHistoryUnemployeeInsuranceRate(historyId).done(function (data) {
+                                    var unemployeeInsuranceFindInDto;
+                                    unemployeeInsuranceFindInDto = new UnemployeeInsuranceFindInDto();
+                                    unemployeeInsuranceFindInDto.historyId = historyId;
+                                    unemployeeInsuranceFindInDto.companyCode = "companyCode001";
+                                    a.service.detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto).done(function (data) {
                                         self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(data, self.rateInputOptions, self.selectionRoundingMethod));
                                         dfd.resolve(null);
                                     });

@@ -86,9 +86,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findHisotryUnemployeeInsuranceRate = findHisotryUnemployeeInsuranceRate;
-                            function detailHistoryUnemployeeInsuranceRate(historyId) {
+                            function detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate, unemployeeInsuranceFindInDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -307,6 +307,12 @@ var nts;
                                     return HistoryAccidentInsuranceDto;
                                 }(HistoryInsuranceDto));
                                 model.HistoryAccidentInsuranceDto = HistoryAccidentInsuranceDto;
+                                var UnemployeeInsuranceFindInDto = (function () {
+                                    function UnemployeeInsuranceFindInDto() {
+                                    }
+                                    return UnemployeeInsuranceFindInDto;
+                                }());
+                                model.UnemployeeInsuranceFindInDto = UnemployeeInsuranceFindInDto;
                                 var AccidentInsuranceRateDto = (function () {
                                     function AccidentInsuranceRateDto() {
                                     }

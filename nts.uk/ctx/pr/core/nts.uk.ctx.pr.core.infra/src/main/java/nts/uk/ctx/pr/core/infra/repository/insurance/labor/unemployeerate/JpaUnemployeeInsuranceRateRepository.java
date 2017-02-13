@@ -2,9 +2,11 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
+
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.unemployeerate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,9 +16,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemGetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 
 /**
@@ -72,10 +78,10 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 * java.lang.String)
 	 */
 	@Override
-	public UnemployeeInsuranceRate findById(String id, String companyCode) {
+	public UnemployeeInsuranceRate findById(String companyCode, String historyId) {
 		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = findAll(companyCode);
 		for (UnemployeeInsuranceRate unemployeeInsuranceRate : lstUnemployeeInsuranceRate) {
-			if (unemployeeInsuranceRate.getHistoryId().equals(id)) {
+			if (unemployeeInsuranceRate.getHistoryId().equals(historyId)) {
 				return unemployeeInsuranceRate;
 			}
 		}
@@ -143,7 +149,92 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 			@Override
 			public Set<UnemployeeInsuranceRateItem> getRateItems() {
 				// TODO Auto-generated method stub
-				return null;
+				Set<UnemployeeInsuranceRateItem> rateItems = new HashSet<>();
+				UnemployeeInsuranceRateItem itemAgroforestry = new UnemployeeInsuranceRateItem(
+						new UnemployeeInsuranceRateItemGetMemento() {
+
+							@Override
+							public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
+								// TODO Auto-generated method stub
+								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+								unemployeeInsuranceRateItemSetting.setRate(55.5);
+								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
+								return unemployeeInsuranceRateItemSetting;
+							}
+
+							@Override
+							public UnemployeeInsuranceRateItemSetting getCompanySetting() {
+								// TODO Auto-generated method stub
+								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+								unemployeeInsuranceRateItemSetting.setRate(55.5);
+								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
+								return unemployeeInsuranceRateItemSetting;
+							}
+
+							@Override
+							public CareerGroup getCareerGroup() {
+								// TODO Auto-generated method stub
+								return CareerGroup.Agroforestry;
+							}
+						});
+				rateItems.add(itemAgroforestry);
+				UnemployeeInsuranceRateItem itemContruction = new UnemployeeInsuranceRateItem(
+						new UnemployeeInsuranceRateItemGetMemento() {
+
+							@Override
+							public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
+								// TODO Auto-generated method stub
+								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+								unemployeeInsuranceRateItemSetting.setRate(55.5);
+								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
+								return unemployeeInsuranceRateItemSetting;
+							}
+
+							@Override
+							public UnemployeeInsuranceRateItemSetting getCompanySetting() {
+								// TODO Auto-generated method stub
+								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+								unemployeeInsuranceRateItemSetting.setRate(55.5);
+								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
+								return unemployeeInsuranceRateItemSetting;
+							}
+
+							@Override
+							public CareerGroup getCareerGroup() {
+								// TODO Auto-generated method stub
+								return CareerGroup.Contruction;
+							}
+						});
+				rateItems.add(itemContruction);
+				UnemployeeInsuranceRateItem itemOther = new UnemployeeInsuranceRateItem(
+						new UnemployeeInsuranceRateItemGetMemento() {
+
+							@Override
+							public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
+								// TODO Auto-generated method stub
+								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+								unemployeeInsuranceRateItemSetting.setRate(55.5);
+								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
+								return unemployeeInsuranceRateItemSetting;
+							}
+
+							@Override
+							public UnemployeeInsuranceRateItemSetting getCompanySetting() {
+								// TODO Auto-generated method stub
+								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
+								unemployeeInsuranceRateItemSetting.setRate(55.5);
+								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
+								return unemployeeInsuranceRateItemSetting;
+							}
+
+							@Override
+							public CareerGroup getCareerGroup() {
+								// TODO Auto-generated method stub
+								return CareerGroup.Other;
+							}
+						});
+				rateItems.add(itemOther);
+				return rateItems;
 			}
 
 			@Override

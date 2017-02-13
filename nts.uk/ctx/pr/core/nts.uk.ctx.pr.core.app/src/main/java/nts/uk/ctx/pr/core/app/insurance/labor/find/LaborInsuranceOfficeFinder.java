@@ -37,8 +37,10 @@ public class LaborInsuranceOfficeFinder {
 	 * @return the labor insurance office dto
 	 */
 	public LaborInsuranceOfficeDto findById(String officeCode, String companyCode) {
-		return LaborInsuranceOfficeDto.fromDomain(
-				this.laborInsuranceOfficeRepository.findById(new CompanyCode(companyCode), new OfficeCode(officeCode)));
+		LaborInsuranceOfficeDto laborInsuranceOfficeDto = new LaborInsuranceOfficeDto();
+		this.laborInsuranceOfficeRepository.findById(new CompanyCode(companyCode), new OfficeCode(officeCode))
+				.saveToMemento(laborInsuranceOfficeDto);
+		return laborInsuranceOfficeDto;
 	}
 
 	/**

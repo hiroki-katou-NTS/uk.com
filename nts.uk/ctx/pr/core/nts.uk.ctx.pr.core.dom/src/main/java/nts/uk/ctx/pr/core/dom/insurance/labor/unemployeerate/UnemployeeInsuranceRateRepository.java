@@ -49,7 +49,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @return the unemployee insurance rate
 	 */
-	UnemployeeInsuranceRate findById(String id,String companyCode);
+	UnemployeeInsuranceRate findById(String companyCode,String historyId);
 
 	/**
 	 * Checks if is invalid date range.
