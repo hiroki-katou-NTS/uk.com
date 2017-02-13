@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
+import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.core.dom.layout.detail.SumScopeAtr;
 import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
@@ -33,17 +34,19 @@ class Helper {
 			.collect(Collectors.toList());
 	}
 	
-	static List<PrintPositionCategory> createPositionCategory(Map<CategoryAtr, List<DetailItem>> payDetail,
+	static List<PrintPositionCategory> createPositionCategory(List<LayoutMasterCategory> categoryList,
 			List<LayoutMasterLine> lineList) {
 		List<PrintPositionCategory> result = new ArrayList<>();
 		
-		payDetail.keySet().stream().forEach(category -> {
-			List<PrintPositionCategory> lines = lineList.stream()
-					.filter(x -> x.getCategoryAtr() == category && LineDispAtr.ENABLE == x.getLineDispayAttribute())
-					.map(line -> new PrintPositionCategory(category, new PrintPosCatalogLines(line.getLinePosition().v())))
+		categoryList.forEach(category -> {
+			// find line
+			List<LayoutMasterLine> lines = lineList.stream()
+					.filter(x -> x.getCategoryAtr() == category.getCtAtr() && LineDispAtr.ENABLE == x.getLineDispayAttribute())
 					.collect(Collectors.toList());
+			
+			PrintPositionCategory printPositionCategory = new PrintPositionCategory(category.getCtAtr(), new PrintPosCatalogLines(lines.size()));
 			if (!lines.isEmpty()) {
-				result.addAll(lines);
+				result.add(printPositionCategory);
 			}
 		});
 		
