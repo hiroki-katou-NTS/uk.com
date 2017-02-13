@@ -33,13 +33,22 @@ var nts;
                         this.option.show(false);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
-                        var duplicate = _.filter(this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                        if (duplicate.length == 0)
-                            this.errors.push(error);
+                        var _this = this;
+                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
+                        // 原因がわかるまでひとまずdeferを使っておく
+                        _.defer(function () {
+                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                            if (duplicate.length == 0)
+                                _this.errors.push(error);
+                        });
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var removeds = _.filter(this.errors(), function (e) { return e.$control.is($element); });
-                        this.errors.removeAll(removeds);
+                        var _this = this;
+                        // addErrorと同じ対応
+                        _.defer(function () {
+                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
+                            _this.errors.removeAll(removeds);
+                        });
                     };
                     return ErrorsViewModel;
                 }());

@@ -9,6 +9,17 @@
             return true;
         }
         /**
+         * function find an item index in array
+         * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
+         */
+        export function findIndex(arr, value, key) {
+            for(var i = 0; i < arr.length; i++) {
+                var item = arr[i];
+                if(item[key] === value) return i; 
+            }
+            return -1;
+        }
+        /**
          * function add item to array, this function is used in combine with visitDfs function
          * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
          */
@@ -200,6 +211,50 @@
                 }
             }
         }
+        
+        export class Range {
+            start: number;
+            end: number;
+            
+            constructor(start: number, end: number) {
+                if (start > end) {
+                    throw new Error('start is larger than end');
+                }
+                
+                this.start = start;
+                this.end = end;
+            }
+            
+            contains(value: number) {
+                return this.start <= value && value <= this.end;
+            }
+            
+            greaterThan(value: number) {
+                return value < this.start;
+            }
+            
+            greaterThanOrEqualTo(value: number) {
+                return value <= this.start;
+            }
+            
+            lessThan(value: number) {
+                return this.end < value;
+            }
+            
+            lessThanOrEqualTo(value: number) {
+                return this.end <= value;
+            }
+            
+            distanceFrom(value: number) {
+                if (this.greaterThan(value)) {
+                    return value - this.start;
+                } else if (this.lessThan(value)) {
+                    return value - this.end;
+                } else {
+                    return 0;
+                }
+            }
+        }
     }
     
     export class WebStorageWrapper {
@@ -248,5 +303,88 @@
         }
     }
     
+    
+    /**
+     * Utilities about jquery deferred
+     */
+    export module deferred {
+        
+        /**
+         * Repeats a task with jQuery Deferred
+         */
+        export function repeat(configurator: (conf: repeater.IConfiguration) => void) {
+            var conf = repeater.createConfiguration();
+            configurator(conf);
+            return repeater.begin(conf);
+        }
+        
+        module repeater {
+            export function begin(conf: IConfiguration) {
+                return (<Configuration>conf).run();
+            }
+            
+            export interface IConfiguration {
+                /**
+                 * Set task returns JQueryPromise.
+                 */
+                task(taskFunction: () => JQueryPromise<any>): IConfiguration;
+                
+                /**
+                 * Set condition to repeat task.
+                 */
+                while(whileCondition: (taskResult: any) => boolean): IConfiguration;
+                
+                /**
+                 * Set pause time as milliseconds.
+                 */
+                pause(pauseMilliseconds: number): IConfiguration;
+            }
+            
+            export function createConfiguration(): IConfiguration {
+                return new Configuration();
+            }
+            
+            class Configuration implements IConfiguration {
+                taskFunction: () => JQueryPromise<any>;
+                whileCondition: (taskResult: any) => boolean;
+                pauseMilliseconds = 0;
+                
+                task(taskFunction: () => JQueryDeferred<any>) {
+                    this.taskFunction = taskFunction;
+                    return this;
+                }
+                
+                while(whileCondition: (taskResult: any) => boolean) {
+                    this.whileCondition = whileCondition;
+                    return this;
+                }
+                
+                pause(pauseMilliseconds: number) {
+                    this.pauseMilliseconds = pauseMilliseconds;
+                    return this;
+                }
+                
+                run() {
+                    let dfd = $.Deferred();
+                    this.repeat(dfd);
+                    return dfd.promise();
+                }
+                
+                repeat(dfd: JQueryDeferred<any>) {
+                    this.taskFunction().done(res => {
+                        if (this.whileCondition(res)) {
+                            setTimeout(() => this.repeat(dfd), this.pauseMilliseconds);
+                        } else {
+                            dfd.resolve(res);
+                        }
+                    }).fail(res => {
+                        dfd.reject(res);
+                    });
+                }
+            }
+        }
+    }
+    
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
+    
 }

@@ -1,4 +1,15 @@
 /*****************************
+  Overwrite JQueryUI
+*****************************/
+.ui-widget,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+	font-family: $font_family;
+}
+
+/*****************************
   Helper Class
 *****************************/
 .hidden {display: none !important;}
@@ -48,8 +59,8 @@
   NtsFormLabel
 *****************************/
 div.form-label {
-	$_label_height: 27px;
-	$_label_height_inline: 18px;
+	$_label_height: 37px;
+	$_label_height_inline: 23px;
 	
 	$_label_ribbon_width: 5px;
 	$_label_ribbon_color_normal: $green_formlabel_color;
@@ -59,26 +70,23 @@ div.form-label {
 	$_label_font_size: $bfs * 1.4;
 	$_constraint_font_size: $bfs * 1.2;
 	$_constraint_font_color: #777777;
-	
-	$_margin_if_single_row: $_label_height - $_label_font_size - 3px;
-	$_margin_if_inline: $_label_height_inline - $_label_font_size - 1px;
-	
+		
 	display: inline-block;
+	box-sizing: border-box;
 	height: $_label_height;
 	border-style: solid;
 	border-color: $_label_ribbon_color_normal;
 	border-width: 0 0 0 $_label_ribbon_width;
-	padding: $_margin_if_single_row 10px 0 8px;
+	padding: 0 10px 0 8px;
 	
 	&.broken {
-		padding-top: 0;
-		padding-bottom: $_margin_if_single_row;
+		label {line-height: inherit;}
 	}
 	
 	&.inline {
 		height: $_label_height_inline;
-		padding-top: $_margin_if_inline;
-		padding-bottom: 2px;
+		line-height: $_label_height_inline;
+		label {line-height: $_label_height_inline;}
 	}
 	
 	&.required {
@@ -90,7 +98,9 @@ div.form-label {
 	}
 	
 	> label {
+		max-height: 100%;
 		font-size: $_label_font_size;
+		line-height: $_label_height;
 	}
 	
 	> i {
@@ -119,13 +129,14 @@ div.form-label {
 /*****************************
   NtsLinkButton
 *****************************/
-div.link-button {
+.link-button {
 	display: inline-block;
 	padding: 3px 12px;
 	background-color: $green_background_color;
 	color: #0D86D1;
 	text-decoration: underline;
 	cursor: pointer;
+	user-select: none;
 }
 
 
@@ -143,13 +154,10 @@ div.popup-panel {
 /*****************************
   NtsEditor
 *****************************/
-.nts-editor {
-	&.error {
-		border-color: #ff6666;
+.ntsControl.error {
+	.nts-editor {
+		border-color:#ff6666;
 	}
-}
-.error {
-	border: 1px solid #ff6666 !important;
 }
 
 /*****************************
@@ -192,6 +200,18 @@ div.popup-panel {
 		font-size: 1.2rem;
 		background-color: $yellow_background_color;
 		color: $red_warning_color;
+	}
+	
+	&.with-image {
+		padding: 5px 10px 5px 5px;
+		border-radius: 5px;
+		background-color: $green_background_color;
+		color: $activated_color;
+		
+		.image {
+			vertical-align: middle;
+			margin-right: 10px;
+		}
 	}
 }
 div.label {
@@ -279,6 +299,98 @@ div.label {
 		    border-radius: 0 0 5px 5px;
 		    background-color: #FFF;
 		    transform: rotate(-45deg);
+	    }
+	}
+	&.icon-button-arrow-left {
+	    margin: 10px 0 10px 3px;
+	    width: 40px;
+	    height: 4px;
+	    background-color: $activated_color;
+	    
+	    &:before {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 0 2px 2px 0;
+		    transform: rotate(-40deg);
+		    left: -3px;
+		    top: -4px;
+	    }
+	    &:after {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 2px 0 0 2px;
+		    transform: rotate(-140deg);
+		    left: -3px;
+		    top: 4px;
+	    }
+	}
+	&.icon-button-arrow-right {
+	    margin: 10px 3px 10px 0;
+	    width: 40px;
+	    height: 4px;
+	    background-color: $activated_color;
+	    
+	    &:before {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 2px 0 0 2px;
+		    transform: rotate(40deg);
+		    right: -3px;
+		    top: -4px;
+	    }
+	    &:after {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 0 2px 2px 0;
+		    transform: rotate(140deg);
+		    right: -3px;
+		    top: 4px;
+	    }
+	}
+	&.icon-button-arrow-top {
+	    margin: 8px 5px 0 5px;
+	    width: 4px;
+	    height: 30px;
+	    background-color: $activated_color;
+	    
+	    &:before {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 0 2px 2px 0;
+		    transform: rotate(50deg);
+		    left: -2px;
+		    top: 2px;
+	    }
+	    &:after {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 0 2px 2px 0;
+		    transform: rotate(130deg);
+		    left: -10px;
+		    top: 2px;
+	    }
+	}
+	&.icon-button-arrow-bottom {
+	    margin: 5px 5px 3px 5px;
+	    width: 4px;
+	    height: 30px;
+	    background-color: $activated_color;
+	    
+	    &:before {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 0 2px 2px 0;
+		    transform: rotate(-50deg);
+		    left: -2px;
+		    bottom: 2px;
+	    }
+	    &:after {
+	        width: 16px;
+		    border-top: solid 4px $activated_color;
+		    border-radius: 0 2px 2px 0;
+		    transform: rotate(-130deg);
+		    left: -10px;
+		    bottom: 2px;
 	    }
 	}
 }

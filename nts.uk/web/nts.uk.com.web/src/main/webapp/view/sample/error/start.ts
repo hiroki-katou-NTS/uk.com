@@ -22,6 +22,18 @@ __viewContext.ready(function () {
                 readonly: ko.observable(false)
             };
         }
+        
+        setErrorToResidenceCode() {
+            $('#residence-code').ntsError('set', 'えらーです');
+        }
+        
+        clearErrorToResidenceCode() {
+            $('#residence-code').ntsError('clear');
+        }
+        
+        clearSaveErrors() {
+            $('.save-error').ntsError('clear');
+        }
     }
     
     this.bind(new ScreenModel());
