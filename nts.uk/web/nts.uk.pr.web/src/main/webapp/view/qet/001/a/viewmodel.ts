@@ -58,6 +58,10 @@ module qet001.a.viewmodel {
             });
         }
         
+        public goToAggregateItemPage() {
+            nts.uk.ui.windows.sub.modal("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" })
+        }
+        
         public print() {
             // Validate.
             var self = this;

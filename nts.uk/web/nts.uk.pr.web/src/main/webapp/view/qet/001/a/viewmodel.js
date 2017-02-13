@@ -44,6 +44,9 @@ var qet001;
                         }
                     });
                 };
+                ScreenModel.prototype.goToAggregateItemPage = function () {
+                    nts.uk.ui.windows.sub.modal("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" });
+                };
                 ScreenModel.prototype.print = function () {
                     var self = this;
                     if (self.targetYear() == null || self.targetYear().toString() == '') {
