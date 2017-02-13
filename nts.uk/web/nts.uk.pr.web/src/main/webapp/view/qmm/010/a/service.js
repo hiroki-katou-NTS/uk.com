@@ -55,6 +55,18 @@ var nts;
                                 });
                             }
                             service.addLaborInsuranceOffice = addLaborInsuranceOffice;
+                            function updateLaborInsuranceOffice(laborInsuranceOffice, companyCode) {
+                                var dfd = $.Deferred();
+                                var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+                                nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                            }
+                            service.updateLaborInsuranceOffice = updateLaborInsuranceOffice;
                             function deleteLaborInsuranceOffice(code, companyCode) {
                                 var dfd = $.Deferred();
                                 var data = { companyCode: companyCode, code: code };
@@ -87,6 +99,11 @@ var nts;
                                     return LaborInsuranceOfficeFindInDto;
                                 }());
                                 model.LaborInsuranceOfficeFindInDto = LaborInsuranceOfficeFindInDto;
+                                (function (TypeActionLaborInsuranceOffice) {
+                                    TypeActionLaborInsuranceOffice[TypeActionLaborInsuranceOffice["add"] = 1] = "add";
+                                    TypeActionLaborInsuranceOffice[TypeActionLaborInsuranceOffice["update"] = 2] = "update";
+                                })(model.TypeActionLaborInsuranceOffice || (model.TypeActionLaborInsuranceOffice = {}));
+                                var TypeActionLaborInsuranceOffice = model.TypeActionLaborInsuranceOffice;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm010.a || (qmm010.a = {}));

@@ -11,7 +11,9 @@ var nts;
                     var a;
                     (function (a) {
                         var option = nts.uk.ui.option;
+                        var LaborInsuranceOfficeDto = a.service.model.LaborInsuranceOfficeDto;
                         var LaborInsuranceOfficeFindInDto = a.service.model.LaborInsuranceOfficeFindInDto;
+                        var TypeActionLaborInsuranceOffice = a.service.model.TypeActionLaborInsuranceOffice;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -31,10 +33,12 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 120 }
                                     ]);
                                     self.enableButton = ko.observable(true);
+                                    self.typeAction = ko.observable(TypeActionLaborInsuranceOffice.update);
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
                                     self.laborInsuranceOfficeModel().resetAllValue();
+                                    self.typeAction(TypeActionLaborInsuranceOffice.add);
                                 };
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
@@ -91,6 +95,19 @@ var nts;
                                     var self = this;
                                     a.service.addLaborInsuranceOffice(self.collectData(), "000001");
                                 };
+                                ScreenModel.prototype.updateLaborInsuranceOffice = function () {
+                                    var self = this;
+                                    a.service.updateLaborInsuranceOffice(self.collectData(), "000001");
+                                };
+                                ScreenModel.prototype.saveLaborInsuranceOffice = function () {
+                                    var self = this;
+                                    if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
+                                        self.addLaborInsuranceOffice();
+                                    }
+                                    else {
+                                        self.updateLaborInsuranceOffice();
+                                    }
+                                };
                                 ScreenModel.prototype.deleteLaborInsuranceOffice = function () {
                                     var self = this;
                                     a.service.deleteLaborInsuranceOffice(self.laborInsuranceOfficeModel().code(), "00001");
@@ -98,7 +115,7 @@ var nts;
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var laborInsuranceOffice;
-                                    laborInsuranceOffice = new a.service.model.LaborInsuranceOfficeDto();
+                                    laborInsuranceOffice = new LaborInsuranceOfficeDto();
                                     laborInsuranceOffice.code = self.laborInsuranceOfficeModel().code();
                                     laborInsuranceOffice.name = self.laborInsuranceOfficeModel().name();
                                     laborInsuranceOffice.shortName = self.laborInsuranceOfficeModel().shortName();
