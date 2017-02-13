@@ -15,4 +15,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
+
+		public static boolean isExisted(String companyCode, JobCode jobCode) {
+			// TODO Auto-generated method stub
+			return false;
+		}
 }
