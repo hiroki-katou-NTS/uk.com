@@ -3,6 +3,7 @@ package nts.uk.ctx.basic.dom.organization.position;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
@@ -35,6 +36,21 @@ public class Position extends AggregateRoot {
 		this.jobOutCode = jobOutCode;
 		this.startDate = startDate;
 		this.companyCode = companyCode;
+		this.memo = memo;
+	}
+
+	
+	public Position( JobName jobName,GeneralDate endDate, JobCode jobCode, JobCode jobOutCode,
+			GeneralDate startDate, String companyCode, Memo memo) {
+
+		super();
+		this.endDate = endDate;
+		this.jobName = jobName;
+		this.jobCode = jobCode;
+		this.jobOutCode = jobOutCode;
+		this.startDate = startDate;
+		this.companyCode = companyCode;
+		this.historyID = IdentifierUtil.randomUniqueId();
 		this.memo = memo;
 	}
 
