@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.core.ws.insurance.social.healthrate;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,8 +11,6 @@ import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealth
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnDto;
-import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceAvgearnFinder;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateFinder;
 
@@ -25,21 +21,13 @@ public class HealthInsuranceRateWs extends WebService {
 	@Inject
 	private HealthInsuranceRateFinder healthInsuranceRateFinder;
 	@Inject
-	private HealthInsuranceAvgearnFinder healthInsuranceAvgearnFinder;
-	@Inject
 	private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
 	@Inject
 	private UpdateHealthInsuranceCommandHandler updateHealthInsuranceCommandHandler;
 
 	@POST
-	@Path("findHealthInsuranceAvgearn/{id}")
-	public List<HealthInsuranceAvgearnDto> findHealthInsuranceAvgearn(@PathParam("id") String id) {
-		return healthInsuranceAvgearnFinder.find(id);
-	}
-
-	@POST
-	@Path("findHealthInsuranceRate/{id}")
-	public HealthInsuranceRateDto findHealthInsuranceRate(@PathParam("id") String id) {
+	@Path("find/{id}")
+	public HealthInsuranceRateDto find(@PathParam("id") String id) {
 		return healthInsuranceRateFinder.find(id).get();
 	}
 
@@ -55,9 +43,4 @@ public class HealthInsuranceRateWs extends WebService {
 		updateHealthInsuranceCommandHandler.handle(command);
 	}
 
-	@POST
-	@Path("updateHealthInsuranceAvgearn")
-	public void updateHealthInsuranceAvgearn() {
-
-	}
 }

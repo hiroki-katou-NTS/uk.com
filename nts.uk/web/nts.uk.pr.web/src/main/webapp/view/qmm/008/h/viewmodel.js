@@ -49,7 +49,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    h.service.saveListHealthInsuranceAvgEarn(this.collectData());
+                                    h.service.updateHealthInsuranceAvgearn(this.collectData());
                                 };
                                 ScreenModel.prototype.loadHealthInsuranceAvgEarn = function () {
                                     var self = this;

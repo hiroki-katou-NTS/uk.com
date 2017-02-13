@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
+package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +15,10 @@ public class HealthInsuranceAvgearnFinder {
 	private HealthInsuranceAvgearnRepository repository;
 
 	public List<HealthInsuranceAvgearnDto> find(String id) {
-		return repository.findById(id).stream().map(domain -> HealthInsuranceAvgearnDto.fromDomain(domain))
-				.collect(Collectors.toList());
+		return repository.findById(id).stream().map(domain -> {
+			HealthInsuranceAvgearnDto dto = HealthInsuranceAvgearnDto.builder().build();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

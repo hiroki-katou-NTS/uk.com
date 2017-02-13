@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find;
+package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
 
 import java.util.List;
 import java.util.stream.Collectors;

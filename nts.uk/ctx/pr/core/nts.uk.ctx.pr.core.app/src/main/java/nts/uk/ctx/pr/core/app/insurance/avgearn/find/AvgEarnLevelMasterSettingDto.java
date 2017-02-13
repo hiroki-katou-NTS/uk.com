@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
+package nts.uk.ctx.pr.core.app.insurance.avgearn.find;
 
 import lombok.Builder;
 import lombok.Getter;

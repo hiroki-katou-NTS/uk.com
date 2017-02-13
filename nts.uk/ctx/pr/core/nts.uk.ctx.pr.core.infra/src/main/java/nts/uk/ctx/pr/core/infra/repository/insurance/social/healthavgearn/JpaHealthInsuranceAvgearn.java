@@ -39,7 +39,7 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 
 			@Override
 			public Long getVersion() {
-				return null;
+				return 1l;
 			}
 
 			@Override
@@ -63,16 +63,21 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 			}
 		}));
 
-//		list.add(new HealthInsuranceAvgearn("2", 2, new HealthInsuranceAvgearnValue(333l, 444l, 6666l, 9220l),
-//				new HealthInsuranceAvgearnValue(111l, 221l, 331l, 441l)));
-//		list.add(new HealthInsuranceAvgearn("3", 3, new HealthInsuranceAvgearnValue(774l, 4446l, 3338l, 220l),
-//				new HealthInsuranceAvgearnValue(122l, 331l, 661l, 551l)));
-//		list.add(new HealthInsuranceAvgearn("4", 4, new HealthInsuranceAvgearnValue(4534l, 456l, 678l, 550l),
-//				new HealthInsuranceAvgearnValue(112l, 231l, 431l, 531l)));
-//		list.add(new HealthInsuranceAvgearn("5", 5, new HealthInsuranceAvgearnValue(124l, 4256l, 528l, 112340l),
-//				new HealthInsuranceAvgearnValue(2341l, 231l, 2341l, 5321l)));
-//		list.add(new HealthInsuranceAvgearn("6", 6, new HealthInsuranceAvgearnValue(555l, 455l, 3328l, 230l),
-//				new HealthInsuranceAvgearnValue(12341l, 12341l, 145l, 671l)));
+		// list.add(new HealthInsuranceAvgearn("2", 2, new
+		// HealthInsuranceAvgearnValue(333l, 444l, 6666l, 9220l),
+		// new HealthInsuranceAvgearnValue(111l, 221l, 331l, 441l)));
+		// list.add(new HealthInsuranceAvgearn("3", 3, new
+		// HealthInsuranceAvgearnValue(774l, 4446l, 3338l, 220l),
+		// new HealthInsuranceAvgearnValue(122l, 331l, 661l, 551l)));
+		// list.add(new HealthInsuranceAvgearn("4", 4, new
+		// HealthInsuranceAvgearnValue(4534l, 456l, 678l, 550l),
+		// new HealthInsuranceAvgearnValue(112l, 231l, 431l, 531l)));
+		// list.add(new HealthInsuranceAvgearn("5", 5, new
+		// HealthInsuranceAvgearnValue(124l, 4256l, 528l, 112340l),
+		// new HealthInsuranceAvgearnValue(2341l, 231l, 2341l, 5321l)));
+		// list.add(new HealthInsuranceAvgearn("6", 6, new
+		// HealthInsuranceAvgearnValue(555l, 455l, 3328l, 230l),
+		// new HealthInsuranceAvgearnValue(12341l, 12341l, 145l, 671l)));
 		return list;
 	}
 
