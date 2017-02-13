@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
 import lombok.Builder;
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.AvgEarnLevelMasterSetting;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
 
 @Builder
 @Getter

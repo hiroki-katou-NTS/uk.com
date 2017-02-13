@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
@@ -26,9 +27,17 @@ public class HistoryAccidentInsuranceRateF‌inder {
 	@Inject
 	private AccidentInsuranceRateRepository accidentInsuranceRateRepository;
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @return the list
+	 */
 	public List<HistoryAccidentInsuranceRateDto> findAll(String companyCode) {
 		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRateDto = new ArrayList<>();
-		for (AccidentInsuranceRate accidentInsuranceRate : accidentInsuranceRateRepository.findAll(companyCode)) {
+		for (AccidentInsuranceRate accidentInsuranceRate : accidentInsuranceRateRepository
+				.findAll(new CompanyCode(companyCode))) {
 			lstHistoryAccidentInsuranceRateDto.add(HistoryAccidentInsuranceRateDto.fromDomain(accidentInsuranceRate));
 		}
 		return lstHistoryAccidentInsuranceRateDto;
@@ -37,14 +46,15 @@ public class HistoryAccidentInsuranceRateF‌inder {
 	/**
 	 * Find.
 	 *
-	 * @param historyAccidentInsuranceRateFindInDto the history accident insurance rate find in dto
+	 * @param historyAccidentInsuranceRateFindInDto
+	 *            the history accident insurance rate find in dto
 	 * @return the history accident insurance rate dto
 	 */
 	public HistoryAccidentInsuranceRateDto find(
 			HistoryAccidentInsuranceRateFindInDto historyAccidentInsuranceRateFindInDto) {
-		return HistoryAccidentInsuranceRateDto.fromDomain(
-				accidentInsuranceRateRepository.findById(historyAccidentInsuranceRateFindInDto.getCompanyCode(),
-						historyAccidentInsuranceRateFindInDto.getHistoryId()));
+		return HistoryAccidentInsuranceRateDto.fromDomain(accidentInsuranceRateRepository.findById(
+				new CompanyCode(historyAccidentInsuranceRateFindInDto.getCompanyCode()),
+				historyAccidentInsuranceRateFindInDto.getHistoryId()));
 	}
 
 }

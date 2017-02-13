@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
+package nts.uk.ctx.pr.core.infra.repository.insurance.avgearn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.AvgEarnLevelMasterSetting;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.AvgEarnLevelMasterSettingRepository;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 
 @Stateless
 public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository

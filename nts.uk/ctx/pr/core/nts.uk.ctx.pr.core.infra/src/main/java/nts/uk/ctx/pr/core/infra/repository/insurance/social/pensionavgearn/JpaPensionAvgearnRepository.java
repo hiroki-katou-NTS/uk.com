@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionrate;
+package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionAvgearn;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionAvgearnRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
 
 @Stateless
 public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {

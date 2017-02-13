@@ -77,7 +77,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * findAll(java.lang.String)
 	 */
 	@Override
-	public List<LaborInsuranceOffice> findAll(String companyCode) {
+	public List<LaborInsuranceOffice> findAll(CompanyCode companyCode) {
 		return findAllDataDemo(companyCode);
 	}
 
@@ -89,7 +89,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * findById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public LaborInsuranceOffice findById(OfficeCode officeCode, String companyCode) {
+	public LaborInsuranceOffice findById(CompanyCode companyCode, OfficeCode officeCode) {
 		// TODO Auto-generated method stub
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = findAllDataDemo(companyCode);
 		for (LaborInsuranceOffice laborInsuranceOffice : lstLaborInsuranceOffice) {
@@ -103,7 +103,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	/*
 	 * DEMO SEARCH DATA
 	 */
-	public List<LaborInsuranceOffice> findAllDataDemo(String companyCode) {
+	public List<LaborInsuranceOffice> findAllDataDemo(CompanyCode companyCode) {
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<>();
 		lstLaborInsuranceOffice.add(fromDomain(companyCode, "XA事業所", "000000000001"));
 		lstLaborInsuranceOffice.add(fromDomain(companyCode, "B事業所", "000000000002"));
@@ -112,7 +112,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 
 	}
 
-	public LaborInsuranceOffice fromDomain(String companyCode, String officeName, String officeCode) {
+	public LaborInsuranceOffice fromDomain(CompanyCode companyCode, String officeName, String officeCode) {
 		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
 
 			@Override
@@ -208,7 +208,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 			@Override
 			public CompanyCode getCompanyCode() {
 				// TODO Auto-generated method stub
-				return new CompanyCode(companyCode);
+				return companyCode;
 			}
 
 			@Override
@@ -238,7 +238,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public boolean isDuplicateCode(OfficeCode code) {
+	public boolean isDuplicateCode(CompanyCode companyCode, OfficeCode code) {
 		// TODO Auto-generated method stub
 		return false;
 	}
