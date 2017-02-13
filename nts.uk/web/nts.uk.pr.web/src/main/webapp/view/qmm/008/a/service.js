@@ -15,8 +15,8 @@ var nts;
                             var servicePath = {
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
-                                getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
-                                getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/findPensionRate",
+                                getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
+                                getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
                                 getAllRoundingItem: "list/rounding"
                             };
                             function findInsuranceOffice(key) {
@@ -91,11 +91,7 @@ var nts;
                                     }());
                                     finder.ChooseOption = ChooseOption;
                                     var HistoryItemDto = (function () {
-                                        function HistoryItemDto(id, name, code, childs) {
-                                            this.id = id;
-                                            this.name = name;
-                                            this.code = code;
-                                            this.childs = childs;
+                                        function HistoryItemDto() {
                                         }
                                         return HistoryItemDto;
                                     }());

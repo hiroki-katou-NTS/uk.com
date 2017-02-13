@@ -6,8 +6,8 @@ module nts.uk.pr.view.qmm008.a {
         var servicePath = {
             getAllOfficeItem: "pr/insurance/social/findall",
             getAllHistoryOfOffice: "pr/insurance/social/history",
-            getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
-            getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/findPensionRate",
+            getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
+            getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
             getAllRoundingItem: "list/rounding"
         };
         /**
@@ -57,9 +57,9 @@ module nts.uk.pr.view.qmm008.a {
         /**
          * Function is used to load history of Office by office code.
          */
-        export function findHistoryByOfficeCode(code: string): JQueryPromise<model.finder.InsuranceOfficeItemDto> {
+        export function findHistoryByOfficeCode(code: string): JQueryPromise<Array<model.finder.HistoryItemDto>> {
             // Init new dfd.
-            var dfd = $.Deferred<model.finder.InsuranceOfficeItemDto>();
+            var dfd = $.Deferred<Array<model.finder.HistoryItemDto>>();
             var findPath = servicePath.getAllHistoryOfOffice + "/" + code;
             // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data) {
@@ -146,14 +146,8 @@ module nts.uk.pr.view.qmm008.a {
                     id: string;
                     name: string;
                     code: string;
-                    childs: any;
-                    codeName: string;
-                    constructor(id: string, name: string, code: string, childs: Array<InsuranceOfficeItemDto>) {
-                        this.id = id;
-                        this.name = name;
-                        this.code = code;
-                        this.childs = childs;
-                    }
+                    start: string;
+                    end: string
                 }
                 //office DTO
                 export class InsuranceOfficeItemDto {
@@ -167,9 +161,12 @@ module nts.uk.pr.view.qmm008.a {
                         this.name = name;
                         this.code = code;
                         this.childs = childs;
+                        //if is history
                         if (childs.length == 0) {
                             this.codeName = name;
-                        } else {
+                        }
+                        //if is office
+                        else {
                             this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
                         }
                     }

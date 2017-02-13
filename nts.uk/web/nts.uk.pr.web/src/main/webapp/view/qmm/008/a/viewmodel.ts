@@ -1,7 +1,8 @@
 module nts.uk.pr.view.qmm008.a {
     export module viewmodel {
-        import InsuranceOfficeItem = service.model.finder.InsuranceOfficeItemDto
-        import RoundingItem = service.model.finder.Enum
+        import InsuranceOfficeItem = service.model.finder.InsuranceOfficeItemDto;
+        import HistoryItem = service.model.finder.HistoryItemDto;
+        import RoundingItem = service.model.finder.Enum;
         import HealthInsuranceRateDto = service.model.finder.HealthInsuranceRateDto;
         import PensionRateDto = service.model.finder.PensionRateDto;
         import PaymentType = service.model.PaymentType;
@@ -172,10 +173,12 @@ module nts.uk.pr.view.qmm008.a {
                 service.findInsuranceOffice(self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
                     //TODO add childs(history) for each item office
                    data.forEach(function(item,index){
-                        service.findHistoryByOfficeCode(item.code).done(function(data2:InsuranceOfficeItem) {
+                        service.findHistoryByOfficeCode(item.code).done(function(data2:Array<HistoryItem>) {
                             //TODO convert data get from service
-                            var addData = new InsuranceOfficeItem(index+item.code, data2.name, index+data2.code,[]);
-                            data[index].childs.push(addData);
+                            data2.forEach(function(item2, index2) {
+                                var addData = new InsuranceOfficeItem(index + item.code, item2.start+"~"+ item2.end, index + item2.code, []);
+                                data[index].childs.push(addData);
+                            });
                         });
                     });
                     

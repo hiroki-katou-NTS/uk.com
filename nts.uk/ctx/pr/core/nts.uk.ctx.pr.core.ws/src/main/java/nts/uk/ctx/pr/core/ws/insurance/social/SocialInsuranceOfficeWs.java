@@ -61,27 +61,42 @@ public class SocialInsuranceOfficeWs extends WebService {
 	
 	@POST
 	@Path("history/{officeCode}")
-	public HistoryDto findHistory(@PathParam("officeCode") String officeCode) {
+	public List<HistoryDto> findHistory(@PathParam("officeCode") String officeCode) {
 		
 		List<HistoryDto> lstHistory = new ArrayList<HistoryDto>();
-		HistoryDto returnHistory = new HistoryDto();
+		List<HistoryDto> returnHistory = new ArrayList<HistoryDto>();
 		
 		HistoryDto history1 = new HistoryDto();
-		history1.setCode("00000");
-		history1.setName("2015");
+		history1.setOfficeCode("officeCode1");
+		history1.setCode("historyCode1");
+		history1.setStart("2015");
+		history1.setEnd("2016");
 		lstHistory.add(history1);
+		
 		HistoryDto history2 = new HistoryDto();
-		history2.setCode("00002");
-		history2.setName("2016");
+		history2.setOfficeCode("officeCode2");
+		history2.setCode("historyCode2");
+		history2.setStart("2015");
+		history2.setEnd("2016");
 		lstHistory.add(history2);
+		
 		HistoryDto history3 = new HistoryDto();
-		history3.setCode("00003");
-		history3.setName("2017");
+		history3.setOfficeCode("officeCode3");
+		history3.setCode("historyCode3");
+		history3.setStart("2015");
+		history3.setEnd("2016");
 		lstHistory.add(history3);
 		
+		HistoryDto history4 = new HistoryDto();
+		history4.setOfficeCode("officeCode2");
+		history4.setCode("historyCode4");
+		history4.setStart("2015");
+		history4.setEnd("2016");
+		lstHistory.add(history4);
+		
 		for (HistoryDto HistoryDto : lstHistory) {
- 			if (HistoryDto.getCode().toString().equals(officeCode)) {
- 				returnHistory = HistoryDto;
+ 			if (HistoryDto.getOfficeCode().toString().equals(officeCode)) {
+ 				returnHistory.add(HistoryDto);
  			}
 		}
 		return returnHistory;

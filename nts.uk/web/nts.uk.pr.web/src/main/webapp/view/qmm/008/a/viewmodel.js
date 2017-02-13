@@ -96,8 +96,10 @@ var nts;
                                     a.service.findInsuranceOffice(self.searchKey()).done(function (data) {
                                         data.forEach(function (item, index) {
                                             a.service.findHistoryByOfficeCode(item.code).done(function (data2) {
-                                                var addData = new InsuranceOfficeItem(index + item.code, data2.name, index + data2.code, []);
-                                                data[index].childs.push(addData);
+                                                data2.forEach(function (item2, index2) {
+                                                    var addData = new InsuranceOfficeItem(index + item.code, item2.start + "~" + item2.end, index + item2.code, []);
+                                                    data[index].childs.push(addData);
+                                                });
                                             });
                                         });
                                         dfd.resolve(data);
