@@ -70,7 +70,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 * AccidentInsuranceRateRepository#findAll(int)
 	 */
 	@Override
-	public List<AccidentInsuranceRate> findAll(String companyCode) {
+	public List<AccidentInsuranceRate> findAll(CompanyCode companyCode) {
 		List<AccidentInsuranceRate> lstAccidentInsuranceRate = new ArrayList<>();
 		MonthRange monthRange006 = MonthRange.range(new YearMonth(2016 * 100 + 4), new YearMonth(9999 * 100 + 12));
 		lstAccidentInsuranceRate.add(fromDomain("historyId006", companyCode, monthRange006));
@@ -98,7 +98,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 *            the month range
 	 * @return the unemployee insurance rate
 	 */
-	public AccidentInsuranceRate fromDomain(String historyId, String companyCode, MonthRange monthRange) {
+	public AccidentInsuranceRate fromDomain(String historyId, CompanyCode companyCode, MonthRange monthRange) {
 		return new AccidentInsuranceRate(new AccidentInsuranceRateGetMemento() {
 
 			@Override
@@ -122,7 +122,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 			@Override
 			public CompanyCode getCompanyCode() {
 				// TODO Auto-generated method stub
-				return new CompanyCode(companyCode);
+				return companyCode;
 			}
 
 			@Override
@@ -140,7 +140,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 * AccidentInsuranceRateRepository#findById(java.lang.String)
 	 */
 	@Override
-	public AccidentInsuranceRate findById(String companyCode, String historyId) {
+	public AccidentInsuranceRate findById(CompanyCode companyCode, String historyId) {
 		// TODO Auto-generated method stub
 		List<AccidentInsuranceRate> lstAccidentInsuranceRate = findAll(companyCode);
 		for (AccidentInsuranceRate accidentInsuranceRate : lstAccidentInsuranceRate) {
@@ -152,7 +152,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	}
 
 	@Override
-	public boolean isInvalidDateRange(YearMonth startMonth) {
+	public boolean isInvalidDateRange(CompanyCode companyCode, YearMonth startMonth) {
 		// TODO Auto-generated method stub
 		return false;
 	}

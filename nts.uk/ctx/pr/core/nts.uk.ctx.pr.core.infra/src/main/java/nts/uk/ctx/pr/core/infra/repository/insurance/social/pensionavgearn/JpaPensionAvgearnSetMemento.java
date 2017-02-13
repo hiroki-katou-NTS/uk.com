@@ -4,19 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 
-import java.util.List;
-
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 
 /**
  * The Class JpaAggrSchemaMemento.
