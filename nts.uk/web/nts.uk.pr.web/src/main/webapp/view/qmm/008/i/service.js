@@ -13,9 +13,26 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
-                                getListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate",
+                                updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
+                                findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
+                            function updatePensionAvgearn(list) {
+                                return nts.uk.request.ajax(paths.updatePensionAvgearn, list);
+                            }
+                            service.updatePensionAvgearn = updatePensionAvgearn;
+                            function findPensionAvgearn(id) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                                ;
+                            }
+                            service.findPensionAvgearn = findPensionAvgearn;
                             var model;
                             (function (model) {
                                 var PensionAvgearnValue = (function () {

@@ -24,12 +24,5 @@ public class HealthInsuranceRateFinder {
 			healthInsuranceRate.get().saveToMemento(dto);
 		}
 		return Optional.ofNullable(dto);
-		
-//		Optional<HealthInsuranceRateDto> dto = this.healthInsuranceRateRepository.findById(id)
-//				.map(domain -> HealthInsuranceRateDto.fromDomain(domain));
-//		// dto.get().setOfficeName(socialInsuranceOfficeRepository.findByOfficeCode(dto.get().getOfficeCode()).getName().v());
-//		// mock data
-//		dto.get().setOfficeName("Ｃ 事業所");
-//		return dto;
 	}
 }

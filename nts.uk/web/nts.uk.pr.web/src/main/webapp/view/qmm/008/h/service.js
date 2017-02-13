@@ -13,14 +13,14 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                saveListHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/updateHealthInsuranceAvgearn",
-                                findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceAvgearn",
-                                findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/findHealthInsuranceRate",
+                                updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthrate/update",
+                                findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
+                                findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/find",
                             };
-                            function saveListHealthInsuranceAvgEarn(list) {
-                                return nts.uk.request.ajax(paths.saveListHealthInsuranceAvgEarn, list);
+                            function updateHealthInsuranceAvgearn(list) {
+                                return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, list);
                             }
-                            service.saveListHealthInsuranceAvgEarn = saveListHealthInsuranceAvgEarn;
+                            service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
                             function findHealthInsuranceRate(id) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findHealthInsuranceRate + '/' + id)

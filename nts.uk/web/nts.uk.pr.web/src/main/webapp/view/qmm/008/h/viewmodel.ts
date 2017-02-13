@@ -55,7 +55,7 @@ module nts.uk.pr.view.qmm008.h {
 
             private save() {
                 var self = this;
-                service.saveListHealthInsuranceAvgEarn(this.collectData());
+                service.updateHealthInsuranceAvgearn(this.collectData());
             }
 
             private loadHealthInsuranceAvgEarn(): JQueryPromise<any> {
