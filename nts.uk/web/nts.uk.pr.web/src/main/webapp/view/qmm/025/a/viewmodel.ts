@@ -23,6 +23,19 @@ module qmm025.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.texteditor1 = {
+                value: ko.observable(''),
+                constraint: 'ResidenceCode',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    width: "45px",
+                    textalign: "center"
+                })),
+                required: ko.observable(true),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
 
             // checkbox square
             $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
@@ -128,21 +141,8 @@ module qmm025.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-            self.texteditor1 = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "45px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-
             var dfd = $.Deferred();
+            dfd.resolve();
             return dfd.promise();
         }
     }

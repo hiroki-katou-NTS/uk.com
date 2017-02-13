@@ -23,6 +23,19 @@ var qmm025;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    self.texteditor1 = {
+                        value: ko.observable(''),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            width: "45px",
+                            textalign: "center"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
                     // checkbox square
                     $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
                     $("#grid").igGrid({
@@ -124,20 +137,8 @@ var qmm025;
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    self.texteditor1 = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "45px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
                     var dfd = $.Deferred();
+                    dfd.resolve();
                     return dfd.promise();
                 };
                 return ScreenModel;
