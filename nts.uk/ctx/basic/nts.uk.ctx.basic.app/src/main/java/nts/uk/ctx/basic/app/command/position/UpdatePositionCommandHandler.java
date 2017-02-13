@@ -37,7 +37,7 @@ public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionC
 				new JobName(context.getCommand().getJobName()),
 				new JobCode(context.getCommand().getJobCode()),
 				new JobCode(context.getCommand().getJobOutCode()),
-				starDate,
+				endDate,
 				companyCode,
 				new Memo(context.getCommand().getMemo())
 				);

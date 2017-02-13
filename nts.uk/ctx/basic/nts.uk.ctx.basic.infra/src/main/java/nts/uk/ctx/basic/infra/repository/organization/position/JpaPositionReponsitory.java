@@ -10,14 +10,10 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.organization.payclassification.PayClassification;
-import nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationCode;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
 import nts.uk.ctx.basic.dom.organization.position.JobName;
 import nts.uk.ctx.basic.dom.organization.position.Position;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
-import nts.uk.ctx.basic.infra.entity.organization.payclassification.QmnmtPayClass;
-import nts.uk.ctx.basic.infra.entity.organization.payclassification.QmnmtPayClassPK;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTittle;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTittlePK;
 import nts.uk.shr.com.primitive.Memo;
@@ -61,8 +57,9 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	}
 
 	private Position convertToDomain(CmnmtJobTittle cmnmtJobTittle) {
-		return new Position(GeneralDate.localDate(cmnmtJobTittle.getEndDate()),
+		return new Position(
 				new JobName(cmnmtJobTittle.getJobName()),
+				GeneralDate.localDate(cmnmtJobTittle.getEndDate()),
 				new JobCode(cmnmtJobTittle.getCmnmtJobTittlePK().getJobCode()),
 				new JobCode(cmnmtJobTittle.getJobOutCode()),
 				GeneralDate.localDate(cmnmtJobTittle.getStartDate()),
@@ -70,9 +67,23 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 				cmnmtJobTittle.getCmnmtJobTittlePK().getCompanyCode(),
 				new Memo(cmnmtJobTittle.getMemo()));
 	}
+	private CmnmtJobTittle convertToDbType(Position position) {
+		CmnmtJobTittle cmnmtJobTittle = new CmnmtJobTittle();
+		CmnmtJobTittlePK cmnmtJobTittlePK = new CmnmtJobTittlePK(
+				position.getJobCode().v(),
+				position.getHistoryID(),
+				position.getCompanyCode());
+		cmnmtJobTittle.setMemo(position.getMemo().toString());
+		cmnmtJobTittle.setEndDate(position.getEndDate().localDate());
+		cmnmtJobTittle.setStartDate(position.getStartDate().localDate());
+		cmnmtJobTittle.setJobName(position.getJobName().v());
+		cmnmtJobTittle.setJobOutCode(position.getJobOutCode().v());
+		cmnmtJobTittle.setCmnmtJobTittlePK(cmnmtJobTittlePK);
+		return cmnmtJobTittle;
+	}
 
 	private final Position toDomain(CmnmtJobTittle entity) {
-		val domain = Position.createFromJavaType(GeneralDate.localDate(entity.endDate), entity.jobName, entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo);
+		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo);
 
 		return domain;
 	}
@@ -113,7 +124,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	
 	@Override
 	public void add(Position position) {
-		this.commandProxy().insert(convertToDbType(Position));
+		this.commandProxy().insert(convertToDbType(position));
 
 	}
 
@@ -160,6 +171,18 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	public List<Position> findAll(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isExisted(String companyCode, JobCode jobCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void remove(String companyCode, JobCode jobCode) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

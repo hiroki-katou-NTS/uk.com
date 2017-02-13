@@ -12,7 +12,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
-import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
