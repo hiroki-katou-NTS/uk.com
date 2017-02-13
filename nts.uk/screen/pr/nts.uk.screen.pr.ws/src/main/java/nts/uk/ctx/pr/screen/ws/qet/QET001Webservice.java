@@ -18,6 +18,8 @@ import nts.uk.ctx.pr.screen.ws.qet.dto.WageLedgerReportDto;
 @Path("/screen/pr/qet001")
 @Produces("application/json")
 public class QET001Webservice extends WebService{
+	
+	
 	@POST
 	@Path("print")
 	public FileGeneratorContext printReport(WageLedgerReportDto printDto) {
