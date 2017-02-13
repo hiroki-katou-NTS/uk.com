@@ -36,6 +36,8 @@ public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionC
 		Position position = new Position(
 				new JobName(context.getCommand().getJobName()),
 				new JobCode(context.getCommand().getJobCode()),
+				new JobCode(context.getCommand().getJobOutCode()),
+				starDate,
 				companyCode,
 				new Memo(context.getCommand().getMemo())
 				);
