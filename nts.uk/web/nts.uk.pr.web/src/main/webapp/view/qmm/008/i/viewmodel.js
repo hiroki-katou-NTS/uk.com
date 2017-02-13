@@ -30,6 +30,9 @@ var nts;
                                     var dfd = $.Deferred();
                                     commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
                                         self.listAvgEarnLevelMasterSetting(data);
+                                        i.service.findPensionAvgearn('a').done(function (zz) {
+                                            self.listPensionAvgearn(zz);
+                                        });
                                         dfd.resolve();
                                     });
                                     return dfd.promise();

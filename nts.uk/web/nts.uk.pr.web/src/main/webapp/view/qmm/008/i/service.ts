@@ -21,7 +21,7 @@ module nts.uk.pr.view.qmm008.i {
         */
         export function findPensionAvgearn(id: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+            nts.uk.request.ajax(paths.findPensionAvgearn + '/' + id)
                 .done(res => {
                     dfd.resolve(res);
                 })
