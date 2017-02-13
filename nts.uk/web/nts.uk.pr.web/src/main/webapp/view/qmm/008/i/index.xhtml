@@ -139,65 +139,37 @@
 									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
 									<com:ko-foreach bind="$parent.listPensionAvgearn">
 										<com:ko-if bind="$parent.code == levelCode">
-											<td><input
+											<td data-bind="css: { hidden: $parents[1].leftShow() }"
+												class="bg-green border_none"></td>
+											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
 												data-bind="value: personalPension.maleAmount"></input></td>
-											<td><input
+											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
 												data-bind="value: personalPension.femaleAmount"></input></td>
-											<td><input
+											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
 												data-bind="value: personalPension.unknownAmount"></input></td>
-											<td><input 
+											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
 												data-bind="value: companyPension.maleAmount"></input></td>
-											<td><input
+											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
 												data-bind="value: companyPension.femaleAmount"></input></td>
-											<td><input
+											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
 												data-bind="value: companyPension.unknownAmount"></input></td>
-												<td><input
+											<td data-bind="css: { hidden: $parents[1].rightShow() }"
+												class="bg-green border_none"></td>
+											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
 												data-bind="value: personalFundExemption.maleAmount"></input></td>
-												<td><input
+											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
 												data-bind="value: personalFundExemption.femaleAmount"></input></td>
-												<td><input
+											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
 												data-bind="value: personalFundExemption.unknownAmount"></input></td>
-												<td><input
+											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
 												data-bind="value: companyFundExemption.maleAmount"></input></td>
-												<td><input
+											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
 												data-bind="value: companyFundExemption.femaleAmount"></input></td>
-												<td><input
+											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
 												data-bind="value: companyFundExemption.unknownAmount"></input></td>
-												<td><input
-												data-bind="value: childContributionAmount"></input></td>
+											<td><input data-bind="value: childContributionAmount"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
-										<!-- 
-									<td data-bind="css: { hidden: $parent.leftShow() }"
-										class="bg-green border_none"></td>
-									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
-									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
-									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
-									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
-									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
-									<td data-bind="css: { hidden: !$parent.leftShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.leftShow() }"></input></td>
-
-									<td data-bind="css: { hidden: $parent.rightShow() }"
-										class="bg-green border_none"></td>
-									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
-									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
-									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
-									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
-									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
-									<td data-bind=" css: { hidden: !$parent.rightShow() }"><input
-										data-bind="value: 456, css: { hidden: !$parent.rightShow() }"></input></td>
-									<td><input data-bind="value: 555"></input></td> -->
 								</tr>
 							</com:ko-foreach>
 						</tbody>
