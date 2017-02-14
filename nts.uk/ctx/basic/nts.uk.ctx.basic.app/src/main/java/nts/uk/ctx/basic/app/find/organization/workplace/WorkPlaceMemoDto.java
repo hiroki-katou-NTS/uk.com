@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.query.organization.workplace;
+package nts.uk.ctx.basic.app.find.organization.workplace;
 
 import lombok.Data;
 
