@@ -1,11 +1,12 @@
 package nts.uk.ctx.basic.app.query.organization.department;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import lombok.Data;
 
 @Data
-public class DepartmentDto {
+public class DepartmentDto extends OrganizationTreeDto<DepartmentDto>{
 
 	private String companyCode;
 
@@ -32,6 +33,7 @@ public class DepartmentDto {
 		this.fullName = fullName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
+		this.children = new ArrayList<>();
 	}
 
 }

@@ -1,12 +1,14 @@
 package nts.uk.ctx.basic.app.query.organization.workplace;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 import lombok.Data;
+import nts.uk.ctx.basic.app.query.organization.department.OrganizationTreeDto;
 
 @Data
-public class WorkPlaceDto {
+public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto>{
 
 	private String companyCode;
 
@@ -61,6 +63,7 @@ public class WorkPlaceDto {
 		this.fullName = fullName;
 		this.hierarchyCode = hierarchyCode;
 		this.name = name;
+		this.children = new ArrayList<>();
 	}
 
 }

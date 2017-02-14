@@ -24,5 +24,7 @@ public interface WorkPlaceRepository {
 	boolean checkExist(String companyCode);
 	
 	Optional<WorkPlaceMemo> findMemo(String companyCode, String historyId);
+	
+	boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode);
 
 }

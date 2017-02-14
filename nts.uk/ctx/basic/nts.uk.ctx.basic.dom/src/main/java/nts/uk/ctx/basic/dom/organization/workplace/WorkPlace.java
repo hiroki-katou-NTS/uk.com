@@ -2,6 +2,7 @@ package nts.uk.ctx.basic.dom.organization.workplace;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
 
 @Getter
@@ -36,10 +37,10 @@ public class WorkPlace {
 	private GeneralDate startDate;
 
 	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, String historyId, GeneralDate endDate,
-			WorkPlaceCode externalCode, WorkPlaceFullName fullName, HierarchyCode hierarchyCode,
-		    WorkPlaceName name, ParentChildAttribute parentChildAttribute1,
-			ParentChildAttribute parentChildAttribute2, WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2,
-			WorkPlaceShortName shortName, GeneralDate startDate) {
+			WorkPlaceCode externalCode, WorkPlaceFullName fullName, HierarchyCode hierarchyCode, WorkPlaceName name,
+			ParentChildAttribute parentChildAttribute1, ParentChildAttribute parentChildAttribute2,
+			WorkPlaceCode parentWorkCode1, WorkPlaceCode parentWorkCode2, WorkPlaceShortName shortName,
+			GeneralDate startDate) {
 		this.companyCode = companyCode;
 		this.workPlaceCode = workPlaceCode;
 		this.historyId = historyId;
@@ -52,6 +53,21 @@ public class WorkPlace {
 		this.parentChildAttribute2 = parentChildAttribute2;
 		this.parentWorkCode1 = parentWorkCode1;
 		this.parentWorkCode2 = parentWorkCode2;
+		this.shortName = shortName;
+		this.startDate = startDate;
+	}
+
+	public WorkPlace(String companyCode, WorkPlaceCode workPlaceCode, GeneralDate endDate, WorkPlaceCode externalCode,
+			WorkPlaceFullName fullName, HierarchyCode hierarchyCode, WorkPlaceName name, WorkPlaceShortName shortName,
+			GeneralDate startDate) {
+		this.companyCode = companyCode;
+		this.workPlaceCode = workPlaceCode;
+		this.historyId = IdentifierUtil.randomUniqueId();
+		this.endDate = endDate;
+		this.externalCode = externalCode;
+		this.fullName = fullName;
+		this.hierarchyCode = hierarchyCode;
+		this.name = name;
 		this.shortName = shortName;
 		this.startDate = startDate;
 	}

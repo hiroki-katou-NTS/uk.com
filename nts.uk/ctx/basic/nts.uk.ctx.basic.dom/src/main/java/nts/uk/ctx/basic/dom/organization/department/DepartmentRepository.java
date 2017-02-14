@@ -24,5 +24,7 @@ public interface DepartmentRepository {
 	boolean checkExist(String companyCode);
 	
 	Optional<DepartmentMemo> findMemo(String companyCode, String historyId);
+	
+	boolean isDuplicateDepartmentCode(String companyCode, DepartmentCode departmentCode);
 
 }

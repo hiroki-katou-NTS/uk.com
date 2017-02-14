@@ -35,12 +35,15 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 
 	private static final String FIND_MEMO;
 
+	private static final String IS_DUPLICATE_DEPARTMENT_CODE;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtDep e");
 		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtDepPK.historyId = :historyId");
+		builderString.append(" ORDER BY e.hierarchyId");
 		FIND_ALL_BY_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -73,6 +76,13 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		builderString.append(" WHERE e.cmnmtDepMemoPK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtDepMemoPK.historyId = :historyId");
 		FIND_MEMO = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM CmnmtDep e");
+		builderString.append(" WHERE e.cmnmtDepPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtDepPK.departmentCode = :departmentCode");
+		IS_DUPLICATE_DEPARTMENT_CODE = builderString.toString();
 	}
 
 	@Override
@@ -103,7 +113,7 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 	public Optional<Department> findSingleDepartment(String companyCode, DepartmentCode departmentCode,
 			String historyId) {
 		return this.queryProxy().query(FIND_SINGLE, CmnmtDep.class).setParameter("companyCode", "'" + companyCode + "'")
-				.setParameter("workPlaceCode", "'" + departmentCode.toString() + "'")
+				.setParameter("departmentCode", "'" + departmentCode.toString() + "'")
 				.setParameter("historyId", historyId).getSingle().map(e -> {
 					return Optional.of(convertToDomain(e));
 				}).orElse(Optional.empty());
@@ -163,6 +173,13 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		cmnmtDep.setFullName(department.getFullName().toString());
 		cmnmtDep.setHierarchyId(department.getHierarchyCode().toString());
 		return cmnmtDep;
+	}
+
+	@Override
+	public boolean isDuplicateDepartmentCode(String companyCode, DepartmentCode departmentCode) {
+		return this.queryProxy().query(IS_DUPLICATE_DEPARTMENT_CODE, long.class)
+				.setParameter("companyCode", "'" + companyCode + "'")
+				.setParameter("departmentCode", "'" + departmentCode.toString() + "'").getSingle().get() > 0;
 	}
 
 }

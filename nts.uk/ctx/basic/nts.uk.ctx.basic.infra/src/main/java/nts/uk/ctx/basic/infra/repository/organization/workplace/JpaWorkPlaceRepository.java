@@ -37,6 +37,8 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 
 	private static final String FIND_ALL_BY_HISTORY;
 
+	private static final String IS_DUPLICATE_WORK_PLACE_CODE;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -75,6 +77,13 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		builderString.append(" WHERE e.cmnmtWorkPlaceMemoPK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtWorkPlaceMemoPK.historyId = :historyId");
 		FIND_MEMO = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM CmnmtWorkPlace e");
+		builderString.append(" WHERE e.cmnmtWorkPlacePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtWorkPlacePK.workPlaceCode = :workPlaceCode");
+		IS_DUPLICATE_WORK_PLACE_CODE = builderString.toString();
 	}
 
 	@Override
@@ -180,6 +189,13 @@ public class JpaWorkPlaceRepository extends JpaRepository implements WorkPlaceRe
 		cmnmtWorkPlace.setShortName(workPlace.getShortName().toString());
 		cmnmtWorkPlace.setStartDate(workPlace.getStartDate().date());
 		return cmnmtWorkPlace;
+	}
+
+	@Override
+	public boolean isDuplicateWorkPlaceCode(String companyCode, WorkPlaceCode workPlaceCode) {
+		return this.queryProxy().query(IS_DUPLICATE_WORK_PLACE_CODE, long.class)
+				.setParameter("companyCode", "'" + companyCode + "'")
+				.setParameter("departmentCode", "'" + workPlaceCode.toString() + "'").getSingle().get() > 0;
 	}
 
 }

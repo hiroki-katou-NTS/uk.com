@@ -2,6 +2,7 @@ package nts.uk.ctx.basic.dom.organization.department;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.basic.dom.organization.shr.HierarchyCode;
 
 @Getter
@@ -31,6 +32,20 @@ public class Department {
 		this.companyCode = companyCode;
 		this.departmentCode = departmentCode;
 		this.historyId = historyId;
+		this.endDate = endDate;
+		this.externalCode = externalCode;
+		this.fullName = fullName;
+		this.hierarchyCode = hierarchyCode;
+		this.name = name;
+		this.startDate = startDate;
+	}
+
+	public Department(String companyCode, DepartmentCode departmentCode, GeneralDate endDate,
+			DepartmentCode externalCode, DepartmentFullName fullName, HierarchyCode hierarchyCode, DepartmentName name,
+			GeneralDate startDate) {
+		this.companyCode = companyCode;
+		this.departmentCode = departmentCode;
+		this.historyId = IdentifierUtil.randomUniqueId();
 		this.endDate = endDate;
 		this.externalCode = externalCode;
 		this.fullName = fullName;
