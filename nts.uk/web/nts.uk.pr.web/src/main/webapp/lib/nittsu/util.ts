@@ -303,5 +303,88 @@
         }
     }
     
+    
+    /**
+     * Utilities about jquery deferred
+     */
+    export module deferred {
+        
+        /**
+         * Repeats a task with jQuery Deferred
+         */
+        export function repeat(configurator: (conf: repeater.IConfiguration) => void) {
+            var conf = repeater.createConfiguration();
+            configurator(conf);
+            return repeater.begin(conf);
+        }
+        
+        module repeater {
+            export function begin(conf: IConfiguration) {
+                return (<Configuration>conf).run();
+            }
+            
+            export interface IConfiguration {
+                /**
+                 * Set task returns JQueryPromise.
+                 */
+                task(taskFunction: () => JQueryPromise<any>): IConfiguration;
+                
+                /**
+                 * Set condition to repeat task.
+                 */
+                while(whileCondition: (taskResult: any) => boolean): IConfiguration;
+                
+                /**
+                 * Set pause time as milliseconds.
+                 */
+                pause(pauseMilliseconds: number): IConfiguration;
+            }
+            
+            export function createConfiguration(): IConfiguration {
+                return new Configuration();
+            }
+            
+            class Configuration implements IConfiguration {
+                taskFunction: () => JQueryPromise<any>;
+                whileCondition: (taskResult: any) => boolean;
+                pauseMilliseconds = 0;
+                
+                task(taskFunction: () => JQueryDeferred<any>) {
+                    this.taskFunction = taskFunction;
+                    return this;
+                }
+                
+                while(whileCondition: (taskResult: any) => boolean) {
+                    this.whileCondition = whileCondition;
+                    return this;
+                }
+                
+                pause(pauseMilliseconds: number) {
+                    this.pauseMilliseconds = pauseMilliseconds;
+                    return this;
+                }
+                
+                run() {
+                    let dfd = $.Deferred();
+                    this.repeat(dfd);
+                    return dfd.promise();
+                }
+                
+                repeat(dfd: JQueryDeferred<any>) {
+                    this.taskFunction().done(res => {
+                        if (this.whileCondition(res)) {
+                            setTimeout(() => this.repeat(dfd), this.pauseMilliseconds);
+                        } else {
+                            dfd.resolve(res);
+                        }
+                    }).fail(res => {
+                        dfd.reject(res);
+                    });
+                }
+            }
+        }
+    }
+    
     export var sessionStorage = new WebStorageWrapper(window.sessionStorage);
+    
 }

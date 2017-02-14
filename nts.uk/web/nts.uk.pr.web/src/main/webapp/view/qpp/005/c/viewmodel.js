@@ -30,7 +30,10 @@ ScreenModel.prototype.start = function() {
 		return new Employee(employee.personId, employee.code, employee.name);
 	});
 	
+	var employee = nts.uk.ui.windows.getShared('semployee');
+	self.employeeList().selected(new Employee(employee.personId, employee.code, employee.name));
 	self.employeeList().items(employeeList);
+	
 };
 
 ScreenModel.prototype.chooseEmployee = function() {

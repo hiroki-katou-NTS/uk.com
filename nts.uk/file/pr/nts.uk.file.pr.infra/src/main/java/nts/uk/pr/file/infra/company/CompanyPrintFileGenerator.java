@@ -11,11 +11,12 @@ import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 
-import nts.arc.layer.infra.file.FileGenerator;
-import nts.arc.layer.infra.file.FileGeneratorContext;
+import nts.arc.layer.infra.file.export.FileGenerator;
+import nts.arc.layer.infra.file.export.FileGeneratorContext;
+
 
 @Stateless
-public class CompanyPrintFileGenerator extends FileGenerator{
+public class CompanyPrintFileGenerator extends FileGenerator {
 
 	private final String fileName = "report/company.xlsx";
 	
@@ -23,7 +24,7 @@ public class CompanyPrintFileGenerator extends FileGenerator{
 	protected void generate(FileGeneratorContext context) {
 		try {
 			List<CompanyDto> companies = new ArrayList<>();
-			OutputStream output = context.createOutputFileStream("company.xlsx");
+			OutputStream output = this.createNewFile(context, "company.xlsx");
 			for (int i = 0; i < 1000; i++) {
 				CompanyDto company = new CompanyDto();
 				company.setCode("Code " + (i + 1));
