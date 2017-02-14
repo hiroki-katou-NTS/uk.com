@@ -120,6 +120,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 
 		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem();
 		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
+		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
 		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
 		premiumRateItem.setGenderType(InsuranceGender.Female);
 		premiumRateItem.setPayType(PaymentType.Bonus);

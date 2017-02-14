@@ -15,8 +15,8 @@ var nts;
                             var servicePath = {
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
-                                getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
                                 getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
+                                getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
                                 getAllRoundingItem: "list/rounding"
                             };
@@ -33,7 +33,7 @@ var nts;
                             function convertToTreeList(data) {
                                 var OfficeItemList = [];
                                 data.forEach(function (item, index) {
-                                    OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, []));
+                                    OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, [], item.code + "\u00A0" + "\u00A0" + "\u00A0" + item.name));
                                 });
                                 return OfficeItemList;
                             }
@@ -108,29 +108,29 @@ var nts;
                                     }());
                                     finder.HistoryItemDto = HistoryItemDto;
                                     var InsuranceOfficeItemDto = (function () {
-                                        function InsuranceOfficeItemDto(id, name, code, childs) {
+                                        function InsuranceOfficeItemDto(id, name, code, childs, codeName) {
                                             this.id = id;
                                             this.name = name;
                                             this.code = code;
                                             this.childs = childs;
-                                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
+                                            this.codeName = codeName;
                                         }
                                         return InsuranceOfficeItemDto;
                                     }());
                                     finder.InsuranceOfficeItemDto = InsuranceOfficeItemDto;
                                     var PensionRateDto = (function () {
-                                        function PensionRateDto(historyId, companyCode, officeCode, applyRange, autoCalculate, funInputOption, premiumRateItems, fundRateItems, roundingMethods, maxAmount, officeRate) {
+                                        function PensionRateDto(historyId, companyCode, officeCode, applyRange, autoCalculate, fundInputApply, premiumRateItems, fundRateItems, roundingMethods, maxAmount, childContributionRate) {
                                             this.historyId = historyId;
                                             this.companyCode = companyCode;
                                             this.officeCode = officeCode;
                                             this.applyRange = applyRange;
                                             this.autoCalculate = autoCalculate;
-                                            this.fundInputOption = funInputOption;
+                                            this.fundInputApply = fundInputApply;
                                             this.premiumRateItems = premiumRateItems;
                                             this.fundRateItems = fundRateItems;
                                             this.roundingMethods = roundingMethods;
                                             this.maxAmount = maxAmount;
-                                            this.officeRate = officeRate;
+                                            this.childContributionRate = childContributionRate;
                                         }
                                         return PensionRateDto;
                                     }());
@@ -145,9 +145,6 @@ var nts;
                                     finder.PensionRateItemDto = PensionRateItemDto;
                                     var FundRateItemDto = (function () {
                                         function FundRateItemDto(chargeRate, groupType, chargeType, genderType, payType) {
-                                            this.chargeRate = chargeRate;
-                                            this.groupType = groupType;
-                                            this.chargeType = chargeType;
                                             this.genderType = genderType;
                                             this.payType = payType;
                                         }

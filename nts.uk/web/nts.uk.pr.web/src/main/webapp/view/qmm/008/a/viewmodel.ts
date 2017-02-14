@@ -126,7 +126,7 @@ module nts.uk.pr.view.qmm008.a {
                             self.loadHistoryOfOffice(officeSelectedCode);
                             //reset data on view
                             self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                            self.pensionModel(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
+                            self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
 //                       TODO enabled button add new history
                             self.createHistoryControll(true);
                         }
@@ -143,7 +143,7 @@ module nts.uk.pr.view.qmm008.a {
                         }
                     }
                 });
-                self.pensionModel().funInputOption.subscribe(function(pensionFundInputOptions: any){
+                self.pensionModel().fundInputApply.subscribe(function(pensionFundInputOptions: any){
                     //TODO change select -> disable fun input
                     if (self.fundInputEnable()) {
                         self.fundInputEnable(false);
@@ -225,7 +225,7 @@ module nts.uk.pr.view.qmm008.a {
                         service.getAllHealthInsuranceItem(item.code).done(function(data: Array<HealthInsuranceRateDto>) {
                             data.forEach(function(item2, index2) {
                                 //push history into office
-                                officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.startMonth + "~" + item2.endMonth, index + item2.historyId + index2, []));
+                                officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [],item2.startMonth + "~" + item2.endMonth));
                             });
                             self.InsuranceOfficeList(officeData);
                         });
@@ -297,18 +297,34 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().historyId = data.historyId;
                     self.pensionModel().companyCode = data.companyCode;
                     self.pensionModel().officeCode(data.officeCode);
-                    self.pensionModel().autoCalculate(data.autoCalculate);
-                    self.pensionModel().funInputOption(data.fundInputOption);
+                    if (data.autoCalculate)
+                        self.pensionModel().autoCalculate(1);
+                    else
+                        self.pensionModel().autoCalculate(2);
+
+                    if (data.fundInputApply)
+                        self.pensionModel().fundInputApply(1);
+                    else
+                        self.pensionModel().fundInputApply(2);
+                    self.pensionModel().rateItems().pensionSalaryPersonalSon(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionSalaryCompanySon(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionBonusPersonalSon(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionBonusCompanySon(data.premiumRateItems[0].companyRate);
                     
-                    self.pensionModel().rateItems().pensionSalaryPersonalSon(data.premiumRateItems[0].pensionDeductCompanyRate);
-                    self.pensionModel().rateItems().pensionSalaryCompanySon(data.premiumRateItems[0].pensionDeductCompanyRate);
-                    self.pensionModel().rateItems().pensionBonusPersonalSon(data.premiumRateItems[0].pensionDeductCompanyRate);
-                    self.pensionModel().rateItems().pensionBonusCompanySon(data.premiumRateItems[0].pensionDeductCompanyRate);
+                    self.pensionModel().rateItems().pensionSalaryPersonalDaughter(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionSalaryCompanyDaughter(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionBonusPersonalDaughter(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionBonusCompanyDaughter(data.premiumRateItems[0].companyRate);
                     
-                    self.pensionModel().fundRateItems().salaryPersonalSonExemption(data.fundRateItems[0].chargeRate);
-                    self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].chargeRate);
-                    self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].chargeRate);
-                    self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].chargeRate);
+                    self.pensionModel().rateItems().pensionSalaryPersonalUnknown(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionSalaryCompanyUnknown(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionBonusPersonalUnknown(data.premiumRateItems[0].companyRate);
+                    self.pensionModel().rateItems().pensionBonusCompanyUnknown(data.premiumRateItems[0].companyRate);
+                    
+                    self.pensionModel().fundRateItems().salaryPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
+                    self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
+                    self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
+                    self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                     
 //                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs.companyRoundAtr);
 //                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs.personalRoundAtr);
@@ -316,7 +332,7 @@ module nts.uk.pr.view.qmm008.a {
 //                    self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(data.roundingMethods[0].roundAtrs.personalRoundAtr);
                     
                     self.pensionModel().maxAmount(data.maxAmount);
-                    self.pensionModel().officeRate(data.officeRate);
+                    self.pensionModel().childContributionRate(data.childContributionRate);
                     // Resolve
                     dfd.resolve();
                 }).fail(function() {
@@ -445,23 +461,23 @@ module nts.uk.pr.view.qmm008.a {
             companyCode: string;
             officeCode: KnockoutObservable<string>;
             applyRange: string;
-            funInputOption: KnockoutObservable<number>;
+            fundInputApply: KnockoutObservable<number>;
             autoCalculate: KnockoutObservable<number>;
             rateItems: KnockoutObservable<PensionRateItemModel>;
             fundRateItems: KnockoutObservable<FunRateItemModel>;
             roundingMethods: KnockoutObservable<PensionRateRoundingModel>;
             maxAmount: KnockoutObservable<number>;
-            officeRate: KnockoutObservable<number>;
-            constructor(officeCode: string, funInputOption:number,autoCalculate: number,rateItems: PensionRateItemModel, fundRateItems: FunRateItemModel, roundingMethods: PensionRateRoundingModel, maxAmount: number, officeRate: number) {
+            childContributionRate: KnockoutObservable<number>;
+            constructor(officeCode: string,fundInputApply:number,autoCalculate: number,rateItems: PensionRateItemModel, fundRateItems: FunRateItemModel, roundingMethods: PensionRateRoundingModel, maxAmount: number, childContributionRate: number) {
                 this.pensionDate = ko.observable('2016/04');
                 this.officeCode = ko.observable('');
-                this.funInputOption = ko.observable(funInputOption);
+                this.fundInputApply = ko.observable(fundInputApply);
                 this.autoCalculate = ko.observable(autoCalculate);
                 this.rateItems = ko.observable(new PensionRateItemModel());
                 this.fundRateItems = ko.observable(new FunRateItemModel());
                 this.roundingMethods = ko.observable(new PensionRateRoundingModel());
                 this.maxAmount = ko.observable(0);
-                this.officeRate = ko.observable(0);
+                this.childContributionRate = ko.observable(0);
             }
 
         }

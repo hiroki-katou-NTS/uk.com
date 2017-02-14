@@ -6,9 +6,10 @@ module nts.uk.pr.view.qmm008.a {
         var servicePath = {
             getAllOfficeItem: "pr/insurance/social/findall",
             getAllHistoryOfOffice: "pr/insurance/social/history",
-            getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
             //get all heal insurance for get history
             getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
+            //get health and pension data 
+            getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
             getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
             getAllRoundingItem: "list/rounding"
         };
@@ -51,7 +52,7 @@ module nts.uk.pr.view.qmm008.a {
             var OfficeItemList: Array<model.finder.InsuranceOfficeItemDto> = [];
             // 
             data.forEach((item, index) => {
-                OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, []));
+                OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, [],item.code+ "\u00A0" + "\u00A0" + "\u00A0" +item.name));
             });
             return OfficeItemList;
         }
@@ -177,18 +178,19 @@ module nts.uk.pr.view.qmm008.a {
                     code: string;
                     childs: any;
                     codeName: string;
-                    constructor(id: string, name: string, code: string, childs: Array<InsuranceOfficeItemDto>) {
+                    constructor(id: string, name: string, code: string, childs: Array<InsuranceOfficeItemDto>,codeName:string) {
                         this.id = id;
                         this.name = name;
                         this.code = code;
                         this.childs = childs;
+                        this.codeName = codeName;
                         //if is history
 //                        if (childs.length == 0) {
 //                            this.codeName = name;
 //                        }
                         //if is office
 //                        else {
-                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
+//                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
 //                        }
                     }
                 }
@@ -199,52 +201,46 @@ module nts.uk.pr.view.qmm008.a {
                     companyCode: string;
                     officeCode: string;
                     applyRange: string;
-                    autoCalculate: number;
-                    fundInputOption: number;
+                    autoCalculate: boolean;
+                    fundInputApply: boolean;
                     premiumRateItems: Array<PensionRateItemDto>;
                     fundRateItems: Array<FundRateItemDto>;
                     roundingMethods: Array<RoundingDto>;
                     maxAmount: number;
-                    officeRate: number;
+                    childContributionRate: number;
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: number, companyCode: string, officeCode: string, applyRange: string, autoCalculate: number, funInputOption: number, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, officeRate: number) {
+                    constructor(historyId: number, companyCode: string, officeCode: string, applyRange: string, autoCalculate: boolean, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;
                         this.applyRange = applyRange;
                         this.autoCalculate = autoCalculate;
-                        this.fundInputOption = funInputOption;
+                        this.fundInputApply = fundInputApply;
                         this.premiumRateItems = premiumRateItems;
                         this.fundRateItems = fundRateItems;
                         this.roundingMethods = roundingMethods;
                         this.maxAmount = maxAmount;
-                        this.officeRate = officeRate;
+                        this.childContributionRate = childContributionRate;
                     }
                 }
                 export class PensionRateItemDto {
-                    pensionDeductCompanyRate: number;
-                    pensionDeductPersonalRate: number;
-                    pensionRaiseCompanyRate: number;
-                    pensionRaisePersonalRate: number;
+                    personalRate: number;
+                    companyRate: number;
                     genderType: InsuranceGender;
                     payType: PaymentType;
                     constructor(payType: PaymentType, genderType: InsuranceGender) {
-                        //                        this.chargeRate = chargeRate;
-                        //                        this.groupType = groupType;
                         this.payType = payType;
                         this.genderType = genderType;
                     }
                 }
                 export class FundRateItemDto {
-                    chargeRate: number;
-                    groupType: GroupType;
-                    chargeType: ChargeType;
+                    burdenChargeCompanyRate: number;
+                    burdenChargePersonalRate: number;
+                    exemptionChargeCompanyRate: number;
+                    exemptionChargePersonalRate: number;
                     genderType: InsuranceGender;
                     payType: PaymentType;
                     constructor(chargeRate: number, groupType: GroupType, chargeType: ChargeType, genderType: InsuranceGender, payType: PaymentType) {
-                        this.chargeRate = chargeRate;
-                        this.groupType = groupType;
-                        this.chargeType = chargeType;
                         this.genderType = genderType;
                         this.payType = payType;
                     }
