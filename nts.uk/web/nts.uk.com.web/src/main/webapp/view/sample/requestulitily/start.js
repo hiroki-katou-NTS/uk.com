@@ -3,7 +3,7 @@ __viewContext.ready(function () {
         function ScreenModel() {
         }
         ScreenModel.prototype.exportFile = function () {
-            nts.uk.request.exportFile('/sample/report/generate').done(function () {
+            nts.uk.request.exportFile('/sample/report/generate', { value: 'abc' }).done(function () {
                 console.log('DONE!!');
             });
         };
