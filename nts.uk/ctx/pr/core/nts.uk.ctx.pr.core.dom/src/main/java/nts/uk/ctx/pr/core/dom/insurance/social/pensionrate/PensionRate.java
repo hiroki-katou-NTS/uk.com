@@ -40,20 +40,20 @@ public class PensionRate extends AggregateRoot {
 	/** The auto calculate. */
 	private Boolean autoCalculate;
 
-	/** The max amount. */
-	private CommonAmount maxAmount;
+	/** The premium rate items. */
+	private List<PensionPremiumRateItem> premiumRateItems;
 
 	/** The fund rate items. */
 	private List<FundRateItem> fundRateItems;
 
-	/** The premium rate items. */
-	private List<PensionPremiumRateItem> premiumRateItems;
-
-	/** The child contribution rate. */
-	private Ins2Rate childContributionRate;
-
 	/** The rounding methods. */
 	private List<PensionRateRounding> roundingMethods;
+	
+	/** The max amount. */
+	private CommonAmount maxAmount;
+	
+	/** The child contribution rate. */
+	private Ins2Rate childContributionRate;
 
 	/**
 	 * Validate.

@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
-import java.util.Set;
-
 import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
@@ -24,10 +22,7 @@ public class PensionPremiumRateItem extends AggregateRoot {
 	private InsuranceGender genderType;
 
 	/** The raise charge rate. */
-	private PensionChargeRateItem raiseChargeRate;
-
-	/** The deduct charge rate. */
-	private PensionChargeRateItem deductChargeRate;
+	private PensionChargeRateItem chargeRate;
 
 	/**
 	 * Instantiates a new pension premium rate item.
@@ -43,18 +38,14 @@ public class PensionPremiumRateItem extends AggregateRoot {
 	 *            the pay type
 	 * @param genderType
 	 *            the gender type
-	 * @param raiseChargeRate
-	 *            the raise charge rate
-	 * @param deductChargeRate
-	 *            the deduct charge rate
+	 * @param chargeRate
+	 *            the charge rate
 	 */
-	public PensionPremiumRateItem(PaymentType payType, InsuranceGender genderType,
-			PensionChargeRateItem raiseChargeRate, PensionChargeRateItem deductChargeRate) {
+	public PensionPremiumRateItem(PaymentType payType, InsuranceGender genderType, PensionChargeRateItem chargeRate) {
 		super();
 		this.payType = payType;
 		this.genderType = genderType;
-		this.raiseChargeRate = raiseChargeRate;
-		this.deductChargeRate = deductChargeRate;
+		this.chargeRate = chargeRate;
 	}
 
 }
