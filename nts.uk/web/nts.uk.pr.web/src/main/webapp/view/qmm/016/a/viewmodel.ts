@@ -1,36 +1,5 @@
-module qmm016.a {
+module nts.uk.pr.view.qmm016.a {
     export module viewmodel {
-
-        export class WageTableItem {
-            code: string;
-            name: string;
-            nodeText: string;
-            histories: Array<WageTableHistoryItem>;
-
-            constructor(code: string, name: string, histories: Array<WageTableHistoryItem>) {
-                var self = this;
-                self.code = code;
-                self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
-                self.histories = histories;
-            }
-        }
-
-        export class WageTableHistoryItem {
-            code: string;
-            startMonth: string;
-            endMonth: string;
-            nodeText: string;
-
-            constructor(code: string, startMonth: string, endMonth: string) {
-                var self = this;
-                self.code = code;
-                self.startMonth = startMonth;
-                self.endMonth = endMonth;
-                self.nodeText = self.startMonth + ' ~ ' + self.endMonth;
-            }
-        }
-
         export class ScreenModel {
             // UI
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -43,10 +12,10 @@ module qmm016.a {
 
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
-            startMonth: string;
-            endMonth: string;
-            memo: string;
-            selectedDimensionType: number;
+            startMonth: KnockoutObservable<string>;
+            endMonth: KnockoutObservable<string>;
+            memo: KnockoutObservable<string>;
+            selectedDimensionType: KnockoutObservable<number>;
             selectedDimensionName: KnockoutComputed<string>;
 
             generalTableTypes: KnockoutObservableArray<any>;
@@ -95,7 +64,60 @@ module qmm016.a {
             goToB() {
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 400 }).setTitle('å±¥æ­´ã�®è¿½åŠ ');
             }
+            //open dialog edit HistoryAccidentInsurance => show view model xhtml (action event edit)
+            private openSetupEntitlementGroup() {
+                // Set parent value
+                //  selectionHistoryUnemployeeInsuranceRate
+                var self = this;
+                //var historyId = self.selectionHistoryAccidentInsuranceRate();
+                //  nts.uk.ui.windows.setShared("historyId", historyId);
+                // nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                // nts.uk.ui.windows.setShared("historyStart", self.historyAccidentInsuranceRateStart());
+                // nts.uk.ui.windows.setShared("historyEnd", self.historyAccidentInsuranceRateEnd());
+                //self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
+                nts.uk.ui.windows.sub.modal("/view/qmm/016/l/index.xhtml", { height: 800, width: 1319, title: "資格グループの設定" }).onClosed(() => {
+                    //OnClose => call
+                    //var updateHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryAccidentInsuranceDto");
+                    /*if (updateHistoryAccidentInsuranceDto != null && updateHistoryAccidentInsuranceDto != undefined) {
+                        self.historyAccidentInsuranceRateStart(updateHistoryAccidentInsuranceDto.startMonthRage);
+                        self.historyAccidentInsuranceRateEnd(updateHistoryAccidentInsuranceDto.endMonthRage);
+                    }*/
+                });
+            }
 
         }
+
+
+        export class WageTableItem {
+            code: string;
+            name: string;
+            nodeText: string;
+            histories: Array<WageTableHistoryItem>;
+
+            constructor(code: string, name: string, histories: Array<WageTableHistoryItem>) {
+                var self = this;
+                self.code = code;
+                self.name = name;
+                self.nodeText = self.code + ' ' + self.name;
+                self.histories = histories;
+            }
+        }
+
+        export class WageTableHistoryItem {
+            code: string;
+            startMonth: string;
+            endMonth: string;
+            nodeText: string;
+
+            constructor(code: string, startMonth: string, endMonth: string) {
+                var self = this;
+                self.code = code;
+                self.startMonth = startMonth;
+                self.endMonth = endMonth;
+                self.nodeText = self.startMonth + ' ~ ' + self.endMonth;
+            }
+        }
+
+
     }
 }
