@@ -48,7 +48,7 @@ var qmm013;
                     self.SEL_004_check = ko.observable(0);
                     self.uniteCode = ko.observable("002");
                     self.displayAtr = ko.observable(false);
-                    self.displayAll = ko.observable(false);
+                    self.displayAll = ko.observable(true);
                     self.displayAll.subscribe(function (newValue) {
                         self.getPersonalUnitPriceList().done(function () {
                             self.selectedFirstUnitPrice();
@@ -103,7 +103,7 @@ var qmm013;
                 ScreenModel.prototype.getPersonalUnitPriceList = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm013.a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
+                    a.service.getPersonalUnitPriceList(self.displayAll()).done(function (data) {
                         var items = _.map(data, function (item) {
                             var abolition = item.displayAtr == 0 ? '<i class="icon icon-close"></i>' : "";
                             return new ItemModel(item.personalUnitPriceCode, item.personalUnitPriceName, abolition);
