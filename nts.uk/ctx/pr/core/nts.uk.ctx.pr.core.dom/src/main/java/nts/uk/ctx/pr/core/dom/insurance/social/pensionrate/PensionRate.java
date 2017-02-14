@@ -34,6 +34,12 @@ public class PensionRate extends AggregateRoot {
 	/** The apply range. */
 	private MonthRange applyRange;
 
+	/** The fund input apply. */
+	private Boolean fundInputApply;
+
+	/** The auto calculate. */
+	private Boolean autoCalculate;
+
 	/** The max amount. */
 	private CommonAmount maxAmount;
 
@@ -78,6 +84,8 @@ public class PensionRate extends AggregateRoot {
 		this.companyCode = memento.getCompanyCode();
 		this.officeCode = memento.getOfficeCode();
 		this.applyRange = memento.getApplyRange();
+		this.fundInputApply = memento.getFundInputApply();
+		this.autoCalculate = memento.getAutoCalculate();
 		this.maxAmount = memento.getMaxAmount();
 		this.fundRateItems = memento.getFundRateItems();
 		this.premiumRateItems = memento.getPremiumRateItems();
@@ -97,6 +105,8 @@ public class PensionRate extends AggregateRoot {
 		memento.setCompanyCode(this.companyCode);
 		memento.setOfficeCode(this.officeCode);
 		memento.setApplyRange(this.applyRange);
+		memento.setFundInputApply(this.fundInputApply);
+		memento.setAutoCalculate(this.autoCalculate);
 		memento.setMaxAmount(this.maxAmount);
 		memento.setFundRateItems(this.fundRateItems);
 		memento.setPremiumRateItems(this.premiumRateItems);

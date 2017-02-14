@@ -94,4 +94,16 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 		return null;
 	}
 
+	@Override
+	public Boolean getFundInputApply() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getAutoCalculate() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
