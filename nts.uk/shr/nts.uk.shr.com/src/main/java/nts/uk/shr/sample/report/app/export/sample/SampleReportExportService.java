@@ -1,4 +1,4 @@
-package nts.uk.shr.sample.report.app;
+package nts.uk.shr.sample.report.app.export.sample;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

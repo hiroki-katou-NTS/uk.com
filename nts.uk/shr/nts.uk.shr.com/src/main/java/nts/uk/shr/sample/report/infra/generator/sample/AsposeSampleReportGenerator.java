@@ -1,12 +1,12 @@
-package nts.uk.shr.sample.report.file.infra.generator;
+package nts.uk.shr.sample.report.infra.generator.sample;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import nts.uk.shr.sample.report.app.SampleReportDataSource;
-import nts.uk.shr.sample.report.app.SampleReportGenerator;
+import nts.uk.shr.sample.report.app.export.sample.SampleReportDataSource;
+import nts.uk.shr.sample.report.app.export.sample.SampleReportGenerator;
 
 @Stateless
 public class AsposeSampleReportGenerator extends AsposeCellsReportGenerator implements SampleReportGenerator {
