@@ -9,7 +9,7 @@
 		
 		<ui:composition template="../../../../master/sidebar.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1100, height: 700 };</script>
+				<script>var dialogSize = { width: 1200, height: 750 };</script>
 				<com:stylefile path="main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="service.js" />
@@ -50,23 +50,27 @@
 												fields: ['name', 'code']}"
 											placeholder="コード・名称"></div>
 								</div>
-								<table id="aggregate-items" data-bind="ntsGridList: {
-												width: 250,
-												height: 550,
-												options: itemList,
-												optionsValue: 'code',
-												columns: itemListColumns,
-												multiple: false,
-												value: aggregateItemSelectedCode
-										}"></table>
+								<div class="aggregate-table">
+									<table id="aggregate-items" data-bind="ntsGridList: {
+													width: 250,
+													height: 500,
+													options: itemList,
+													optionsValue: 'code',
+													columns: itemListColumns,
+													multiple: false,
+													value: aggregateItemSelectedCode
+											}"></table>
+								</div>
 							</div>
 							<div class="right-content" data-bind="with: aggregateItemDetail">
 								<div class="flex valign-center">
 									<div id="code-name-label" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
-									<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
-														enable: true,
-														constraint: 'WLAggregateItemCode',
-														required: true}"></input>
+									<div class="code-input">
+										<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
+															enable: true,
+															constraint: 'WLAggregateItemCode',
+															required: true}"></input>
+									</div>
 									<div class="name-input">
 										<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: name,
 															constraint: 'WLAggregateItemName',
@@ -92,25 +96,25 @@
 										enable: true }"></div>
 								</div>
 								<div class="select-item">
-									<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
-									<div class="search-grid">
-										<div id="search-master-items-input" class="ntsSearchBox"
-												data-bind="ntsSearchBox: {comId: 'aggregate-items', 
-													items: itemList, 
-													selected: aggregateItemSelectedCode, 
-													selectedKey: 'code', 
-													fields: ['name', 'code']}"
-												placeholder="コード・名称"></div>
+									<div class="select-label">
+										<div class="master-table-label">
+											<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
+											<div class="head-end"></div>
+										</div>
+										<div class="sub-table-label">
+											<div data-bind="ntsFormLabel: {}">集約する給与支給項目</div>
+											<div class="head-end"></div>
+										</div>
 									</div>
-									<table id="master-items" data-bind="ntsGridList: {
-													width: 250,
-													height: 550,
-													options: itemList,
-													optionsValue: 'code',
-													columns: itemListColumns,
-													multiple: false,
-													value: aggregateItemSelectedCode
-											}"></table>
+									<div id="swap-list" data-bind="ntsSwapList: {
+											showSearchBox: { showLeft : true, showRight: false},
+											height: 350,
+											width: 720,
+											dataSource: masterItems,
+											primaryKey: 'code',
+											columns: swapListColumns,
+											value: subItems
+										}"></div>
 								</div>
 							</div>
 				   		</div>

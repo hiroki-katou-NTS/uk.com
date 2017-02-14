@@ -80,8 +80,8 @@ var qet001;
                     var item = { code: selectedCode, name: 'Aggregate item ' + selectedNumber,
                         category: self.category, paymentType: self.paymentType, showNameZeroValue: true,
                         showValueZeroValue: true, subItems: [
-                            { code: 'SUB' + selectedNumber, name: 'sub item ' + selectedNumber },
-                            { code: 'SUB' + selectedNumber + 2, name: 'sub item ' + selectedNumber + 2 },
+                            { code: 'MI' + selectedNumber, name: 'sub item ' + selectedNumber },
+                            { code: 'MI' + selectedNumber + 2, name: 'sub item ' + selectedNumber + 2 },
                         ] };
                     dfd.resolve(item);
                     return dfd.promise();
@@ -107,7 +107,6 @@ var qet001;
                         : ko.observable(item.showNameZeroValue);
                     this.showValueZeroValue = item == undefined ? ko.observable(true)
                         : ko.observable(item.showValueZeroValue);
-                    this.masterItems = ko.observableArray(masterItems);
                     this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems);
                     this.switchs = ko.observableArray([
                         { code: '0', name: '表示する' },
@@ -115,6 +114,10 @@ var qet001;
                     ]);
                     this.showNameZeroCode = ko.observable(this.showNameZeroValue() ? '0' : '1');
                     this.showValueZeroCode = ko.observable(this.showValueZeroValue() ? '0' : '1');
+                    this.swapListColumns = ko.observableArray([
+                        { headerText: 'コード', key: 'code', width: 100 },
+                        { headerText: '名称', key: 'name', width: 160 }
+                    ]);
                     var self = this;
                     self.showNameZeroValue = ko.computed(function () {
                         return self.showNameZeroCode() == '0';
@@ -122,6 +125,9 @@ var qet001;
                     self.showValueZeroValue = ko.computed(function () {
                         return self.showValueZeroCode() == '0';
                     });
+                    var subItemCodes = self.subItems().map(function (item) { return item.code; });
+                    var masterItemsExcluded = masterItems.filter(function (item) { return subItemCodes.indexOf(item.code) == -1; });
+                    self.masterItems = ko.observableArray(masterItemsExcluded);
                 }
                 return AggregateItemDetail;
             }());
