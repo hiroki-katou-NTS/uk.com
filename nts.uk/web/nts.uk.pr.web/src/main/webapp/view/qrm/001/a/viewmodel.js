@@ -24,7 +24,6 @@ var qrm001;
                     });
                     self.employeeInfo = ko.observable(new EmployeeInfo('0001', 'asfas', '1', '1', 1, '2', '5', '6', '7', '8', '9', '3', '4', '5', '6', '7', 2, 1, '1', '2', '3', '4', '5', '6'));
                     self.paymentDateProcessingList = ko.observableArray([]);
-                    self.selectedPaymentDate = ko.observable(null);
                     self.selectList1 = ko.observableArray([
                         { name: '試用期間なし' },
                         { name: '試用期間あり' }
@@ -54,101 +53,39 @@ var qrm001;
                     ]);
                     self.currentPaytransfer = self.fullPaytransfer;
                     self.currentPaytransfer.subscribe(function (value) { console.log(value); });
-                    self.selectList10 = ko.observableArray([
-                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                    ]);
-                    console.log(self.selectList10());
+                    self.selectList10 = ko.observableArray(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                     self.currentSetSelect = ko.observableArray(_.filter(self.fullSetSelect(), function (o) {
                         return o.name !== self.currentPaytransfer()[0].dataSetName() &&
                             o.name !== self.currentPaytransfer()[1].dataSetName() &&
                             o.name !== self.currentPaytransfer()[2].dataSetName() &&
                             o.name !== self.currentPaytransfer()[3].dataSetName();
                     }));
-                    console.log(self.currentSetSelect());
                     self.currentPaytransfer().forEach(function (item) {
                         item.dataSetName.subscribe(function (value) {
                             switch (value) {
                                 case '支給1':
                                     qrm001.a.viewmodel.ScreenModel.setDataRow(item, self.fullPaytransfer, 0);
-                                    console.log(self.currentPaytransfer());
-                                    self.selectList10([
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                                    ]);
-                                    console.log(self.selectList10());
-                                    console.log(value);
+                                    self.selectList10(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                                     break;
                                 case '支給2':
                                     qrm001.a.viewmodel.ScreenModel.setDataRow(item, self.fullPaytransfer, 1);
-                                    console.log(self.currentPaytransfer());
-                                    self.selectList10([
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                                    ]);
-                                    console.log(self.selectList10());
-                                    console.log(value);
+                                    self.selectList10(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                                     break;
                                 case '支給3':
                                     qrm001.a.viewmodel.ScreenModel.setDataRow(item, self.fullPaytransfer, 2);
-                                    console.log(self.currentPaytransfer());
-                                    self.selectList10([
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                                    ]);
-                                    console.log(self.selectList10());
-                                    console.log(value);
+                                    self.selectList10(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                                     break;
                                 case '支給4':
                                     qrm001.a.viewmodel.ScreenModel.setDataRow(item, self.fullPaytransfer, 3);
-                                    console.log(self.currentPaytransfer());
-                                    self.selectList10([
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                                    ]);
-                                    console.log(self.selectList10());
-                                    console.log(value);
+                                    self.selectList10(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                                     break;
                                 case '支給5':
                                     qrm001.a.viewmodel.ScreenModel.setDataRow(item, self.fullPaytransfer, 4);
-                                    console.log(self.currentPaytransfer());
-                                    self.selectList10([
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                                    ]);
-                                    console.log(self.selectList10());
-                                    console.log(value);
+                                    self.selectList10(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                                     break;
                                 default:
                                     qrm001.a.viewmodel.ScreenModel.setDataRow(item, self.fullPaytransfer, -1);
-                                    console.log(self.currentPaytransfer());
-                                    self.selectList10([
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 0),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 1),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 2),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 3),
-                                        qrm001.a.viewmodel.ScreenModel.prototype.filter(self.fullSetSelect, self.currentPaytransfer, 4),
-                                    ]);
-                                    console.log(self.selectList10());
-                                    console.log(value);
+                                    self.selectList10(qrm001.a.viewmodel.ScreenModel.prototype.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
                                     break;
                             }
                         });
@@ -169,6 +106,7 @@ var qrm001;
                         dfd.resolve();
                     }).fail(function (res) {
                     });
+                    console.log(self.selectList10());
                     return dfd.promise();
                 };
                 ScreenModel.prototype.next_emp = function () {
@@ -211,6 +149,13 @@ var qrm001;
                                 o.name !== currentSet()[4].dataSetName();
                     });
                 };
+                ScreenModel.prototype.refreshSelect = function (source1, source2, length) {
+                    var array = [];
+                    for (var i = 0; i < length; i++) {
+                        array.push(qrm001.a.viewmodel.ScreenModel.prototype.filter(source1, source2, i));
+                    }
+                    return array;
+                };
                 ScreenModel.setDataRow = function (item, dataSet, index) {
                     if (0 <= index) {
                         item.bankName(dataSet()[index].bankName());
@@ -230,12 +175,11 @@ var qrm001;
             viewmodel.ScreenModel = ScreenModel;
             var BankDataSet = (function () {
                 function BankDataSet(dataSetName, bankName, branchName, accountNumber, transferMoney) {
-                    var self = this;
-                    self.dataSetName = ko.observable(dataSetName);
-                    self.bankName = ko.observable(bankName);
-                    self.branchName = ko.observable(branchName);
-                    self.accountNumber = ko.observable(accountNumber);
-                    self.transferMoney = ko.observable(transferMoney);
+                    this.dataSetName = ko.observable(dataSetName);
+                    this.bankName = ko.observable(bankName);
+                    this.branchName = ko.observable(branchName);
+                    this.accountNumber = ko.observable(accountNumber);
+                    this.transferMoney = ko.observable(transferMoney);
                 }
                 return BankDataSet;
             }());
