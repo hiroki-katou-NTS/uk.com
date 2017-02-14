@@ -9,6 +9,8 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceCode
+					nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceName
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
@@ -19,27 +21,34 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="BTN_001">新規</button>
-				<button id="BTN_002" class="proceed">登録</button>
+				<button id="BTN_001" data-bind="click: btn_001">新規</button>
+				<button id="BTN_002" class="proceed" data-bind="click: btn_002">登録</button>
 				<button id="BTN_003">印刷 (PDF)</button>
 				<button id="BTN_007">マスタ修正ログ</button>
-				<button id="BTN_004" class="danger">削除</button>
+				<button id="BTN_004" class="danger" data-bind="click: btn_004">削除</button>
 			</div>
 			<div id="contents-area">
-				<div class="left-content">
+				<div class="left-content">		  
 				  <div class="cf">
-				    <div style="float: left; width: 480px" class="caret-right caret-background bg-green">
-				    <div style="width: 515px;margin: 40px 0px -10px 14px"
+						<div style="float: left; width: 480px"
+							class="caret-right caret-background bg-green">
+							<div
+								style="margin: 20px 24px 24px 0px;float: right;">
+								<div style="margin-left: 5px;"
+									data-bind="ntsCheckBox: {checked: displayAll, text: '廃止も表示する' }"
+									class="cf minimalist"></div>
+							</div>
+							<div style="margin: 20px 0px -10px 14px"
 								data-bind="ntsSearchBox: {
 									comId: 'single-list',
 									items: items, 
 									selected: currentCode, 
 									selectedKey: 'code', 
 									fields: ['name', 'code']}" />
-					<br />
-					<div id="LST_001">
-						<table id="single-list"
-							data-bind="ntsGridList: {
+							<br />
+							<div id="LST_001">
+								<table id="single-list"
+									data-bind="ntsGridList: {
 										width: 440,
 										height: 500,
 										options: items,
@@ -48,55 +57,54 @@
 										multiple: false,
 										value: currentCode
 									}"></table>
+							</div>
+						</div>
 					</div>
-					 </div>
-				  </div>
 				</div>
 				<div class="right-content">
 					<div class="right-content-left">
 						<div id="LBL_002"
-							data-bind="ntsFormLabel:{constraint: 'PersonId',required: true}">コード/名称</div>
+							data-bind="ntsFormLabel:{constraint: ['PersonalUnitPriceCode', 'PersonalUnitPriceName'],required: true}">コード/名称</div>
 						<div id="LBL_003" data-bind="ntsFormLabel:{}">略名</div>
 						<br />
 						<div id="LBL_004" data-bind="ntsFormLabel:{}">統合コード</div>
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="INP_002" data-bind="with: texteditor1"> <input
+							<span id="INP_002" data-bind="with: INP_002"> <input
 								class="text-editor1"
 								data-bind="ntsTextEditor: {
 									value: value,
+									constraint: 'PersonalUnitPriceCode',
 									option: option,
-									required: false,
-									enable: false,
-									readonly: true}" /></span>
-							<span id="INP_003" data-bind="with: texteditor2"> <input
+									required: true,
+									enable: enable}" /></span>
+							<span id="INP_003" data-bind="with: INP_003"> <input
 								class="text-editor2"
 								data-bind="ntsTextEditor: {
 									value: value,
+									constraint: 'PersonalUnitPriceName',
 									option: option,
 									required: true,
-									enable: true,
-									readonly: true}" /></span>
+									enable: true}" /></span>
 									
 							<div class="bg-yellow" style="width: 200px; height: 25px;display: inline-block;margin-left: 46px">
-						      <div style="margin-left: 5px;" data-bind="ntsCheckBox: {text: 'この会社を廃止する' }" class="cf minimalist"></div>
+						      <div style="margin-left: 5px;" data-bind="ntsCheckBox: {checked: displayAtr, text: 'この会社を廃止する' }" class="cf minimalist"></div>
 						      <button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
 						    </div>
 						</div>
 						<div class="control-group">
-							<span id="INP_004" data-bind="with: texteditor2"> <input
+							<span id="INP_004" data-bind="with: inp_004"> <input
 								class="text-editor2"
 								data-bind="ntsTextEditor: {
 									value: value,
 									option: option,
 									required: true,
-									enable: true,
-									readonly: true}" /></span>
+									enable: true}" /></span>
 						</div>
 						<div class="control-group">
 							<button id="BTN_006">参照</button>
-							<label id="LBL_012">002</label> <label id="LBL_013">支店名称</label>
+							<label id="LBL_012" data-bind="text: uniteCode">002</label> <label id="LBL_013">支店名称</label>
 						</div>
 					</div>
 					<hr />
@@ -110,7 +118,7 @@
 								optionsValue: 'id',
 								optionsText: 'name',
 								value: selectedId,
-								enable: enable}">
+								enable: true}">
 							</div>
 						</div>
 						<div class="control-group-left" style="float:left ;width: 30%">
@@ -120,7 +128,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: SEL_005_check,
-								enable: enable }">
+								enable: !isCompany() }">
 							</div>
 						</div>		
 						<div class="control-group-right" style="float:left">
@@ -132,7 +140,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: SEL_006_check,
-								enable: enable }">
+								enable: isCompany }">
 							</div>
 						</div>
 						<div class="cf">
@@ -143,7 +151,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: SEL_007_check,
-								enable: enable }">
+								enable: isCompany }">
 							</div>
 						</div>
 						<div class="cf">
@@ -154,7 +162,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: SEL_008_check,
-								enable: enable }">
+								enable: isCompany }">
 							</div>
 						</div>
 						<div class="cf">
@@ -165,7 +173,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: SEL_009_check,
-								enable: enable }">
+								enable: isCompany }">
 							</div>
 						</div>
 						</div>
@@ -179,7 +187,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: SEL_004_check,
-								enable: enable }">
+								enable: true }">
 					   </div>
 					</div>
 					<hr />
@@ -188,7 +196,7 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="INP_005" data-bind="with: multilineeditor"> <textarea
+							<span id="INP_005" data-bind="with: INP_005"> <textarea
 									style="height: 130px; width: 450px" class="text-editor1"
 									data-bind="ntsMultilineEditor: {
 									value: value,

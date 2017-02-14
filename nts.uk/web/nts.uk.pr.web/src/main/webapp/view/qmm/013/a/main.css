@@ -121,3 +121,7 @@ hr {
 	margin: 0px 280px 0px 100px;
 	padding: 0px 20px;
 }
+
+.ntsSearchBox {
+	width: 390px !important;
+}
