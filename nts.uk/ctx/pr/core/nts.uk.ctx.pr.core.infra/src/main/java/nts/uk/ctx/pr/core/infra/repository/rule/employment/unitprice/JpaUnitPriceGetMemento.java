@@ -6,13 +6,13 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceMemento;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 
 /**
  * The Class JpaAggrSchemaMemento.
  */
-public class JpaUnitPriceMemento implements UnitPriceMemento {
+public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 
 	// TODO: Object -> entity class.
 	protected Object typeValue;
@@ -23,7 +23,7 @@ public class JpaUnitPriceMemento implements UnitPriceMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceMemento(Object typeValue) {
+	public JpaUnitPriceGetMemento(Object typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -49,30 +49,6 @@ public class JpaUnitPriceMemento implements UnitPriceMemento {
 	public Long getVersion() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setCode(UnitPriceCode code) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setName(UnitPriceName name) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

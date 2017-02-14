@@ -2,50 +2,63 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
+package nts.uk.ctx.pr.core.dom.wagetable;
+
+import java.util.Set;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
- * The Class UnitPrice.
+ * The Class CertifyGroup.
  */
 @Getter
-public class UnitPrice extends AggregateRoot {
-
-	/** The id. */
-	private String id;
+public class CertifyGroup extends AggregateRoot {
 
 	/** The company code. */
 	private CompanyCode companyCode;
 
+	/** The wage table code. */
+	private WageTableCode wageTableCode;
+
+	/** The history id. */
+	private String historyId;
+
 	/** The code. */
-	private UnitPriceCode code;
+	private String code;
 
 	/** The name. */
-	@Setter
-	private UnitPriceName name;
+	private String name;
+
+	/** The multi apply set. */
+	private MultipleTargetSetting multiApplySet;
+
+	/** The certifies. */
+	private Set<Certification> certifies;
 
 	/**
-	 * Instantiates a new unit price.
+	 * Instantiates a new certify group.
 	 */
-	public UnitPrice() {
+	public CertifyGroup() {
 		super();
 	}
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new labor insurance office.
+	 * Instantiates a new certify group.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public UnitPrice(UnitPriceGetMemento memento) {
+	public CertifyGroup(CertifyGroupGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
+		this.wageTableCode = memento.getWageTableCode();
+		this.historyId = memento.getHistoryId();
 		this.code = memento.getCode();
 		this.name = memento.getName();
+		this.multiApplySet = memento.getMultiApplySet();
+		this.certifies = memento.getCertifies();
 		this.setVersion(memento.getVersion());
 	}
 
@@ -55,10 +68,14 @@ public class UnitPrice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(UnitPriceSetMemento memento) {
+	public void saveToMemento(CertifyGroupSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
+		memento.setWageTableCode(this.wageTableCode);
+		memento.setHistoryId(this.historyId);
 		memento.setCode(this.code);
 		memento.setName(this.name);
+		memento.setMultiApplySet(this.multiApplySet);
+		memento.setCertifies(this.certifies);
 		memento.setVersion(this.getVersion());
 	}
 

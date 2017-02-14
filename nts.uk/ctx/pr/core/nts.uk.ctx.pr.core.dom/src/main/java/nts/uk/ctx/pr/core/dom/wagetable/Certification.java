@@ -2,10 +2,9 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
+package nts.uk.ctx.pr.core.dom.wagetable;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
@@ -13,27 +12,16 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
  * The Class UnitPrice.
  */
 @Getter
-public class UnitPrice extends AggregateRoot {
-
-	/** The id. */
-	private String id;
+public class Certification extends AggregateRoot {
 
 	/** The company code. */
 	private CompanyCode companyCode;
 
 	/** The code. */
-	private UnitPriceCode code;
+	private String code;
 
 	/** The name. */
-	@Setter
-	private UnitPriceName name;
-
-	/**
-	 * Instantiates a new unit price.
-	 */
-	public UnitPrice() {
-		super();
-	}
+	private String name;
 
 	// =================== Memento State Support Method ===================
 	/**
@@ -42,7 +30,7 @@ public class UnitPrice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public UnitPrice(UnitPriceGetMemento memento) {
+	public Certification(CertificationGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
@@ -55,7 +43,7 @@ public class UnitPrice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(UnitPriceSetMemento memento) {
+	public void saveToMemento(CertificationSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
