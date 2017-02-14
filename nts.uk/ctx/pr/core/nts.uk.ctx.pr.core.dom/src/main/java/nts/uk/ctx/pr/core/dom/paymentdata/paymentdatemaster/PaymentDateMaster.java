@@ -3,15 +3,13 @@ package nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.EnumType;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
+import nts.uk.shr.com.primitive.sample.ProcessingNo;
 
 /**
  * Payroll date master;
