@@ -1540,7 +1540,7 @@ module nts.uk.ui.koExtentions {
                 features: features
             });
 
-            if (!util.isNullOrUndefined(deleteOptions) && util.isNullOrUndefined(deleteOptions.deleteField)
+            if (!util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
                 && deleteOptions.visible === true) {
                 var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
                 $grid.ntsGridList("setupDeleteButton", {
@@ -2157,8 +2157,8 @@ module nts.uk.ui.koExtentions {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var HEADER_HEIGHT = 27;
             var CHECKBOX_WIDTH = 70;
-            var SEARCH_AREA_HEIGHT = 40;
-            var BUTTON_SEARCH_WIDTH = 85;
+            var SEARCH_AREA_HEIGHT = 45;
+            var BUTTON_SEARCH_WIDTH = 60;
             var INPUT_SEARCH_PADDING = 65;
 
             var $swap = $(element);
@@ -2227,14 +2227,16 @@ module nts.uk.ui.koExtentions {
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
                 
-                    $SearchArea.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
-                    $SearchArea.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
+                    $SearchArea.find(".ntsSearchTextContainer")
+                        .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
+                    $SearchArea.find(".ntsSearchButtonContainer")
+                        .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function(event, ui) {
                         if (event.which === 13) {
                             search($SearchArea, targetId, primaryKey);
                         }
                     });
-                    $SearchArea.find(".ntsSearchButton").text("Search").click(function(event, ui) {
+                    $SearchArea.find(".ntsSearchButton").text("検索").click(function(event, ui) {
                         search($SearchArea, targetId, primaryKey);
                     });  
                 }
