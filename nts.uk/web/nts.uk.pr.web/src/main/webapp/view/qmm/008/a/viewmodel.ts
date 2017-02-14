@@ -49,6 +49,7 @@ module nts.uk.pr.view.qmm008.a {
             pensionOwnerRate: KnockoutObservable<number>;
             
             fundInputEnable: KnockoutObservable<boolean>;
+            createHistoryControll: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 
@@ -116,17 +117,30 @@ module nts.uk.pr.view.qmm008.a {
                 self.pensionOwnerRate = ko.observable(1.5);
                 
                 self.fundInputEnable = ko.observable(true);
+                self.createHistoryControll = ko.observable(true);
                 //subscribe change select office
                 self.officeSelectedCode.subscribe(function(officeSelectedCode: string) {
-                    //TODO check parent or child
-                    
                     if (officeSelectedCode != null || officeSelectedCode != undefined) {
-//                        alert(officeSelectedCode);
-                        $.when(self.load(officeSelectedCode)).done(function() {
-                            //TODO load data success
-                        }).fail(function(res) {
-                            //TODO when load data error
-                        });
+                        //if click office item
+                        if (self.checkCode(officeSelectedCode)) {
+                            self.loadHistoryOfOffice(officeSelectedCode);
+                            //reset data on view
+                            self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
+                            self.pensionModel(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
+//                       TODO enabled button add new history
+                            self.createHistoryControll(true);
+                        }
+                        //if click history item
+                        else {
+//                            TODO disabled button add new history
+                            self.createHistoryControll(false);
+                            //officeSelectedCode = historyCode
+                            $.when(self.load(officeSelectedCode)).done(function() {
+                                //TODO load data success
+                            }).fail(function(res) {
+                                //TODO when load data error
+                            });
+                        }
                     }
                 });
                 self.pensionModel().funInputOption.subscribe(function(pensionFundInputOptions: any){
@@ -145,14 +159,14 @@ module nts.uk.pr.view.qmm008.a {
                 var dfd = $.Deferred<any>();
                 //first load
                 self.loadAllInsuranceOffice().done(function(data) {
-                    // Set list.
                     self.InsuranceOfficeList(data); 
-                    // Load first result.
+                    // Load first item.
                     if (self.InsuranceOfficeList().length > 0) {
-                        //TODO load select first item of list
-                        //self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
+                        //Load select first item of list
+//                        self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
                     } else {
-                        //TODO Open register new office screen
+                        //Open register new office screen
+                        self.OpenModalOfficeRegister();
                     }
                     // Resolve
                     dfd.resolve(null);
@@ -171,23 +185,6 @@ module nts.uk.pr.view.qmm008.a {
                 var dfd = $.Deferred<any>();
                 // find data from search key
                 service.findInsuranceOffice(self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
-                    //TODO add childs(history) for each item office
-                   data.forEach(function(item,index){
-                       service.getAllHealthInsuranceItem(item.code).done(function(data2: Array<HealthInsuranceRateDto>) {
-                           data2.forEach(function(item2, index2) {
-                               var addData = new InsuranceOfficeItem(index + item.code, item2.startMonth+"~"+ item2.endMonth, index + item2.historyId+index2, []);
-                                data[index].childs.push(addData);
-                           });
-                       });
-//                        service.findHistoryByOfficeCode(item.code).done(function(data2:Array<HistoryItem>) {
-//                            //TODO convert data get from service
-//                            data2.forEach(function(item2, index2) {
-//                                var addData = new InsuranceOfficeItem(index + item.code, item2.start+"~"+ item2.end, index + item2.code, []);
-//                                data[index].childs.push(addData);
-//                            });
-//                        });
-                    });
-                    
                     dfd.resolve(data);
                 });
                 // Return.
@@ -207,13 +204,41 @@ module nts.uk.pr.view.qmm008.a {
                 // Return.
                 return dfd.promise();
             }
+            //check code of parent or child
+            public checkCode(code: string) {
+                var flag = false;
+                this.InsuranceOfficeList().forEach(function(item, index) {
+                    if (item.code == code) {
+                        flag = true;
+                    }
+                });
+                return flag;
+            }
+            //load all history when click expand office
+            public loadHistoryOfOffice(officeCode: string) {
+                var self = this;
+                var officeData = self.InsuranceOfficeList();
+                //TODO add childs(history) for each item office
+                officeData.forEach(function(item, index) {
+                    //search item have office code
+                    if ((item.code == officeCode)&&(item.childs.length==0)) {
+                        service.getAllHealthInsuranceItem(item.code).done(function(data: Array<HealthInsuranceRateDto>) {
+                            data.forEach(function(item2, index2) {
+                                //push history into office
+                                officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.startMonth + "~" + item2.endMonth, index + item2.historyId + index2, []));
+                            });
+                            self.InsuranceOfficeList(officeData);
+                        });
+                    }
+                });
+            }
             
-            //load data of item by code
-            public load(officeCode: string): JQueryPromise<any> {
+            //load data of item by history code
+            public load(historyCode: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-               
-                service.getHealthInsuranceItemDetail(officeCode).done(function(data: HealthInsuranceRateDto) {
+
+                service.getHealthInsuranceItemDetail(historyCode).done(function(data: HealthInsuranceRateDto) {
                     if (data == null) {
                         return;
                     }
@@ -221,7 +246,10 @@ module nts.uk.pr.view.qmm008.a {
                     self.healthModel().historyId = data.historyId;
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
-                    self.healthModel().autoCalculate(data.autoCalculate);
+                    if(data.autoCalculate)
+                    self.healthModel().autoCalculate(1);
+                    else
+                    self.healthModel().autoCalculate(2);
                     
                     self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].companyRate);
@@ -261,7 +289,7 @@ module nts.uk.pr.view.qmm008.a {
                 }).always(function(res) {
                 });
                 
-                service.getPensionItemDetail(officeCode).done(function(data: PensionRateDto) {
+                service.getPensionItemDetail(historyCode).done(function(data: PensionRateDto) {
                     if (data == null) {
                         return;
                     }
@@ -305,10 +333,6 @@ module nts.uk.pr.view.qmm008.a {
                     $("#tabs-complex").width(700);
                 else
                     $("#tabs-complex").width("auto");
-            }
-            
-            //Chuyen tu data nhan ve chuyen thanh mang de hien thi ra list
-            public convertListToParentChilds() {
             }
             
             public getDataOfSelectedOffice(){
@@ -395,17 +419,17 @@ module nts.uk.pr.view.qmm008.a {
         }
 
         export class HealthInsuranceRateModel {
-            healthDate: any;
-            historyId: number;
+            historyId: string;
             companyCode: string;
             officeCode: KnockoutObservable<string>;
-            applyRange: string;
+            startMonth: KnockoutObservable<string>;
+            endMonth: string;
             autoCalculate: KnockoutObservable<number>;
             rateItems: KnockoutObservable<HealthInsuranceRateItemModel>;
             roundingMethods: KnockoutObservable<HealthInsuranceRoundingModel>;
             maxAmount: KnockoutObservable<number>;
             constructor(officeCode: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel,roundingMethods: HealthInsuranceRoundingModel, maxAmount:number) {
-                this.healthDate = ko.observable('2016/04');
+                this.startMonth= ko.observable("2016/04");
                 this.officeCode= ko.observable('');
                 this.autoCalculate= ko.observable(autoCalculate);
                 this.rateItems = ko.observable(new HealthInsuranceRateItemModel());

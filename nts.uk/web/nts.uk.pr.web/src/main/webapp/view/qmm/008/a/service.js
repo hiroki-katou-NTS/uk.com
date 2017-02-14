@@ -113,12 +113,7 @@ var nts;
                                             this.name = name;
                                             this.code = code;
                                             this.childs = childs;
-                                            if (childs.length == 0) {
-                                                this.codeName = name;
-                                            }
-                                            else {
-                                                this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
-                                            }
+                                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
                                         }
                                         return InsuranceOfficeItemDto;
                                     }());
@@ -160,11 +155,12 @@ var nts;
                                     }());
                                     finder.FundRateItemDto = FundRateItemDto;
                                     var HealthInsuranceRateDto = (function () {
-                                        function HealthInsuranceRateDto(historyId, companyCode, officeCode, applyRange, autoCalculate, rateItems, roundingMethods, maxAmount) {
+                                        function HealthInsuranceRateDto(historyId, companyCode, officeCode, startMonth, endMonth, autoCalculate, rateItems, roundingMethods, maxAmount) {
                                             this.historyId = historyId;
                                             this.companyCode = companyCode;
                                             this.officeCode = officeCode;
-                                            this.applyRange = applyRange;
+                                            this.startMonth = startMonth;
+                                            this.endMonth = endMonth;
                                             this.autoCalculate = autoCalculate;
                                             this.rateItems = rateItems;
                                             this.roundingMethods = roundingMethods;

@@ -36,6 +36,9 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 	/** The personal pension. */
 	public PensionAvgearnValueDto personalPension;
 
+	/** The version. */
+	public Long version;
+
 	@Override
 	public void setHistoryId(String historyId) {
 		this.historyId = historyId;
@@ -83,6 +86,6 @@ public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 
 	@Override
 	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
+		this.version = version;
 	}
 }

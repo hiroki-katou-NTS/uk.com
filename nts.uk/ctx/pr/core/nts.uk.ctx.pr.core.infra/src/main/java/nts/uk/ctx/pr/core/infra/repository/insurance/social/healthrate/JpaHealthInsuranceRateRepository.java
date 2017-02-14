@@ -232,7 +232,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 
 			@Override
 			public Boolean getAutoCalculate() {
-				return true;
+				return false;
 			}
 
 			@Override

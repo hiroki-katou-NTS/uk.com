@@ -45,6 +45,9 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 	/** The rounding methods. */
 	public Set<HealthInsuranceRounding> roundingMethods;
 
+	/** The version. */
+	public Long version;
+
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		this.companyCode = companyCode.v();
@@ -75,6 +78,7 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 
 	@Override
 	public void setVersion(Long version) {
+		this.version = version;
 	}
 
 	@Override

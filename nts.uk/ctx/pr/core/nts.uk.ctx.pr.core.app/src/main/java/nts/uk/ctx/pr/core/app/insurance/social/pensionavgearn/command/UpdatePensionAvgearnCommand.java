@@ -15,23 +15,24 @@ public class UpdatePensionAvgearnCommand extends PensionAvgearnBaseCommand {
 
 			@Override
 			public Long getVersion() {
-				return null;
+				return command.getVersion();
 			}
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {
+				// TODO convert command -> domain
 				return null;
 			}
 
 			@Override
 			public PensionAvgearnValue getPersonalFundExemption() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
 			@Override
 			public PensionAvgearnValue getPersonalFund() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
@@ -47,19 +48,19 @@ public class UpdatePensionAvgearnCommand extends PensionAvgearnBaseCommand {
 
 			@Override
 			public PensionAvgearnValue getCompanyPension() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
 			@Override
 			public PensionAvgearnValue getCompanyFundExemption() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
 			@Override
 			public PensionAvgearnValue getCompanyFund() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
@@ -68,6 +69,7 @@ public class UpdatePensionAvgearnCommand extends PensionAvgearnBaseCommand {
 				return new InsuranceAmount(command.getChildContributionAmount());
 			}
 		});
+
 		return updatedPensionAvgearn;
 	}
 }
