@@ -23,12 +23,13 @@ var qrm007;
                             data.forEach(function (dataItem) {
                                 self.retirementPayItemList.push(ko.mapping.toJS(new RetirementPayItemModel(dataItem.itemCode, dataItem.itemName, dataItem.printName, dataItem.memo)));
                             });
-                            self.currentCode(1);
+                            self.currentCode(_.first(self.retirementPayItemList()).itemCode);
                             self.currentItem(RetirementPayItemModel.converToObject(_.first(self.retirementPayItemList())));
                         }
                         dfd.resolve();
                     }).fail(function (res) {
-                        //self.retirementPayItemList.removeAll();
+                        self.retirementPayItemList.removeAll();
+                        dfd.resolve();
                     });
                     return dfd.promise();
                 };
@@ -47,7 +48,7 @@ var qrm007;
                             }
                             dfd.resolve();
                         }).fail(function (res) {
-                            //self.retirementPayItemList.removeAll();
+                            self.retirementPayItemList.removeAll();
                             dfd.resolve();
                         });
                     }).fail(function (res) {

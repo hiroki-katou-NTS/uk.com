@@ -26,12 +26,13 @@ module qrm007.a.viewmodel {
                                 dataItem.printName,
                                 dataItem.memo)));
                     });
-                    self.currentCode(1);  
+                    self.currentCode(_.first(self.retirementPayItemList()).itemCode);  
                     self.currentItem(RetirementPayItemModel.converToObject(_.first(self.retirementPayItemList())));
                 }
                 dfd.resolve();
             }).fail(function(res) {
-                //self.retirementPayItemList.removeAll();
+                self.retirementPayItemList.removeAll();
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -55,7 +56,7 @@ module qrm007.a.viewmodel {
                     }
                     dfd.resolve();
                 }).fail(function(res) {
-                    //self.retirementPayItemList.removeAll();
+                    self.retirementPayItemList.removeAll();
                     dfd.resolve();
                 });
             }).fail(function(res) {
