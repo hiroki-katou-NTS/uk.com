@@ -43,6 +43,7 @@ public class UpdateRetirementPayItemCommandHandler extends CommandHandler<Update
 				new RetirementPayItemEnglishName(command.englishName), 
 				new RetirementPayItemFullName(command.fullName), 
 				new Memo(command.memo));
+		retirementPayItem.validate();
 		this.retirementPayItemRepository.update(retirementPayItem);
 		
 	}

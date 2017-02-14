@@ -28,13 +28,14 @@
 						<div class="pull-left">
 							<div class="caret-right caret-background bg-green">
 								<table id="single-list" data-bind="ntsGridList: {
-										width: 600,
-										height: 250,
+										width: 600, height: 250,
 										options: retirementPayItemList,
 										optionsValue: 'itemCode',
-										columns: columns,
-										multiple: false,
-										value: currentCode}">
+										columns: ko.observableArray([
+							                { headerText: 'コード', prop: 'itemCode', width: 50 },
+							                { headerText: '名称', prop: 'itemName', width: 145 },
+							                { headerText: '印刷用名称', prop: 'printName', width: 145 }]),
+										value: currentCode }">
 								</table>
 							</div>
 						</div>
@@ -44,7 +45,7 @@
 									<div data-bind="ntsFormLabel: { required: true, constraint: 'RetirementPayItemCode' }">コード/名称</div>
 								</div>
 								<div class="cell">
-									<span data-bind="text: currentCode"></span>
+									<span data-bind="text: currentItem().itemCode"></span>
 									<span id="name-span" data-bind="text: currentItem().itemName"></span>
 								</div>
 							</div>
@@ -53,14 +54,12 @@
 									<div data-bind="ntsFormLabel: { constraint: 'RetirementPayItemPrintName', required: true }">印刷用名称</div>
 								</div>
 								<div class="cell valign-center">
-									<div data-bind="with: texteditor">
+									<div data-bind="with: currentItem">
 										<input data-bind="ntsTextEditor: {
-											value: value,
+											value: printName,
 											constraint: 'RetirementPayItemPrintName',
-											option: option,
-											required: true,
-											enable: true,
-											readonly: false}" />
+											option: { width: '200px' },
+											required: true}" />
 									</div>
 								</div>
 							</div>
@@ -70,13 +69,11 @@
 									<div class="right-column" data-bind="ntsFormLabel: { constraint: 'Memo', required: false }">メモ</div>
 								</div>
 								<div class="cell">
-									<div data-bind="with: multilineeditor">
+									<div data-bind="with: currentItem">
 										<textarea id="text-area" data-bind="ntsMultilineEditor: {
-											value: value,
+											value: memo,
 											constraint: 'Memo',
-											option: true,
-											enable: true,
-											readonly: false}" />
+											option: { resizeable: true }}" />
 									</div>
 								</div>
 							</div>

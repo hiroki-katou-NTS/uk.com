@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.dom.retirement.payitem;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
@@ -35,7 +36,16 @@ public class RetirementPayItem extends AggregateRoot{
 
 	@Getter
 	private Memo memo;
-
+	
+	@Override
+	public void validate() {
+		// TODO Auto-generated method stub
+		super.validate();
+		if(printName.toString().isEmpty() || printName.toString().equals("")) { 
+			throw new BusinessException("error");
+		}
+	}
+	
 	public RetirementPayItem(CompanyCode companyCode, IndicatorCategory category, RetirementPayItemCode itemCode,
 			RetirementPayItemName itemName, RetirementPayItemPrintName printName, RetirementPayItemEnglishName englishName,
 			RetirementPayItemFullName fullName, Memo memo) {
