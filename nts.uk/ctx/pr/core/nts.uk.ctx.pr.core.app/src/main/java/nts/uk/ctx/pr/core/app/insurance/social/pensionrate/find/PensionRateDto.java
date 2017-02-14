@@ -50,8 +50,8 @@ public class PensionRateDto implements PensionRateSetMemento {
 	/** The fund input apply. */
 	public Boolean fundInputApply;
 
-	/** The auto calcuate. */
-	public Boolean autoCalcuate;
+	/** The auto calculate. */
+	public Boolean autoCalculate;
 
 	/** The version. */
 	public Long version;
@@ -112,7 +112,7 @@ public class PensionRateDto implements PensionRateSetMemento {
 
 	@Override
 	public void setAutoCalculate(Boolean autoCalculate) {
-		this.autoCalcuate = autoCalculate;
+		this.autoCalculate = autoCalculate;
 	}
 
 	@Override

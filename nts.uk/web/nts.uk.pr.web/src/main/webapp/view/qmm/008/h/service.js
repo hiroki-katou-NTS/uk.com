@@ -13,7 +13,7 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthrate/update",
+                                updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/update",
                                 findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
                                 findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/find",
                             };
