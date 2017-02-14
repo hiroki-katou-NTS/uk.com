@@ -12,9 +12,9 @@
 				<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:stylefile path="../catalog/catalog.css" />
 				<com:stylefile path="main.css" />
-				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
-				<com:scriptfile path="../catalog/catalog.js" />				
+				<com:scriptfile path="../catalog/catalog.js" />		
+				<com:scriptfile set="IGNITE" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -23,21 +23,94 @@
 					<div id="content" class="cf">
 						<h1>SwapList </h1>
 						<div><div style="display: inline-block;"><div id="swap-list" data-bind="ntsSwapList: {
-								showSearchBox: true,
+								showSearchBox: { showLeft : true, showRight: true},
 								height: 300,
 								dataSource: itemsSwap,
 								primaryKey: 'code',
 								columns: columns,
 								value: currentCodeListSwap
-							}"
-							class=""></div></div>
+							}"></div></div>
 								<div id="up-down" data-bind="ntsUpDown: {
+									targetSource: currentCodeListSwap,
 									primaryKey: 'code',
 									comId: '#swap-list',
 									type: 'swap',
 									swapTarget: 'right'
 								}"
 								class=""></div></div>
+								<div>
+									<article class="cf">
+							<div class="tabs">
+								<ol>
+									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
+								</ol>
+								<div id="tabs-html" class="cf">
+									<h2>HTML</h2>
+									<p>Using Ignite library so you must include following line in <i>&lt;ui:define name="htmlHead"&gt;</i></p>
+<pre><![CDATA[<ui:define name="htmlHead">
+	<com:scriptfile set="IGNITE" />
+</ui:define>]]></pre>
+<pre><![CDATA[<div id="swap-list" data-bind="ntsSwapList: {
+	showSearchBox: { showLeft : true, showRight: true},
+	height: 300,
+	dataSource: itemsSwap,
+	primaryKey: 'code',
+	columns: columns,
+	value: currentCodeListSwap
+}"></div>]]></pre>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+									<h2>TypeScript</h2>
+<pre><![CDATA[
+	class ScreenModel {
+        itemsSwap: KnockoutObservableArray<ItemModel>;
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        currentCodeListSwap: KnockoutObservableArray<any>;
+        test: KnockoutObservableArray<any>;
+
+        constructor() {
+
+            this.itemsSwap = ko.observableArray([]);
+            
+            var array = [];
+            for (var i = 0; i < 10000; i++) {
+                array.push(new ItemModel(i, '基本給', "description"));
+            }
+            this.itemsSwap(array);
+
+            this.columns = ko.observableArray([
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
+            ]);
+
+            this.currentCodeListSwap = ko.observableArray([]);
+            this.test = ko.observableArray([]);
+        }
+        
+        remove(){
+            this.itemsSwap.shift();            
+        }
+        
+    }
+    
+    class ItemModel {
+        code: number;
+        name: string;
+        description: string;
+        deletable: boolean;
+        constructor(code: number, name: string, description: string) {
+            this.code = code;
+            this.name = name;
+            this.description = description;
+            this.deletable = code % 3 === 0;
+        }
+    }
+]]></pre>
+								</div>
+							</div>
+						</article>
+								</div>
 							<br/>
 							<hr/>
 							<div>
@@ -53,6 +126,7 @@
 									class=""></table>
 								</div>
 								<div id="up-down" data-bind="ntsUpDown: {
+									targetSource: itemsSwap,
 									primaryKey: 'code',
 									comId: '#grid-test',
 									type: 'grid'
@@ -75,8 +149,9 @@
 											<tr>
 												<td>showSearchBox</td>
 												<td>
-													<b>Type:</b> boolean, is text box and search button showed.<br/>
-													<i>Default:</i> False.
+													<b>Type:</b> Object, is text box and search button showed.<br/>
+													<b>Options:</b> { showLeft : boolean, showRight: boolean}<br/>
+													<i>Default:</i> {}.
 												</td>
 											</tr>
 											<tr>

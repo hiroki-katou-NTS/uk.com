@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Validator localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Validator localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -33,6 +32,7 @@
 		        minValueMessage: 'Пожалуйста, введите значение больше или равно {0}',
 		        maxValueMessage: 'Пожалуйста, введите значение меньше или равно {0}',
 		        emailMessage: 'Следует ввести правильный адрес электронной почты',
+				creditCardMessage: 'Следует ввести правильный номер платежной карты.',
 		        equalToMessage: 'Эти два значения не совпадают',
 		        optionalString: '(необязательно)'
 		    }

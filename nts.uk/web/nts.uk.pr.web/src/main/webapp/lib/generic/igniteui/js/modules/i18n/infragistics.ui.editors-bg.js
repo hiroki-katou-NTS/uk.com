@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Editors localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Editors localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -45,8 +44,8 @@
 			    minValErrMsg: "Входните данни достигнаха минималната стойност от {0} за това поле.",
 			    maxValExceedRevertErrMsg: "Входните данни надхвърлиха максималната стойност от {0} и бяха върнат към предишната им стойност.",
 			    minValExceedRevertErrMsg: "Входните данни бяха по-малки от минималната стойност от {0} и бяха върнати към предишната им стойност.",
-			    maxValExceedSetErrMsg: "Entry exceeded the maximum value of {0} and was set to the maximum value",
-			    minValExceedSetErrMsg: "Entry exceeded the minimum value of {0} and was set to the minimum value",
+			    maxValExceedSetErrMsg: "Входните данни надхвърлиха максималната стойност от {0} и бяха върнати към максималната стойност.",
+			    minValExceedSetErrMsg: "Входните данни надхвърлиха минималната стойност от {0} и бяха върнати към минималната стойност.",
 			    maxValExceededWrappedAroundErrMsg: "Входните данни надхвърлиха максималната стойност от {0} и бяха върнати към най-ниската им позволена такава.",
 			    minValExceededWrappedAroundErrMsg: "Входните данни бяха по-малки от минималната стойност от {0} и бяха върнати към предишната им стойност.",
 			    btnValueNotSupported: 'Необходима е различна стойност на бутона. Изберете една от следните стойности: "dropdown", "clear" или "spin".',
@@ -72,7 +71,8 @@
 			    cannotSetRuntime: "Тази опцията не може да бъде настроена по време на изпълнение.",
 			    invalidDate: "Невалидна дата",
 			    maskMessage: 'Всички задължителни позиции трябва да бъдат попълнени.',
-			    dateMessage: 'Трябва да бъде въведена валидна дата.',
+			    maskRevertMessage: 'Всички задължителни позиции трябва да бъдат попълнени, заради което стойността беше върната към последната валидна',
+				dateMessage: 'Трябва да бъде въведена валидна дата.',
 			    centuryThresholdValidValues: "Свойството centuryThreshold трябва да е между 0 и 99. Стойността беше върната към началната си стойност. ",
 			    noListItemsNoButton: "Брояча или падащия бутон са рендирани понеже няма listitems."
 		    }

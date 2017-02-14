@@ -12,7 +12,7 @@ __viewContext.ready(function() {
             
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel("test" + i, '基本給', "description"));
+                array.push(new ItemModel(i, '基本給', "description"));
             }
             this.itemsSwap(array);
 
@@ -32,13 +32,15 @@ __viewContext.ready(function() {
     }
     
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
         description: string;
-        constructor(code: string, name: string, description: string) {
+        deletable: boolean;
+        constructor(code: number, name: string, description: string) {
             this.code = code;
             this.name = name;
             this.description = description;
+            this.deletable = code % 3 === 0;
         }
     }
 

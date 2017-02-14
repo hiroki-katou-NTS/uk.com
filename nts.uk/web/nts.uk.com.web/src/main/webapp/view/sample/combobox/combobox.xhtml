@@ -29,17 +29,16 @@
 						</div>
 						<br />
 						<div class="control-group valign-center">
-							<div id="combo-box" data-bind="ntsComboBox: {options: itemList,
-												optionsValue: 'code',
+							<div id="combo-box" data-bind="ntsComboBox: {options: itemListCbb1,
+												optionsValue: 'codeCbb1',
 												value: selectedCode,
-												optionsText: 'name',
+												optionsText: 'nameCbb1',
 												editable: isEditable,
 												enable: isEnable,
 												columns: [
-													{ prop: 'name', length: 4 },
-														{ prop: 'code', length: 10 },
-														{prop: 'label', length: 10}
-												]}"></div>
+														{ prop: 'codeCbb1', length: 4 },
+														{ prop: 'nameCbb1', length: 10 },
+													]}"></div>
 							<button data-bind="click: removeByCode">Remove Item</button>
 						</div>
 						<div class="status">
