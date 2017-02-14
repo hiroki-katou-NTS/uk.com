@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,14 @@
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 $.ig = $.ig || {};
 
@@ -226,7 +233,7 @@ if (!$.ig.Grid) {
 	$.extend($.ig.GridRowSelectors, {
 		locale: {
 			selectionNotLoaded: "igGridSelection has not been initialized. Selection should be enabled for the grid.",
-			columnVirtualizationEnabled: "Row Selectors require a different virtualization setting. Use rowVirtualization and set the virtualizationMode to 'continuous'.",
+			columnVirtualizationEnabled: "Row Selectors require a different virtualization setting. Use rowVirtualization or set the virtualizationMode to 'continuous'.",
 			selectedRecordsText: "You have selected ${checked} records.",
 			deselectedRecordsText: "You have deselected ${unchecked} records.",
 			selectAllText: "Select all ${totalRecordsCount} records",
@@ -403,9 +410,12 @@ if (!$.ig.Grid) {
 
 	$.extend($.ig.igGridMultiColumnHeaders, {
 		locale: {
-			multiColumnHeadersNotSupportedWithColumnVirtualization: 'Multi-column headers require a different configuration. columnVirtualization should be disabled.'
+		    multiColumnHeadersNotSupportedWithColumnVirtualization: 'Multi-column headers require a different configuration. columnVirtualization should be disabled.',
+		    atLeastOneColumnShouldBeShownWhenCollapseOrExpand: 'You should have at least one column shown when you expand or collapse a multi-column header.',
+		    collapsedColumnIconTooltip: "Expand",
+            expandedColumnIconTooltip: "Collapse"
 		}
 	});
 
 }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES

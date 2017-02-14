@@ -162,8 +162,8 @@ __viewContext.ready(function () {
          */
         ScreenModel.prototype.removeByCode = function () {
             var self = this;
-            var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
-            self.itemList.remove(selected);
+            var selected = self.itemListCbb1().filter(function (item) { return item.codeCbb1 == self.selectedCode(); })[0];
+            self.itemListCbb1.remove(selected);
         };
         return ScreenModel;
     }());

@@ -1,6 +1,5 @@
-﻿
-/*!@license
- * Infragistics.Web.ClientUI Tree Grid 16.1.20161.2145
+﻿/*!@license
+ * Infragistics.Web.ClientUI Tree Grid 16.2.20162.2040
  *
  * Copyright (c) 2011-2016 Infragistics Inc.
  *
@@ -17,33 +16,4 @@
  *	infragistics.ui.grid.framework.js
  *	infragistics.ui.grid.resizing.js
  */
-
-/*global jQuery */
-if (typeof jQuery !== "function") {
-	throw new Error("jQuery is undefined");
-}
-(function ($) {
-	/*
-		igTreeGridResizing widget. The widget is pluggable to the element where the treegrid is instantiated and the actual igTreeGrid object doesn't know about this
-		the resizing widget just attaches its functionality to the treegrid
-		igTreeGridResizing is extending igGrid Resizing
-	*/
-	$.widget("ui.igTreeGridResizing", $.ui.igGridResizing, {
-		css: {},
-		_create: function () {
-			this.element.data(
-				$.ui.igGridResizing.prototype.widgetName,
-				this.element.data($.ui.igTreeGridResizing.prototype.widgetName)
-			);
-			$.ui.igGridResizing.prototype._create.apply(this, arguments);
-		},
-		destroy: function () {
-			$.ui.igGridResizing.prototype.destroy.apply(this, arguments);
-			this.element.removeData($.ui.igGridResizing.prototype.widgetName);
-		}
-	});
-	$.extend($.ui.igTreeGridResizing, { version: "16.1.20161.2145" });
-}(jQuery));
-
-
-
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery","jquery-ui","./infragistics.util","./infragistics.ui.treegrid","./infragistics.ui.grid.resizing"],factory)}else{factory(jQuery)}})(function($){$.widget("ui.igTreeGridResizing",$.ui.igGridResizing,{css:{},_create:function(){this.element.data($.ui.igGridResizing.prototype.widgetName,this.element.data($.ui.igTreeGridResizing.prototype.widgetName));$.ui.igGridResizing.prototype._create.apply(this,arguments)},destroy:function(){$.ui.igGridResizing.prototype.destroy.apply(this,arguments);this.element.removeData($.ui.igGridResizing.prototype.widgetName)}});$.extend($.ui.igTreeGridResizing,{version:"16.2.20162.2040"});return $.ui.igTreeGridResizing});

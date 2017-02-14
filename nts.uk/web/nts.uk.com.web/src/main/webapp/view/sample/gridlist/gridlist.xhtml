@@ -160,6 +160,23 @@ currentCodeList: <span data-bind="text: currentCodeList"></span>]]></pre>
 													List selected value
 												</td>
 											</tr>
+											<tr>
+												<td>deleteOptions</td>
+												<td>
+													<b>Type:</b> Object. <br/>
+													Show delete button for each row.<br/>
+													<b>Options:</b> {<br/> visible : boolean --> is show delete button for each row<br/>
+																	deleteField: string --> field for setting disable/ enable delete button<br/>}<br/>
+													Can use with $grid.ntsGridList("setupDeleteButton", {
+										                   deleteField: deleteField,
+										                   sourceTarget: sources
+										               });<br/>
+										               <b>$grid</b> is jquery object of grid element.<br/>
+										               <b>deleteField</b> field for setting disable/ enable delete button.
+										               <b>sourceTarget</b> observable variable for data sources (For binding after with grid list.). 
+										               This variable can be undefined for only delete in igGrid sources (not delete in model).
+												</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
