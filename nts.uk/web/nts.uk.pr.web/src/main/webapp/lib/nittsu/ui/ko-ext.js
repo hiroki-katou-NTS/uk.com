@@ -1174,6 +1174,9 @@ var nts;
                             container.igCombo("option", "dataSource", options);
                             container.igCombo("dataBind");
                         }
+                        if (selectedValue !== undefined && selectedValue !== null) {
+                            container.igCombo("value", selectedValue);
+                        }
                         // Set width for multi columns.
                         if (haveColumn && (isChangeOptions || isInitCombo)) {
                             var totalWidth = 0;
@@ -1483,9 +1486,10 @@ var nts;
                         var data = valueAccessor();
                         var optionsValue = data.primaryKey !== undefined ? data.primaryKey : data.optionsValue;
                         var options = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
-                        var observableColumns = data.columns;
-                        var iggridColumns = _.map(observableColumns(), function (c) {
-                            c["key"] = c.key === undefined ? c.prop : c.key;
+                        var deleteOptions = ko.unwrap(data.deleteOptions);
+                        var observableColumns = ko.unwrap(data.columns);
+                        var iggridColumns = _.map(observableColumns, function (c) {
+                            c["key"] = c["key"] === undefined ? c["prop"] : c["key"];
                             c["dataType"] = 'string';
                             return c;
                         });
@@ -1495,13 +1499,21 @@ var nts;
                         features.push({ name: 'RowSelectors', enableCheckBoxes: data.multiple, enableRowNumbering: true });
                         $grid.igGrid({
                             width: data.width,
-                            height: (data.height - HEADER_HEIGHT) + "px",
+                            height: (data.height) + "px",
                             primaryKey: optionsValue,
                             columns: iggridColumns,
                             virtualization: true,
                             virtualizationMode: 'continuous',
                             features: features
                         });
+                        if (!uk.util.isNullOrUndefined(deleteOptions) && uk.util.isNullOrUndefined(deleteOptions.deleteField)
+                            && deleteOptions.visible === true) {
+                            var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
+                            $grid.ntsGridList("setupDeleteButton", {
+                                deleteField: deleteOptions.deleteField,
+                                sourceTarget: sources
+                            });
+                        }
                         $grid.ntsGridList('setupSelecting');
                         $grid.bind('selectionchanged', function () {
                             if (data.multiple) {
@@ -2076,6 +2088,8 @@ var nts;
                         var HEADER_HEIGHT = 27;
                         var CHECKBOX_WIDTH = 70;
                         var SEARCH_AREA_HEIGHT = 40;
+                        var BUTTON_SEARCH_WIDTH = 85;
+                        var INPUT_SEARCH_PADDING = 65;
                         var $swap = $(element);
                         var elementId = $swap.attr('id');
                         if (nts.uk.util.isNullOrUndefined(elementId)) {
@@ -2104,11 +2118,13 @@ var nts;
                             return c;
                         });
                         var gridHeight = (height - 20);
-                        if (showSearchBox) {
-                            var search = function ($swap, grid2Id, grid1Id, primaryKey) {
+                        var grid1Id = "#" + elementId + "-grid1";
+                        var grid2Id = "#" + elementId + "-grid2";
+                        if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showEright)) {
+                            var search = function ($swap, gridId, primaryKey) {
                                 var value = $swap.find(".ntsSearchInput").val();
-                                var source = $(grid1Id).igGrid("option", "dataSource").slice();
-                                var selected = $(grid1Id).ntsGridList("getSelected");
+                                var source = $(gridId).igGrid("option", "dataSource").slice();
+                                var selected = $(gridId).ntsGridList("getSelected");
                                 if (selected.length > 0) {
                                     var gotoEnd = source.splice(0, selected[0].index + 1);
                                     source = source.concat(gotoEnd);
@@ -2118,31 +2134,49 @@ var nts;
                                         return x !== undefined && x !== null && val[x["key"]].toString().indexOf(value) >= 0;
                                     }) !== undefined;
                                 });
-                                $(grid1Id).ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[primaryKey]] : []);
+                                $(gridId).ntsGridList('setSelected', searchedValues !== undefined ? [searchedValues[primaryKey]] : []);
                                 if (searchedValues !== undefined && (selected.length === 0 ||
                                     selected[0].id !== searchedValues[primaryKey])) {
-                                    var current = $(grid1Id).igGrid("selectedRows");
-                                    if (current.length > 0 && $(grid1Id).igGrid("hasVerticalScrollbar")) {
-                                        $(grid1Id).igGrid("virtualScrollTo", current[0].index === source.length - 1
+                                    var current = $(gridId).igGrid("selectedRows");
+                                    if (current.length > 0 && $(gridId).igGrid("hasVerticalScrollbar")) {
+                                        $(gridId).igGrid("virtualScrollTo", current[0].index === source.length - 1
                                             ? current[0].index : current[0].index + 1);
                                     }
                                 }
                             };
+                            var initSearchArea = function ($SearchArea, targetId) {
+                                $SearchArea.append("<div class='ntsSearchTextContainer'/>")
+                                    .append("<div class='ntsSearchButtonContainer'/>");
+                                $SearchArea.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
+                                $SearchArea.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
+                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
+                                    if (event.which === 13) {
+                                        search($SearchArea, targetId, primaryKey);
+                                    }
+                                });
+                                $SearchArea.find(".ntsSearchButton").text("Search").click(function (event, ui) {
+                                    search($SearchArea, targetId, primaryKey);
+                                });
+                            };
                             var searchAreaId = elementId + "-search-area";
                             $swap.append("<div class = 'ntsSearchArea' id = " + searchAreaId + "/>");
-                            $swap.find(".ntsSearchArea")
-                                .append("<div class='ntsSearchTextContainer'/>")
-                                .append("<div class='ntsSearchButtonContainer'/>");
-                            $swap.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
-                            $swap.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
-                            $swap.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
-                                if (event.which === 13) {
-                                    search($swap, grid2Id, grid1Id, primaryKey);
-                                }
-                            });
-                            $swap.find(".ntsSearchButton").text("Search").click(function (event, ui) {
-                                search($swap, grid2Id, grid1Id, primaryKey);
-                            });
+                            var $searchArea = $swap.find(".ntsSearchArea");
+                            $searchArea.append("<div class='ntsSwapSearchLeft'/>")
+                                .append("<div class='ntsSwapSearchRight'/>");
+                            $searchArea.css({ position: "relative" });
+                            var searchAreaWidth = gridWidth + CHECKBOX_WIDTH;
+                            if (showSearchBox.showLeft) {
+                                var $searchLeftContainer = $swap.find(".ntsSwapSearchLeft");
+                                $searchLeftContainer.width(searchAreaWidth).css({ position: "absolute", left: 0 });
+                                initSearchArea($searchLeftContainer, grid1Id);
+                            }
+                            if (showSearchBox.showRight) {
+                                var $searchRightContainer = $swap.find(".ntsSwapSearchRight");
+                                $searchRightContainer.width(gridWidth + CHECKBOX_WIDTH).css({ position: "absolute", right: 0 });
+                                initSearchArea($searchRightContainer, grid2Id);
+                            }
+                            $searchArea.find(".ntsSearchBox").width(searchAreaWidth - BUTTON_SEARCH_WIDTH - INPUT_SEARCH_PADDING);
+                            $searchArea.height(SEARCH_AREA_HEIGHT);
                             gridHeight -= SEARCH_AREA_HEIGHT;
                         }
                         $swap.append("<div class= 'ntsSwapArea ntsGridArea'/>");
@@ -2151,15 +2185,15 @@ var nts;
                             .append("<div class = 'ntsSwapGridArea ntsSwapComponent' id = " + elementId + "-gridArea2" + "/>");
                         $swap.find("#" + elementId + "-gridArea1").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid1" + "/>");
                         $swap.find("#" + elementId + "-gridArea2").append("<table class = 'ntsSwapGrid' id = " + elementId + "-grid2" + "/>");
-                        var $grid1 = $swap.find("#" + elementId + "-grid1");
-                        var $grid2 = $swap.find("#" + elementId + "-grid2");
+                        var $grid1 = $swap.find(grid1Id);
+                        var $grid2 = $swap.find(grid2Id);
                         var features = [{ name: 'Selection', multipleSelection: true },
                             { name: 'Sorting', type: 'local' },
                             { name: 'RowSelectors', enableCheckBoxes: true, enableRowNumbering: true }];
                         $swap.find(".nstSwapGridArea").width(gridWidth + CHECKBOX_WIDTH);
                         $grid1.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
-                            height: (gridHeight - HEADER_HEIGHT) + "px",
+                            height: (gridHeight) + "px",
                             primaryKey: primaryKey,
                             columns: iggridColumns,
                             virtualization: true,
@@ -2172,7 +2206,7 @@ var nts;
                         $grid1.ntsGridList('setupSelecting');
                         $grid2.igGrid({
                             width: gridWidth + CHECKBOX_WIDTH,
-                            height: (gridHeight - HEADER_HEIGHT) + "px",
+                            height: (gridHeight) + "px",
                             primaryKey: primaryKey,
                             columns: iggridColumns,
                             virtualization: true,
@@ -2183,8 +2217,6 @@ var nts;
                             .addClass('nts-gridlist')
                             .height(gridHeight);
                         $grid2.ntsGridList('setupSelecting');
-                        var grid1Id = "#" + $grid1.attr('id');
-                        var grid2Id = "#" + $grid2.attr('id');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
                             .append("<button class = 'move-button move-forward'/>")
                             .append("<button class = 'move-button move-back'/>");
@@ -2198,12 +2230,12 @@ var nts;
                                 var employeeList = [];
                                 for (var i = 0; i < selectedEmployees.length; i++) {
                                     var current = source[selectedEmployees[i].index];
-                                    if (current[key] === selectedEmployees[i].id) {
+                                    if (current[key].toString() === selectedEmployees[i].id.toString()) {
                                         employeeList.push(current);
                                     }
                                     else {
                                         var sameCodes = _.find(source, function (subject) {
-                                            return subject[key] === selectedEmployees[i].id;
+                                            return subject[key].toString() === selectedEmployees[i].id.toString();
                                         });
                                         if (sameCodes !== undefined) {
                                             employeeList.push(sameCodes);
@@ -2213,7 +2245,7 @@ var nts;
                                 var length = value().length;
                                 var notExisted = _.filter(employeeList, function (list) {
                                     return _.find(currentSource, function (data) {
-                                        return data[key] === list[key];
+                                        return data[key].toString() === list[key].toString();
                                     }) === undefined;
                                 });
                                 if (notExisted.length > 0) {
@@ -2221,7 +2253,7 @@ var nts;
                                     $(id2).igGrid("virtualScrollTo", 0);
                                     var newSource = _.filter(source, function (list) {
                                         return _.find(notExisted, function (data) {
-                                            return data[key] === list[key];
+                                            return data[key].toString() === list[key].toString();
                                         }) === undefined;
                                     });
                                     var sources = currentSource.concat(notExisted);
