@@ -15,6 +15,10 @@
 				<com:scriptfile path="service.js" />
 				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="start.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode
+					nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName
+  				</com:ValidatorScript>
 			</ui:define>
 			
 			<ui:define name="sidebar">
@@ -37,7 +41,7 @@
 					<com:ko tag="if" bind="selectedTab() == 0">
 						<div class="contents-area" data-bind="with: aggregateItemCategories()[0]">
 							<div class="left-content">
-								<div id="search-grid">
+								<div class="search-grid">
 									<div id="search-input" class="ntsSearchBox"
 											data-bind="ntsSearchBox: {comId: 'aggregate-items', 
 												items: itemList, 
@@ -46,8 +50,7 @@
 												fields: ['name', 'code']}"
 											placeholder="コード・名称"></div>
 								</div>
-								<div id="output-setting-list">
-									<table id="aggregate-items" data-bind="ntsGridList: {
+								<table id="aggregate-items" data-bind="ntsGridList: {
 												width: 250,
 												height: 550,
 												options: itemList,
@@ -55,11 +58,60 @@
 												columns: itemListColumns,
 												multiple: false,
 												value: aggregateItemSelectedCode
+										}"></table>
+							</div>
+							<div class="right-content" data-bind="with: aggregateItemDetail">
+								<div class="flex valign-center">
+									<div id="code-name-label" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
+									<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
+														enable: true,
+														constraint: 'WLAggregateItemCode',
+														required: true}"></input>
+									<div class="name-input">
+										<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: name,
+															constraint: 'WLAggregateItemName',
+															required: true}"></input>
+									</div>
+								</div>
+								<div class="flex valign-center">
+									<div data-bind="ntsFormLabel: {}">値が0の時の項目名</div>
+									<div class="cf" data-bind="ntsSwitchButton: {
+										options: switchs,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: showNameZeroCode,
+										enable: true }"></div>
+								</div>
+								<div class="flex valign-center">
+									<div data-bind="ntsFormLabel: {}">値が0の時の項目値</div>
+									<div class="cf" data-bind="ntsSwitchButton: {
+										options: switchs,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: showValueZeroCode,
+										enable: true }"></div>
+								</div>
+								<div class="select-item">
+									<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
+									<div class="search-grid">
+										<div id="search-master-items-input" class="ntsSearchBox"
+												data-bind="ntsSearchBox: {comId: 'aggregate-items', 
+													items: itemList, 
+													selected: aggregateItemSelectedCode, 
+													selectedKey: 'code', 
+													fields: ['name', 'code']}"
+												placeholder="コード・名称"></div>
+									</div>
+									<table id="master-items" data-bind="ntsGridList: {
+													width: 250,
+													height: 550,
+													options: itemList,
+													optionsValue: 'code',
+													columns: itemListColumns,
+													multiple: false,
+													value: aggregateItemSelectedCode
 											}"></table>
 								</div>
-							</div>
-							<div class="right-content">
-								
 							</div>
 				   		</div>
 			   		</com:ko>

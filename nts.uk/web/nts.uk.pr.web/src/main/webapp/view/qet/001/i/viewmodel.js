@@ -103,12 +103,25 @@ var qet001;
                     this.name = item == undefined ? ko.observable(null) : ko.observable(item.name);
                     this.paymentType = paymentType;
                     this.category = category;
-                    this.showNameZeroValue = item == undefined ? ko.observable(false)
+                    this.showNameZeroValue = item == undefined ? ko.observable(true)
                         : ko.observable(item.showNameZeroValue);
-                    this.showValueZeroValue = item == undefined ? ko.observable(false)
+                    this.showValueZeroValue = item == undefined ? ko.observable(true)
                         : ko.observable(item.showValueZeroValue);
                     this.masterItems = ko.observableArray(masterItems);
                     this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems);
+                    this.switchs = ko.observableArray([
+                        { code: '0', name: '表示する' },
+                        { code: '1', name: '表示しない' }
+                    ]);
+                    this.showNameZeroCode = ko.observable(this.showNameZeroValue() ? '0' : '1');
+                    this.showValueZeroCode = ko.observable(this.showValueZeroValue() ? '0' : '1');
+                    var self = this;
+                    self.showNameZeroValue = ko.computed(function () {
+                        return self.showNameZeroCode() == '0';
+                    });
+                    self.showValueZeroValue = ko.computed(function () {
+                        return self.showValueZeroCode() == '0';
+                    });
                 }
                 return AggregateItemDetail;
             }());
