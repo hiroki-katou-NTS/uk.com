@@ -391,6 +391,12 @@ project (':screen:pr:nts.uk.screen.pr.infra') {
 
 project (':file:pr:nts.uk.file.pr.ws') {
 	dependencies {
+		compile project (':file:pr:nts.uk.file.pr.app')
+	}
+}
+
+project (':file:pr:nts.uk.file.pr.app') {
+	dependencies {
 		compile project (':file:pr:nts.uk.file.pr.infra')
 	}
 }
