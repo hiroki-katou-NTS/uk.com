@@ -150,11 +150,12 @@ module nts.uk.pr.view.qmm008.c {
             //TODO save
             public save() {
                 var self = this;
-
+                //if update office
                 if (!self.enabled())
-                    self.updateOffice()
+                    self.updateOffice();
+                //if register new office
                 else {
-                    self.registerOffice()
+                    self.registerOffice();
                 }
             }
             //TODO Update office data
@@ -238,6 +239,7 @@ module nts.uk.pr.view.qmm008.c {
                 //set enabled code input
                 self.enabled(true);
             }
+            
             closeDialog() {
                 // Set child value
                 nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());

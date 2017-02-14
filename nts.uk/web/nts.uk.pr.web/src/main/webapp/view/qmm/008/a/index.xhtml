@@ -47,8 +47,8 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: InsuranceOfficeList, selected: officeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalSubWindow">履歴追加</button>
-						<button data-bind="click: OpenModalConfigHistory"
+							data-bind="click: OpenModalSubWindow,enable:createHistoryControll()">履歴追加</button>
+						<button data-bind="click: OpenModalConfigHistory,enable:!createHistoryControll()"
 							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
 							<table id="treegrid2"
@@ -77,7 +77,7 @@
 								<td class="border_none padding_top_20">
 									<div id="date-picker"
 										data-bind="ntsDatePicker: {
-									value:healthDate, 
+									value:startMonth, 
 									dateFormat: 'yyyy/MM'}">
 									</div>
 								</td>

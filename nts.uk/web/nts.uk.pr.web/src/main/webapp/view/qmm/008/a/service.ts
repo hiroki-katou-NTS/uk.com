@@ -116,9 +116,9 @@ module nts.uk.pr.view.qmm008.a {
             // Ret promise.
             return dfd.promise();
         }
-                /**
-         * Function is used to load health data of Office by office code.
-         */
+        /**
+ * Function is used to load health data of Office by office code.
+ */
         export function getAllHealthInsuranceItem(code: string): JQueryPromise<Array<model.finder.HealthInsuranceRateDto>> {
             // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.HealthInsuranceRateDto>>();
@@ -133,8 +133,8 @@ module nts.uk.pr.view.qmm008.a {
             // Ret promise.
             return dfd.promise();
         }
-                
-        
+
+
 
         /**
         * Function is used to load pension  data of Office by office code.
@@ -183,13 +183,13 @@ module nts.uk.pr.view.qmm008.a {
                         this.code = code;
                         this.childs = childs;
                         //if is history
-                        if (childs.length == 0) {
-                            this.codeName = name;
-                        }
+//                        if (childs.length == 0) {
+//                            this.codeName = name;
+//                        }
                         //if is office
-                        else {
+//                        else {
                             this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
-                        }
+//                        }
                     }
                 }
 
@@ -252,21 +252,23 @@ module nts.uk.pr.view.qmm008.a {
 
                 //health DTO
                 export class HealthInsuranceRateDto {
-                    historyId: number;
+                    historyId: string;
                     companyCode: string;
                     officeCode: string;
-                    applyRange: string;
-                    autoCalculate: number;
+                    startMonth: string;
+                    endMonth: string;
+                    autoCalculate: boolean;
                     rateItems: Array<HealthInsuranceRateItemDto>;
                     roundingMethods: Array<Enum>;
                     maxAmount: number;
 
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: number, companyCode: string, officeCode: string, applyRange: string, autoCalculate: number, rateItems: Array<HealthInsuranceRateItemDto>, roundingMethods: Array<Enum>, maxAmount: number) {
+                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: boolean, rateItems: Array<HealthInsuranceRateItemDto>, roundingMethods: Array<Enum>, maxAmount: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;
-                        this.applyRange = applyRange;
+                        this.startMonth = startMonth;
+                        this.endMonth = endMonth;
                         this.autoCalculate = autoCalculate;
                         this.rateItems = rateItems;
                         this.roundingMethods = roundingMethods;
