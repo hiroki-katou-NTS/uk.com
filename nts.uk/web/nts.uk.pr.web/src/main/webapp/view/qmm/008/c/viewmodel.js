@@ -16,9 +16,10 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(selectedOfficeCode) {
                                     var self = this;
-                                    this.currentCode = ko.observable();
-                                    this.officeItems = ko.observableArray([]);
-                                    this.columns2 = ko.observableArray([
+                                    self.enabled = ko.observable(true);
+                                    self.collectData = ko.observable(null);
+                                    self.officeItems = ko.observableArray([]);
+                                    self.columns2 = ko.observableArray([
                                         { headerText: 'コード', key: 'code', width: 100 },
                                         { headerText: '名称', key: 'name', width: 150 }
                                     ]);
@@ -32,7 +33,7 @@ var nts;
                                     self.selectedTab = ko.observable('tab-1');
                                     self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '', 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
                                     self.textArea = ko.observable("");
-                                    this.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                                    self.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
                                         width: "100",
                                         textalign: "center"
@@ -40,6 +41,7 @@ var nts;
                                     self.selectedOfficeCode = ko.observable('');
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
                                         if (selectedOfficeCode != null || selectedOfficeCode != undefined) {
+                                            self.enabled(false);
                                             $.when(self.load(selectedOfficeCode)).done(function () {
                                             }).fail(function (res) {
                                             });
@@ -77,7 +79,7 @@ var nts;
                                         self.officeModel().shortName(data.shortName);
                                         self.officeModel().PicName(data.picName);
                                         self.officeModel().PicPosition(data.picPosition);
-                                        self.officeModel().portCode(data.potalCode);
+                                        self.officeModel().portCode(parseInt(data.potalCode));
                                         self.officeModel().prefecture(data.prefecture);
                                         self.officeModel().address1st(data.address1st);
                                         self.officeModel().kanaAddress1st(data.kanaAddress1st);
@@ -98,6 +100,7 @@ var nts;
                                         self.officeModel().healthInsuAssoCode(data.healthInsuAssoCode);
                                         self.officeModel().memo(data.memo);
                                     });
+                                    return;
                                 };
                                 ScreenModel.prototype.convertDatatoList = function (data) {
                                     var OfficeItemList = [];
@@ -105,6 +108,59 @@ var nts;
                                         OfficeItemList.push(new ItemModel(item.code, item.name));
                                     });
                                     return OfficeItemList;
+                                };
+                                ScreenModel.prototype.save = function () {
+                                    var self = this;
+                                    if (!self.enabled())
+                                        self.updateOffice();
+                                    else {
+                                        self.registerOffice();
+                                    }
+                                };
+                                ScreenModel.prototype.updateOffice = function () {
+                                    var self = this;
+                                    c.service.update(self.collectData()).done(function () {
+                                    }).fail(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.registerOffice = function () {
+                                    var self = this;
+                                    c.service.register(self.collectData()).done(function () {
+                                    }).fail(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    return new c.service.model.finder.OfficeItemDto("company code", self.officeModel().officeCode(), self.officeModel().officeName(), self.officeModel().shortName(), self.officeModel().PicName(), self.officeModel().PicPosition(), self.officeModel().portCode().toString(), self.officeModel().prefecture(), self.officeModel().address1st(), self.officeModel().address2nd(), self.officeModel().kanaAddress1st(), self.officeModel().kanaAddress2nd(), self.officeModel().phoneNumber(), self.officeModel().healthInsuOfficeRefCode1st(), self.officeModel().healthInsuOfficeRefCode2nd(), self.officeModel().pensionOfficeRefCode1st(), self.officeModel().pensionOfficeRefCode2nd(), self.officeModel().welfarePensionFundCode(), self.officeModel().officePensionFundCode(), self.officeModel().healthInsuCityCode(), self.officeModel().healthInsuOfficeSign(), self.officeModel().pensionCityCode(), self.officeModel().pensionOfficeSign(), self.officeModel().healthInsuOfficeCode(), self.officeModel().healthInsuAssoCode(), self.officeModel().memo());
+                                };
+                                ScreenModel.prototype.addNew = function () {
+                                    var self = this;
+                                    self.officeModel().officeCode('');
+                                    self.officeModel().officeName('');
+                                    self.officeModel().shortName('');
+                                    self.officeModel().PicName('');
+                                    self.officeModel().PicPosition('');
+                                    self.officeModel().portCode(null);
+                                    self.officeModel().prefecture('');
+                                    self.officeModel().address1st('');
+                                    self.officeModel().kanaAddress1st('');
+                                    self.officeModel().address2nd('');
+                                    self.officeModel().kanaAddress2nd('');
+                                    self.officeModel().phoneNumber('');
+                                    self.officeModel().healthInsuOfficeRefCode1st('');
+                                    self.officeModel().healthInsuOfficeRefCode2nd('');
+                                    self.officeModel().pensionOfficeRefCode1st('');
+                                    self.officeModel().pensionOfficeRefCode2nd('');
+                                    self.officeModel().welfarePensionFundCode('');
+                                    self.officeModel().officePensionFundCode('');
+                                    self.officeModel().healthInsuCityCode('');
+                                    self.officeModel().healthInsuOfficeSign('');
+                                    self.officeModel().pensionCityCode('');
+                                    self.officeModel().pensionOfficeSign('');
+                                    self.officeModel().healthInsuOfficeCode('');
+                                    self.officeModel().healthInsuAssoCode('');
+                                    self.officeModel().memo('');
+                                    self.enabled(true);
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());

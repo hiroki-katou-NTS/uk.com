@@ -42,7 +42,7 @@ public class UnitPrice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public UnitPrice(UnitPriceMemento memento) {
+	public UnitPrice(UnitPriceGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
@@ -55,7 +55,7 @@ public class UnitPrice extends AggregateRoot {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(UnitPriceMemento memento) {
+	public void saveToMemento(UnitPriceSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);

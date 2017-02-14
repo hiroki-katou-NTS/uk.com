@@ -94,4 +94,16 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 
 	}
 
+	@Override
+	public void setFundInputApply(Boolean fundInputApply) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAutoCalculate(Boolean autoCalculate) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

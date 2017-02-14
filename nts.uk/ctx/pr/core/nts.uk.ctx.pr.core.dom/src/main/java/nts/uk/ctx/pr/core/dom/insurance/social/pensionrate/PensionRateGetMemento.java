@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 /**
- * The Interface PensionRateMemento.
+ * The Interface PensionRateGetMemento.
  */
 public interface PensionRateGetMemento {
 
@@ -44,6 +44,20 @@ public interface PensionRateGetMemento {
 	 * @return the apply range
 	 */
 	MonthRange getApplyRange();
+	
+	/**
+	 * Gets the fund input apply.
+	 *
+	 * @return the fund input apply
+	 */
+	Boolean getFundInputApply();
+	
+	/**
+	 * Gets the auto calculate.
+	 *
+	 * @return the auto calculate
+	 */
+	Boolean getAutoCalculate();
 
 	/**
 	 * Gets the max amount.

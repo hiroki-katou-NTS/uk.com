@@ -17,6 +17,7 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 
 	@Inject
 	private PensionRateService pensionRateService;
+	@Inject
 	private PensionRateRepository pensionRateRepository;
 
 	@Override

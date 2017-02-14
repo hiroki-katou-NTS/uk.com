@@ -192,6 +192,18 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 			public MonthRange getApplyRange() {
 				return mr;
 			}
+
+			@Override
+			public Boolean getFundInputApply() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Boolean getAutoCalculate() {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		});
 		return Optional.of(mock);
 	}

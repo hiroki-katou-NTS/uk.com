@@ -23,8 +23,8 @@ public class JpaAvgEarnLevelMasterSettingGetMemento implements AvgEarnLevelMaste
 	public JpaAvgEarnLevelMasterSettingGetMemento(Object typeValue) {
 		this.typeValue = typeValue;
 	}
-
 	@Override
+	
 	public Long getVersion() {
 		// TODO Auto-generated method stub
 		return null;

@@ -29,7 +29,7 @@
 				<button id="btn_new" data-bind="click: resetValueLaborInsurance"
 					class="btnStyle">新規</button>
 				<button class="proceed btnStyle" id="btn_register"
-					data-bind="click: addLaborInsuranceOffice">登録</button>
+					data-bind="click: saveLaborInsuranceOffice">登録</button>
 				<button id="btn_printing">印刷 (PDF)</button>
 				<button id="btn_readFromSocialTnsuranceOffice"
 					data-bind="click: readFromSocialTnsuranceOffice,enable:enableButton">社会保険事業所から読み込み</button>
@@ -118,7 +118,7 @@
 								<tr>
 									<td class="contentsRL">
 										<div id="lbl_postalCode"
-											data-bind="ntsFormLabel: {constraint:'PicPosition',required: true}">
+											data-bind="ntsFormLabel: {constraint:'PicPosition', required: true}">
 											<label>代表者職位</label>
 										</div>
 									</td>
@@ -127,7 +127,8 @@
 										data-bind="ntsTextEditor: {value: picPosition, 
 										constraint: 'PicPosition', 
 										option: textEditorOption, 
-										enable: true}" />
+										enable: true,
+										required: true}" />
 									</td>
 								</tr>
 								<tr>

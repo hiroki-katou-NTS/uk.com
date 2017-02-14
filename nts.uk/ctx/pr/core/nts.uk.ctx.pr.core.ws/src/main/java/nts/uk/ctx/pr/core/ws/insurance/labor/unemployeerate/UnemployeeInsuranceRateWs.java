@@ -4,24 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSettingDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFindInDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -30,6 +25,10 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")
 public class UnemployeeInsuranceRateWs extends WebService {
+
+	/** The find. */
+	@Inject
+	private UnemployeeInsuranceFinder find;
 
 	/** The add. */
 	@Inject
@@ -47,49 +46,10 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	 * @return the unemployee insurance rate dto
 	 */
 	@POST
-	@Path("detailHistory/{historyId}")
-	public UnemployeeInsuranceRateDto detailHistory(@PathParam("historyId") String historyId) {
-		UnemployeeInsuranceRateDto unemployeeInsuranceRate = new UnemployeeInsuranceRateDto();
-		unemployeeInsuranceRate.setVersion(11L);
-		HistoryUnemployeeInsuranceDto historyUnemployeeInsurance = new HistoryUnemployeeInsuranceDto();
-		historyUnemployeeInsurance.setHistoryId(historyId);
-		unemployeeInsuranceRate.setHistoryInsurance(historyUnemployeeInsurance);
-		List<UnemployeeInsuranceRateItemDto> rateItems = new ArrayList<UnemployeeInsuranceRateItemDto>();
-		UnemployeeInsuranceRateItemDto umInsuranceRateItemAgroforestry = new UnemployeeInsuranceRateItemDto();
-		umInsuranceRateItemAgroforestry.setCareerGroup(0);// CareerGroup.Agroforestry
-		UnemployeeInsuranceRateItemSettingDto personalSettingAgroforestry = new UnemployeeInsuranceRateItemSettingDto();
-		personalSettingAgroforestry.setRate(55.5);
-		personalSettingAgroforestry.setRoundAtr(0);// RoundingMethod.RoundUp
-		umInsuranceRateItemAgroforestry.setPersonalSetting(personalSettingAgroforestry);
-		UnemployeeInsuranceRateItemSettingDto companySettingAgroforestry = new UnemployeeInsuranceRateItemSettingDto();
-		companySettingAgroforestry.setRate(55.59);
-		companySettingAgroforestry.setRoundAtr(0);// RoundingMethod.RoundUp
-		umInsuranceRateItemAgroforestry.setCompanySetting(companySettingAgroforestry);
-		rateItems.add(umInsuranceRateItemAgroforestry);
-		UnemployeeInsuranceRateItemDto umInsuranceRateItemContruction = new UnemployeeInsuranceRateItemDto();
-		umInsuranceRateItemContruction.setCareerGroup(1);// CareerGroup.Contruction
-		UnemployeeInsuranceRateItemSettingDto personalSettingContruction = new UnemployeeInsuranceRateItemSettingDto();
-		personalSettingContruction.setRate(55.5);
-		personalSettingContruction.setRoundAtr(0);// RoundingMethod.RoundUp
-		umInsuranceRateItemContruction.setPersonalSetting(personalSettingContruction);
-		UnemployeeInsuranceRateItemSettingDto companySettingContruction = new UnemployeeInsuranceRateItemSettingDto();
-		companySettingContruction.setRate(55.59);
-		companySettingContruction.setRoundAtr(0); // RoundingMethod.RoundUp
-		umInsuranceRateItemContruction.setCompanySetting(companySettingContruction);
-		rateItems.add(umInsuranceRateItemContruction);
-		UnemployeeInsuranceRateItemDto umInsuranceRateItemOther = new UnemployeeInsuranceRateItemDto();
-		umInsuranceRateItemOther.setCareerGroup(2);// CareerGroup.Other
-		UnemployeeInsuranceRateItemSettingDto personalSettingOther = new UnemployeeInsuranceRateItemSettingDto();
-		personalSettingOther.setRate(55.5);
-		personalSettingOther.setRoundAtr(0); // RoundingMethod.RoundUp
-		umInsuranceRateItemOther.setPersonalSetting(personalSettingOther);
-		UnemployeeInsuranceRateItemSettingDto companySettingOther = new UnemployeeInsuranceRateItemSettingDto();
-		companySettingOther.setRate(56.0);
-		companySettingOther.setRoundAtr(0);// RoundingMethod.RoundUp
-		umInsuranceRateItemOther.setCompanySetting(companySettingOther);
-		rateItems.add(umInsuranceRateItemOther);
-		unemployeeInsuranceRate.setRateItems(rateItems);
-		return unemployeeInsuranceRate;
+	@Path("detailHistory")
+	public UnemployeeInsuranceRateDto detailHistory(UnemployeeInsuranceFindInDto unemployeeInsuranceFindInDto) {
+		return find.findById(unemployeeInsuranceFindInDto.getCompanyCode(),
+				unemployeeInsuranceFindInDto.getHistoryId());
 	}
 
 	/**

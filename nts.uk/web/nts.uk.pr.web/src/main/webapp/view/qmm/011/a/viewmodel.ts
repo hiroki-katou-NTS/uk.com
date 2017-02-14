@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm011.a {
     import RoundingMethodDto = service.model.RoundingMethodDto;
     import HistoryUnemployeeInsuranceDto = service.model.HistoryUnemployeeInsuranceDto;
     import HistoryUnemployeeInsuranceFindInDto = service.model.HistoryUnemployeeInsuranceFindInDto;
+    import UnemployeeInsuranceFindInDto = service.model.UnemployeeInsuranceFindInDto;
     import MonthRange = service.model.MonthRange;
     import YearMonth = service.model.YearMonth;
     import UnemployeeInsuranceRateItemSettingDto = service.model.UnemployeeInsuranceRateItemSettingDto;
@@ -265,7 +266,11 @@ module nts.uk.pr.view.qmm011.a {
             private detailHistoryUnemployeeInsuranceRate(historyId: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.detailHistoryUnemployeeInsuranceRate(historyId).done(data => {
+                var unemployeeInsuranceFindInDto: UnemployeeInsuranceFindInDto;
+                unemployeeInsuranceFindInDto = new UnemployeeInsuranceFindInDto();
+                unemployeeInsuranceFindInDto.historyId = historyId;
+                unemployeeInsuranceFindInDto.companyCode = "companyCode001";
+                service.detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto).done(data => {
                     self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(data, self.rateInputOptions, self.selectionRoundingMethod));
                     dfd.resolve(null);
                 });

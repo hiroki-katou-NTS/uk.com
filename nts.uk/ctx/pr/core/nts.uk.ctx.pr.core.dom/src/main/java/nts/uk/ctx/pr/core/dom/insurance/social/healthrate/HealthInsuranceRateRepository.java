@@ -36,13 +36,14 @@ public interface HealthInsuranceRateRepository {
 	 */
     void remove(String id, Long version);
 
-	/**  
+	/**
+	 *   
 	 * Find all.
 	 *
-	 * @param companyCode the company code
+	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<HealthInsuranceRate> findAll(int companyCode);
+	List<HealthInsuranceRate> findAll(String officeCode);
 
 	/**
 	 * Find by id.

@@ -10,11 +10,15 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepo
 
 @Stateless
 public class PensionAvgearnFinder {
+
 	@Inject
 	private PensionAvgearnRepository repository;
 
 	public List<PensionAvgearnDto> find(String id) {
-		return repository.find(id).stream().map(domain -> PensionAvgearnDto.fromDomain(domain))
-				.collect(Collectors.toList());
+		return repository.find(id).stream().map(domain -> {
+			PensionAvgearnDto dto = PensionAvgearnDto.builder().build();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

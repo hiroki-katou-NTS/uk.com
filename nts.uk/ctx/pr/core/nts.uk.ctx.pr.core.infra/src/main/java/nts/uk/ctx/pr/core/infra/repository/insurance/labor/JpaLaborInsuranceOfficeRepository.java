@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
@@ -40,6 +41,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	@Override
 	public void add(LaborInsuranceOffice office) {
 		// TODO Auto-generated method stub
+		
 
 	}
 

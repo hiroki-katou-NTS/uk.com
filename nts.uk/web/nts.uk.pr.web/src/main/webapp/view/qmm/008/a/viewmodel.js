@@ -85,7 +85,7 @@ var nts;
                                         }
                                         dfd.resolve(null);
                                     });
-                                    self.getAllRounding().done(function () {
+                                    self.getAllRounding().done(function (data) {
                                         dfd.resolve(null);
                                     });
                                     return dfd.promise();
@@ -95,9 +95,11 @@ var nts;
                                     var dfd = $.Deferred();
                                     a.service.findInsuranceOffice(self.searchKey()).done(function (data) {
                                         data.forEach(function (item, index) {
-                                            a.service.findHistoryByOfficeCode(item.code).done(function (data2) {
-                                                var addData = new InsuranceOfficeItem(index + item.code, data2.name, index + data2.code, []);
-                                                data[index].childs.push(addData);
+                                            a.service.getAllHealthInsuranceItem(item.code).done(function (data2) {
+                                                data2.forEach(function (item2, index2) {
+                                                    var addData = new InsuranceOfficeItem(index + item.code, item2.startMonth + "~" + item2.endMonth, index + item2.historyId + index2, []);
+                                                    data[index].childs.push(addData);
+                                                });
                                             });
                                         });
                                         dfd.resolve(data);
@@ -113,10 +115,10 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.load = function (code) {
+                                ScreenModel.prototype.load = function (officeCode) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.getHealthInsuranceItemDetail(code).done(function (data) {
+                                    a.service.getHealthInsuranceItemDetail(officeCode).done(function (data) {
                                         if (data == null) {
                                             return;
                                         }
@@ -125,15 +127,35 @@ var nts;
                                         self.healthModel().officeCode(data.officeCode);
                                         self.healthModel().autoCalculate(data.autoCalculate);
                                         self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[1].companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].companyRate);
                                         self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[0].companyRate);
                                         self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthSalaryPersonalNursing(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyNursing(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalNursing(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanyNursing(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthSalaryPersonalBasic(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyBasic(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalBasic(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanyBasic(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthSalaryPersonalSpecific(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanySpecific(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalSpecific(data.rateItems[0].companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanySpecific(data.rateItems[0].companyRate);
+                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBox(self.roundingList());
+                                        self.healthModel().roundingMethods().healthSalaryCompanyComboBox(self.roundingList());
+                                        self.healthModel().roundingMethods().healthBonusPersonalComboBox(self.roundingList());
+                                        self.healthModel().roundingMethods().healthBonusCompanyComboBox(self.roundingList());
+                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[0].code);
+                                        self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode(data.roundingMethods[1].code);
+                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[2].code);
+                                        self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode(data.roundingMethods[3].code);
                                         self.healthModel().maxAmount(data.maxAmount);
                                         dfd.resolve();
                                     }).fail(function () {
                                     }).always(function (res) {
                                     });
-                                    a.service.getPensionItemDetail(code).done(function (data) {
+                                    a.service.getPensionItemDetail(officeCode).done(function (data) {
                                         if (data == null) {
                                             return;
                                         }
@@ -262,18 +284,18 @@ var nts;
                                     this.healthSalaryCompanyGeneral = ko.observable(0);
                                     this.healthBonusPersonalGeneral = ko.observable(0);
                                     this.healthBonusCompanyGeneral = ko.observable(0);
-                                    this.healthSalaryPersonalNursing = ko.observable(40990);
-                                    this.healthSalaryCompanyNursing = ko.observable(40990);
-                                    this.healthBonusPersonalNursing = ko.observable(40990);
-                                    this.healthBonusCompanyNursing = ko.observable(40990);
-                                    this.healthSalaryPersonalBasic = ko.observable(40990);
-                                    this.healthSalaryCompanyBasic = ko.observable(40990);
-                                    this.healthBonusPersonalBasic = ko.observable(40990);
-                                    this.healthBonusCompanyBasic = ko.observable(40990);
-                                    this.healthSalaryPersonalSpecific = ko.observable(40990);
-                                    this.healthSalaryCompanySpecific = ko.observable(40990);
-                                    this.healthBonusPersonalSpecific = ko.observable(40990);
-                                    this.healthBonusCompanySpecific = ko.observable(40990);
+                                    this.healthSalaryPersonalNursing = ko.observable(0);
+                                    this.healthSalaryCompanyNursing = ko.observable(0);
+                                    this.healthBonusPersonalNursing = ko.observable(0);
+                                    this.healthBonusCompanyNursing = ko.observable(0);
+                                    this.healthSalaryPersonalBasic = ko.observable(0);
+                                    this.healthSalaryCompanyBasic = ko.observable(0);
+                                    this.healthBonusPersonalBasic = ko.observable(0);
+                                    this.healthBonusCompanyBasic = ko.observable(0);
+                                    this.healthSalaryPersonalSpecific = ko.observable(0);
+                                    this.healthSalaryCompanySpecific = ko.observable(0);
+                                    this.healthBonusPersonalSpecific = ko.observable(0);
+                                    this.healthBonusCompanySpecific = ko.observable(0);
                                 }
                                 return HealthInsuranceRateItemModel;
                             }());

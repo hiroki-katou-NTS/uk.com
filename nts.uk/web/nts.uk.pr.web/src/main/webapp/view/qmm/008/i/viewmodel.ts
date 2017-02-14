@@ -29,11 +29,9 @@ module nts.uk.pr.view.qmm008.i {
                 var dfd = $.Deferred();
                 commonService.getAvgEarnLevelMasterSettingList().done(data => {
                     self.listAvgEarnLevelMasterSetting(data);
-                    /**
-                     * service.findPensionAvgearn('a').done(zz => {
+                    service.findPensionAvgearn('a').done(zz => {
                         self.listPensionAvgearn(zz);
                     });
-                     */
                     dfd.resolve();
                 });
                 return dfd.promise();

@@ -61,5 +61,4 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 		memento.setRateItems(this.rateItems);
 		memento.setVersion(this.getVersion());
 	}
-
 }
