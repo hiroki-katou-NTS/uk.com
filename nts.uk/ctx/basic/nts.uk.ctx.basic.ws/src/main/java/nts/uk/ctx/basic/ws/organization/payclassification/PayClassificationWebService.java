@@ -60,4 +60,5 @@ public class PayClassificationWebService extends WebService {
 		this.removePayClassificationCommandHandler.handle(command);
 	}
 
+
 }

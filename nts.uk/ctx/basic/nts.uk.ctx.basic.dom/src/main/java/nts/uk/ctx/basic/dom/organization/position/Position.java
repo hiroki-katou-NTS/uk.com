@@ -36,6 +36,7 @@ public class Position extends AggregateRoot {
 		this.jobOutCode = jobOutCode;
 		this.startDate = startDate;
 		this.companyCode = companyCode;
+		this.historyID = historyID;
 		this.memo = memo;
 	}
 

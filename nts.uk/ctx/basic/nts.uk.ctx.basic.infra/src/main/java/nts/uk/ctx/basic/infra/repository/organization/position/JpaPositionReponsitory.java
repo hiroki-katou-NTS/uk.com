@@ -55,6 +55,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 					return Optional.of(convertToDomain(e));
 				}).orElse(Optional.empty());
 	}
+	
 
 	private Position convertToDomain(CmnmtJobTittle cmnmtJobTittle) {
 		return new Position(
@@ -67,6 +68,8 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 				cmnmtJobTittle.getCmnmtJobTittlePK().getCompanyCode(),
 				new Memo(cmnmtJobTittle.getMemo()));
 	}
+	
+	
 	private CmnmtJobTittle convertToDbType(Position position) {
 		CmnmtJobTittle cmnmtJobTittle = new CmnmtJobTittle();
 		CmnmtJobTittlePK cmnmtJobTittlePK = new CmnmtJobTittlePK(
@@ -81,12 +84,16 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		cmnmtJobTittle.setCmnmtJobTittlePK(cmnmtJobTittlePK);
 		return cmnmtJobTittle;
 	}
+	
+	
 
 	private final Position toDomain(CmnmtJobTittle entity) {
 		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo);
 
 		return domain;
 	}
+	
+	
 	
 	private CmnmtJobTittle toEntityPK(Position domain) {
 		val entity = new CmnmtJobTittle();

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-
 import nts.uk.ctx.basic.dom.organization.position.Position;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 		@Inject
 		private PositionRepository positionRepository;
-
+		
 		public List<PositionDto> init() {
 			String companyCode = AppContexts.user().companyCode();
 			return positionRepository.findAll(companyCode)
@@ -31,6 +30,12 @@ import nts.uk.shr.com.context.AppContexts;
 			positionDto.setMemo(position.getMemo().v());
 			positionDto.setJobOutCode(position.getJobOutCode().v());
 			positionDto.setEndDate(position.getEndDate().localDate());
+			positionDto.setStartDate(position.getStartDate().localDate());
 			return positionDto;
+		}
+
+		public List<PositionDto> getAllPosition(String companyCode) {
+			return this.positionRepository.getPositions(companyCode).stream().map(position -> PositionDto.fromDomain(position))
+					.collect(Collectors.toList());
 		}
 }
