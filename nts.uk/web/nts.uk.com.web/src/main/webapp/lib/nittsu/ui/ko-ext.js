@@ -27,19 +27,30 @@ var nts;
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        $input.focus(function () {
+                            $input.select();
+                        });
                         $input.change(function () {
                             var validator = _this.getValidator(data);
-                            var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
                                 setValue(result.parsedValue);
-                                $input.val(formatter.format(result.parsedValue));
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage);
                                 setValue(newText);
+                            }
+                        });
+                        // format on blur
+                        $input.blur(function () {
+                            var validator = _this.getValidator(data);
+                            var formatter = _this.getFormatter(data);
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            if (result.isValid) {
+                                $input.val(formatter.format(result.parsedValue));
                             }
                         });
                     };
@@ -184,6 +195,13 @@ var nts;
                     function NumberEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    NumberEditorProcessor.prototype.init = function ($input, data) {
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        $input.focus(function () {
+                            $input.val(data.value());
+                        });
+                        _super.prototype.init.call(this, $input, data);
+                    };
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
