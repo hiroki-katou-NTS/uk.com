@@ -97,7 +97,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.13'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.15.1'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.16.4'
 	}
 }
 
@@ -390,6 +390,12 @@ project (':screen:pr:nts.uk.screen.pr.infra') {
 }
 
 project (':file:pr:nts.uk.file.pr.ws') {
+	dependencies {
+		compile project (':file:pr:nts.uk.file.pr.app')
+	}
+}
+
+project (':file:pr:nts.uk.file.pr.app') {
 	dependencies {
 		compile project (':file:pr:nts.uk.file.pr.infra')
 	}
