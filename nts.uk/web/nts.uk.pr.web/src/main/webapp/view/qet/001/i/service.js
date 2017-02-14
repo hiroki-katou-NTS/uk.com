@@ -15,10 +15,10 @@ var qet001;
                 var dfd = $.Deferred();
                 var data = [];
                 for (var i = 0; i < 10; i++) {
-                    data.push({ code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Payment' });
+                    data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Payment' });
                 }
                 for (var i = 0; i < 10; i++) {
-                    data.push({ code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Deduction' });
+                    data.push({ code: 'MI' + i, name: 'Master item' + i, category: 'Deduction' });
                 }
                 dfd.resolve(data);
                 return dfd.promise();

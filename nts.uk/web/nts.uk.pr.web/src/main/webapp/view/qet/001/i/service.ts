@@ -19,10 +19,10 @@ module qet001.i {
             // Fake data.
             var data = [];
             for (var i = 0; i < 10; i++) {
-                data.push({code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Payment'});
+                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Payment'});
             }
             for (var i = 0; i < 10; i++) {
-                data.push({code: 'MI' + i, name: 'Master item' + i, paymentType: 'Salary', category: 'Deduction'});
+                data.push({code: 'MI' + i, name: 'Master item' + i, category: 'Deduction'});
             }
             dfd.resolve(data);
             return dfd.promise();
@@ -34,11 +34,20 @@ module qet001.i {
         export interface Item {
             code: string;
             name: string;
-            paymentType: string;
+            paymentType?: string;
             category: string;
             orderNumber? : number;
-            showNameZeroValue: boolean;
-            showValueZeroValue: boolean;
+            showNameZeroValue?: boolean;
+            showValueZeroValue?: boolean;
+            subItems?: SubItem[];
+        }
+        
+        /**
+         * Sub item class.
+         */
+        export interface SubItem {
+            code: string;
+            name: string;
         }
     }
 }

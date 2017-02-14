@@ -5,31 +5,45 @@ module qet001.i.viewmodel {
     import WageLedgerSettingItem = qet001.a.service.model.WageLedgerSettingItem;
     
     export class ScreenModel {
-        
+        aggregateItemCategories: KnockoutObservableArray<AggregateCategory>;
+        masterItems: KnockoutObservableArray<service.Item>;
+        selectedTab: KnockoutObservable<number>;
         
         constructor() {
+            this.aggregateItemCategories = ko.observableArray([]);
+            this.masterItems = ko.observableArray([]);
+            this.selectedTab = ko.observable(0);
+            var self = this;
+            $("#sidebar-area > ul > li").on('click', function() {
+                self.selectedTab($("#sidebar-area > ul > li").index(this));
+            });
+            self.selectedTab.subscribe(val => {
+                if (val == undefined || val == null) {
+                    return;
+                }
+                // reload tab.
+                self.aggregateItemCategories()[val].loadAggregateItemByCategory();
+            })
         }
         
         start(): JQueryPromise<void>{
             var dfd = $.Deferred<void>();
+            var self = this;
+            service.findMasterItems().done(function(res) {
+                self.masterItems(res);
+                
+                // init aggregate categories.
+                self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.PAYMENT, res));
+                self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.DEDUCTION, res));
+                self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.ATTENDANCE, res));
+                self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.PAYMENT, res));
+                self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.DEDUCTION, res));
+                self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.ATTENDANCE, res));
+                
+                self.aggregateItemCategories()[0].loadAggregateItemByCategory();
+            })
             dfd.resolve();
             return dfd.promise();
-        }
-        
-        switchToCreateMode() {
-            
-        }
-        
-        save() {
-            
-        }
-        
-        remove() {
-            
-        }
-        
-        close() {
-            
         }
     }
     
@@ -51,20 +65,67 @@ module qet001.i.viewmodel {
                 {headerText: '名称', prop: 'name',  width: 100}]);
             
             // Filter master item by category and payment type.
-            var masterItemInCate = masterItems.filter(item => item.paymentType == paymentType 
-                && item.category == categoryName);
-            this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
+            var masterItemInCate = masterItems.filter(item => item.category == categoryName);
+            this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, 
+                categoryName, masterItemInCate));
+            var self = this;
+            self.aggregateItemSelectedCode.subscribe((code) => {
+                if (code == undefined || code == null || code == '') {
+                    return;
+                }
+                self.loadDetailAggregateItem(code).done(function(res: service.Item) {
+                    self.aggregateItemDetail(new AggregateItemDetail(paymentType,
+                        categoryName, masterItemInCate, res));
+                });
+            })
         }
         
         loadAggregateItemByCategory() : JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             // Fake data.
             var self = this;
-//            var 
+            var items: Array<service.Item> = [];
             for (var i = 0; i < 10; i++) {
-                
+                items.push({code: 'AGG' + i, name: 'Aggregate item ' + i, category: self.category, 
+                    paymentType: self.paymentType, showNameZeroValue: true, showValueZeroValue: true});
             }
+            self.itemList(items);
+            dfd.resolve();
             return dfd.promise();
+        }
+        
+        
+        loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
+            var dfd = $.Deferred<service.Item>();
+            var self = this;
+            var selectedCode = code;
+            // Fake data
+            var selectedNumber = parseInt(selectedCode.substring(selectedCode.length - 1, selectedCode.length));
+            var item: service.Item = {code: selectedCode, name: 'Aggregate item ' + selectedNumber, 
+                category: self.category, paymentType: self.paymentType, showNameZeroValue: true, 
+                showValueZeroValue: true, subItems: [
+                            {code: 'SUB' + selectedNumber, name: 'sub item ' + selectedNumber},
+                            {code: 'SUB' + selectedNumber + 2, name: 'sub item ' + selectedNumber + 2},
+                        ]};
+            dfd.resolve(item);
+            return dfd.promise();
+        }
+        
+        
+        switchToCreateMode() {
+            
+        }
+        
+        save() {
+            
+        }
+        
+        remove() {
+            
+        }
+        
+        close() {
+            
         }
     }
     
@@ -79,6 +140,7 @@ module qet001.i.viewmodel {
         showNameZeroValue: KnockoutObservable<boolean>;
         showValueZeroValue: KnockoutObservable<boolean>;
         masterItems: KnockoutObservableArray<service.Item>;
+        subItems: KnockoutObservableArray<service.SubItem>;
         
         constructor(paymentType: string, category: string, 
                 masterItems: service.Item[], item?: service.Item) {
@@ -91,6 +153,7 @@ module qet001.i.viewmodel {
             this.showValueZeroValue = item == undefined ? ko.observable(false)
                 : ko.observable(item.showValueZeroValue);
             this.masterItems = ko.observableArray(masterItems);
+            this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems)
         }
     }
     

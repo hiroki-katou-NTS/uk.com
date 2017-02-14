@@ -103,7 +103,8 @@ var qet001;
                     }
                     b.service.removeOutputSetting(selectedCode).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        var selectedSetting = self.outputSettings().outputSettingList().filter(function (setting) { return setting.code == selectedCode; })[0];
+                        var selectedSetting = self.outputSettings().outputSettingList()
+                            .filter(function (setting) { return setting.code == selectedCode; })[0];
                         self.outputSettings().outputSettingList.remove(selectedSetting);
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -170,12 +171,18 @@ var qet001;
                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
                     this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.isOnceSheetPerPerson : false);
                     this.categorySettingTabs = ko.observableArray([
-                        { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-salary-attendance', title: '給与勤怠', content: '#salary-attendance', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-bonus-payment', title: '賞与支給', content: '#bonus-payment', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-bonus-deduction', title: '賞与控除', content: '#bonus-deduction', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-bonus-attendance', title: '賞与勤怠', content: '#bonus-attendance', enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment',
+                            enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction',
+                            enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-salary-attendance', title: '給与勤怠', content: '#salary-attendance',
+                            enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-bonus-payment', title: '賞与支給', content: '#bonus-payment',
+                            enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-bonus-deduction', title: '賞与控除', content: '#bonus-deduction',
+                            enable: ko.observable(true), visible: ko.observable(true) },
+                        { id: 'tab-bonus-attendance', title: '賞与勤怠', content: '#bonus-attendance',
+                            enable: ko.observable(true), visible: ko.observable(true) },
                     ]);
                     this.selectedCategory = ko.observable('tab-salary-payment');
                     this.isCreateMode = ko.observable(outputSetting == undefined);
@@ -205,10 +212,8 @@ var qet001;
                     return settings;
                 };
                 OutputSettingDetail.prototype.createCategorySetting = function (category, paymentType, aggregateItems, masterItem, categorySettings) {
-                    var aggregateItemsInCategory = aggregateItems.filter(function (item) { return item.category == category
-                        && item.paymentType == paymentType; });
-                    var masterItemsInCategory = masterItem.filter(function (item) { return item.category == category
-                        && item.paymentType == paymentType; });
+                    var aggregateItemsInCategory = aggregateItems.filter(function (item) { return item.category == category; });
+                    var masterItemsInCategory = masterItem.filter(function (item) { return item.category == category; });
                     var cateTempSetting = { category: category, paymentType: paymentType, outputItems: [] };
                     if (categorySettings == undefined) {
                         return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);

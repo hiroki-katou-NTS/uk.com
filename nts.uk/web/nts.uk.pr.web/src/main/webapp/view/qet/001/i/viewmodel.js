@@ -6,19 +6,35 @@ var qet001;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.aggregateItemCategories = ko.observableArray([]);
+                    this.masterItems = ko.observableArray([]);
+                    this.selectedTab = ko.observable(0);
+                    var self = this;
+                    $("#sidebar-area > ul > li").on('click', function () {
+                        self.selectedTab($("#sidebar-area > ul > li").index(this));
+                    });
+                    self.selectedTab.subscribe(function (val) {
+                        if (val == undefined || val == null) {
+                            return;
+                        }
+                        self.aggregateItemCategories()[val].loadAggregateItemByCategory();
+                    });
                 }
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
+                    var self = this;
+                    i_1.service.findMasterItems().done(function (res) {
+                        self.masterItems(res);
+                        self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.PAYMENT, res));
+                        self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.DEDUCTION, res));
+                        self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.ATTENDANCE, res));
+                        self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.PAYMENT, res));
+                        self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.DEDUCTION, res));
+                        self.aggregateItemCategories.push(new AggregateCategory(PaymentType.BONUS, Category.ATTENDANCE, res));
+                        self.aggregateItemCategories()[0].loadAggregateItemByCategory();
+                    });
                     dfd.resolve();
                     return dfd.promise();
-                };
-                ScreenModel.prototype.switchToCreateMode = function () {
-                };
-                ScreenModel.prototype.save = function () {
-                };
-                ScreenModel.prototype.remove = function () {
-                };
-                ScreenModel.prototype.close = function () {
                 };
                 return ScreenModel;
             }());
@@ -32,16 +48,51 @@ var qet001;
                     this.itemListColumns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 90 },
                         { headerText: '名称', prop: 'name', width: 100 }]);
-                    var masterItemInCate = masterItems.filter(function (item) { return item.paymentType == paymentType
-                        && item.category == categoryName; });
+                    var masterItemInCate = masterItems.filter(function (item) { return item.category == categoryName; });
                     this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
+                    var self = this;
+                    self.aggregateItemSelectedCode.subscribe(function (code) {
+                        if (code == undefined || code == null || code == '') {
+                            return;
+                        }
+                        self.loadDetailAggregateItem(code).done(function (res) {
+                            self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate, res));
+                        });
+                    });
                 }
                 AggregateCategory.prototype.loadAggregateItemByCategory = function () {
                     var dfd = $.Deferred();
                     var self = this;
+                    var items = [];
                     for (var i = 0; i < 10; i++) {
+                        items.push({ code: 'AGG' + i, name: 'Aggregate item ' + i, category: self.category,
+                            paymentType: self.paymentType, showNameZeroValue: true, showValueZeroValue: true });
                     }
+                    self.itemList(items);
+                    dfd.resolve();
                     return dfd.promise();
+                };
+                AggregateCategory.prototype.loadDetailAggregateItem = function (code) {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    var selectedCode = code;
+                    var selectedNumber = parseInt(selectedCode.substring(selectedCode.length - 1, selectedCode.length));
+                    var item = { code: selectedCode, name: 'Aggregate item ' + selectedNumber,
+                        category: self.category, paymentType: self.paymentType, showNameZeroValue: true,
+                        showValueZeroValue: true, subItems: [
+                            { code: 'SUB' + selectedNumber, name: 'sub item ' + selectedNumber },
+                            { code: 'SUB' + selectedNumber + 2, name: 'sub item ' + selectedNumber + 2 },
+                        ] };
+                    dfd.resolve(item);
+                    return dfd.promise();
+                };
+                AggregateCategory.prototype.switchToCreateMode = function () {
+                };
+                AggregateCategory.prototype.save = function () {
+                };
+                AggregateCategory.prototype.remove = function () {
+                };
+                AggregateCategory.prototype.close = function () {
                 };
                 return AggregateCategory;
             }());
@@ -57,6 +108,7 @@ var qet001;
                     this.showValueZeroValue = item == undefined ? ko.observable(false)
                         : ko.observable(item.showValueZeroValue);
                     this.masterItems = ko.observableArray(masterItems);
+                    this.subItems = item == undefined ? ko.observableArray([]) : ko.observableArray(item.subItems);
                 }
                 return AggregateItemDetail;
             }());

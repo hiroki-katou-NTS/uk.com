@@ -142,7 +142,8 @@ module qet001.b.viewmodel {
             }
             service.removeOutputSetting(selectedCode).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                var selectedSetting = self.outputSettings().outputSettingList().filter(setting => setting.code == selectedCode)[0];
+                var selectedSetting = self.outputSettings().outputSettingList()
+                        .filter(setting => setting.code == selectedCode)[0];
                 self.outputSettings().outputSettingList.remove(selectedSetting);
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
@@ -244,12 +245,18 @@ module qet001.b.viewmodel {
             this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
             this.isPrintOnePageEachPer = ko.observable(outputSetting != undefined ? outputSetting.isOnceSheetPerPerson : false);
             this.categorySettingTabs = ko.observableArray([
-                { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-salary-attendance', title: '給与勤怠', content: '#salary-attendance', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-bonus-payment', title: '賞与支給', content: '#bonus-payment', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-bonus-deduction', title: '賞与控除', content: '#bonus-deduction', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-bonus-attendance', title: '賞与勤怠', content: '#bonus-attendance', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-salary-payment', title: '給与支給', content: '#salary-payment', 
+                    enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-salary-deduction', title: '給与控除', content: '#salary-deduction', 
+                    enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-salary-attendance', title: '給与勤怠', content: '#salary-attendance', 
+                    enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-bonus-payment', title: '賞与支給', content: '#bonus-payment', 
+                    enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-bonus-deduction', title: '賞与控除', content: '#bonus-deduction', 
+                    enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-bonus-attendance', title: '賞与勤怠', content: '#bonus-attendance', 
+                    enable: ko.observable(true), visible: ko.observable(true) },
             ]);
             this.selectedCategory = ko.observable('tab-salary-payment');
             this.isCreateMode = ko.observable(outputSetting == undefined);
@@ -275,23 +282,28 @@ module qet001.b.viewmodel {
                 categorySettings?: WageledgerCategorySetting[]) : CategorySetting[] {
             var settings: CategorySetting[] = [];
             
-            settings[0] = this.createCategorySetting(Category.PAYMENT, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
-            settings[1] = this.createCategorySetting(Category.DEDUCTION, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
-            settings[2] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.SALARY, aggregateItems, masterItem, categorySettings);
-            settings[3] = this.createCategorySetting(Category.PAYMENT, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
-            settings[4] = this.createCategorySetting(Category.DEDUCTION, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
-            settings[5] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.BONUS, aggregateItems, masterItem, categorySettings);
+            settings[0] = this.createCategorySetting(Category.PAYMENT, PaymentType.SALARY,
+                aggregateItems, masterItem, categorySettings);
+            settings[1] = this.createCategorySetting(Category.DEDUCTION, PaymentType.SALARY, 
+                aggregateItems, masterItem, categorySettings);
+            settings[2] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.SALARY, 
+                aggregateItems, masterItem, categorySettings);
+            settings[3] = this.createCategorySetting(Category.PAYMENT, PaymentType.BONUS, 
+                aggregateItems, masterItem, categorySettings);
+            settings[4] = this.createCategorySetting(Category.DEDUCTION, PaymentType.BONUS, 
+                aggregateItems, masterItem, categorySettings);
+            settings[5] = this.createCategorySetting(Category.ATTENDANCE, PaymentType.BONUS, 
+                aggregateItems, masterItem, categorySettings);
             
             return settings;
         }
         
         private createCategorySetting(category: string, paymentType: string,
-                aggregateItems: service.Item[], masterItem: service.Item[], categorySettings?: WageledgerCategorySetting[]): CategorySetting {
+                aggregateItems: service.Item[], masterItem: service.Item[], 
+                categorySettings?: WageledgerCategorySetting[]): CategorySetting {
             //var categorySetting: CategorySetting;
-            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category 
-                && item.paymentType == paymentType);
-            var masterItemsInCategory = masterItem.filter((item) => item.category == category 
-                && item.paymentType == paymentType);
+            var aggregateItemsInCategory = aggregateItems.filter((item) => item.category == category);
+            var masterItemsInCategory = masterItem.filter((item) => item.category == category);
             var cateTempSetting: WageledgerCategorySetting = {category: category, paymentType: paymentType, outputItems: []};
             if (categorySettings == undefined) {
                 return new CategorySetting(aggregateItemsInCategory, masterItemsInCategory, cateTempSetting);
