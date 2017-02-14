@@ -29,50 +29,104 @@
 
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
-				<button id="BTN_001" class="btnStyle">新規</button>
-				<button id="BTN_002" class="proceed btnStyle">登録</button>
-				<button id="BTN_003">マスタ修正ログ</button>
-				<button id="BTN_004" class="danger btnStyle" >削除</button>
+				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
+					class="btnStyle">新規</button>
+				<button id="A_BTN_002" data-bind="click: RegisterClassification"
+					class="proceed btnStyle">登録</button>
+				<button id="A_BTN_003">マスタ修正ログ</button>
+				<button id="A_BTN_004" data-bind="click: DeleteClassification"
+					class="danger btnStyle">削除</button>
 				<label id="LBL_001">分類情報の登録</label>
 			</div>
+
 			<div id="contents-area">
-				<div class="relative bg-green caret-right caret-background">
-    				<i class="icon icon-searchbox"></i>
-					<div class = "search-line">
-					
-					</div>
-				</div>
-				<div class = "right-area">
-					<div class = "code-name-area">
-						<div data-bind="ntsFormLabel: { constraint: 'ClassificationCode', required: true }">コード/名称</div>
-						<div data-bind="with: texteditorcode">
-							<input data-bind="ntsTextEditor: {
-							value: value,
-							constraint: ClassificationCode,
-							required: required,
-							enable: enable}" />
-						</div>
-						<div data-bind="with: texteditorname">
-							<input data-bind="ntsTextEditor: {
-							value: value,
-							constraint: constraint,
-							required: required,
-							enable: enable}" />
-						</div>
-					</div>
-					<div class = "memo-area">
-					<div data-bind="ntsFormLabel: {}">メモ</div>
-						<div data-bind="with: multilineeditor">
-							<textarea data-bind="ntsMultilineEditor: {
-							value: value,
-							constraint: constraint,
-							option: option,
-							enable: enable,
-							readonly: readonly}" />
+				<div id="left-content" class="bg-green caret-right caret-background">
+					<i class="icon icon-searchbox"></i>
+
+					<div class="cf">
+						<div style="float: left">
+							<div
+								data-bind="ntsSearchBox: {
+                                    comId: 'single-list',
+                                    items: dataSource,         
+                                    selected: currentCode, 
+                                    selectedKey: 'classificationCode', 
+                                    childField: 'childs', 
+                                    fields: ['classificationName', 'classificationCode']}" />
+							<br />
+							<table id="single-list"
+								data-bind="ntsGridList: {
+                                            width: 300,
+                                            height: 300,
+                                            options: dataSource,
+                                            optionsValue: 'classificationCode',
+                                            columns: columns,
+                                            multiple: false,
+                                            value: currentCode}"
+								class="cf">
+							</table>
 						</div>
 					</div>
 				</div>
-			</div>
+
+				<div id="right-content">
+					<table class="table_content">
+						<colgroup>
+							<col width="150px" />
+							<col width="*" />
+						</colgroup>
+
+						<tr>
+							<td class="row_1">
+								<div
+									data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
+									<label id="A_LBL_002">コード/名称</label>
+								</div>
+							</td>
+							<td class="valign-center">
+								<div>
+									<div class="input_002">
+										<input
+											data-bind="ntsTextEditor: {
+                                            value: INP_002_code,
+                                            constraint: 'ResidenceCode',
+                                            enable: INP_002_enable}" />
+									</div>
+
+									<div class="input_002">
+										<input
+											data-bind="ntsTextEditor: {
+                                            value: INP_003_name,
+                                            constraint: 'ResidenceCode'
+                                            
+                                            }" />
+									</div>
+
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {constraint: 'LayoutCode'}">
+									<label id="A_LBL_003">メモ</label>
+								</div>
+							</td>
+							<td class="valign-center">
+								<div>
+									<div class="input_005">
+										<textarea
+											data-bind="ntsMultilineEditor: {
+                                                value: INP_004_notes,
+                                                constraint: 'ResidenceCode'
+                                                }" />
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+
+				</div>
 		</ui:define>
 	</ui:composition>
 </body>
