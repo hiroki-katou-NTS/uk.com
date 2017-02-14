@@ -7,6 +7,8 @@ module nts.uk.pr.view.qmm008.a {
             getAllOfficeItem: "pr/insurance/social/findall",
             getAllHistoryOfOffice: "pr/insurance/social/history",
             getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
+            //get all heal insurance for get history
+            getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
             getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
             getAllRoundingItem: "list/rounding"
         };
@@ -114,6 +116,25 @@ module nts.uk.pr.view.qmm008.a {
             // Ret promise.
             return dfd.promise();
         }
+                /**
+         * Function is used to load health data of Office by office code.
+         */
+        export function getAllHealthInsuranceItem(code: string): JQueryPromise<Array<model.finder.HealthInsuranceRateDto>> {
+            // Init new dfd.
+            var dfd = $.Deferred<Array<model.finder.HealthInsuranceRateDto>>();
+            var findPath = servicePath.getAllHealthInsuranceItemByOfficeCode + "/" + code;
+            // Call ajax.
+            nts.uk.request.ajax(findPath).done(function(data) {
+                // Convert json to model here.
+                var returnData: Array<model.finder.HealthInsuranceRateDto> = data;
+                // Resolve.
+                dfd.resolve(returnData);
+            });
+            // Ret promise.
+            return dfd.promise();
+        }
+                
+        
 
         /**
         * Function is used to load pension  data of Office by office code.

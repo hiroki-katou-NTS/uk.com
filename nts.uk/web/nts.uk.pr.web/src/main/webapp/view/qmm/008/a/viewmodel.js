@@ -95,9 +95,9 @@ var nts;
                                     var dfd = $.Deferred();
                                     a.service.findInsuranceOffice(self.searchKey()).done(function (data) {
                                         data.forEach(function (item, index) {
-                                            a.service.findHistoryByOfficeCode(item.code).done(function (data2) {
+                                            a.service.getAllHealthInsuranceItem(item.code).done(function (data2) {
                                                 data2.forEach(function (item2, index2) {
-                                                    var addData = new InsuranceOfficeItem(index + item.code, item2.start + "~" + item2.end, index + item2.code, []);
+                                                    var addData = new InsuranceOfficeItem(index + item.code, item2.startMonth + "~" + item2.endMonth, index + item2.historyId + index2, []);
                                                     data[index].childs.push(addData);
                                                 });
                                             });
@@ -115,10 +115,10 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.load = function (code) {
+                                ScreenModel.prototype.load = function (officeCode) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.getHealthInsuranceItemDetail(code).done(function (data) {
+                                    a.service.getHealthInsuranceItemDetail(officeCode).done(function (data) {
                                         if (data == null) {
                                             return;
                                         }
@@ -155,7 +155,7 @@ var nts;
                                     }).fail(function () {
                                     }).always(function (res) {
                                     });
-                                    a.service.getPensionItemDetail(code).done(function (data) {
+                                    a.service.getPensionItemDetail(officeCode).done(function (data) {
                                         if (data == null) {
                                             return;
                                         }

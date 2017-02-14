@@ -1,6 +1,8 @@
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,5 +23,13 @@ public class HealthInsuranceRateFinder {
 			healthInsuranceRate.get().saveToMemento(dto);
 		}
 		return Optional.ofNullable(dto);
+	}
+
+	public List<HealthInsuranceRateDto> findByOfficeCode(String officeCode) {
+		return healthInsuranceRateRepository.findAll(officeCode).stream().map(domain -> {
+			HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().build();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }

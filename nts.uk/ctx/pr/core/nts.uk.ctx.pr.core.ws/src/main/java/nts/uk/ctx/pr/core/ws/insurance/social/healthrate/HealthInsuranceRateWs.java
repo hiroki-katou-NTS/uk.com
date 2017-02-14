@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.ws.insurance.social.healthrate;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -31,6 +33,12 @@ public class HealthInsuranceRateWs extends WebService {
 		return healthInsuranceRateFinder.find(id).get();
 	}
 
+	@POST
+	@Path("findByOfficeCode/{officeCode}")
+	public List<HealthInsuranceRateDto> findbyCode(@PathParam("officeCode") String officeCode) {
+		return healthInsuranceRateFinder.findByOfficeCode(officeCode);
+	}
+	
 	@POST
 	@Path("create")
 	public void create(RegisterHealthInsuranceCommand command) {

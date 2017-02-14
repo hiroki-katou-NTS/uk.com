@@ -16,6 +16,7 @@ var nts;
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
                                 getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
+                                getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
                                 getAllRoundingItem: "list/rounding"
                             };
@@ -70,6 +71,16 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getHealthInsuranceItemDetail = getHealthInsuranceItemDetail;
+                            function getAllHealthInsuranceItem(code) {
+                                var dfd = $.Deferred();
+                                var findPath = servicePath.getAllHealthInsuranceItemByOfficeCode + "/" + code;
+                                nts.uk.request.ajax(findPath).done(function (data) {
+                                    var returnData = data;
+                                    dfd.resolve(returnData);
+                                });
+                                return dfd.promise();
+                            }
+                            service.getAllHealthInsuranceItem = getAllHealthInsuranceItem;
                             function getPensionItemDetail(code) {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getPensionItemDetail + "/" + code;

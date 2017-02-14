@@ -173,13 +173,19 @@ module nts.uk.pr.view.qmm008.a {
                 service.findInsuranceOffice(self.searchKey()).done(function(data: Array<InsuranceOfficeItem>) {
                     //TODO add childs(history) for each item office
                    data.forEach(function(item,index){
-                        service.findHistoryByOfficeCode(item.code).done(function(data2:Array<HistoryItem>) {
-                            //TODO convert data get from service
-                            data2.forEach(function(item2, index2) {
-                                var addData = new InsuranceOfficeItem(index + item.code, item2.start+"~"+ item2.end, index + item2.code, []);
+                       service.getAllHealthInsuranceItem(item.code).done(function(data2: Array<HealthInsuranceRateDto>) {
+                           data2.forEach(function(item2, index2) {
+                               var addData = new InsuranceOfficeItem(index + item.code, item2.startMonth+"~"+ item2.endMonth, index + item2.historyId+index2, []);
                                 data[index].childs.push(addData);
-                            });
-                        });
+                           });
+                       });
+//                        service.findHistoryByOfficeCode(item.code).done(function(data2:Array<HistoryItem>) {
+//                            //TODO convert data get from service
+//                            data2.forEach(function(item2, index2) {
+//                                var addData = new InsuranceOfficeItem(index + item.code, item2.start+"~"+ item2.end, index + item2.code, []);
+//                                data[index].childs.push(addData);
+//                            });
+//                        });
                     });
                     
                     dfd.resolve(data);
@@ -203,10 +209,11 @@ module nts.uk.pr.view.qmm008.a {
             }
             
             //load data of item by code
-            public load(code: string): JQueryPromise<any> {
+            public load(officeCode: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.getHealthInsuranceItemDetail(code).done(function(data: HealthInsuranceRateDto) {
+               
+                service.getHealthInsuranceItemDetail(officeCode).done(function(data: HealthInsuranceRateDto) {
                     if (data == null) {
                         return;
                     }
@@ -254,7 +261,7 @@ module nts.uk.pr.view.qmm008.a {
                 }).always(function(res) {
                 });
                 
-                service.getPensionItemDetail(code).done(function(data: PensionRateDto) {
+                service.getPensionItemDetail(officeCode).done(function(data: PensionRateDto) {
                     if (data == null) {
                         return;
                     }
