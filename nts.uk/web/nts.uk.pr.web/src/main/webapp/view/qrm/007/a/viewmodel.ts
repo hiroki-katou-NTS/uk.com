@@ -56,9 +56,10 @@ module qrm007.a.viewmodel {
                     dfd.resolve();
                 }).fail(function(res) {
                     //self.retirementPayItemList.removeAll();
+                    dfd.resolve();
                 });
             }).fail(function(res) {
-                
+                dfd.resolve();
             });
             return dfd.promise();
         }
