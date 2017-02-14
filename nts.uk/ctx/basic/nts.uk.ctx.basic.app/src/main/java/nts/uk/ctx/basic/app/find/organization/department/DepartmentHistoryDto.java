@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.query.organization.department;
+package nts.uk.ctx.basic.app.find.organization.department;
 
 import java.util.Date;
 

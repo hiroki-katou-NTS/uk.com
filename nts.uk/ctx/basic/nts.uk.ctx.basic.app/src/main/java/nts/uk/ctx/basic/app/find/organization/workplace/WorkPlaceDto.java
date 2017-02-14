@@ -1,11 +1,11 @@
-package nts.uk.ctx.basic.app.query.organization.workplace;
+package nts.uk.ctx.basic.app.find.organization.workplace;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
 import lombok.Data;
-import nts.uk.ctx.basic.app.query.organization.department.OrganizationTreeDto;
+import nts.uk.ctx.basic.app.find.organization.department.OrganizationTreeDto;
 
 @Data
 public class WorkPlaceDto extends OrganizationTreeDto<WorkPlaceDto>{
