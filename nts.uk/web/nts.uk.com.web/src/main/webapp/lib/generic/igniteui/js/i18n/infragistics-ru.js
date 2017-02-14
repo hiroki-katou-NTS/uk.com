@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI data source localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI data source localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -49,7 +48,7 @@
 })(jQuery);
 
 /*!@license
-* Infragistics.Web.ClientUI common DV widget localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI common DV widget localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -57,7 +56,14 @@
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -84,9 +90,9 @@
 	    });
 
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI shared localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI shared localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -94,7 +100,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -110,8 +115,9 @@ if (!$.ig.SharedLocale) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI templating localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI templating localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -119,7 +125,6 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -133,8 +138,9 @@ if (!$.ig.SharedLocale) {
 	    });
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Barcode localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Barcode localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -142,7 +148,14 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -187,9 +200,9 @@ if (!$.ig.SharedLocale) {
 		    }
 	    };
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Combo localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Combo localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -197,7 +210,6 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -218,7 +230,7 @@ if (!$.ig.SharedLocale) {
 })(jQuery);
 
 /*!@license
-* Infragistics.Web.ClientUI Dialog localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Dialog localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -226,7 +238,6 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -238,13 +249,15 @@ if (!$.ig.SharedLocale) {
 			    maximizeButtonTitle: "максимизировать",
 			    pinButtonTitle: "прикрепить",
 			    unpinButtonTitle: "открепить",
-			    restoreButtonTitle: "восстановить"
+			    restoreButtonTitle: "восстановить",
+				setOptionError: 'Динамические изменения следующей опции не поддерживаются: '
 		    }
 	    };
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Doughnut Chart localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Doughnut Chart localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -252,7 +265,14 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -265,9 +285,9 @@ if (!$.ig.SharedLocale) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Editors localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Editors localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -275,7 +295,6 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -313,8 +332,8 @@ if (!$.ig.SharedLocale) {
 			    minValErrMsg: "Введенные данные достигли минимального значения {0} для этого поля",
 			    maxValExceedRevertErrMsg: "Введенные данные превысили максимальное значение {0}, было восстановлено предыдущее значение",
 			    minValExceedRevertErrMsg: "Введенное значение было меньше минимального значения {0}, поэтому было возвращено предыдущее значение",
-			    maxValExceedSetErrMsg: "Entry exceeded the maximum value of {0} and was set to the maximum value",
-			    minValExceedSetErrMsg: "Entry exceeded the minimum value of {0} and was set to the minimum value",
+			    maxValExceedSetErrMsg: "Введенные данные превысили максимальное значение {0}, было установлено максимальное значение",
+			    minValExceedSetErrMsg: "Введенные данные превысили минимальное значение {0}, было установлено минимальное значение",
 			    maxValExceededWrappedAroundErrMsg: "Введенные данные превысили максимальное значение {0}, было установлено минимально допустимое значение",
 			    minValExceededWrappedAroundErrMsg: "Введенное значение было меньше минимального значения {0}, поэтому было установлено максимальное допустимое значение",
 			    btnValueNotSupported: 'Требуется задать другое значение кнопки. Выберите значение из "dropdown", "clear" и "spin".',
@@ -340,15 +359,17 @@ if (!$.ig.SharedLocale) {
 			    cannotSetRuntime: "Этот параметр не может быть задан во время выполнения программы",
 			    invalidDate: "Неверная дата",
 			    maskMessage: 'Следует заполнить все обязательные поля',
-			    dateMessage: 'Следует ввести правильную дату',
+			    maskRevertMessage: 'Все обязательные поля должны быть заполнены, поэтому было восстановлено последнее правильное значение.',
+				dateMessage: 'Следует ввести правильную дату',
 			    centuryThresholdValidValues: "Свойство centuryThreshold должно находиться в диапазоне от 0 до 99. Возвращено значение по умолчанию.",
 			    noListItemsNoButton: "Счетчик или кнопка раскрытия списка не отображаются вследствие отсутствия элементов списка."
 		    }
 	    };
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -356,7 +377,14 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 $.ig = $.ig || {};
 
@@ -753,15 +781,18 @@ if (!$.ig.Grid) {
 
     $.extend($.ig.igGridMultiColumnHeaders, {
     	locale: {
-    	    multiColumnHeadersNotSupportedWithColumnVirtualization: 'Заголовки для нескольких столбцов не поддерживаются с опцией columnVirtualization'
+    	    multiColumnHeadersNotSupportedWithColumnVirtualization: 'Заголовки для нескольких столбцов не поддерживаются с опцией columnVirtualization',
+    	    atLeastOneColumnShouldBeShownWhenCollapseOrExpand: 'You should have at least one column shown when you expand or collapse a multi-column header.',
+    	    collapsedColumnIconTooltip: "Expand",
+    	    expandedColumnIconTooltip: "Collapse"
     	}
     });
 
 }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 
 /*!@license
-* Infragistics.Web.ClientUI HTML Editor localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI HTML Editor localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -769,7 +800,6 @@ if (!$.ig.Grid) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -894,8 +924,9 @@ if (!$.ig.HtmlEditor) {
 	});
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Notifier localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Notifier localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -903,7 +934,6 @@ if (!$.ig.HtmlEditor) {
 *
 */
 
-/*global jQuery */
 (function($) {
 $.ig = $.ig || {};
 
@@ -920,8 +950,9 @@ if (!$.ig.Notifier) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Pivot Shared localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Pivot Shared localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -929,7 +960,14 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -949,9 +987,9 @@ if (!$.ig.Notifier) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Pivot Data Selector localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Pivot Data Selector localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -959,7 +997,14 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -983,9 +1028,9 @@ if (!$.ig.Notifier) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Pivot Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Pivot Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -993,7 +1038,14 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1014,9 +1066,9 @@ if (!$.ig.Notifier) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Popover localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Popover localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1024,7 +1076,6 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1040,8 +1091,9 @@ if (!$.ig.Popover) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Rating localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Rating localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1049,7 +1101,6 @@ if (!$.ig.Popover) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1063,8 +1114,9 @@ if (!$.ig.Popover) {
 	    });
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Splitter localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Scroll localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1072,7 +1124,31 @@ if (!$.ig.Popover) {
 *
 */
 
-/*global jQuery */
+(function ($) {
+    $.ig = $.ig || {};
+
+    if (!$.ig.Scroll) {
+	    $.ig.Scroll = {};
+
+	    $.extend($.ig.Scroll, {
+		    locale: {
+		        errorNoElementLink: 'Связанный элемент не найден.',
+		        errorNoScrollbarLink: 'Связанный элемент "полоса прокрутки" не найден.'
+		    }
+	    });
+
+    }
+})(jQuery);
+
+/*!@license
+* Infragistics.Web.ClientUI Splitter localization resources 16.2.20162.2040
+*
+* Copyright (c) 2011-2016 Infragistics Inc.
+*
+* http://www.infragistics.com/
+*
+*/
+
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1088,8 +1164,9 @@ if (!$.ig.Popover) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Tile Manager localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Tile Manager localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1097,7 +1174,6 @@ if (!$.ig.Popover) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1113,8 +1189,9 @@ if (!$.ig.TileManager) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Toolbar localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Toolbar localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1122,7 +1199,6 @@ if (!$.ig.TileManager) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1139,8 +1215,9 @@ if (!$.ig.Toolbar) {
 	});
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Tree localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Tree localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1148,7 +1225,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1177,8 +1253,9 @@ if (!$.ig.Toolbar) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Tree Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Tree Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1186,7 +1263,14 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 	$.ig = $.ig || {};
 
@@ -1225,9 +1309,9 @@ if (!$.ig.Toolbar) {
 			}
 		});
 	}
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Upload localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Upload localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1235,7 +1319,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1293,8 +1376,9 @@ if (!$.ig.Toolbar) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Validator localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Validator localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1302,7 +1386,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1328,14 +1411,16 @@ if (!$.ig.Toolbar) {
 		        minValueMessage: 'Пожалуйста, введите значение больше или равно {0}',
 		        maxValueMessage: 'Пожалуйста, введите значение меньше или равно {0}',
 		        emailMessage: 'Следует ввести правильный адрес электронной почты',
+				creditCardMessage: 'Следует ввести правильный номер платежной карты.',
 		        equalToMessage: 'Эти два значения не совпадают',
 		        optionalString: '(необязательно)'
 		    }
 	    };
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Video Player localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Video Player localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1343,7 +1428,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1392,8 +1476,9 @@ if (!$.ig.Toolbar) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Zoombar localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Zoombar localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1401,7 +1486,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1410,17 +1494,19 @@ if (!$.ig.Zoombar) {
 
 	$.extend($.ig.Zoombar, {
 
-	    locale: {
-	        zoombarTargetNotSpecified: "Виджету igZoombar необходим целевой объект для отображения!",
+		locale: {
+			zoombarTargetNotSpecified: "Виджету igZoombar необходим целевой объект для отображения!",
 			zoombarTypeNotSupported: "Целевой виджет, к которому Zoombar пытается присоединиться, не поддерживается!",
+			zoombarProviderNotRecognized: "igZoombar не удалось инициализировать поставщика из указанного класса — возможно, переданное значение не является классом.",
 			optionChangeNotSupported: "Изменение этой опции после создания igZoombar не поддерживается:"
 		}
 	});
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI common utilities localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI common utilities localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1428,7 +1514,6 @@ if (!$.ig.Zoombar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1455,4 +1540,5 @@ if (!$.ig.Zoombar) {
 
     }
 })(jQuery);
+
 

@@ -24,9 +24,10 @@ import nts.uk.ctx.pr.core.dom.paymentdata.insure.InsuredAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.PensionAverageEarn;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.PensionInsuranceGrade;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.WorkInsuranceCalculateAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.residence.ResidenceCode;
 import nts.uk.ctx.pr.core.dom.paymentdata.residence.ResidenceName;
 import nts.uk.shr.com.primitive.PersonId;
+import nts.uk.shr.com.primitive.sample.ProcessingNo;
+import nts.uk.shr.com.primitive.sample.ResidenceCode;
 
 /**
  * 明細データ
