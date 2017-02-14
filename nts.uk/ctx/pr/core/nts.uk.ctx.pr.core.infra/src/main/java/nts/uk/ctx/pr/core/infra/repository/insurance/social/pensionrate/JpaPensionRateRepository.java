@@ -119,13 +119,12 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 				pensionChargeRateItem));
 
 		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem();
-		PensionChargeRateItem raiseChargeRate = new PensionChargeRateItem();
-		raiseChargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
-		raiseChargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
+		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
+		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
+		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
 		premiumRateItem.setGenderType(InsuranceGender.Female);
 		premiumRateItem.setPayType(PaymentType.Bonus);
-		premiumRateItem.setRaiseChargeRate(raiseChargeRate);
-		premiumRateItem.setDeductChargeRate(raiseChargeRate);
+		premiumRateItem.setChargeRate(chargeRate);
 		premiumRateItems.add(premiumRateItem);
 
 		PensionRateRounding pensionRateRounding = new PensionRateRounding();
@@ -195,14 +194,12 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 
 			@Override
 			public Boolean getFundInputApply() {
-				// TODO Auto-generated method stub
-				return null;
+				return false;
 			}
 
 			@Override
 			public Boolean getAutoCalculate() {
-				// TODO Auto-generated method stub
-				return null;
+				return false;
 			}
 		});
 		return Optional.of(mock);
