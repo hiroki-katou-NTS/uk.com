@@ -40,4 +40,13 @@ public interface HealthInsuranceAvgearnRepository {
 	 * @return the list
 	 */
 	List<HealthInsuranceAvgearn> findById(String id);
+
+	/**
+	 * Find.
+	 *
+	 * @param historyId the history id
+	 * @param levelCode the level code
+	 * @return the health insurance avgearn
+	 */
+	HealthInsuranceAvgearn find(String historyId, Integer levelCode);
 }

@@ -392,4 +392,9 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 		return list;
 	}
 
+	@Override
+	public PensionAvgearn find(String historyId, Integer levelCode) {
+		return null;
+	}
+
 }

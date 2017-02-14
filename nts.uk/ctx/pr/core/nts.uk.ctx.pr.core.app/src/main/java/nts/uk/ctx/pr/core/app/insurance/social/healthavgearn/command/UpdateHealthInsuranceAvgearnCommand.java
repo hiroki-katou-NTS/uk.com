@@ -1,17 +1,9 @@
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command;
 
-import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 
-public class UpdateHealthInsuranceAvgearnCommand {
-	/** The history id. */
-	private String historyId;
-
-	/** The level code. */
-	private Integer levelCode;
-
-	/** The company avg. */
-	private HealthInsuranceAvgearnValue companyAvg;
-
-	/** The personal avg. */
-	private HealthInsuranceAvgearnValue personalAvg;
+public class UpdateHealthInsuranceAvgearnCommand extends HealthInsuranceAvgearnBaseCommand {
+	public HealthInsuranceAvgearn toDomain(String historyId, Integer levelCode) {
+		return null;
+	}
 }

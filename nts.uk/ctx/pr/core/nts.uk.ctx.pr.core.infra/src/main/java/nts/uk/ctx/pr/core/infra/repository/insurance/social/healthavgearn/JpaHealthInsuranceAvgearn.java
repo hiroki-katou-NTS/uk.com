@@ -206,4 +206,10 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 		return list;
 	}
 
+	@Override
+	public HealthInsuranceAvgearn find(String historyId, Integer levelCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

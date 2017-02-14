@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 
 @Getter
 @Setter
-public class PensionBaseCommand {
+public abstract class PensionBaseCommand {
 	/** The history id. */
 	private String historyId;
 

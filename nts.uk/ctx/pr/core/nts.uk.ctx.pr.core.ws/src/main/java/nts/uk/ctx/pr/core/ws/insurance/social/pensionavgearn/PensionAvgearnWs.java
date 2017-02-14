@@ -9,10 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command.UpdatePensionAvgearnCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command.UpdatePensionAvgearnCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgearnDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgearnFinder;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
 
 @Path("ctx/pr/core/insurance/social/pensionavgearn")
 @Produces("application/json")
@@ -20,7 +20,7 @@ public class PensionAvgearnWs extends WebService {
 	@Inject
 	private PensionAvgearnFinder pensionAvgearnFinder;
 	@Inject
-	private PensionAvgearnRepository pensionAvgearnRepository;
+	private UpdatePensionAvgearnCommandHandler updatePensionAvgearnCommandHandler;
 
 	@POST
 	@Path("find/{id}")
@@ -30,7 +30,7 @@ public class PensionAvgearnWs extends WebService {
 
 	@POST
 	@Path("update")
-	public void update(List<PensionAvgearn> listPensionAvgearn) {
-		listPensionAvgearn.forEach(item -> pensionAvgearnRepository.update(item));
+	public void update(List<UpdatePensionAvgearnCommand> commands) {
+		commands.forEach(command -> updatePensionAvgearnCommandHandler.handle(command));
 	}
 }

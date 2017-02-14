@@ -36,4 +36,13 @@ public interface PensionAvgearnRepository {
 	 */
 	List<PensionAvgearn> find(String historyId);
 
+	/**
+	 * Find.
+	 *
+	 * @param historyId the history id
+	 * @param levelCode the level code
+	 * @return the pension avgearn
+	 */
+	PensionAvgearn find(String historyId, Integer levelCode);
+
 }
