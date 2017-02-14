@@ -12,6 +12,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 @Getter
 @Setter
 public abstract class PensionBaseCommand {
+	/** The version. */
+	private Long version;
+
 	/** The history id. */
 	private String historyId;
 
@@ -41,4 +44,10 @@ public abstract class PensionBaseCommand {
 
 	/** The rounding methods. */
 	private List<PensionRateRounding> roundingMethods;
+
+	/** The fund input apply. */
+	private Boolean fundInputApply;
+
+	/** The auto calculate. */
+	private Boolean autoCalculate;
 }

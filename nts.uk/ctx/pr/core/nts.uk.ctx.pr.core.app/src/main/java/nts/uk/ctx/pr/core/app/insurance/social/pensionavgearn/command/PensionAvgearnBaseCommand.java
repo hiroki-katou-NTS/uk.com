@@ -9,6 +9,9 @@ import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgear
 @Getter
 @Setter
 public abstract class PensionAvgearnBaseCommand {
+	/** The version. */
+	private Long version;
+
 	/** The history id. */
 	public String historyId;
 

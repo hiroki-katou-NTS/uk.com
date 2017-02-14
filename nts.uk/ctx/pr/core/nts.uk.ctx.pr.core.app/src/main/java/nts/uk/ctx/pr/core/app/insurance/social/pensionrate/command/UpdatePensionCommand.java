@@ -19,68 +19,71 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 @Setter
 public class UpdatePensionCommand extends PensionBaseCommand {
 	public PensionRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
-		PensionRate domain = new PensionRate(new PensionRateGetMemento() {
+		UpdatePensionCommand command = this;
+		PensionRate updatedPensionRate = new PensionRate(new PensionRateGetMemento() {
 
 			@Override
 			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getVersion();
 			}
 
 			@Override
 			public List<PensionRateRounding> getRoundingMethods() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getRoundingMethods();
 			}
 
 			@Override
 			public List<PensionPremiumRateItem> getPremiumRateItems() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
 			@Override
 			public OfficeCode getOfficeCode() {
-				// TODO Auto-generated method stub
-				return null;
+				return new OfficeCode(command.getOfficeCode());
 			}
 
 			@Override
 			public CommonAmount getMaxAmount() {
-				// TODO Auto-generated method stub
-				return null;
+				return new CommonAmount(command.getMaxAmount());
 			}
 
 			@Override
 			public String getHistoryId() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getHistoryId();
 			}
 
 			@Override
 			public List<FundRateItem> getFundRateItems() {
-				// TODO Auto-generated method stub
+				// TODO convert command -> domain
 				return null;
 			}
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return null;
+				return new CompanyCode(command.getCompanyCode());
 			}
 
 			@Override
 			public Ins2Rate getChildContributionRate() {
-				// TODO Auto-generated method stub
-				return null;
+				return new Ins2Rate(command.getChildContributionRate());
 			}
 
 			@Override
 			public MonthRange getApplyRange() {
-				// TODO Auto-generated method stub
-				return null;
+				return MonthRange.range(command.getStartMonth(), command.getEndMonth(), "/");
+			}
+
+			@Override
+			public Boolean getFundInputApply() {
+				return command.getFundInputApply();
+			}
+
+			@Override
+			public Boolean getAutoCalculate() {
+				return command.getAutoCalculate();
 			}
 		});
-		return domain;
+		return updatedPensionRate;
 	}
 }

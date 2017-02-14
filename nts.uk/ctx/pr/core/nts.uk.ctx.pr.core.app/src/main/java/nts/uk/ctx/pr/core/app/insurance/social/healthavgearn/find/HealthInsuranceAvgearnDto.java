@@ -19,6 +19,9 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	/** The personal avg. */
 	public HealthInsuranceAvgearnValue personalAvg;
 
+	/** The version. */
+	public Long version;
+
 	@Override
 	public void setHistoryId(String historyId) {
 		this.historyId = historyId;
@@ -41,6 +44,6 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 
 	@Override
 	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
+		this.version = version;
 	}
 }

@@ -19,55 +19,49 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 @Setter
 public class RegisterPensionCommand extends PensionBaseCommand {
 	public PensionRate toDomain(CompanyCode companyCode) {
+		RegisterPensionCommand command = this;
+
 		// Transfer data
-		PensionRate domain = new PensionRate(new PensionRateGetMemento() {
+		PensionRate pensionRate = new PensionRate(new PensionRateGetMemento() {
 
 			@Override
 			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return null;
+				return 0L;
 			}
 
 			@Override
 			public List<PensionRateRounding> getRoundingMethods() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getRoundingMethods();
 			}
 
 			@Override
 			public List<PensionPremiumRateItem> getPremiumRateItems() {
-				// TODO Auto-generated method stub
-				return null;
+				return this.getPremiumRateItems();
 			}
 
 			@Override
 			public OfficeCode getOfficeCode() {
-				// TODO Auto-generated method stub
-				return null;
+				return this.getOfficeCode();
 			}
 
 			@Override
 			public CommonAmount getMaxAmount() {
-				// TODO Auto-generated method stub
-				return null;
+				return this.getMaxAmount();
 			}
 
 			@Override
 			public String getHistoryId() {
-				// TODO Auto-generated method stub
-				return null;
+				return this.getHistoryId();
 			}
 
 			@Override
 			public List<FundRateItem> getFundRateItems() {
-				// TODO Auto-generated method stub
-				return null;
+				return this.getFundRateItems();
 			}
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return null;
+				return new CompanyCode(command.getCompanyCode());
 			}
 
 			@Override
@@ -78,11 +72,20 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				// TODO Auto-generated method stub
-				return null;
+				return MonthRange.range(command.getStartMonth(), command.getEndMonth(), "/");
+			}
+
+			@Override
+			public Boolean getFundInputApply() {
+				return command.getFundInputApply();
+			}
+
+			@Override
+			public Boolean getAutoCalculate() {
+				return command.getAutoCalculate();
 			}
 		});
 
-		return domain;
+		return pensionRate;
 	}
 }

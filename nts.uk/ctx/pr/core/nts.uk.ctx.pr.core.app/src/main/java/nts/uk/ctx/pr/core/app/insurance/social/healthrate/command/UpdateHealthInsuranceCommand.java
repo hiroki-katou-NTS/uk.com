@@ -17,17 +17,18 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 @Setter
 public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 	public HealthInsuranceRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
-		HealthInsuranceRate domain = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
+		UpdateHealthInsuranceCommand command = this;
+
+		// Transfer data
+		HealthInsuranceRate updatedHealthInsuranceRate = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
 
 			@Override
 			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getVersion();
 			}
 
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 
@@ -39,40 +40,34 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public OfficeCode getOfficeCode() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getOfficeCode();
 			}
 
 			@Override
 			public CommonAmount getMaxAmount() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getMaxAmount();
 			}
 
 			@Override
 			public String getHistoryId() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getHistoryId();
 			}
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getCompanyCode();
 			}
 
 			@Override
 			public Boolean getAutoCalculate() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getAutoCalculate();
 			}
 
 			@Override
 			public MonthRange getApplyRange() {
-				// TODO Auto-generated method stub
-				return null;
+				return command.getApplyRange();
 			}
 		});
-		return domain;
+		return updatedHealthInsuranceRate;
 	}
 }

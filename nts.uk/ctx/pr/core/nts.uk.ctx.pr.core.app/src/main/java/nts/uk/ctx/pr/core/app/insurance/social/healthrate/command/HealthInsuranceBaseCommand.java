@@ -14,6 +14,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 @Getter
 @Setter
 public abstract class HealthInsuranceBaseCommand {
+	/** The version. */
+	private Long version;
+
 	/** The history id. */
 	private String historyId;
 

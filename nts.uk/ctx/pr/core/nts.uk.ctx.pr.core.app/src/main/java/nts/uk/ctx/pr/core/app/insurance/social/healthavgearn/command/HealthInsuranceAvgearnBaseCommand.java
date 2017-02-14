@@ -7,6 +7,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 @Getter
 @Setter
 public abstract class HealthInsuranceAvgearnBaseCommand {
+	/** The version. */
+	private Long version;
+
 	/** The history id. */
 	private String historyId;
 

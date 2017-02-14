@@ -47,10 +47,18 @@ public class PensionRateDto implements PensionRateSetMemento {
 	/** The rounding methods. */
 	public List<PensionRateRounding> roundingMethods;
 
+	/** The fund input apply. */
+	public Boolean fundInputApply;
+
+	/** The auto calcuate. */
+	public Boolean autoCalcuate;
+
+	/** The version. */
+	public Long version;
+
 	@Override
 	public void setHistoryId(String historyId) {
 		this.historyId = historyId;
-
 	}
 
 	@Override
@@ -62,18 +70,17 @@ public class PensionRateDto implements PensionRateSetMemento {
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
 		this.officeCode = officeCode.v();
-
 	}
 
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
 		this.startMonth = applyRange.getStartMonth().toString();
+		this.endMonth = applyRange.getEndMonth().toString();
 	}
 
 	@Override
 	public void setMaxAmount(CommonAmount maxAmount) {
 		this.maxAmount = maxAmount.v();
-
 	}
 
 	@Override
@@ -86,7 +93,6 @@ public class PensionRateDto implements PensionRateSetMemento {
 	public void setPremiumRateItems(List<PensionPremiumRateItem> premiumRateItems) {
 		this.premiumRateItems = premiumRateItems.stream().map(item -> PensionPremiumRateItemDto.fromDomain(item))
 				.collect(Collectors.toList());
-
 	}
 
 	@Override
@@ -100,8 +106,17 @@ public class PensionRateDto implements PensionRateSetMemento {
 	}
 
 	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
+	public void setFundInputApply(Boolean fundInputApply) {
+		this.fundInputApply = fundInputApply;
+	}
 
+	@Override
+	public void setAutoCalculate(Boolean autoCalculate) {
+		this.autoCalcuate = autoCalculate;
+	}
+
+	@Override
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 }
