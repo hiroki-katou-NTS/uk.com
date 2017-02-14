@@ -29,4 +29,5 @@ public class ClassificationFinder {
 		classificationDto.setMemo(classification.getClassificationMemo().toString());
 		return classificationDto;
 	}
+
 }

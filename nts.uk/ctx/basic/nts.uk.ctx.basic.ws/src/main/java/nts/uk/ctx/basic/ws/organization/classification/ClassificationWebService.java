@@ -18,7 +18,7 @@ import nts.uk.ctx.basic.app.command.organization.classification.UpdateClassifica
 import nts.uk.ctx.basic.app.find.organization.classification.ClassificationDto;
 import nts.uk.ctx.basic.app.find.organization.classification.ClassificationFinder;
 
-@Path("pr/basic/organization")
+@Path("")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClassificationWebService extends WebService {
 
@@ -34,25 +34,25 @@ public class ClassificationWebService extends WebService {
 	@Inject
 	private RemoveClassificationCommandHandler removeClassificationCommandHandler;
 
-	@Path("findAllClassification")
+	@Path("")
 	@POST
 	public List<ClassificationDto> init() {
 		return classificationFinder.init();
 	}
 
-	@Path("add")
+	@Path("")
 	@POST
 	public void add(AddClassificationCommand command) {
 		this.addClassificationCommandHandler.handle(command);
 	}
 
-	@Path("update")
+	@Path("")
 	@POST
 	public void update(UpdateClassificationCommand command) {
 		this.updateClassificationCommandHandler.handle(command);
 	}
 
-	@Path("remove")
+	@Path("")
 	@POST
 	public void remove(RemoveClassificationCommand command) {
 		this.removeClassificationCommandHandler.handle(command);
