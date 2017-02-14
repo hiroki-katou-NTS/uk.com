@@ -10,8 +10,8 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.pr.proto.dom.paymentdata.Comment
-				nts.uk.ctx.pr.proto.dom.paymentdata.PaymentRemarks
+				nts.uk.ctx.pr.core.dom.paymentdata.Comment
+				nts.uk.ctx.pr.core.dom.paymentdata.PaymentRemarks
 			</com:ValidatorScript>
 			<!-- 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.core.js" /> -->
 			<!-- 			<com:scriptfile path="/lib/generic/igniteui/js/infragistics.lob.js" /> -->
@@ -29,9 +29,9 @@
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register">計算/登録</button>
 				<button>計算結果の確認</button>
-				<button>印刷プレビュー</button>
-				<button>データ修正ログ</button>
-				<button class="danger">削除</button>
+				<button data-bind="enable: isCreate">印刷プレビュー</button>
+				<button data-bind="enable: isCreate">データ修正ログ</button>
+				<button class="danger" data-bind="click: remove, enable: isCreate">削除</button>
 
 				<label style="float: right">支給入力（社員ごと）</label>
 			</div>

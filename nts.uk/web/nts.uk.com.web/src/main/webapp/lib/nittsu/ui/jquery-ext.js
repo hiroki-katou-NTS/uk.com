@@ -156,6 +156,8 @@ var nts;
                                 return setSelected($grid, param);
                             case 'deselectAll':
                                 return deselectAll($grid);
+                            case 'setupDeleteButton':
+                                return setupDeleteButton($grid, param);
                         }
                     };
                     function getSelected($grid) {
@@ -190,6 +192,44 @@ var nts;
                     function deselectAll($grid) {
                         $grid.igGridSelection('clearSelection');
                     }
+                    function setupDeleteButton($grid, param) {
+                        var itemDeletedEvent = new CustomEvent("itemDeleted", {
+                            detail: {},
+                        });
+                        var currentColumns = $grid.igGrid("option", "columns");
+                        currentColumns.push({
+                            dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
+                            width: 30, formatter: function createButton(deleteField, row) {
+                                var primaryKey = $grid.igGrid("option", "primaryKey");
+                                var result = $('<input class="delete-button" value="delete" type="button"/>');
+                                result.attr("data-value", row[primaryKey]);
+                                if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
+                                    return result[0].outerHTML;
+                                }
+                                else {
+                                    return result.attr("disabled", "disabled")[0].outerHTML;
+                                }
+                            }
+                        });
+                        $grid.igGrid("option", "columns", currentColumns);
+                        $grid.on("click", ".delete-button", function () {
+                            var key = $(this).attr("data-value");
+                            var primaryKey = $grid.igGrid("option", "primaryKey");
+                            var source = _.cloneDeep($grid.igGrid("option", "dataSource"));
+                            _.remove(source, function (current) {
+                                return _.isEqual(current[primaryKey].toString(), key.toString());
+                            });
+                            if (!uk.util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function") {
+                                param.sourceTarget(source);
+                            }
+                            else {
+                                $grid.igGrid("option", "dataSource", source);
+                                $grid.igGrid("dataBind");
+                            }
+                            itemDeletedEvent.detail["target"] = key;
+                            document.getElementById($grid.attr('id')).dispatchEvent(itemDeletedEvent);
+                        });
+                    }
                     function setupSelecting($grid) {
                         setupDragging($grid);
                         setupSelectingEvents($grid);
@@ -199,9 +239,9 @@ var nts;
                         var dragSelectRange = [];
                         // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
-                        var $container = $grid.closest('.ui-iggrid-scrolldiv');
                         $grid.bind('mousedown', function (e) {
                             // グリッド内がマウスダウンされていない場合は処理なしで終了
+                            var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
                             }
