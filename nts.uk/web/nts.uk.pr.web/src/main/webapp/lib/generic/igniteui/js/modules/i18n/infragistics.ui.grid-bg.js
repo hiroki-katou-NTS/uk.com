@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,14 @@
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 $.ig = $.ig || {};
 
@@ -404,9 +411,12 @@ if (!$.ig.Grid) {
 
     $.extend($.ig.igGridMultiColumnHeaders, {
     	locale: {
-    	    multiColumnHeadersNotSupportedWithColumnVirtualization: 'Multi-column headers изисква различна конфигурация. columnVirtualization трябва да бъде изключен.'
+    	    multiColumnHeadersNotSupportedWithColumnVirtualization: 'Multi-column headers изисква различна конфигурация. columnVirtualization трябва да бъде изключен.',
+    	    atLeastOneColumnShouldBeShownWhenCollapseOrExpand: 'Трябва да има поне 1 показана колона, когато multi-column header е collapsed или expanded.',
+    	    collapsedColumnIconTooltip: "Разтвори",
+    	    expandedColumnIconTooltip: "Свий"
     	}
     });
 
 }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES

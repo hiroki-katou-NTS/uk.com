@@ -243,8 +243,8 @@ __viewContext.ready(function () {
          */
         removeByCode() {
             var self = this;
-            var selected: ItemModel = self.itemList().filter(item => item.code == self.selectedCode())[0];
-            self.itemList.remove(selected);
+            var selected: ItemModelCbb1 = self.itemListCbb1().filter(item => item.codeCbb1 == self.selectedCode())[0];
+            self.itemListCbb1.remove(selected);
         }
     };
     

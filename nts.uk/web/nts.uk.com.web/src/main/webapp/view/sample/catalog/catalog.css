@@ -66,3 +66,17 @@ pre {
 pre * {
 	font-family: Consolas;
 }
+
+/*** Theme ***/
+#header {background-color:#feb0cd;color:#ff4e8f;}
+#functions-area {background-color:#ffd8e7;border-bottom-color:#ff4e8f;}
+html, body{background: #ffdddd url(valentine-bg.jpg) center center; background-size: 100% auto; background-attachment: fixed;}
+#contents-area{background:transparent;border-color:#ff4e8f;box-shadow: 4px 4px 13px 3px rgba(0,0,0,0.1);}
+#side-menu{background-color:#171d31;}
+#side-menu h1{background:#2e395f;border-color:#2e395f;border-left-color:#ff4e8f;color:#ff8cb7;}
+#side-menu a{color:#fafafa;}
+#side-menu a:hover{background-color:rgba(255,255,255,0.1);}
+#side-menu a.active{background-color: #fff;color: #c72661;}
+#search-menu{border:none;color:#fff;background:rgba(255,255,255,0.15);}
+#content{background: rgba(255, 255, 255, 1);}
+.feature-box > .content{background:#fff;}

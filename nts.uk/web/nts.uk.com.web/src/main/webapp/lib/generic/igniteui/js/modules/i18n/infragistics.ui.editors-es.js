@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Editors localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Editors localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -45,8 +44,8 @@
 			    minValErrMsg: "La entrada ha alcanzado el valor mínimo de {0} para este campo.",
 			    maxValExceedRevertErrMsg: "La entrada ha superado el valor máximo de {0} y se ha vuelto a la anterior.",
 			    minValExceedRevertErrMsg: "La entrada es inferior al valor mínimo de {0} y ha vuelto al valor anterior",
-			    maxValExceedSetErrMsg: "Entry exceeded the maximum value of {0} and was set to the maximum value",
-			    minValExceedSetErrMsg: "Entry exceeded the minimum value of {0} and was set to the minimum value",
+			    maxValExceedSetErrMsg: "La entrada ha superado el valor máximo de {0} y se ha ajustado al valor máximo.",
+			    minValExceedSetErrMsg: "La entrada ha superado el valor máximo de {0} y se ha ajustado al valor mínimo.",
 			    maxValExceededWrappedAroundErrMsg: "La entrada ha superado el valor máximo de {0} y se ha ajustado al mínimo permitido.",
 			    minValExceededWrappedAroundErrMsg: "La entrada es inferior al valor mínimo de {0} y se ha ajustado en el valor máximo permitido",
 			    btnValueNotSupported: 'Se requiere un valor de botón diferente. Elija un valor entre "dropdown", "clear" y "spin".',
@@ -72,7 +71,8 @@
 			    cannotSetRuntime: "Esta opción no puede establecer un tiempo de ejecución",
 			    invalidDate: "Fecha no válida",
 			    maskMessage: 'Deben rellenarse todas las posiciones requeridas.',
-			    dateMessage: 'Debe introducirse una fecha válida',
+			    maskRevertMessage: 'Deben rellenarse todas las posiciones requeridas. Por eso el valor ha vuelto al último valor válido.',
+				dateMessage: 'Debe introducirse una fecha válida',
 			    centuryThresholdValidValues: "La propiedad centuryThreshold debería estar entre 0 y 99. Se ha devuelto este valor a su ajuste predeterminado.",
 			    noListItemsNoButton: "No se representa ningún botón desplegable o de control de número porque no hay elementos de lista."
 		    }
