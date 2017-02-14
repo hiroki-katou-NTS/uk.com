@@ -1,6 +1,6 @@
 @import "_ignitecommons.scss";
 
-.nts-treegridview.ui-igtreegrid {
+.ui-igtreegrid {
 	@include iggridstyle();
 	@include iggridrowselector();
 	

@@ -4,6 +4,7 @@ __viewContext.ready(function() {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
+        test: KnockoutObservableArray<any>;
 
         constructor() {
 
@@ -21,6 +22,11 @@ __viewContext.ready(function() {
             ]);
 
             this.currentCodeListSwap = ko.observableArray([]);
+            this.test = ko.observableArray([]);
+        }
+        
+        remove(){
+            this.itemsSwap.shift();            
         }
         
     }
