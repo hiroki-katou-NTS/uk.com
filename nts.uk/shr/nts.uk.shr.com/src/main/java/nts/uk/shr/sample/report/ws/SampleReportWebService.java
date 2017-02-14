@@ -5,21 +5,21 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.shr.sample.report.file.infra.generator.AsposeSampleReportGenerator;
+import nts.arc.layer.app.file.export.ExportServiceResult;
+import nts.uk.shr.sample.report.app.SampleReportExportService;
+import nts.uk.shr.sample.report.app.SampleReportQuery;
 
 @Path("/sample/report")
 @Produces("application/json")
 public class SampleReportWebService {
 
 	@Inject
-	private AsposeSampleReportGenerator generator;
+	private SampleReportExportService exportService;
 	
 	@POST
 	@Path("generate")
-	public FileGeneratorContext generate() {
+	public ExportServiceResult generate(SampleReportQuery query) {
 		
-		// send parameters as variable arguments
-		return this.generator.start("this is parameter");
+		return this.exportService.start(query);
 	}
 }

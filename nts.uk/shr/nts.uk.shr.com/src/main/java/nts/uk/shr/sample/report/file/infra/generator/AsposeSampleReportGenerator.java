@@ -1,43 +1,35 @@
 package nts.uk.shr.sample.report.file.infra.generator;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import com.aspose.cells.SaveFormat;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.WorkbookDesigner;
 
 import lombok.val;
-import nts.arc.layer.infra.file.export.FileGenerator;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.shr.sample.report.app.SampleReportDataRepository;
+import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import nts.uk.shr.sample.report.app.SampleReportDataSource;
+import nts.uk.shr.sample.report.app.SampleReportGenerator;
 
 @Stateless
-public class AsposeSampleReportGenerator extends FileGenerator {
+public class AsposeSampleReportGenerator extends AsposeCellsReportGenerator implements SampleReportGenerator {
 	
-	@Inject
-	private SampleReportDataRepository repository;
+	private static final String TEMPLATE_FILE = "report/SampleReport.xlsx";
+	
+	private static final String REPORT_FILE_NAME = "サンプル帳票.pdf";
 
 	@Override
-	protected void generate(FileGeneratorContext context) {
+	public void generate(FileGeneratorContext generatorContext, SampleReportDataSource dataSource) {
 		
-		// String parameter = context.getParameterAt(0); -> "this is parameter"
-		
-		try (val templateFile = this.getResourceAsStream("report/SampleReport.xlsx")) {
+		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
 			
-			val workBook = new Workbook(templateFile);
+			// set data source named "item"
+			reportContext.setDataSource("item", dataSource.getItems());
 			
-			val items = this.repository.getItems();
+			// process data binginds in template
+			reportContext.processDesigner();
 			
-			val designer = new WorkbookDesigner(workBook);
-			designer.setDataSource("item", items);
-			
-			designer.process();
-			
-			workBook.save(this.createNewFile(context, "サンプル帳票.pdf"), SaveFormat.PDF);
+			// save as PDF file
+			reportContext.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
 			
 		} catch (Exception e) {
-			// rethrow exceptions from Aspose
 			throw new RuntimeException(e);
 		}
 	}

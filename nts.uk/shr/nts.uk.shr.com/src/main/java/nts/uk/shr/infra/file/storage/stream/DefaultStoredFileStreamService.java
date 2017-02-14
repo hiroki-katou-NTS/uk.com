@@ -9,7 +9,7 @@ import java.nio.file.StandardOpenOption;
 
 import javax.ejb.Stateless;
 
-import nts.arc.layer.infra.file.storage.StoredFileInfo;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.system.ServerSystemProperties;
 import nts.gul.file.FileUtil;
