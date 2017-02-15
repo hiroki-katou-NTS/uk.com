@@ -45,10 +45,4 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

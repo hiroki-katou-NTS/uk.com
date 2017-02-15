@@ -93,12 +93,6 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 		return new InsuranceBusinessType(new InsuranceBusinessTypeGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return 11L;
-			}
-
-			@Override
 			public CompanyCode getCompanyCode() {
 				// TODO Auto-generated method stub
 				return new CompanyCode(companyCode);

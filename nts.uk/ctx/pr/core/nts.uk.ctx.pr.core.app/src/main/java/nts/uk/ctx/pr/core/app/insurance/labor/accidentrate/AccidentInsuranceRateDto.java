@@ -7,21 +7,19 @@ package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-// TODO: Auto-generated Javadoc
+/**
+ * Instantiates a new accident insurance rate dto.
+ */
 @Data
 public class AccidentInsuranceRateDto {
-	/** The history id. */
+
+	/** The history insurance. */
 	// historyId
 	private HistoryAccidentInsuranceRateDto historyInsurance;
 
-	/** The short name. */
+	/** The rate items. */
 	private List<InsuBizRateItemDto> rateItems;
-
-	private long version;
 
 }

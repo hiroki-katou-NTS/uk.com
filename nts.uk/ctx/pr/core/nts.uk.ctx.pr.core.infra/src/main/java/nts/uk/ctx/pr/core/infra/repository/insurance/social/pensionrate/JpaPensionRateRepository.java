@@ -118,14 +118,14 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
 				pensionChargeRateItem));
 
-		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem();
-		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
-		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
-		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
-		premiumRateItem.setGenderType(InsuranceGender.Female);
-		premiumRateItem.setPayType(PaymentType.Bonus);
-		premiumRateItem.setChargeRate(chargeRate);
-		premiumRateItems.add(premiumRateItem);
+//		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem();
+//		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
+//		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
+//		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
+//		premiumRateItem.setGenderType(InsuranceGender.Female);
+//		premiumRateItem.setPayType(PaymentType.Bonus);
+//		premiumRateItem.setChargeRate(chargeRate);
+//		premiumRateItems.add(premiumRateItem);
 
 		PensionRateRounding pensionRateRounding = new PensionRateRounding();
 		RoundingItem ri = new RoundingItem();
@@ -141,11 +141,6 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
 
 		PensionRate mock = new PensionRate(new PensionRateGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public List<PensionRateRounding> getRoundingMethods() {

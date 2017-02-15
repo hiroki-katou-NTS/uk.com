@@ -88,7 +88,6 @@ public class UnitPriceHistory extends AggregateRoot {
 		this.fixPayAtrDaily = memento.getFixPayAtrDaily();
 		this.fixPayAtrHourly = memento.getFixPayAtrHourly();
 		this.memo = memento.getMemo();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -111,7 +110,6 @@ public class UnitPriceHistory extends AggregateRoot {
 		memento.setFixPayAtrDaily(this.fixPayAtrDaily);
 		memento.setFixPayAtrHourly(this.fixPayAtrHourly);
 		memento.setMemo(this.memo);
-		memento.setVersion(this.getVersion());
 	}
 
 }

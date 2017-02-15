@@ -44,11 +44,6 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 		list.add(new PensionAvgearn(new PensionAvgearnGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public PensionAvgearnValue getPersonalPension() {
 				return new PensionAvgearnValue(new CommonAmount(new BigDecimal(1234)),
 						new CommonAmount(new BigDecimal(55)), new CommonAmount(new BigDecimal(1234)));
@@ -100,11 +95,6 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 			}
 		}));
 		list.add(new PensionAvgearn(new PensionAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {
@@ -160,11 +150,6 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 		list.add(new PensionAvgearn(new PensionAvgearnGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public PensionAvgearnValue getPersonalPension() {
 				return new PensionAvgearnValue(new CommonAmount(new BigDecimal(1234)),
 						new CommonAmount(new BigDecimal(55)), new CommonAmount(new BigDecimal(1234)));
@@ -216,11 +201,6 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 			}
 		}));
 		list.add(new PensionAvgearn(new PensionAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {
@@ -276,11 +256,6 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 		list.add(new PensionAvgearn(new PensionAvgearnGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public PensionAvgearnValue getPersonalPension() {
 				return new PensionAvgearnValue(new CommonAmount(new BigDecimal(1234)),
 						new CommonAmount(new BigDecimal(55)), new CommonAmount(new BigDecimal(1234)));
@@ -332,11 +307,6 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 			}
 		}));
 		list.add(new PensionAvgearn(new PensionAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {

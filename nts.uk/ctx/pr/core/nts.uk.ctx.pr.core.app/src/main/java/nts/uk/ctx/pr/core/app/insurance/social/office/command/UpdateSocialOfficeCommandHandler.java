@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import java.util.Optional;
@@ -14,15 +18,27 @@ import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.service.SocialInsuranceOfficeService;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class UpdateSocialOfficeCommandHandler.
+ */
 @Stateless
 public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocialOfficeCommand> {
 
+	/** The social insurance office service. */
 	@Inject
 	SocialInsuranceOfficeService socialInsuranceOfficeService;
 
+	/** The social insurance office repository. */
 	@Inject
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
+	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) {
@@ -30,14 +46,14 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 		UpdateSocialOfficeCommand command = context.getCommand();
 		// Get the current company code.
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		
+
 		// Convert Dto to Domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
-		
-		//TODO validate
+
+		// TODO validate
 		socialInsuranceOfficeService.validateRequiredItem(socialInsuranceOffice);
 		socialInsuranceOfficeService.checkDuplicateCode(socialInsuranceOffice);
-		
+
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
 				.findById(command.getCode().toString());
 		if (findOffice.get() == null) {

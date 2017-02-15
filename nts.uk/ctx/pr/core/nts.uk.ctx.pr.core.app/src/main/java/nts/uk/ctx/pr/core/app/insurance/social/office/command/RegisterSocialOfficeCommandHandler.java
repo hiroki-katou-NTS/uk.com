@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import javax.ejb.Stateless;
@@ -12,15 +16,23 @@ import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.service.SocialInsuranceOfficeService;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class RegisterSocialOfficeCommandHandler.
+ */
 @Stateless
 public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterSocialOfficeCommand> {
 
+	/** The insurance social service. */
 	@Inject
 	SocialInsuranceOfficeService insuranceSocialService;
 
+	/** The social insurance office repository. */
 	@Inject
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<RegisterSocialOfficeCommand> context) {

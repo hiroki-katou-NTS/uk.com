@@ -23,11 +23,6 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 		PensionRate updatedPensionRate = new PensionRate(new PensionRateGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return command.getVersion();
-			}
-
-			@Override
 			public List<PensionRateRounding> getRoundingMethods() {
 				return command.getRoundingMethods();
 			}
@@ -83,7 +78,9 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 			public Boolean getAutoCalculate() {
 				return command.getAutoCalculate();
 			}
+
 		});
+
 		return updatedPensionRate;
 	}
 }

@@ -42,11 +42,4 @@ public interface AccidentInsuranceRateSetMemento {
 	 */
 	void setRateItems(Set<InsuBizRateItem> items);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

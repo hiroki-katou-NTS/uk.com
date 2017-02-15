@@ -156,11 +156,4 @@ public interface LaborInsuranceOfficeSetMemento {
 	 */
 	void setMemo(Memo memo);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

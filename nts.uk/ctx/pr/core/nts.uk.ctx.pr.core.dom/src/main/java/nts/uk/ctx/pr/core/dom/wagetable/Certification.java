@@ -5,14 +5,13 @@
 package nts.uk.ctx.pr.core.dom.wagetable;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Class UnitPrice.
  */
 @Getter
-public class Certification extends AggregateRoot {
+public class Certification {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -34,7 +33,6 @@ public class Certification extends AggregateRoot {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -47,7 +45,6 @@ public class Certification extends AggregateRoot {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
-		memento.setVersion(this.getVersion());
 	}
 
 }

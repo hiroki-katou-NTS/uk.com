@@ -17,12 +17,18 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 @Stateless
 public class InsuranceBusinessTypeFinder {
 
-	/** The repository. */
+	/** The insurance business type repository. */
 	@Inject
-	private InsuranceBusinessTypeRepository insuranceBusinessTypeRepository;
+	private InsuranceBusinessTypeRepository insuranceBusinessTypeRepo;
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @return the insurance business type update dto
+	 */
 	public InsuranceBusinessTypeUpdateDto findAll(String companyCode) {
-		return InsuranceBusinessTypeUpdateDto.fromDomain(this.insuranceBusinessTypeRepository.findAll(companyCode),
-				11L);
+		return InsuranceBusinessTypeUpdateDto.fromDomain(this.insuranceBusinessTypeRepo.findAll(companyCode), 11L);
 	}
 }

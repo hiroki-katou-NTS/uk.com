@@ -15,7 +15,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class InsuranceBusinessTypeUpdateCommandHandler.
  */
@@ -23,21 +22,22 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 @Transactional
 public class InsuranceBusinessTypeUpdateCommandHandler extends CommandHandler<InsuranceBusinessTypeUpdateCommand> {
 
-	/**  CompanyRepository. */
+	/** The insurance business type repository. */
 	@Inject
-	private InsuranceBusinessTypeRepository insuranceBusinessTypeRepository;
+	private InsuranceBusinessTypeRepository insBizTypeRepo;
 
-	/**
-	 * Handle command.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param context
-	 *            context
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<InsuranceBusinessTypeUpdateCommand> context) { 
+	protected void handle(CommandHandlerContext<InsuranceBusinessTypeUpdateCommand> context) {
 		List<InsuranceBusinessType> lsInsuranceBusinessType = context.getCommand().toDomain();
 		for (InsuranceBusinessType insuranceBusinessType : lsInsuranceBusinessType) {
-			this.insuranceBusinessTypeRepository.update(insuranceBusinessType);
+			this.insBizTypeRepo.update(insuranceBusinessType);
 		}
 	}
 

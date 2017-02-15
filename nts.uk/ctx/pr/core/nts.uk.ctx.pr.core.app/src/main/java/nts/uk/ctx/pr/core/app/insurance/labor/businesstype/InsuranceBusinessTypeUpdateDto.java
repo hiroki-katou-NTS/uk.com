@@ -49,9 +49,6 @@ public class InsuranceBusinessTypeUpdateDto {
 	/** The biz name biz 10 th. */
 	private String bizNameBiz10Th;
 
-	/** The version. */
-	private long version;
-
 	public static InsuranceBusinessTypeUpdateDto fromDomain(List<InsuranceBusinessType> domain, long version) {
 		InsuranceBusinessTypeUpdateDto insuranceBusinessTypeUpdateDto = new InsuranceBusinessTypeUpdateDto();
 		for (InsuranceBusinessType insuranceBusinessType : domain) {
@@ -86,7 +83,6 @@ public class InsuranceBusinessTypeUpdateDto {
 				insuranceBusinessTypeUpdateDto.setBizNameBiz10Th(insuranceBusinessType.getBizName().v());
 			}
 		}
-		insuranceBusinessTypeUpdateDto.setVersion(version);
 		return insuranceBusinessTypeUpdateDto;
 	}
 }

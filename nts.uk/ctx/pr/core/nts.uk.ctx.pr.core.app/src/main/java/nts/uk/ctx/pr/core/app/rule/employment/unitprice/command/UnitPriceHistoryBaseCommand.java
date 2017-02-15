@@ -19,9 +19,6 @@ public abstract class UnitPriceHistoryBaseCommand {
 	/** The id. */
 	private String id;
 
-	/** The version. */
-	private long version;
-
 	/** The unit price code. */
 	private String unitPriceCode;
 

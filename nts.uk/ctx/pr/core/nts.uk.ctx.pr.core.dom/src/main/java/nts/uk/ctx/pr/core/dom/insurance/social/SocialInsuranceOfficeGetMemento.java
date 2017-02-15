@@ -203,11 +203,4 @@ public interface SocialInsuranceOfficeGetMemento {
 	 */
 	Memo getMemo();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

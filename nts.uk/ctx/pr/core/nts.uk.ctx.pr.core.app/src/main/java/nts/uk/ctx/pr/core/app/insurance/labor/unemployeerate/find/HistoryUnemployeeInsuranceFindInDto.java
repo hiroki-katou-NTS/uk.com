@@ -6,6 +6,9 @@ package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find;
 
 import lombok.Data;
 
+/**
+ * Instantiates a new history unemployee insurance find in dto.
+ */
 @Data
 public class HistoryUnemployeeInsuranceFindInDto {
 

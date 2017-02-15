@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
 import java.util.List;
@@ -10,14 +14,24 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 
+/**
+ * The Class SocialInsuranceOfficeFinder.
+ */
 @Stateless
 public class SocialInsuranceOfficeFinder {
 
+	/** The social insurance office repository. */
 	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	SocialInsuranceOfficeRepository socialInsuranceOfficeRepo;
 
+	/**
+	 * Find.
+	 *
+	 * @param officeCode the office code
+	 * @return the optional
+	 */
 	public Optional<SocialInsuranceOfficeDto> find(String officeCode) {
-		Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeRepository
+		Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeRepo
 				.findByOfficeCode(officeCode);
 		SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
 		if (socialInsuranceOffice.isPresent()) {
@@ -26,8 +40,14 @@ public class SocialInsuranceOfficeFinder {
 		return Optional.ofNullable(dto);
 	}
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
 	public List<SocialInsuranceOfficeItemDto> findAll(String companyCode) {
-		return socialInsuranceOfficeRepository.findAll(companyCode).stream().map(domain -> {
+		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
 			SocialInsuranceOfficeItemDto dto = SocialInsuranceOfficeItemDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;

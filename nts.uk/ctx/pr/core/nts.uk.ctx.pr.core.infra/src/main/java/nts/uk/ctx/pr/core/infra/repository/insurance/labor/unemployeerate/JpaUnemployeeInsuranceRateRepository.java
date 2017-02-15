@@ -141,12 +141,6 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		return new UnemployeeInsuranceRate(new UnemployeeInsuranceRateGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return 11L;
-			}
-
-			@Override
 			public Set<UnemployeeInsuranceRateItem> getRateItems() {
 				// TODO Auto-generated method stub
 				Set<UnemployeeInsuranceRateItem> rateItems = new HashSet<>();

@@ -32,11 +32,4 @@ public interface CertificationGetMemento {
 	 */
 	String getName();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

@@ -9,22 +9,19 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.command.BaseInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.command.InsuranceBaseCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UnemployeeInsuranceRateAddCommand.
  */
-// TODO: Auto-generated Javadoc
-
 @Getter
 @Setter
-public class UnemployeeInsuranceRateAddCommand extends BaseInsuranceCommand {
+public class UnemployeeInsuranceRateAddCommand extends InsuranceBaseCommand {
 
 	/** The history info dto. */
 	private UnemployeeInsuranceRateDto unemployeeInsuranceRate;
@@ -43,32 +40,22 @@ public class UnemployeeInsuranceRateAddCommand extends BaseInsuranceCommand {
 				new UnemployeeInsuranceRateGetMemento() {
 
 					@Override
-					public Long getVersion() {
-						// TODO Auto-generated method stub
-						return command.unemployeeInsuranceRate.getVersion();
-					}
-
-					@Override
 					public Set<UnemployeeInsuranceRateItem> getRateItems() {
-						// TODO Auto-generated method stub
 						return command.convertSetUnemployeeInsuranceRateItem(command.unemployeeInsuranceRate);
 					}
 
 					@Override
 					public String getHistoryId() {
-						// TODO Auto-generated method stub
 						return command.unemployeeInsuranceRate.getHistoryInsurance().getHistoryId();
 					}
 
 					@Override
 					public CompanyCode getCompanyCode() {
-						// TODO Auto-generated method stub
 						return new CompanyCode(command.companyCode);
 					}
 
 					@Override
 					public MonthRange getApplyRange() {
-						// TODO Auto-generated method stub
 						return command.convertMonthRange(
 								command.unemployeeInsuranceRate.getHistoryInsurance().getStartMonthRage(),
 								command.unemployeeInsuranceRate.getHistoryInsurance().getEndMonthRage());

@@ -32,11 +32,4 @@ public interface CertificationSetMemento {
 	 */
 	void setName(String name);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

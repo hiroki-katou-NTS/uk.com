@@ -80,10 +80,4 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -7,14 +7,14 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 import java.util.Set;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Class CertifyGroup.
  */
 @Getter
-public class CertifyGroup extends AggregateRoot {
+public class CertifyGroup extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -37,13 +37,6 @@ public class CertifyGroup extends AggregateRoot {
 	/** The certifies. */
 	private Set<Certification> certifies;
 
-	/**
-	 * Instantiates a new certify group.
-	 */
-	public CertifyGroup() {
-		super();
-	}
-
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new certify group.
@@ -59,7 +52,6 @@ public class CertifyGroup extends AggregateRoot {
 		this.name = memento.getName();
 		this.multiApplySet = memento.getMultiApplySet();
 		this.certifies = memento.getCertifies();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -76,7 +68,6 @@ public class CertifyGroup extends AggregateRoot {
 		memento.setName(this.name);
 		memento.setMultiApplySet(this.multiApplySet);
 		memento.setCertifies(this.certifies);
-		memento.setVersion(this.getVersion());
 	}
 
 }

@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm008.i {
             listPensionAvgearn: KnockoutObservableArray<any>;
             healthInsuranceRateModel: KnockoutObservable<any>;
 
-            constructor() {
+            constructor(dataOfSelectedOffice, pensionModel) {
                 var self = this;
                 self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                 self.listPensionAvgearn = ko.observableArray([]);

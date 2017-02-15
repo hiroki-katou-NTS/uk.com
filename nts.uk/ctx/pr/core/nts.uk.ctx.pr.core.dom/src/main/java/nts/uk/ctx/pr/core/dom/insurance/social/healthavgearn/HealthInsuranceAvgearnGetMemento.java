@@ -37,11 +37,4 @@ public interface HealthInsuranceAvgearnGetMemento {
 	 */
 	HealthInsuranceAvgearnValue  getPersonalAvg();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

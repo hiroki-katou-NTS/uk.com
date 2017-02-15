@@ -110,10 +110,4 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

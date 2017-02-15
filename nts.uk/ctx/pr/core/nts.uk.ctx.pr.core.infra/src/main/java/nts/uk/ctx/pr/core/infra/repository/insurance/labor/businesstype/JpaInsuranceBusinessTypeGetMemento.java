@@ -45,10 +45,4 @@ public class JpaInsuranceBusinessTypeGetMemento implements InsuranceBusinessType
 		return null;
 	}
 
-	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

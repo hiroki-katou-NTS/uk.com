@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
 import java.util.List;
@@ -15,19 +19,24 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 
+/**
+ * The Class RegisterPensionCommand.
+ */
 @Getter
 @Setter
 public class RegisterPensionCommand extends PensionBaseCommand {
+	
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode the company code
+	 * @return the pension rate
+	 */
 	public PensionRate toDomain(CompanyCode companyCode) {
 		RegisterPensionCommand command = this;
 
 		// Transfer data
 		PensionRate pensionRate = new PensionRate(new PensionRateGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 0L;
-			}
 
 			@Override
 			public List<PensionRateRounding> getRoundingMethods() {

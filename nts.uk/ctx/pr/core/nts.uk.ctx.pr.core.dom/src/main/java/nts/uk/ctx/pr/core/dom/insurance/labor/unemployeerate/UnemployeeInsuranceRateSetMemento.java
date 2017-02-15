@@ -42,11 +42,4 @@ public interface UnemployeeInsuranceRateSetMemento {
 	 */
 	void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

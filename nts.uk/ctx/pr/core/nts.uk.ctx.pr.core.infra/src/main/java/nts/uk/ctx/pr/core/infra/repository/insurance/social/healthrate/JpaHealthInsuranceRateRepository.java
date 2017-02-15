@@ -107,11 +107,6 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
 				// TODO Auto-generated method stub
 				return list2;
@@ -192,11 +187,6 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		MonthRange mr = MonthRange.range(new YearMonth(201601), new YearMonth(201605));
 
 		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {

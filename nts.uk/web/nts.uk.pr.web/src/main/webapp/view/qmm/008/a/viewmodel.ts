@@ -408,7 +408,9 @@ module nts.uk.pr.view.qmm008.a {
             //open modal standard monthly price health
             public OpenModalStandardMonthlyPriceHealth() {
                 // Set parent value
-                nts.uk.ui.windows.setShared("dataParentValue", "");
+                nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfSelectedOffice());
+                nts.uk.ui.windows.setShared("healthModel", this.healthModel());
+                
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
                     // Get child value
@@ -419,7 +421,9 @@ module nts.uk.pr.view.qmm008.a {
             //open modal standard monthly price pension 
             public OpenModalStandardMonthlyPricePension() {
                 // Set parent value
-                nts.uk.ui.windows.setShared("dataParentValue", "");
+                nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfSelectedOffice());
+                nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
+                
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
                     // Get child value

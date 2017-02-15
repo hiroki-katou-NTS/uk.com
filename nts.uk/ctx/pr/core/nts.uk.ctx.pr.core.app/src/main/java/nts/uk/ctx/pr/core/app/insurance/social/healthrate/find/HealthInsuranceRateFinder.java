@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
 import java.util.List;
@@ -10,12 +14,22 @@ import javax.inject.Inject;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 
+/**
+ * The Class HealthInsuranceRateFinder.
+ */
 @Stateless
 public class HealthInsuranceRateFinder {
 
+	/** The health insurance rate repository. */
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
 
+	/**
+	 * Find.
+	 *
+	 * @param id the id
+	 * @return the optional
+	 */
 	public Optional<HealthInsuranceRateDto> find(String id) {
 		Optional<HealthInsuranceRate> healthInsuranceRate = healthInsuranceRateRepository.findById(id);
 		HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().officeName("Ｃ 事業所").build();
@@ -25,6 +39,12 @@ public class HealthInsuranceRateFinder {
 		return Optional.ofNullable(dto);
 	}
 
+	/**
+	 * Find by office code.
+	 *
+	 * @param officeCode the office code
+	 * @return the list
+	 */
 	public List<HealthInsuranceRateDto> findByOfficeCode(String officeCode) {
 		return healthInsuranceRateRepository.findAll(officeCode).stream().map(domain -> {
 			HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().build();

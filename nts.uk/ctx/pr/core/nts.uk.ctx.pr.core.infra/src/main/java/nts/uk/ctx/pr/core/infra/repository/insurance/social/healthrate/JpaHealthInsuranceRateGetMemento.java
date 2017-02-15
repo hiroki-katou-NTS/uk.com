@@ -80,10 +80,4 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 		return null;
 	}
 
-	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

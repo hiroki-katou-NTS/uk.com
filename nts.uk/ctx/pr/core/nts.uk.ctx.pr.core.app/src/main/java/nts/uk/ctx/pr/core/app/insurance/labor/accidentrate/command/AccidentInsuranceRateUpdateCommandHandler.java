@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
 
 import javax.ejb.Stateless;
@@ -9,25 +13,29 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 
+/**
+ * The Class AccidentInsuranceRateUpdateCommandHandler.
+ */
 @Stateless
 @Transactional
 public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<AccidentInsuranceRateUpdateCommand> {
 
-	/** CompanyRepository */	
+	/** The accident insurance rate repository. */
 	@Inject
-	private AccidentInsuranceRateRepository accidentInsuranceRateRepository;
+	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
-	/**
-	 * Handle command.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param context
-	 *            context
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
 		AccidentInsuranceRate accidentInsuranceRate = context.getCommand().toDomain();
 		accidentInsuranceRate.validate();
-		this.accidentInsuranceRateRepository.update(accidentInsuranceRate);
+		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}
 
 }

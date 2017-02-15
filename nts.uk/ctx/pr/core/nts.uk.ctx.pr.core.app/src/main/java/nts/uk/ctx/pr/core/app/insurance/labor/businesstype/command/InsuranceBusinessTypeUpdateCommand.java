@@ -10,7 +10,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.command.BaseInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.command.InsuranceBaseCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.InsuranceBusinessTypeUpdateDto;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 
 @Getter
 @Setter
-public class InsuranceBusinessTypeUpdateCommand extends BaseInsuranceCommand {
+public class InsuranceBusinessTypeUpdateCommand extends InsuranceBaseCommand {
 
 	/** The insurance business type. */
 	private InsuranceBusinessTypeUpdateDto insuranceBusinessType;
@@ -62,26 +62,17 @@ public class InsuranceBusinessTypeUpdateCommand extends BaseInsuranceCommand {
 		return new InsuranceBusinessType(new InsuranceBusinessTypeGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return command.insuranceBusinessType.getVersion();
-			}
-
-			@Override
 			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
 				return new CompanyCode(command.companyCode);
 			}
 
 			@Override
 			public BusinessTypeEnum getBizOrder() {
-				// TODO Auto-generated method stub
 				return businessTypeEnum;
 			}
 
 			@Override
 			public BusinessName getBizName() {
-				// TODO Auto-generated method stub
 				return new BusinessName(bizName);
 			}
 		});

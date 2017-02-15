@@ -6,17 +6,14 @@ package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Class UnitPrice.
  */
 @Getter
-public class UnitPrice extends AggregateRoot {
-
-	/** The id. */
-	private String id;
+public class UnitPrice extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -27,13 +24,6 @@ public class UnitPrice extends AggregateRoot {
 	/** The name. */
 	@Setter
 	private UnitPriceName name;
-
-	/**
-	 * Instantiates a new unit price.
-	 */
-	public UnitPrice() {
-		super();
-	}
 
 	// =================== Memento State Support Method ===================
 	/**
@@ -46,7 +36,6 @@ public class UnitPrice extends AggregateRoot {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -59,7 +48,6 @@ public class UnitPrice extends AggregateRoot {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
-		memento.setVersion(this.getVersion());
 	}
 
 }

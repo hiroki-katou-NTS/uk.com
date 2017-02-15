@@ -190,10 +190,4 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 		return null;
 	}
 
-	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

@@ -33,12 +33,6 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	}
 
 	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void setLevelCode(Integer levelCode) {
 		// TODO Auto-generated method stub
 

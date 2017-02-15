@@ -17,8 +17,8 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistorySetMemen
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.shr.com.primitive.Memo;
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
+/**
+ * The Class UnitPriceHistoryDto.
  */
 @Builder
 public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
@@ -221,16 +221,6 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	@Override
 	public void setMemo(Memo memo) {
 		this.memo = memo.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
-	 * UnitPriceHistorySetMemento#setVersion(java.lang.Long)
-	 */
-	@Override
-	public void setVersion(Long version) {
 	}
 
 }

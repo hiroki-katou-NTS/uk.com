@@ -74,11 +74,4 @@ public interface PensionAvgearnGetMemento {
 	 */
 	PensionAvgearnValue getPersonalPension();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

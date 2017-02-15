@@ -33,12 +33,6 @@ public class JpaPensionAvgearnGetMemento implements PensionAvgearnGetMemento {
 	}
 
 	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Integer getLevelCode() {
 		// TODO Auto-generated method stub
 		return null;

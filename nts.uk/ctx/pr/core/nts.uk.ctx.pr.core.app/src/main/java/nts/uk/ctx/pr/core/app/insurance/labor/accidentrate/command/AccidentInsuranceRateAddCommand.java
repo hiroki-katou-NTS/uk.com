@@ -9,17 +9,19 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.command.BaseInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.command.InsuranceBaseCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 
-// TODO: Auto-generated Javadoc
+/**
+ * The Class AccidentInsuranceRateAddCommand.
+ */
 @Getter
 @Setter
-public class AccidentInsuranceRateAddCommand extends BaseInsuranceCommand {
+public class AccidentInsuranceRateAddCommand extends InsuranceBaseCommand {
 
 	/** The accident insurance rate. */
 	private AccidentInsuranceRateDto accidentInsuranceRate;
@@ -39,14 +41,7 @@ public class AccidentInsuranceRateAddCommand extends BaseInsuranceCommand {
 		AccidentInsuranceRate accidentInsuranceRate = new AccidentInsuranceRate(new AccidentInsuranceRateGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return command.accidentInsuranceRate.getVersion();
-			}
-
-			@Override
 			public Set<InsuBizRateItem> getRateItems() {
-				// TODO Auto-generated method stub
 				return defaultSetInsuBizRateItem();
 			}
 
@@ -57,13 +52,11 @@ public class AccidentInsuranceRateAddCommand extends BaseInsuranceCommand {
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
 				return new CompanyCode(command.companyCode);
 			}
 
 			@Override
 			public MonthRange getApplyRange() {
-				// TODO Auto-generated method stub
 				return convertMonthRange(command.accidentInsuranceRate.getHistoryInsurance().getStartMonthRage(),
 						command.accidentInsuranceRate.getHistoryInsurance().getEndMonthRage());
 			}

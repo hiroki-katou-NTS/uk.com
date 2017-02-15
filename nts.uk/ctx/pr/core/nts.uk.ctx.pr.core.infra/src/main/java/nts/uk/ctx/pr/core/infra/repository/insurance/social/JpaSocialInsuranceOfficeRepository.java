@@ -214,10 +214,6 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 				return new Memo("getMemo");
 			}
 
-			@Override
-			public Long getVersion() {
-				return 0L;
-			}
 		});
 		
 		SocialInsuranceOffice socialInsuranceOffice2 = new SocialInsuranceOffice(new SocialInsuranceOfficeGetMemento() {
@@ -352,10 +348,6 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 				return new Memo("");
 			}
 
-			@Override
-			public Long getVersion() {
-				return 0L;
-			}
 		});
 		
 		SocialInsuranceOffice socialInsuranceOffice3 = new SocialInsuranceOffice(new SocialInsuranceOfficeGetMemento() {
@@ -490,10 +482,6 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 				return new Memo("");
 			}
 
-			@Override
-			public Long getVersion() {
-				return 0L;
-			}
 		});
 		
 		listSocialInsuranceOffice.add(socialInsuranceOffice1);
@@ -663,10 +651,6 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 				return new Memo("");
 			}
 
-			@Override
-			public Long getVersion() {
-				return 0L;
-			}
 		});
 
 		return Optional.of(socialInsuranceOffice);

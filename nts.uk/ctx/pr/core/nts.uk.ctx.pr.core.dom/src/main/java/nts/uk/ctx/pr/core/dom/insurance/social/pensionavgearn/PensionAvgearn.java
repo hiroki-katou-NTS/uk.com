@@ -5,14 +5,14 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 
 /**
  * The Class PensionAvgearn.
  */
 @Getter
-public class PensionAvgearn extends AggregateRoot {
+public class PensionAvgearn extends DomainObject {
 
 	/** The history id. */
 	// historyId
@@ -59,7 +59,6 @@ public class PensionAvgearn extends AggregateRoot {
 		this.personalFund = memento.getPersonalFund();
 		this.personalFundExemption = memento.getPersonalFundExemption();
 		this.personalPension = memento.getPersonalPension();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -78,7 +77,6 @@ public class PensionAvgearn extends AggregateRoot {
 		memento.setPersonalFund(this.personalFund);
 		memento.setPersonalFundExemption(this.personalFundExemption);
 		memento.setPersonalPension(this.personalPension);
-		memento.setVersion(this.getVersion());
 	}
 
 }

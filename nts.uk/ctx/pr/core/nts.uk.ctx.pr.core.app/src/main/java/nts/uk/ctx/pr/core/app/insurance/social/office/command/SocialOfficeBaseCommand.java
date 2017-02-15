@@ -1,8 +1,15 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The Class SocialOfficeBaseCommand.
+ */
 @Getter
 @Setter
 public class SocialOfficeBaseCommand {

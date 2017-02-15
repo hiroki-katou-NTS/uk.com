@@ -72,11 +72,4 @@ public interface HealthInsuranceRateSetMemento {
 	 */
 	void setRoundingMethods(Set<HealthInsuranceRounding> roundingMethods);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

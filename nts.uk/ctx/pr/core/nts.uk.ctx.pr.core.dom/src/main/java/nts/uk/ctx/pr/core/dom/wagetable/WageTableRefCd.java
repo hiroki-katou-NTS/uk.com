@@ -2,18 +2,22 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.rule.employment.unitprice.command;
+package nts.uk.ctx.pr.core.dom.wagetable;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
- * The Class DeleteUnitPriceHistoryCommand.
+ * The Class TableRefBase.
  */
 @Getter
-@Setter
-public class DeleteUnitPriceHistoryCommand {
+public class WageTableRefCd extends TableRefBase {
 
-	/** The id. */
-	private String id;
+	private Integer wageRefValue;
+	
+	private Integer wagePersonTable;
+	
+	private Integer wagePersonField;
+	
+	private Integer wagePersonQuery;
+
 }

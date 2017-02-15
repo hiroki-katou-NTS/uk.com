@@ -190,10 +190,4 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

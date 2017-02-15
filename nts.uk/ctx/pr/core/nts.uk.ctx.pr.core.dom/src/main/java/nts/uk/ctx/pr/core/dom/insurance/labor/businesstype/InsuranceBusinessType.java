@@ -5,7 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.businesstype;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 
@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
  * The Class InsuranceBusinessType.
  */
 @Getter
-public class InsuranceBusinessType extends AggregateRoot {
+public class InsuranceBusinessType extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -42,7 +42,6 @@ public class InsuranceBusinessType extends AggregateRoot {
 		this.companyCode = memento.getCompanyCode();
 		this.bizOrder = memento.getBizOrder();
 		this.bizName = memento.getBizName();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -55,7 +54,6 @@ public class InsuranceBusinessType extends AggregateRoot {
 		memento.setCompanyCode(this.companyCode);
 		memento.setBizOrder(this.bizOrder);
 		memento.setBizName(this.bizName);
-		memento.setVersion(this.getVersion());
 	}
 
 }
