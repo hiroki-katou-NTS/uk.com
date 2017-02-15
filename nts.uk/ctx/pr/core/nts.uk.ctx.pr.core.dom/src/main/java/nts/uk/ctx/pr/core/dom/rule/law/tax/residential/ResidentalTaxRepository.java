@@ -4,9 +4,6 @@
 package nts.uk.ctx.pr.core.dom.rule.law.tax.residential;
 
 import java.util.List;
-import java.util.Optional;
-
-import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
 
 /**
  * @author lanlt
@@ -22,8 +19,8 @@ public interface ResidentalTaxRepository {
 	List<ResidentalTax> getAllResidentalTax(String companyCode);
 	//Optional<ResidentalTax> getDetailResidentalTax(String);
 	void add(ResidentalTax residentalTax);
-	void update(ResidentalTax residentalTax);
-	void delele(String companyCode);
+	void update(String companyCode,String resiTaxCode);
+	void delele(String companyCode,String resiTaxCode);
 	
 
 }

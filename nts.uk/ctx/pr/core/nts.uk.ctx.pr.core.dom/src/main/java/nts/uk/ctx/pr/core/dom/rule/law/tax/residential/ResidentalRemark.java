@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pr.core.dom.rule.law.tax.residential;
 
+import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -10,7 +11,9 @@ import nts.arc.layer.dom.DomainObject;
  *
  */
 public class ResidentalRemark extends DomainObject{
+	@Getter
 	private Remark remark1;
+	@Getter
 	private Remark remark2;
 	/**
 	 * @param remark1
