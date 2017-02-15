@@ -11,7 +11,9 @@ var qet001;
                     this.selectedTab = ko.observable(0);
                     var self = this;
                     $("#sidebar-area > ul > li").on('click', function () {
-                        self.selectedTab($("#sidebar-area > ul > li").index(this));
+                        var index = $("#sidebar-area > ul > li").index(this);
+                        $("#sidebar").ntsSideBar("active", index);
+                        self.selectedTab(index);
                     });
                     self.selectedTab.subscribe(function (val) {
                         if (val == undefined || val == null) {
@@ -35,6 +37,10 @@ var qet001;
                     });
                     dfd.resolve();
                     return dfd.promise();
+                };
+                ScreenModel.prototype.afterRender = function () {
+                    $('.master-table-label').width($('#swap-list-gridArea1').width());
+                    $('.sub-table-label').width($('#swap-list-gridArea2').width());
                 };
                 return ScreenModel;
             }());

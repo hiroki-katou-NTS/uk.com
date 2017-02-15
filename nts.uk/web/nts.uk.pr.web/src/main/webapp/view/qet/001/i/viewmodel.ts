@@ -15,7 +15,9 @@ module qet001.i.viewmodel {
             this.selectedTab = ko.observable(0);
             var self = this;
             $("#sidebar-area > ul > li").on('click', function() {
-                self.selectedTab($("#sidebar-area > ul > li").index(this));
+                var index = $("#sidebar-area > ul > li").index(this);
+                $("#sidebar").ntsSideBar("active", index);
+                self.selectedTab(index);
             });
             self.selectedTab.subscribe(val => {
                 if (val == undefined || val == null) {
@@ -44,6 +46,16 @@ module qet001.i.viewmodel {
             })
             dfd.resolve();
             return dfd.promise();
+        }
+        
+        
+        /**
+         * After rended template.
+         */
+        public afterRender() {
+            // set width when swap list is rended.
+            $('.master-table-label').width($('#swap-list-gridArea1').width());
+            $('.sub-table-label').width($('#swap-list-gridArea2').width())
         }
     }
     
@@ -77,10 +89,14 @@ module qet001.i.viewmodel {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate, res));
                 });
-            })
+            });
+            
         }
         
-        loadAggregateItemByCategory() : JQueryPromise<void> {
+        /**
+         * Load Aggregate items by category.
+         */
+        public loadAggregateItemByCategory() : JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             // Fake data.
             var self = this;
@@ -94,8 +110,10 @@ module qet001.i.viewmodel {
             return dfd.promise();
         }
         
-        
-        loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
+        /**
+         * Load detail aggregate item.
+         */
+        public loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
             var dfd = $.Deferred<service.Item>();
             var self = this;
             var selectedCode = code;
@@ -112,19 +130,19 @@ module qet001.i.viewmodel {
         }
         
         
-        switchToCreateMode() {
+        public switchToCreateMode() {
             
         }
         
-        save() {
+        public save() {
             
         }
         
-        remove() {
+        public remove() {
             
         }
         
-        close() {
+        public close() {
             
         }
     }
