@@ -126,7 +126,7 @@ var cmm013;
                         memo: self.A_INP_006.value()
                     };
                     var dfd = $.Deferred();
-                    service.addBank(self.isCreated(), branchInfo).done(function () {
+                    viewmodel.service.addBank(self.isCreated(), branchInfo).done(function () {
                         // reload tree
                         self.getBankList();
                     }).fail(function (error) {
@@ -163,7 +163,7 @@ var cmm013;
                 ScreenModel.prototype.getBankList = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    service.getBankList().done(function (data) {
+                    viewmodel.service.getBankList().done(function (data) {
                         var list001 = [];
                         _.forEach(data, function (itemBank) {
                             var childs = _.map(itemBank.bankBranch, function (item) {
