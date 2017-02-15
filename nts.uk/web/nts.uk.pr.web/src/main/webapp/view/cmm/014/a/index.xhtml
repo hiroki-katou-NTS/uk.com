@@ -21,8 +21,13 @@
 					
 					__viewContext.primitiveValueConstraints.ClassificationName = {
 							valueType: 'String',
-							charType: 'String',
+							charType: 'Numeric',
 							maxLength: 20,
+						};
+					__viewContext.primitiveValueConstraints.Memo = {
+							valueType: 'String',
+							charType: 'Numeric',
+							maxLength: 500,
 						};
 				</script>
 		</ui:define>
@@ -36,11 +41,12 @@
 				<button id="A_BTN_003">マスタ修正ログ</button>
 				<button id="A_BTN_004" data-bind="click: DeleteClassification"
 					class="danger btnStyle">削除</button>
-				<label id="LBL_001">分類情報の登録</label>
+
 			</div>
 
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
+
 					<i class="icon icon-searchbox"></i>
 
 					<div class="cf">
@@ -72,16 +78,17 @@
 				<div id="right-content">
 					<table class="table_content">
 						<colgroup>
-							<col width="150px" />
+							<col width="230px" />
 							<col width="*" />
 						</colgroup>
 
 						<tr>
 							<td class="row_1">
 								<div
-									data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
-									<label id="A_LBL_002">コード/名称</label>
-								</div>
+									data-bind="ntsFormLabel: { constraint: ['ClassificationCode','ClassificationName'], required: true }">
+									コード/名称</div>
+
+
 							</td>
 							<td class="valign-center">
 								<div>
@@ -108,7 +115,8 @@
 
 						<tr>
 							<td>
-								<div data-bind="ntsFormLabel: {constraint: 'LayoutCode'}">
+								<div
+									data-bind="ntsFormLabel: {constraint: 'Memo'}">
 									<label id="A_LBL_003">メモ</label>
 								</div>
 							</td>

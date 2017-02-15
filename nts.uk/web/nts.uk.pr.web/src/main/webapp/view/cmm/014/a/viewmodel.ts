@@ -12,33 +12,25 @@ module cmm014.a.viewmodel {
         INP_002_enable: any;
         INP_003_name: any;
         INP_004_notes: any;
-        classificationCode: KnockoutObservable<string>;
-        classificationName: KnockoutObservable<string>;
-        classificationMemo: KnockoutObservable<string>;
-        classificationList: KnockoutObservableArray<Classification>;
-        selectedClassificationCode: any;
-        texteditorcode: any;
-        texteditorname: any;
-        multilineeditor: any;
 
         constructor() {
             var self = this;
             self.dataSource = ko.observableArray([
-                new viewmodel.model.ClassificationDto('A000001', '1��{��'),
-                new viewmodel.model.ClassificationDto('A000002', '2��{��'),
-                new viewmodel.model.ClassificationDto('A000003', '3��12�{'),
-                new viewmodel.model.ClassificationDto('A000004', '4��12�{'),
-                new viewmodel.model.ClassificationDto('A000005', '5��12�{'),
-                new viewmodel.model.ClassificationDto('A000006', '6��12�{'),
-                new viewmodel.model.ClassificationDto('A000007', '7��12�{'),
-                new viewmodel.model.ClassificationDto('A000008', '8��12�{'),
-                new viewmodel.model.ClassificationDto('A000009', '9��12�{'),
-                new viewmodel.model.ClassificationDto('A000010', '10��12�{')
+                new viewmodel.model.ClassificationDto('A000001', 'マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000002', '2マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000003', '3マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000004', '4マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000005', '5マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000006', '6マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000007', '7マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000008', '8マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000009', '9マスタ修正ログ'),
+                new viewmodel.model.ClassificationDto('A000010', '10マスタ修正ログ')
 
             ]);
             self.columns = ko.observableArray([
-                { headerText: '�R�[�h', prop: 'classificationCode', width: 100 },
-                { headerText: '����', prop: 'classificationName', width: 80 }
+                { headerText: 'コード', prop: 'classificationCode', width: 100 },
+                { headerText: '名称', prop: 'classificationName', width: 80 }
 
             ]);
             self.currentCode = ko.observable(self.dataSource()[0].classificationCode);
@@ -97,7 +89,7 @@ module cmm014.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             if (self.checkInput()) {
-                console.log("Insert(??ng ky m?i) or Update Classification");
+                console.log("Insert(đăng ký mới) or Update Classification");
                 for (let i = 0; i < self.dataSource().length; i++) {
                     if (self.INP_002_code() == self.dataSource()[i].classificationCode) {
                         var classification_old = self.dataSource()[i];
@@ -145,7 +137,6 @@ module cmm014.a.viewmodel {
         }
 
         DeleteClassification() {
-
             var self = this;
             var dfd = $.Deferred<any>();
             var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
@@ -164,51 +155,8 @@ module cmm014.a.viewmodel {
                 dfd.reject(res);
             })
 
-            //   self.dataSource.remove(self.currentItem());
-
-            self.classificationCode = ko.observable("");
-            self.classificationName = ko.observable("");
-            self.classificationMemo = ko.observable("");
-            self.classificationList = ko.observableArray([]);
-            self.selectedClassificationCode = ko.observable(null);
-            self.texteditorcode = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "100px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true)
-            };
-            self.texteditorname = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "100px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true)
-            };
-            self.multilineeditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: true,
-                    placeholder: "",
-                    width: "",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
         }
+        //   self.dataSource.remove(self.currentItem());
 
         start(): JQueryPromise<any> {
             var self = this;
@@ -241,16 +189,8 @@ module cmm014.a.viewmodel {
             constructor(classificationCode: string) {
                 this.classificationCode = classificationCode;
             }
-    
-    }
-            }
-      class Classification {
-            classificationCode: string;
-            classificationName: string;
-            classificationMemo: string;
-            constructor(classificationCode: string, classificationName: string) {
-                this.classificationCode = classificationCode;
-                this.classificationName = classificationName;
-            }
+
         }
-    }
+    }
+
+}
