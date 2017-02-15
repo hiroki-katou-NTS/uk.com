@@ -12,7 +12,7 @@ module nts.uk.pr.view.qmm008.h {
             rateItems: KnockoutObservableArray<any>;
             roundingMethods: KnockoutObservableArray<any>;
 
-            constructor() {
+            constructor(dataOfSelectedOffice,healthModel) {
                 var self = this;
                 self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
                 self.listAvgEarnLevelMasterSetting = ko.observableArray([]);

@@ -11,7 +11,7 @@ var nts;
                     var h;
                     (function (h) {
                         __viewContext.ready(function () {
-                            var screenModel = new h.viewmodel.ScreenModel();
+                            var screenModel = new h.viewmodel.ScreenModel(nts.uk.ui.windows.getShared("dataOfSelectedOffice"), nts.uk.ui.windows.getShared("healthModel"));
                             screenModel.startPage().done(function () {
                                 __viewContext.bind(screenModel);
                             });

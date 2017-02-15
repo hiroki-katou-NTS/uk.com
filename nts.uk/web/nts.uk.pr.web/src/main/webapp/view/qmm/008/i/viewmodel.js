@@ -14,7 +14,7 @@ var nts;
                         (function (viewmodel) {
                             var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(dataOfSelectedOffice, pensionModel) {
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                                     self.listPensionAvgearn = ko.observableArray([]);

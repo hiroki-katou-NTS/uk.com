@@ -11,7 +11,7 @@ var nts;
                     var i;
                     (function (i) {
                         __viewContext.ready(function () {
-                            var screenModel = new i.viewmodel.ScreenModel();
+                            var screenModel = new i.viewmodel.ScreenModel(nts.uk.ui.windows.getShared("dataOfSelectedOffice"), nts.uk.ui.windows.getShared("pensionModel"));
                             screenModel.startPage().done(function () {
                                 __viewContext.bind(screenModel);
                             });
