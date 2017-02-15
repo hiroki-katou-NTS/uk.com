@@ -5,12 +5,10 @@ import lombok.Getter;
 @Getter
 public class ResidenceTax {
 	private int month;
-	private MonthlyResidenceTax monthlyResidenceTax;
-	public ResidenceTax(int month, MonthlyResidenceTax monthlyResidenceTax) {
+	private MonthlyResidenceTax value;
+	public ResidenceTax(int month, MonthlyResidenceTax value) {
 		super();
 		this.month = month;
-		this.monthlyResidenceTax = monthlyResidenceTax;
+		this.value = value;
 	}
-	
-
 }
