@@ -37,27 +37,15 @@ module cmm001.a.service {
             return dfd.promise();
             
         }
-        export function addData(layoutMaster: model.CompanyDto){
+        export function addData(company: model.CompanyDto){
         var dfd = $.Deferred<Array<any>>();  
-        nts.uk.request.ajax(paths.addCompany, layoutMaster).done(function(res: Array<any>){
+        nts.uk.request.ajax(paths.addCompany, company).done(function(res: Array<any>){
             dfd.resolve(res);    
         }).fail(function(res){
             dfd.reject(res);
         })
         return dfd.promise(); 
     }
-//        export function addData(): JQueryPromise<companyDto: model.CompanyDto>{
-//           let dfd = $.Deferred<Array<any>>();
-//            nts.uk.request.ajax(paths.addCompany,company)
-//                    .done(function(res: Array<any>){
-//                        dfd.resolve(res);
-//                    })
-//                    .fail(function(res){
-//                        dfd.reject(res);
-//                    })
-//            return dfd.promise();
-//        }
-//    
         export function updateData(): JQueryPromise<Array<model.CompanyDto>>{
            let dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.updateCompany)

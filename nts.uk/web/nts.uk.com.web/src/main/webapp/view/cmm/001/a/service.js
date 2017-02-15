@@ -41,9 +41,9 @@ var cmm001;
                 return dfd.promise();
             }
             service.getCompanyDetail = getCompanyDetail;
-            function addData(layoutMaster) {
+            function addData(company) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.addCompany, layoutMaster).done(function (res) {
+                nts.uk.request.ajax(paths.addCompany, company).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
                     dfd.reject(res);
@@ -51,18 +51,6 @@ var cmm001;
                 return dfd.promise();
             }
             service.addData = addData;
-            //        export function addData(): JQueryPromise<companyDto: model.CompanyDto>{
-            //           let dfd = $.Deferred<Array<any>>();
-            //            nts.uk.request.ajax(paths.addCompany,company)
-            //                    .done(function(res: Array<any>){
-            //                        dfd.resolve(res);
-            //                    })
-            //                    .fail(function(res){
-            //                        dfd.reject(res);
-            //                    })
-            //            return dfd.promise();
-            //        }
-            //    
             function updateData() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.updateCompany)

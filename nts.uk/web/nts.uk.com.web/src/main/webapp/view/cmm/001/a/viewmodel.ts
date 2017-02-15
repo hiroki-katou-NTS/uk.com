@@ -4,8 +4,7 @@ module cmm001.a {
         items: KnockoutObservableArray<Company>;
         item1s: KnockoutObservableArray<Company>;
         columns2: KnockoutObservableArray<any>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
+        currentCode: any;
         currentCompanyDto: KnockoutObservable<cmm001.a.service.model.CompanyDto>;
         currentCodeList: KnockoutObservableArray<any>;
         currentNode: KnockoutObservable<Company>;
@@ -32,18 +31,28 @@ module cmm001.a {
         textSearch: string = "";
         //company from database
         companys: KnockoutObservableArray<cmm001.a.service.model.CompanyDto>;
+
+        // texteditor
+        A_INP_002: any;
+        A_INP_003: any;
+        A_INP_004: any;
+        A_INP_005: any;
         constructor() {
             let self = this;
             let node: Company;
             self.init();
+            self.A_INP_002 =ko.observable(new TextEditor(self.currentCode,'CompanyCode',
+             ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+            self.A_INP_003 = ko.observable(new TextEditor("hehhehe",'CompanyName',
+             ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
             self.currentCode.subscribe(function(newValue) {
                 let dfd = $.Deferred<any>();
                 cmm001.a.service.getAllCompanys().done(function(companies) {
                     if (companies.length > 0) {
                         self.companys(companies);
-                        console.log(self.companys());
                         if (self.editMode) {
                             self.getDetailCompany(self.companys(), newValue);
+
                         }
                         else {
                             self.editMode = true;
@@ -54,6 +63,9 @@ module cmm001.a {
                 });
             });
             self.checked2.subscribe(function(newValue) {
+
+                self.columns2()[2]._initiallyHidden = false;
+                self.columns2()[2].hidden = false;
                 // chu y khi code chinh phai lay lai datasource khong se bi thay doi source
                 self.item1s = ko.observableArray([
                     new Company('01', '日通システム株式会社', ''),
@@ -75,38 +87,48 @@ module cmm001.a {
 
 
                 } else {
-                    console.log(self.item1s());
+                    // console.log(self.item1s());
                     self.items([]);
                     self.items(self.item1s());
                     self.currentCode(self.items()[0].code);
                 }
 
             });
+
+
+
+
             self.checked1.subscribe(function(newValue) {
-                console.log(self.items());
                 if (newValue) {
                     self.columns2()[2].hidden = true;
                     $(function() {
                         $("#single-list").igGrid({
+                            heigth: 450,
+                            width: 350,
                             options: self.items(),
-                            optionsValue: 'code',
-                            columns: self.columns2(),
+                            columns: self.columns2()
 
                         });
                     });
                 } else {
-                    self.columns2()[2].hidden = false;
+                    //  self.columns2()[2].hidden = false;
+                    self.columns2 = ko.observableArray([
+                        { headerText: '会社コード', prop: 'code', width: 80 },
+                        { headerText: '名称', prop: 'name', width: 200 },
+                        { headerText: '廃止', prop: 'description', width: 50, hidden: false }
+                    ]);
                     $(function() {
                         $("#single-list").igGrid({
+                            height: 450,
+                            width: 390,
                             options: self.items(),
-                            optionsValue: 'code',
-                            columns: self.columns2(),
+                            columns: self.columns2()
 
                         });
                     });
                 }
             });
-            console.log(self.checked1());
+
 
         }
 
@@ -137,8 +159,9 @@ module cmm001.a {
         resetData(): void {
             let self = this;
             self.editMode = false;
-            self.currentCode(" ");
-            self.currentNode(new Company("", "", ""));
+            self.currentCode({});
+            // self.currentNode(new Company("", "", ""));
+            self.currentCompanyDto({});
             //self.currentCompanyDto({});
 
         }
@@ -146,14 +169,12 @@ module cmm001.a {
             let self = this;
             self.checked1 = ko.observable(false);
             self.items = ko.observableArray([]);
-            self.columns = ko.observableArray([
+            self.columns2 = ko.observableArray([
                 { headerText: '会社コード', prop: 'code', width: 80 },
                 { headerText: '名称', prop: 'name', width: 200 },
                 { headerText: '廃止', prop: 'description', width: 50, hidden: false }
             ]);
-            self.columns2 = ko.observableArray([]);
-            self.columns2(self.columns());
-            console.log(self.columns2());
+
 
             self.currentCode = ko.observable("0001");
             self.currentCodeList = ko.observableArray(null);
@@ -205,10 +226,49 @@ module cmm001.a {
         //BTN-002 
         ClickRegister(): any {
             let self = this;
-            //            let companyCode = $('#A_INP_002').val();
-            //            let companyAbb = $("#A_INP_003").val();
-            //            let companyHira = $("#A_INP_004").val();
-            //       let companyHira1 = $("#A_INP_005").val();
+            let dfd = $.Deferred<any>();
+            self.currentCompanyDto().companyCode = $("#A_INP_002").val();
+            self.currentCompanyDto().companyName = $("#A_INP_003").val();
+            let companyNameGlobal: string;
+            self.currentCompanyDto().address1 = $("#C_INP_002").val();
+            self.currentCompanyDto().address2 = $("#C_INP_003").val();
+            self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
+            self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
+            self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
+            self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
+            self.currentCompanyDto().corporateMyNumber = $("#B_INP_001").val();
+            let depWorkPlaceSet: number;
+            let displayAttribute: number;
+            self.currentCompanyDto().faxNo = $("#C_INP_007").val();
+            self.currentCompanyDto().postal = $("#C_INP_001").val();
+            self.currentCompanyDto().presidentName = $("#B_INP_002").val()
+            self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
+            self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
+            let termBeginMon: number;
+            let use_Gr_Set: number;
+            let use_kt_Set: number;
+            let use_Qy_Set: number;
+            let use_Jj_Set: number;
+            let use_Ac_Set: number;
+            let use_Gw_Set: number;
+            let use_Hc_Set: number;
+            let use_Lc_Set: number;
+            let use_Bi_Set: number;
+            let use_Rs01_Set: number;
+            let use_Rs02_Set: number;
+            let use_Rs03_Set: number;
+            let use_Rs04_Set: number;
+            let use_Rs05_Set: number;
+            let use_Rs06_Set: number;
+            let use_Rs07_Set: number;
+            let use_Rs08_Set: number;
+            let use_Rs10_Set: number;
+            cmm001.a.service.addData(self.currentCompanyDto()).done(function() {
+                self.items.push(new Company(self.currentCompanyDto().companyCode, self.currentCompanyDto().companyName, ""));
+
+            });
+            console.log("lan");
+            console.log(self.items());
 
 
         }
@@ -247,7 +307,6 @@ module cmm001.a {
                 if (companies.length > 0) {
                     self.companys(companies);
                     self.buildGridDataSource(self.companys());
-
                 }
                 dfd.resolve();
             });
@@ -260,6 +319,7 @@ module cmm001.a {
             });
         }
 
+
     }
     export class Company {
         code: string;
@@ -271,4 +331,19 @@ module cmm001.a {
             this.description = description;
         }
     }
+    export class TextEditor {
+        value: string;
+        constraint: string;
+        option: string;
+        enable: boolean;
+        readonly: boolean;
+        constructor(value: string, constraint: string, option: string, enable: boolean, readonly: boolean){
+            this.value = value;
+            this.constraint = constraint;
+            this.option = option;
+            this.enable = enable;
+            this.readonly = readonly;
+        }
+    }
+
 };

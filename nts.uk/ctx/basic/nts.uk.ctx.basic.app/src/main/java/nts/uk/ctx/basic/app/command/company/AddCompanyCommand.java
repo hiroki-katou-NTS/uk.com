@@ -1,12 +1,14 @@
 package nts.uk.ctx.basic.app.command.company;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.basic.dom.company.Company;
 /**
  * 
  * @author lanlt
  *
  */
+@Setter
 @Getter
 public class AddCompanyCommand {
     private String companyCode;

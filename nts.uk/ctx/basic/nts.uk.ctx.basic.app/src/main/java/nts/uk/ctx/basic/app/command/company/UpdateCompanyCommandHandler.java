@@ -24,6 +24,7 @@ public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCom
 		//error 26
 		Company company= companyReposity.getCompanyDetail(update.getCompanyCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")));
+		companyReposity.update(company);
 		
 //		if(!(company.getAddress().getAddress1().equals(update.getAddress1())) ||
 //				!(company.getAddress().getAddress2().equals(update.getAddress2())) ||

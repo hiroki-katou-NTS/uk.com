@@ -3,9 +3,10 @@ package nts.uk.ctx.basic.app.find.company;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.basic.dom.company.Company;
+
 import nts.uk.ctx.basic.dom.company.CompanyRepository;
 /**
  * 
