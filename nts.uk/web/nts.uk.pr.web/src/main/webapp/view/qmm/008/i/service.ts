@@ -12,8 +12,9 @@ module nts.uk.pr.view.qmm008.i {
         /**
          *  Save List Health Insurance Average Earn
          */
-        export function updatePensionAvgearn(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updatePensionAvgearn, list);
+        export function updatePensionAvgearn(listPensionAvgearn): JQueryPromise<any> {
+            var data = {listPensionAvgearn: listPensionAvgearn};
+            return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
         }
 
         /**

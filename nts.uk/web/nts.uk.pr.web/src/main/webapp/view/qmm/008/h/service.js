@@ -18,7 +18,8 @@ var nts;
                                 findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/find",
                             };
                             function updateHealthInsuranceAvgearn(list) {
-                                return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, list);
+                                var data = { listHealthInsuranceAvgearn: list };
+                                return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data);
                             }
                             service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
                             function findHealthInsuranceRate(id) {

@@ -24,19 +24,21 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 		// Get command.
 		UpdateHealthInsuranceAvgearnCommand command = context.getCommand();
 
-		// Get the pensionAvgearn.
-		HealthInsuranceAvgearn healthInsuranceAvgearn = (HealthInsuranceAvgearn) healthInsuranceAvgearnRepository
-				.find(command.getHistoryId(), command.getLevelCode());
+		command.getListHealthInsuranceAvgearn().forEach(dto -> {
+			// Get the healthInsuranceAvgearn.
+			HealthInsuranceAvgearn healthInsuranceAvgearn = (HealthInsuranceAvgearn) healthInsuranceAvgearnRepository
+					.find(dto.getHistoryId(), dto.getLevelCode());
 
-		// Transfer data
-		HealthInsuranceAvgearn updatedHealthInsuranceAvgearn = command.toDomain(healthInsuranceAvgearn.getHistoryId(),
-				healthInsuranceAvgearn.getLevelCode());
+			// Transfer data
+			HealthInsuranceAvgearn updatedHealthInsuranceAvgearn = dto.toDomain(healthInsuranceAvgearn.getHistoryId(),
+					healthInsuranceAvgearn.getLevelCode());
 
-		// Validate
-		healthInsuranceAvgearnService.validateRequiredItem(updatedHealthInsuranceAvgearn);
+			// Validate
+			healthInsuranceAvgearnService.validateRequiredItem(updatedHealthInsuranceAvgearn);
+			// Update to db.
+			healthInsuranceAvgearnRepository.update(updatedHealthInsuranceAvgearn);
 
-		// Update to db.
-		healthInsuranceAvgearnRepository.update(updatedHealthInsuranceAvgearn);
+		});
+
 	}
-
 }

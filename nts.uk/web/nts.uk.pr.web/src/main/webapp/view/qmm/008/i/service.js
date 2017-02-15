@@ -16,8 +16,9 @@ var nts;
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
-                            function updatePensionAvgearn(list) {
-                                return nts.uk.request.ajax(paths.updatePensionAvgearn, list);
+                            function updatePensionAvgearn(listPensionAvgearn) {
+                                var data = { listPensionAvgearn: listPensionAvgearn };
+                                return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
                             }
                             service.updatePensionAvgearn = updatePensionAvgearn;
                             function findPensionAvgearn(id) {

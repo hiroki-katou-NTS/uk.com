@@ -30,7 +30,7 @@ public class PensionAvgearnWs extends WebService {
 
 	@POST
 	@Path("update")
-	public void update(List<UpdatePensionAvgearnCommand> commands) {
-		commands.forEach(command -> updatePensionAvgearnCommandHandler.handle(command));
+	public void update(UpdatePensionAvgearnCommand command) {
+		updatePensionAvgearnCommandHandler.handle(command);
 	}
 }

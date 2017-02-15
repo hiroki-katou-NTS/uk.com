@@ -24,19 +24,19 @@ public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePen
 		// Get command.
 		UpdatePensionAvgearnCommand command = context.getCommand();
 
-		// Get the pensionAvgearn.
-		PensionAvgearn pensionAvgearn = (PensionAvgearn) pensionAvgearnRepository.find(command.getHistoryId(),
-				command.getLevelCode());
+		command.getListPensionAvgearn().forEach(dto -> {
+			// Get the pensionAvgearn.
+			PensionAvgearn pensionAvgearn = (PensionAvgearn) pensionAvgearnRepository.find(dto.getHistoryId(),
+					dto.getLevelCode());
 
-		// Transfer data
-		PensionAvgearn updatedPensionAvgearn = command.toDomain(pensionAvgearn.getHistoryId(),
-				pensionAvgearn.getLevelCode());
+			// Transfer data
+			PensionAvgearn updatedPensionAvgearn = dto.toDomain(pensionAvgearn.getHistoryId(),
+					pensionAvgearn.getLevelCode());
 
-		// Validate
-		pensionAvgearnService.validateRequiredItem(updatedPensionAvgearn);
-
-		// Update to db.
-		pensionAvgearnRepository.update(updatedPensionAvgearn);
+			// Validate
+			pensionAvgearnService.validateRequiredItem(updatedPensionAvgearn);
+			// Update to db.
+			pensionAvgearnRepository.update(updatedPensionAvgearn);
+		});
 	}
-
 }
