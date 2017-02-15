@@ -18,6 +18,7 @@ var nts;
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                                     self.listPensionAvgearn = ko.observableArray([]);
+                                    self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -28,11 +29,39 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
-                                        self.listAvgEarnLevelMasterSetting(data);
-                                        i.service.findPensionAvgearn('a').done(function (zz) {
-                                            self.listPensionAvgearn(zz);
+                                    self.loadAvgEarnLevelMasterSetting().done(function () {
+                                        return self.loadPensionRate().done(function () {
+                                            return self.loadPensionAvgearn().done(function () {
+                                                return dfd.resolve();
+                                            });
                                         });
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    commonService.getAvgEarnLevelMasterSettingList().done(function (res) {
+                                        self.listAvgEarnLevelMasterSetting(res);
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadPensionRate = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    i.service.findPensionRate('id').done(function (res) {
+                                        self.healthInsuranceRateModel().officeCode = res.officeCode;
+                                        self.healthInsuranceRateModel().officeName = res.officeCode;
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadPensionAvgearn = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    i.service.findPensionAvgearn('id').done(function (res) {
+                                        self.listPensionAvgearn(res);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -61,6 +90,12 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            var HealthInsuranceRateModel = (function () {
+                                function HealthInsuranceRateModel() {
+                                }
+                                return HealthInsuranceRateModel;
+                            }());
+                            viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
                         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
                     })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));

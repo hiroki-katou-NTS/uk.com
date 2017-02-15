@@ -5,37 +5,114 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgearnValueDto;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
 @Getter
 @Setter
-public abstract class PensionAvgearnBaseCommand {
+public class PensionAvgearnBaseCommand {
 	/** The version. */
 	private Long version;
 
 	/** The history id. */
-	public String historyId;
+	private String historyId;
 
 	/** The level code. */
-	public Integer levelCode;
+	private Integer levelCode;
 
 	/** The child contribution amount. */
-	public BigDecimal childContributionAmount;
+	private BigDecimal childContributionAmount;
 
 	/** The company fund. */
-	public PensionAvgearnValueDto companyFund;
+	private PensionAvgearnValueDto companyFund;
 
 	/** The company fund exemption. */
-	public PensionAvgearnValueDto companyFundExemption;
+	private PensionAvgearnValueDto companyFundExemption;
 
 	/** The company pension. */
-	public PensionAvgearnValueDto companyPension;
+	private PensionAvgearnValueDto companyPension;
 
 	/** The personal fund. */
-	public PensionAvgearnValueDto personalFund;
+	private PensionAvgearnValueDto personalFund;
 
 	/** The personal fund exemption. */
-	public PensionAvgearnValueDto personalFundExemption;
+	private PensionAvgearnValueDto personalFundExemption;
 
 	/** The personal pension. */
-	public PensionAvgearnValueDto personalPension;
+	private PensionAvgearnValueDto personalPension;
+
+	public PensionAvgearn toDomain(String historyId, Integer levelCode) {
+		PensionAvgearnBaseCommand command = this;
+
+		// Transfer data
+		PensionAvgearn updatedPensionAvgearn = new PensionAvgearn(new PensionAvgearnGetMemento() {
+
+			@Override
+			public Long getVersion() {
+				return command.getVersion();
+			}
+
+			@Override
+			public PensionAvgearnValue getPersonalPension() {
+				return new PensionAvgearnValue(new CommonAmount(command.getPersonalPension().getMaleAmount()),
+						new CommonAmount(command.getPersonalPension().getFemaleAmount()),
+						new CommonAmount(command.getPersonalPension().getUnknownAmount()));
+			}
+
+			@Override
+			public PensionAvgearnValue getPersonalFundExemption() {
+				return new PensionAvgearnValue(new CommonAmount(command.getPersonalFundExemption().getMaleAmount()),
+						new CommonAmount(command.getPersonalFundExemption().getFemaleAmount()),
+						new CommonAmount(command.getPersonalFundExemption().getUnknownAmount()));
+			}
+
+			@Override
+			public PensionAvgearnValue getPersonalFund() {
+				return new PensionAvgearnValue(new CommonAmount(command.getPersonalFund().getMaleAmount()),
+						new CommonAmount(command.getPersonalFund().getFemaleAmount()),
+						new CommonAmount(command.getPersonalFund().getUnknownAmount()));
+			}
+
+			@Override
+			public Integer getLevelCode() {
+				return levelCode;
+			}
+
+			@Override
+			public String getHistoryId() {
+				return historyId;
+			}
+
+			@Override
+			public PensionAvgearnValue getCompanyPension() {
+				return new PensionAvgearnValue(new CommonAmount(command.getCompanyPension().getMaleAmount()),
+						new CommonAmount(command.getCompanyPension().getFemaleAmount()),
+						new CommonAmount(command.getCompanyPension().getUnknownAmount()));
+			}
+
+			@Override
+			public PensionAvgearnValue getCompanyFundExemption() {
+				return new PensionAvgearnValue(new CommonAmount(command.getCompanyFundExemption().getMaleAmount()),
+						new CommonAmount(command.getCompanyFundExemption().getFemaleAmount()),
+						new CommonAmount(command.getCompanyFundExemption().getUnknownAmount()));
+			}
+
+			@Override
+			public PensionAvgearnValue getCompanyFund() {
+				return new PensionAvgearnValue(new CommonAmount(command.getCompanyFund().getMaleAmount()),
+						new CommonAmount(command.getCompanyFund().getFemaleAmount()),
+						new CommonAmount(command.getCompanyFund().getUnknownAmount()));
+			}
+
+			@Override
+			public InsuranceAmount getChildContributionAmount() {
+				return new InsuranceAmount(command.getChildContributionAmount());
+			}
+		});
+
+		return updatedPensionAvgearn;
+	}
 }

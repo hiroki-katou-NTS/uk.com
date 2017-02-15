@@ -27,23 +27,57 @@ module nts.uk.pr.view.qmm008.h {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                commonService.getAvgEarnLevelMasterSettingList().done(data => {
-                    self.listAvgEarnLevelMasterSetting(data);
-                    service.findHealthInsuranceRate('a').done(xx => {
-                        self.healthInsuranceRateModel().officeCode(xx.officeCode);
-                        self.healthInsuranceRateModel().officeName(xx.officeName);
-                        self.rateItems(xx.ratesItem);
-                    });
-                    service.findHealthInsuranceAvgEarn('a').done(zz => {
-                        self.listHealthInsuranceAvgearn(zz);
-                    });
+                self.loadAvgEarnLevelMasterSetting().done(() =>
+                    self.loadHealthInsuranceRate().done(() =>
+                        self.loadHealthInsuranceAvgearn().done(() =>
+                            dfd.resolve())));
+                return dfd.promise();
+            }
+
+            /**
+             * Load AvgEarnLevelMasterSetting list.
+             */
+            private loadAvgEarnLevelMasterSetting(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                commonService.getAvgEarnLevelMasterSettingList().done(res => {
+                    self.listAvgEarnLevelMasterSetting(res);
                     dfd.resolve();
-                    //self.loadListHealthInsuranceAvgEarn().done(() => {
-                    //});
                 });
                 return dfd.promise();
             }
 
+            /**
+             * Load healthInsuranceRate.
+             */
+            private loadHealthInsuranceRate(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findHealthInsuranceRate('id').done(res => {
+                    self.healthInsuranceRateModel().officeCode = res.officeCode;
+                    self.healthInsuranceRateModel().officeName = res.officeName;
+                    self.rateItems(res.ratesItem);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Load HealthInsuranceAvgEarn.
+             */
+            private loadHealthInsuranceAvgearn(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findHealthInsuranceAvgEarn('id').done(res => {
+                    self.listHealthInsuranceAvgearn(res);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Collect data from input.
+             */
             private collectData(): Array<HealthInsuranceAvgEarnDto> {
                 var self = this;
                 var data = [];
@@ -53,46 +87,27 @@ module nts.uk.pr.view.qmm008.h {
                 return data;
             }
 
+            /**
+             * Call service to save healthInsuaranceAvgearn.
+             */
             private save() {
                 var self = this;
                 service.updateHealthInsuranceAvgearn(this.collectData());
             }
 
-            private loadHealthInsuranceAvgEarn(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-                service.findHealthInsuranceAvgEarn('a').done(data => {
-                    data.forEach(item => {
-
-                    });
-                    self.listHealthInsuranceAvgearn(data);
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-
+            /**
+             * Close dialog.
+             */
             private closeDialog() {
                 nts.uk.ui.windows.close();
             }
         }
 
         export class HealthInsuranceRateModel {
-            companyCode: KnockoutObservable<string>;
-            officeCode: KnockoutObservable<string>;
-            officeName: KnockoutObservable<string>;
-            startMonth: KnockoutObservable<string>;
-            endMonth: KnockoutObservable<string>;
-            autoCalculate: KnockoutObservable<boolean>;
-            maxAmount: KnockoutObservable<number>;
-            constructor() {
-                this.companyCode = ko.observable('');
-                this.officeCode = ko.observable('');
-                this.officeName = ko.observable('');
-                this.startMonth = ko.observable('');
-                this.endMonth = ko.observable('');
-                this.autoCalculate = ko.observable(false);
-                this.maxAmount = ko.observable(0);
-            }
+            officeCode: string;
+            officeName: string;
+            startMonth: string;
+            endMonth: string;
         }
         export class HealthInsuranceAvgEarnModel {
             historyId: string;

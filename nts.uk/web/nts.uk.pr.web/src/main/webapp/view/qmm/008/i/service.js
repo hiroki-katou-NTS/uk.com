@@ -13,11 +13,13 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
+                                findPensionRate: "ctx/pr/core/insurance/social/pensionrate/find",
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
-                            function updatePensionAvgearn(list) {
-                                return nts.uk.request.ajax(paths.updatePensionAvgearn, list);
+                            function updatePensionAvgearn(listPensionAvgearn) {
+                                var data = { listPensionAvgearn: listPensionAvgearn };
+                                return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
                             }
                             service.updatePensionAvgearn = updatePensionAvgearn;
                             function findPensionAvgearn(id) {
@@ -33,6 +35,19 @@ var nts;
                                 ;
                             }
                             service.findPensionAvgearn = findPensionAvgearn;
+                            function findPensionRate(id) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findPensionRate + '/' + id)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                                ;
+                            }
+                            service.findPensionRate = findPensionRate;
                             var model;
                             (function (model) {
                                 var PensionAvgearnValue = (function () {
@@ -41,12 +56,6 @@ var nts;
                                     return PensionAvgearnValue;
                                 }());
                                 model.PensionAvgearnValue = PensionAvgearnValue;
-                                var HealthInsuranceAvgEarnDto = (function () {
-                                    function HealthInsuranceAvgEarnDto() {
-                                    }
-                                    return HealthInsuranceAvgEarnDto;
-                                }());
-                                model.HealthInsuranceAvgEarnDto = HealthInsuranceAvgEarnDto;
                             })(model = service.model || (service.model = {}));
                         })(service = i.service || (i.service = {}));
                     })(i = qmm008.i || (qmm008.i = {}));

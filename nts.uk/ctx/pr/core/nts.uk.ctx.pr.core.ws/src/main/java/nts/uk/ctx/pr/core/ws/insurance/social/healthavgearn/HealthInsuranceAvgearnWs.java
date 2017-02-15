@@ -25,8 +25,8 @@ public class HealthInsuranceAvgearnWs extends WebService {
 
 	@POST
 	@Path("update")
-	public void update(List<UpdateHealthInsuranceAvgearnCommand> commands) {
-		commands.forEach(command -> updateHealthInsuranceAvgearnCommandHandler.handle(command));
+	public void update(UpdateHealthInsuranceAvgearnCommand command) {
+		updateHealthInsuranceAvgearnCommandHandler.handle(command);
 	}
 
 	@POST
