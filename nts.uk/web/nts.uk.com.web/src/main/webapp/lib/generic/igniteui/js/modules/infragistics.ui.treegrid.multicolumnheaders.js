@@ -1,6 +1,5 @@
-﻿
-/*!@license
-* Infragistics.Web.ClientUI Tree Grid 16.1.20161.2145
+﻿/*!@license
+* Infragistics.Web.ClientUI Tree Grid 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -17,38 +16,4 @@
 *	infragistics.ui.grid.framework.js
 *	infragistics.ui.grid.multicolumnheaders.js
 */
-
-/*global jQuery */
-if (typeof jQuery !== "function") {
-	throw new Error("jQuery is undefined");
-}
-(function ($) {
-	/*
-		igTreeGridMultiColumnHeaders widget. The widget is pluggable to the element where the treegrid is instantiated and the actual igTreeGrid object doesn't know about this
-		the filtering widget just attaches its functionality to the treegrid
-		igTreeGridMultiColumnHeaders is extending igGrid MultiColumnHeaders
-	*/
-	$.widget("ui.igTreeGridMultiColumnHeaders", $.ui.igGridMultiColumnHeaders, {
-		css: {},
-		options: {
-		},
-		_create: function () {
-			this.element.data(
-				$.ui.igGridMultiColumnHeaders.prototype.widgetName,
-				this.element.data($.ui.igTreeGridMultiColumnHeaders.prototype.widgetName
-			));
-			$.ui.igGridMultiColumnHeaders.prototype._create.apply(this, arguments);
-		},
-		destroy: function () {
-			$.ui.igGridMultiColumnHeaders.prototype.destroy.apply(this, arguments);
-			this.element.removeData($.ui.igGridMultiColumnHeaders.prototype.widgetName);
-		},
-		_injectGrid: function () {
-			$.ui.igGridMultiColumnHeaders.prototype._injectGrid.apply(this, arguments);
-		}
-	});
-	$.extend($.ui.igTreeGridMultiColumnHeaders, { version: "16.1.20161.2145" });
-}(jQuery));
-
-
-
+(function(factory){if(typeof define==="function"&&define.amd){define(["jquery","jquery-ui","./infragistics.util","./infragistics.ui.treegrid","./infragistics.ui.grid.mullticolumnheaders"],factory)}else{factory(jQuery)}})(function($){$.widget("ui.igTreeGridMultiColumnHeaders",$.ui.igGridMultiColumnHeaders,{css:{},options:{},_create:function(){this.element.data($.ui.igGridMultiColumnHeaders.prototype.widgetName,this.element.data($.ui.igTreeGridMultiColumnHeaders.prototype.widgetName));$.ui.igGridMultiColumnHeaders.prototype._create.apply(this,arguments)},destroy:function(){$.ui.igGridMultiColumnHeaders.prototype.destroy.apply(this,arguments);this.element.removeData($.ui.igGridMultiColumnHeaders.prototype.widgetName)},_injectGrid:function(){$.ui.igGridMultiColumnHeaders.prototype._injectGrid.apply(this,arguments)}});$.extend($.ui.igTreeGridMultiColumnHeaders,{version:"16.2.20162.2040"});return $.ui.igTreeGridMultiColumnHeaders});

@@ -51,7 +51,8 @@ public interface PaymentDataRepository {
 	 * @param itemCode
 	 * @return
 	 */
-	boolean isExistDetail(String companyCode, String personId, int processingNo, int baseYM, int categoryAtr, String itemCode, int payBonusAtr, int sparePayAtr);
+	boolean isExistDetail(String companyCode, String personId, int processingNo, int baseYM, int categoryAtr,
+			String itemCode, int payBonusAtr, int sparePayAtr);
 
 	/**
 	 * import new data payment detail
@@ -90,5 +91,23 @@ public interface PaymentDataRepository {
 	 * @param detailItem
 	 */
 	void updateDetail(Payment payment, DetailItem detailItem);
+
+	/**
+	 * Remove payment details
+	 * 
+	 * @param personId
+	 * @param processingYM
+	 * @param companyCode
+	 */
+	void removeDetails(String personId, Integer processingYM, String companyCode);
+
+	/**
+	 * Remove payment header
+	 * 
+	 * @param personId
+	 * @param processingYM
+	 * @param companyCode
+	 */
+	void removeHeader(String personId, Integer processingYM, String companyCode);
 
 }

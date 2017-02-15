@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Splitter localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Splitter localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 

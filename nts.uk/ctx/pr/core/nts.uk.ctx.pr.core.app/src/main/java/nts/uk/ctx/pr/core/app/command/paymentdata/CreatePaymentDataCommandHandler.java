@@ -26,6 +26,8 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategory;
+import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetailRepository;
 import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
@@ -40,7 +42,6 @@ import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.core.dom.paymentdata.PersonName;
-import nts.uk.ctx.pr.core.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.SpecificationCode;
 import nts.uk.ctx.pr.core.dom.paymentdata.SpecificationName;
@@ -60,7 +61,6 @@ import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentCalculationBasicInformationRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDateMasterRepository;
-import nts.uk.ctx.pr.core.dom.paymentdata.residence.ResidenceCode;
 import nts.uk.ctx.pr.core.dom.paymentdata.residence.ResidenceName;
 import nts.uk.ctx.pr.core.dom.paymentdata.service.PaymentDataCheckService;
 import nts.uk.ctx.pr.core.dom.paymentdata.service.PaymentDetailParam;
@@ -74,6 +74,8 @@ import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWageRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.primitive.PersonId;
+import nts.uk.shr.com.primitive.sample.ProcessingNo;
+import nts.uk.shr.com.primitive.sample.ResidenceCode;
 
 /**
  * Command Handler: add payment data.
@@ -110,6 +112,8 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	@Inject
 	private LayoutMasterLineRepository layoutMasterLineRepo;
 	@Inject
+	private LayoutMasterCategoryRepository layoutMasterCtgRepo;
+	@Inject
 	private ItemMasterRepository itemMasterRepo;
 	@Inject
 	private PersonalWageRepository personalWageRepo;
@@ -128,7 +132,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				
 		// get basic calculate
 		PaymentCalculationBasicInformation payCalBasicInfo = payCalBasicInfoRepo.find(loginInfo.companyCode())
-				.orElseThrow(() -> new RuntimeException("PaymentCalculationBasicInformation not found: personId=" + command.getPersonId()));
+				.orElseThrow(() -> new BusinessException("エラーでは？")); //PaymentCalculationBasicInformation not found
 		
 		// get pay day
 		PaymentDateMaster payDay = payDateMasterRepo.find(loginInfo.companyCode(), PayBonusAtr.SALARY.value,
@@ -171,9 +175,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		//
 		PersonalEmploymentContract employmentContract = personalEmploymentContractRepo.findActive(
 				loginInfo.companyCode(), personId, payDay.getStandardDate())
-					.orElseThrow(() -> new RuntimeException("PersonalEmploymentContract not found"));
+					.orElseThrow(() -> new BusinessException("エラーでは？")); // PersonalEmploymentContract not found
 		HolidayPaid holiday = holidayPaidRepo.find(loginInfo.companyCode(), personId)
-					.orElseThrow(() -> new RuntimeException("HolidayPaid not found")); 
+					.orElseThrow(() -> new BusinessException("エラーでは？")); // HolidayPaid not found
 		
 		// get allot personal setting
 		PersonalAllotSetting personalAllotSetting = getPersonalAllotSetting(loginInfo.companyCode(), personId,
@@ -192,6 +196,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// get layout detail master
 		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(loginInfo.companyCode(),
 						stmtCode, layoutMaster.getStartYM().v());
+		
+		// get lay master category
+		List<LayoutMasterCategory> categoryList = layoutMasterCtgRepo.getCategories(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
 		
 		// get layout master line
 		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
@@ -219,10 +226,10 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		// convert to domain
 		List<DetailItem> detailPaymentList = Helper.createDetailsOfPayment(payDetail, layoutMasterDetailList);
 		List<DetailItem> detailDeductionList = Helper.createDetailsOfDeduction(payDetail, layoutMasterDetailList);
-		List<PrintPositionCategory> positionCategoryList = Helper.createPositionCategory(payDetail, lineList);
+		List<PrintPositionCategory> positionCategoryList = Helper.createPositionCategory(categoryList, lineList);
 		List<DetailItem> detailPersonTimeList = payDetail.get(CategoryAtr.PERSONAL_TIME);
 		List<DetailItem> detailArticleList = payDetail.get(CategoryAtr.ARTICLES);
-				
+		
 		Payment paymentHead = this.toDomain(
 				loginInfo.companyCode(), personId, personName, processingNo, processingYearMonth, stmtCode, layoutMaster.getStmtName().v(),
 				detailPaymentList, detailDeductionList, detailPersonTimeList, detailArticleList, positionCategoryList, payDay);
@@ -313,7 +320,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		if (!personalAllotSettingOp.isPresent()) {
 			// get allot company setting
 			CompanyAllotSetting companyAllotSetting = companyAllotSettingRepo.find(companyCode)
-					.orElseThrow(() -> new RuntimeException("Company Allot Setting Not Found"));
+					.orElseThrow(() -> new RuntimeException("エラーでは？")); // Company Allot Setting Not Found
 
 			result = new PersonalAllotSetting(new CompanyCode(companyCode), new PersonId(personId),
 					companyAllotSetting.getStartDate(), companyAllotSetting.getEndDate(),
@@ -346,8 +353,9 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		
 		val detailItem = DetailItem.createDataDetailItem(itemMaster.getItemCode(), value, categoryAtr);
 		detailItem.additionalInfo(CorrectFlag.NO_MODIFY, itemMaster.getSocialInsuranceAtr().value, itemMaster.getLaborInsuranceAtr().value, itemMaster.getDeductAttribute());
-		detailItem.additionalInfo(itemMaster.getLimitMoney().v(), itemMaster.getFixedPaidAtr().value, itemMaster.getAvgPaidAtr().value, itemMaster.getTaxAtr().value);
+		detailItem.additionalInfo(itemMaster.getLimitMoney().v(), itemMaster.getFixedPaidAtr().value, itemMaster.getAvgPaidAtr().value, itemMaster.getItemAtr().value);
 		detailItem.additionalInfo(linePosition, itemPositionColumn);
+		detailItem.additionalInfo(itemMaster.getTaxAtr());
 		return detailItem;
 	}
 	

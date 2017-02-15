@@ -7,6 +7,7 @@ import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.DeductionAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.ColumnPosition;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.DetailItemPosition;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.LinePosition;
@@ -70,6 +71,12 @@ public class DetailItem extends DomainObject {
 	@Getter
 	private int fixPayAtr;
 
+	/**
+	 * 課税区分
+	 */
+	@Getter
+	Integer taxAtr;
+	
 	@Getter
 	private int limitAmount;
 
@@ -81,6 +88,8 @@ public class DetailItem extends DomainObject {
 
 	@Getter
 	private double commuteAllowFraction;
+	
+	
 
 	/**
 	 * Constructor
@@ -176,6 +185,17 @@ public class DetailItem extends DomainObject {
 		this.commuteAllowMonth = commuteAllowMonth;
 	}
 
+	/**
+	 * Add info: taxtAtr
+	 * 
+	 * @param taxAtr
+	 * @return
+	 */
+	public void additionalInfo(TaxAtr taxAtr) {
+		this.taxAtr = taxAtr.value;
+	}
+
+	
 	/**
 	 * add comute data
 	 * 

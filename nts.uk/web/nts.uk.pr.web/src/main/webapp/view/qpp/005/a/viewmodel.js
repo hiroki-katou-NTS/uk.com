@@ -21,6 +21,7 @@ var nts;
                                     self.categories = ko.observable(new CategoriesList());
                                     self.option = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.employee = ko.observable();
+                                    self.isCreate = ko.observable(true);
                                     var employeeMocks = [
                                         { personId: 'A00000000000000000000000000000000001', code: 'A000000000001', name: '日通　社員1' },
                                         { personId: 'A00000000000000000000000000000000002', code: 'A000000000002', name: '日通　社員2' },
@@ -50,6 +51,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     qpp005.a.service.getPaymentData(self.employee().personId, self.employee().code).done(function (res) {
+                                        self.isCreate(res.paymentHeader.created);
                                         ko.mapping.fromJS(res, PaymentDataResultViewModel, self.paymentDataResult());
                                         self.paymentDataResult().__ko_mapping__ = undefined;
                                         var categoryPayment = self.paymentDataResult().categories()[0];
@@ -90,6 +92,19 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                 };
+                                /** Event click: 削除*/
+                                ScreenModel.prototype.remove = function () {
+                                    var self = this;
+                                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
+                                        qpp005.a.service.remove(self.employee().personId, self.paymentDataResult().paymentHeader.processingYM()).done(function (res) {
+                                            self.startPage().done(function () {
+                                                a.utils.gridSetup(self.switchButton().selectedRuleCode());
+                                            });
+                                        });
+                                    }).ifCancel(function () {
+                                        // nothing
+                                    });
+                                };
                                 ScreenModel.prototype.validator = function () {
                                     var self = this;
                                     var data = self.paymentDataResult().categories();
@@ -114,10 +129,13 @@ var nts;
                                 ScreenModel.prototype.openEmployeeList = function () {
                                     var _this = this;
                                     var self = this;
+                                    nts.uk.ui.windows.setShared("semployee", ko.toJS(self.employee()));
                                     nts.uk.ui.windows.sub.modal('/view/qpp/005/c/index.xhtml', { title: '社員選択' }).onClosed(function () {
                                         var employee = nts.uk.ui.windows.getShared('employee');
-                                        self.employee(employee);
-                                        self.startPage();
+                                        if (employee) {
+                                            self.employee(employee);
+                                            self.startPage();
+                                        }
                                         return _this;
                                     });
                                 };
@@ -151,14 +169,8 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openColorSettingGuide = function () {
-                                    var _this = this;
                                     var self = this;
-                                    nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(function () {
-                                        var employee = nts.uk.ui.windows.getShared('employee');
-                                        self.employee(employee);
-                                        self.startPage();
-                                        return _this;
-                                    });
+                                    nts.uk.ui.windows.sub.modeless('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' });
                                 };
                                 ScreenModel.prototype.openGridSetting = function () {
                                     var self = this;
@@ -174,12 +186,14 @@ var nts;
                                         var taxCommuteEditor = nts.uk.ui.windows.getShared('taxCommuteEditor');
                                         var oneMonthCommuteEditor = nts.uk.ui.windows.getShared('oneMonthCommuteEditor');
                                         var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
-                                        var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
-                                        qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor);
-                                        value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
-                                        value.commuteAllowTaxImpose = taxCommuteEditor;
-                                        value.commuteAllowMonth = oneMonthCommuteEditor;
-                                        value.commuteAllowFraction = oneMonthRemainderEditor;
+                                        if (totalCommuteEditor && !isNaN(totalCommuteEditor)) {
+                                            var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
+                                            qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor, value.sumScopeAtr());
+                                            value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
+                                            value.commuteAllowTaxImpose = taxCommuteEditor;
+                                            value.commuteAllowMonth = oneMonthCommuteEditor;
+                                            value.commuteAllowFraction = oneMonthRemainderEditor;
+                                        }
                                         //                    self.startPage();
                                         return self;
                                     });
@@ -195,25 +209,27 @@ var nts;
                                     var detailsPayment = _.flatMap(source.lines(), function (l) { return l.details(); });
                                     var totalPayment = _.last(detailsPayment);
                                     var inputtingsDetailsPayment = _.reject(detailsPayment, totalPayment);
-                                    var updateTotalPayment = function () {
-                                        var total = _(inputtingsDetailsPayment).map(function (d) { return Number(uk.util.orDefault(d.value(), 0)); }).sum();
-                                        totalPayment.value(total);
-                                        var detailsTranfer = _.flatMap(tranfer.lines(), function (l) { return l.details(); });
-                                        var totalValueTranfer = _.last(detailsTranfer).value();
-                                        if (destinate !== undefined) {
-                                            var detailsDestinate = _.flatMap(destinate.lines(), function (l) { return l.details(); });
-                                            if (isPayment) {
-                                                _.last(detailsDestinate).value(total - totalValueTranfer);
-                                            }
-                                            else {
-                                                _.last(detailsDestinate).value(totalValueTranfer - total);
+                                    var updateTotalPayment = function (sumScopeAtr) {
+                                        if (sumScopeAtr === 1) {
+                                            var total = _(inputtingsDetailsPayment).filter(function (d) { return d.sumScopeAtr() === 1; }).map(function (d) { return Number(uk.util.orDefault(d.value(), 0)); }).sum();
+                                            if (isNaN(total))
+                                                return false;
+                                            totalPayment.value(total);
+                                            var detailsTranfer = _.flatMap(tranfer.lines(), function (l) { return l.details(); });
+                                            var totalValueTranfer = _.last(detailsTranfer).value();
+                                            if (destinate !== undefined) {
+                                                var detailsDestinate = _.flatMap(destinate.lines(), function (l) { return l.details(); });
+                                                if (isPayment) {
+                                                    _.last(detailsDestinate).value(total - totalValueTranfer);
+                                                }
+                                                else {
+                                                    _.last(detailsDestinate).value(totalValueTranfer - total);
+                                                }
                                             }
                                         }
                                     };
                                     inputtingsDetailsPayment.forEach(function (detail) {
-                                        if (detail.sumScopeAtr() === 1) {
-                                            detail.value.subscribe(function () { return updateTotalPayment(); });
-                                        }
+                                        detail.value.subscribe(function () { return updateTotalPayment(detail.sumScopeAtr()); });
                                     });
                                 };
                                 return ScreenModel;
@@ -227,10 +243,12 @@ var nts;
                                         _.forEach(line.details(), function (item) {
                                             item.value.subscribe(function (val) {
                                                 var nId = 'ct' + item.categoryAtr() + '_' + (item.linePosition() - 1) + '_' + (item.columnPosition() - 1);
-                                                var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value());
-                                                var isInputItem = item.itemType() === 0 || item.itemType() === 1;
-                                                if (isCorrectFlag && isInputItem)
-                                                    item.correctFlag(1);
+                                                if (!isNaN(item.value())) {
+                                                    var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value(), item.sumScopeAtr());
+                                                    var isInputItem = item.itemType() === 0 || item.itemType() === 1;
+                                                    if (isCorrectFlag && isInputItem)
+                                                        item.correctFlag(1);
+                                                }
                                             });
                                         });
                                     });

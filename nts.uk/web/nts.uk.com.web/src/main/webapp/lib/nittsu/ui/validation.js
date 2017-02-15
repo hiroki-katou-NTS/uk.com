@@ -95,7 +95,7 @@ var nts;
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
                             isDecimalNumber = (this.option.decimallength > 0);
-                            inputText = uk.text.replaceAll(inputText, this.option.groupseperator, '');
+                            inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
                         if (!uk.ntsNumber.isNumber(inputText, isDecimalNumber)) {
                             result.fail('invalid number');
