@@ -100,3 +100,8 @@ td.tab-contents-right {
 	width: 50px;
 	margin-left: 4px;
 }
+.delete-button {
+	margin-left: 7px;
+	width: 20px !important;
+	height: 20px !important;;
+}

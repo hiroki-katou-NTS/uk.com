@@ -331,12 +331,12 @@ module qet001.b.viewmodel {
         masterItemSelected: KnockoutObservable<string>;
         outputItemsSelected: KnockoutObservable<string>;
         outputItemColumns: KnockoutObservableArray<any>;
+        outputItemCache: WageLedgerSettingItem[];
 
         constructor(aggregateItems: service.Item[], masterItems: service.Item[],
                 categorySetting?: WageledgerCategorySetting) {
             this.category = categorySetting.category;
             this.paymentType = categorySetting.paymentType;
-            this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
 
             // exclude item contain in setting.
             var settingItemCode: string[] = [];
@@ -345,6 +345,7 @@ module qet001.b.viewmodel {
                     return item.code;
                 });
             }
+            this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
             var aggregateItemsExcluded = aggregateItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
             var masterItemsExcluded = masterItems.filter((item) => settingItemCode.indexOf(item.code) == -1);
             this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
@@ -361,9 +362,61 @@ module qet001.b.viewmodel {
                             return '';
                         }
                     },
-                    {headerText: 'コード', prop: 'code', width: 60},
-                    {headerText: '名称', prop: 'name', width: 100},
+                    {headerText: 'コード', prop: 'code', width: 50},
+                    {headerText: '名称', prop: 'name', width: 50},
+                    {headerText: '削除', prop: 'code', width: 50,
+                        formatter: function(data: string) {
+                            return '<button class="delete-button icon icon-close" id="' + data + '" >'
+                                + '</button>';
+                        }
+                    },
                 ]);
+            var self = this;
+            self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
+            self.outputItems.subscribe(function(items) {
+                self.outputItemCache = items;
+            });
+            // Customs handle.
+            (<any>ko.bindingHandlers).rended = {
+              init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {},
+              update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {
+                  var code = valueAccessor();
+                  viewModel.outputItems().forEach(item => {
+                      $('#' + item.code).on('click', function() {
+                          code(item.code);
+                          viewModel.remove();
+                          code(null);
+                      })
+                  });
+              }
+            };
+        }
+        
+        public remove() {
+            var self = this;
+            var selectedItem = self.outputItems().filter((item) => {
+                return item.code == self.outputItemsSelected();
+            })[0];
+            self.outputItems.remove(selectedItem);
+            
+            // Return item.
+            if (selectedItem.isAggregateItem) {
+                // Return to Aggregate items table.
+                self.aggregateItemsList.push({
+                    code: selectedItem.code,
+                    name: selectedItem.name,
+                    paymentType: self.paymentType,
+                    category: self.category,
+                });
+                return;
+            }
+            // Return to master items table.
+            self.masterItemList.push({
+                code: selectedItem.code,
+                name: selectedItem.name,
+                paymentType: self.paymentType,
+                category: self.category,
+            });
         }
         
         /**
@@ -386,7 +439,7 @@ module qet001.b.viewmodel {
             self.outputItems.push({
                 code: selectedItem.code,
                 name: selectedItem.name,
-                isAggregateItem: true,
+                isAggregateItem: false,
             });
             self.masterItemSelected(null);
         }
@@ -408,7 +461,7 @@ module qet001.b.viewmodel {
             self.outputItems.push({
                 code: selectedItem.code,
                 name: selectedItem.name,
-                isAggregateItem: false,
+                isAggregateItem: true
             });
             self.aggregateItemSelected(null);
         }
