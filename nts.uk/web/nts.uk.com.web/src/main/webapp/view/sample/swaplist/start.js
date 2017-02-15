@@ -4,7 +4,7 @@ __viewContext.ready(function () {
             this.itemsSwap = ko.observableArray([]);
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel("test" + i, '基本給', "description"));
+                array.push(new ItemModel(i, '基本給', "description"));
             }
             this.itemsSwap(array);
             this.columns = ko.observableArray([
@@ -24,6 +24,7 @@ __viewContext.ready(function () {
             this.code = code;
             this.name = name;
             this.description = description;
+            this.deletable = code % 3 === 0;
         }
         return ItemModel;
     }());
