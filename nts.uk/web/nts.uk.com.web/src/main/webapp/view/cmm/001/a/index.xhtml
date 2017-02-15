@@ -14,6 +14,18 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.company.CompanyCode
 					nts.uk.ctx.basic.dom.company.CompanyName
+					nts.uk.ctx.basic.dom.company.CompanyNameAbb
+					nts.uk.ctx.basic.dom.company.CompanyNameKana
+					nts.uk.ctx.basic.dom.company.FaxNo
+					nts.uk.ctx.basic.dom.company.TelephoneNo
+					nts.uk.ctx.basic.dom.company.TermBeginMon
+					nts.uk.ctx.basic.dom.company.CorporateMyNumber
+					nts.uk.ctx.basic.dom.company.PresidentName
+					nts.uk.ctx.basic.dom.company.PresidentJobTitle
+					nts.uk.ctx.basic.dom.company.address.Address1
+					nts.uk.ctx.basic.dom.company.address.Address2
+					nts.uk.ctx.basic.dom.company.address.AddressKana1
+					nts.uk.ctx.basic.dom.company.address.AddressKana2
    				</com:ValidatorScript>
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -75,9 +87,6 @@
 							data-bind="ntsFormLabel: { required: true }">
 							<label id="A_LBL_003">会社コード</label>
 						</div>
-						<!-- 						<input id="A_INP_002"
-							data-bind="enable: true, value:currentCompanyDto().companyCode"
-							class="input-table" /> -->
 						<div data-bind="with: A_INP_002">
 							<input id="A_INP_002" class="save-error" data-name="CompanyCode"
 								data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
@@ -104,14 +113,6 @@
 									</th>
 
 									<th colspan="2" class="th-col2">
-										<!-- <input id="A_INP_003"
-										type="text" data-bind="value: currentCompanyDto().companyName"
-										class="input-table" /></th> -->
-		<!-- 								<div data-bind="with: A_INP_003">
-											<input id="A_INP_003" class="save-error"
-												data-name="CompanyName"
-												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
-										</div> -->
 										<div data-bind="with: A_INP_003">
 											<input id="A_INP_003" class="save-error"
 												data-name="CompanyName"
@@ -126,10 +127,13 @@
 										</div>
 									</th>
 
-									<th colspan="2" class="th-col2"><input id="A_INP_004"
-										type="text"
-										data-bind="value:  currentCompanyDto().companyNameKana"
-										class="input-table" style="margin-bottom: 10px;" /></th>
+									<th colspan="2" class="th-col2">
+										<div data-bind="with: A_INP_004">
+											<input id="A_INP_004" class="save-error"
+												data-name="CompanyNameAbb"
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+										</div>
+									</th>
 								</tr>
 								<!--  3  -->
 
@@ -140,10 +144,18 @@
 										</div>
 									</th>
 
-									<th colspan="2" class="th-col2"><input id="A_INP_005"
+									<th colspan="2" class="th-col2">
+										<!-- <input id="A_INP_005"
 										type="text"
 										data-bind="value: currentCompanyDto().companyNameAbb"
-										class="input-table" style="margin-bottom: 10px;" /></th>
+										class="input-table" style="margin-bottom: 10px;" /> -->
+										<div data-bind="with: A_INP_005">
+											<input id="A_INP_005" class="save-error"
+												data-name="CompanyNameKana"
+												data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" />
+										</div>
+
+									</th>
 								</tr>
 
 							</tbody>

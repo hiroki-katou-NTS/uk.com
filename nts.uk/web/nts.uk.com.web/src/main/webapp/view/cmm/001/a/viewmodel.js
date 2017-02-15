@@ -11,7 +11,13 @@ var cmm001;
                 var node;
                 self.init();
                 self.A_INP_002 = ko.observable(new TextEditor(self.currentCode, 'CompanyCode', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.A_INP_003 = ko.observable(new TextEditor("hehhehe", 'CompanyName', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+                //if(self.currentCode)
+                self.txt003 = ko.observable("");
+                self.text004 = ko.observable("");
+                self.text005 = ko.observable("");
+                self.A_INP_003 = ko.observable(new TextEditor(self.txt003, 'CompanyName', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+                self.A_INP_004 = ko.observable(new TextEditor(self.text004, 'CompanyNameAbb', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+                self.A_INP_005 = ko.observable(new TextEditor(self.text005, 'CompanyNameKana', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
                 self.currentCode.subscribe(function (newValue) {
                     var dfd = $.Deferred();
                     cmm001.a.service.getAllCompanys().done(function (companies) {
@@ -49,7 +55,6 @@ var cmm001;
                         }
                     }
                     else {
-                        // console.log(self.item1s());
                         self.items([]);
                         self.items(self.item1s());
                         self.currentCode(self.items()[0].code);
@@ -103,6 +108,9 @@ var cmm001;
                     if (obj.companyCode.toString() == newValue) {
                         node = obj;
                         self.currentCompanyDto(node);
+                        self.txt003(obj.companyName);
+                        self.text004(obj.companyNameKana);
+                        self.text005(obj.companyNameAbb);
                     }
                 });
                 return node;
@@ -113,7 +121,6 @@ var cmm001;
                 self.currentCode({});
                 // self.currentNode(new Company("", "", ""));
                 self.currentCompanyDto({});
-                //self.currentCompanyDto({});
             };
             ScreenModel.prototype.init = function () {
                 var self = this;
@@ -124,7 +131,7 @@ var cmm001;
                     { headerText: '名称', prop: 'name', width: 200 },
                     { headerText: '廃止', prop: 'description', width: 50, hidden: false }
                 ]);
-                self.currentCode = ko.observable("0001");
+                self.currentCode = ko.observable("");
                 self.currentCodeList = ko.observableArray(null);
                 //tabpanel
                 self.tabs = ko.observableArray([

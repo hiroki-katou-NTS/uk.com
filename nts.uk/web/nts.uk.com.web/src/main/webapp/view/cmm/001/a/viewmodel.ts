@@ -34,17 +34,31 @@ module cmm001.a {
 
         // texteditor
         A_INP_002: any;
+        txt002: any;
         A_INP_003: any;
+        txt003: any;
         A_INP_004: any;
+        text004: any;
         A_INP_005: any;
+        text005:any;
         constructor() {
             let self = this;
             let node: Company;
             self.init();
-            self.A_INP_002 =ko.observable(new TextEditor(self.currentCode,'CompanyCode',
-             ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-            self.A_INP_003 = ko.observable(new TextEditor("hehhehe",'CompanyName',
-             ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+            self.A_INP_002 = ko.observable(new TextEditor(self.currentCode, 'CompanyCode',
+                ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+            //if(self.currentCode)
+
+            self.txt003 = ko.observable("");
+            self.text004 = ko.observable("");
+            self.text005 = ko.observable("");
+
+            self.A_INP_003 = ko.observable(new TextEditor(self.txt003, 'CompanyName',
+                ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+            self.A_INP_004 = ko.observable(new TextEditor(self.text004, 'CompanyNameAbb',
+                ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
+            self.A_INP_005 = ko.observable(new TextEditor(self.text005, 'CompanyNameKana',
+                ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
             self.currentCode.subscribe(function(newValue) {
                 let dfd = $.Deferred<any>();
                 cmm001.a.service.getAllCompanys().done(function(companies) {
@@ -87,7 +101,6 @@ module cmm001.a {
 
 
                 } else {
-                    // console.log(self.item1s());
                     self.items([]);
                     self.items(self.item1s());
                     self.currentCode(self.items()[0].code);
@@ -152,6 +165,9 @@ module cmm001.a {
                 if (obj.companyCode.toString() == newValue) {
                     node = obj;
                     self.currentCompanyDto(node);
+                    self.txt003(obj.companyName);
+                    self.text004(obj.companyNameKana);
+                    self.text005(obj.companyNameAbb);
                 }
             });
             return node;
@@ -162,7 +178,6 @@ module cmm001.a {
             self.currentCode({});
             // self.currentNode(new Company("", "", ""));
             self.currentCompanyDto({});
-            //self.currentCompanyDto({});
 
         }
         init(): void {
@@ -176,7 +191,7 @@ module cmm001.a {
             ]);
 
 
-            self.currentCode = ko.observable("0001");
+            self.currentCode = ko.observable("");
             self.currentCodeList = ko.observableArray(null);
             //tabpanel
             self.tabs = ko.observableArray([
@@ -337,7 +352,7 @@ module cmm001.a {
         option: string;
         enable: boolean;
         readonly: boolean;
-        constructor(value: string, constraint: string, option: string, enable: boolean, readonly: boolean){
+        constructor(value: string, constraint: string, option: string, enable: boolean, readonly: boolean) {
             this.value = value;
             this.constraint = constraint;
             this.option = option;
