@@ -53,7 +53,7 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	 * UnitPriceHistoryRepository#remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(String id, Long version) {
+	public void remove(String id) {
 		// TODO Auto-generated method stub
 
 	}

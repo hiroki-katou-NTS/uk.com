@@ -30,8 +30,7 @@ public class HistoryAccidentInsuranceRateF‌inder {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode
-	 *            the company code
+	 * @param companyCode the company code
 	 * @return the list
 	 */
 	public List<HistoryAccidentInsuranceRateDto> findAll(String companyCode) {
@@ -46,8 +45,7 @@ public class HistoryAccidentInsuranceRateF‌inder {
 	/**
 	 * Find.
 	 *
-	 * @param historyAccidentInsuranceRateFindInDto
-	 *            the history accident insurance rate find in dto
+	 * @param historyAccidentInsuranceRateFindInDto the history accident insurance rate find in dto
 	 * @return the history accident insurance rate dto
 	 */
 	public HistoryAccidentInsuranceRateDto find(

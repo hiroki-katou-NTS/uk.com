@@ -28,9 +28,6 @@ public class UnemployeeInsuranceRateDto implements UnemployeeInsuranceRateSetMem
 	/** The rate items. */
 	private List<UnemployeeInsuranceRateItemDto> rateItems;
 
-	/** The version. */
-	private long version;
-
 	@Override
 	public void setHistoryId(String historyId) {
 		if (this.historyInsurance == null)
@@ -61,12 +58,4 @@ public class UnemployeeInsuranceRateDto implements UnemployeeInsuranceRateSetMem
 			this.rateItems.add(dto);
 		}
 	}
-
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-		this.version = version;
-	}
-
-
 }

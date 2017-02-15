@@ -1,16 +1,20 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
+/**
+ * The Class PensionAvgearnValueDto.
+ */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class PensionAvgearnValueDto {
+
 	/** The male amount. */
 	private BigDecimal maleAmount;
 
@@ -20,8 +24,30 @@ public class PensionAvgearnValueDto {
 	/** The unknown amount. */
 	private BigDecimal unknownAmount;
 
+	/**
+	 * Instantiates a new pension avgearn value dto.
+	 *
+	 * @param maleAmount the male amount
+	 * @param femaleAmount the female amount
+	 * @param unknownAmount the unknown amount
+	 */
+	public PensionAvgearnValueDto(BigDecimal maleAmount, BigDecimal femaleAmount, BigDecimal unknownAmount) {
+		super();
+		this.maleAmount = maleAmount;
+		this.femaleAmount = femaleAmount;
+		this.unknownAmount = unknownAmount;
+	}
+	
+	/**
+	 * From domain.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the pension avgearn value dto
+	 */
 	public static PensionAvgearnValueDto fromDomain(PensionAvgearnValue domain) {
 		return new PensionAvgearnValueDto(domain.getMaleAmount().v(), domain.getFemaleAmount().v(),
 				domain.getUnknownAmount().v());
 	}
+	
 }

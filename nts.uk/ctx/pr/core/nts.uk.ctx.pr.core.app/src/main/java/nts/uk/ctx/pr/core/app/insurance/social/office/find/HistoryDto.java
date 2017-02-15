@@ -1,9 +1,17 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
 import lombok.Data;
 
+/**
+ * Instantiates a new history dto.
+ */
 @Data
 public class HistoryDto {
+	
 	/** The company code. */
 	private String companyCode;
 	

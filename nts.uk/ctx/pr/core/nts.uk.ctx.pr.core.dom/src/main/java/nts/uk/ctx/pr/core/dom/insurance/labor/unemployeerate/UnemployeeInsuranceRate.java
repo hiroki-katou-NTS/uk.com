@@ -8,7 +8,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
  * The Class UnemployeeInsuranceRate.
  */
 @Getter
-public class UnemployeeInsuranceRate extends AggregateRoot {
+public class UnemployeeInsuranceRate extends DomainObject {
 
 	/** The history id. */
 	// historyId
@@ -45,7 +45,6 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 		this.historyId = memento.getHistoryId();
 		this.applyRange = memento.getApplyRange();
 		this.rateItems = memento.getRateItems();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -59,6 +58,5 @@ public class UnemployeeInsuranceRate extends AggregateRoot {
 		memento.setHistoryId(this.historyId);
 		memento.setApplyRange(this.applyRange);
 		memento.setRateItems(this.rateItems);
-		memento.setVersion(this.getVersion());
 	}
 }

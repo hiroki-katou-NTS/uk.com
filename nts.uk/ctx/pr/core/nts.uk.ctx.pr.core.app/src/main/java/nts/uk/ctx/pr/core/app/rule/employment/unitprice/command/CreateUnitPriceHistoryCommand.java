@@ -19,6 +19,9 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryGetMemen
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * The Class CreateUnitPriceHistoryCommand.
+ */
 @Getter
 @Setter
 public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
@@ -26,12 +29,7 @@ public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param historyId
-	 *            the history id
-	 * @param unitPriceCode
-	 *            the unit price code
+	 * @param companyCode the company code
 	 * @return the unit price history
 	 */
 	public UnitPriceHistory toDomain(CompanyCode companyCode) {
@@ -39,10 +37,6 @@ public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
 		// Transfer data
 		UnitPriceHistory unitPriceHistory = new UnitPriceHistory(new UnitPriceHistoryGetMemento() {
-			@Override
-			public Long getVersion() {
-				return 0L;
-			}
 
 			@Override
 			public UnitPriceName getUnitPriceName() {

@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 import java.util.Set;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
  * The Class AccidentInsuranceRate.
  */
 @Getter
-public class AccidentInsuranceRate extends AggregateRoot {
+public class AccidentInsuranceRate extends DomainObject {
 
 	/** The history id. */
 	// historyId
@@ -43,7 +43,6 @@ public class AccidentInsuranceRate extends AggregateRoot {
 		this.companyCode = memento.getCompanyCode();
 		this.applyRange = memento.getApplyRange();
 		this.rateItems = memento.getRateItems();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -57,7 +56,6 @@ public class AccidentInsuranceRate extends AggregateRoot {
 		memento.setCompanyCode(this.companyCode);
 		memento.setApplyRange(this.applyRange);
 		memento.setRateItems(this.rateItems);
-		memento.setVersion(this.getVersion());
 	}
 
 }

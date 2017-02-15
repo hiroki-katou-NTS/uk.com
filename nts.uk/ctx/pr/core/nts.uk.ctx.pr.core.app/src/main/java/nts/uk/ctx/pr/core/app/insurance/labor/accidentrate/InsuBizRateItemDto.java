@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+/**
+ * Instantiates a new insu biz rate item dto.
+ */
 @Data
 public class InsuBizRateItemDto {
 
@@ -20,7 +20,6 @@ public class InsuBizRateItemDto {
 
 	/** The insu round. */
 	private Integer insuRound;
-
 
 	/** The insurance business type. */
 	private String insuranceBusinessType;

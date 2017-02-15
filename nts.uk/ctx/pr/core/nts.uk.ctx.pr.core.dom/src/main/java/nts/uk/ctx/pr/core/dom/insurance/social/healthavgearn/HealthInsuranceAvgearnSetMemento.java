@@ -37,11 +37,4 @@ public interface HealthInsuranceAvgearnSetMemento {
 	 */
 	void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

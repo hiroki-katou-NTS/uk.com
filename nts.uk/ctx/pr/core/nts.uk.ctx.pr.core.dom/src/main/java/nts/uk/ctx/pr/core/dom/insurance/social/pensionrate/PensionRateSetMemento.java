@@ -94,11 +94,4 @@ public interface PensionRateSetMemento {
 	 */
 	void setRoundingMethods(List<PensionRateRounding> roundingMethods);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

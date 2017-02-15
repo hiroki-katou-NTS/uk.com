@@ -5,13 +5,13 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class HealthInsuranceAvgearn.
  */
 @Getter
-public class HealthInsuranceAvgearn extends AggregateRoot {
+public class HealthInsuranceAvgearn extends DomainObject {
 
 	/** The history id. */
 	// historyId
@@ -38,7 +38,6 @@ public class HealthInsuranceAvgearn extends AggregateRoot {
 		this.levelCode = memento.getLevelCode();
 		this.companyAvg = memento.getCompanyAvg();
 		this.personalAvg = memento.getPersonalAvg();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -52,7 +51,6 @@ public class HealthInsuranceAvgearn extends AggregateRoot {
 		memento.setLevelCode(this.levelCode);
 		memento.setCompanyAvg(this.companyAvg);
 		memento.setPersonalAvg(this.personalAvg);
-		memento.setVersion(this.getVersion());
 	}
 
 }

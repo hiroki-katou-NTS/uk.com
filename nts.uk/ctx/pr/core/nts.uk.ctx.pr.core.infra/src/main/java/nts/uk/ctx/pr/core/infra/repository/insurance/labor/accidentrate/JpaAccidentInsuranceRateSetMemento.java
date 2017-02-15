@@ -53,10 +53,4 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

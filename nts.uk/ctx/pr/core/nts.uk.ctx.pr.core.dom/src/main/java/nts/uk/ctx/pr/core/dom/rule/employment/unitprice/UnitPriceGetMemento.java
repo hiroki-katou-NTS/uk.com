@@ -32,11 +32,4 @@ public interface UnitPriceGetMemento {
 	 */
 	UnitPriceName getName();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

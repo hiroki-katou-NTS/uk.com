@@ -148,10 +148,4 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

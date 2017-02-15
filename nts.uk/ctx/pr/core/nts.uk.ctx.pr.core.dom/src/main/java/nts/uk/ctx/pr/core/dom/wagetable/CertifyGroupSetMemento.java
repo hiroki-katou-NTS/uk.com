@@ -62,11 +62,4 @@ public interface CertifyGroupSetMemento {
 	 */
 	void setCertifies(Set<Certification> certifies);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

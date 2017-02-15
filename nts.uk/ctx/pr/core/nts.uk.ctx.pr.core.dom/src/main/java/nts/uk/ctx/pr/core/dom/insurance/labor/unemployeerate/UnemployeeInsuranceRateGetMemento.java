@@ -42,11 +42,4 @@ public interface UnemployeeInsuranceRateGetMemento {
 	 */
 	Set<UnemployeeInsuranceRateItem> getRateItems();
 
-	/**
-	 * Gets the verion.
-	 *
-	 * @return the verion
-	 */
-	Long getVersion();
-
 }

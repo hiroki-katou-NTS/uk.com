@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.command;
 
 import java.util.HashSet;
@@ -19,8 +23,11 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
 
+/**
+ * The Class InsuranceBaseCommand.
+ */
 //class auto convert object a to b
-public class BaseInsuranceCommand {
+public class InsuranceBaseCommand {
 	// String => YearMonth
 	public YearMonth convertYearMonth(String monthyear) {
 		// Format mm/YYYY => String mm and YYYY
@@ -162,12 +169,6 @@ public class BaseInsuranceCommand {
 	public InsuranceBusinessType detaultInsuranceBusinessType(String companyCode, String bizName,
 			BusinessTypeEnum bizOrder) {
 		InsuranceBusinessType insuranceBusinessType = new InsuranceBusinessType(new InsuranceBusinessTypeGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return null;
-			}
 
 			@Override
 			public CompanyCode getCompanyCode() {

@@ -102,12 +102,6 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		return new AccidentInsuranceRate(new AccidentInsuranceRateGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return 11L;
-			}
-
-			@Override
 			public Set<InsuBizRateItem> getRateItems() {
 				// TODO Auto-generated method stub
 				return null;

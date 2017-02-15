@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate;
 
-import lombok.Data;
 import nts.uk.ctx.pr.core.app.insurance.HistoryInsuranceDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 
@@ -12,11 +11,12 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
  * The Class HistoryAccidentInsuranceRateDto.
  */
 public class HistoryAccidentInsuranceRateDto extends HistoryInsuranceDto {
-	
+
 	/**
 	 * From domain.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the history accident insurance rate dto
 	 */
 	public static HistoryAccidentInsuranceRateDto fromDomain(AccidentInsuranceRate domain) {

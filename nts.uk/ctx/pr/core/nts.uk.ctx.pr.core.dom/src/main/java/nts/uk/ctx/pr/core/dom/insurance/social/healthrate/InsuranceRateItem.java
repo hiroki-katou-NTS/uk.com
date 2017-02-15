@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true, of = { "payType", "insuranceType" })
-public class InsuranceRateItem extends AggregateRoot {
+public class InsuranceRateItem extends DomainObject {
 
 	/** The pay type. */
 	private PaymentType payType;
@@ -25,13 +25,6 @@ public class InsuranceRateItem extends AggregateRoot {
 
 	/** The charge rate. */
 	private HealthChargeRateItem chargeRate;
-
-	/**
-	 * Instantiates a new insurance rate item.
-	 */
-	public InsuranceRateItem() {
-		super();
-	}
 
 	/**
 	 * @param chargeRate

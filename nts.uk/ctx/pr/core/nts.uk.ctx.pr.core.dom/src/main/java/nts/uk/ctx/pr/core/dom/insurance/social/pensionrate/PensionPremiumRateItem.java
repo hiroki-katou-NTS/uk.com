@@ -4,16 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
-import lombok.Data;
-import nts.arc.layer.dom.AggregateRoot;
+import lombok.Getter;
+import lombok.Setter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 
 /**
  * The Class PensionPremiumRateItem.
  */
-@Data
-public class PensionPremiumRateItem extends AggregateRoot {
+@Getter
+@Setter
+public class PensionPremiumRateItem extends DomainObject {
 
 	/** The pay type. */
 	private PaymentType payType;
@@ -23,13 +25,6 @@ public class PensionPremiumRateItem extends AggregateRoot {
 
 	/** The raise charge rate. */
 	private PensionChargeRateItem chargeRate;
-
-	/**
-	 * Instantiates a new pension premium rate item.
-	 */
-	public PensionPremiumRateItem() {
-		super();
-	}
 
 	/**
 	 * Instantiates a new pension premium rate item.

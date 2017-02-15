@@ -62,11 +62,4 @@ public interface CertifyGroupGetMemento {
 	 */
 	Set<Certification> getCertifies();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

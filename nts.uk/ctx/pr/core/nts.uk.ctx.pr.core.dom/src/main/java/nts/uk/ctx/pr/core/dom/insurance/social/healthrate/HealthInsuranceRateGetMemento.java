@@ -72,11 +72,4 @@ public interface HealthInsuranceRateGetMemento {
 	 */
 	Set<HealthInsuranceRounding> getRoundingMethods();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

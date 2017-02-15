@@ -34,10 +34,6 @@ public class UpdateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
 		// Transfer data
 		UnitPriceHistory updatedHistory = new UnitPriceHistory(new UnitPriceHistoryGetMemento() {
-			@Override
-			public Long getVersion() {
-				return command.getVersion();
-			}
 
 			@Override
 			public UnitPriceName getUnitPriceName() {

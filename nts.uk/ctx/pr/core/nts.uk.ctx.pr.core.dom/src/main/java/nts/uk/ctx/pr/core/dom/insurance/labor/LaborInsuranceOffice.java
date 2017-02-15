@@ -7,7 +7,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -23,7 +23,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class LaborInsuranceOffice.
  */
 @Getter
-public class LaborInsuranceOffice extends AggregateRoot {
+public class LaborInsuranceOffice extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -110,7 +110,6 @@ public class LaborInsuranceOffice extends AggregateRoot {
 		this.officeNoB = memento.getOfficeNoB();
 		this.officeNoC = memento.getOfficeNoC();
 		this.memo = memento.getMemo();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -139,7 +138,6 @@ public class LaborInsuranceOffice extends AggregateRoot {
 		memento.setOfficeNoB(this.officeNoB);
 		memento.setOfficeNoC(this.officeNoC);
 		memento.setMemo(this.memo);
-		memento.setVersion(this.getVersion());
 	}
 
 }

@@ -12,24 +12,22 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 
 /**
- * The Class LaborInsuranceOfficeFinder.
+ * The Class UnemployeeInsuranceFinder.
  */
 @Stateless
 @Transactional
 public class UnemployeeInsuranceFinder {
 
-	/** The labor insurance office repository. */
+	/** The unemployee insurance rate repository. */
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
 	/**
 	 * Find by id.
 	 *
-	 * @param officeCode
-	 *            the office code
-	 * @param companyCode
-	 *            the company code
-	 * @return the labor insurance office dto
+	 * @param companyCode the company code
+	 * @param historyId the history id
+	 * @return the unemployee insurance rate dto
 	 */
 	public UnemployeeInsuranceRateDto findById(String companyCode, String historyId) {
 		UnemployeeInsuranceRateDto unemployeeInsuranceRateDto = new UnemployeeInsuranceRateDto();

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
 import javax.ejb.Stateless;
@@ -12,14 +16,23 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRep
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class UpdateHealthInsuranceCommandHandler.
+ */
 @Stateless
 public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHealthInsuranceCommand> {
 
+	/** The health insurance rate service. */
 	@Inject
 	HealthInsuranceRateService healthInsuranceRateService;
+	
+	/** The health insurance rate repository. */
 	@Inject
 	HealthInsuranceRateRepository healthInsuranceRateRepository;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<UpdateHealthInsuranceCommand> context) {

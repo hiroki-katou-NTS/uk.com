@@ -42,11 +42,6 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
 				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
 			}
@@ -67,11 +62,6 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
@@ -96,11 +86,6 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
 				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
 			}
@@ -121,11 +106,6 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
@@ -151,11 +131,6 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				return 1l;
-			}
-
-			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
 				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
 			}
@@ -176,11 +151,6 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return 1l;
-			}
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {

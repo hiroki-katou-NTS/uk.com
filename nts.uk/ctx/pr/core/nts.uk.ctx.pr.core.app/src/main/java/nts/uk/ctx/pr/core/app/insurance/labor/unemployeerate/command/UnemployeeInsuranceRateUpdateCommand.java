@@ -9,7 +9,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.command.BaseInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.command.InsuranceBaseCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 
 @Getter
 @Setter
-public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand {
+public class UnemployeeInsuranceRateUpdateCommand extends InsuranceBaseCommand {
 	/** The history info dto. */
 	private UnemployeeInsuranceRateDto unemployeeInsuranceRate;
 
@@ -34,12 +34,6 @@ public class UnemployeeInsuranceRateUpdateCommand extends BaseInsuranceCommand {
 		UnemployeeInsuranceRateUpdateCommand command = this;
 		UnemployeeInsuranceRate unemployeeInsuranceRate = new UnemployeeInsuranceRate(
 				new UnemployeeInsuranceRateGetMemento() {
-
-					@Override
-					public Long getVersion() {
-						// TODO Auto-generated method stub
-						return command.unemployeeInsuranceRate.getVersion();
-					}
 
 					@Override
 					public Set<UnemployeeInsuranceRateItem> getRateItems() {

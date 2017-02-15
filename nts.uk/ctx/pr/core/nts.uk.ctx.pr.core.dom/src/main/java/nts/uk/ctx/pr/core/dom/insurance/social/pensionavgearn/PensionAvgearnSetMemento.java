@@ -74,11 +74,4 @@ public interface PensionAvgearnSetMemento {
 	 */
 	void setPersonalPension(PensionAvgearnValue personalPension);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

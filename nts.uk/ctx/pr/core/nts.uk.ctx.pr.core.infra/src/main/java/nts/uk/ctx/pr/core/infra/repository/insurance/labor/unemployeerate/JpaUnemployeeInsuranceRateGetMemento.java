@@ -53,10 +53,4 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 		return null;
 	}
 
-	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

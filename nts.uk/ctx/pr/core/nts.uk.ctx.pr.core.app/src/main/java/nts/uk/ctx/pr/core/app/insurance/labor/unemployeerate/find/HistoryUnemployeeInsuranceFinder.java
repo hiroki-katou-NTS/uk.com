@@ -12,17 +12,19 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 
+/**
+ * The Class HistoryUnemployeeInsuranceFinder.
+ */
 @Stateless
 @Transactional
 public class HistoryUnemployeeInsuranceFinder {
 
 	/** The unemployee insurance rate repository. */
 	@Inject
-	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
+	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepo;
 
 	/**
 	 * Find all.
@@ -32,7 +34,7 @@ public class HistoryUnemployeeInsuranceFinder {
 	 */
 	public List<HistoryUnemployeeInsuranceDto> findAll(String companyCode) {
 		List<HistoryUnemployeeInsuranceDto> lstHistoryUnemployeeInsurance = new ArrayList<>();
-		for (UnemployeeInsuranceRate unemployeeInsuranceRate : unemployeeInsuranceRateRepository.findAll(companyCode)) {
+		for (UnemployeeInsuranceRate unemployeeInsuranceRate : unemployeeInsuranceRateRepo.findAll(companyCode)) {
 			lstHistoryUnemployeeInsurance.add(HistoryUnemployeeInsuranceDto.fromDomain(unemployeeInsuranceRate));
 		}
 		return lstHistoryUnemployeeInsurance;
@@ -47,6 +49,6 @@ public class HistoryUnemployeeInsuranceFinder {
 	 */
 	public HistoryUnemployeeInsuranceDto find(String companyCode, String historyId) {
 		return HistoryUnemployeeInsuranceDto
-				.fromDomain(unemployeeInsuranceRateRepository.findById(companyCode, historyId));
+				.fromDomain(unemployeeInsuranceRateRepo.findById(companyCode, historyId));
 	}
 }

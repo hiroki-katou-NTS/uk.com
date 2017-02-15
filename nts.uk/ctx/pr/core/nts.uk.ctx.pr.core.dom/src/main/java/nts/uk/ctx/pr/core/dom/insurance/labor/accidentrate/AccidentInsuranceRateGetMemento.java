@@ -42,11 +42,4 @@ public interface AccidentInsuranceRateGetMemento {
 	 */
 	Set<InsuBizRateItem> getRateItems();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

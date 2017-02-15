@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
 import java.util.Set;
@@ -13,19 +17,26 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGet
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
+/**
+ * The Class UpdateHealthInsuranceCommand.
+ */
 @Getter
 @Setter
 public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
+	
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode the company code
+	 * @param historyId the history id
+	 * @param officeCode the office code
+	 * @return the health insurance rate
+	 */
 	public HealthInsuranceRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
 		UpdateHealthInsuranceCommand command = this;
 
 		// Transfer data
 		HealthInsuranceRate updatedHealthInsuranceRate = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return command.getVersion();
-			}
 
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
@@ -68,6 +79,7 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 				return command.getApplyRange();
 			}
 		});
+		
 		return updatedHealthInsuranceRate;
 	}
 }

@@ -118,12 +118,6 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
 
 			@Override
-			public Long getVersion() {
-				// TODO Auto-generated method stub
-				return 11L;
-			}
-
-			@Override
 			public ShortName getShortName() {
 				// TODO Auto-generated method stub
 				return new ShortName("ShortName");

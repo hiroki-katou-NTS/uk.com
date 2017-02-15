@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
 import java.math.BigDecimal;
@@ -11,6 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 @Builder
 @Getter
 public class InsuranceRateItemDto {
+	
 	/** The pay type. */
 	private PaymentType payType;
 
@@ -23,6 +28,12 @@ public class InsuranceRateItemDto {
 	/** The personal rate. */
 	private BigDecimal personalRate;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the insurance rate item dto
+	 */
 	public static InsuranceRateItemDto fromDomain(InsuranceRateItem domain) {
 		return new InsuranceRateItemDto(domain.getPayType(), domain.getInsuranceType(),
 				domain.getChargeRate().getCompanyRate().v(), domain.getChargeRate().getPersonalRate().v());

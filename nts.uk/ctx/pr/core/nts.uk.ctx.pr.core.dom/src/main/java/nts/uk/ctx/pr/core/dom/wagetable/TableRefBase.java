@@ -2,18 +2,24 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.rule.employment.unitprice.command;
+package nts.uk.ctx.pr.core.dom.wagetable;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
- * The Class DeleteUnitPriceHistoryCommand.
+ * The Class TableRefBase.
  */
 @Getter
-@Setter
-public class DeleteUnitPriceHistoryCommand {
+public abstract class TableRefBase {
 
-	/** The id. */
-	private String id;
+	/** The company code. */
+	private CompanyCode companyCode;
+
+	/** The ref no. */
+	private String refNo;
+
+	/** The ref name. */
+	private String refName;
+
 }

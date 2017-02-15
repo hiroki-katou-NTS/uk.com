@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.Set;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
  * The Class HealthInsuranceRate.
  */
 @Getter
-public class HealthInsuranceRate extends AggregateRoot {
+public class HealthInsuranceRate extends DomainObject {
 
 	/** The history id. */
 	// historyId
@@ -60,7 +60,6 @@ public class HealthInsuranceRate extends AggregateRoot {
 		this.maxAmount = memento.getMaxAmount();
 		this.rateItems = memento.getRateItems();
 		this.roundingMethods = memento.getRoundingMethods();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -78,7 +77,6 @@ public class HealthInsuranceRate extends AggregateRoot {
 		memento.setMaxAmount(this.maxAmount);
 		memento.setRateItems(this.rateItems);
 		memento.setRoundingMethods(this.roundingMethods);
-		memento.setVersion(this.getVersion());
 	}
 
 }

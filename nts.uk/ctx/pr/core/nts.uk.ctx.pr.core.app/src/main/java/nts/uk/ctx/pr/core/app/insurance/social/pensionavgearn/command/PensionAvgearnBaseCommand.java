@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command;
 
 import java.math.BigDecimal;
@@ -11,11 +15,12 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
+/**
+ * The Class PensionAvgearnBaseCommand.
+ */
 @Getter
 @Setter
 public class PensionAvgearnBaseCommand {
-	/** The version. */
-	private Long version;
 
 	/** The history id. */
 	private String historyId;
@@ -44,16 +49,20 @@ public class PensionAvgearnBaseCommand {
 	/** The personal pension. */
 	private PensionAvgearnValueDto personalPension;
 
+	/**
+	 * To domain.
+	 *
+	 * @param historyId
+	 *            the history id
+	 * @param levelCode
+	 *            the level code
+	 * @return the pension avgearn
+	 */
 	public PensionAvgearn toDomain(String historyId, Integer levelCode) {
 		PensionAvgearnBaseCommand command = this;
 
 		// Transfer data
 		PensionAvgearn updatedPensionAvgearn = new PensionAvgearn(new PensionAvgearnGetMemento() {
-
-			@Override
-			public Long getVersion() {
-				return command.getVersion();
-			}
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {

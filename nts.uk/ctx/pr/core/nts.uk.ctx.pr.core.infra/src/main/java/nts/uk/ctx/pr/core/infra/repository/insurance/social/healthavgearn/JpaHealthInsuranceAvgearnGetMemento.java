@@ -32,12 +32,6 @@ public class JpaHealthInsuranceAvgearnGetMemento implements HealthInsuranceAvgea
 	}
 
 	@Override
-	public Long getVersion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Integer getLevelCode() {
 		// TODO Auto-generated method stub
 		return null;

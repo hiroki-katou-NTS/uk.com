@@ -7,19 +7,18 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
 
 /**
  * The Class PensionRate.
  */
 @Getter
-public class PensionRate extends AggregateRoot {
+public class PensionRate extends DomainObject {
 
 	/** The history id. */
 	// historyId
@@ -55,24 +54,8 @@ public class PensionRate extends AggregateRoot {
 	/** The child contribution rate. */
 	private Ins2Rate childContributionRate;
 
-	/**
-	 * Validate.
-	 *
-	 * @param service
-	 *            the service
-	 */
-	public void validate(PensionRateService service) {
-		// Validate required item
-		service.validateRequiredItem(this);
-
-		// Check consistency date range.
-		service.validateDateRange(this);
-		// History after start date and time exists
-		// throw new BusinessException("ER011"); ER0123!?
-	}
 
 	// =================== Memento State Support Method ===================
-
 	/**
 	 * Instantiates a new pension rate.
 	 *
@@ -91,7 +74,6 @@ public class PensionRate extends AggregateRoot {
 		this.premiumRateItems = memento.getPremiumRateItems();
 		this.childContributionRate = memento.getChildContributionRate();
 		this.roundingMethods = memento.getRoundingMethods();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -112,7 +94,6 @@ public class PensionRate extends AggregateRoot {
 		memento.setPremiumRateItems(this.premiumRateItems);
 		memento.setChildContributionRate(this.childContributionRate);
 		memento.setRoundingMethods(this.roundingMethods);
-		memento.setVersion(this.getVersion());
 	}
 
 }

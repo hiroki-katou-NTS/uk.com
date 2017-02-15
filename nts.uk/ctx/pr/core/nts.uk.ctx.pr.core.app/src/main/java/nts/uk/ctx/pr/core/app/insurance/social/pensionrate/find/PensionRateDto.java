@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find;
 
 import java.math.BigDecimal;
@@ -15,8 +19,12 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateIte
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento;
 
+/**
+ * The Class PensionRateDto.
+ */
 @Builder
 public class PensionRateDto implements PensionRateSetMemento {
+
 	/** The history id. */
 	public String historyId;
 
@@ -53,70 +61,140 @@ public class PensionRateDto implements PensionRateSetMemento {
 	/** The auto calculate. */
 	public Boolean autoCalculate;
 
-	/** The version. */
-	public Long version;
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setHistoryId(java.lang.String)
+	 */
 	@Override
 	public void setHistoryId(String historyId) {
 		this.historyId = historyId;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		this.companyCode = companyCode.v();
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setOfficeCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	 */
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
 		this.officeCode = officeCode.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setApplyRange(nts.uk.ctx.pr.core.dom.insurance.MonthRange)
+	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
 		this.startMonth = applyRange.getStartMonth().toString();
 		this.endMonth = applyRange.getEndMonth().toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setMaxAmount(nts.uk.ctx.pr.core.dom.insurance.CommonAmount)
+	 */
 	@Override
 	public void setMaxAmount(CommonAmount maxAmount) {
 		this.maxAmount = maxAmount.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setFundRateItems(java.util.List)
+	 */
 	@Override
 	public void setFundRateItems(List<FundRateItem> fundRateItems) {
 		this.fundRateItems = fundRateItems.stream().map(item -> FundRateItemDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setPremiumRateItems(java.util.List)
+	 */
 	@Override
 	public void setPremiumRateItems(List<PensionPremiumRateItem> premiumRateItems) {
 		this.premiumRateItems = premiumRateItems.stream().map(item -> PensionPremiumRateItemDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setChildContributionRate(nts.uk.ctx.pr.core.dom.insurance.Ins2Rate)
+	 */
 	@Override
 	public void setChildContributionRate(Ins2Rate childContributionRate) {
 		this.childContributionRate = childContributionRate.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setRoundingMethods(java.util.List)
+	 */
 	@Override
 	public void setRoundingMethods(List<PensionRateRounding> roundingMethods) {
 		this.roundingMethods = roundingMethods;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setFundInputApply(java.lang.Boolean)
+	 */
 	@Override
 	public void setFundInputApply(Boolean fundInputApply) {
 		this.fundInputApply = fundInputApply;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento
+	 * #setAutoCalculate(java.lang.Boolean)
+	 */
 	@Override
 	public void setAutoCalculate(Boolean autoCalculate) {
 		this.autoCalculate = autoCalculate;
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		this.version = version;
-	}
 }

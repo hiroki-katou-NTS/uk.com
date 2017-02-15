@@ -5,7 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -15,14 +15,13 @@ import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
-import nts.uk.ctx.pr.core.dom.insurance.social.service.SocialInsuranceOfficeService;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class SocialInsuranceOffice.
  */
 @Getter
-public class SocialInsuranceOffice extends AggregateRoot {
+public class SocialInsuranceOffice extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -103,31 +102,7 @@ public class SocialInsuranceOffice extends AggregateRoot {
 	/** The memo. */
 	private Memo memo;
 
-	/**
-	 * Instantiates a new social insurance office.
-	 */
-	public SocialInsuranceOffice() {
-		super();
-	}
-
-	/**
-	 * Validate.
-	 *
-	 * @param service
-	 *            the service
-	 */
-	public void validate(SocialInsuranceOfficeService service) {
-		// Validate required item
-		service.validateRequiredItem(this);
-		
-
-		// Office code duplication check
-		service.checkDuplicateCode(this);
-		
-	}
-
 	// =================== Memento State Support Method ===================
-
 	/**
 	 * Instantiates a new social insurance office.
 	 *
@@ -161,7 +136,6 @@ public class SocialInsuranceOffice extends AggregateRoot {
 		this.healthInsuOfficeCode = memento.getHealthInsuOfficeCode();
 		this.healthInsuAssoCode = memento.getHealthInsuAssoCode();
 		this.memo = memento.getMemo();
-		this.setVersion(memento.getVersion());
 	}
 
 	/**
@@ -197,7 +171,6 @@ public class SocialInsuranceOffice extends AggregateRoot {
 		memento.setHealthInsuOfficeCode(this.healthInsuOfficeCode);
 		memento.setHealthInsuAssoCode(this.healthInsuAssoCode);
 		memento.setMemo(this.memo);
-		memento.setVersion(this.getVersion());
 	}
 
 }

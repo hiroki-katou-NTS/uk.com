@@ -33,11 +33,4 @@ public interface InsuranceBusinessTypeSetMemento {
 	 */
 	void setBizName(BusinessName name);
 
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(Long version);
-
 }

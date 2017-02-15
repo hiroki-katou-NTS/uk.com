@@ -94,11 +94,4 @@ public interface PensionRateGetMemento {
 	 */
 	List<PensionRateRounding> getRoundingMethods();
 
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	Long getVersion();
-
 }

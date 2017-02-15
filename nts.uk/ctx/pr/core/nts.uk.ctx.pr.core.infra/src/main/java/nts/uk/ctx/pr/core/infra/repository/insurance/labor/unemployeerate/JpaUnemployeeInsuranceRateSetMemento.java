@@ -53,10 +53,4 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 
 	}
 
-	@Override
-	public void setVersion(Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
 }
