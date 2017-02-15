@@ -1,6 +1,8 @@
-// TreeGrid Node
-module qmm019.a {
 
+var screenQmm019: KnockoutObservable<qmm019.a.ScreenModel>;
+
+module qmm019.a {
+    
     export class ScreenModel {
         //Khai bao bien
         itemList: KnockoutObservableArray<NodeTest>;
@@ -26,12 +28,13 @@ module qmm019.a {
         
         constructor() {
             var self = this;
+            screenQmm019 = ko.observable(self);
             self.itemList = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(null);
             self.layouts = ko.observableArray([]);
             self.layoutsMax = ko.observableArray([]);
             self.layoutMaster = ko.observable(new service.model.LayoutMasterDto());
-            self.categories = ko.observableArray([new service.model.Category([], 0, self)]);
+            self.categories = ko.observableArray([new service.model.Category([], 0)]);
 
             self.singleSelectedCode.subscribe(function(codeChanged) {
                 var layoutFind = _.find(self.layouts(), function(layout) {
@@ -41,7 +44,7 @@ module qmm019.a {
                     self.layoutMaster(layoutFind);  
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                    service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
+                    service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
                         .done(function(listResult : Array<service.model.Category>){
                             self.categories(listResult);
                             self.calculateLine();
@@ -50,6 +53,7 @@ module qmm019.a {
                     });
                 }
             });
+            
         }
         
         searchLayout() {
@@ -181,7 +185,7 @@ module qmm019.a {
         registerLayout() {
             var self = this;
             service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
                     .done(function(listResult : Array<service.model.Category>){
                         self.categories(listResult);
                         self.checkKintaiKiji();
@@ -194,7 +198,7 @@ module qmm019.a {
         
         addKintaiCategory() {
             var self = this;
-            let category: service.model.Category = new service.model.Category([], 2, self);
+            let category: service.model.Category = new service.model.Category([], 2);
             self.categories.push(category);
             self.notHasKintai(false);
             self.bindSortable();
@@ -202,7 +206,7 @@ module qmm019.a {
         
         addKijiCategory() {
             var self = this;
-            let category: service.model.Category = new service.model.Category([], 3, self);
+            let category: service.model.Category = new service.model.Category([], 3);
             self.categories.push(category);
             self.notHasKiji(false);
             self.bindSortable();
