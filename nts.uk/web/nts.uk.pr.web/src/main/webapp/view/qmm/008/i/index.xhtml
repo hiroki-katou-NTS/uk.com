@@ -30,7 +30,8 @@
 			</div>
 			<div class="contents-area">
 				<div data-bind="ntsFormLabel: {required: true}">事業所 :</div>
-				<span id="lblCode">code</span><span id="lblName">name</span>
+				<span id="lblCode" data-bind="text: healthInsuranceRateModel().officeCode"></span>
+				<span id="lblName" data-bind="text: healthInsuranceRateModel().officeName"></span>
 				<div style="margin-left: 200px"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
 				<span>(平成28年04月) ~ 9999/12</span>

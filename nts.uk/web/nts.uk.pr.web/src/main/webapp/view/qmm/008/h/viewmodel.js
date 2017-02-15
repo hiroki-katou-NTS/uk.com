@@ -25,16 +25,40 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
-                                        self.listAvgEarnLevelMasterSetting(data);
-                                        h.service.findHealthInsuranceRate('a').done(function (xx) {
-                                            self.healthInsuranceRateModel().officeCode(xx.officeCode);
-                                            self.healthInsuranceRateModel().officeName(xx.officeName);
-                                            self.rateItems(xx.ratesItem);
+                                    self.loadAvgEarnLevelMasterSetting().done(function () {
+                                        return self.loadHealthInsuranceRate().done(function () {
+                                            return self.loadHealthInsuranceAvgearn().done(function () {
+                                                return dfd.resolve();
+                                            });
                                         });
-                                        h.service.findHealthInsuranceAvgEarn('a').done(function (zz) {
-                                            self.listHealthInsuranceAvgearn(zz);
-                                        });
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadAvgEarnLevelMasterSetting = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    commonService.getAvgEarnLevelMasterSettingList().done(function (res) {
+                                        self.listAvgEarnLevelMasterSetting(res);
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadHealthInsuranceRate = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    h.service.findHealthInsuranceRate('id').done(function (res) {
+                                        self.healthInsuranceRateModel().officeCode = res.officeCode;
+                                        self.healthInsuranceRateModel().officeName = res.officeName;
+                                        self.rateItems(res.ratesItem);
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadHealthInsuranceAvgearn = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    h.service.findHealthInsuranceAvgEarn('id').done(function (res) {
+                                        self.listHealthInsuranceAvgearn(res);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -51,17 +75,6 @@ var nts;
                                     var self = this;
                                     h.service.updateHealthInsuranceAvgearn(this.collectData());
                                 };
-                                ScreenModel.prototype.loadHealthInsuranceAvgEarn = function () {
-                                    var self = this;
-                                    var dfd = $.Deferred();
-                                    h.service.findHealthInsuranceAvgEarn('a').done(function (data) {
-                                        data.forEach(function (item) {
-                                        });
-                                        self.listHealthInsuranceAvgearn(data);
-                                        dfd.resolve();
-                                    });
-                                    return dfd.promise();
-                                };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
                                 };
@@ -70,13 +83,6 @@ var nts;
                             viewmodel.ScreenModel = ScreenModel;
                             var HealthInsuranceRateModel = (function () {
                                 function HealthInsuranceRateModel() {
-                                    this.companyCode = ko.observable('');
-                                    this.officeCode = ko.observable('');
-                                    this.officeName = ko.observable('');
-                                    this.startMonth = ko.observable('');
-                                    this.endMonth = ko.observable('');
-                                    this.autoCalculate = ko.observable(false);
-                                    this.maxAmount = ko.observable(0);
                                 }
                                 return HealthInsuranceRateModel;
                             }());

@@ -251,15 +251,15 @@ module nts.uk.pr.view.qmm008.a {
                     historyId: string;
                     companyCode: string;
                     officeCode: string;
-                    startMonth: string;
-                    endMonth: string;
+                    startMonth: number;
+                    endMonth: number;
                     autoCalculate: boolean;
                     rateItems: Array<HealthInsuranceRateItemDto>;
                     roundingMethods: Array<Enum>;
                     maxAmount: number;
 
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: boolean, rateItems: Array<HealthInsuranceRateItemDto>, roundingMethods: Array<Enum>, maxAmount: number) {
+                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: number, endMonth: number, autoCalculate: boolean, rateItems: Array<HealthInsuranceRateItemDto>, roundingMethods: Array<Enum>, maxAmount: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;

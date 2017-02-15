@@ -41,7 +41,7 @@
 									data-bind="ntsFormLabel: {required: true}">期間</div></td>
 							<td class="border_none"><div
 									data-bind="ntsDatePicker: {
-									value: addDate, 
+									value: selectedDate, 
 									dateFormat: 'yyyy/MM'}">
 								</div></td>
 							<td>(平成28年04月) ~ 9999/12</td>
@@ -58,8 +58,8 @@
 					<div>
 						<hr />
 					</div>
-					<button class="proceed x-large">決定</button>
-					<button data-bind="click: CloseModalSubWindow"
+					<button data-bind="click: clickSettingButton" class="proceed x-large">決定</button>
+					<button data-bind="click: closeDialog"
 						style="float: right;">キャンセル</button>
 				</div>
 			</div>

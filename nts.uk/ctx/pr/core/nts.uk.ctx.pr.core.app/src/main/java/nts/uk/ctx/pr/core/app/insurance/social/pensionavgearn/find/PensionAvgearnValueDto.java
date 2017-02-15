@@ -2,12 +2,14 @@ package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
 
 import java.math.BigDecimal;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
-@Builder
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PensionAvgearnValueDto {
 	/** The male amount. */
 	private BigDecimal maleAmount;

@@ -11,10 +11,10 @@ module nts.uk.pr.view.qmm008.b {
             selectedValue: KnockoutObservable<any>;
             //for input 
             officeCodeName: KnockoutObservable<string>;
-            addDate: KnockoutObservable<string>;
-            constructor(recivedVal: any) {
+            selectedDate: KnockoutObservable<string>;
+            constructor(receiveOfficeItem: InsuranceOfficeItemDto) {
                 var self = this;
-                self.getInsuranceOfficeItemDto = ko.observable(recivedVal);
+                self.getInsuranceOfficeItemDto = ko.observable(receiveOfficeItem);
                 self.returnInsuranceOfficeItemDto = ko.observable(null);
                 
                 //select options 
@@ -25,16 +25,62 @@ module nts.uk.pr.view.qmm008.b {
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
                 // Reset child value
                 //            nts.uk.ui.windows.setShared("childValue", null);
-                self.officeCodeName= ko.observable(recivedVal.code + " " +recivedVal.name );
-                self.addDate = ko.observable('2016/04');
+                self.officeCodeName= ko.observable(receiveOfficeItem.codeName);
+                //TODO get current date time of system
+                self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
             }
+            
+            public getLastHistory(OfficeItem : InsuranceOfficeItemDto)
+            {
+                var index = OfficeItem.childs[OfficeItem.childs.length-1].codeName.indexOf("~");
+                var lastHistory = OfficeItem.childs[OfficeItem.childs.length-1].codeName.substring(0, index);
+                return lastHistory;       
+            }
+            public clickSettingButton(){
+                var self =this;
+                var childArray = self.getInsuranceOfficeItemDto().childs;
+                var lastChild = childArray[childArray.length -1];
+                //TODO recheck check if selected time invalid
+                if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()),self.selectedDate())) {
+                    alert();
+                }
+                else {
+                    //update previous history
+                    self.getInsuranceOfficeItemDto().childs[childArray.length - 1].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.selectedDate();
+                    //push new history 
+                    self.getInsuranceOfficeItemDto().childs.push(
+                        new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
+                    nts.uk.ui.windows.setShared("addHistoryChildValue", self.getInsuranceOfficeItemDto(), true);
+                    nts.uk.ui.windows.close();
+                }
+            }
+            
+            //compare 2 string date time
+            public compareStringDate(date1: string, date2: string) {
+                var index1 = date1.indexOf("/");
+                var year1 = Number(date1.substring(0, index1));
+                var month1 = Number(date1.substring(index1 + 1, date1.length));
 
-
-            CloseModalSubWindow() {
-                // Set child value
-                this.getInsuranceOfficeItemDto().childs.push(new InsuranceOfficeItemDto('id', '2016/04 ~ 2017/03', 'chilcode2',[]));
-                this.returnInsuranceOfficeItemDto(this.getInsuranceOfficeItemDto());
-                nts.uk.ui.windows.setShared("addHistoryChildValue", this.returnInsuranceOfficeItemDto(),true);
+                var index2 = date2.indexOf("/");
+                var year2 = Number(date2.substring(0, index2));
+                var month2 = Number(date2.substring(index2 + 1, date2.length));
+                //compare year
+                if (year1 < year2) {
+                    return true;
+                }
+                else {
+                    //compare month
+                    if (month1 < month2) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }
+            
+            public closeDialog() {
+                nts.uk.ui.windows.setShared("addHistoryChildValue", null,true);
                 nts.uk.ui.windows.close();
             }
         }

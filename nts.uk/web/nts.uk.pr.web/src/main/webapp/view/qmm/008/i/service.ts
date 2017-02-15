@@ -5,15 +5,17 @@ module nts.uk.pr.view.qmm008.i {
          *  Service paths
          */
         var paths: any = {
+            findPensionRate: "ctx/pr/core/insurance/social/pensionrate/find",
             updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
             findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
         };
 
         /**
-         *  Save List Health Insurance Average Earn
+         *  Save list pensionAvgearn
          */
-        export function updatePensionAvgearn(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updatePensionAvgearn, list);
+        export function updatePensionAvgearn(listPensionAvgearn): JQueryPromise<any> {
+            var data = { listPensionAvgearn: listPensionAvgearn };
+            return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
         }
 
         /**
@@ -32,6 +34,21 @@ module nts.uk.pr.view.qmm008.i {
         }
 
         /**
+         *  Find PensionRate by historyId
+         */
+        export function findPensionRate(id: string): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.findPensionRate + '/' + id)
+                .done(res => {
+                    dfd.resolve(res);
+                })
+                .fail(res => {
+                    dfd.reject(res);
+                })
+            return dfd.promise();;
+        }
+
+        /**
         * Model namespace.
         */
         export module model {
@@ -39,15 +56,6 @@ module nts.uk.pr.view.qmm008.i {
                 maleAmount: number;
                 femaleAmount: number;
                 unknownAmount: number;
-            }
-            export class HealthInsuranceAvgEarnDto {
-                historyId: string;
-                childContributionAmount: number;
-                companyFund: PensionAvgearnValue;
-                companyFundExemption: PensionAvgearnValue;
-                companyPension: PensionAvgearnValue;
-                personalFund: PensionAvgearnValue;
-                personalPension: PensionAvgearnValue;
             }
         }
     }

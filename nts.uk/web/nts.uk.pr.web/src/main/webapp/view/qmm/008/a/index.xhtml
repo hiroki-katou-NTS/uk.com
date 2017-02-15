@@ -25,9 +25,9 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" >健康保険</a></li>
-				<li><a href="#tabpanel-2" class="active">厚生年金</a></li>
-			</ul>
+				<li><a href="#tabpanel-1" class="active">健康保険</a></li>
+				<li><a href="#tabpanel-2" >厚生年金</a></li>
+			</ul>`
 		</ui:define>
 
 		<ui:define name="content">
@@ -47,7 +47,7 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: InsuranceOfficeList, selected: officeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalSubWindow,enable:createHistoryControll()">履歴追加</button>
+							data-bind="click: OpenModalAddHistory,enable:createHistoryControll()">履歴追加</button>
 						<button data-bind="click: OpenModalConfigHistory,enable:!createHistoryControll()"
 							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
@@ -306,7 +306,7 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: InsuranceOfficeList, selected: officeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalSubWindow,enable:createHistoryControll()">履歴追加</button>
+							data-bind="click: OpenModalAddHistory,enable:createHistoryControll()">履歴追加</button>
 						<button data-bind="click: OpenModalConfigHistory,enable:!createHistoryControll()"
 							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">

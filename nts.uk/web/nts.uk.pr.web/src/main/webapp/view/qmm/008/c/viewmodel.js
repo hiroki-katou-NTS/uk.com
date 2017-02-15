@@ -53,8 +53,10 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.loadAllInsuranceOfficeData().done(function () {
                                         if (self.officeItems().length > 0) {
+                                            self.selectedOfficeCode(self.officeItems()[0].code);
                                         }
                                         else {
+                                            self.addNew();
                                         }
                                         dfd.resolve(null);
                                     });
@@ -64,10 +66,15 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     aservice.findInsuranceOffice('').done(function (data) {
-                                        data.forEach(function (item, index) {
-                                            self.officeItems.push(new ItemModel(item.code, item.name));
-                                        });
-                                        dfd.resolve(data);
+                                        if (data != null) {
+                                            data.forEach(function (item, index) {
+                                                self.officeItems.push(new ItemModel(item.code, item.name));
+                                            });
+                                            dfd.resolve(data);
+                                        }
+                                        else {
+                                            dfd.resolve(null);
+                                        }
                                     });
                                     return dfd.promise();
                                 };
@@ -126,6 +133,12 @@ var nts;
                                 ScreenModel.prototype.registerOffice = function () {
                                     var self = this;
                                     c.service.register(self.collectData()).done(function () {
+                                    }).fail(function () {
+                                    });
+                                };
+                                ScreenModel.prototype.remove = function (officeCode) {
+                                    var self = this;
+                                    c.service.remove(officeCode).done(function () {
                                     }).fail(function () {
                                     });
                                 };

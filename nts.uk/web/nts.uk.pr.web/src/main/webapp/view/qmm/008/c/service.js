@@ -16,6 +16,7 @@ var nts;
                                 getOfficeDetailData: "pr/insurance/social/find",
                                 updateOffice: "pr/insurance/social/update",
                                 regiterOffice: "pr/insurance/social/register",
+                                removeOffice: "pr/insurance/social/remove"
                             };
                             function getOfficeItemDetail(code) {
                                 var dfd = $.Deferred();
@@ -34,6 +35,10 @@ var nts;
                                 return nts.uk.request.ajax(servicePath.updateOffice, data);
                             }
                             service.update = update;
+                            function remove(officeCode) {
+                                return nts.uk.request.ajax(servicePath.removeOffice, officeCode);
+                            }
+                            service.remove = remove;
                             var model;
                             (function (model) {
                                 var finder;
