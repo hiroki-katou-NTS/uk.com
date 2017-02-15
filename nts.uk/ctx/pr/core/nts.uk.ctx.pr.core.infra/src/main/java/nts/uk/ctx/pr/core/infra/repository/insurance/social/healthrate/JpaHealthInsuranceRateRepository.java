@@ -102,7 +102,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
-		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
+		MonthRange mr = MonthRange.range(new YearMonth(201601), new YearMonth(201605));
 
 		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
 
@@ -189,7 +189,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
 		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
-		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
+		MonthRange mr = MonthRange.range(new YearMonth(201601), new YearMonth(201605));
 
 		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
 

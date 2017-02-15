@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm008.c {
             getOfficeDetailData: "pr/insurance/social/find",
             updateOffice: "pr/insurance/social/update",
             regiterOffice: "pr/insurance/social/register",
+            removeOffice: "pr/insurance/social/remove"
         };
 
         /**
@@ -40,7 +41,14 @@ module nts.uk.pr.view.qmm008.c {
 
             return nts.uk.request.ajax(servicePath.updateOffice, data);
         }
+        
+         /**
+         * Function is used to remove office by office code
+         */
+        export function remove(officeCode:string): JQueryPromise<model.finder.OfficeItemDto> {
 
+            return nts.uk.request.ajax(servicePath.removeOffice, officeCode);
+        }
         /**
         * Model namespace.
         */

@@ -89,7 +89,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.loadAllInsuranceOffice().done(function (data) {
                                         self.InsuranceOfficeList(data);
-                                        if (self.InsuranceOfficeList().length > 0) {
+                                        if ((self.InsuranceOfficeList() != null) && (self.InsuranceOfficeList().length > 0)) {
                                         }
                                         else {
                                             self.OpenModalOfficeRegister();
@@ -134,7 +134,7 @@ var nts;
                                         if ((item.code == officeCode) && (item.childs.length == 0)) {
                                             a.service.getAllHealthInsuranceItem(item.code).done(function (data) {
                                                 data.forEach(function (item2, index2) {
-                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth + "~" + item2.endMonth));
+                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
                                                 });
                                                 self.InsuranceOfficeList(officeData);
                                             });
@@ -239,15 +239,16 @@ var nts;
                                     });
                                     return saveVal;
                                 };
-                                ScreenModel.prototype.OpenModalSubWindow = function () {
+                                ScreenModel.prototype.OpenModalAddHistory = function () {
                                     var self = this;
-                                    var saveVal = self.getDataOfSelectedOffice();
-                                    nts.uk.ui.windows.setShared("addHistoryParentValue", saveVal);
+                                    var sendOfficeItem = self.getDataOfSelectedOffice();
+                                    var previousStartDate = "2016/04";
+                                    nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
                                         var currentInsuranceOfficeList = self.InsuranceOfficeList();
-                                        if (returnValue != undefined) {
+                                        if (returnValue != undefined && returnValue != null) {
                                             currentInsuranceOfficeList.forEach(function (item, index) {
                                                 if (item.code == returnValue.code) {
                                                     currentInsuranceOfficeList[index] = returnValue;
@@ -263,6 +264,7 @@ var nts;
                                     nts.uk.ui.windows.setShared("officeCodeOfParentValue", self.officeSelectedCode());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
+                                        self.start();
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };

@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm008.c {
         import InsuranceOfficeItemDto = qmm008.a.service.model.finder.InsuranceOfficeItemDto;
         import aservice = nts.uk.pr.view.qmm008.a.service;
         import OfficeItemDto = qmm008.c.service.model.finder.OfficeItemDto;
-
+        
         export class ScreenModel {
             // for left list
             officeItems: KnockoutObservableArray<ItemModel>;
@@ -80,10 +80,11 @@ module nts.uk.pr.view.qmm008.c {
                 self.loadAllInsuranceOfficeData().done(function() {
                     // Load first result.
                     if (self.officeItems().length > 0) {
-                        //TODO load select first item of list
-                        //self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
+                        //load first office
+                        self.selectedOfficeCode(self.officeItems()[0].code);
                     } else {
-                        //TODO Open register new office screen
+                        //register new office mode
+                        self.addNew();
                     }
                     // Resolve
                     dfd.resolve(null);
@@ -96,12 +97,19 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 // find all insurance office 
-                aservice.findInsuranceOffice('').done(function(data: Array<any>) {
-                    // Set data get from service to list.
-                    data.forEach((item, index) => {
-                        self.officeItems.push(new ItemModel(item.code, item.name));
-                    });
-                    dfd.resolve(data);
+                aservice.findInsuranceOffice('').done(function(data: Array<InsuranceOfficeItemDto>) {
+                    //check list office is empty
+                    if (data != null) {
+                        // Set data get from service to list.
+                        data.forEach((item, index) => {
+                            self.officeItems.push(new ItemModel(item.code, item.name));
+                        });
+                        dfd.resolve(data);
+                    }
+                    //list is empty
+                    else {
+                        dfd.resolve(null);
+                    }
                 });
                 // Return.
                 return dfd.promise();
@@ -147,7 +155,7 @@ module nts.uk.pr.view.qmm008.c {
                 return OfficeItemList;
             }
 
-            //TODO save
+            //save (mode: update or create new)
             public save() {
                 var self = this;
                 //if update office
@@ -158,7 +166,8 @@ module nts.uk.pr.view.qmm008.c {
                     self.registerOffice();
                 }
             }
-            //TODO Update office data
+            
+            //update office
             private updateOffice() {
                 var self = this;
                 service.update(self.collectData()).done(function() {
@@ -167,7 +176,8 @@ module nts.uk.pr.view.qmm008.c {
                     //TODO if update fail    
                 });
             }
-            //TODO register Office
+            
+            //create new Office
             private registerOffice() {
                 var self = this;
                 service.register(self.collectData()).done(function() {
@@ -176,7 +186,19 @@ module nts.uk.pr.view.qmm008.c {
                     //TODO if register fail    
                 });
             }
-
+            
+            //remove office  by office Code
+            private remove(officeCode: string)
+            {
+                var self =this;
+                service.remove(officeCode).done(function(){
+                //TODO if remove success    
+                }).fail(function(){
+                //TODO if remove fail    
+                });   
+            }
+            
+            //collect all data
             private collectData() {
                 var self = this;
                 return new service.model.finder.OfficeItemDto(
@@ -208,6 +230,8 @@ module nts.uk.pr.view.qmm008.c {
                     self.officeModel().memo()
                 );
             }
+            
+            //reset all field when click add new office button
             public addNew() {
                 var self = this;
                 //reset all input fields to blank
