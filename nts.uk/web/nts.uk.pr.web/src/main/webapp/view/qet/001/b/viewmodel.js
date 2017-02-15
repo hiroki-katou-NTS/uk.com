@@ -232,13 +232,13 @@ var qet001;
                 function CategorySetting(aggregateItems, masterItems, categorySetting) {
                     this.category = categorySetting.category;
                     this.paymentType = categorySetting.paymentType;
-                    this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
                     var settingItemCode = [];
                     if (categorySetting != undefined) {
                         settingItemCode = categorySetting.outputItems.map(function (item) {
                             return item.code;
                         });
                     }
+                    this.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
                     var aggregateItemsExcluded = aggregateItems.filter(function (item) { return settingItemCode.indexOf(item.code) == -1; });
                     var masterItemsExcluded = masterItems.filter(function (item) { return settingItemCode.indexOf(item.code) == -1; });
                     this.aggregateItemsList = ko.observableArray(aggregateItemsExcluded);
@@ -255,10 +255,56 @@ var qet001;
                                 return '';
                             }
                         },
-                        { headerText: 'コード', prop: 'code', width: 60 },
-                        { headerText: '名称', prop: 'name', width: 100 },
+                        { headerText: 'コード', prop: 'code', width: 50 },
+                        { headerText: '名称', prop: 'name', width: 50 },
+                        { headerText: '削除', prop: 'code', width: 50,
+                            formatter: function (data) {
+                                return '<button class="delete-button icon icon-close" id="' + data + '" >'
+                                    + '</button>';
+                            }
+                        },
                     ]);
+                    var self = this;
+                    self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
+                    self.outputItems.subscribe(function (items) {
+                        self.outputItemCache = items;
+                    });
+                    ko.bindingHandlers.rended = {
+                        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
+                        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                            var code = valueAccessor();
+                            viewModel.outputItems().forEach(function (item) {
+                                $('#' + item.code).on('click', function () {
+                                    code(item.code);
+                                    viewModel.remove();
+                                    code(null);
+                                });
+                            });
+                        }
+                    };
                 }
+                CategorySetting.prototype.remove = function () {
+                    var self = this;
+                    var selectedItem = self.outputItems().filter(function (item) {
+                        return item.code == self.outputItemsSelected();
+                    })[0];
+                    self.outputItems.remove(selectedItem);
+                    if (selectedItem.isAggregateItem) {
+                        self.aggregateItemsList.push({
+                            code: selectedItem.code,
+                            name: selectedItem.name,
+                            paymentType: self.paymentType,
+                            category: self.category,
+                        });
+                        return;
+                    }
+                    self.masterItemList.push({
+                        code: selectedItem.code,
+                        name: selectedItem.name,
+                        paymentType: self.paymentType,
+                        category: self.category,
+                    });
+                };
                 CategorySetting.prototype.masterItemToDisplay = function () {
                     if (this.masterItemSelected() == undefined || this.masterItemSelected() == null) {
                         return;
@@ -271,7 +317,7 @@ var qet001;
                     self.outputItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
-                        isAggregateItem: true,
+                        isAggregateItem: false,
                     });
                     self.masterItemSelected(null);
                 };
@@ -287,7 +333,7 @@ var qet001;
                     self.outputItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
-                        isAggregateItem: false,
+                        isAggregateItem: true
                     });
                     self.aggregateItemSelected(null);
                 };
