@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.command.organization.jobtitle;
+package nts.uk.ctx.basic.app.command.organization.position;
 
 import lombok.Data;
 

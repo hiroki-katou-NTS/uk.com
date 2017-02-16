@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.organization.jobtitle;
+package nts.uk.ctx.basic.dom.organization.position;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Optional;
 
 
 
-public interface JobTitleRepository {
+public interface PositionRepository {
 
 	/**
 	 * 
@@ -15,7 +15,7 @@ public interface JobTitleRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	List<JobTitle> getPositions(String companyCode);
+	List<Position> getPositions(String companyCode);
 
 	/**
 	 * get All Item Master   
@@ -26,20 +26,20 @@ public interface JobTitleRepository {
 	 * @return list Position
 	 */
 
-	Optional<JobTitle> getPosition(String companyCode, String jobCode ,String historyID );
+	Optional<Position> getPosition(String companyCode, String jobCode ,String historyID );
 	
 
-	void add(JobTitle position);
+	void add(Position position);
 
-	void update(JobTitle position);
+	void update(Position position);
 
 	void remove(String companyCode);
 
-	void remove(List<JobTitle> details);
+	void remove(List<Position> details);
 	boolean isExist(String companyCode, LocalDate startDate);
-	List<JobTitle> findAll(String companyCode);
+	List<Position> findAll(String companyCode);
 
-	Optional<JobTitle> findSingle(String companyCode, String historyID, JobCode jobCode);
+	Optional<Position> findSingle(String companyCode, String historyID, JobCode jobCode);
 
 	boolean isExisted(String companyCode, JobCode jobCode);
 

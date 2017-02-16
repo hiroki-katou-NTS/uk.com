@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.repository.organization.jobtitle;
+package nts.uk.ctx.basic.infra.repository.organization.position;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,18 +10,18 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.organization.jobtitle.HiterarchyOrderCode;
-import nts.uk.ctx.basic.dom.organization.jobtitle.JobCode;
-import nts.uk.ctx.basic.dom.organization.jobtitle.JobName;
-import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitle;
-import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitleRepository;
-import nts.uk.ctx.basic.dom.organization.jobtitle.PresenceCheckScopeSet;
-import nts.uk.ctx.basic.infra.entity.organization.jobtitle.CmnmtJobTitle;
-import nts.uk.ctx.basic.infra.entity.organization.jobtitle.CmnmtJobTitlePK;
+import nts.uk.ctx.basic.dom.organization.position.HiterarchyOrderCode;
+import nts.uk.ctx.basic.dom.organization.position.JobCode;
+import nts.uk.ctx.basic.dom.organization.position.JobName;
+import nts.uk.ctx.basic.dom.organization.position.Position;
+import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
+import nts.uk.ctx.basic.dom.organization.position.PresenceCheckScopeSet;
+import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitle;
+import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitlePK;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
-public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRepository {
+public class JpaPositionReponsitory extends JpaRepository implements PositionRepository {
 
 	
 
@@ -48,7 +48,7 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	
 	
 	@Override
-	public Optional<JobTitle> findSingle(String companyCode,
+	public Optional<Position> findSingle(String companyCode,
 			String historyID,JobCode jobCode ) {
 		return this.queryProxy().query(FIND_SINGLE, CmnmtJobTitle.class)
 				.setParameter("companyCode", "'" + companyCode + "'")
@@ -59,8 +59,8 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	}
 	
 
-	private JobTitle convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
-		return new JobTitle(
+	private Position convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
+		return new Position(
 				new JobName(cmnmtJobTittle.getJobName()),
 				GeneralDate.localDate(cmnmtJobTittle.getEndDate()),
 				new JobCode(cmnmtJobTittle.getCmnmtJobTittlePK().getJobCode()),
@@ -75,7 +75,7 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	}
 	
 	
-	private CmnmtJobTitle convertToDbType(JobTitle position) {
+	private CmnmtJobTitle convertToDbType(Position position) {
 		CmnmtJobTitle cmnmtJobTittle = new CmnmtJobTitle();
 		CmnmtJobTitlePK cmnmtJobTittlePK = new CmnmtJobTitlePK(
 				position.getJobCode().v(),
@@ -94,15 +94,15 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	
 	
 
-	private final JobTitle toDomain(CmnmtJobTitle entity) {
-		val domain = JobTitle.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo,entity.hiterarchyOrderCode,entity.presenceCheckScopeSet);
+	private final Position toDomain(CmnmtJobTitle entity) {
+		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo,entity.hiterarchyOrderCode,entity.presenceCheckScopeSet);
 
 		return domain;
 	}
 	
 	
 	
-	private CmnmtJobTitle toEntityPK(JobTitle domain) {
+	private CmnmtJobTitle toEntityPK(Position domain) {
 		val entity = new CmnmtJobTitle();
 
 		entity.cmnmtJobTittlePK = new CmnmtJobTitlePK();
@@ -137,20 +137,20 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	}
 	
 	@Override
-	public void add(JobTitle position) {
+	public void add(Position position) {
 		this.commandProxy().insert(convertToDbType(position));
 
 	}
 
 	@Override
-	public void update(JobTitle position) {
+	public void update(Position position) {
 		this.commandProxy().update(convertToDbType(position));
 
 	}
 
 
 	@Override
-	public void remove(List<JobTitle> details) {
+	public void remove(List<Position> details) {
 		List<CmnmtJobTitle> cmnmtJobTittlePKs = details.stream().map(
 					detail -> {return this.toEntityPK(detail);}
 				).collect(Collectors.toList());
@@ -158,7 +158,7 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	}
 
 	@Override
-	public List<JobTitle> getPositions(String companyCode) {
+	public List<Position> getPositions(String companyCode) {
 		return this.queryProxy().query(FIND_ALL, CmnmtJobTitle.class)
 				.setParameter("companyCd", companyCode)
 
@@ -166,7 +166,7 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	}
 
 	@Override
-	public Optional<JobTitle> getPosition(String companyCode, String jobCode, String historyID) {
+	public Optional<Position> getPosition(String companyCode, String jobCode, String historyID) {
 		try {
 			return this.queryProxy().find(new CmnmtJobTitlePK(companyCode, jobCode ,historyID), CmnmtJobTitle.class)
 					.map(c -> toDomain(c));
@@ -182,7 +182,7 @@ public class JpaJobTitleReponsitory extends JpaRepository implements JobTitleRep
 	}
 
 	@Override
-	public List<JobTitle> findAll(String companyCode) {
+	public List<Position> findAll(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

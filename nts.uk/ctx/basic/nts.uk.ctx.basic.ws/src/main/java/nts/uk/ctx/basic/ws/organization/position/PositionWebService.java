@@ -9,14 +9,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.organization.jobtitle.CreateJobTitleCommand;
-import nts.uk.ctx.basic.app.command.organization.jobtitle.CreateJobTitleCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.jobtitle.RemoveJobTitleCommand;
-import nts.uk.ctx.basic.app.command.organization.jobtitle.RemoveJobTitleCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.jobtitle.UpdateJobTitleCommand;
-import nts.uk.ctx.basic.app.command.organization.jobtitle.UpdateJobTitleCommandHandler;
-import nts.uk.ctx.basic.app.find.organization.jobtitle.JobTitleDto;
-import nts.uk.ctx.basic.app.find.organization.jobtitle.JobTitleFinder;
+import nts.uk.ctx.basic.app.command.organization.position.CreateJobTitleCommand;
+import nts.uk.ctx.basic.app.command.organization.position.CreateJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.position.RemoveJobTitleCommand;
+import nts.uk.ctx.basic.app.command.organization.position.RemoveJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.position.UpdateJobTitleCommand;
+import nts.uk.ctx.basic.app.command.organization.position.UpdateJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.find.organization.position.JobTitleDto;
+import nts.uk.ctx.basic.app.find.organization.position.JobTitleFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 
