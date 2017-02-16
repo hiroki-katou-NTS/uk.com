@@ -207,9 +207,13 @@ var qmm019;
             };
             ScreenModel.prototype.openEDialog = function () {
                 var self = this;
-                if (self.singleSelectedCode() == null)
+                if (self.singleSelectedCode() === null)
                     return false;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
+                if (singleSelectedCode[0] === undefined
+                    || singleSelectedCode[1] === undefined
+                    || self.layoutMaster().historyId === undefined)
+                    return false;
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
                 nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
