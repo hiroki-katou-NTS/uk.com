@@ -27,7 +27,7 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 			this.repository.add(employ);	
 			//A_SEL_001にチェックが付いている場合
 			if(command.isChkDisplayFlg()){
-				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode, 1);
+				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
 				if(employmentByDisplayFlg.isPresent()){
 					//[雇用マスタ.UPD-2]を実施する
 					Employment employmentDisplay = employmentByDisplayFlg.get();
