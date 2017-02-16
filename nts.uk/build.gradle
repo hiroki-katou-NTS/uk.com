@@ -362,7 +362,7 @@ project (':web:nts.uk.pr.web') {
 		runtime project (':screen:pr:nts.uk.screen.pr.app')
 		runtime project (':screen:pr:nts.uk.screen.pr.infra')
 		
-		runtime project (':file:pr:nts.uk.file.pr.ws')
+		runtime project (':file:pr:nts.uk.file.pr.app')
 		runtime project (':file:pr:nts.uk.file.pr.infra')
 		
 		// to provide PrimitiveValue
@@ -386,12 +386,6 @@ project (':screen:pr:nts.uk.screen.pr.app') {
 project (':screen:pr:nts.uk.screen.pr.infra') {
 	dependencies {
 		compile project (':screen:pr:nts.uk.screen.pr.app')
-	}
-}
-
-project (':file:pr:nts.uk.file.pr.ws') {
-	dependencies {
-		compile project (':file:pr:nts.uk.file.pr.app')
 	}
 }
 
