@@ -107,10 +107,10 @@
 		   		</div>
 		   		
 			<script type="text/html" id="header-template">
-				<button data-bind="">新規</button>
-				<button class="proceed" data-bind="">登録</button>
-				<button data-bind="">削除</button>
-				<button data-bind="">閉じる</button>
+				<button data-bind="click: switchToCreateMode">新規</button>
+				<button class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
+				<button data-bind="click: remove">削除</button>
+				<button data-bind="click: close">閉じる</button>
 			</script>
 			<script type="text/html" id="content-template">
 			<div class="left-content">

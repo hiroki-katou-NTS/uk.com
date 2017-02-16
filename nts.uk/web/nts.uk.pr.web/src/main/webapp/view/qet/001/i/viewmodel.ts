@@ -83,6 +83,8 @@ module qet001.i.viewmodel {
             var self = this;
             self.aggregateItemSelectedCode.subscribe((code) => {
                 if (code == undefined || code == null || code == '') {
+                    self.aggregateItemDetail(new AggregateItemDetail(paymentType,
+                        categoryName, masterItemInCate));
                     return;
                 }
                 self.loadDetailAggregateItem(code).done(function(res: service.Item) {
@@ -129,21 +131,36 @@ module qet001.i.viewmodel {
             return dfd.promise();
         }
         
-        
+        /**
+         * Switch to create mode.
+         */
         public switchToCreateMode() {
-            
+            var self = this;
+            self.aggregateItemSelectedCode(null);
         }
         
         public save() {
+            // validate.
+            var self = this;
+            if (self.aggregateItemDetail().code() == undefined || self.aggregateItemDetail().code() == null
+                || self.aggregateItemDetail().name() == undefined || self.aggregateItemDetail().name() == null) {
+                nts.uk.ui.dialog.alert('未入力エラー');
+                return;
+            }
             
         }
         
         public remove() {
-            
+            if (this.aggregateItemSelectedCode() == null) {
+                return;
+            }
         }
         
+        /**
+         * Close dialog.
+         */
         public close() {
-            
+            nts.uk.ui.windows.close();
         }
     }
     
