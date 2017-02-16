@@ -29,13 +29,22 @@ var nts;
                                     var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
                                     return lastHistory;
                                 };
+                                ScreenModel.prototype.minusOneMonth = function (stringDate) {
+                                    var index = stringDate.indexOf("/");
+                                    var year = stringDate.substr(0, index);
+                                    var month = (Number(stringDate.substring(index + 1, stringDate.length)) - 1).toString();
+                                    if (month == "0") {
+                                        year = (Number(year) - 1).toString();
+                                    }
+                                    return month.length == 1 ? year + "/0" + month : year + "/" + month;
+                                };
                                 ScreenModel.prototype.clickSettingButton = function () {
                                     var self = this;
                                     if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {
                                         alert("ER011");
                                     }
                                     else {
-                                        self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.selectedDate();
+                                        self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.minusOneMonth(self.selectedDate());
                                         self.getInsuranceOfficeItemDto().childs.unshift(new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
                                         nts.uk.ui.windows.setShared("addHistoryChildValue", self.getInsuranceOfficeItemDto(), true);
                                         nts.uk.ui.windows.close();
@@ -52,7 +61,7 @@ var nts;
                                         return true;
                                     }
                                     else {
-                                        if (month1 < month2) {
+                                        if (month1 + 1 < month2) {
                                             return true;
                                         }
                                         else {

@@ -1,3 +1,7 @@
-.ntsRadioBox{
+.ntsRadioBox {
 	display: block;
+}
+
+.float_right {
+	float: right;
 }
