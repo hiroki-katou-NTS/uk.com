@@ -113,6 +113,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	public void update(Company company) {
 		try {
 			this.commandProxy().update(toEntity(company));
+			System.out.println(company.getCompanyName());
 		} catch (Exception e) {
 			throw (e);
 		}

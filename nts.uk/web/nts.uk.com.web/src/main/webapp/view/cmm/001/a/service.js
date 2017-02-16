@@ -51,9 +51,9 @@ var cmm001;
                 return dfd.promise();
             }
             service.addData = addData;
-            function updateData() {
+            function updateData(company) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.updateCompany)
+                nts.uk.request.ajax(paths.updateCompany, company)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
