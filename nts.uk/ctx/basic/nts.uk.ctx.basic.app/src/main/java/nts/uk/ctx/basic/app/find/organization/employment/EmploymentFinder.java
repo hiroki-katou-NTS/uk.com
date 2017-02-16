@@ -30,4 +30,13 @@ public class EmploymentFinder {
 	public Optional<EmploymentDto> getEmployment(String companyCode, String employmentCode){
 		return this.repository.findEmployment(companyCode, employmentCode).map(employ -> EmploymentDto.fromDomain(employ));		
 	}
+	/**
+	 * find employment by company code and display flag
+	 * @param companyCode
+	 * @param displayFlg
+	 * @return
+	 */
+	public Optional<EmploymentDto> findEmpByDisplayFlg(String companyCode){
+		return this.repository.findEmploymnetByDisplayFlg(companyCode).map(employ -> EmploymentDto.fromDomain(employ));
+	}
 } 

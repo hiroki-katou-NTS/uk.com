@@ -39,5 +39,5 @@ public interface EmploymentRepository {
 	 * @param displayFlg
 	 * @return
 	 */
-	Optional<Employment> findEmploymnetByDisplayFlg(String companyCode, int displayFlg);
+	Optional<Employment> findEmploymnetByDisplayFlg(String companyCode);
 }

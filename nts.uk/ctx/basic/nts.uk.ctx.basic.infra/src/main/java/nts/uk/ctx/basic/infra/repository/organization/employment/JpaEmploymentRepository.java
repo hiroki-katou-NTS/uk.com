@@ -15,7 +15,7 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 	private final String SELECT_ALL_EMP_BY_COMPANY = "SELECT c FROM CmnmtEmp "
 			+ "WHERE c.cmnmtEmpPk.companyCode = :companyCode";
 	private final String SELECT_EMP_BY_DISPLAY_FLG = SELECT_ALL_EMP_BY_COMPANY
-			+ " AND c.displayFlg = :displayFlg";
+			+ " AND c.displayFlg = 1";
 	@Override
 	public void add(Employment employment) {
 		this.commandProxy().insert(toEntity(employment));
@@ -78,10 +78,9 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 	}
 
 	@Override
-	public Optional<Employment> findEmploymnetByDisplayFlg(String companyCode, int displayFlg) {		
+	public Optional<Employment> findEmploymnetByDisplayFlg(String companyCode) {		
 		List<Employment> lstEmployment= this.queryProxy().query(SELECT_EMP_BY_DISPLAY_FLG, CmnmtEmp.class)
 				.setParameter("companyCode", companyCode)
-				.setParameter("displayFlg", displayFlg)
 				.getList(c -> toDomain(c));
 		Employment employment;
 		if(lstEmployment.isEmpty())
