@@ -25,5 +25,5 @@ public class SalaryOutputSetting {
 	private CompanyCode companyCode;
 	
 	/** The category settings. */
-	private List<SalaryOutputSetting> categorySettings;
+	private List<SalaryCategorySetting> categorySettings;
 }

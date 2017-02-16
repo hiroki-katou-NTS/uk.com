@@ -66,7 +66,8 @@
 								<th class="halign-center">内（特定）</th>
 								<th class="halign-center">内（基本）</th>
 							</tr>
-							<tr class="bg-green">
+							<tr class="bg-green" data-bind="with: rateItems">
+							<th class="halign-center">40.900/1000</th>
 								<th class="halign-center">40.900/1000</th>
 								<th class="halign-center">40.900/1000</th>
 								<th class="halign-center">40.900/1000</th>
@@ -74,23 +75,15 @@
 								<th class="halign-center">40.900/1000</th>
 								<th class="halign-center">40.900/1000</th>
 								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<!--<com:ko-foreach bind="rateItems">
-									<com:ko-if bind="insuranceType == 'Basic'">
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-										<th><span data-bind="text: payType"></span></th>
-									</com:ko-if> 
-									<th><span data-bind="text: payType"></span></th>
-									<th><span data-bind="text: payType"></span></th>
-									<th><span data-bind="text: payType"></span></th>
-									<th><span data-bind="text: payType"></span></th>
-								</com:ko-foreach>-->
+								<!-- 
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalGeneral()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalNursing()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalSpecific()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalBasic()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyGeneral()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyNursing()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanySpecific()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyBasic()"></span></th> -->
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
 								<tr class="inp-money">
@@ -101,20 +94,18 @@
 									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
 									<com:ko-foreach bind="$parent.listHealthInsuranceAvgearn">
 										<com:ko-if bind="$parent.code == levelCode">
-											<td><input
-												data-bind="value: personalAvg.healthGeneralMny"></input></td>
-											<td><input
-												data-bind="value: personalAvg.healthNursingMny"></input></td>
-											<td><input
-												data-bind="value: personalAvg.healthSpecificMny"></input></td>
-											<td><input data-bind="value: personalAvg.healthBasicMny"></input></td>
-											<td><input
-												data-bind="value: companyAvg.healthGeneralMny"></input></td>
-											<td><input
-												data-bind="value: companyAvg.healthNursingMny"></input></td>
-											<td><input
-												data-bind="value: companyAvg.healthSpecificMny"></input></td>
-											<td><input data-bind="value: companyAvg.healthBasicMny"></input></td>
+											<com:ko tag="with" bind="personalAvg">
+												<td><input data-bind="value: healthGeneralMny"></input></td>
+												<td><input data-bind="value: healthNursingMny"></input></td>
+												<td><input data-bind="value: healthSpecificMny"></input></td>
+												<td><input data-bind="value: healthBasicMny"></input></td>
+											</com:ko>
+											<com:ko tag="with" bind="companyAvg">
+												<td><input data-bind="value: healthGeneralMny"></input></td>
+												<td><input data-bind="value: healthNursingMny"></input></td>
+												<td><input data-bind="value: healthSpecificMny"></input></td>
+												<td><input data-bind="value: healthBasicMny"></input></td>
+											</com:ko>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>
