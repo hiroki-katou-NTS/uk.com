@@ -3,13 +3,15 @@ package nts.uk.ctx.basic.infra.repository.organization.employment;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.organization.employment.Employment;
 import nts.uk.ctx.basic.dom.organization.employment.EmploymentRepository;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmp;
 import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmpPK;
-
+@Stateless
 public class JpaEmploymentRepository extends JpaRepository implements EmploymentRepository{
 	
 	private final String SELECT_ALL_EMP_BY_COMPANY = "SELECT c FROM CmnmtEmp "
