@@ -5,12 +5,31 @@ var qet001;
         var service;
         (function (service) {
             var servicePath = {
-                findOutputSettings: 'ctx/pr/report/wageledger/outputsetting/findAll'
+                findOutputSettings: 'ctx/pr/report/wageledger/outputsetting/findAll',
+                printReport: 'screen/pr/qet001/print'
             };
             function findOutputSettings() {
                 return nts.uk.request.ajax(servicePath.findOutputSettings);
             }
             service.findOutputSettings = findOutputSettings;
+            function printReport(data) {
+                var dfd = $.Deferred();
+                var dataJson = {
+                    targetYear: data.targetYear(),
+                    isAggreatePreliminaryMonth: data.isAggreatePreliminaryMonth(),
+                    layoutSelected: data.layoutSelected(),
+                    isPageBreakIndicator: data.isPageBreakIndicator(),
+                    outputTypeSelected: data.outputTypeSelected(),
+                    outputSettingSelectedCode: data.outputSettingSelectedCode()
+                };
+                nts.uk.request.exportFile(servicePath.printReport, dataJson).done(function () {
+                    dfd.resolve();
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.printReport = printReport;
             var model;
             (function (model) {
                 var WageLedgerOutputSetting = (function () {

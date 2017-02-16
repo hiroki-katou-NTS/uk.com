@@ -53,6 +53,9 @@ var qet001;
                         nts.uk.ui.dialog.alert('未入力エラー');
                         return;
                     }
+                    a.service.printReport(self).done(function () { }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 return ScreenModel;
             }());

@@ -29,10 +29,10 @@ public class AggregateItemFinder {
 		// Fake data.
 		List<AggregateItemDto> dtos = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			dtos.add(AggregateItemDto.builder().code("AGR" + i).name("Aggregate item " + i)
+			dtos.add(AggregateItemDto.builder().code("AG" + i).name("Aggregate item " + i)
 					.showNameZeroValue(i % 2 != 0).showValueZeroValue(i % 2 == 0).paymentType(PaymentType.Salary)
 					.category(WLCategory.Payment).build());
-			dtos.add(AggregateItemDto.builder().code("AGR" + i).name("Aggregate item " + i)
+			dtos.add(AggregateItemDto.builder().code("AG" + i).name("Aggregate item " + i)
 					.showNameZeroValue(i % 2 != 0).showValueZeroValue(i % 2 == 0).paymentType(PaymentType.Salary)
 					.category(WLCategory.Deduction).build());
 		}
@@ -50,7 +50,7 @@ public class AggregateItemFinder {
 		// Fake data.
 		List<AggregateItemDto> dtos = new ArrayList<>();
 		for (int i = 0; i < 10; i++) {
-			dtos.add(AggregateItemDto.builder().code("AGR" + i).name("Aggregate item " + i)
+			dtos.add(AggregateItemDto.builder().code("AG" + i).name("Aggregate item " + i)
 					.showNameZeroValue(i % 2 != 0).showValueZeroValue(i % 2 == 0).paymentType(paymentType)
 					.category(category).build());
 		}

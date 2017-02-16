@@ -3,7 +3,8 @@ module qet001.a {
 
         // Service paths.
         var servicePath = {
-            findOutputSettings: 'ctx/pr/report/wageledger/outputsetting/findAll'
+            findOutputSettings: 'ctx/pr/report/wageledger/outputsetting/findAll',
+            printReport: 'screen/pr/qet001/print'
         }
         
         /**
@@ -11,7 +12,29 @@ module qet001.a {
          */
         export function findOutputSettings(): JQueryPromise<model.WageLedgerOutputSetting[]>{
             return nts.uk.request.ajax(servicePath.findOutputSettings);
-         }
+        }
+        
+        /**
+         * Print report service.
+         */
+        export function printReport(data: viewmodel.ScreenModel) : JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
+            var dataJson = {
+                targetYear: data.targetYear(),
+                isAggreatePreliminaryMonth: data.isAggreatePreliminaryMonth(),
+                layoutSelected: data.layoutSelected(),
+                isPageBreakIndicator: data.isPageBreakIndicator(),
+                outputTypeSelected: data.outputTypeSelected(),
+                outputSettingSelectedCode: data.outputSettingSelectedCode()
+                // TODO: need employee code list.
+            }
+            nts.uk.request.exportFile(servicePath.printReport, dataJson).done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+            return dfd.promise();
+        }
         
         /**
         * Model namespace.

@@ -8,7 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.screen.ws.qet.dto.WageLedgerReportDto;
 
@@ -20,9 +20,15 @@ import nts.uk.ctx.pr.screen.ws.qet.dto.WageLedgerReportDto;
 public class QET001Webservice extends WebService{
 	
 	
+	/**
+	 * Prints the report.
+	 *
+	 * @param printDto the print dto
+	 * @return the export service result
+	 */
 	@POST
 	@Path("print")
-	public FileGeneratorContext printReport(WageLedgerReportDto printDto) {
+	public ExportServiceResult printReport(WageLedgerReportDto printDto) {
 		// TODO: validate print dto.
 		return null;
 	}

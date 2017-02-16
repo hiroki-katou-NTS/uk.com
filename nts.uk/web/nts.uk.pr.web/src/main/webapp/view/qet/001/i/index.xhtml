@@ -142,7 +142,8 @@
 					<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
 										enable: true,
 										constraint: 'WLAggregateItemCode',
-										required: true}"></input>
+										required: true,
+										enable: createMode()}"></input>
 				</div>
 				<div class="name-input">
 					<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: name,
