@@ -15,5 +15,7 @@ public class UpdatePositionCommand {
 	private String jobName;
 	private String jobOutCode;
 	private String memo;
+	private String hiterarchyOrderCode;
+	private int presenceCheckScopeSet;
 
 }

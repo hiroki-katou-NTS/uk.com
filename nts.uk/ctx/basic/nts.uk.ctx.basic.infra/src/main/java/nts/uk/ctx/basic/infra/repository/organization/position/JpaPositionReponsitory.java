@@ -10,10 +10,12 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.dom.organization.position.HiterarchyOrderCode;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
 import nts.uk.ctx.basic.dom.organization.position.JobName;
 import nts.uk.ctx.basic.dom.organization.position.Position;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
+import nts.uk.ctx.basic.dom.organization.position.PresenceCheckScopeSet;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTittle;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTittlePK;
 import nts.uk.shr.com.primitive.Memo;
@@ -66,7 +68,10 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 				GeneralDate.localDate(cmnmtJobTittle.getStartDate()),
 				cmnmtJobTittle.getCmnmtJobTittlePK().getHistoryID(),
 				cmnmtJobTittle.getCmnmtJobTittlePK().getCompanyCode(),
-				new Memo(cmnmtJobTittle.getMemo()));
+				new Memo(cmnmtJobTittle.getMemo()),
+				new HiterarchyOrderCode(cmnmtJobTittle.getHiterarchyOrderCode()),
+				PresenceCheckScopeSet.valueOf(Integer.toString(cmnmtJobTittle.getPresenceCheckScopeSet())));
+	
 	}
 	
 	
@@ -81,6 +86,8 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		cmnmtJobTittle.setStartDate(position.getStartDate().localDate());
 		cmnmtJobTittle.setJobName(position.getJobName().v());
 		cmnmtJobTittle.setJobOutCode(position.getJobOutCode().v());
+		cmnmtJobTittle.setHiterarchyOrderCode(position.getHiterarchyOrderCode().v());
+		cmnmtJobTittle.setPresenceCheckScopeSet(position.getPresenceCheckScopeSet().value);
 		cmnmtJobTittle.setCmnmtJobTittlePK(cmnmtJobTittlePK);
 		return cmnmtJobTittle;
 	}
@@ -88,7 +95,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	
 
 	private final Position toDomain(CmnmtJobTittle entity) {
-		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo);
+		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo,entity.hiterarchyOrderCode,entity.presenceCheckScopeSet);
 
 		return domain;
 	}

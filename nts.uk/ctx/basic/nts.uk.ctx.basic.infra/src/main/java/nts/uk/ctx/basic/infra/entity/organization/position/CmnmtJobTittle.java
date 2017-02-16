@@ -50,9 +50,19 @@ public class CmnmtJobTittle implements Serializable{
 	@Column(name ="JOB_OUT_CODE")
 	public String jobOutCode;
 	
+	@Basic(optional = false)
+	@Column(name ="PRESENCE_CHECK_SCOPE_SET")
+	public int presenceCheckScopeSet;
+	
+	@Basic(optional = false)
+	@Column(name ="HIERARCHY_ORDER_CD")
+	public String hiterarchyOrderCode;
+	
 	public void setCmnmtJobTittlePK(CmnmtJobTittlePK cmnmtJobTittlePK) {
 		this.cmnmtJobTittlePK = cmnmtJobTittlePK;
 	}
+	
+	
 
 	public LocalDate getStartDate() {
 		return startDate;
@@ -96,6 +106,30 @@ public class CmnmtJobTittle implements Serializable{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+
+
+	public int getPresenceCheckScopeSet() {
+		return presenceCheckScopeSet;
+	}
+
+
+
+	public void setPresenceCheckScopeSet(int presenceCheckScopeSet) {
+		this.presenceCheckScopeSet = presenceCheckScopeSet;
+	}
+
+
+
+	public String getHiterarchyOrderCode() {
+		return hiterarchyOrderCode;
+	}
+
+
+
+	public void setHiterarchyOrderCode(String hiterarchyOrderCode) {
+		this.hiterarchyOrderCode = hiterarchyOrderCode;
 	}
 
 	
