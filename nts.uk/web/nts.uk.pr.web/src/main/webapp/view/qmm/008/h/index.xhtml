@@ -31,9 +31,9 @@
 			<div class="contents-area">
 				<div data-bind="ntsFormLabel: {required: true}">事業所 :</div>
 				<span id="lblCode"
-					data-bind="text: healthInsuranceRateModel().officeCode"></span> <span
+					data-bind="text: healthInsuranceRateModel.officeCode"></span> <span
 					id="lblName"
-					data-bind="text: healthInsuranceRateModel().officeName"></span>
+					data-bind="text: healthInsuranceRateModel.officeName"></span>
 				<div style="margin-left: 200px;"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
 				<span id="startMonth">(平成28年04月)</span> <span id="endMonth">
@@ -67,15 +67,6 @@
 								<th class="halign-center">内（基本）</th>
 							</tr>
 							<tr class="bg-green" data-bind="with: rateItems">
-							<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<th class="halign-center">40.900/1000</th>
-								<!-- 
 								<th class="halign-center"><span data-bind="text: healthSalaryPersonalGeneral()"></span></th>
 								<th class="halign-center"><span data-bind="text: healthSalaryPersonalNursing()"></span></th>
 								<th class="halign-center"><span data-bind="text: healthSalaryPersonalSpecific()"></span></th>
@@ -83,7 +74,7 @@
 								<th class="halign-center"><span data-bind="text: healthSalaryCompanyGeneral()"></span></th>
 								<th class="halign-center"><span data-bind="text: healthSalaryCompanyNursing()"></span></th>
 								<th class="halign-center"><span data-bind="text: healthSalaryCompanySpecific()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryCompanyBasic()"></span></th> -->
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyBasic()"></span></th>
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
 								<tr class="inp-money">
@@ -95,16 +86,16 @@
 									<com:ko-foreach bind="$parent.listHealthInsuranceAvgearn">
 										<com:ko-if bind="$parent.code == levelCode">
 											<com:ko tag="with" bind="personalAvg">
-												<td><input data-bind="value: healthGeneralMny"></input></td>
-												<td><input data-bind="value: healthNursingMny"></input></td>
-												<td><input data-bind="value: healthSpecificMny"></input></td>
-												<td><input data-bind="value: healthBasicMny"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: general}"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: nursing}"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: specific}"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: basic}"></input></td>
 											</com:ko>
 											<com:ko tag="with" bind="companyAvg">
-												<td><input data-bind="value: healthGeneralMny"></input></td>
-												<td><input data-bind="value: healthNursingMny"></input></td>
-												<td><input data-bind="value: healthSpecificMny"></input></td>
-												<td><input data-bind="value: healthBasicMny"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: general}"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: nursing}"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: specific}"></input></td>
+												<td><input data-bind="ntsNumberEditor: {value: basic}"></input></td>
 											</com:ko>
 										</com:ko-if>
 									</com:ko-foreach>

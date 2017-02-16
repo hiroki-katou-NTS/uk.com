@@ -1,18 +1,52 @@
 module nts.uk.pr.view.qmm016.l {
     export module service {
         var paths: any = {
-            findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
+            findAllCertification: "pr/wagetable/certification/findall",
+            findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
             findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
             addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
             updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
             deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
         };
 
-        /**
-       * Model namespace. LaborInsuranceOfficeDto
-       */
+        //Function connection service FindAll Certification
+        export function findAllCertification(companyCode: string): JQueryPromise<Array<model.CertificationFindInDto>> {
+            var dfd = $.Deferred<Array<model.CertificationFindInDto>>();
+            nts.uk.request.ajax(paths.findAllCertification + "/" + companyCode)
+                .done(function(res: Array<model.CertificationFindInDto>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function connection service FindAll CertifyGroup
+        export function findAllCertifyGroup(companyCode: string): JQueryPromise<Array<model.CertifyGroupFindInDto>> {
+            var dfd = $.Deferred<Array<model.CertifyGroupFindInDto>>();
+            nts.uk.request.ajax(paths.findAllCertifyGroup + "/" + companyCode)
+                .done(function(res: Array<model.CertifyGroupFindInDto>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
         export module model {
             export class CertificationDto {
+                code: string;
+                name: string;
+            }
+
+            export class CertificationFindInDto {
+                code: string;
+                name: string;
+            }
+            export class CertifyGroupFindInDto {
                 code: string;
                 name: string;
             }

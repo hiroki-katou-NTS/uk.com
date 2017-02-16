@@ -4,59 +4,44 @@ module nts.uk.pr.view.qmm008.h {
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         import HealthInsuranceAvgEarnDto = service.model.HealthInsuranceAvgEarnDto;
         import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
+        import PensionRateItemModel = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateItemModel;
 
         export class ScreenModel {
-            listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
-            listHealthInsuranceAvgearn: KnockoutObservableArray<any>;
-            healthInsuranceRateModel: KnockoutObservable<HealthInsuranceRateModel>;
-            rateItems: any;
-            roundingMethods: KnockoutObservableArray<any>;
+            listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
+            listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
+            healthInsuranceRateModel: HealthInsuranceRateModel;
+            rateItems: Array<PensionRateItemModel>;
 
             constructor(dataOfSelectedOffice, healthModel) {
                 var self = this;
-                self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
-                self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
-                self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                self.healthInsuranceRateModel = new HealthInsuranceRateModel();
+                self.healthInsuranceRateModel.officeCode = dataOfSelectedOffice.code;
+                self.healthInsuranceRateModel.officeName = dataOfSelectedOffice.name;
+                self.listAvgEarnLevelMasterSetting = [];
+                self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
                 self.rateItems = healthModel.rateItems();
-                self.roundingMethods = ko.observableArray([]);
-
             }
 
             /**
              * Start page.
              */
-            public startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred();
+                var dfd = $.Deferred<any>();
                 self.loadAvgEarnLevelMasterSetting().done(() =>
-                    self.loadHealthInsuranceRate().done(() =>
-                        self.loadHealthInsuranceAvgearn().done(() =>
-                            dfd.resolve())));
+                    self.loadHealthInsuranceAvgearn().done(() =>
+                        dfd.resolve()));
                 return dfd.promise();
             }
 
             /**
              * Load AvgEarnLevelMasterSetting list.
              */
-            private loadAvgEarnLevelMasterSetting(): JQueryPromise<any> {
+            private loadAvgEarnLevelMasterSetting(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 commonService.getAvgEarnLevelMasterSettingList().done(res => {
-                    self.listAvgEarnLevelMasterSetting(res);
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-
-            /**
-             * Load healthInsuranceRate.
-             */
-            private loadHealthInsuranceRate(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-                service.findHealthInsuranceRate('id').done(res => {
-                    self.healthInsuranceRateModel().officeCode = res.officeCode;
-                    self.healthInsuranceRateModel().officeName = res.officeName;
+                    self.listAvgEarnLevelMasterSetting = res;
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -65,11 +50,29 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Load HealthInsuranceAvgEarn.
              */
-            private loadHealthInsuranceAvgearn(): JQueryPromise<any> {
+            private loadHealthInsuranceAvgearn(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findHealthInsuranceAvgEarn('id').done(res => {
-                    self.listHealthInsuranceAvgearn(res);
+                    //self.listHealthInsuranceAvgearn(res);
+                    res.forEach(item => {
+                        self.listHealthInsuranceAvgearn.push(
+                            new HealthInsuranceAvgEarnModel(
+                                item.historyId,
+                                item.levelCode,
+                                new HealthInsuranceAvgEarnValueModel(
+                                    item.personalAvg.healthGeneralMny,
+                                    item.personalAvg.healthNursingMny,
+                                    item.personalAvg.healthBasicMny,
+                                    item.personalAvg.healthSpecificMny),
+                                new HealthInsuranceAvgEarnValueModel(
+                                    item.companyAvg.healthGeneralMny,
+                                    item.companyAvg.healthNursingMny,
+                                    item.companyAvg.healthBasicMny,
+                                    item.companyAvg.healthSpecificMny)
+                            )
+                        );
+                    });
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -114,12 +117,24 @@ module nts.uk.pr.view.qmm008.h {
             levelCode: number;
             companyAvg: HealthInsuranceAvgEarnValueModel;
             personalAvg: HealthInsuranceAvgEarnValueModel;
+            constructor(historyId: string, levelCode: number, companyAvg: HealthInsuranceAvgEarnValueModel, personalAvg: HealthInsuranceAvgEarnValueModel) {
+                this.historyId = historyId;
+                this.levelCode = levelCode;
+                this.companyAvg = companyAvg;
+                this.personalAvg = personalAvg;
+            }
         }
         export class HealthInsuranceAvgEarnValueModel {
             general: KnockoutObservable<number>;
             nursing: KnockoutObservable<number>;
             basic: KnockoutObservable<number>;
             specific: KnockoutObservable<number>;
+            constructor(general: number, nursing: number, basic: number, specific: number) {
+                this.general = ko.observable(general);
+                this.nursing = ko.observable(nursing);
+                this.basic = ko.observable(basic);
+                this.specific = ko.observable(specific);
+            }
         }
 
     }

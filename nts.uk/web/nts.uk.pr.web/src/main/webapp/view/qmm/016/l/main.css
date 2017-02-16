@@ -121,12 +121,20 @@ button.nts-switch-button {
 	border-radius: 7px;
 	padding: 20px;
 	margin-top: 10px;
-	height: 500px;
+	height: 400px;
+	width: 800px;
 }
 
 .div50 {
-	width: 48%;
-	margin-left: 15px;
+	width: 45%;
 	float: left;
+	margin-left: 20px;
+	padding-bottom: 5px;
+}
+
+.div100 {
+	width: 98%;
+	float: left;
+	margin-left: 10px;
 	padding-bottom: 5px;
 }

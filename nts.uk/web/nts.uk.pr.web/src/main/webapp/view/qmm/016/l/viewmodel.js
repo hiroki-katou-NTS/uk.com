@@ -10,7 +10,6 @@ var nts;
                 (function (qmm016) {
                     var l;
                     (function (l) {
-                        var option = nts.uk.ui.option;
                         var MultipleTargetSettingDto = l.service.model.MultipleTargetSettingDto;
                         var MultipleTargetSetting = l.service.model.MultipleTargetSetting;
                         var viewmodel;
@@ -18,20 +17,13 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.items = ko.observableArray([]);
-                                    var str = ['a0', 'b0', 'c0', 'd0'];
-                                    for (var j = 0; j < 4; j++) {
-                                        for (var i = 1; i < 51; i++) {
-                                            var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                                            this.items.push(new ItemModel(code, code, code, code));
-                                        }
-                                    }
-                                    self.columns = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 20 },
-                                        { headerText: '名称', prop: 'name', width: 40 },
-                                        { headerText: '説明', prop: 'description', width: 60 },
-                                        { headerText: '説明1', prop: 'other1', width: 100 },
-                                        { headerText: '説明2', prop: 'other2', width: 100 }
+                                    self.columnsCertification = ko.observableArray([
+                                        { headerText: 'コード', prop: 'code', width: 60 },
+                                        { headerText: '名称', prop: 'name', width: 180 }
+                                    ]);
+                                    self.columnsLstCertifyGroup = ko.observableArray([
+                                        { headerText: 'コード', prop: 'code', width: 120 },
+                                        { headerText: '名称', prop: 'name', width: 120 }
                                     ]);
                                     self.currentCode = ko.observable();
                                     self.currentCodeList = ko.observableArray([]);
@@ -47,12 +39,12 @@ var nts;
                                             textalign: "left"
                                         }))
                                     };
-                                    self.columnsLstlaborInsuranceOffice = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 120 },
-                                        { headerText: '名称', prop: 'name', width: 120 }
-                                    ]);
                                     self.enableButton = ko.observable(true);
                                     self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
+                                    self.selectCodeLstLstCertifyGroup = ko.observable('');
+                                    self.selectLstCodeLstCertification = ko.observableArray([]);
+                                    self.lstCertificationInfo = ko.observableArray([]);
+                                    self.selectLstCodeLstCertificationInfo = ko.observableArray([]);
                                 }
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
@@ -64,162 +56,90 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.findAllInsuranceOffice().done(function (data) {
-                                        self.findInsuranceOffice(self.selectCodeLstlaborInsuranceOffice()).done(function (data) { dfd.resolve(self); });
+                                    self.findAllCertification().done(function (data) {
+                                        self.findAllCertifyGroup().done(function (data) {
+                                            dfd.resolve(self);
+                                        });
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.findAllInsuranceOffice = function () {
+                                ScreenModel.prototype.findAllCertification = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    l.service.findAllLaborInsuranceOffice("companyCode").done(function (data) {
-                                        self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
-                                        self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
-                                        self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
-                                            self.showInsuranceOffice(selectCodeLstlaborInsuranceOffice);
-                                        });
+                                    l.service.findAllCertification("CCD1").done(function (data) {
+                                        self.lstCertification = ko.observableArray(data);
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.findInsuranceOffice = function (code) {
+                                ScreenModel.prototype.findAllCertifyGroup = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    var laborInsuranceOfficeFindInDto;
-                                    laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
-                                    laborInsuranceOfficeFindInDto.code = code;
-                                    laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
-                                    l.service.findLaborInsuranceOffice(laborInsuranceOfficeFindInDto).done(function (data) {
-                                        self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
-                                        dfd.resolve(null);
+                                    l.service.findAllCertifyGroup("CCD1").done(function (data) {
+                                        self.lstCertifyGroup = ko.observableArray(data);
+                                        dfd.resolve(self);
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.showInsuranceOffice = function (code) {
+                                ScreenModel.prototype.lefttorightCertification = function () {
                                     var self = this;
-                                    var laborInsuranceOfficeFindInDto;
-                                    laborInsuranceOfficeFindInDto = new LaborInsuranceOfficeFindInDto();
-                                    laborInsuranceOfficeFindInDto.code = code;
-                                    laborInsuranceOfficeFindInDto.companyCode = "companyCode001";
-                                    l.service.findLaborInsuranceOffice(laborInsuranceOfficeFindInDto).done(function (data) {
-                                        self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
-                                    });
+                                    var selectLstCodeLstCertification;
+                                    var lstCertification;
+                                    var lstCertificationInfo;
+                                    lstCertification = self.lstCertification();
+                                    lstCertificationInfo = self.lstCertificationInfo();
+                                    selectLstCodeLstCertification = self.selectLstCodeLstCertification();
+                                    if (selectLstCodeLstCertification != null && selectLstCodeLstCertification != undefined) {
+                                        for (var _i = 0, selectLstCodeLstCertification_1 = selectLstCodeLstCertification; _i < selectLstCodeLstCertification_1.length; _i++) {
+                                            var itemSelectLstCodeLstCertification = selectLstCodeLstCertification_1[_i];
+                                            var indexDelete = 0;
+                                            for (var _a = 0, lstCertification_1 = lstCertification; _a < lstCertification_1.length; _a++) {
+                                                var itemDelete = lstCertification_1[_a];
+                                                indexDelete++;
+                                                if (itemDelete.code === itemSelectLstCodeLstCertification) {
+                                                    lstCertificationInfo.push(itemDelete);
+                                                    indexDelete--;
+                                                    break;
+                                                }
+                                            }
+                                            lstCertification.splice(indexDelete, 1);
+                                        }
+                                        self.lstCertification(lstCertification);
+                                        self.lstCertificationInfo(lstCertificationInfo);
+                                    }
                                 };
-                                ScreenModel.prototype.addLaborInsuranceOffice = function () {
+                                ScreenModel.prototype.righttoleftCertification = function () {
                                     var self = this;
-                                    l.service.addLaborInsuranceOffice(self.collectData(), "000001");
-                                };
-                                ScreenModel.prototype.updateLaborInsuranceOffice = function () {
-                                    var self = this;
-                                    l.service.updateLaborInsuranceOffice(self.collectData(), "000001");
-                                };
-                                ScreenModel.prototype.deleteLaborInsuranceOffice = function () {
-                                    var self = this;
-                                    l.service.deleteLaborInsuranceOffice(self.laborInsuranceOfficeModel().code(), "00001");
-                                };
-                                ScreenModel.prototype.collectData = function () {
-                                    var self = this;
-                                    var laborInsuranceOffice;
-                                    laborInsuranceOffice = new LaborInsuranceOfficeDto();
-                                    laborInsuranceOffice.code = self.laborInsuranceOfficeModel().code();
-                                    laborInsuranceOffice.name = self.laborInsuranceOfficeModel().name();
-                                    laborInsuranceOffice.shortName = self.laborInsuranceOfficeModel().shortName();
-                                    laborInsuranceOffice.picName = self.laborInsuranceOfficeModel().picName();
-                                    laborInsuranceOffice.picPosition = self.laborInsuranceOfficeModel().picPosition();
-                                    laborInsuranceOffice.potalCode = self.laborInsuranceOfficeModel().postalCode();
-                                    laborInsuranceOffice.address1st = self.laborInsuranceOfficeModel().address1st();
-                                    laborInsuranceOffice.address2nd = self.laborInsuranceOfficeModel().address2nd();
-                                    laborInsuranceOffice.kanaAddress1st = self.laborInsuranceOfficeModel().kanaAddress1st();
-                                    laborInsuranceOffice.kanaAddress2nd = self.laborInsuranceOfficeModel().kanaAddress2nd();
-                                    laborInsuranceOffice.phoneNumber = self.laborInsuranceOfficeModel().phoneNumber();
-                                    laborInsuranceOffice.citySign = self.laborInsuranceOfficeModel().citySign();
-                                    laborInsuranceOffice.officeMark = self.laborInsuranceOfficeModel().officeMark();
-                                    laborInsuranceOffice.officeNoA = self.laborInsuranceOfficeModel().officeNoA();
-                                    laborInsuranceOffice.officeNoB = self.laborInsuranceOfficeModel().officeNoB();
-                                    laborInsuranceOffice.officeNoC = self.laborInsuranceOfficeModel().officeNoC();
-                                    laborInsuranceOffice.memo = self.laborInsuranceOfficeModel().memo();
-                                    return laborInsuranceOffice;
+                                    var selectLstCodeLstCertificationInfo;
+                                    var lstCertification;
+                                    var lstCertificationInfo;
+                                    lstCertification = self.lstCertification();
+                                    lstCertificationInfo = self.lstCertificationInfo();
+                                    selectLstCodeLstCertificationInfo = self.selectLstCodeLstCertificationInfo();
+                                    if (selectLstCodeLstCertificationInfo != null && selectLstCodeLstCertificationInfo != undefined) {
+                                        for (var _i = 0, selectLstCodeLstCertificationInfo_1 = selectLstCodeLstCertificationInfo; _i < selectLstCodeLstCertificationInfo_1.length; _i++) {
+                                            var itemSelectLstCodeLstCertification = selectLstCodeLstCertificationInfo_1[_i];
+                                            var indexDelete = 0;
+                                            for (var _a = 0, lstCertificationInfo_1 = lstCertificationInfo; _a < lstCertificationInfo_1.length; _a++) {
+                                                var itemDelete = lstCertificationInfo_1[_a];
+                                                indexDelete++;
+                                                if (itemDelete.code === itemSelectLstCodeLstCertification) {
+                                                    lstCertification.push(itemDelete);
+                                                    indexDelete--;
+                                                    break;
+                                                }
+                                            }
+                                            lstCertificationInfo.splice(indexDelete, 1);
+                                        }
+                                        self.lstCertification(lstCertification);
+                                        self.lstCertificationInfo(lstCertificationInfo);
+                                        self.selectLstCodeLstCertificationInfo([]);
+                                        self.selectLstCodeLstCertification([]);
+                                    }
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var LaborInsuranceOfficeModel = (function () {
-                                function LaborInsuranceOfficeModel(officeInfo) {
-                                    this.code = ko.observable(officeInfo.code);
-                                    this.name = ko.observable(officeInfo.name);
-                                    this.shortName = ko.observable(officeInfo.shortName);
-                                    this.picName = ko.observable(officeInfo.picName);
-                                    this.picPosition = ko.observable(officeInfo.picPosition);
-                                    this.postalCode = ko.observable(officeInfo.potalCode);
-                                    this.address1st = ko.observable(officeInfo.address1st);
-                                    this.kanaAddress1st = ko.observable(officeInfo.kanaAddress1st);
-                                    this.address2nd = ko.observable(officeInfo.address2nd);
-                                    this.kanaAddress2nd = ko.observable(officeInfo.kanaAddress2nd);
-                                    this.phoneNumber = ko.observable(officeInfo.phoneNumber);
-                                    this.citySign = ko.observable(officeInfo.citySign);
-                                    this.officeMark = ko.observable(officeInfo.officeMark);
-                                    this.officeNoA = ko.observable(officeInfo.officeNoA);
-                                    this.officeNoB = ko.observable(officeInfo.officeNoB);
-                                    this.officeNoC = ko.observable(officeInfo.officeNoC);
-                                    this.memo = ko.observable(officeInfo.memo);
-                                    this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                                    this.multilineeditor = ko.observable({
-                                        memo: ko.observable(officeInfo.memo),
-                                        readonly: false,
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                                            resizeable: true,
-                                            placeholder: "Placeholder for text editor",
-                                            width: "",
-                                            textalign: "left"
-                                        })),
-                                    });
-                                }
-                                LaborInsuranceOfficeModel.prototype.resetAllValue = function () {
-                                    this.code('');
-                                    this.name('');
-                                    this.shortName('');
-                                    this.picName('');
-                                    this.picPosition('');
-                                    this.postalCode('');
-                                    this.address1st('');
-                                    this.kanaAddress1st('');
-                                    this.address2nd('');
-                                    this.kanaAddress2nd('');
-                                    this.phoneNumber('');
-                                    this.citySign('');
-                                    this.officeMark('');
-                                    this.officeNoA('');
-                                    this.officeNoB('');
-                                    this.officeNoC('');
-                                    this.memo('');
-                                    this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                                    this.multilineeditor({
-                                        memo: ko.observable(''),
-                                        readonly: false,
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                                            resizeable: true,
-                                            placeholder: "Placeholder for text editor",
-                                            width: "",
-                                            textalign: "left"
-                                        })),
-                                    });
-                                };
-                                return LaborInsuranceOfficeModel;
-                            }());
-                            viewmodel.LaborInsuranceOfficeModel = LaborInsuranceOfficeModel;
-                            var ItemModel = (function () {
-                                function ItemModel(code, name, description, other1, other2) {
-                                    this.code = code;
-                                    this.name = name;
-                                    this.description = description;
-                                    this.other1 = other1;
-                                    this.other2 = other2 || other1;
-                                }
-                                return ItemModel;
-                            }());
-                            viewmodel.ItemModel = ItemModel;
                         })(viewmodel = l.viewmodel || (l.viewmodel = {}));
                     })(l = qmm016.l || (qmm016.l = {}));
                 })(qmm016 = view.qmm016 || (view.qmm016 = {}));

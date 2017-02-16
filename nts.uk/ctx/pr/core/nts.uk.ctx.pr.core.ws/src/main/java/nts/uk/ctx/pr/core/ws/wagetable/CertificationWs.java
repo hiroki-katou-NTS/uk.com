@@ -13,21 +13,27 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.wagetable.find.CertifyGroupFindInDto;
-import nts.uk.ctx.pr.core.app.wagetable.find.CertifyGroupFinder;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
+import nts.uk.ctx.pr.core.app.wagetable.find.CertificationFindInDto;
+import nts.uk.ctx.pr.core.app.wagetable.find.CertificationFinder;
 
-@Path("pr/wagetable/certifygroup")
+@Path("pr/wagetable/certification")
 @Produces("application/json")
-public class CertifyGroupWs extends WebService {
+public class CertificationWs extends WebService {
 
 	/** The find. */
 	@Inject
-	private CertifyGroupFinder find;
+	private CertificationFinder find;
 
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @return the list
+	 */
 	@POST
 	@Path("findall/{companyCode}")
-	public List<CertifyGroupFindInDto> findAll(@PathParam("companyCode") String companyCode) {
+	public List<CertificationFindInDto> findAll(@PathParam("companyCode") String companyCode) {
 		return find.findAll(companyCode);
 	}
 }
