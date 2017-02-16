@@ -25,7 +25,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "qwtmt_wagetable_certify_g")
+@Table(name = "QWTMT_WAGETABLE_CERTIFY_G")
 public class QwtmtWagetableCertifyG implements Serializable {
 
 	/** The Constant serialVersionUID. */

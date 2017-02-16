@@ -25,7 +25,7 @@ import lombok.Data;
  */
 @Data
 @Entity
-@Table(name = "qcemt_certification")
+@Table(name = "QCEMT_CERTIFICATION")
 public class QcemtCertification implements Serializable {
     
     /** The Constant serialVersionUID. */
