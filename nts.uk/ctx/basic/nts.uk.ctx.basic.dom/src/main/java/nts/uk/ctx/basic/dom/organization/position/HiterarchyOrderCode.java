@@ -3,10 +3,10 @@ package nts.uk.ctx.basic.dom.organization.position;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(20)
-public class JobName extends StringPrimitiveValue<JobName> {
+@StringMaxLength(10)
+public class HiterarchyOrderCode extends StringPrimitiveValue<HiterarchyOrderCode> {
 
-	public JobName(String rawValue) {
+	public HiterarchyOrderCode(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
@@ -19,5 +19,7 @@ public class JobName extends StringPrimitiveValue<JobName> {
 	public static boolean isExisted(String companyCode, JobCode jobCode) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	} 
 }
+
+
