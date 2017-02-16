@@ -25,20 +25,18 @@ var nts;
                                     self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
                                 }
                                 ScreenModel.prototype.getLastHistory = function (OfficeItem) {
-                                    var index = OfficeItem.childs[OfficeItem.childs.length - 1].codeName.indexOf("~");
-                                    var lastHistory = OfficeItem.childs[OfficeItem.childs.length - 1].codeName.substring(0, index);
+                                    var index = OfficeItem.childs[0].codeName.indexOf("~");
+                                    var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
                                     return lastHistory;
                                 };
                                 ScreenModel.prototype.clickSettingButton = function () {
                                     var self = this;
-                                    var childArray = self.getInsuranceOfficeItemDto().childs;
-                                    var lastChild = childArray[childArray.length - 1];
                                     if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {
-                                        alert();
+                                        alert("ER011");
                                     }
                                     else {
-                                        self.getInsuranceOfficeItemDto().childs[childArray.length - 1].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.selectedDate();
-                                        self.getInsuranceOfficeItemDto().childs.push(new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
+                                        self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.selectedDate();
+                                        self.getInsuranceOfficeItemDto().childs.unshift(new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
                                         nts.uk.ui.windows.setShared("addHistoryChildValue", self.getInsuranceOfficeItemDto(), true);
                                         nts.uk.ui.windows.close();
                                     }

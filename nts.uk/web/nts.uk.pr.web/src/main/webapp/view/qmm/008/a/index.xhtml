@@ -27,7 +27,7 @@
 			<ul class="navigator">
 				<li><a href="#tabpanel-1" class="active">健康保険</a></li>
 				<li><a href="#tabpanel-2" >厚生年金</a></li>
-			</ul>`
+			</ul>
 		</ui:define>
 
 		<ui:define name="content">
@@ -77,11 +77,11 @@
 								<td class="border_none padding_top_20">
 									<div id="date-picker"
 										data-bind="ntsDatePicker: {
-									value:startMonth, 
+									value: startMonth, 
 									dateFormat: 'yyyy/MM'}">
 									</div>
 								</td>
-								<td class="border_none padding_top_20">(平成28年04月) ~ 9999/12
+								<td class="border_none padding_top_20">(平成28年04月) ~ <p class="float_right" data-bind="text:endMonth"></p>
 									<br />
 								</td>
 							</tr>
@@ -339,12 +339,12 @@
 									<div>
 										<div id="date-picker"
 											data-bind="ntsDatePicker: {
-											value: pensionDate , 
+											value: startMonth , 
 											dateFormat: 'yyyy/MM'}">
 										</div>
 									</div>
 								</td>
-								<td class="border_none padding_top_20">(平成28年04月) ~ 9999/12</td>
+								<td class="border_none padding_top_20">(平成28年04月) ~ <p data-bind="text:endMonth"></p></td>
 							</tr>
 							<tr>
 								<td class="border_none"><div

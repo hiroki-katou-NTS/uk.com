@@ -119,11 +119,12 @@ var nts;
                                     }());
                                     finder.InsuranceOfficeItemDto = InsuranceOfficeItemDto;
                                     var PensionRateDto = (function () {
-                                        function PensionRateDto(historyId, companyCode, officeCode, applyRange, autoCalculate, fundInputApply, premiumRateItems, fundRateItems, roundingMethods, maxAmount, childContributionRate) {
+                                        function PensionRateDto(historyId, companyCode, officeCode, startMonth, endMonth, autoCalculate, fundInputApply, premiumRateItems, fundRateItems, roundingMethods, maxAmount, childContributionRate) {
                                             this.historyId = historyId;
                                             this.companyCode = companyCode;
                                             this.officeCode = officeCode;
-                                            this.applyRange = applyRange;
+                                            this.startMonth = startMonth;
+                                            this.endMonth = endMonth;
                                             this.autoCalculate = autoCalculate;
                                             this.fundInputApply = fundInputApply;
                                             this.premiumRateItems = premiumRateItems;

@@ -200,7 +200,8 @@ module nts.uk.pr.view.qmm008.a {
                     historyId: number;
                     companyCode: string;
                     officeCode: string;
-                    applyRange: string;
+                    startMonth: number;
+                    endMonth: number;
                     autoCalculate: boolean;
                     fundInputApply: boolean;
                     premiumRateItems: Array<PensionRateItemDto>;
@@ -209,11 +210,12 @@ module nts.uk.pr.view.qmm008.a {
                     maxAmount: number;
                     childContributionRate: number;
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: number, companyCode: string, officeCode: string, applyRange: string, autoCalculate: boolean, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
+                    constructor(historyId: number, companyCode: string, officeCode: string, startMonth: number,endMonth: number, autoCalculate: boolean, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;
-                        this.applyRange = applyRange;
+                        this.startMonth = startMonth;
+                        this.endMonth = endMonth;
                         this.autoCalculate = autoCalculate;
                         this.fundInputApply = fundInputApply;
                         this.premiumRateItems = premiumRateItems;

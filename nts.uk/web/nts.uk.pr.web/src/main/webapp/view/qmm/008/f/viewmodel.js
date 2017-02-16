@@ -13,17 +13,42 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel(getFromParent) {
+                                function ScreenModel(receiveOfficeItem, selectedHistoryCode) {
                                     var self = this;
+                                    self.OfficeItemModel = ko.observable(receiveOfficeItem);
+                                    self.selectedHistoryCode = ko.observable(selectedHistoryCode);
                                     self.listOptions = ko.observableArray([new optionsModel(1, "履歴を削除する"), new optionsModel(2, "履歴を修正する")]);
                                     self.selectedValue = ko.observable(new optionsModel(1, ""));
                                     self.modalValue = ko.observable("Goodbye world!");
                                     self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
-                                    if (getFromParent != null) {
-                                        this.officeCodeName = ko.observable(getFromParent.code + " " + getFromParent.name);
+                                    if (receiveOfficeItem != null) {
+                                        this.officeCodeName = ko.observable(receiveOfficeItem.codeName);
                                     }
-                                    this.datePicker = ko.observable(getFromParent.name);
+                                    self.startMonth = ko.observable('');
+                                    self.endMonth = ko.observable('');
+                                    self.getDate();
                                 }
+                                ScreenModel.prototype.getDate = function () {
+                                    var self = this;
+                                    self.OfficeItemModel().childs.forEach(function (item, index) {
+                                        if (item.code == self.selectedHistoryCode()) {
+                                            var viewRangeString = self.OfficeItemModel().childs[index].codeName;
+                                            var rangeCharIndex = viewRangeString.indexOf("~");
+                                            self.endMonth(viewRangeString.substr(rangeCharIndex + 1, viewRangeString.length));
+                                            self.startMonth(viewRangeString.substr(0, rangeCharIndex));
+                                        }
+                                    });
+                                };
+                                ScreenModel.prototype.clickSettingButton = function () {
+                                    var self = this;
+                                    self.OfficeItemModel().childs.forEach(function (item, index) {
+                                        if (item.code == self.selectedHistoryCode()) {
+                                            self.OfficeItemModel().childs[index].codeName = self.startMonth() + "~" + self.endMonth();
+                                        }
+                                    });
+                                    nts.uk.ui.windows.setShared("updateHistoryChildValue", self.OfficeItemModel(), true);
+                                    nts.uk.ui.windows.close();
+                                };
                                 ScreenModel.prototype.CloseModalSubWindow = function () {
                                     nts.uk.ui.windows.setShared("updateHistoryChildValue", this.modalValue(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
