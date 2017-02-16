@@ -7,7 +7,7 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 460, height: 485 };</script>
+				<script>var dialogSize = { width: 735, height: 485 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
@@ -21,27 +21,16 @@
 						<span>対象労働日数項目を選択してください。</span>
 					</div>
 					<div id="center-middle">
-						<div class="table">
-							<div class="cell">
-								<i class="icon icon-searchbox"></i>
-							</div>
-							<div class="cell">
-								<div id="search-box" data-bind="ntsSearchBox: {
-															comId: 'multiple-list',
-															items: items, 
-															selected: currentCodeList, 
-															selectedKey: 'code',	 
-															fields: ['name', 'code']}" />
-							</div>
-						</div>
-						<table id="multiple-list" data-bind="ntsGridList: {
-														width: 400,
-														height: 250,
-														options: items,
-														optionsValue: 'code',
-														columns: columns,
-														multiple: true,
-														value: currentCodeList }"></table>
+						<div id="swap-list" data-bind="ntsSwapList: {
+							showSearchBox: { showLeft : true, showRight: true},
+							height: 300,
+							dataSource: items,
+							primaryKey: 'code',
+							columns: ko.observableArray([
+				                { headerText: 'コード', prop: 'code', width: 50 },
+				                { headerText: '名称', prop: 'name', width: 180 },
+				            ]),
+							value: currentCodeListSwap }"></div>
 					</div>
 					<hr id="division"/>
 					<div id="center-bottom" class="valign-center control-group">

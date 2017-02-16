@@ -2,27 +2,13 @@ module qmm018.b.viewmodel {
     export class ScreenModel {
         selectedPaymentDate: KnockoutObservable<any>;
         items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        currentItemList: KnockoutObservableArray<ItemModel>;
+        currentCodeListSwap: KnockoutObservableArray<ItemModel>;
         constructor() {
             var self = this;
             self.selectedPaymentDate = ko.observable(null);
             self.items = ko.observableArray([]);
-            self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 40 },
-                { headerText: '名称', prop: 'name', width: 130 },
-            ]);
-            self.currentCodeList = ko.observableArray([]);
-            self.currentItemList = ko.observableArray([]);
-            self.currentCodeList.subscribe(function(newCodeList){
-                self.currentItemList.removeAll();
-                ko.utils.arrayForEach(newCodeList,function(newCode){
-                    self.currentItemList.push(_.find(self.items(), function(item) { return item.code === newCode; }));
-                });
-            });
+            self.currentCodeListSwap = ko.observableArray([]);
         }
-
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -35,24 +21,20 @@ module qmm018.b.viewmodel {
             });
             return dfd.promise();
         }
-    
         saveData() {
-            nts.uk.ui.windows.setShared('selectedItemList', this.currentItemList);
+            var self = this;
+            nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap);
             nts.uk.ui.windows.close();
         }
-    
         closeWindow() {
             nts.uk.ui.windows.setShared('selectedItemList', ko.observableArray([]));
             nts.uk.ui.windows.close();
         }
     }
     
-    
-
     class ItemModel {
         code: string;
         name: string;
-
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;

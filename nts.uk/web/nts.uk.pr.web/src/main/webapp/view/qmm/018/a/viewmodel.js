@@ -7,57 +7,35 @@ var qmm018;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    //self.paymentDateProcessingList = ko.observableArray([]);
-                    //self.selectedPaymentDate = ko.observable(null);
-                    self.checked = ko.observable(true);
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '就業からの連携' },
-                        { code: '2', name: '明細書項目から選択' }
-                    ]);
-                    self.selectedRuleCode = ko.observable(1);
-                    self.itemList = ko.observableArray([
-                        { code: '1', name: '足した後' },
-                        { code: '2', name: '足す前' }
-                    ]);
-                    self.itemName = ko.observable('');
-                    self.currentCode = ko.observable(3);
-                    self.selectedItemList = ko.observableArray([]);
+                    self.averagePay = ko.observable(new AveragePay(1, 1, 0, 1));
+                    self.paymentDateProcessingList = ko.observableArray([]);
+                    self.selectedItemList1 = ko.observableArray([]);
+                    self.selectedItemList2 = ko.observableArray([]);
                     self.texteditor1 = {
                         value: ko.computed(function () {
                             var s;
-                            ko.utils.arrayForEach(self.selectedItemList(), function (item) { if (!s) {
+                            ko.utils.arrayForEach(self.selectedItemList1(), function (item) { if (!s) {
                                 s = item.name;
                             }
                             else {
                                 s += " + " + item.name;
                             } });
                             return s;
-                        }),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "500px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
+                        })
                     };
-                    self.percentage = ko.observable('60');
                     self.texteditor2 = {
-                        value: self.percentage,
-                        constraint: 'ExceptionPayRate',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "30px",
-                            textalign: "center"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
+                        value: ko.computed(function () {
+                            var s;
+                            ko.utils.arrayForEach(self.selectedItemList2(), function (item) { if (!s) {
+                                s = item.name;
+                            }
+                            else {
+                                s += " + " + item.name;
+                            } });
+                            return s;
+                        })
                     };
+                    self.averagePay().roundTimingSet.subscribe(function (value) { self.averagePay().roundTimingSet(value ? 1 : 0); });
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -71,12 +49,7 @@ var qmm018;
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = {
-                        attendDayGettingSet: self.selectedRuleCode(),
-                        exceptionPayRate: parseInt(self.texteditor2.value()),
-                        roundDigitSet: self.currentCode(),
-                        roundTimingSet: self.checked() ? 1 : 0
-                    };
+                    var command = ko.mapping.toJS(self.averagePay());
                     qmm018.a.service.saveData(command).done(function (data) {
                         dfd.resolve();
                     }).fail(function (res) {
@@ -86,12 +59,7 @@ var qmm018;
                 ScreenModel.prototype.updateData = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = {
-                        attendDayGettingSet: self.selectedRuleCode(),
-                        exceptionPayRate: parseInt(self.texteditor2.value()),
-                        roundDigitSet: self.currentCode(),
-                        roundTimingSet: self.checked() ? 1 : 0
-                    };
+                    var command = ko.mapping.toJS(self.averagePay());
                     qmm018.a.service.updateData(command).done(function (data) {
                         dfd.resolve();
                     }).fail(function (res) {
@@ -101,25 +69,28 @@ var qmm018;
                 ScreenModel.prototype.removeData = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = {
-                        attendDayGettingSet: self.selectedRuleCode(),
-                        exceptionPayRate: parseInt(self.texteditor2.value()),
-                        roundDigitSet: self.currentCode(),
-                        roundTimingSet: self.checked() ? 1 : 0
-                    };
+                    var command = ko.mapping.toJS(self.averagePay());
                     qmm018.a.service.removeData(command).done(function (data) {
                         dfd.resolve();
                     }).fail(function (res) {
                     });
                     return dfd.promise();
                 };
-                ScreenModel.prototype.openSubWindow = function () {
+                ScreenModel.prototype.openSubWindow = function (n) {
                     var self = this;
                     nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function () {
                         var selectedList = nts.uk.ui.windows.getShared('selectedItemList');
-                        self.selectedItemList.removeAll();
-                        if (selectedList().length) {
-                            ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList.push(item); });
+                        if (!n) {
+                            self.selectedItemList1.removeAll();
+                            if (selectedList().length) {
+                                ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList1.push(item); });
+                            }
+                        }
+                        else {
+                            self.selectedItemList2.removeAll();
+                            if (selectedList().length) {
+                                ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList2.push(item); });
+                            }
                         }
                     });
                 };
@@ -132,6 +103,15 @@ var qmm018;
                     this.name = name;
                 }
                 return ItemModel;
+            }());
+            var AveragePay = (function () {
+                function AveragePay(roundDigitSet, attendDayGettingSet, roundTimingSet, exceptionPayRate) {
+                    this.roundDigitSet = ko.observable(roundDigitSet);
+                    this.attendDayGettingSet = ko.observable(attendDayGettingSet);
+                    this.roundTimingSet = ko.observable(roundTimingSet);
+                    this.exceptionPayRate = ko.observable(exceptionPayRate);
+                }
+                return AveragePay;
             }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm018.a || (qmm018.a = {}));

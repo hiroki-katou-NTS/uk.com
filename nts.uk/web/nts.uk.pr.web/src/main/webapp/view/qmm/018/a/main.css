@@ -8,6 +8,10 @@
 .halign-center { text-align: center; }
 .bg-green {background-color: #E0F59E;}
 
+#contents-area {
+	width: 1366px;
+}
+
 #head-label {
 	margin-left: 20px;
 }
@@ -26,7 +30,7 @@
 }
  
  .sub {
- 	margin-left: 50px;
+ 	margin-left: 80px;
  }
  
 button.nts-switch-button selected, button.nts-switch-button  {
@@ -76,7 +80,7 @@ button {
 
 .formula-division {
 	border-color: black;
-	width: 300px;
+	width: 400px;
 }
 
 .formula-text {

@@ -7,7 +7,7 @@
 .halign-center { text-align: center; }
 
 #contents-area {
-	width: 430px;
+	width: 715px;
 }
 
 #center-top {
@@ -22,31 +22,13 @@
 	margin-bottom: 20px;
 }
 
-.icon.icon-searchbox {
-	margin-top: 58px;
-	margin-left: 30px;
-}
-
-input.ntsSearchBox {
-	margin-left: 40px;
-	width: 285px;
-}
-
-.search-btn {
-	width: 70px;
-}
-
-.table {
-	margin-bottom: 10px;
-}
-
 #division {
-	width: 430px;
+	width: 700px;
 	margin-left: 5px;
 }
 
 #center-bottom {
-	margin-left: 120px;
+	margin-left: 260px;
 	margin-bottom: 0px;
 }
 

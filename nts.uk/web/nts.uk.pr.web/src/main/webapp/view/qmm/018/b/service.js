@@ -11,7 +11,6 @@ var qmm018;
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getItemList)
                     .done(function (res) {
-                    console.log(res);
                     dfd.resolve(res);
                 })
                     .fail(function (res) {

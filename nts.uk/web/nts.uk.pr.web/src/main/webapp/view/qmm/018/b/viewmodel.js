@@ -9,18 +9,7 @@ var qmm018;
                     var self = this;
                     self.selectedPaymentDate = ko.observable(null);
                     self.items = ko.observableArray([]);
-                    self.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 40 },
-                        { headerText: '名称', prop: 'name', width: 130 },
-                    ]);
-                    self.currentCodeList = ko.observableArray([]);
-                    self.currentItemList = ko.observableArray([]);
-                    self.currentCodeList.subscribe(function (newCodeList) {
-                        self.currentItemList.removeAll();
-                        ko.utils.arrayForEach(newCodeList, function (newCode) {
-                            self.currentItemList.push(_.find(self.items(), function (item) { return item.code === newCode; }));
-                        });
-                    });
+                    self.currentCodeListSwap = ko.observableArray([]);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -35,7 +24,8 @@ var qmm018;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.saveData = function () {
-                    nts.uk.ui.windows.setShared('selectedItemList', this.currentItemList);
+                    var self = this;
+                    nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeWindow = function () {

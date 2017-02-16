@@ -7,7 +7,6 @@ module qmm018.b.service {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.getItemList)
             .done(function(res: Array<any>) {
-                console.log(res);
                 dfd.resolve(res);
             })
             .fail(function(res) {
