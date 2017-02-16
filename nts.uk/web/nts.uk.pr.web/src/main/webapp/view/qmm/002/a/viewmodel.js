@@ -192,7 +192,18 @@ var nts;
                                 };
                                 ScreenModel.prototype.removeBranch = function () {
                                     var self = this;
-                                    a.service.removeBranch(self.nodeParent().code, self.A_INP_003.value()).done(function () {
+                                    var parentCode = null;
+                                    var childCode = null;
+                                    var check = self.singleSelectedCode().includes("-");
+                                    if (check) {
+                                        var codes = self.singleSelectedCode().split("-");
+                                        parentCode = codes[0];
+                                        childCode = codes[1];
+                                    }
+                                    else {
+                                        parentCode = self.singleSelectedCode();
+                                    }
+                                    a.service.removeBank(!check, parentCode, childCode).done(function () {
                                         // reload tree
                                         self.getBankList();
                                         self.cleanBranch();
