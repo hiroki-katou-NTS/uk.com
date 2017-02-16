@@ -13,8 +13,6 @@ var nts;
                         var option = nts.uk.ui.option;
                         var MultipleTargetSettingDto = l.service.model.MultipleTargetSettingDto;
                         var MultipleTargetSetting = l.service.model.MultipleTargetSetting;
-                        var LaborInsuranceOfficeDto = l.service.model.LaborInsuranceOfficeDto;
-                        var LaborInsuranceOfficeFindInDto = l.service.model.LaborInsuranceOfficeFindInDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {

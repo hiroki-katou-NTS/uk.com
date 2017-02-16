@@ -19,86 +19,20 @@ var nts;
                                 updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
-                            function findAllLaborInsuranceOffice(companyCode) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllLaborInsuranceOffice + "/" + companyCode)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.findAllLaborInsuranceOffice = findAllLaborInsuranceOffice;
-                            function findLaborInsuranceOffice(laborInsuranceOfficeFindInDto) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findLaborInsuranceOffice, laborInsuranceOfficeFindInDto)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.findLaborInsuranceOffice = findLaborInsuranceOffice;
-                            function addLaborInsuranceOffice(laborInsuranceOffice, companyCode) {
-                                var dfd = $.Deferred();
-                                var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
-                                nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                            }
-                            service.addLaborInsuranceOffice = addLaborInsuranceOffice;
-                            function updateLaborInsuranceOffice(laborInsuranceOffice, companyCode) {
-                                var dfd = $.Deferred();
-                                var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
-                                nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                            }
-                            service.updateLaborInsuranceOffice = updateLaborInsuranceOffice;
-                            function deleteLaborInsuranceOffice(code, companyCode) {
-                                var dfd = $.Deferred();
-                                var data = { companyCode: companyCode, code: code };
-                                nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                            }
-                            service.deleteLaborInsuranceOffice = deleteLaborInsuranceOffice;
                             var model;
                             (function (model) {
-                                var LaborInsuranceOfficeDto = (function () {
-                                    function LaborInsuranceOfficeDto() {
+                                var CertificationDto = (function () {
+                                    function CertificationDto() {
                                     }
-                                    return LaborInsuranceOfficeDto;
+                                    return CertificationDto;
                                 }());
-                                model.LaborInsuranceOfficeDto = LaborInsuranceOfficeDto;
-                                var LaborInsuranceOfficeFindOutDto = (function () {
-                                    function LaborInsuranceOfficeFindOutDto() {
+                                model.CertificationDto = CertificationDto;
+                                var CertifyGroupDto = (function () {
+                                    function CertifyGroupDto() {
                                     }
-                                    return LaborInsuranceOfficeFindOutDto;
+                                    return CertifyGroupDto;
                                 }());
-                                model.LaborInsuranceOfficeFindOutDto = LaborInsuranceOfficeFindOutDto;
-                                var LaborInsuranceOfficeFindInDto = (function () {
-                                    function LaborInsuranceOfficeFindInDto() {
-                                    }
-                                    return LaborInsuranceOfficeFindInDto;
-                                }());
-                                model.LaborInsuranceOfficeFindInDto = LaborInsuranceOfficeFindInDto;
+                                model.CertifyGroupDto = CertifyGroupDto;
                                 (function (MultipleTargetSetting) {
                                     MultipleTargetSetting[MultipleTargetSetting["BigestMethod"] = 0] = "BigestMethod";
                                     MultipleTargetSetting[MultipleTargetSetting["TotalMethod"] = 1] = "TotalMethod";
