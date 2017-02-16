@@ -1,7 +1,7 @@
 var qet001;
 (function (qet001) {
     var i;
-    (function (i_1) {
+    (function (i) {
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
@@ -25,7 +25,7 @@ var qet001;
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    i_1.service.findMasterItems().done(function (res) {
+                    i.service.findMasterItems().done(function (res) {
                         self.masterItems(res);
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.PAYMENT, res));
                         self.aggregateItemCategories.push(new AggregateCategory(PaymentType.SALARY, Category.DEDUCTION, res));
@@ -60,37 +60,35 @@ var qet001;
                     self.aggregateItemSelectedCode.subscribe(function (code) {
                         if (code == undefined || code == null || code == '') {
                             self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
+                            self.setStyle();
                             return;
                         }
                         self.loadDetailAggregateItem(code).done(function (res) {
                             self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate, res));
+                            self.setStyle();
                         });
                     });
                 }
                 AggregateCategory.prototype.loadAggregateItemByCategory = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    var items = [];
-                    for (var i = 0; i < 10; i++) {
-                        items.push({ code: 'AGG' + i, name: 'Aggregate item ' + i, category: self.category,
-                            paymentType: self.paymentType, showNameZeroValue: true, showValueZeroValue: true });
-                    }
-                    self.itemList(items);
-                    dfd.resolve();
+                    i.service.findAggregateItemsByCategory(self.category, self.paymentType).done(function (res) {
+                        self.itemList(res);
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                        dfd.reject();
+                    });
                     return dfd.promise();
                 };
                 AggregateCategory.prototype.loadDetailAggregateItem = function (code) {
                     var dfd = $.Deferred();
-                    var self = this;
-                    var selectedCode = code;
-                    var selectedNumber = parseInt(selectedCode.substring(selectedCode.length - 1, selectedCode.length));
-                    var item = { code: selectedCode, name: 'Aggregate item ' + selectedNumber,
-                        category: self.category, paymentType: self.paymentType, showNameZeroValue: true,
-                        showValueZeroValue: true, subItems: [
-                            { code: 'MI' + selectedNumber, name: 'sub item ' + selectedNumber },
-                            { code: 'MI' + selectedNumber + 2, name: 'sub item ' + selectedNumber + 2 },
-                        ] };
-                    dfd.resolve(item);
+                    i.service.findAggregateItemDetail(code).done(function (data) {
+                        dfd.resolve(data);
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                        dfd.reject();
+                    });
                     return dfd.promise();
                 };
                 AggregateCategory.prototype.switchToCreateMode = function () {
@@ -104,14 +102,28 @@ var qet001;
                         nts.uk.ui.dialog.alert('未入力エラー');
                         return;
                     }
+                    i.service.save(self.aggregateItemDetail()).done(function () {
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 AggregateCategory.prototype.remove = function () {
-                    if (this.aggregateItemSelectedCode() == null) {
+                    var self = this;
+                    if (self.aggregateItemSelectedCode() == null) {
                         return;
                     }
+                    i.service.remove(self.aggregateItemSelectedCode()).done(function () {
+                        self.aggregateItemSelectedCode(null);
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 AggregateCategory.prototype.close = function () {
                     nts.uk.ui.windows.close();
+                };
+                AggregateCategory.prototype.setStyle = function () {
+                    $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
+                    $('.sub-table-label').attr('style', 'width: ' + $('#swap-list-gridArea2').width() + 'px');
                 };
                 return AggregateCategory;
             }());
@@ -137,6 +149,7 @@ var qet001;
                         { headerText: 'コード', key: 'code', width: 100 },
                         { headerText: '名称', key: 'name', width: 160 }
                     ]);
+                    this.createMode = ko.observable(item == undefined);
                     var self = this;
                     self.showNameZeroValue = ko.computed(function () {
                         return self.showNameZeroCode() == '0';
@@ -168,6 +181,6 @@ var qet001;
                 return PaymentType;
             }());
             viewmodel.PaymentType = PaymentType;
-        })(viewmodel = i_1.viewmodel || (i_1.viewmodel = {}));
+        })(viewmodel = i.viewmodel || (i.viewmodel = {}));
     })(i = qet001.i || (qet001.i = {}));
 })(qet001 || (qet001 = {}));

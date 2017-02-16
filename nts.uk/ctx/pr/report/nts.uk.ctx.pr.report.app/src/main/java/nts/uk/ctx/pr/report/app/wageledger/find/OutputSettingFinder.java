@@ -92,6 +92,6 @@ public class OutputSettingFinder {
 					.isOnceSheetPerPerson(true)
 					.build());
 		}
-		return dtos;		
+		return dtos;
 	};
 }

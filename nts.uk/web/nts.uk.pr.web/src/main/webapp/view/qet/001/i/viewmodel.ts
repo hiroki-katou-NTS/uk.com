@@ -81,15 +81,19 @@ module qet001.i.viewmodel {
             this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, 
                 categoryName, masterItemInCate));
             var self = this;
+            
+            // When selected aggregate item => load detail.
             self.aggregateItemSelectedCode.subscribe((code) => {
                 if (code == undefined || code == null || code == '') {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate));
+                    self.setStyle();
                     return;
                 }
                 self.loadDetailAggregateItem(code).done(function(res: service.Item) {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate, res));
+                    self.setStyle();
                 });
             });
             
@@ -102,13 +106,13 @@ module qet001.i.viewmodel {
             var dfd = $.Deferred<void>();
             // Fake data.
             var self = this;
-            var items: Array<service.Item> = [];
-            for (var i = 0; i < 10; i++) {
-                items.push({code: 'AGG' + i, name: 'Aggregate item ' + i, category: self.category, 
-                    paymentType: self.paymentType, showNameZeroValue: true, showValueZeroValue: true});
-            }
-            self.itemList(items);
-            dfd.resolve();
+            service.findAggregateItemsByCategory(self.category, self.paymentType).done(function(res: service.Item[]) {
+                self.itemList(res);
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            });
             return dfd.promise();
         }
         
@@ -117,17 +121,12 @@ module qet001.i.viewmodel {
          */
         public loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
             var dfd = $.Deferred<service.Item>();
-            var self = this;
-            var selectedCode = code;
-            // Fake data
-            var selectedNumber = parseInt(selectedCode.substring(selectedCode.length - 1, selectedCode.length));
-            var item: service.Item = {code: selectedCode, name: 'Aggregate item ' + selectedNumber, 
-                category: self.category, paymentType: self.paymentType, showNameZeroValue: true, 
-                showValueZeroValue: true, subItems: [
-                            {code: 'MI' + selectedNumber, name: 'sub item ' + selectedNumber},
-                            {code: 'MI' + selectedNumber + 2, name: 'sub item ' + selectedNumber + 2},
-                        ]};
-            dfd.resolve(item);
+            service.findAggregateItemDetail(code).done((data: service.Item) => {
+                dfd.resolve(data);
+            }).fail((res) => {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            })
             return dfd.promise();
         }
         
@@ -148,12 +147,26 @@ module qet001.i.viewmodel {
                 return;
             }
             
+            // save.
+            service.save(self.aggregateItemDetail()).done(function() {
+                // TODO: Show message save success.
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
         }
         
         public remove() {
-            if (this.aggregateItemSelectedCode() == null) {
+            var self = this;
+            if (self.aggregateItemSelectedCode() == null) {
                 return;
             }
+            // save.
+            service.remove(self.aggregateItemSelectedCode()).done(function() {
+                // TODO: Show message remove success.
+                self.aggregateItemSelectedCode(null);
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
         }
         
         /**
@@ -161,6 +174,15 @@ module qet001.i.viewmodel {
          */
         public close() {
             nts.uk.ui.windows.close();
+        }
+        
+        /**
+         * Set style when re-rending list.
+         */
+        public setStyle() {
+            // set width when swap list is rended.
+            $('.master-table-label').attr('style','width: ' + $('#swap-list-gridArea1').width() + 'px');
+            $('.sub-table-label').attr('style','width: ' + $('#swap-list-gridArea2').width() + 'px');
         }
     }
     
@@ -182,6 +204,7 @@ module qet001.i.viewmodel {
         showNameZeroCode: KnockoutObservable<string>;
         showValueZeroCode: KnockoutObservable<string>;
         swapListColumns: KnockoutObservableArray<any>;
+        createMode: KnockoutObservable<boolean>;
         
         constructor(paymentType: string, category: string, 
                 masterItems: service.Item[], item?: service.Item) {
@@ -204,6 +227,7 @@ module qet001.i.viewmodel {
                 { headerText: 'コード', key: 'code', width: 100 },
                 { headerText: '名称', key: 'name', width: 160 }
             ]);
+            this.createMode = ko.observable(item == undefined);
             var self = this;
             
             // Computed show values variable.

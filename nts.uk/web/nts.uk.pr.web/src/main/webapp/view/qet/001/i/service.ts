@@ -4,11 +4,11 @@ module qet001.i {
 
         // Service paths.
         var servicePath = {
-            findOutputSettingDetail: 'ctx/pr/report/wageledger/outputsetting/find',
-            findAggregateItems: 'ctx/pr/report/wageledger/aggregateitem/findAll',
+            findAggregateItemsByCategory: 'ctx/pr/report/wageledger/aggregateitem/findByCate',
+            findAggregateItemDetail: 'ctx/pr/report/wageledger/aggregateitem/findByCode',
             findMasterItems: '???',
-            saveOutputSetting: 'ctx/pr/report/wageledger/outputsetting/save',
-            removeOutputSetting: 'ctx/pr/report/wageledger/outputsetting/remove',
+            saveAggregateItem: 'ctx/pr/report/wageledger/aggregateitem/save',
+            removeAggegateItem: 'ctx/pr/report/wageledger/aggregateitem/remove'
         }
         
         /**
@@ -26,6 +26,45 @@ module qet001.i {
             }
             dfd.resolve(data);
             return dfd.promise();
+        }
+        
+        /**
+         * Find Aggregate item by category and payment type.
+         */
+        export function findAggregateItemsByCategory(category: string, paymentType: string): JQueryPromise<Item[]> {
+            return nts.uk.request.ajax(servicePath.findAggregateItemsByCategory + '/' + category + '/' + paymentType);
+        }
+        
+        /**
+         * Find aggregate item detail.
+         */
+        export function findAggregateItemDetail(code: string) : JQueryPromise<Item> {
+            return nts.uk.request.ajax(servicePath.findAggregateItemDetail + '/' + code);
+        }
+        
+        /**
+         * Save aggregate item.
+         */
+        export function save(data: viewmodel.AggregateItemDetail): JQueryPromise<void> {
+            // Convert to json data.
+            var dataJson = {
+                category: data.category,
+                paymentType: data.paymentType,
+                code: data.code(),
+                name: data.name(),
+                showNameZeroValue: data.showNameZeroValue(),
+                showValueZeroValue: data.showValueZeroValue(),
+                createMode: data.createMode(),
+                subItems: data.subItems().map(item => item.code)
+            }
+            return nts.uk.request.ajax(servicePath.saveAggregateItem, dataJson);
+        }
+        
+        /**
+         * Remove aggregate item.
+         */
+        export function remove(code: string): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeAggegateItem + '/' + code);
         }
         
         /**
