@@ -55,17 +55,17 @@
 							</td>
 							<td><div id="date-picker"
 									data-bind="ntsDatePicker: {
-									value: datePicker, 
+									value: startMonth, 
 									dateFormat: 'yyyy/MM'}">
 								</div></td>
-							<td>~ 9999/12</td>
+							<td>~<p data-bind="text: endMonth" class="float_right"></p></td>
 						</tr>
 					</table>
 					<br />
 					<div>
 						<hr />
 					</div>
-					<button class="proceed x-large">決定</button><button data-bind="click: CloseModalSubWindow" style="float:right;" >キャンセル</button>
+					<button data-bind="click:clickSettingButton" class="proceed x-large">決定</button><button data-bind="click: CloseModalSubWindow" style="float:right;" >キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

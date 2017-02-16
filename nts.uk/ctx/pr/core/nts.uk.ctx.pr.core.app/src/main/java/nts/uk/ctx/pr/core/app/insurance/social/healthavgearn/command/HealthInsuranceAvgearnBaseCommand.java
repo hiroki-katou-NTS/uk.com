@@ -32,8 +32,10 @@ public class HealthInsuranceAvgearnBaseCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param historyId the history id
-	 * @param levelCode the level code
+	 * @param historyId
+	 *            the history id
+	 * @param levelCode
+	 *            the level code
 	 * @return the health insurance avgearn
 	 */
 	public HealthInsuranceAvgearn toDomain(String historyId, Integer levelCode) {
@@ -45,8 +47,7 @@ public class HealthInsuranceAvgearnBaseCommand {
 
 					@Override
 					public HealthInsuranceAvgearnValue getPersonalAvg() {
-						// TODO convert command -> domain
-						return null;
+						return command.getPersonalAvg();
 					}
 
 					@Override
@@ -61,11 +62,10 @@ public class HealthInsuranceAvgearnBaseCommand {
 
 					@Override
 					public HealthInsuranceAvgearnValue getCompanyAvg() {
-						// TODO convert command -> domain
-						return null;
+						return command.getCompanyAvg();
 					}
 				});
-		
+
 		return updatedHealthInsuranceAvgearn;
 	}
 }

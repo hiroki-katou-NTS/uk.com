@@ -117,15 +117,12 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 				pensionChargeRateItem));
 		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
 				pensionChargeRateItem));
-
-//		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem();
-//		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
-//		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
-//		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
-//		premiumRateItem.setGenderType(InsuranceGender.Female);
-//		premiumRateItem.setPayType(PaymentType.Bonus);
-//		premiumRateItem.setChargeRate(chargeRate);
-//		premiumRateItems.add(premiumRateItem);
+		
+		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
+		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
+		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
+		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Female,chargeRate);
+		premiumRateItems.add(premiumRateItem);
 
 		PensionRateRounding pensionRateRounding = new PensionRateRounding();
 		RoundingItem ri = new RoundingItem();

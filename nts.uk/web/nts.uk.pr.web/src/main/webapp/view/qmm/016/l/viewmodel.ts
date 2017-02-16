@@ -2,9 +2,6 @@ module nts.uk.pr.view.qmm016.l {
     import option = nts.uk.ui.option;
     import MultipleTargetSettingDto = service.model.MultipleTargetSettingDto;
     import MultipleTargetSetting = service.model.MultipleTargetSetting;
-    import LaborInsuranceOfficeDto = service.model.LaborInsuranceOfficeDto;
-    import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
-    import LaborInsuranceOfficeFindInDto = service.model.LaborInsuranceOfficeFindInDto;
     export module viewmodel {
         export class ScreenModel {
             items: KnockoutObservableArray<ItemModel>;

@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -363,7 +364,8 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 	}
 
 	@Override
-	public PensionAvgearn find(String historyId, Integer levelCode) {
+	public Optional<PensionAvgearn> find(String historyId, Integer levelCode) {
+		// TODO: find and return pensionAvgearn 
 		return null;
 	}
 

@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find.PensionAvgearnValueDto;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
@@ -66,23 +65,17 @@ public class PensionAvgearnBaseCommand {
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {
-				return new PensionAvgearnValue(new CommonAmount(command.getPersonalPension().getMaleAmount()),
-						new CommonAmount(command.getPersonalPension().getFemaleAmount()),
-						new CommonAmount(command.getPersonalPension().getUnknownAmount()));
+				return PensionAvgearnValueDto.toDomain(command.getPersonalPension());
 			}
 
 			@Override
 			public PensionAvgearnValue getPersonalFundExemption() {
-				return new PensionAvgearnValue(new CommonAmount(command.getPersonalFundExemption().getMaleAmount()),
-						new CommonAmount(command.getPersonalFundExemption().getFemaleAmount()),
-						new CommonAmount(command.getPersonalFundExemption().getUnknownAmount()));
+				return PensionAvgearnValueDto.toDomain(command.getPersonalFundExemption());
 			}
 
 			@Override
 			public PensionAvgearnValue getPersonalFund() {
-				return new PensionAvgearnValue(new CommonAmount(command.getPersonalFund().getMaleAmount()),
-						new CommonAmount(command.getPersonalFund().getFemaleAmount()),
-						new CommonAmount(command.getPersonalFund().getUnknownAmount()));
+				return PensionAvgearnValueDto.toDomain(command.getPersonalFund());
 			}
 
 			@Override
@@ -97,23 +90,17 @@ public class PensionAvgearnBaseCommand {
 
 			@Override
 			public PensionAvgearnValue getCompanyPension() {
-				return new PensionAvgearnValue(new CommonAmount(command.getCompanyPension().getMaleAmount()),
-						new CommonAmount(command.getCompanyPension().getFemaleAmount()),
-						new CommonAmount(command.getCompanyPension().getUnknownAmount()));
+				return PensionAvgearnValueDto.toDomain(command.getCompanyPension());
 			}
 
 			@Override
 			public PensionAvgearnValue getCompanyFundExemption() {
-				return new PensionAvgearnValue(new CommonAmount(command.getCompanyFundExemption().getMaleAmount()),
-						new CommonAmount(command.getCompanyFundExemption().getFemaleAmount()),
-						new CommonAmount(command.getCompanyFundExemption().getUnknownAmount()));
+				return PensionAvgearnValueDto.toDomain(command.getCompanyFundExemption());
 			}
 
 			@Override
 			public PensionAvgearnValue getCompanyFund() {
-				return new PensionAvgearnValue(new CommonAmount(command.getCompanyFund().getMaleAmount()),
-						new CommonAmount(command.getCompanyFund().getFemaleAmount()),
-						new CommonAmount(command.getCompanyFund().getUnknownAmount()));
+				return PensionAvgearnValueDto.toDomain(command.getCompanyFund());
 			}
 
 			@Override

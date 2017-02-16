@@ -9,16 +9,17 @@ module nts.uk.pr.view.qmm008.h {
             listAvgEarnLevelMasterSetting: KnockoutObservableArray<any>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<any>;
             healthInsuranceRateModel: KnockoutObservable<HealthInsuranceRateModel>;
-            rateItems: KnockoutObservableArray<any>;
+            rateItems: any;
             roundingMethods: KnockoutObservableArray<any>;
 
-            constructor(dataOfSelectedOffice,healthModel) {
+            constructor(dataOfSelectedOffice, healthModel) {
                 var self = this;
                 self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
                 self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
                 self.listHealthInsuranceAvgearn = ko.observableArray([]);
-                self.rateItems = ko.observableArray([]);
+                self.rateItems = healthModel.rateItems();
                 self.roundingMethods = ko.observableArray([]);
+
             }
 
             /**
@@ -56,7 +57,6 @@ module nts.uk.pr.view.qmm008.h {
                 service.findHealthInsuranceRate('id').done(res => {
                     self.healthInsuranceRateModel().officeCode = res.officeCode;
                     self.healthInsuranceRateModel().officeName = res.officeName;
-                    self.rateItems(res.ratesItem);
                     dfd.resolve();
                 });
                 return dfd.promise();

@@ -32,23 +32,21 @@ module nts.uk.pr.view.qmm008.b {
             
             public getLastHistory(OfficeItem : InsuranceOfficeItemDto)
             {
-                var index = OfficeItem.childs[OfficeItem.childs.length-1].codeName.indexOf("~");
-                var lastHistory = OfficeItem.childs[OfficeItem.childs.length-1].codeName.substring(0, index);
+                var index = OfficeItem.childs[0].codeName.indexOf("~");
+                var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
                 return lastHistory;       
             }
             public clickSettingButton(){
                 var self =this;
-                var childArray = self.getInsuranceOfficeItemDto().childs;
-                var lastChild = childArray[childArray.length -1];
                 //TODO recheck check if selected time invalid
                 if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()),self.selectedDate())) {
-                    alert();
+                    alert("ER011");
                 }
                 else {
                     //update previous history
-                    self.getInsuranceOfficeItemDto().childs[childArray.length - 1].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.selectedDate();
+                    self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.selectedDate();
                     //push new history 
-                    self.getInsuranceOfficeItemDto().childs.push(
+                    self.getInsuranceOfficeItemDto().childs.unshift(
                         new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
                     nts.uk.ui.windows.setShared("addHistoryChildValue", self.getInsuranceOfficeItemDto(), true);
                     nts.uk.ui.windows.close();

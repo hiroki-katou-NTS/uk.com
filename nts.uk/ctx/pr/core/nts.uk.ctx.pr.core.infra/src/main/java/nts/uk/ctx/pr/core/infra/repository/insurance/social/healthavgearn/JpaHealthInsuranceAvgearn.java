@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -177,7 +178,7 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 	}
 
 	@Override
-	public HealthInsuranceAvgearn find(String historyId, Integer levelCode) {
+	public Optional<HealthInsuranceAvgearn> find(String historyId, Integer levelCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -23,10 +23,12 @@ module nts.uk.pr.view.qmm008.a {
             moneyInputOptions: any;
             //numberInputOptions
             numberInputOptions: any;
-            
+
             filteredData: any;
             officeSelectedCode: KnockoutObservable<string>;
-            
+            currentParentCode: KnockoutObservable<string>;
+            currentChildCode: KnockoutObservable<string>;
+
             //for health auto calculate switch button
             healthAutoCalculateOptions: KnockoutObservableArray<any>;
             selectedRuleCode: KnockoutObservable<number>;
@@ -35,11 +37,11 @@ module nts.uk.pr.view.qmm008.a {
             //for pension auto calculate switch button
             pensionCalculateOptions: KnockoutObservableArray<any>;
             pensionCalculateSelectedCode: KnockoutObservable<number>;
-            
+
             //for control data after close dialog
             isTransistReturnData: KnockoutObservable<boolean>;
             //health history input
-            healthDate : KnockoutObservable<string>;
+            healthDate: KnockoutObservable<string>;
             //pension history input
             pensionDate: KnockoutObservable<string>;
             //healthTotal
@@ -47,39 +49,41 @@ module nts.uk.pr.view.qmm008.a {
             //pensionCurrency
             pensionCurrency: KnockoutObservable<number>;
             pensionOwnerRate: KnockoutObservable<number>;
-            
+
             fundInputEnable: KnockoutObservable<boolean>;
             createHistoryControll: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
-                
+
                 //init model
-                self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null,15000));
-                self.pensionModel = ko.observable(new PensionRateModel("code",1,2,null,null,null,35000,1.5));
-                
+                self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
+                self.pensionModel = ko.observable(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
+
                 // init insurance offices list
                 self.InsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
                 self.officeSelectedCode = ko.observable('');
-                
+                self.currentParentCode = ko.observable('');
+                self.currentChildCode = ko.observable('');
+
                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.InsuranceOfficeList(), "childs"));
                 self.searchKey = ko.observable('');
-                
+
                 //init rounding list
                 self.roundingList = ko.observableArray<RoundingItem>([]);
-               
+
                 //healthTimeInput options
                 self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
                     width: "100",
                     textalign: "center"
                 }));
-                
+
                 self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }));
-                
+
                 self.numberInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2
@@ -101,21 +105,21 @@ module nts.uk.pr.view.qmm008.a {
                     { code: '2', name: 'しない' }
                 ]);
                 self.pensionCalculateSelectedCode = ko.observable(1);
-                
+
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
                 // health history input
-                self.healthDate= ko.observable('2016/04');
+                self.healthDate = ko.observable('2016/04');
                 //pension history input
                 self.pensionDate = ko.observable("2016/04");
-                
+
                 // Health CurrencyEditor
                 self.healthTotal = ko.observable(5400000);
                 //Pension CurrencyEditor
                 self.pensionCurrency = ko.observable(1500000);
                 //pension owner rate
                 self.pensionOwnerRate = ko.observable(1.5);
-                
+
                 self.fundInputEnable = ko.observable(true);
                 self.createHistoryControll = ko.observable(true);
                 //subscribe change select office
@@ -123,16 +127,20 @@ module nts.uk.pr.view.qmm008.a {
                     if (officeSelectedCode != null || officeSelectedCode != undefined) {
                         //if click office item
                         if (self.checkCode(officeSelectedCode)) {
+                            self.currentParentCode(officeSelectedCode);
+                            //TODO reset current child code
                             self.loadHistoryOfOffice(officeSelectedCode);
                             //reset data on view
                             self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
                             self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
-//                       TODO enabled button add new history
+                            //TODO enabled button add new history
                             self.createHistoryControll(true);
                         }
                         //if click history item
                         else {
-//                            TODO disabled button add new history
+                            self.currentChildCode(officeSelectedCode);
+                            //TODO reset current parent code
+                            //disabled button add new history
                             self.createHistoryControll(false);
                             //officeSelectedCode = historyCode
                             $.when(self.load(officeSelectedCode)).done(function() {
@@ -143,7 +151,7 @@ module nts.uk.pr.view.qmm008.a {
                         }
                     }
                 });
-                self.pensionModel().fundInputApply.subscribe(function(pensionFundInputOptions: any){
+                self.pensionModel().fundInputApply.subscribe(function(pensionFundInputOptions: any) {
                     //TODO change select -> disable fun input
                     if (self.fundInputEnable()) {
                         self.fundInputEnable(false);
@@ -152,18 +160,18 @@ module nts.uk.pr.view.qmm008.a {
                     }
                 });
             } //end constructor
-            
+
             // Start
             public start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 //first load
                 self.loadAllInsuranceOffice().done(function(data) {
-                    self.InsuranceOfficeList(data); 
+                    self.InsuranceOfficeList(data);
                     // Load first item.
-                    if ((self.InsuranceOfficeList()!=null)&&(self.InsuranceOfficeList().length > 0)) {
+                    if ((self.InsuranceOfficeList() != null) && (self.InsuranceOfficeList().length > 0)) {
                         //Load select first item of list
-//                        self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
+                        //                        self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
                     } else {
                         //Open register new office screen
                         self.OpenModalOfficeRegister();
@@ -178,7 +186,7 @@ module nts.uk.pr.view.qmm008.a {
                 // Return.
                 return dfd.promise();
             }
-            
+
             //load all insurance office
             public loadAllInsuranceOffice(): JQueryPromise<any> {
                 var self = this;
@@ -190,7 +198,7 @@ module nts.uk.pr.view.qmm008.a {
                 // Return.
                 return dfd.promise();
             }
-            
+
             //load All rounding method
             public getAllRounding(): JQueryPromise<any> {
                 var self = this;
@@ -221,19 +229,19 @@ module nts.uk.pr.view.qmm008.a {
                 //TODO add childs(history) for each item office
                 officeData.forEach(function(item, index) {
                     //search item have office code
-                    if ((item.code == officeCode)&&(item.childs.length==0)) {
+                    if ((item.code == officeCode) && (item.childs.length == 0)) {
                         service.getAllHealthInsuranceItem(item.code).done(function(data: Array<HealthInsuranceRateDto>) {
                             data.forEach(function(item2, index2) {
                                 //push history into office
                                 officeData[index].childs.push(
-                                new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [],((item2.startMonth)/100).toFixed(0)+"/"+item2.startMonth%100 + "~" + ((item2.endMonth)/100).toFixed(0)+"/"+item2.endMonth%100));
+                                    new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
                             });
                             self.InsuranceOfficeList(officeData);
                         });
                     }
                 });
             }
-            
+
             //load data of item by history code
             public load(historyCode: string): JQueryPromise<any> {
                 var self = this;
@@ -245,43 +253,46 @@ module nts.uk.pr.view.qmm008.a {
                     }
                     // TODO Set detail health.
                     self.healthModel().historyId = data.historyId;
+                    self.healthModel().startMonth(((data.startMonth) / 100).toFixed(0) + "/" + data.startMonth % 100);
+                    self.healthModel().endMonth(((data.endMonth) / 100).toFixed(0) + "/" + data.endMonth % 100);
+
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
-                    if(data.autoCalculate)
-                    self.healthModel().autoCalculate(1);
+                    if (data.autoCalculate)
+                        self.healthModel().autoCalculate(1);
                     else
-                    self.healthModel().autoCalculate(2);
-                    
+                        self.healthModel().autoCalculate(2);
+
                     self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[0].companyRate);
-                    
+
                     self.healthModel().rateItems().healthSalaryPersonalNursing(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthSalaryCompanyNursing(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusPersonalNursing(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusCompanyNursing(data.rateItems[0].companyRate);
-                    
+
                     self.healthModel().rateItems().healthSalaryPersonalBasic(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthSalaryCompanyBasic(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusPersonalBasic(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusCompanyBasic(data.rateItems[0].companyRate);
-                    
+
                     self.healthModel().rateItems().healthSalaryPersonalSpecific(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthSalaryCompanySpecific(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusPersonalSpecific(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusCompanySpecific(data.rateItems[0].companyRate);
-                    
+
                     self.healthModel().roundingMethods().healthSalaryPersonalComboBox(self.roundingList());
                     self.healthModel().roundingMethods().healthSalaryCompanyComboBox(self.roundingList());
                     self.healthModel().roundingMethods().healthBonusPersonalComboBox(self.roundingList());
                     self.healthModel().roundingMethods().healthBonusCompanyComboBox(self.roundingList());
-                    
+
                     //set selected rounding method                     
                     self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[0].code);
-                    self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode(data.roundingMethods[1].code);
-                    self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[2].code);
-                    self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode(data.roundingMethods[3].code);
+                    self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode(data.roundingMethods[0].code);
+                    self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[0].code);
+                    self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode(data.roundingMethods[0].code);
 
                     self.healthModel().maxAmount(data.maxAmount);
                     // Resolve
@@ -289,7 +300,7 @@ module nts.uk.pr.view.qmm008.a {
                 }).fail(function() {
                 }).always(function(res) {
                 });
-                
+
                 service.getPensionItemDetail(historyCode).done(function(data: PensionRateDto) {
                     if (data == null) {
                         return;
@@ -298,6 +309,8 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().historyId = data.historyId;
                     self.pensionModel().companyCode = data.companyCode;
                     self.pensionModel().officeCode(data.officeCode);
+                    self.pensionModel().startMonth(data.startMonth.toString());
+                    self.pensionModel().endMonth(data.endMonth.toString());
                     if (data.autoCalculate)
                         self.pensionModel().autoCalculate(1);
                     else
@@ -311,27 +324,27 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().rateItems().pensionSalaryCompanySon(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionBonusPersonalSon(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionBonusCompanySon(data.premiumRateItems[0].companyRate);
-                    
+
                     self.pensionModel().rateItems().pensionSalaryPersonalDaughter(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionSalaryCompanyDaughter(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionBonusPersonalDaughter(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionBonusCompanyDaughter(data.premiumRateItems[0].companyRate);
-                    
+
                     self.pensionModel().rateItems().pensionSalaryPersonalUnknown(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionSalaryCompanyUnknown(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionBonusPersonalUnknown(data.premiumRateItems[0].companyRate);
                     self.pensionModel().rateItems().pensionBonusCompanyUnknown(data.premiumRateItems[0].companyRate);
-                    
+
                     self.pensionModel().fundRateItems().salaryPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                     self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                     self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                     self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
-                    
-//                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs.companyRoundAtr);
-//                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs.personalRoundAtr);
-//                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs.companyRoundAtr);
-//                    self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(data.roundingMethods[0].roundAtrs.personalRoundAtr);
-                    
+
+                    //                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs.companyRoundAtr);
+                    //                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs.personalRoundAtr);
+                    //                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs.companyRoundAtr);
+                    //                    self.pensionModel().roundingMethods().peboBox(data.roundingMethods[0].roundAtrs.personalRoundAtr);
+
                     self.pensionModel().maxAmount(data.maxAmount);
                     self.pensionModel().childContributionRate(data.childContributionRate);
                     // Resolve
@@ -339,11 +352,11 @@ module nts.uk.pr.view.qmm008.a {
                 }).fail(function() {
                 }).always(function(res) {
                 });
-                
+
                 // Ret promise.
                 return dfd.promise();
             }
-            
+
             //TODO delete
             public resize() {
                 if ($("#tabs-complex").width() > 700)
@@ -351,51 +364,63 @@ module nts.uk.pr.view.qmm008.a {
                 else
                     $("#tabs-complex").width("auto");
             }
-            
-            public getDataOfSelectedOffice(){
-                var self= this;
-                var saveVal=null;
+
+            public getDataOfSelectedOffice(): InsuranceOfficeItem {
+                var self = this;
+                var saveVal = null;
                 // Set parent value
                 this.InsuranceOfficeList().forEach(function(item, index) {
-                    if (self.officeSelectedCode() == item.code) {
+                    if (self.currentParentCode() == item.code) {
                         saveVal = item;
                     }
                 });
                 return saveVal;
             }
-            
+            // get index of history in list child
+            public getIndexOfHistory(historyId: string) {
+                var self = this;
+                self.getDataOfSelectedOffice().childs.forEach(function(item, index) {
+                    if (item.historyId == historyId) {
+                        return index;
+                    }
+                });
+                return null;
+            }
+            public refreshOfficeList(returnValue: InsuranceOfficeItem) {
+                var self = this;
+                var currentInsuranceOfficeList = self.InsuranceOfficeList();
+                if (returnValue != undefined && returnValue != null) {
+                    currentInsuranceOfficeList.forEach(function(item, index) {
+                        if (item.code == returnValue.code) {
+                            currentInsuranceOfficeList[index] = returnValue;
+                        }
+                    });
+                }
+                self.InsuranceOfficeList([]);
+                self.InsuranceOfficeList(currentInsuranceOfficeList);
+            }
             // open dialog add history 
             public OpenModalAddHistory() {
-                var self= this;
+                var self = this;
                 var sendOfficeItem = self.getDataOfSelectedOffice();
                 //TODO get previous start month 
                 var previousStartDate = "2016/04";
-                
+
                 nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
-                
+
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(() => {
                     // Get child value return office Item
                     var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
-                    var currentInsuranceOfficeList = self.InsuranceOfficeList();
-                    if(returnValue!= undefined && returnValue!= null)
-                    {
-                        currentInsuranceOfficeList.forEach(function(item, index) {
-                            if (item.code == returnValue.code) {
-                                currentInsuranceOfficeList[index] = returnValue;
-                            }
-                        });
-                    }
-                    self.InsuranceOfficeList([]);
-                    self.InsuranceOfficeList(currentInsuranceOfficeList);
+                    self.refreshOfficeList(returnValue);
                 });
             }
-            
+
             //open office register dialog
             public OpenModalOfficeRegister() {
-                var self =this;
+                var self = this;
                 // Set parent value
-                nts.uk.ui.windows.setShared("officeCodeOfParentValue",self.officeSelectedCode());
+                nts.uk.ui.windows.setShared("officeCodeOfParentValue", self.officeSelectedCode());
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
                     //when close dialog -> reload office list
@@ -404,45 +429,49 @@ module nts.uk.pr.view.qmm008.a {
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });
             }
-            
+
             //open modal standard monthly price health
             public OpenModalStandardMonthlyPriceHealth() {
                 // Set parent value
                 nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfSelectedOffice());
                 nts.uk.ui.windows.setShared("healthModel", this.healthModel());
-                
+
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });
             }
-            
+
             //open modal standard monthly price pension 
             public OpenModalStandardMonthlyPricePension() {
                 // Set parent value
                 nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfSelectedOffice());
                 nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
-                
+
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });
             }
-            
+
             //open modal config history 
             public OpenModalConfigHistory() {
-                var getVal= null;
-                getVal= this.getDataOfSelectedOffice();
+                var self = this;
+                var sendOfficeParentValue = this.getDataOfSelectedOffice();
                 // Set parent value
-                nts.uk.ui.windows.setShared("updateHistoryParentValue", getVal);
+                nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeParentValue);
+                nts.uk.ui.windows.setShared("currentChildCode", self.currentChildCode());
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(() => {
-                    // Get child value
-                    var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
+
+                    // Get child value return office Item
+                    var returnValue = nts.uk.ui.windows.getShared("updateHistoryChildValue");
+                    self.refreshOfficeList(returnValue);
                 });
             }
+
         }
 
         export class HealthInsuranceRateModel {
@@ -450,28 +479,29 @@ module nts.uk.pr.view.qmm008.a {
             companyCode: string;
             officeCode: KnockoutObservable<string>;
             startMonth: KnockoutObservable<string>;
-            endMonth: string;
+            endMonth: KnockoutObservable<string>;
             autoCalculate: KnockoutObservable<number>;
             rateItems: KnockoutObservable<HealthInsuranceRateItemModel>;
             roundingMethods: KnockoutObservable<HealthInsuranceRoundingModel>;
             maxAmount: KnockoutObservable<number>;
-            constructor(officeCode: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel,roundingMethods: HealthInsuranceRoundingModel, maxAmount:number) {
-                this.startMonth= ko.observable("2016/04");
-                this.officeCode= ko.observable('');
-                this.autoCalculate= ko.observable(autoCalculate);
+            constructor(officeCode: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel, roundingMethods: HealthInsuranceRoundingModel, maxAmount: number) {
+                this.startMonth = ko.observable("2016/04");
+                this.endMonth = ko.observable("2016/04");
+                this.officeCode = ko.observable('');
+                this.autoCalculate = ko.observable(autoCalculate);
                 this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
-                this.roundingMethods= ko.observable(new HealthInsuranceRoundingModel());
-                this.maxAmount= ko.observable(0);
+                this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
+                this.maxAmount = ko.observable(0);
             }
 
         }
 
         export class PensionRateModel {
-            pensionDate: any;
             historyId: number;
             companyCode: string;
             officeCode: KnockoutObservable<string>;
-            applyRange: string;
+            startMonth: KnockoutObservable<string>;
+            endMonth: KnockoutObservable<string>;
             fundInputApply: KnockoutObservable<number>;
             autoCalculate: KnockoutObservable<number>;
             rateItems: KnockoutObservable<PensionRateItemModel>;
@@ -479,8 +509,9 @@ module nts.uk.pr.view.qmm008.a {
             roundingMethods: KnockoutObservable<PensionRateRoundingModel>;
             maxAmount: KnockoutObservable<number>;
             childContributionRate: KnockoutObservable<number>;
-            constructor(officeCode: string,fundInputApply:number,autoCalculate: number,rateItems: PensionRateItemModel, fundRateItems: FunRateItemModel, roundingMethods: PensionRateRoundingModel, maxAmount: number, childContributionRate: number) {
-                this.pensionDate = ko.observable('2016/04');
+            constructor(officeCode: string, fundInputApply: number, autoCalculate: number, rateItems: PensionRateItemModel, fundRateItems: FunRateItemModel, roundingMethods: PensionRateRoundingModel, maxAmount: number, childContributionRate: number) {
+                this.startMonth = ko.observable('2016/04');
+                this.endMonth = ko.observable("2016/04");
                 this.officeCode = ko.observable('');
                 this.fundInputApply = ko.observable(fundInputApply);
                 this.autoCalculate = ko.observable(autoCalculate);
@@ -492,7 +523,7 @@ module nts.uk.pr.view.qmm008.a {
             }
 
         }
-        export class HealthInsuranceRateItemModel   {
+        export class HealthInsuranceRateItemModel {
             healthSalaryPersonalGeneral: KnockoutObservable<number>;
             healthSalaryPersonalNursing: KnockoutObservable<number>;
             healthSalaryPersonalBasic: KnockoutObservable<number>;
@@ -502,49 +533,48 @@ module nts.uk.pr.view.qmm008.a {
             healthSalaryCompanyBasic: KnockoutObservable<number>;
             healthSalaryCompanySpecific: KnockoutObservable<number>;
 
-            healthBonusPersonalGeneral:  KnockoutObservable<number>;
+            healthBonusPersonalGeneral: KnockoutObservable<number>;
             healthBonusPersonalNursing: KnockoutObservable<number>;
             healthBonusPersonalBasic: KnockoutObservable<number>;
             healthBonusPersonalSpecific: KnockoutObservable<number>;
-            healthBonusCompanyGeneral:  KnockoutObservable<number>;
+            healthBonusCompanyGeneral: KnockoutObservable<number>;
             healthBonusCompanyNursing: KnockoutObservable<number>;
             healthBonusCompanyBasic: KnockoutObservable<number>;
             healthBonusCompanySpecific: KnockoutObservable<number>;
-            constructor()
-            {
-                this.healthSalaryPersonalGeneral=ko.observable(0);
-                this.healthSalaryCompanyGeneral=ko.observable(0);
-                this.healthBonusPersonalGeneral=ko.observable(0);
-                this.healthBonusCompanyGeneral=ko.observable(0);
-                
-                this.healthSalaryPersonalNursing=ko.observable(0);
-                this.healthSalaryCompanyNursing=ko.observable(0);
-                this.healthBonusPersonalNursing=ko.observable(0);
-                this.healthBonusCompanyNursing=ko.observable(0);
-                
-                this.healthSalaryPersonalBasic=ko.observable(0);
-                this.healthSalaryCompanyBasic=ko.observable(0);
-                this.healthBonusPersonalBasic=ko.observable(0);
-                this.healthBonusCompanyBasic=ko.observable(0);
-                
-                this.healthSalaryPersonalSpecific=ko.observable(0);
-                this.healthSalaryCompanySpecific=ko.observable(0);
-                this.healthBonusPersonalSpecific=ko.observable(0);
-                this.healthBonusCompanySpecific=ko.observable(0);
-                
+            constructor() {
+                this.healthSalaryPersonalGeneral = ko.observable(0);
+                this.healthSalaryCompanyGeneral = ko.observable(0);
+                this.healthBonusPersonalGeneral = ko.observable(0);
+                this.healthBonusCompanyGeneral = ko.observable(0);
+
+                this.healthSalaryPersonalNursing = ko.observable(0);
+                this.healthSalaryCompanyNursing = ko.observable(0);
+                this.healthBonusPersonalNursing = ko.observable(0);
+                this.healthBonusCompanyNursing = ko.observable(0);
+
+                this.healthSalaryPersonalBasic = ko.observable(0);
+                this.healthSalaryCompanyBasic = ko.observable(0);
+                this.healthBonusPersonalBasic = ko.observable(0);
+                this.healthBonusCompanyBasic = ko.observable(0);
+
+                this.healthSalaryPersonalSpecific = ko.observable(0);
+                this.healthSalaryCompanySpecific = ko.observable(0);
+                this.healthBonusPersonalSpecific = ko.observable(0);
+                this.healthBonusCompanySpecific = ko.observable(0);
+
             }
         }
-        export class PensionRateItemModel{
+        export class PensionRateItemModel {
             pensionSalaryPersonalSon: KnockoutObservable<number>;
             pensionSalaryCompanySon: KnockoutObservable<number>;
             pensionBonusPersonalSon: KnockoutObservable<number>;
             pensionBonusCompanySon: KnockoutObservable<number>;
-            
+
             pensionSalaryPersonalDaughter: KnockoutObservable<number>;
             pensionSalaryCompanyDaughter: KnockoutObservable<number>;
             pensionBonusPersonalDaughter: KnockoutObservable<number>;
             pensionBonusCompanyDaughter: KnockoutObservable<number>;
-            
+
             pensionSalaryPersonalUnknown: KnockoutObservable<number>;
             pensionSalaryCompanyUnknown: KnockoutObservable<number>;
             pensionBonusPersonalUnknown: KnockoutObservable<number>;
@@ -564,67 +594,67 @@ module nts.uk.pr.view.qmm008.a {
                 this.pensionSalaryCompanyUnknown = ko.observable(0);
                 this.pensionBonusPersonalUnknown = ko.observable(0);
                 this.pensionBonusCompanyUnknown = ko.observable(0);
-           }
+            }
         }
-        
-        export class FunRateItemModel{
+
+        export class FunRateItemModel {
             salaryPersonalSonExemption: KnockoutObservable<number>;
             salaryCompanySonExemption: KnockoutObservable<number>;
             bonusPersonalSonExemption: KnockoutObservable<number>;
             bonusCompanySonExemption: KnockoutObservable<number>;
-            
+
             salaryPersonalSonBurden: KnockoutObservable<number>;
             salaryCompanySonBurden: KnockoutObservable<number>;
             bonusPersonalSonBurden: KnockoutObservable<number>;
             bonusCompanySonBurden: KnockoutObservable<number>;
-            
+
             salaryPersonalDaughterExemption: KnockoutObservable<number>;
             salaryCompanyDaughterExemption: KnockoutObservable<number>;
             bonusPersonalDaughterExemption: KnockoutObservable<number>;
             bonusCompanyDaughterExemption: KnockoutObservable<number>;
-            
+
             salaryPersonalDaughterBurden: KnockoutObservable<number>;
             salaryCompanyDaughterBurden: KnockoutObservable<number>;
             bonusPersonalDaughterBurden: KnockoutObservable<number>;
             bonusCompanyDaughterBurden: KnockoutObservable<number>;
-            
+
             salaryPersonalUnknownExemption: KnockoutObservable<number>;
             salaryCompanyUnknownExemption: KnockoutObservable<number>;
             bonusPersonalUnknownExemption: KnockoutObservable<number>;
             bonusCompanyUnknownExemption: KnockoutObservable<number>;
-            
+
             salaryPersonalUnknownBurden: KnockoutObservable<number>;
             salaryCompanyUnknownBurden: KnockoutObservable<number>;
             bonusPersonalUnknownBurden: KnockoutObservable<number>;
             bonusCompanyUnknownBurden: KnockoutObservable<number>;
-            
-            constructor (){
+
+            constructor() {
                 this.salaryPersonalSonExemption = ko.observable(0);
                 this.salaryCompanySonExemption = ko.observable(0);
                 this.bonusPersonalSonExemption = ko.observable(0);
                 this.bonusCompanySonExemption = ko.observable(0);
-                
-                
+
+
                 this.salaryPersonalSonBurden = ko.observable(0);
                 this.salaryCompanySonBurden = ko.observable(0);
                 this.bonusPersonalSonBurden = ko.observable(0);
                 this.bonusCompanySonBurden = ko.observable(0);
-                
+
                 this.salaryPersonalDaughterExemption = ko.observable(0);
                 this.salaryCompanyDaughterExemption = ko.observable(0);
                 this.bonusPersonalDaughterExemption = ko.observable(0);
                 this.bonusCompanyDaughterExemption = ko.observable(0);
-                
+
                 this.salaryPersonalDaughterBurden = ko.observable(0);
                 this.salaryCompanyDaughterBurden = ko.observable(0);
                 this.bonusPersonalDaughterBurden = ko.observable(0);
                 this.bonusCompanyDaughterBurden = ko.observable(0);
-                
+
                 this.salaryPersonalUnknownExemption = ko.observable(0);
                 this.salaryCompanyUnknownExemption = ko.observable(0);
                 this.bonusPersonalUnknownExemption = ko.observable(0);
                 this.bonusCompanyUnknownExemption = ko.observable(0);
-                
+
                 this.salaryPersonalUnknownBurden = ko.observable(0);
                 this.salaryCompanyUnknownBurden = ko.observable(0);
                 this.bonusPersonalUnknownBurden = ko.observable(0);
@@ -673,7 +703,7 @@ module nts.uk.pr.view.qmm008.a {
                 this.healthBonusCompanyComboBoxSelectedCode = ko.observable('002');
             }
         }
-        export class PensionRateRoundingModel{
+        export class PensionRateRoundingModel {
             pensionSalaryPersonalComboBox: KnockoutObservableArray<RoundingItem>;
             pensionSalaryPersonalComboBoxItemName: KnockoutObservable<string>;
             pensionSalaryPersonalComboBoxCurrentCode: KnockoutObservable<number>
@@ -713,7 +743,7 @@ module nts.uk.pr.view.qmm008.a {
                 this.pensionBonusCompanyComboBoxItemName = ko.observable('');
                 this.pensionBonusCompanyComboBoxCurrentCode = ko.observable(3);
                 this.pensionBonusCompanyComboBoxSelectedCode = ko.observable('002');
-            }    
+            }
         }
     }
 
