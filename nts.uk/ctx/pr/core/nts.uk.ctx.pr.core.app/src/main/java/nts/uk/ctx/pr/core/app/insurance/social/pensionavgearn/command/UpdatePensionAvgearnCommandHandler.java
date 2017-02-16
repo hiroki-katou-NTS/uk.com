@@ -43,8 +43,7 @@ public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePen
 
 		command.getListPensionAvgearn().forEach(dto -> {
 			// Get the pensionAvgearn.
-			PensionAvgearn pensionAvgearn = (PensionAvgearn) pensionAvgearnRepository.find(dto.getHistoryId(),
-					dto.getLevelCode());
+			PensionAvgearn pensionAvgearn = pensionAvgearnRepository.find(dto.getHistoryId(), dto.getLevelCode()).get();
 
 			// Transfer data
 			PensionAvgearn updatedPensionAvgearn = dto.toDomain(pensionAvgearn.getHistoryId(),

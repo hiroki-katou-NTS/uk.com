@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
 import java.math.BigDecimal;
 
 import lombok.Data;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
 /**
@@ -27,9 +28,12 @@ public class PensionAvgearnValueDto {
 	/**
 	 * Instantiates a new pension avgearn value dto.
 	 *
-	 * @param maleAmount the male amount
-	 * @param femaleAmount the female amount
-	 * @param unknownAmount the unknown amount
+	 * @param maleAmount
+	 *            the male amount
+	 * @param femaleAmount
+	 *            the female amount
+	 * @param unknownAmount
+	 *            the unknown amount
 	 */
 	public PensionAvgearnValueDto(BigDecimal maleAmount, BigDecimal femaleAmount, BigDecimal unknownAmount) {
 		super();
@@ -37,7 +41,7 @@ public class PensionAvgearnValueDto {
 		this.femaleAmount = femaleAmount;
 		this.unknownAmount = unknownAmount;
 	}
-	
+
 	/**
 	 * From domain.
 	 *
@@ -49,5 +53,17 @@ public class PensionAvgearnValueDto {
 		return new PensionAvgearnValueDto(domain.getMaleAmount().v(), domain.getFemaleAmount().v(),
 				domain.getUnknownAmount().v());
 	}
-	
+
+	/**
+	 * To domain.
+	 *
+	 * @param dto
+	 *            the dto
+	 * @return the pension avgearn value
+	 */
+	public static PensionAvgearnValue toDomain(PensionAvgearnValueDto dto) {
+		return new PensionAvgearnValue(new CommonAmount(dto.getMaleAmount()), new CommonAmount(dto.getFemaleAmount()),
+				new CommonAmount(dto.getUnknownAmount()));
+	}
+
 }
