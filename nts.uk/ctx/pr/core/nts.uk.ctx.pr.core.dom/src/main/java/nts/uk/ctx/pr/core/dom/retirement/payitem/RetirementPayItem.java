@@ -4,6 +4,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -41,7 +42,7 @@ public class RetirementPayItem extends AggregateRoot{
 	public void validate() {
 		// TODO Auto-generated method stub
 		super.validate();
-		if(printName.toString().isEmpty() || printName.toString().equals("")) { 
+		if(printName == null || StringUtil.isNullOrEmpty(printName.v(), true)) { 
 			throw new BusinessException("error");
 		}
 	}

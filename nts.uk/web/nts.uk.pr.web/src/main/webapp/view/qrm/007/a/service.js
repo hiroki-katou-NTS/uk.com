@@ -5,7 +5,6 @@ var qrm007;
         var service;
         (function (service) {
             var paths = {
-                //getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
                 getRetirementPayItemList: "pr/core/retirement/payitem/findBycompanyCode",
                 updateRetirementPayItem: "pr/core/retirement/payitem/update"
             };

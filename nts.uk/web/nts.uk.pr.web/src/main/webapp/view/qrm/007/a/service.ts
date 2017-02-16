@@ -1,6 +1,5 @@
 module qrm007.a.service {
     var paths: any = {
-        //getRetirementPayItemList: "pr/proto/paymentdatemaster/processing/findall",
         getRetirementPayItemList: "pr/core/retirement/payitem/findBycompanyCode",
         updateRetirementPayItem: "pr/core/retirement/payitem/update"
     }

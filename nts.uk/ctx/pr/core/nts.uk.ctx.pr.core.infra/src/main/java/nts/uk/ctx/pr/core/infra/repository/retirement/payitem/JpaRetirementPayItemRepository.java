@@ -11,7 +11,6 @@ import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItem;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemRepository;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payitem.QremtRetirePayItem;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payitem.QremtRetirePayItemPK;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
