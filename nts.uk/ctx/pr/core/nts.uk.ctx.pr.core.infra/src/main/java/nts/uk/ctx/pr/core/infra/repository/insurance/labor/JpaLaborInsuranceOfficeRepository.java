@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;

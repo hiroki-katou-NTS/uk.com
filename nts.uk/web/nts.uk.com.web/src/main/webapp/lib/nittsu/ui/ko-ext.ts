@@ -15,18 +15,32 @@ module nts.uk.ui.koExtentions {
             }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+            
+            $input.focus(() => {
+                $input.select();
+            });
+            
             $input.change(() => {
                 var validator = this.getValidator(data);
-                var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
                     setValue(result.parsedValue);
-                    $input.val(formatter.format(result.parsedValue));
                 } else {
                     $input.ntsError('set', result.errorMessage);
                     setValue(newText);
+                }
+            });
+            
+            // format on blur
+            $input.blur(() => {
+                var validator = this.getValidator(data);
+                var formatter = this.getFormatter(data);
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                if (result.isValid) {
+                    $input.val(formatter.format(result.parsedValue));
                 }
             });
         }
@@ -166,6 +180,16 @@ module nts.uk.ui.koExtentions {
     }
 
     class NumberEditorProcessor extends EditorProcessor {
+        
+        init($input: JQuery, data: any) {
+            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            
+            $input.focus(() => {
+                $input.val(data.value());
+            });
+            
+            super.init($input, data);
+        }
 
         update($input: JQuery, data: any) {
             super.update($input, data);

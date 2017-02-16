@@ -39,84 +39,9 @@
 						<com:ko tag="template" bind="{name: 'header-template', data: aggregateItemCategories()[0]}"></com:ko>
 					</div>
 					<com:ko tag="if" bind="selectedTab() == 0">
-						<div class="contents-area" data-bind="with: aggregateItemCategories()[0]">
-							<div class="left-content">
-								<div class="search-grid">
-									<div id="search-input" class="ntsSearchBox"
-											data-bind="ntsSearchBox: {comId: 'aggregate-items', 
-												items: itemList, 
-												selected: aggregateItemSelectedCode, 
-												selectedKey: 'code', 
-												fields: ['name', 'code']}"
-											placeholder="コード・名称"></div>
-								</div>
-								<div class="aggregate-table">
-									<table id="aggregate-items" data-bind="ntsGridList: {
-													width: 250,
-													height: 500,
-													options: itemList,
-													optionsValue: 'code',
-													columns: itemListColumns,
-													multiple: false,
-													value: aggregateItemSelectedCode
-											}"></table>
-								</div>
-							</div>
-							<div class="right-content" data-bind="with: aggregateItemDetail">
-								<div class="flex valign-center">
-									<div id="code-name-label" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
-									<div class="code-input">
-										<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
-															enable: true,
-															constraint: 'WLAggregateItemCode',
-															required: true}"></input>
-									</div>
-									<div class="name-input">
-										<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: name,
-															constraint: 'WLAggregateItemName',
-															required: true}"></input>
-									</div>
-								</div>
-								<div class="flex valign-center">
-									<div data-bind="ntsFormLabel: {}">値が0の時の項目名</div>
-									<div class="cf" data-bind="ntsSwitchButton: {
-										options: switchs,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: showNameZeroCode,
-										enable: true }"></div>
-								</div>
-								<div class="flex valign-center">
-									<div data-bind="ntsFormLabel: {}">値が0の時の項目値</div>
-									<div class="cf" data-bind="ntsSwitchButton: {
-										options: switchs,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: showValueZeroCode,
-										enable: true }"></div>
-								</div>
-								<div class="select-item">
-									<div class="select-label">
-										<div class="master-table-label">
-											<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
-											<div class="head-end"></div>
-										</div>
-										<div class="sub-table-label">
-											<div data-bind="ntsFormLabel: {}">集約する給与支給項目</div>
-											<div class="head-end"></div>
-										</div>
-									</div>
-									<div id="swap-list" data-bind="ntsSwapList: {
-											showSearchBox: { showLeft : true, showRight: false},
-											height: 350,
-											width: 720,
-											dataSource: masterItems,
-											primaryKey: 'code',
-											columns: swapListColumns,
-											value: subItems
-										}"></div>
-								</div>
-							</div>
+						<div class="contents-area">
+							<com:ko tag="template" bind="{name: 'content-template', data: aggregateItemCategories()[0],
+								afterRender: afterRender}"></com:ko>
 				   		</div>
 			   		</com:ko>
 		   		</div>
@@ -125,48 +50,146 @@
 		   				<span class="title">給与控除項目</span>
 		   				<com:ko tag="template" bind="{name: 'header-template', data: aggregateItemCategories()[1]}"></com:ko>
 					</div>
-					<div class="contents-area">
-
-			   		</div>
+					<com:ko tag="if" bind="selectedTab() == 1">
+						<div class="contents-area">
+							<com:ko tag="template" bind="{name: 'content-template', data: aggregateItemCategories()[1],
+									afterRender: afterRender}"></com:ko>
+				   		</div>
+			   		</com:ko>
 		   		</div>
 		   		<div id="tabpanel-3" role="tabpanel">
 		   			<div class="sidebar-content-header">
 		   				<span class="title">給与勤怠項目</span>
 		   				<com:ko tag="template" bind="{name: 'header-template', data: aggregateItemCategories()[2]}"></com:ko>
 					</div>
-					<div class="contents-area">
-			   		</div>
+					<com:ko tag="if" bind="selectedTab() == 2">
+						<div class="contents-area">
+							<com:ko tag="template" bind="{name: 'content-template', data: aggregateItemCategories()[2],
+									afterRender: afterRender}"></com:ko>
+				   		</div>
+			   		</com:ko>
 		   		</div>
 		   		<div id="tabpanel-4" role="tabpanel">
 		   			<div class="sidebar-content-header">
 		   				<span class="title">賞与支給項目</span>
 		   				<com:ko tag="template" bind="{name: 'header-template', data: aggregateItemCategories()[3]}"></com:ko>
 					</div>
-					<div class="contents-area">
-			   		</div>
+					<com:ko tag="if" bind="selectedTab() == 3">
+						<div class="contents-area">
+							<com:ko tag="template" bind="{name: 'content-template', data: aggregateItemCategories()[3],
+									afterRender: afterRender}"></com:ko>
+				   		</div>
+			   		</com:ko>
 		   		</div>
 		   		<div id="tabpanel-5" role="tabpanel">
 		   			<div class="sidebar-content-header">
 		   				<span class="title">賞与控除項目</span>
 		   				<com:ko tag="template" bind="{name: 'header-template', data: aggregateItemCategories()[4]}"></com:ko>
 					</div>
-					<div class="contents-area">
-			   		</div>
+					<com:ko tag="if" bind="selectedTab() == 4">
+						<div class="contents-area">
+							<com:ko tag="template" bind="{name: 'content-template', data: aggregateItemCategories()[4],
+									afterRender: afterRender}"></com:ko>
+				   		</div>
+			   		</com:ko>
 		   		</div>
 		   		<div id="tabpanel-6" role="tabpanel">
 		   			<div class="sidebar-content-header">
 		   				<span class="title">賞与勤怠項目</span>
 		   				<com:ko tag="template" bind="{name: 'header-template', data: aggregateItemCategories()[5]}"></com:ko>
 					</div>
-					<div class="contents-area">
-			   		</div>
+					<com:ko tag="if" bind="selectedTab() == 5">
+						<div class="contents-area">
+							<com:ko tag="template" bind="{name: 'content-template', data: aggregateItemCategories()[5],
+									afterRender: afterRender}"></com:ko>
+				   		</div>
+			   		</com:ko>
 		   		</div>
 		   		
 			<script type="text/html" id="header-template">
-				<button data-bind="">新規</button>
-				<button class="proceed" data-bind="">登録</button>
-				<button data-bind="">削除</button>
-				<button data-bind="">閉じる</button>
+				<button data-bind="click: switchToCreateMode">新規</button>
+				<button class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
+				<button data-bind="click: remove">削除</button>
+				<button data-bind="click: close">閉じる</button>
+			</script>
+			<script type="text/html" id="content-template">
+			<div class="left-content">
+			<div class="search-grid">
+				<div id="search-input" class="ntsSearchBox"
+						data-bind="ntsSearchBox: {comId: 'aggregate-items', 
+							items: itemList, 
+							selected: aggregateItemSelectedCode, 
+							selectedKey: 'code', 
+							fields: ['name', 'code']}"
+						placeholder="コード・名称"></div>
+			</div>
+			<div class="aggregate-table">
+				<table id="aggregate-items" data-bind="ntsGridList: {
+								width: 250,
+								height: 500,
+								options: itemList,
+								optionsValue: 'code',
+								columns: itemListColumns,
+								multiple: false,
+								value: aggregateItemSelectedCode
+						}"></table>
+			</div>
+		</div>
+		<div class="right-content" data-bind="with: aggregateItemDetail">
+			<div class="flex valign-center">
+				<div id="code-name-label" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
+				<div class="code-input">
+					<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
+										enable: true,
+										constraint: 'WLAggregateItemCode',
+										required: true}"></input>
+				</div>
+				<div class="name-input">
+					<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: name,
+										constraint: 'WLAggregateItemName',
+										required: true}"></input>
+				</div>
+			</div>
+			<div class="flex valign-center">
+				<div data-bind="ntsFormLabel: {}">値が0の時の項目名</div>
+				<div class="cf" data-bind="ntsSwitchButton: {
+					options: switchs,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: showNameZeroCode,
+					enable: true }"></div>
+			</div>
+			<div class="flex valign-center">
+				<div data-bind="ntsFormLabel: {}">値が0の時の項目値</div>
+				<div class="cf" data-bind="ntsSwitchButton: {
+					options: switchs,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: showValueZeroCode,
+					enable: true }"></div>
+			</div>
+			<div class="select-item">
+				<div class="select-label">
+					<div class="master-table-label">
+						<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
+						<div class="head-end"></div>
+					</div>
+					<div class="sub-table-label">
+						<div data-bind="ntsFormLabel: {}">集約する給与支給項目</div>
+						<div class="head-end"></div>
+					</div>
+				</div>
+				<div id="swap-list" data-bind="ntsSwapList: {
+						showSearchBox: { showLeft : true, showRight: false},
+						height: 350,
+						width: 750,
+						dataSource: masterItems,
+						primaryKey: 'code',
+						columns: swapListColumns,
+						value: subItems
+					}"></div>
+			</div>
+		</div>
 			</script>
 		</ui:define>
 		</ui:composition>

@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface HealthInsuranceAvgearnRepository.
@@ -48,5 +49,5 @@ public interface HealthInsuranceAvgearnRepository {
 	 * @param levelCode the level code
 	 * @return the health insurance avgearn
 	 */
-	HealthInsuranceAvgearn find(String historyId, Integer levelCode);
+	Optional<HealthInsuranceAvgearn> find(String historyId, Integer levelCode);
 }

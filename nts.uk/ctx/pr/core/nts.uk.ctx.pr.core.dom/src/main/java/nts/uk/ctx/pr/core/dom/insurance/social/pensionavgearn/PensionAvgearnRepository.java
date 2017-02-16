@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface PensionAvgearnRepository.
@@ -43,6 +44,6 @@ public interface PensionAvgearnRepository {
 	 * @param levelCode the level code
 	 * @return the pension avgearn
 	 */
-	PensionAvgearn find(String historyId, Integer levelCode);
+	Optional<PensionAvgearn> find(String historyId, Integer levelCode);
 
 }

@@ -26,8 +26,8 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 
 		command.getListHealthInsuranceAvgearn().forEach(dto -> {
 			// Get the healthInsuranceAvgearn.
-			HealthInsuranceAvgearn healthInsuranceAvgearn = (HealthInsuranceAvgearn) healthInsuranceAvgearnRepository
-					.find(dto.getHistoryId(), dto.getLevelCode());
+			HealthInsuranceAvgearn healthInsuranceAvgearn = healthInsuranceAvgearnRepository
+					.find(dto.getHistoryId(), dto.getLevelCode()).get();
 
 			// Transfer data
 			HealthInsuranceAvgearn updatedHealthInsuranceAvgearn = dto.toDomain(healthInsuranceAvgearn.getHistoryId(),

@@ -11,7 +11,9 @@ var qet001;
                     this.selectedTab = ko.observable(0);
                     var self = this;
                     $("#sidebar-area > ul > li").on('click', function () {
-                        self.selectedTab($("#sidebar-area > ul > li").index(this));
+                        var index = $("#sidebar-area > ul > li").index(this);
+                        $("#sidebar").ntsSideBar("active", index);
+                        self.selectedTab(index);
                     });
                     self.selectedTab.subscribe(function (val) {
                         if (val == undefined || val == null) {
@@ -36,6 +38,10 @@ var qet001;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                ScreenModel.prototype.afterRender = function () {
+                    $('.master-table-label').width($('#swap-list-gridArea1').width());
+                    $('.sub-table-label').width($('#swap-list-gridArea2').width());
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
@@ -53,6 +59,7 @@ var qet001;
                     var self = this;
                     self.aggregateItemSelectedCode.subscribe(function (code) {
                         if (code == undefined || code == null || code == '') {
+                            self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate));
                             return;
                         }
                         self.loadDetailAggregateItem(code).done(function (res) {
@@ -87,12 +94,24 @@ var qet001;
                     return dfd.promise();
                 };
                 AggregateCategory.prototype.switchToCreateMode = function () {
+                    var self = this;
+                    self.aggregateItemSelectedCode(null);
                 };
                 AggregateCategory.prototype.save = function () {
+                    var self = this;
+                    if (self.aggregateItemDetail().code() == undefined || self.aggregateItemDetail().code() == null
+                        || self.aggregateItemDetail().name() == undefined || self.aggregateItemDetail().name() == null) {
+                        nts.uk.ui.dialog.alert('未入力エラー');
+                        return;
+                    }
                 };
                 AggregateCategory.prototype.remove = function () {
+                    if (this.aggregateItemSelectedCode() == null) {
+                        return;
+                    }
                 };
                 AggregateCategory.prototype.close = function () {
+                    nts.uk.ui.windows.close();
                 };
                 return AggregateCategory;
             }());

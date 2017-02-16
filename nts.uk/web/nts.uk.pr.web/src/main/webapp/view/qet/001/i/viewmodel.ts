@@ -15,7 +15,9 @@ module qet001.i.viewmodel {
             this.selectedTab = ko.observable(0);
             var self = this;
             $("#sidebar-area > ul > li").on('click', function() {
-                self.selectedTab($("#sidebar-area > ul > li").index(this));
+                var index = $("#sidebar-area > ul > li").index(this);
+                $("#sidebar").ntsSideBar("active", index);
+                self.selectedTab(index);
             });
             self.selectedTab.subscribe(val => {
                 if (val == undefined || val == null) {
@@ -45,6 +47,16 @@ module qet001.i.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        
+        
+        /**
+         * After rended template.
+         */
+        public afterRender() {
+            // set width when swap list is rended.
+            $('.master-table-label').width($('#swap-list-gridArea1').width());
+            $('.sub-table-label').width($('#swap-list-gridArea2').width())
+        }
     }
     
     export class AggregateCategory {
@@ -71,16 +83,22 @@ module qet001.i.viewmodel {
             var self = this;
             self.aggregateItemSelectedCode.subscribe((code) => {
                 if (code == undefined || code == null || code == '') {
+                    self.aggregateItemDetail(new AggregateItemDetail(paymentType,
+                        categoryName, masterItemInCate));
                     return;
                 }
                 self.loadDetailAggregateItem(code).done(function(res: service.Item) {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate, res));
                 });
-            })
+            });
+            
         }
         
-        loadAggregateItemByCategory() : JQueryPromise<void> {
+        /**
+         * Load Aggregate items by category.
+         */
+        public loadAggregateItemByCategory() : JQueryPromise<void> {
             var dfd = $.Deferred<void>();
             // Fake data.
             var self = this;
@@ -94,8 +112,10 @@ module qet001.i.viewmodel {
             return dfd.promise();
         }
         
-        
-        loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
+        /**
+         * Load detail aggregate item.
+         */
+        public loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
             var dfd = $.Deferred<service.Item>();
             var self = this;
             var selectedCode = code;
@@ -111,21 +131,36 @@ module qet001.i.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * Switch to create mode.
+         */
+        public switchToCreateMode() {
+            var self = this;
+            self.aggregateItemSelectedCode(null);
+        }
         
-        switchToCreateMode() {
+        public save() {
+            // validate.
+            var self = this;
+            if (self.aggregateItemDetail().code() == undefined || self.aggregateItemDetail().code() == null
+                || self.aggregateItemDetail().name() == undefined || self.aggregateItemDetail().name() == null) {
+                nts.uk.ui.dialog.alert('未入力エラー');
+                return;
+            }
             
         }
         
-        save() {
-            
+        public remove() {
+            if (this.aggregateItemSelectedCode() == null) {
+                return;
+            }
         }
         
-        remove() {
-            
-        }
-        
-        close() {
-            
+        /**
+         * Close dialog.
+         */
+        public close() {
+            nts.uk.ui.windows.close();
         }
     }
     
