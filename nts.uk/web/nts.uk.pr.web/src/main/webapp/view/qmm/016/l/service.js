@@ -13,12 +13,37 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findAllLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findall",
+                                findAllCertification: "pr/wagetable/certification/findall",
+                                findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
                                 findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
                                 addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
                                 updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
+                            function findAllCertification(companyCode) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findAllCertification + "/" + companyCode)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findAllCertification = findAllCertification;
+                            function findAllCertifyGroup(companyCode) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findAllCertifyGroup + "/" + companyCode)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findAllCertifyGroup = findAllCertifyGroup;
                             var model;
                             (function (model) {
                                 var CertificationDto = (function () {
@@ -27,6 +52,18 @@ var nts;
                                     return CertificationDto;
                                 }());
                                 model.CertificationDto = CertificationDto;
+                                var CertificationFindInDto = (function () {
+                                    function CertificationFindInDto() {
+                                    }
+                                    return CertificationFindInDto;
+                                }());
+                                model.CertificationFindInDto = CertificationFindInDto;
+                                var CertifyGroupFindInDto = (function () {
+                                    function CertifyGroupFindInDto() {
+                                    }
+                                    return CertifyGroupFindInDto;
+                                }());
+                                model.CertifyGroupFindInDto = CertifyGroupFindInDto;
                                 var CertifyGroupDto = (function () {
                                     function CertifyGroupDto() {
                                     }
