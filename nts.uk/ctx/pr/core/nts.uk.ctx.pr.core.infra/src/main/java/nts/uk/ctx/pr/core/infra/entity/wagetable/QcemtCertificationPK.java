@@ -24,12 +24,12 @@ public class QcemtCertificationPK implements Serializable {
 
 	/** The ccd. */
 	@Basic(optional = false)
-	@Column(name = "ccd")
+	@Column(name = "CCD")
 	private String ccd;
 
 	/** The cert cd. */
 	@Basic(optional = false)
-	@Column(name = "cert_cd")
+	@Column(name = "CERT_CD")
 	private String certCd;
 
 	/**

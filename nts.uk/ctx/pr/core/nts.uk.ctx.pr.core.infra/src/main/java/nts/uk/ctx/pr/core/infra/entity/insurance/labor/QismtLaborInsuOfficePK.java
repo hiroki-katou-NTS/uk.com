@@ -24,12 +24,12 @@ public class QismtLaborInsuOfficePK implements Serializable {
 
 	/** The ccd. */
 	@Basic(optional = false)
-	@Column(name = "ccd")
+	@Column(name = "CCD")
 	private String ccd;
 
 	/** The li office cd. */
 	@Basic(optional = false)
-	@Column(name = "li_office_cd")
+	@Column(name = "LI_OFFICE_CD")
 	private String liOfficeCd;
 
 	/**

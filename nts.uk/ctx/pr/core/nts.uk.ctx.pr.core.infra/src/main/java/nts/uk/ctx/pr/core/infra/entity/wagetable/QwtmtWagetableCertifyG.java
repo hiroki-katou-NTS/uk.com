@@ -36,50 +36,50 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	protected QwtmtWagetableCertifyGPK qwtmtWagetableCertifyGPK;
 
 	/** The ins date. */
-	@Column(name = "ins_date")
+	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date insDate;
 
 	/** The ins ccd. */
-	@Column(name = "ins_ccd")
+	@Column(name = "INS_CCD")
 	private String insCcd;
 
 	/** The ins scd. */
-	@Column(name = "ins_scd")
+	@Column(name = "INS_SCD")
 	private String insScd;
 
 	/** The ins pg. */
-	@Column(name = "ins_pg")
+	@Column(name = "INS_PG")
 	private String insPg;
 
 	/** The upd date. */
-	@Column(name = "upd_date")
+	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updDate;
 
 	/** The upd ccd. */
-	@Column(name = "upd_ccd")
+	@Column(name = "UPD_CCD")
 	private String updCcd;
 
 	/** The upd scd. */
-	@Column(name = "upd_scd")
+	@Column(name = "UPD_SCD")
 	private String updScd;
 
 	/** The upd pg. */
-	@Column(name = "upd_pg")
+	@Column(name = "UPD_PG")
 	private String updPg;
 
 	/** The exclus ver. */
 	@Basic(optional = false)
-	@Column(name = "exclus_ver")
+	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 
 	/** The certify group name. */
-	@Column(name = "certify_group_name")
+	@Column(name = "CERTIFY_GROUP_NAME")
 	private String certifyGroupName;
 
 	/** The multi apply set. */
-	@Column(name = "multi_apply_set")
+	@Column(name = "MULTI_APPLY_SET")
 	private Integer multiApplySet;
 
 	/** The qwtmt wagetable certify list. */

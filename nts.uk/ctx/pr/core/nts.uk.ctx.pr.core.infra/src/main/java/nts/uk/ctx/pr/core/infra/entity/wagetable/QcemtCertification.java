@@ -36,47 +36,47 @@ public class QcemtCertification implements Serializable {
     protected QcemtCertificationPK qcemtCertificationPK;
     
     /** The ins date. */
-    @Column(name = "ins_date")
+    @Column(name = "INS_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date insDate;
     
     /** The ins ccd. */
-    @Column(name = "ins_ccd")
+    @Column(name = "INS_CCD")
     private String insCcd;
     
     /** The ins scd. */
-    @Column(name = "ins_scd")
+    @Column(name = "INS_SCD")
     private String insScd;
     
     /** The ins pg. */
-    @Column(name = "ins_pg")
+    @Column(name = "INS_PG")
     private String insPg;
     
     /** The upd date. */
-    @Column(name = "upd_date")
+    @Column(name = "UPD_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updDate;
     
     /** The upd ccd. */
-    @Column(name = "upd_ccd")
+    @Column(name = "UPD_CCD")
     private String updCcd;
     
     /** The upd scd. */
-    @Column(name = "upd_scd")
+    @Column(name = "UPD_SCD")
     private String updScd;
     
     /** The upd pg. */
-    @Column(name = "upd_pg")
+    @Column(name = "UPD_PG")
     private String updPg;
     
     /** The exclus ver. */
     @Basic(optional = false)
-    @Column(name = "exclus_ver")
+    @Column(name = "EXCLUS_VER")
     private long exclusVer;
     
     /** The name. */
     @Basic(optional = false)
-    @Column(name = "name")
+    @Column(name = "NAME")
     private String name;
     
     /** The qwtmt wagetable certify list. */

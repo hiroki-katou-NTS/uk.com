@@ -33,139 +33,139 @@ public class QismtSocialInsuOffice implements Serializable {
 	protected QismtSocialInsuOfficePK qismtSocialInsuOfficePK;
 	
 	/** The ins date. */
-	@Column(name = "ins_date")
+	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date insDate;
 	
 	/** The ins ccd. */
-	@Column(name = "ins_ccd")
+	@Column(name = "INS_CCD")
 	private String insCcd;
 	
 	/** The ins scd. */
-	@Column(name = "ins_scd")
+	@Column(name = "INS_SCD")
 	private String insScd;
 	
 	/** The ins pg. */
-	@Column(name = "ins_pg")
+	@Column(name = "INS_PG")
 	private String insPg;
 	
 	/** The upd date. */
-	@Column(name = "upd_date")
+	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updDate;
 	
 	/** The upd ccd. */
-	@Column(name = "upd_ccd")
+	@Column(name = "UPD_CCD")
 	private String updCcd;
 	
 	/** The upd scd. */
-	@Column(name = "upd_scd")
+	@Column(name = "UPD_SCD")
 	private String updScd;
 	
 	/** The upd pg. */
-	@Column(name = "upd_pg")
+	@Column(name = "UPD_PG")
 	private String updPg;
 	
 	/** The exclus ver. */
 	@Basic(optional = false)
-	@Column(name = "exclus_ver")
+	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 	
 	/** The si office name. */
 	@Basic(optional = false)
-	@Column(name = "si_office_name")
+	@Column(name = "SI_OFFICE_NAME")
 	private String siOfficeName;
 	
 	/** The si office ab name. */
-	@Column(name = "si_office_ab_name")
+	@Column(name = "SI_OFFICE_AB_NAME")
 	private String siOfficeAbName;
 	
 	/** The president name. */
-	@Column(name = "president_name")
+	@Column(name = "PRESIDENT_NAME")
 	private String presidentName;
 	
 	/** The president title. */
-	@Column(name = "president_title")
+	@Column(name = "PRESIDENT_TITLE")
 	private String presidentTitle;
 	
 	/** The postal. */
-	@Column(name = "postal")
+	@Column(name = "POSTAL")
 	private String postal;
 	
 	/** The prefecture. */
-	@Column(name = "prefecture")
+	@Column(name = "PREFECTURE")
 	private String prefecture;
 	
 	/** The address 1. */
-	@Column(name = "address1")
+	@Column(name = "ADDRESS1")
 	private String address1;
 	
 	/** The address 2. */
-	@Column(name = "address2")
+	@Column(name = "ADDRESS2")
 	private String address2;
 	
 	/** The kn address 1. */
-	@Column(name = "kn_address1")
+	@Column(name = "KN_ADDRESS1")
 	private String knAddress1;
 	
 	/** The kn address 2. */
-	@Column(name = "kn_address2")
+	@Column(name = "KN_ADDRESS2")
 	private String knAddress2;
 	
 	/** The tel no. */
-	@Column(name = "tel_no")
+	@Column(name = "TEL_NO")
 	private String telNo;
 	
 	/** The health insu office refno 1. */
-	@Column(name = "health_insu_office_refno1")
+	@Column(name = "HEALTH_INSU_OFFICE_REFNO1")
 	private String healthInsuOfficeRefno1;
 	
 	/** The health insu office refno 2. */
-	@Column(name = "health_insu_office_refno2")
+	@Column(name = "HEALTH_INSU_OFFICE_REFNO2")
 	private String healthInsuOfficeRefno2;
 	
 	/** The pension office refno 1. */
-	@Column(name = "pension_office_refno1")
+	@Column(name = "PENSION_OFFICE_REFNO1")
 	private String pensionOfficeRefno1;
 	
 	/** The pension office refno 2. */
-	@Column(name = "pension_office_refno2")
+	@Column(name = "PENSION_OFFICE_REFNO2")
 	private String pensionOfficeRefno2;
 	
 	/** The pension fund no. */
-	@Column(name = "pension_fund_no")
+	@Column(name = "PENSION_FUND_NO")
 	private String pensionFundNo;
 	
 	/** The pension fund office no. */
-	@Column(name = "pension_fund_office_no")
+	@Column(name = "PENSION_FUND_OFFICE_NO")
 	private String pensionFundOfficeNo;
 	
 	/** The health insu city mark. */
-	@Column(name = "health_insu_city_mark")
+	@Column(name = "HEALTH_INSU_CITY_MARK")
 	private String healthInsuCityMark;
 	
 	/** The health insu office mark. */
-	@Column(name = "health_insu_office_mark")
+	@Column(name = "HEALTH_INSU_OFFICE_MARK")
 	private String healthInsuOfficeMark;
 	
 	/** The pension city mark. */
-	@Column(name = "pension_city_mark")
+	@Column(name = "PENSION_CITY_MARK")
 	private String pensionCityMark;
 	
 	/** The pension office mark. */
-	@Column(name = "pension_office_mark")
+	@Column(name = "PENSION_OFFICE_MARK")
 	private String pensionOfficeMark;
 	
 	/** The health insu office no. */
-	@Column(name = "health_insu_office_no")
+	@Column(name = "HEALTH_INSU_OFFICE_NO")
 	private String healthInsuOfficeNo;
 	
 	/** The health insu asso no. */
-	@Column(name = "health_insu_asso_no")
+	@Column(name = "HEALTH_INSU_ASSO_NO")
 	private String healthInsuAssoNo;
 	
 	/** The memo. */
-	@Column(name = "memo")
+	@Column(name = "MEMO")
 	private String memo;
 
 	/**

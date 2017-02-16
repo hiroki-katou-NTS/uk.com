@@ -24,12 +24,12 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 
 	/** The ccd. */
 	@Basic(optional = false)
-	@Column(name = "ccd")
+	@Column(name = "CCD")
 	private String ccd;
 
 	/** The certify group cd. */
 	@Basic(optional = false)
-	@Column(name = "certify_group_cd")
+	@Column(name = "CERTIFY_GROUP_CD")
 	private String certifyGroupCd;
 
 	/**

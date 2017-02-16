@@ -33,111 +33,111 @@ public class QismtLaborInsuOffice implements Serializable {
 	protected QismtLaborInsuOfficePK qismtLaborInsuOfficePK;
 
 	/** The ins date. */
-	@Column(name = "ins_date")
+	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date insDate;
 
 	/** The ins ccd. */
-	@Column(name = "ins_ccd")
+	@Column(name = "INS_CCD")
 	private String insCcd;
 
 	/** The ins scd. */
-	@Column(name = "ins_scd")
+	@Column(name = "INS_SCD")
 	private String insScd;
 
 	/** The ins pg. */
-	@Column(name = "ins_pg")
+	@Column(name = "INS_PG")
 	private String insPg;
 
 	/** The upd date. */
-	@Column(name = "upd_date")
+	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updDate;
 
 	/** The upd ccd. */
-	@Column(name = "upd_ccd")
+	@Column(name = "UPD_CCD")
 	private String updCcd;
 
 	/** The upd scd. */
-	@Column(name = "upd_scd")
+	@Column(name = "UPD_SCD")
 	private String updScd;
 
 	/** The upd pg. */
-	@Column(name = "upd_pg")
+	@Column(name = "UPD_PG")
 	private String updPg;
 
 	/** The exclus ver. */
 	@Basic(optional = false)
-	@Column(name = "exclus_ver")
+	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 
 	/** The li office name. */
 	@Basic(optional = false)
-	@Column(name = "li_office_name")
+	@Column(name = "LI_OFFICE_NAME")
 	private String liOfficeName;
 
 	/** The li office ab name. */
-	@Column(name = "li_office_ab_name")
+	@Column(name = "LI_OFFICE_AB_NAME")
 	private String liOfficeAbName;
 
 	/** The president name. */
-	@Column(name = "president_name")
+	@Column(name = "PRESIDENT_NAME")
 	private String presidentName;
 
 	/** The president title. */
-	@Column(name = "president_title")
+	@Column(name = "PRESIDENT_TITLE")
 	private String presidentTitle;
 
 	/** The postal. */
-	@Column(name = "postal")
+	@Column(name = "POSTAL")
 	private String postal;
 
 	/** The prefecture. */
-	@Column(name = "prefecture")
+	@Column(name = "PREFECTURE")
 	private String prefecture;
 
 	/** The address 1. */
-	@Column(name = "address1")
+	@Column(name = "ADDRESS1")
 	private String address1;
 
 	/** The address 2. */
-	@Column(name = "address2")
+	@Column(name = "ADDRESS2")
 	private String address2;
 
 	/** The kn address 1. */
-	@Column(name = "kn_address1")
+	@Column(name = "KN_ADDRESS1")
 	private String knAddress1;
 
 	/** The kn address 2. */
-	@Column(name = "kn_address2")
+	@Column(name = "KN_ADDRESS2")
 	private String knAddress2;
 
 	/** The tel no. */
-	@Column(name = "tel_no")
+	@Column(name = "TEL_NO")
 	private String telNo;
 
 	/** The city sign. */
-	@Column(name = "city_sign")
+	@Column(name = "CITY_SIGN")
 	private String citySign;
 
 	/** The office mark. */
-	@Column(name = "office_mark")
+	@Column(name = "OFFICE_MARK")
 	private String officeMark;
 
 	/** The office no A. */
-	@Column(name = "office_no_a")
+	@Column(name = "OFFICE_NO_A")
 	private String officeNoA;
 
 	/** The office no B. */
-	@Column(name = "office_no_b")
+	@Column(name = "OFFICE_NO_B")
 	private String officeNoB;
 
 	/** The office no C. */
-	@Column(name = "office_no_c")
+	@Column(name = "OFFICE_NO_C")
 	private Character officeNoC;
 
 	/** The memo. */
-	@Column(name = "memo")
+	@Column(name = "MEMO")
 	private String memo;
 
 	/**

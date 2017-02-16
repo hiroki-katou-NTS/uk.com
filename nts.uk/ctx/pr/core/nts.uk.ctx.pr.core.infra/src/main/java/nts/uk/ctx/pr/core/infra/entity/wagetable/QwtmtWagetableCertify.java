@@ -36,53 +36,53 @@ public class QwtmtWagetableCertify implements Serializable {
 	protected QwtmtWagetableCertifyPK qwtmtWagetableCertifyPK;
 
 	/** The ins date. */
-	@Column(name = "ins_date")
+	@Column(name = "INS_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date insDate;
 
 	/** The ins ccd. */
-	@Column(name = "ins_ccd")
+	@Column(name = "INS_CCD")
 	private String insCcd;
 
 	/** The ins scd. */
-	@Column(name = "ins_scd")
+	@Column(name = "INS_SCD")
 	private String insScd;
 
 	/** The ins pg. */
-	@Column(name = "ins_pg")
+	@Column(name = "INS_PG")
 	private String insPg;
 
 	/** The upd date. */
-	@Column(name = "upd_date")
+	@Column(name = "UPD_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updDate;
 
 	/** The upd ccd. */
-	@Column(name = "upd_ccd")
+	@Column(name = "UPD_CCD")
 	private String updCcd;
 
 	/** The upd scd. */
-	@Column(name = "upd_scd")
+	@Column(name = "UPD_SCD")
 	private String updScd;
 
 	/** The upd pg. */
-	@Column(name = "upd_pg")
+	@Column(name = "UPD_PG")
 	private String updPg;
 
 	/** The exclus ver. */
 	@Basic(optional = false)
-	@Column(name = "exclus_ver")
+	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 
 	/** The qcemt certification. */
-	@JoinColumns({ @JoinColumn(name = "ccd", referencedColumnName = "ccd", insertable = false, updatable = false),
-			@JoinColumn(name = "certify_cd", referencedColumnName = "cert_cd", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "CERTIFY_CD", referencedColumnName = "CERT_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QcemtCertification qcemtCertification;
 
 	/** The qwtmt wagetable certify G. */
-	@JoinColumns({ @JoinColumn(name = "ccd", referencedColumnName = "ccd", insertable = false, updatable = false),
-			@JoinColumn(name = "certify_group_cd", referencedColumnName = "certify_group_cd", insertable = false, updatable = false) })
+	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "CERTIFY_GROUP_CD", referencedColumnName = "CERTIFY_GROUP_CD", insertable = false, updatable = false) })
 	@ManyToOne(optional = false)
 	private QwtmtWagetableCertifyG qwtmtWagetableCertifyG;
 

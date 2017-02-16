@@ -20,12 +20,12 @@ public class QismtSocialInsuOfficePK implements Serializable {
 
 	/** The ccd. */
 	@Basic(optional = false)
-	@Column(name = "ccd")
+	@Column(name = "CCD")
 	private String ccd;
 
 	/** The si office cd. */
 	@Basic(optional = false)
-	@Column(name = "si_office_cd")
+	@Column(name = "SI_OFFICE_CD")
 	private String siOfficeCd;
 
 	/**
