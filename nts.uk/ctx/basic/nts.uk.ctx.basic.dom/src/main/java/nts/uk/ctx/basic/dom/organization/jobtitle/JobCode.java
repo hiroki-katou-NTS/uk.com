@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.organization.position;
+package nts.uk.ctx.basic.dom.organization.jobtitle;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

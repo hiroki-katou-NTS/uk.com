@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.organization.position;
+package nts.uk.ctx.basic.infra.entity.organization.jobtitle;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,14 +17,14 @@ import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 @NoArgsConstructor
 @Entity
 @Table(name = "CMNMT_JOB_TITLE")
-public class CmnmtJobTittle implements Serializable{
+public class CmnmtJobTitle implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public CmnmtJobTittlePK cmnmtJobTittlePK;
+	public CmnmtJobTitlePK cmnmtJobTittlePK;
 	
-	public CmnmtJobTittlePK getCmnmtJobTittlePK() {
+	public CmnmtJobTitlePK getCmnmtJobTittlePK() {
 		return cmnmtJobTittlePK;
 	}
 
@@ -58,7 +58,7 @@ public class CmnmtJobTittle implements Serializable{
 	@Column(name ="HIERARCHY_ORDER_CD")
 	public String hiterarchyOrderCode;
 	
-	public void setCmnmtJobTittlePK(CmnmtJobTittlePK cmnmtJobTittlePK) {
+	public void setCmnmtJobTittlePK(CmnmtJobTitlePK cmnmtJobTittlePK) {
 		this.cmnmtJobTittlePK = cmnmtJobTittlePK;
 	}
 	

@@ -1,15 +1,15 @@
-package nts.uk.ctx.basic.app.find.organization.position;
+package nts.uk.ctx.basic.app.find.organization.jobtitle;
 
 import java.time.LocalDate;
 
 import lombok.Data;
-import nts.uk.ctx.basic.dom.organization.position.Position;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitle;
 
 
 
 @Data
 
-public class PositionDto {
+public class JobTitleDto {
 	private String historyID;
 	private String jobCode;
 	private String jobName;
@@ -20,8 +20,8 @@ public class PositionDto {
 	
 	
 
-	public static PositionDto fromDomain(Position domain) {
-		PositionDto positionDto = new PositionDto();
+	public static JobTitleDto fromDomain(JobTitle domain) {
+		JobTitleDto jobTitleDto = new JobTitleDto();
 		domain.getCompanyCode();
 		domain.getJobCode().v();
 		domain.getHistoryID();
@@ -29,7 +29,7 @@ public class PositionDto {
 		domain.getJobOutCode().v();
 		domain.getEndDate().localDate();
 		domain.getStartDate().localDate();
-		return positionDto;
+		return jobTitleDto;
 	};
 				
 				

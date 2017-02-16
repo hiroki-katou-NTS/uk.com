@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.position;
+package nts.uk.ctx.basic.infra.entity.organization.jobtitle;
 
 import java.io.Serializable;
 
@@ -7,11 +7,16 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-@AllArgsConstructor
+import lombok.Setter;
+
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
-public class CmnmtJobTittlePK implements Serializable{
+public class CmnmtJobTitlePK implements Serializable{
 
 	/**
 	 * serialVersionUID
@@ -20,7 +25,7 @@ public class CmnmtJobTittlePK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name ="CCD")
-	public String companyCd;
+	public String companyCode;
 	
 	@Basic(optional = false)
 	@Column(name ="JOBCD")

@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.organization.position;
+package nts.uk.ctx.basic.dom.organization.jobtitle;
 
 import lombok.AllArgsConstructor;
 

@@ -9,14 +9,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.position.CreatePositionCommand;
-import nts.uk.ctx.basic.app.command.position.CreatePositionCommandHandler;
-import nts.uk.ctx.basic.app.command.position.RemovePositionCommand;
-import nts.uk.ctx.basic.app.command.position.RemovePositionCommandHandler;
-import nts.uk.ctx.basic.app.command.position.UpdatePositionCommand;
-import nts.uk.ctx.basic.app.command.position.UpdatePositionCommandHandler;
-import nts.uk.ctx.basic.app.find.organization.position.PositionDto;
-import nts.uk.ctx.basic.app.find.organization.position.PositionFinder;
+import nts.uk.ctx.basic.app.command.organization.jobtitle.CreateJobTitleCommand;
+import nts.uk.ctx.basic.app.command.organization.jobtitle.CreateJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.jobtitle.RemoveJobTitleCommand;
+import nts.uk.ctx.basic.app.command.organization.jobtitle.RemoveJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.jobtitle.UpdateJobTitleCommand;
+import nts.uk.ctx.basic.app.command.organization.jobtitle.UpdateJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.find.organization.jobtitle.JobTitleDto;
+import nts.uk.ctx.basic.app.find.organization.jobtitle.JobTitleFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 
@@ -28,44 +28,44 @@ import nts.uk.shr.com.context.AppContexts;
 public class PositionWebService extends WebService {
 
 	@Inject
-	private PositionFinder positionFinder;
+	private JobTitleFinder positionFinder;
 
 	@Inject
-	private CreatePositionCommandHandler createPositionCommandHandler;
+	private CreateJobTitleCommandHandler createPositionCommandHandler;
 
 	@Inject
-	private UpdatePositionCommandHandler updatePositionCommandHandler;
+	private UpdateJobTitleCommandHandler updatePositionCommandHandler;
 
 	@Inject
-	private RemovePositionCommandHandler removePositionCommandHandler;
+	private RemoveJobTitleCommandHandler removePositionCommandHandler;
 
 	@Path("")
 	@POST
-	public List<PositionDto> init() {
+	public List<JobTitleDto> init() {
 		return positionFinder.init();
 	}
 
 	@Path("")
 	@POST
-	public void add(CreatePositionCommand command) {
+	public void add(CreateJobTitleCommand command) {
 		this.createPositionCommandHandler.handle(command);
 	}
 
 	@Path("")
 	@POST
-	public void update(UpdatePositionCommand command) {
+	public void update(UpdateJobTitleCommand command) {
 		this.updatePositionCommandHandler.handle(command);
 	}
 
 	@Path("")
 	@POST
-	public void remove(RemovePositionCommand command) {
+	public void remove(RemoveJobTitleCommand command) {
 		this.removePositionCommandHandler.handle(command);
 	}
 	
 	@POST
 	@Path("findAllPosition")
-	public List<PositionDto> getAllPosition(){
+	public List<JobTitleDto> getAllPosition(){
 		return this.positionFinder.getAllPosition(AppContexts.user().companyCode());		
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.find.organization.position;
+package nts.uk.ctx.basic.app.find.organization.jobtitle;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,25 +6,25 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.basic.dom.organization.position.Position;
-import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitle;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 
 	@Stateless
-	public class PositionFinder {
+	public class JobTitleFinder {
 
 		@Inject
-		private PositionRepository positionRepository;
+		private JobTitleRepository positionRepository;
 		
-		public List<PositionDto> init() {
+		public List<JobTitleDto> init() {
 			String companyCode = AppContexts.user().companyCode();
 			return positionRepository.findAll(companyCode)
 					.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
 		}
 
-		private PositionDto convertToDto(Position position) {
-			PositionDto positionDto = new PositionDto();
+		private JobTitleDto convertToDto(JobTitle position) {
+			JobTitleDto positionDto = new JobTitleDto();
 			positionDto.setJobCode(position.getJobCode().v());
 			positionDto.setHistoryID(position.getHistoryID());
 			positionDto.setMemo(position.getMemo().v());
@@ -34,8 +34,8 @@ import nts.uk.shr.com.context.AppContexts;
 			return positionDto;
 		}
 
-		public List<PositionDto> getAllPosition(String companyCode) {
-			return this.positionRepository.getPositions(companyCode).stream().map(position -> PositionDto.fromDomain(position))
+		public List<JobTitleDto> getAllPosition(String companyCode) {
+			return this.positionRepository.getPositions(companyCode).stream().map(position -> JobTitleDto.fromDomain(position))
 					.collect(Collectors.toList());
 		}
 }

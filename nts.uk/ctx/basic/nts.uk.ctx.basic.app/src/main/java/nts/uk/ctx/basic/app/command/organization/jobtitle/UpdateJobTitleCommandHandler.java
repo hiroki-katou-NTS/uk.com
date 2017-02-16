@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.command.position;
+package nts.uk.ctx.basic.app.command.organization.jobtitle;
 
 
 import javax.ejb.Stateless;
@@ -7,23 +7,23 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.organization.position.HiterarchyOrderCode;
-import nts.uk.ctx.basic.dom.organization.position.JobCode;
-import nts.uk.ctx.basic.dom.organization.position.JobName;
-import nts.uk.ctx.basic.dom.organization.position.Position;
-import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
-import nts.uk.ctx.basic.dom.organization.position.PresenceCheckScopeSet;
+import nts.uk.ctx.basic.dom.organization.jobtitle.HiterarchyOrderCode;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobCode;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobName;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitle;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitleRepository;
+import nts.uk.ctx.basic.dom.organization.jobtitle.PresenceCheckScopeSet;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
-public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionCommand> {
+public class UpdateJobTitleCommandHandler extends CommandHandler<UpdateJobTitleCommand> {
 
 	@Inject
-	private PositionRepository positionRepository;
+	private JobTitleRepository positionRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdatePositionCommand> context) {
+	protected void handle(CommandHandlerContext<UpdateJobTitleCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		
 		
@@ -32,7 +32,7 @@ public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionC
 			//throw err[ER026]
 		}
 		
-		Position position = new Position(
+		JobTitle jobTitle = new JobTitle(
 				new JobName(context.getCommand().getJobName()),
 				GeneralDate.localDate(context.getCommand().getEndDate()),
 				new JobCode(context.getCommand().getJobCode()),
@@ -43,7 +43,7 @@ public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionC
 				new HiterarchyOrderCode(context.getCommand().getHiterarchyOrderCode()),
 				PresenceCheckScopeSet.valueOf(Integer.toString(context.getCommand().getPresenceCheckScopeSet()))
 				);
-		positionRepository.update(position);
+		positionRepository.update(jobTitle);
 	}
 
 }

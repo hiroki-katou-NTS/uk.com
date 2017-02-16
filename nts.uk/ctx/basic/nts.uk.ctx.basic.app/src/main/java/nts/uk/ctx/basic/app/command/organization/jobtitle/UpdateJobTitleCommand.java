@@ -1,11 +1,11 @@
-package nts.uk.ctx.basic.app.command.position;
+package nts.uk.ctx.basic.app.command.organization.jobtitle;
 
 import java.time.LocalDate;
 
 import lombok.Data;
 
 @Data
-public class UpdatePositionCommand {
+public class UpdateJobTitleCommand {
 	
 	private String companyCode;
 	private String historyID;

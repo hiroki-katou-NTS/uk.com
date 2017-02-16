@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.organization.position;
+package nts.uk.ctx.basic.dom.organization.jobtitle;
 
 
 import lombok.Getter;
@@ -9,7 +9,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
-public class Position extends AggregateRoot {
+public class JobTitle extends AggregateRoot {
 
 	private GeneralDate endDate;
 
@@ -31,7 +31,7 @@ public class Position extends AggregateRoot {
 	
 	private PresenceCheckScopeSet presenceCheckScopeSet;
 	
-	public Position( JobName jobName,GeneralDate endDate, JobCode jobCode, JobCode jobOutCode,
+	public JobTitle( JobName jobName,GeneralDate endDate, JobCode jobCode, JobCode jobOutCode,
 			GeneralDate startDate, String historyID, String companyCode, Memo memo ,HiterarchyOrderCode hiterarchyOrderCode ,PresenceCheckScopeSet presenceCheckScopeSet) {
 
 		super();
@@ -48,7 +48,7 @@ public class Position extends AggregateRoot {
 	}
 
 	
-	public Position( JobName jobName,GeneralDate endDate, JobCode jobCode, JobCode jobOutCode,
+	public JobTitle( JobName jobName,GeneralDate endDate, JobCode jobCode, JobCode jobOutCode,
 			GeneralDate startDate, String companyCode, Memo memo,HiterarchyOrderCode hiterarchyOrderCode ,PresenceCheckScopeSet presenceCheckScopeSet) {
 
 		super();
@@ -64,9 +64,9 @@ public class Position extends AggregateRoot {
 		this.presenceCheckScopeSet = presenceCheckScopeSet;
 	}
 
-	public static Position createFromJavaType( String jobName, GeneralDate endDate,String jobCode, String jobOutCode,
+	public static JobTitle createFromJavaType( String jobName, GeneralDate endDate,String jobCode, String jobOutCode,
 			GeneralDate startDate, String historyID, String companyCode, String memo ,String hiterarchyOrderCode ,int presenceCheckScopeSet) {
-		return new Position(new JobName(jobName),endDate,  new JobCode(jobCode), new JobCode(jobOutCode), startDate,
+		return new JobTitle(new JobName(jobName),endDate,  new JobCode(jobCode), new JobCode(jobOutCode), startDate,
 				historyID, companyCode, new Memo(memo),new HiterarchyOrderCode(hiterarchyOrderCode) ,EnumAdaptor.valueOf(presenceCheckScopeSet, PresenceCheckScopeSet.class));
 
 	}

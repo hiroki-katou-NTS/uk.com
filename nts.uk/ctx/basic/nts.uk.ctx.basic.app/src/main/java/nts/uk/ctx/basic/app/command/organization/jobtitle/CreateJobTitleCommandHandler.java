@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.command.position;
+package nts.uk.ctx.basic.app.command.organization.jobtitle;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -9,29 +9,29 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.basic.dom.organization.position.Position;
-import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitle;
+import nts.uk.ctx.basic.dom.organization.jobtitle.JobTitleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class CreatePositionCommandHandler extends CommandHandler<CreatePositionCommand>{
+public class CreateJobTitleCommandHandler extends CommandHandler<CreateJobTitleCommand>{
 	
 	@Inject
-	private PositionRepository positionRepo;
+	private JobTitleRepository positionRepo;
 	
 	
 	@Override
-	protected void handle(CommandHandlerContext<CreatePositionCommand> context){
+	protected void handle(CommandHandlerContext<CreateJobTitleCommand> context){
 		
-		CreatePositionCommand command = context.getCommand();
+		CreateJobTitleCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
 		if (positionRepo.isExist(companyCode, command.getStartDate())) {
 			throw new BusinessException(new RawErrorMessage(""));
 		}
-		Position position = context.getCommand().toDomain(IdentifierUtil.randomUniqueId());
-		position.validate();
-		this.positionRepo.add(position);
+		JobTitle jobTitle = context.getCommand().toDomain(IdentifierUtil.randomUniqueId());
+		jobTitle.validate();
+		this.positionRepo.add(jobTitle);
 	}
 }
