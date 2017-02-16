@@ -93,21 +93,23 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 	}
 
 	private QmnmtPayClass convertToDbType(PayClassification payClassification) {
-		QmnmtPayClass qmnmtPayClass = new QmnmtPayClass();
-		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(payClassification.getCompanyCode(),
-				payClassification.getPayClassCode().toString());
-		qmnmtPayClass.setMemo(payClassification.getMemo().toString());
-		qmnmtPayClass.setPayClassName(payClassification.getPayClassName().toString());
-		qmnmtPayClass.setQmnmtPayClassPK(qmnmtPayClassPK);
-		return qmnmtPayClass;
+//		QmnmtPayClass qmnmtPayClass = new QmnmtPayClass();
+//		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(payClassification.getCompanyCode(),
+//				payClassification.getPayClassCode().toString());
+//		qmnmtPayClass.setMemo(payClassification.getMemo().toString());
+//		qmnmtPayClass.setPayClassName(payClassification.getPayClassName().toString());
+//		qmnmtPayClass.setQmnmtPayClassPK(qmnmtPayClassPK);
+//		return qmnmtPayClass;
+		return null;
 	}
 	
 	
 	private PayClassification convertToDomain(QmnmtPayClass qmnmtPayClass) {
-		return new PayClassification(new PayClassificationName(qmnmtPayClass.getPayClassName()),
-				new PayClassificationCode(qmnmtPayClass.getQmnmtPayClassPK().getPayClassCode()),
-				qmnmtPayClass.getQmnmtPayClassPK().getCompanyCode(),
-				new Memo(qmnmtPayClass.getMemo()));
+//		return new PayClassification(new PayClassificationName(qmnmtPayClass.getPayClassName()),
+//				new PayClassificationCode(qmnmtPayClass.getQmnmtPayClassPK().getPayClassCode()),
+//				qmnmtPayClass.getQmnmtPayClassPK().getCompanyCode(),
+//				new Memo(qmnmtPayClass.getMemo()));
+		return null;
 	}
 
 	@Override

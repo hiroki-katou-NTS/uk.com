@@ -26,11 +26,11 @@ public class AddPayClassificationCommandHandler extends CommandHandler<AddPayCla
 				new PayClassificationCode(context.getCommand().getPayClassificationCode()))){
 			//throw err[ER005]
 		}
-		PayClassification payClassification = new PayClassification(new PayClassificationName(context.getCommand().getPayClassificationName()),
-				new PayClassificationCode(context.getCommand().getPayClassificationCode()),
-				companyCode,
-				new Memo(context.getCommand().getMemo()));
-		payClassificationRepository.add(payClassification);
+//		PayClassification payClassification = new PayClassification(new PayClassificationName(context.getCommand().getPayClassificationName()),
+//				new PayClassificationCode(context.getCommand().getPayClassificationCode()),
+//				companyCode,
+//				new Memo(context.getCommand().getMemo()));
+		//payClassificationRepository.add(payClassification);
 	}
 
 }
