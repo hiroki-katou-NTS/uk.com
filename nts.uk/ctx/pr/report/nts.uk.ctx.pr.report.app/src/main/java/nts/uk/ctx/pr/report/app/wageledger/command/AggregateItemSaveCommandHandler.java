@@ -36,9 +36,9 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		val command = context.getCommand();
 		
 		// In case update.
-		if (!command.isCreateMode) {
+		if (!command.isCreateMode()) {
 			// Find aggregate item.
-			WLAggregateItem aggregateItem = this.repository.find(new WLAggregateItemCode(command.code),
+			WLAggregateItem aggregateItem = this.repository.find(new WLAggregateItemCode(command.getCode()),
 					new CompanyCode(companyCode));
 			if (aggregateItem == null) {
 				throw new BusinessException("ER026");
@@ -53,7 +53,7 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		
 		// In case create.
 		// Check duplicate code.
-		if (this.repository.isExist(new WLAggregateItemCode(command.code))) {
+		if (this.repository.isExist(new WLAggregateItemCode(command.getCode()))) {
 			throw new BusinessException("ER011");
 		}
 		

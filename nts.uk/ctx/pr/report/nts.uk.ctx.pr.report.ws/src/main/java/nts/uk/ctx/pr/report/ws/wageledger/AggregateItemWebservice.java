@@ -70,10 +70,9 @@ public class AggregateItemWebservice extends WebService{
 	 */
 	@POST
 	@Path("findByCate/{category}/{paymentType}")
-	public List<AggregateItemDto> findByCategoryAndPaymentType(@PathParam("category") String category,
-			@PathParam("paymentType") String paymentType) {
-		return this.finder.findByCategoryAndPaymentType(WLCategory.valueOfName(category), 
-				PaymentType.valueOfName(paymentType));
+	public List<AggregateItemDto> findByCategoryAndPaymentType(@PathParam("category") WLCategory category,
+			@PathParam("paymentType") PaymentType paymentType) {
+		return this.finder.findByCategoryAndPaymentType(category,paymentType);
 	}
 	
 	/**

@@ -27,7 +27,7 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
-		this.repository.remove(new WLAggregateItemCode(context.getCommand().code));
+		this.repository.remove(new WLAggregateItemCode(context.getCommand().getCode()));
 	}
 
 }

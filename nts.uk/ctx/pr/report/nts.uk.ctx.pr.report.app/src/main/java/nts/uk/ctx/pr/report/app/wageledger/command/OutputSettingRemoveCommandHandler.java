@@ -27,7 +27,7 @@ public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSett
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<OutputSettingRemoveCommand> context) {
-		this.repository.remove(new WLOutputSettingCode(context.getCommand().code));
+		this.repository.remove(new WLOutputSettingCode(context.getCommand().getCode()));
 	}
 
 }
