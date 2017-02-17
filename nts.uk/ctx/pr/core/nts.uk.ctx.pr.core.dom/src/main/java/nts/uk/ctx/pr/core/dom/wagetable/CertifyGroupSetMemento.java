@@ -21,20 +21,6 @@ public interface CertifyGroupSetMemento {
 	void setCompanyCode(CompanyCode companyCode);
 
 	/**
-	 * Sets the wage table code.
-	 *
-	 * @param wageTableCode the new wage table code
-	 */
-	void setWageTableCode(WageTableCode wageTableCode);
-
-	/**
-	 * Sets the history id.
-	 *
-	 * @param historyId the new history id
-	 */
-	void setHistoryId(String historyId);
-
-	/**
 	 * Sets the code.
 	 *
 	 * @param code the new code

@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
  * The Class HealthInsuranceRounding.
  */
 @Getter
+@Setter
 @EqualsAndHashCode(of = { "payType" })
 public class HealthInsuranceRounding {
 
@@ -21,6 +23,13 @@ public class HealthInsuranceRounding {
 
 	/** The round atrs. */
 	private RoundingItem roundAtrs;
+
+	/**
+	 * Instantiates a new health insurance rounding.
+	 */
+	public HealthInsuranceRounding() {
+		super();
+	}
 
 	/**
 	 * @param payType

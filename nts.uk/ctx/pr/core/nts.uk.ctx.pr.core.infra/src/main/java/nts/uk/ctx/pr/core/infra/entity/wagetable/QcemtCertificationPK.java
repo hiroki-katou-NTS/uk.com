@@ -36,13 +36,16 @@ public class QcemtCertificationPK implements Serializable {
 	 * Instantiates a new qcemt certification PK.
 	 */
 	public QcemtCertificationPK() {
+		super();
 	}
 
 	/**
 	 * Instantiates a new qcemt certification PK.
 	 *
-	 * @param ccd the ccd
-	 * @param certCd the cert cd
+	 * @param ccd
+	 *            the ccd
+	 * @param certCd
+	 *            the cert cd
 	 */
 	public QcemtCertificationPK(String ccd, String certCd) {
 		this.ccd = ccd;
@@ -82,4 +85,5 @@ public class QcemtCertificationPK implements Serializable {
 		}
 		return true;
 	}
+
 }

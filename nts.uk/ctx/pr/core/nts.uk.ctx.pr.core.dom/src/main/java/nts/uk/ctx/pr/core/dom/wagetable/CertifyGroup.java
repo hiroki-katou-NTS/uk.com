@@ -20,10 +20,10 @@ public class CertifyGroup extends DomainObject {
 	private CompanyCode companyCode;
 
 	/** The wage table code. */
-	private WageTableCode wageTableCode;
+	// private WageTableCode wageTableCode;
 
 	/** The history id. */
-	private String historyId;
+	// private String historyId;
 
 	/** The code. */
 	private String code;
@@ -46,8 +46,6 @@ public class CertifyGroup extends DomainObject {
 	 */
 	public CertifyGroup(CertifyGroupGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
-		this.wageTableCode = memento.getWageTableCode();
-		this.historyId = memento.getHistoryId();
 		this.code = memento.getCode();
 		this.name = memento.getName();
 		this.multiApplySet = memento.getMultiApplySet();
@@ -62,8 +60,6 @@ public class CertifyGroup extends DomainObject {
 	 */
 	public void saveToMemento(CertifyGroupSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
-		memento.setWageTableCode(this.wageTableCode);
-		memento.setHistoryId(this.historyId);
 		memento.setCode(this.code);
 		memento.setName(this.name);
 		memento.setMultiApplySet(this.multiApplySet);
