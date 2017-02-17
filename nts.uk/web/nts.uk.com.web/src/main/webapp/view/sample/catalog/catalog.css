@@ -1,4 +1,4 @@
-html, body {background-color:#dedede;position:relative;}
+html, body {background-color:#f5f5f5;position:relative;}
 a{color:#00B050;text-decoration: none;}
 b{font-weight:bold;}
 i{font-style: italic;}
@@ -19,7 +19,7 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 .pull-right{float:right;}
 
 #functions-area {background:#fff;}
-#contents-area {display:flex;background:#f5f5f5;width:95%;min-width:1000px;margin:25px auto; padding:0px; border:1px solid #B1B1B1; box-shadow: 0 0 2px 0px rgba(0,0,0,0.2);}
+#contents-area {display:flex;background:#f5f5f5;width:95%;min-width:1000px;margin:25px auto; padding:0px; border:1px solid #B1B1B1; box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.2);}
 
 #search-menu {margin: 10px 15px 0; width:215px; box-sizing: border-box; padding: 5px 10px; border-radius: 20px; border:1px solid #bbb; outline:none;}
 #side-menu {width:250px;background:#f5f5f5;padding-bottom:15px;overflow:hidden;box-sizing:border-box;box-shadow:-1px 0 2px 0 rgba(0,0,0,0.15) inset;}
@@ -66,9 +66,9 @@ pre {
 pre * {
 	font-family: Consolas;
 }
-
 /*** Theme ***/
-#header {background-color:#feb0cd;color:#ff4e8f;}
+/* Valentine */
+/*#header {background-color:#feb0cd;color:#ff4e8f;}
 #functions-area {background-color:#ffd8e7;border-bottom-color:#ff4e8f;}
 html, body{background: #ffdddd url(valentine-bg.jpg) center center; background-size: 100% auto; background-attachment: fixed;}
 #contents-area{background:transparent;border-color:#ff4e8f;box-shadow: 4px 4px 13px 3px rgba(0,0,0,0.1);}
@@ -79,4 +79,4 @@ html, body{background: #ffdddd url(valentine-bg.jpg) center center; background-s
 #side-menu a.active{background-color: #fff;color: #c72661;}
 #search-menu{border:none;color:#fff;background:rgba(255,255,255,0.15);}
 #content{background: rgba(255, 255, 255, 1);}
-.feature-box > .content{background:#fff;}
+.feature-box > .content{background:#fff;}*/
