@@ -48,6 +48,7 @@ public class WLAggregateItem extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public WLAggregateItem(WLAggregateItemGetMemento memento) {
+		super();
 		this.companyCode = memento.getCompanyCode();
 		this.category = memento.getCategory();
 		this.paymentType = memento.getPaymentType();

@@ -15,7 +15,7 @@ var nts;
                             var servicePath = {
                                 getOfficeDetailData: "pr/insurance/social/find",
                                 updateOffice: "pr/insurance/social/update",
-                                regiterOffice: "pr/insurance/social/register",
+                                regiterOffice: "pr/insurance/social/create",
                                 removeOffice: "pr/insurance/social/remove"
                             };
                             function getOfficeItemDetail(code) {

@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingReposito
  * The Class OutputSettingRemoveCommandHandler.
  */
 @Stateless
-public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSettingRemoveCommand>{
+public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSettingRemoveCommand> {
 	
 	/** The repository. */
 	@Inject

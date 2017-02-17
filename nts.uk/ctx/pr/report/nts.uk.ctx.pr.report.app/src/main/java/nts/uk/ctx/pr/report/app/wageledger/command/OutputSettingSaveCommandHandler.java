@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class OutputSettingSaveCommandHandler.
  */
 @Stateless
-public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettingSaveCommand>{
+public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettingSaveCommand> {
 	
 	/** The repository. */
 	@Inject

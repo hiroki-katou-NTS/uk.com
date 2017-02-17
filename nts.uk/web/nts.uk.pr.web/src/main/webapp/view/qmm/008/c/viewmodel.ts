@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm008.c {
         import InsuranceOfficeItemDto = qmm008.a.service.model.finder.InsuranceOfficeItemDto;
         import aservice = nts.uk.pr.view.qmm008.a.service;
         import OfficeItemDto = qmm008.c.service.model.finder.OfficeItemDto;
-        
+
         export class ScreenModel {
             // for left list
             officeItems: KnockoutObservableArray<ItemModel>;
@@ -26,11 +26,12 @@ module nts.uk.pr.view.qmm008.c {
             textInputOption: KnockoutObservable<any>;
             selectedOfficeCode: KnockoutObservable<string>;
             enabled: KnockoutObservable<boolean>;
+            deleteButtonControll: KnockoutObservable<boolean>;
 
             constructor(selectedOfficeCode: any) {
                 var self = this;
                 self.enabled = ko.observable(true);
-                self.collectData = ko.observable(null);
+                self.deleteButtonControll = ko.observable(true);
 
                 self.officeItems = ko.observableArray([]);
                 self.columns2 = ko.observableArray([
@@ -61,8 +62,9 @@ module nts.uk.pr.view.qmm008.c {
                 }));
                 self.selectedOfficeCode = ko.observable('');
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
-                    if (selectedOfficeCode != null || selectedOfficeCode != undefined) {
+                    if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
                         self.enabled(false);
+                        self.deleteButtonControll(true);
                         //                        alert(officeSelectedCode);
                         $.when(self.load(selectedOfficeCode)).done(function() {
                             //TODO load data success
@@ -115,35 +117,37 @@ module nts.uk.pr.view.qmm008.c {
                 return dfd.promise();
             }
             public load(officeCode: string): JQueryPromise<any> {
-                var self = this;
-                service.getOfficeItemDetail(officeCode).done(function(data: OfficeItemDto) {
-                    //Convert data get from service to screen
-                    self.officeModel().officeCode(data.code);
-                    self.officeModel().officeName(data.name);
-                    self.officeModel().shortName(data.shortName);
-                    self.officeModel().PicName(data.picName);
-                    self.officeModel().PicPosition(data.picPosition);
-                    self.officeModel().portCode(parseInt(data.potalCode));
-                    self.officeModel().prefecture(data.prefecture);
-                    self.officeModel().address1st(data.address1st);
-                    self.officeModel().kanaAddress1st(data.kanaAddress1st);
-                    self.officeModel().address2nd(data.address2nd);
-                    self.officeModel().kanaAddress2nd(data.kanaAddress2nd);
-                    self.officeModel().phoneNumber(data.phoneNumber);
-                    self.officeModel().healthInsuOfficeRefCode1st(data.healthInsuOfficeRefCode1st);
-                    self.officeModel().healthInsuOfficeRefCode2nd(data.healthInsuOfficeRefCode2nd);
-                    self.officeModel().pensionOfficeRefCode1st(data.pensionOfficeRefCode1st);
-                    self.officeModel().pensionOfficeRefCode2nd(data.pensionOfficeRefCode2nd);
-                    self.officeModel().welfarePensionFundCode(data.welfarePensionFundCode);
-                    self.officeModel().officePensionFundCode(data.officePensionFundCode);
-                    self.officeModel().healthInsuCityCode(data.healthInsuCityCode);
-                    self.officeModel().healthInsuOfficeSign(data.healthInsuOfficeSign);
-                    self.officeModel().pensionCityCode(data.pensionCityCode);
-                    self.officeModel().pensionOfficeSign(data.pensionOfficeSign);
-                    self.officeModel().healthInsuOfficeCode(data.healthInsuOfficeCode);
-                    self.officeModel().healthInsuAssoCode(data.healthInsuAssoCode);
-                    self.officeModel().memo(data.memo);
-                });
+                if (officeCode != null && officeCode != '') {
+                    var self = this;
+                    service.getOfficeItemDetail(officeCode).done(function(data: OfficeItemDto) {
+                        //Convert data get from service to screen
+                        self.officeModel().officeCode(data.code);
+                        self.officeModel().officeName(data.name);
+                        self.officeModel().shortName(data.shortName);
+                        self.officeModel().PicName(data.picName);
+                        self.officeModel().PicPosition(data.picPosition);
+                        self.officeModel().portCode(parseInt(data.potalCode));
+                        self.officeModel().prefecture(data.prefecture);
+                        self.officeModel().address1st(data.address1st);
+                        self.officeModel().kanaAddress1st(data.kanaAddress1st);
+                        self.officeModel().address2nd(data.address2nd);
+                        self.officeModel().kanaAddress2nd(data.kanaAddress2nd);
+                        self.officeModel().phoneNumber(data.phoneNumber);
+                        self.officeModel().healthInsuOfficeRefCode1st(data.healthInsuOfficeRefCode1st);
+                        self.officeModel().healthInsuOfficeRefCode2nd(data.healthInsuOfficeRefCode2nd);
+                        self.officeModel().pensionOfficeRefCode1st(data.pensionOfficeRefCode1st);
+                        self.officeModel().pensionOfficeRefCode2nd(data.pensionOfficeRefCode2nd);
+                        self.officeModel().welfarePensionFundCode(data.welfarePensionFundCode);
+                        self.officeModel().officePensionFundCode(data.officePensionFundCode);
+                        self.officeModel().healthInsuCityCode(data.healthInsuCityCode);
+                        self.officeModel().healthInsuOfficeSign(data.healthInsuOfficeSign);
+                        self.officeModel().pensionCityCode(data.pensionCityCode);
+                        self.officeModel().pensionOfficeSign(data.pensionOfficeSign);
+                        self.officeModel().healthInsuOfficeCode(data.healthInsuOfficeCode);
+                        self.officeModel().healthInsuAssoCode(data.healthInsuAssoCode);
+                        self.officeModel().memo(data.memo);
+                    });
+                }
                 return;
             }
             public convertDatatoList(data: Array<InsuranceOfficeItemDto>): Array<ItemModel> {
@@ -166,7 +170,7 @@ module nts.uk.pr.view.qmm008.c {
                     self.registerOffice();
                 }
             }
-            
+
             //update office
             private updateOffice() {
                 var self = this;
@@ -176,7 +180,7 @@ module nts.uk.pr.view.qmm008.c {
                     //TODO if update fail    
                 });
             }
-            
+
             //create new Office
             private registerOffice() {
                 var self = this;
@@ -186,22 +190,21 @@ module nts.uk.pr.view.qmm008.c {
                     //TODO if register fail    
                 });
             }
-            
+
             //remove office  by office Code
-            private remove(officeCode: string)
-            {
-                var self =this;
-                service.remove(officeCode).done(function(){
-                //TODO if remove success    
-                }).fail(function(){
-                //TODO if remove fail    
-                });   
-            }
-            
-            //collect all data
-            private collectData() {
+            private remove(officeCode: string) {
                 var self = this;
-                return new service.model.finder.OfficeItemDto(
+                service.remove(officeCode).done(function() {
+                    //TODO if remove success    
+                }).fail(function() {
+                    //TODO if remove fail    
+                });
+            }
+
+            //collect all data
+            public collectData() {
+                var self = this;
+                var a = new service.model.finder.OfficeItemDto(
                     "company code",
                     self.officeModel().officeCode(),
                     self.officeModel().officeName(),
@@ -229,8 +232,9 @@ module nts.uk.pr.view.qmm008.c {
                     self.officeModel().healthInsuAssoCode(),
                     self.officeModel().memo()
                 );
+                return a;
             }
-            
+
             //reset all field when click add new office button
             public addNew() {
                 var self = this;
@@ -240,7 +244,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.officeModel().shortName('');
                 self.officeModel().PicName('');
                 self.officeModel().PicPosition('');
-                self.officeModel().portCode(null);
+                self.officeModel().portCode(0);
                 self.officeModel().prefecture('');
                 self.officeModel().address1st('');
                 self.officeModel().kanaAddress1st('');
@@ -262,8 +266,12 @@ module nts.uk.pr.view.qmm008.c {
                 self.officeModel().memo('');
                 //set enabled code input
                 self.enabled(true);
+                //disable remove
+                self.deleteButtonControll(false);
+                //reset selected officeCode
+                self.selectedOfficeCode('');
             }
-            
+
             closeDialog() {
                 // Set child value
                 nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());

@@ -1,0 +1,45 @@
+@CHARSET "UTF-8";
+#this-header-area {
+	margin-top: 20px;
+	margin-left: 20px;
+	min-width: 560px;
+}
+#this-contents-area {
+	margin-top: 20px;
+	margin-left: 20px;
+	min-width: 560px;
+}
+
+#this-functions-area {
+	margin-top: 15px;
+}
+#lbl_002 {
+	padding-left: 80px;
+}
+#btn_001 {
+	min-width: 120px;
+}
+
+#btn_002 {
+	margin-left: 10px;
+	min-width: 100px;
+}
+
+table td {
+	padding-bottom: 5px;
+}
+
+.o-vuong {
+	border: solid black 1px;
+	padding-left: 15px;
+	margin-left: 20px;
+}
+.o-vuong label {
+	display: block;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.padding-bot-20 {
+	padding-bottom: 20px;
+}

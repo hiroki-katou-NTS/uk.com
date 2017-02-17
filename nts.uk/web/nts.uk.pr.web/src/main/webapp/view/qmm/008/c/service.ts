@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm008.c {
         var servicePath = {
             getOfficeDetailData: "pr/insurance/social/find",
             updateOffice: "pr/insurance/social/update",
-            regiterOffice: "pr/insurance/social/register",
+            regiterOffice: "pr/insurance/social/create",
             removeOffice: "pr/insurance/social/remove"
         };
 
@@ -30,7 +30,6 @@ module nts.uk.pr.view.qmm008.c {
          * Function is used to register office data
          */
         export function register(data: model.finder.OfficeItemDto): JQueryPromise<model.finder.OfficeItemDto> {
-
             return nts.uk.request.ajax(servicePath.regiterOffice, data);
         }
 

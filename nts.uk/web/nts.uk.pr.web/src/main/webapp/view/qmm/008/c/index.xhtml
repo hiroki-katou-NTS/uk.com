@@ -15,6 +15,18 @@
 					height : 600
 				};
 			</script>
+			
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.insurance.OfficeCode
+				nts.uk.ctx.pr.core.dom.insurance.OfficeName
+				nts.uk.ctx.pr.core.dom.insurance.ShortName
+				nts.uk.ctx.pr.core.dom.insurance.PicName
+				nts.uk.ctx.pr.core.dom.insurance.PicPosition
+				nts.uk.ctx.pr.core.dom.insurance.Address
+				nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+				nts.uk.ctx.pr.core.dom.insurance.PotalCode
+  			</com:ValidatorScript>
+  			
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="service.js" />
@@ -28,7 +40,7 @@
 				<button data-bind="click: addNew">新規</button>
 				<button data-bind="click: save" class="proceed">登録</button>
 				<button>印刷</button>
-				<button class="danger">削除</button>
+				<button data-bind="enable: deleteButtonControll()" class="danger">削除</button>
 				<button data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
@@ -36,9 +48,9 @@
 				<div style="width: 40%; float: left;">
 					<div class="bg-green caret-right caret-background"
 						style="float: left; width: 350px; height: 500px; margin: 20px 50px;">
-						<div style="width: 400px"
+						<div style="padding-left:20px; width: 400px;"
 							data-bind="ntsSearchBox: {comId: 'multi-list', items: officeItems, selected: selectedOfficeCode, selectedKey: 'code', fields: ['name', 'code']}" />
-						<div style="padding-left: 25px; padding-top: 5px;">
+						<div style="padding-left: 14px; padding-top: 5px;">
 							<table id="single-list"
 								data-bind="ntsGridList: {
 												height: 350,
@@ -65,14 +77,18 @@
 										<td colspan="2" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: officeCode , 
+														value: officeCode ,
+														constraint: 'OfficeCode',
+														required: true, 
 														option: $parent.textInputOption,
-														enable : $parent.enabled}" />
+														enable : $parent.enabled()}" />
 											</div></td>
 										<td colspan="2" class="border_none padding_top padding_left"><div>
 												<input
 													data-bind="ntsTextEditor: {
- 														value: officeName ,  
+ 														value: officeName ,
+ 														constraint: 'OfficeName',
+ 														required: true,  
 														option: $parent.textInputOption}" />
 											</div></td>
 									</tr>
@@ -83,7 +99,8 @@
 											<div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: shortName , 
+														value: shortName ,
+														constraint: 'ShortName',
 														option: $parent.textInputOption}" />
 											</div>
 										</td>
@@ -95,7 +112,8 @@
 											<div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: PicName , 
+														value: PicName ,
+														constraint: 'PicName',
 														option: $parent.textInputOption}" />
 											</div>
 										</td>
@@ -110,7 +128,9 @@
 											<div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: PicPosition , 
+														value: PicPosition ,
+														constraint: 'PicPosition',
+														required: true, 
 														option: $parent.textInputOption}" />
 											</div>
 										</td>
@@ -121,7 +141,8 @@
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: portCode , 
+														value: portCode ,
+														constraint: 'PotalCode', 
 														option: $parent.textInputOption}" />
 											</div></td>
 										<td>
@@ -144,7 +165,8 @@
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: address1st , 
+														value: address1st ,
+														constraint: 'Address', 
 														option: $parent.textInputOption}" />
 											</div></td>
 									</tr>
@@ -154,7 +176,8 @@
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: kanaAddress1st , 
+														value: kanaAddress1st ,
+														constraint: 'KanaAddress', 
 														option: $parent.textInputOption}" />
 											</div></td>
 									</tr>
@@ -164,7 +187,8 @@
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: address2nd , 
+														value: address2nd ,
+														constraint: 'Address', 
 														option: $parent.textInputOption}" />
 											</div></td>
 									</tr>
@@ -174,7 +198,8 @@
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: kanaAddress2nd , 
+														value: kanaAddress2nd ,
+														constraint: 'KanaAddress', 
 														option: $parent.textInputOption}" />
 											</div></td>
 									</tr>

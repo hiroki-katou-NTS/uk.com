@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
  * The Class AggregateItemRemoveCommandHandler.
  */
 @Stateless
-public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateItemRemoveCommand>{
+public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateItemRemoveCommand> {
 	
 	/** The repository. */
 	@Inject
