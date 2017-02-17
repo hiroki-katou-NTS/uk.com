@@ -22,6 +22,9 @@ import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
+/**
+ * The Class AggregateItemWebservice.
+ */
 @Path("ctx/pr/report/wageledger/aggregateitem")
 @Produces("application/json")
 public class AggregateItemWebservice extends WebService{

@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class AggregateItemSaveCommandHandler.
  */
 @Stateless
-public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateItemSaveCommand>{
+public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateItemSaveCommand> {
 	
 	/** The repository. */
 	@Inject

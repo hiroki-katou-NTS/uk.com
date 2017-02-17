@@ -41,9 +41,7 @@ public class CategorySettingDto {
 			
 			@Override
 			public List<WLSettingItem> getOutputItems() {
-				return dto.outputItems.stream().map((item) -> {
-					return item.toDomain();
-				}).collect(Collectors.toList());
+				return dto.outputItems.stream().map(SettingItemDto::toDomain).collect(Collectors.toList());
 			}
 			
 			@Override
