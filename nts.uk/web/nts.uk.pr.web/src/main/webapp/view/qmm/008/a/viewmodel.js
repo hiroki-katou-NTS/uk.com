@@ -17,7 +17,7 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                                    self.pensionModel = ko.observable(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
+                                    self.pensionModel = ko.observable(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
                                     self.InsuranceOfficeList = ko.observableArray([]);
                                     self.officeSelectedCode = ko.observable('');
                                     self.currentParentCode = ko.observable('');
@@ -59,8 +59,8 @@ var nts;
                                     self.healthTotal = ko.observable(5400000);
                                     self.pensionCurrency = ko.observable(1500000);
                                     self.pensionOwnerRate = ko.observable(1.5);
-                                    self.fundInputEnable = ko.observable(true);
-                                    self.createHistoryControll = ko.observable(true);
+                                    self.fundInputEnable = ko.observable(false);
+                                    self.isClickHistory = ko.observable(false);
                                     self.officeSelectedCode.subscribe(function (officeSelectedCode) {
                                         if (officeSelectedCode != null || officeSelectedCode != undefined) {
                                             if (self.checkCode(officeSelectedCode)) {
@@ -68,11 +68,11 @@ var nts;
                                                 self.loadHistoryOfOffice(officeSelectedCode);
                                                 self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
                                                 self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
-                                                self.createHistoryControll(true);
+                                                self.isClickHistory(false);
                                             }
                                             else {
                                                 self.currentChildCode(officeSelectedCode);
-                                                self.createHistoryControll(false);
+                                                self.isClickHistory(true);
                                                 $.when(self.load(officeSelectedCode)).done(function () {
                                                 }).fail(function (res) {
                                                 });

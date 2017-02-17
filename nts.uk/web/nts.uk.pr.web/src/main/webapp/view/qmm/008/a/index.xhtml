@@ -25,8 +25,8 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" class="active">健康保険</a></li>
-				<li><a href="#tabpanel-2" >厚生年金</a></li>
+				<li><a href="#tabpanel-1" >健康保険</a></li>
+				<li><a href="#tabpanel-2" class="active">厚生年金</a></li>
 			</ul>
 		</ui:define>
 
@@ -47,9 +47,9 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: InsuranceOfficeList, selected: officeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalAddHistory,enable:createHistoryControll()">履歴追加</button>
-						<button data-bind="click: OpenModalConfigHistory,enable:!createHistoryControll()"
-							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
+							data-bind="click: OpenModalAddHistory,enable:!isClickHistory()">履歴追加</button>
+						<button data-bind="click: OpenModalConfigHistory,enable:isClickHistory()"
+							style="float: right; margin-right: 25px;">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -96,7 +96,7 @@
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: autoCalculate,
-										enable: true }"></div></td>
+										enable: $parent.isClickHistory() }"></div></td>
 								<td class="border_none"><button
 										style="margin-left: 20px; margin-top: 20px; float: left;">?</button>
 								</td>
@@ -128,19 +128,19 @@
 										colspan="2">健康保険率(介護なし)</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalGeneral, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalGeneral,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyGeneral, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyGeneral,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalGeneral , option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalGeneral,enable: $parent.isClickHistory() , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyGeneral , option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyGeneral,enable: $parent.isClickHistory() , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -148,19 +148,19 @@
 										colspan="2">健康保険率(介護ある)</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalNursing, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalNursing,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyNursing, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyNursing,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalNursing, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalNursing,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyNursing, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyNursing,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -173,19 +173,19 @@
 									<td class="bg-green text_center">特定保険率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalBasic, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalBasic,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyBasic, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyBasic,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalBasic, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalBasic,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyBasic, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyBasic,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -193,19 +193,19 @@
 									<td class="bg-green text_center">基本保険率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalSpecific, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalSpecific,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanySpecific, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanySpecific,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalSpecific, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalSpecific,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanySpecific, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanySpecific,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 							</tbody>
@@ -234,7 +234,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().healthSalaryPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div>
@@ -245,7 +245,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().healthSalaryCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -255,7 +255,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().healthBonusPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -265,7 +265,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().healthBonusCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -284,7 +284,7 @@
 								constraint: '', 
 								option: $parent.moneyInputOptions, 
 								required: true, 
-								enable: true, 
+								enable: $parent.isClickHistory(), 
 								readonly: false}" />
 						</div>
 					</div>
@@ -306,9 +306,9 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: InsuranceOfficeList, selected: officeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalAddHistory,enable:createHistoryControll()">履歴追加</button>
-						<button data-bind="click: OpenModalConfigHistory,enable:!createHistoryControll()"
-							style="float: right; margin-right: 25px;" class="danger">履歴編集</button>
+							data-bind="click: OpenModalAddHistory,enable:!isClickHistory()">履歴追加</button>
+						<button data-bind="click: OpenModalConfigHistory,enable:isClickHistory()"
+							style="float: right; margin-right: 25px;">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -357,7 +357,7 @@
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: fundInputApply,
-							enable: true }"></div></td>
+							enable:true }"></div></td>
 							</tr>
 							<tr>
 								<td class="border_none"><div
@@ -370,7 +370,7 @@
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: autoCalculate,
-							enable: true }"></div></td>
+							enable: $parent.isClickHistory() }"></div></td>
 								<td class="border_none"><button
 										style="margin-left: 20px; margin-top: 20px; float: left;">?</button></td>
 							</tr>
@@ -400,19 +400,19 @@
 										colspan="2">男子負担率（第1種）</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalSon, option: $parent.numberInputOptions,enable: $parent.fundInputEnable }" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalSon, option: $parent.numberInputOptions,enable: $parent.isClickHistory() }" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanySon, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanySon, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalSon, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalSon, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanySon, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanySon, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -420,19 +420,19 @@
 										colspan="2">女子負担率（第2種）</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalDaughter, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalDaughter, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyDaughter, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyDaughter, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalDaughter, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalDaughter, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyDaughter, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyDaughter, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -440,29 +440,29 @@
 										colspan="2">坑内員負担率（第3種）</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalUnknown, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalUnknown, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyUnknown, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyUnknown, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalUnknown, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalUnknown, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyUnknown, option: $parent.numberInputOptions,enable: $parent.fundInputEnable}" />
+												data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyUnknown, option: $parent.numberInputOptions,enable: $parent.isClickHistory()}" />
 										</div>/1000</td>
 								</tr>
 							</tbody>
 						</table>
 
-						<div>基金用</div>
-						<div class="hr_width">
+						<div data-bind="css: { hidden: $parent.fundInputEnable() }">基金用</div>
+						<div data-bind="css: { hidden: $parent.fundInputEnable() }" class="hr_width">
 							<hr />
 						</div>
-						<table id="expand-example">
+						<table data-bind="css: { hidden: $parent.fundInputEnable() }" id="expand-example">
 							<tbody>
 								<tr class="bg-green">
 									<th colspan="2" rowspan="2"></th>
@@ -481,38 +481,38 @@
 									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonExemption ,option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
 									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -521,38 +521,38 @@
 									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
 									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
@@ -561,38 +561,38 @@
 									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownExemption, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownExemption , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
 									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownBurden, option: $parent.numberInputOptions}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownBurden , option: $parent.numberInputOptions}" />
 										</div>/1000</td>
 								</tr>
 							</tbody>
@@ -623,7 +623,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionSalaryPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div>
@@ -634,7 +634,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionSalaryCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -644,7 +644,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionBonusPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -654,7 +654,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionBonusCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:true,
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>

@@ -51,13 +51,13 @@ module nts.uk.pr.view.qmm008.a {
             pensionOwnerRate: KnockoutObservable<number>;
 
             fundInputEnable: KnockoutObservable<boolean>;
-            createHistoryControll: KnockoutObservable<boolean>;
+            isClickHistory: KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
 
                 //init model
                 self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                self.pensionModel = ko.observable(new PensionRateModel("code", 1, 2, null, null, null, 35000, 1.5));
+                self.pensionModel = ko.observable(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
 
                 // init insurance offices list
                 self.InsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
@@ -120,8 +120,8 @@ module nts.uk.pr.view.qmm008.a {
                 //pension owner rate
                 self.pensionOwnerRate = ko.observable(1.5);
 
-                self.fundInputEnable = ko.observable(true);
-                self.createHistoryControll = ko.observable(true);
+                self.fundInputEnable = ko.observable(false);
+                self.isClickHistory = ko.observable(false);
                 //subscribe change select office
                 self.officeSelectedCode.subscribe(function(officeSelectedCode: string) {
                     if (officeSelectedCode != null || officeSelectedCode != undefined) {
@@ -134,14 +134,14 @@ module nts.uk.pr.view.qmm008.a {
                             self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
                             self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
                             //TODO enabled button add new history
-                            self.createHistoryControll(true);
+                            self.isClickHistory(false);
                         }
                         //if click history item
                         else {
                             self.currentChildCode(officeSelectedCode);
                             //TODO reset current parent code
                             //disabled button add new history
-                            self.createHistoryControll(false);
+                            self.isClickHistory(true);
                             //officeSelectedCode = historyCode
                             $.when(self.load(officeSelectedCode)).done(function() {
                                 //TODO load data success
