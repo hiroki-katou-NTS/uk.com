@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * @author lanlt
@@ -31,8 +31,6 @@ public class ResidentalTax  extends AggregateRoot{
 	@Getter
 	private RegisteredName registeredName;
 	@Getter
-	private ResidentalRemark remark;
-	@Getter
 	private ResiTaxAutonomy resiTaxAutonomy;
 	@Getter
 	private ResiTaxCode resiTaxCode;
@@ -55,7 +53,7 @@ public class ResidentalTax  extends AggregateRoot{
 	public ResidentalTax(CompanyCode companyCode, CompanyAccountNo companyAccountNo,
 			CompanySpecifiedNo companySpecifiedNo, CordinatePostOffice cordinatePostOffice,
 			CordinatePostalCode cordinatePostalCode, Memo memo, PrefectureCode prefectureCode,
-			RegisteredName registeredName,ResidentalRemark remark, ResiTaxAutonomy resiTaxAutonomy,
+			RegisteredName registeredName, ResiTaxAutonomy resiTaxAutonomy,
 			ResiTaxCode resiTaxCode,ResiTaxReportCode resiTaxReportCode) {
 		super();
 		this.companyCode = companyCode;
@@ -66,7 +64,6 @@ public class ResidentalTax  extends AggregateRoot{
 		this.memo = memo;
 		this.prefectureCode = prefectureCode;
 		this.registeredName = registeredName;
-		this.remark = remark;
 		this.resiTaxAutonomy = resiTaxAutonomy;
 		this.resiTaxCode = resiTaxCode;
 		this.resiTaxReportCode = resiTaxReportCode;
@@ -74,7 +71,7 @@ public class ResidentalTax  extends AggregateRoot{
 
 	public static ResidentalTax createFromJavaType(String companyCode,String companyAccountNo, String companySpecifiedNo,
 			String cordinatePostOffice, String cordinatePostalCode, String memo,
-			String prefectureCode, String registeredName, String remark1, String remark2,
+			String prefectureCode, String registeredName,
 			String resiTaxAutonomy,
 			String resiTaxCode, String resiTaxReportCode){
 		if(companyCode.isEmpty()){
@@ -87,7 +84,6 @@ public class ResidentalTax  extends AggregateRoot{
 						new CompanySpecifiedNo(companySpecifiedNo), new CordinatePostOffice(cordinatePostOffice),
 						new CordinatePostalCode(cordinatePostalCode), new Memo(memo),
 						new PrefectureCode(prefectureCode), new RegisteredName(registeredName),
-						new ResidentalRemark(new Remark(remark1), new Remark(remark2)),
 						new ResiTaxAutonomy(resiTaxAutonomy), new ResiTaxCode(resiTaxCode),
 						new ResiTaxReportCode(resiTaxReportCode));
 	}
