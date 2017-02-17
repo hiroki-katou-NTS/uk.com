@@ -9,6 +9,7 @@ module cmm014.a.viewmodel {
         texteditorcode: any;
         texteditorname: any;
         multilineeditor: any;
+        test: any;
 
         constructor() {
             var self = this;
