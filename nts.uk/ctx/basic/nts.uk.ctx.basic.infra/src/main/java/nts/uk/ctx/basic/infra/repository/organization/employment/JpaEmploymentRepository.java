@@ -14,7 +14,7 @@ import nts.uk.ctx.basic.infra.entity.organization.employment.CmnmtEmpPK;
 @Stateless
 public class JpaEmploymentRepository extends JpaRepository implements EmploymentRepository{
 	
-	private final String SELECT_ALL_EMP_BY_COMPANY = "SELECT c FROM CmnmtEmp "
+	private final String SELECT_ALL_EMP_BY_COMPANY = "SELECT c FROM CmnmtEmp c "
 			+ "WHERE c.cmnmtEmpPk.companyCode = :companyCode";
 	private final String SELECT_EMP_BY_DISPLAY_FLG = SELECT_ALL_EMP_BY_COMPANY
 			+ " AND c.displayFlg = 1";
@@ -60,9 +60,10 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 
 	@Override
 	public List<Employment> findAllEmployment(String companyCode) {
-		return this.queryProxy().query(SELECT_ALL_EMP_BY_COMPANY, CmnmtEmp.class)
+		List<Employment> test = this.queryProxy().query(SELECT_ALL_EMP_BY_COMPANY, CmnmtEmp.class)
 				.setParameter("companyCode", companyCode)
 				.getList(c -> toDomain(c));
+		return test;
 	}
 
 	private static Employment toDomain(CmnmtEmp entity) {

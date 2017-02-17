@@ -18,7 +18,7 @@ import nts.uk.ctx.basic.app.find.organization.employment.EmploymentDto;
 import nts.uk.ctx.basic.app.find.organization.employment.EmploymentFinder;
 import nts.uk.shr.com.context.AppContexts;
 
-@Path("pr/proto/basic/employment")
+@Path("basic/employment")
 @Produces("application/json")
 public class EmploymentWebservice extends WebService {
 	@Inject

@@ -5,19 +5,57 @@ var cmm008;
         var service;
         (function (service) {
             var path = {
-                getAllEmployment: "pr/proto/basic/employment/findallemployments",
-                createEmployment: "pr/proto/basic/employment/createemployment",
-                updateEmployment: "pr/proto/basic/employment/updateemployment",
-                deleteEmployment: "pr/proto/basic/employment/deleteemployment"
+                getAllEmployment: "basic/employment/findallemployments",
+                createEmployment: "basic/employment/createemployment",
+                updateEmployment: "basic/employment/updateemployment",
+                deleteEmployment: "basic/employment/deleteemployment"
             };
+            //find all employment data
             function getAllEmployments() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(path.getAllEmployment)
+                nts.uk.request.ajax("com", path.getAllEmployment)
                     .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
                 });
                 return dfd.promise();
             }
             service.getAllEmployments = getAllEmployments;
+            //create new employment data
+            function createEmployment(employment) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", path.createEmployment).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.resolve(res);
+                });
+                return dfd.promise();
+            }
+            service.createEmployment = createEmployment;
+            //update employment data
+            function updateEmployment(employment) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", path.updateEmployment).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.resolve(res);
+                });
+                return dfd.promise();
+            }
+            service.updateEmployment = updateEmployment;
+            //delete employment data
+            function deleteEmployment(employment) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", path.deleteEmployment).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.resolve(res);
+                });
+                return dfd.promise();
+            }
+            service.deleteEmployment = deleteEmployment;
             var model;
             (function (model) {
                 var employmentDto = (function () {

@@ -75,15 +75,21 @@ var cmm008;
                 ScreenModel.prototype.dataSourceItem = function () {
                     var self = this;
                     self.dataSource = ko.observableArray([]);
-                    for (var i = 1; i < 100; i++) {
-                        self.dataSource.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
-                    }
+                    a.service.getAllEmployments().done(function (listResult) {
+                        for (var _i = 0, listResult_1 = listResult; _i < listResult_1.length; _i++) {
+                            var employ = listResult_1[_i];
+                            var closeDate = employ.closeDateNo.toString();
+                            var processingNo = employ.processingNo.toString();
+                            var displayText = employ.displayFlg.toString();
+                            self.dataSource.push(new ItemModel(employ.employmentCode, employ.employmentName, closeDate, processingNo, displayText));
+                        }
+                    });
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 100 },
                         { headerText: '名称', prop: 'name', width: 150 },
-                        { headerText: '説明', prop: 'description', width: 150 },
-                        { headerText: '説明1', prop: 'other1', width: 150 },
-                        { headerText: '説明2', prop: 'other2', width: 150 }
+                        { headerText: '締め日', prop: 'closeDate', width: 150 },
+                        { headerText: '処理日区分', prop: 'processingNo', width: 150 },
+                        { headerText: '初期表示', prop: 'displayFlg', width: 150 }
                     ]);
                     this.currentCode = ko.observable();
                     self.singleSelectedCode = ko.observable(null);
