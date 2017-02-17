@@ -34,6 +34,13 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 
 	/**
 	 * Instantiates a new qwtmt wagetable certify GPK.
+	 */
+	public QwtmtWagetableCertifyGPK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new qwtmt wagetable certify GPK.
 	 *
 	 * @param ccd
 	 *            the ccd
@@ -78,4 +85,5 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 		}
 		return true;
 	}
+
 }

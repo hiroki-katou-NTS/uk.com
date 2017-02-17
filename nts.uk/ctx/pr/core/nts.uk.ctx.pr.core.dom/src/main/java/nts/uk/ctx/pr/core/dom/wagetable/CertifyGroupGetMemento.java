@@ -21,20 +21,6 @@ public interface CertifyGroupGetMemento {
 	CompanyCode getCompanyCode();
 
 	/**
-	 * Gets the wage table code.
-	 *
-	 * @return the wage table code
-	 */
-	WageTableCode getWageTableCode();
-
-	/**
-	 * Gets the history id.
-	 *
-	 * @return the history id
-	 */
-	String getHistoryId();
-
-	/**
 	 * Gets the code.
 	 *
 	 * @return the code
