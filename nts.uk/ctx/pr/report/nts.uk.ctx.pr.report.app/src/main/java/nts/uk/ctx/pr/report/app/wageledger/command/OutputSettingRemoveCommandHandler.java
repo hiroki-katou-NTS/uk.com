@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingReposito
  * The Class OutputSettingRemoveCommandHandler.
  */
 @Stateless
-public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSettingRemoveCommand>{
+public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSettingRemoveCommand> {
 	
 	/** The repository. */
 	@Inject
@@ -27,7 +27,7 @@ public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSett
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<OutputSettingRemoveCommand> context) {
-		this.repository.remove(new WLOutputSettingCode(context.getCommand().code));
+		this.repository.remove(new WLOutputSettingCode(context.getCommand().getCode()));
 	}
 
 }

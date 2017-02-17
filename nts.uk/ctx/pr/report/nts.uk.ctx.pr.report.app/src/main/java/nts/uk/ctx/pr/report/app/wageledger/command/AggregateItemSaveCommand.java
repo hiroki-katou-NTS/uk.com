@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
@@ -20,31 +22,33 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
 /**
  * The Class AggregateItemSaveCommand.
  */
+@Getter
+@Setter
 public class AggregateItemSaveCommand {
 	
 	/** The category. */
-	public String category;
+	private WLCategory category;
 	
 	/** The payment type. */
-	public String paymentType;
+	private PaymentType paymentType;
 	
 	/** The code. */
-	public String code;
+	private String code;
 	
 	/** The name. */
-	public String name;
+	private String name;
 	
 	/** The show name zero value. */
-	public Boolean showNameZeroValue;
+	private Boolean showNameZeroValue;
 	
 	/** The show value zero value. */
-	public Boolean showValueZeroValue;
+	private Boolean showValueZeroValue;
 	
 	/** The sub items. */
-	public List<String> subItems;
+	private List<String> subItems;
 	
 	/** The is create mode. */
-	public boolean isCreateMode;
+	private boolean isCreateMode;
 	
 	/**
 	 * To domain.
@@ -73,7 +77,7 @@ public class AggregateItemSaveCommand {
 			
 			@Override
 			public PaymentType getPaymentType() {
-				return PaymentType.valueOfName(self.paymentType);
+				return self.paymentType;
 			}
 			
 			@Override
@@ -93,7 +97,7 @@ public class AggregateItemSaveCommand {
 			
 			@Override
 			public WLCategory getCategory() {
-				return WLCategory.valueOfName(self.category);
+				return self.category;
 			}
 		});
 	}

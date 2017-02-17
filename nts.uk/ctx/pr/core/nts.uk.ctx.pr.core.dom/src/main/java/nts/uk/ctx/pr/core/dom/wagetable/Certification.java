@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
  * The Class UnitPrice.
  */
 @Getter
+@EqualsAndHashCode(of = { "companyCode", "code" })
 public class Certification {
 
 	/** The company code. */

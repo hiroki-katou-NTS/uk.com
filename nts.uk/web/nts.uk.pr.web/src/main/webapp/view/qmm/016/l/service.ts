@@ -3,9 +3,10 @@ module nts.uk.pr.view.qmm016.l {
         var paths: any = {
             findAllCertification: "pr/wagetable/certification/findall",
             findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
+            findCertifyGroup: "pr/wagetable/certifygroup/find",
             findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
-            addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
-            updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
+            addCertifyGroup: "pr/wagetable/certifygroup/add",
+            updateCertifyGroup: "pr/wagetable/certifygroup/update",
             deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
         };
 
@@ -23,9 +24,58 @@ module nts.uk.pr.view.qmm016.l {
             return dfd.promise();
         }
         //Function connection service FindAll CertifyGroup
-        export function findAllCertifyGroup(companyCode: string): JQueryPromise<Array<model.CertifyGroupFindInDto>> {
-            var dfd = $.Deferred<Array<model.CertifyGroupFindInDto>>();
+        export function findAllCertifyGroup(companyCode: string): JQueryPromise<Array<model.CertifyGroupFindOutDto>> {
+            var dfd = $.Deferred<Array<model.CertifyGroupFindOutDto>>();
             nts.uk.request.ajax(paths.findAllCertifyGroup + "/" + companyCode)
+                .done(function(res: Array<model.CertifyGroupFindOutDto>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function connection service FindA CertifyGroup
+        export function findCertifyGroup(code: string): JQueryPromise<model.CertifyGroupDto> {
+            var dfd = $.Deferred<model.CertifyGroupDto>();
+            var certifyGroupFindInDto: model.CertifyGroupFindInDto;
+            certifyGroupFindInDto = new model.CertifyGroupFindInDto();
+            certifyGroupFindInDto.code = code;
+            certifyGroupFindInDto.companyCode = "CCD1";
+            nts.uk.request.ajax(paths.findCertifyGroup, certifyGroupFindInDto)
+                .done(function(res: model.CertifyGroupDto) {
+                    console.log(res);
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
+        //Function connection service Add CertifyGroup
+        export function addCertifyGroup(certifyGroupDto: model.CertifyGroupDto): JQueryPromise<any> {
+            var dfd = $.Deferred<Array<model.CertifyGroupFindInDto>>();
+            var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
+            console.log(data);
+            nts.uk.request.ajax(paths.addCertifyGroup, data)
+                .done(function(res: Array<model.CertifyGroupFindInDto>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function connection service Update CertifyGroup
+        export function updateCertifyGroup(certifyGroupDto: model.CertifyGroupDto): JQueryPromise<any> {
+            var dfd = $.Deferred<Array<model.CertifyGroupFindInDto>>();
+            var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
+            console.log(data);
+            nts.uk.request.ajax(paths.updateCertifyGroup, data)
                 .done(function(res: Array<model.CertifyGroupFindInDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -46,18 +96,16 @@ module nts.uk.pr.view.qmm016.l {
                 code: string;
                 name: string;
             }
-            export class CertifyGroupFindInDto {
+            export class CertifyGroupFindOutDto {
                 code: string;
                 name: string;
             }
+            export class CertifyGroupFindInDto {
+                code: string;
+                companyCode: string;
+            }
 
             export class CertifyGroupDto {
-                /** The wage table code. */
-                wageTableCode: string;
-
-                /** The history id. */
-                historyId: string;
-
                 /** The code. */
                 code: string;
 
@@ -81,6 +129,10 @@ module nts.uk.pr.view.qmm016.l {
                     this.code = code;
                     this.name = name;
                 }
+            }
+            export enum TypeActionCertifyGroup {
+                add = 1,
+                update = 2
             }
         }
     }

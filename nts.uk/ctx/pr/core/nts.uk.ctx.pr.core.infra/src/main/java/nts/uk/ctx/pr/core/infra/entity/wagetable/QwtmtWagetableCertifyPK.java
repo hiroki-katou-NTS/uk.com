@@ -41,6 +41,7 @@ public class QwtmtWagetableCertifyPK implements Serializable {
 	 * Instantiates a new qwtmt wagetable certify PK.
 	 */
 	public QwtmtWagetableCertifyPK() {
+		super();
 	}
 
 	/**

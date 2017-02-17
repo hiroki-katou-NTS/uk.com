@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command;
 
+import lombok.Getter;
+
 /**
  * The Class AggregateItemRemoveCommand.
  */
+@Getter
 public class AggregateItemRemoveCommand {
 	
 	/** The code. */
-	public String code;
+	private String code;
 }

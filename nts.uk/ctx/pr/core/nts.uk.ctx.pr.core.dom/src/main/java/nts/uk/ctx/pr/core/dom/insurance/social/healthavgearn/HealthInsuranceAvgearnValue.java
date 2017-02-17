@@ -6,13 +6,13 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The Class HealthInsuranceAvgearnValue.
  */
 @Getter
-@NoArgsConstructor
+@Setter
 public class HealthInsuranceAvgearnValue {
 
 	/** The health basic mny. */
@@ -26,6 +26,13 @@ public class HealthInsuranceAvgearnValue {
 
 	/** The health specific mny. */
 	private Long healthSpecificMny;
+
+	/**
+	 * Instantiates a new health insurance avgearn value.
+	 */
+	public HealthInsuranceAvgearnValue() {
+		super();
+	}
 
 	/**
 	 * Instantiates a new health insurance avgearn value.

@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 
 /**
  * The Class ChargeRateItem.
  */
-@Data
+@Getter
+@Setter
 public class HealthChargeRateItem {
 
 	/** The company rate. */
@@ -24,6 +26,18 @@ public class HealthChargeRateItem {
 	 */
 	public HealthChargeRateItem() {
 		super();
+	}
+
+	/**
+	 * Instantiates a new health charge rate item.
+	 *
+	 * @param companyRate the company rate
+	 * @param personalRate the personal rate
+	 */
+	public HealthChargeRateItem(Ins3Rate companyRate, Ins3Rate personalRate) {
+		super();
+		this.companyRate = companyRate;
+		this.personalRate = personalRate;
 	}
 
 }

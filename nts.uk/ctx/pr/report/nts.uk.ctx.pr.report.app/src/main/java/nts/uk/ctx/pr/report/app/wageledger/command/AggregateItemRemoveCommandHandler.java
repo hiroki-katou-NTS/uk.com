@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
  * The Class AggregateItemRemoveCommandHandler.
  */
 @Stateless
-public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateItemRemoveCommand>{
+public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateItemRemoveCommand> {
 	
 	/** The repository. */
 	@Inject
@@ -27,7 +27,7 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
-		this.repository.remove(new WLAggregateItemCode(context.getCommand().code));
+		this.repository.remove(new WLAggregateItemCode(context.getCommand().getCode()));
 	}
 
 }

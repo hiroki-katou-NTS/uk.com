@@ -77,13 +77,19 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	 * #setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {}
+	public void setCompanyCode(CompanyCode companyCode) {
+		// Do nothing.
+		throw new UnsupportedOperationException();
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingSetMemento
 	 * #setVersion(long)
 	 */
 	@Override
-	public void setVersion(long version) {}
+	public void setVersion(long version) {
+		// Do nothing.
+		throw new UnsupportedOperationException();
+	}
 
 }

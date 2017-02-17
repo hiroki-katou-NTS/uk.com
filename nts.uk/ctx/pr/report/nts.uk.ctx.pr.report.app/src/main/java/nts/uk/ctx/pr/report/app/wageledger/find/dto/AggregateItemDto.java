@@ -48,7 +48,10 @@ public class AggregateItemDto implements WLAggregateItemSetMemento{
 	 * #setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {}
+	public void setCompanyCode(CompanyCode companyCode) {
+		// Do nothing.
+		throw new UnsupportedOperationException();
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento

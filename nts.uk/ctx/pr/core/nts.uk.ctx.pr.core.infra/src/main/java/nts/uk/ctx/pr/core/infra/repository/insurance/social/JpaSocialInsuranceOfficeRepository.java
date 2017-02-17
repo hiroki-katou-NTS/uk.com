@@ -116,7 +116,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 			@Override
 			public PotalCode getPotalCode() {
-				return new PotalCode("t");
+				return new PotalCode("123124");
 			}
 
 			@Override
@@ -384,7 +384,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 			@Override
 			public PotalCode getPotalCode() {
-				return new PotalCode("t");
+				return new PotalCode("4363");
 			}
 
 			@Override
@@ -553,7 +553,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 			@Override
 			public PotalCode getPotalCode() {
-				return new PotalCode("t");
+				return new PotalCode("123412");
 			}
 
 			@Override

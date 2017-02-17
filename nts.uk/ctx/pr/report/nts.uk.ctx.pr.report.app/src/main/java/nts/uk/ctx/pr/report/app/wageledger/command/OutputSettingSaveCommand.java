@@ -7,6 +7,8 @@ package nts.uk.ctx.pr.report.app.wageledger.command;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.CategorySettingDto;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
@@ -18,21 +20,23 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
 /**
  * The Class OutputSettingCommand.
  */
+@Setter
+@Getter
 public class OutputSettingSaveCommand {
 	/** The code. */
-	public String code;
+	private String code;
 	
 	/** The name. */
-	public String name;
+	private String name;
 	
 	/** The once sheet per person. */
-	public boolean onceSheetPerPerson;
+	private boolean onceSheetPerPerson;
 	
 	/** The category settings. */
-	public List<CategorySettingDto> categorySettings;
+	private List<CategorySettingDto> categorySettings;
 	
 	/** The is create mode. */
-	public boolean isCreateMode;
+	private boolean isCreateMode;
 	
 	/**
 	 * To domain.

@@ -10,47 +10,20 @@ package nts.uk.ctx.pr.report.dom.wageledger;
 public enum PaymentType {
 	
 	/** The Salary. */
-	Salary(1, "Salary"),
+	Salary(1),
 	
 	/** The Bonus. */
-	Bonus(2, "Bonus");
+	Bonus(2);
 	
 	/** The value. */
 	public final Integer value;
-	
-	/** The name. */
-	public final String name;
 	
 	/**
 	 * Instantiates a new payment type.
 	 *
 	 * @param value the value
 	 */
-	private PaymentType(Integer value, String name) {
+	private PaymentType(Integer value) {
 		this.value = value;
-		this.name = name;
-	}
-	
-	/**
-	 * Value of name.
-	 *
-	 * @param name the name
-	 * @return the payment type
-	 */
-	public static PaymentType valueOfName(String name) {
-		// Invalid object.
-		if (name == null) {
-			return null;
-		}
-
-		// Find value.
-		for (PaymentType val : PaymentType.values()) {
-			if (val.name == name) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
 	}
 }
