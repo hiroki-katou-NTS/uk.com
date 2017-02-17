@@ -93,5 +93,5 @@ public class OutputSettingFinder {
 					.build());
 		}
 		return dtos;
-	};
+	}
 }

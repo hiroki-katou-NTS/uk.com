@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Builder;
+import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupSetMemento;
@@ -18,14 +18,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 /**
  * The Class CertifyGroupDto.
  */
-@Builder
+@Data
 public class CertifyGroupDto implements CertifyGroupSetMemento {
-
-	/** The wage table code. */
-	private String wageTableCode;
-
-	/** The history id. */
-	private String historyId;
 
 	/** The code. */
 	private String code;
@@ -52,41 +46,6 @@ public class CertifyGroupDto implements CertifyGroupSetMemento {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupSetMemento#setWageTableCode(
-	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
-	 */
-	@Override
-	public void setWageTableCode(WageTableCode wageTableCode) {
-		// TODO Auto-generated method stub
-		this.wageTableCode = wageTableCode.v();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupSetMemento#setHistoryId(java
-	 * .lang.String)
-	 */
-	@Override
-	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-		this.historyId = historyId;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupSetMemento#setCode(java.lang
-	 * .String)
-	 */
 	@Override
 	public void setCode(String code) {
 		// TODO Auto-generated method stub
@@ -103,7 +62,6 @@ public class CertifyGroupDto implements CertifyGroupSetMemento {
 	 */
 	@Override
 	public void setName(String name) {
-		// TODO Auto-generated method stub
 		this.name = name;
 
 	}
@@ -117,7 +75,6 @@ public class CertifyGroupDto implements CertifyGroupSetMemento {
 	 */
 	@Override
 	public void setMultiApplySet(MultipleTargetSetting multiApplySet) {
-		// TODO Auto-generated method stub
 		this.multiApplySet = multiApplySet.value;
 
 	}
@@ -131,7 +88,6 @@ public class CertifyGroupDto implements CertifyGroupSetMemento {
 	 */
 	@Override
 	public void setCertifies(Set<Certification> certifies) {
-		// TODO Auto-generated method stub
 		this.certifies = new ArrayList<>();
 		for (Certification certification : certifies) {
 			CertificationDto certificationDto = new CertificationDto();

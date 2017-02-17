@@ -15,8 +15,9 @@ var nts;
                             var paths = {
                                 findAllCertification: "pr/wagetable/certification/findall",
                                 findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
+                                findCertifyGroup: "pr/wagetable/certifygroup/find",
                                 findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
-                                addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
+                                addCertifyGroup: "pr/wagetable/certifygroup/add",
                                 updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
@@ -44,6 +45,37 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllCertifyGroup = findAllCertifyGroup;
+                            function findCertifyGroup(code) {
+                                var dfd = $.Deferred();
+                                var certifyGroupFindInDto;
+                                certifyGroupFindInDto = new model.CertifyGroupFindInDto();
+                                certifyGroupFindInDto.code = code;
+                                certifyGroupFindInDto.companyCode = "CCD1";
+                                nts.uk.request.ajax(paths.findCertifyGroup, certifyGroupFindInDto)
+                                    .done(function (res) {
+                                    console.log(res);
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findCertifyGroup = findCertifyGroup;
+                            function addCertifyGroup(certifyGroupDto) {
+                                var dfd = $.Deferred();
+                                var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
+                                console.log(data);
+                                nts.uk.request.ajax(paths.addCertifyGroup, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.addCertifyGroup = addCertifyGroup;
                             var model;
                             (function (model) {
                                 var CertificationDto = (function () {
@@ -58,6 +90,12 @@ var nts;
                                     return CertificationFindInDto;
                                 }());
                                 model.CertificationFindInDto = CertificationFindInDto;
+                                var CertifyGroupFindOutDto = (function () {
+                                    function CertifyGroupFindOutDto() {
+                                    }
+                                    return CertifyGroupFindOutDto;
+                                }());
+                                model.CertifyGroupFindOutDto = CertifyGroupFindOutDto;
                                 var CertifyGroupFindInDto = (function () {
                                     function CertifyGroupFindInDto() {
                                     }
@@ -83,6 +121,11 @@ var nts;
                                     return MultipleTargetSettingDto;
                                 }());
                                 model.MultipleTargetSettingDto = MultipleTargetSettingDto;
+                                (function (TypeActionCertifyGroup) {
+                                    TypeActionCertifyGroup[TypeActionCertifyGroup["add"] = 1] = "add";
+                                    TypeActionCertifyGroup[TypeActionCertifyGroup["update"] = 2] = "update";
+                                })(model.TypeActionCertifyGroup || (model.TypeActionCertifyGroup = {}));
+                                var TypeActionCertifyGroup = model.TypeActionCertifyGroup;
                             })(model = service.model || (service.model = {}));
                         })(service = l.service || (l.service = {}));
                     })(l = qmm016.l || (qmm016.l = {}));

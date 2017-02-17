@@ -4,11 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class OutputSettingRemoveCommand.
  */
+@Setter
+@Getter
 public class OutputSettingRemoveCommand {
 	
 	/** The code. */
-	public String code;
+	private String code;
 }

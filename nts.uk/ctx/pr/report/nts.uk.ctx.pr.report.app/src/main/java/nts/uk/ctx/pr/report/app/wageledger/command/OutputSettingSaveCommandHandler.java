@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class OutputSettingSaveCommandHandler.
  */
 @Stateless
-public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettingSaveCommand>{
+public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettingSaveCommand> {
 	
 	/** The repository. */
 	@Inject
@@ -36,9 +36,9 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		OutputSettingSaveCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
-		if (command.isCreateMode) {
+		if (command.isCreateMode()) {
 			// Check exist.
-			if (this.repository.isExist(new WLOutputSettingCode(command.code))) {
+			if (this.repository.isExist(new WLOutputSettingCode(command.getCode()))) {
 				throw new BusinessException("ER026");
 			}
 			
@@ -49,10 +49,10 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		}
 		
 		// Case update.
-		WLOutputSetting outputSetting = this.repository.findByCode(new WLOutputSettingCode(command.code), 
+		WLOutputSetting outputSetting = this.repository.findByCode(new WLOutputSettingCode(command.getCode()), 
 				new CompanyCode(companyCode));
 		if (outputSetting == null) {
-//			throw new IllegalStateException("Output Setting is not found");
+			throw new IllegalStateException("Output Setting is not found");
 		}
 		outputSetting = command.toDomain(companyCode);
 		this.repository.update(outputSetting);

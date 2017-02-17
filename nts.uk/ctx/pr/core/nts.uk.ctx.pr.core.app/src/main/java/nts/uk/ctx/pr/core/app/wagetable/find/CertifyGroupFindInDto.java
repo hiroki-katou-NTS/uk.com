@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.find;
 
 import java.util.Set;
@@ -11,52 +15,12 @@ import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 
 @Data
-public class CertifyGroupFindInDto implements CertifyGroupSetMemento {
+public class CertifyGroupFindInDto {
+
+	/** The code. */
 	private String code;
-	private String name;
 
-	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setCode(String code) {
-		// TODO Auto-generated method stub
-		this.code = code;
-
-	}
-
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-		this.name = name;
-
-	}
-
-	@Override
-	public void setWageTableCode(WageTableCode wageTableCode) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setMultiApplySet(MultipleTargetSetting multiApplySet) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setCertifies(Set<Certification> certifies) {
-		// TODO Auto-generated method stub
-
-	}
+	/** The company code. */
+	private String companyCode;
 
 }

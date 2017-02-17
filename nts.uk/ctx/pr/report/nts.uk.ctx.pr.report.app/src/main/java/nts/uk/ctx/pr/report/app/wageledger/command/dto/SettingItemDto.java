@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.wageledger.command.dto;
 
+import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento;
@@ -11,15 +12,16 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento
 /**
  * The Class SettingItemDto.
  */
+@Setter
 public class SettingItemDto {
 	/** The linkage code. */
-	public String code;
+	private String code;
 	
 	/** The type. */
-	public boolean isAggregate;
+	private boolean isAggregate;
 	
 	/** The order number. */
-	public int orderNumber;
+	private int orderNumber;
 	
 	/**
 	 * To domain.
