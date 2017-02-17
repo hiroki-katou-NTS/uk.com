@@ -5,14 +5,18 @@
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * The Class QismtHealthInsuAvgearnPK.
  */
+@Data
 @Embeddable
 public class QismtHealthInsuAvgearnPK implements Serializable {
 
@@ -37,7 +41,7 @@ public class QismtHealthInsuAvgearnPK implements Serializable {
 	/** The health insu grade. */
 	@Basic(optional = false)
 	@Column(name = "HEALTH_INSU_GRADE")
-	private short healthInsuGrade;
+	private BigDecimal healthInsuGrade;
 
 	/**
 	 * Instantiates a new qismt health insu avgearn PK.
@@ -58,7 +62,7 @@ public class QismtHealthInsuAvgearnPK implements Serializable {
 	 * @param healthInsuGrade
 	 *            the health insu grade
 	 */
-	public QismtHealthInsuAvgearnPK(String ccd, String siOfficeCd, String histId, short healthInsuGrade) {
+	public QismtHealthInsuAvgearnPK(String ccd, String siOfficeCd, String histId, BigDecimal healthInsuGrade) {
 		this.ccd = ccd;
 		this.siOfficeCd = siOfficeCd;
 		this.histId = histId;
@@ -76,7 +80,7 @@ public class QismtHealthInsuAvgearnPK implements Serializable {
 		hash += (ccd != null ? ccd.hashCode() : 0);
 		hash += (siOfficeCd != null ? siOfficeCd.hashCode() : 0);
 		hash += (histId != null ? histId.hashCode() : 0);
-		hash += (int) healthInsuGrade;
+		hash += healthInsuGrade.intValue();
 		return hash;
 	}
 

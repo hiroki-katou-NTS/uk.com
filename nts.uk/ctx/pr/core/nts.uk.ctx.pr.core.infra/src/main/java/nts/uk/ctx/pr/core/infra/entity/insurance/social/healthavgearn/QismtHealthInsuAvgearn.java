@@ -75,22 +75,22 @@ public class QismtHealthInsuAvgearn implements Serializable {
 	/** The health insu avg earn. */
 	@Basic(optional = false)
 	@Column(name = "HEALTH_INSU_AVG_EARN")
-	private long healthInsuAvgEarn;
+	private BigDecimal healthInsuAvgEarn;
 
 	/** The health insu upper limit. */
 	@Basic(optional = false)
 	@Column(name = "HEALTH_INSU_UPPER_LIMIT")
-	private long healthInsuUpperLimit;
+	private BigDecimal healthInsuUpperLimit;
 
 	/** The p health general mny. */
 	@Basic(optional = false)
 	@Column(name = "P_HEALTH_GENERAL_MNY")
-	private long pHealthGeneralMny;
+	private BigDecimal pHealthGeneralMny;
 
 	/** The p health nursing mny. */
 	@Basic(optional = false)
 	@Column(name = "P_HEALTH_NURSING_MNY")
-	private long pHealthNursingMny;
+	private BigDecimal pHealthNursingMny;
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
 	/** The p health specific mny. */
 	// consider using these annotations to enforce field validation
@@ -106,12 +106,12 @@ public class QismtHealthInsuAvgearn implements Serializable {
 	/** The c health general mny. */
 	@Basic(optional = false)
 	@Column(name = "C_HEALTH_GENERAL_MNY")
-	private long cHealthGeneralMny;
+	private BigDecimal cHealthGeneralMny;
 
 	/** The c health nursing mny. */
 	@Basic(optional = false)
 	@Column(name = "C_HEALTH_NURSING_MNY")
-	private long cHealthNursingMny;
+	private BigDecimal cHealthNursingMny;
 
 	/** The c health specific mny. */
 	@Basic(optional = false)
@@ -143,52 +143,6 @@ public class QismtHealthInsuAvgearn implements Serializable {
 	/**
 	 * Instantiates a new qismt health insu avgearn.
 	 *
-	 * @param qismtHealthInsuAvgearnPK
-	 *            the qismt health insu avgearn PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param healthInsuAvgEarn
-	 *            the health insu avg earn
-	 * @param healthInsuUpperLimit
-	 *            the health insu upper limit
-	 * @param pHealthGeneralMny
-	 *            the health general mny
-	 * @param pHealthNursingMny
-	 *            the health nursing mny
-	 * @param pHealthSpecificMny
-	 *            the health specific mny
-	 * @param pHealthBasicMny
-	 *            the health basic mny
-	 * @param cHealthGeneralMny
-	 *            the c health general mny
-	 * @param cHealthNursingMny
-	 *            the c health nursing mny
-	 * @param cHealthSpecificMny
-	 *            the c health specific mny
-	 * @param cHealthBasicMny
-	 *            the c health basic mny
-	 */
-	public QismtHealthInsuAvgearn(QismtHealthInsuAvgearnPK qismtHealthInsuAvgearnPK, long exclusVer,
-			long healthInsuAvgEarn, long healthInsuUpperLimit, long pHealthGeneralMny, long pHealthNursingMny,
-			BigDecimal pHealthSpecificMny, BigDecimal pHealthBasicMny, long cHealthGeneralMny, long cHealthNursingMny,
-			BigDecimal cHealthSpecificMny, BigDecimal cHealthBasicMny) {
-		this.qismtHealthInsuAvgearnPK = qismtHealthInsuAvgearnPK;
-		this.exclusVer = exclusVer;
-		this.healthInsuAvgEarn = healthInsuAvgEarn;
-		this.healthInsuUpperLimit = healthInsuUpperLimit;
-		this.pHealthGeneralMny = pHealthGeneralMny;
-		this.pHealthNursingMny = pHealthNursingMny;
-		this.pHealthSpecificMny = pHealthSpecificMny;
-		this.pHealthBasicMny = pHealthBasicMny;
-		this.cHealthGeneralMny = cHealthGeneralMny;
-		this.cHealthNursingMny = cHealthNursingMny;
-		this.cHealthSpecificMny = cHealthSpecificMny;
-		this.cHealthBasicMny = cHealthBasicMny;
-	}
-
-	/**
-	 * Instantiates a new qismt health insu avgearn.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param siOfficeCd
@@ -198,7 +152,7 @@ public class QismtHealthInsuAvgearn implements Serializable {
 	 * @param healthInsuGrade
 	 *            the health insu grade
 	 */
-	public QismtHealthInsuAvgearn(String ccd, String siOfficeCd, String histId, short healthInsuGrade) {
+	public QismtHealthInsuAvgearn(String ccd, String siOfficeCd, String histId, BigDecimal healthInsuGrade) {
 		this.qismtHealthInsuAvgearnPK = new QismtHealthInsuAvgearnPK(ccd, siOfficeCd, histId, healthInsuGrade);
 	}
 
@@ -232,5 +186,4 @@ public class QismtHealthInsuAvgearn implements Serializable {
 		}
 		return true;
 	}
-
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -74,27 +75,27 @@ public class QismtPensionAvgearn implements Serializable {
 	/** The pension avg earn. */
 	@Basic(optional = false)
 	@Column(name = "PENSION_AVG_EARN")
-	private long pensionAvgEarn;
+	private BigDecimal pensionAvgEarn;
 
 	/** The pension upper limit. */
 	@Basic(optional = false)
 	@Column(name = "PENSION_UPPER_LIMIT")
-	private long pensionUpperLimit;
+	private BigDecimal pensionUpperLimit;
 
 	/** The p pension male mny. */
 	@Basic(optional = false)
 	@Column(name = "P_PENSION_MALE_MNY")
-	private long pPensionMaleMny;
+	private BigDecimal pPensionMaleMny;
 
 	/** The p pension fem mny. */
 	@Basic(optional = false)
 	@Column(name = "P_PENSION_FEM_MNY")
-	private long pPensionFemMny;
+	private BigDecimal pPensionFemMny;
 
 	/** The p pension miner mny. */
 	@Basic(optional = false)
 	@Column(name = "P_PENSION_MINER_MNY")
-	private long pPensionMinerMny;
+	private BigDecimal pPensionMinerMny;
 
 	/** The c pension male mny. */
 	@Basic(optional = false)
@@ -104,77 +105,77 @@ public class QismtPensionAvgearn implements Serializable {
 	/** The c pension fem mny. */
 	@Basic(optional = false)
 	@Column(name = "C_PENSION_FEM_MNY")
-	private long cPensionFemMny;
+	private BigDecimal cPensionFemMny;
 
 	/** The c pension miner mny. */
 	@Basic(optional = false)
 	@Column(name = "C_PENSION_MINER_MNY")
-	private long cPensionMinerMny;
+	private BigDecimal cPensionMinerMny;
 
 	/** The p fund male mny. */
 	@Basic(optional = false)
 	@Column(name = "P_FUND_MALE_MNY")
-	private long pFundMaleMny;
+	private BigDecimal pFundMaleMny;
 
 	/** The p fund fem mny. */
 	@Basic(optional = false)
 	@Column(name = "P_FUND_FEM_MNY")
-	private long pFundFemMny;
+	private BigDecimal pFundFemMny;
 
 	/** The p fund miner mny. */
 	@Basic(optional = false)
 	@Column(name = "P_FUND_MINER_MNY")
-	private long pFundMinerMny;
+	private BigDecimal pFundMinerMny;
 
 	/** The c fund male mny. */
 	@Basic(optional = false)
 	@Column(name = "C_FUND_MALE_MNY")
-	private long cFundMaleMny;
+	private BigDecimal cFundMaleMny;
 
 	/** The c fund fem mny. */
 	@Basic(optional = false)
 	@Column(name = "C_FUND_FEM_MNY")
-	private long cFundFemMny;
+	private BigDecimal cFundFemMny;
 
 	/** The c fund miner mny. */
 	@Basic(optional = false)
 	@Column(name = "C_FUND_MINER_MNY")
-	private long cFundMinerMny;
+	private BigDecimal cFundMinerMny;
 
 	/** The p fund exempt male mny. */
 	@Basic(optional = false)
 	@Column(name = "P_FUND_EXEMPT_MALE_MNY")
-	private long pFundExemptMaleMny;
+	private BigDecimal pFundExemptMaleMny;
 
 	/** The p fund exempt fem mny. */
 	@Basic(optional = false)
 	@Column(name = "P_FUND_EXEMPT_FEM_MNY")
-	private long pFundExemptFemMny;
+	private BigDecimal pFundExemptFemMny;
 
 	/** The p fund exempt miner mny. */
 	@Basic(optional = false)
 	@Column(name = "P_FUND_EXEMPT_MINER_MNY")
-	private long pFundExemptMinerMny;
+	private BigDecimal pFundExemptMinerMny;
 
 	/** The c fund exempt male mny. */
 	@Basic(optional = false)
 	@Column(name = "C_FUND_EXEMPT_MALE_MNY")
-	private long cFundExemptMaleMny;
+	private BigDecimal cFundExemptMaleMny;
 
 	/** The c fund exempt fem mny. */
 	@Basic(optional = false)
 	@Column(name = "C_FUND_EXEMPT_FEM_MNY")
-	private long cFundExemptFemMny;
+	private BigDecimal cFundExemptFemMny;
 
 	/** The c fund exempt miner mny. */
 	@Basic(optional = false)
 	@Column(name = "C_FUND_EXEMPT_MINER_MNY")
-	private long cFundExemptMinerMny;
+	private BigDecimal cFundExemptMinerMny;
 
 	/** The child contribution mny. */
 	@Basic(optional = false)
 	@Column(name = "CHILD_CONTRIBUTION_MNY")
-	private long childContributionMny;
+	private BigDecimal childContributionMny;
 
 	/**
 	 * Instantiates a new qismt pension avgearn.
@@ -196,87 +197,6 @@ public class QismtPensionAvgearn implements Serializable {
 	/**
 	 * Instantiates a new qismt pension avgearn.
 	 *
-	 * @param qismtPensionAvgearnPK
-	 *            the qismt pension avgearn PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param pensionAvgEarn
-	 *            the pension avg earn
-	 * @param pensionUpperLimit
-	 *            the pension upper limit
-	 * @param pPensionMaleMny
-	 *            the pension male mny
-	 * @param pPensionFemMny
-	 *            the pension fem mny
-	 * @param pPensionMinerMny
-	 *            the pension miner mny
-	 * @param cPensionMaleMny
-	 *            the c pension male mny
-	 * @param cPensionFemMny
-	 *            the c pension fem mny
-	 * @param cPensionMinerMny
-	 *            the c pension miner mny
-	 * @param pFundMaleMny
-	 *            the fund male mny
-	 * @param pFundFemMny
-	 *            the fund fem mny
-	 * @param pFundMinerMny
-	 *            the fund miner mny
-	 * @param cFundMaleMny
-	 *            the c fund male mny
-	 * @param cFundFemMny
-	 *            the c fund fem mny
-	 * @param cFundMinerMny
-	 *            the c fund miner mny
-	 * @param pFundExemptMaleMny
-	 *            the fund exempt male mny
-	 * @param pFundExemptFemMny
-	 *            the fund exempt fem mny
-	 * @param pFundExemptMinerMny
-	 *            the fund exempt miner mny
-	 * @param cFundExemptMaleMny
-	 *            the c fund exempt male mny
-	 * @param cFundExemptFemMny
-	 *            the c fund exempt fem mny
-	 * @param cFundExemptMinerMny
-	 *            the c fund exempt miner mny
-	 * @param childContributionMny
-	 *            the child contribution mny
-	 */
-	public QismtPensionAvgearn(QismtPensionAvgearnPK qismtPensionAvgearnPK, long exclusVer, long pensionAvgEarn,
-			long pensionUpperLimit, long pPensionMaleMny, long pPensionFemMny, long pPensionMinerMny,
-			long cPensionMaleMny, long cPensionFemMny, long cPensionMinerMny, long pFundMaleMny, long pFundFemMny,
-			long pFundMinerMny, long cFundMaleMny, long cFundFemMny, long cFundMinerMny, long pFundExemptMaleMny,
-			long pFundExemptFemMny, long pFundExemptMinerMny, long cFundExemptMaleMny, long cFundExemptFemMny,
-			long cFundExemptMinerMny, long childContributionMny) {
-		this.qismtPensionAvgearnPK = qismtPensionAvgearnPK;
-		this.exclusVer = exclusVer;
-		this.pensionAvgEarn = pensionAvgEarn;
-		this.pensionUpperLimit = pensionUpperLimit;
-		this.pPensionMaleMny = pPensionMaleMny;
-		this.pPensionFemMny = pPensionFemMny;
-		this.pPensionMinerMny = pPensionMinerMny;
-		this.cPensionMaleMny = cPensionMaleMny;
-		this.cPensionFemMny = cPensionFemMny;
-		this.cPensionMinerMny = cPensionMinerMny;
-		this.pFundMaleMny = pFundMaleMny;
-		this.pFundFemMny = pFundFemMny;
-		this.pFundMinerMny = pFundMinerMny;
-		this.cFundMaleMny = cFundMaleMny;
-		this.cFundFemMny = cFundFemMny;
-		this.cFundMinerMny = cFundMinerMny;
-		this.pFundExemptMaleMny = pFundExemptMaleMny;
-		this.pFundExemptFemMny = pFundExemptFemMny;
-		this.pFundExemptMinerMny = pFundExemptMinerMny;
-		this.cFundExemptMaleMny = cFundExemptMaleMny;
-		this.cFundExemptFemMny = cFundExemptFemMny;
-		this.cFundExemptMinerMny = cFundExemptMinerMny;
-		this.childContributionMny = childContributionMny;
-	}
-
-	/**
-	 * Instantiates a new qismt pension avgearn.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param siOfficeCd
@@ -286,7 +206,7 @@ public class QismtPensionAvgearn implements Serializable {
 	 * @param pensionGrade
 	 *            the pension grade
 	 */
-	public QismtPensionAvgearn(String ccd, String siOfficeCd, String histId, short pensionGrade) {
+	public QismtPensionAvgearn(String ccd, String siOfficeCd, String histId, BigDecimal pensionGrade) {
 		this.qismtPensionAvgearnPK = new QismtPensionAvgearnPK(ccd, siOfficeCd, histId, pensionGrade);
 	}
 
@@ -320,5 +240,4 @@ public class QismtPensionAvgearn implements Serializable {
 		}
 		return true;
 	}
-
 }

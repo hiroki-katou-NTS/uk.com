@@ -5,13 +5,18 @@
 package nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * The Class QismtPensionAvgearnPK.
  */
+@Data
 @Embeddable
 public class QismtPensionAvgearnPK implements Serializable {
 
@@ -36,7 +41,7 @@ public class QismtPensionAvgearnPK implements Serializable {
 	/** The pension grade. */
 	@Basic(optional = false)
 	@Column(name = "PENSION_GRADE")
-	private short pensionGrade;
+	private BigDecimal pensionGrade;
 
 	/**
 	 * Instantiates a new qismt pension avgearn PK.
@@ -48,95 +53,15 @@ public class QismtPensionAvgearnPK implements Serializable {
 	/**
 	 * Instantiates a new qismt pension avgearn PK.
 	 *
-	 * @param ccd
-	 *            the ccd
-	 * @param siOfficeCd
-	 *            the si office cd
-	 * @param histId
-	 *            the hist id
-	 * @param pensionGrade
-	 *            the pension grade
+	 * @param ccd the ccd
+	 * @param siOfficeCd the si office cd
+	 * @param histId the hist id
+	 * @param pensionGrade the pension grade
 	 */
-	public QismtPensionAvgearnPK(String ccd, String siOfficeCd, String histId, short pensionGrade) {
+	public QismtPensionAvgearnPK(String ccd, String siOfficeCd, String histId, BigDecimal pensionGrade) {
 		this.ccd = ccd;
 		this.siOfficeCd = siOfficeCd;
 		this.histId = histId;
-		this.pensionGrade = pensionGrade;
-	}
-
-	/**
-	 * Gets the ccd.
-	 *
-	 * @return the ccd
-	 */
-	public String getCcd() {
-		return ccd;
-	}
-
-	/**
-	 * Sets the ccd.
-	 *
-	 * @param ccd
-	 *            the new ccd
-	 */
-	public void setCcd(String ccd) {
-		this.ccd = ccd;
-	}
-
-	/**
-	 * Gets the si office cd.
-	 *
-	 * @return the si office cd
-	 */
-	public String getSiOfficeCd() {
-		return siOfficeCd;
-	}
-
-	/**
-	 * Sets the si office cd.
-	 *
-	 * @param siOfficeCd
-	 *            the new si office cd
-	 */
-	public void setSiOfficeCd(String siOfficeCd) {
-		this.siOfficeCd = siOfficeCd;
-	}
-
-	/**
-	 * Gets the hist id.
-	 *
-	 * @return the hist id
-	 */
-	public String getHistId() {
-		return histId;
-	}
-
-	/**
-	 * Sets the hist id.
-	 *
-	 * @param histId
-	 *            the new hist id
-	 */
-	public void setHistId(String histId) {
-		this.histId = histId;
-	}
-
-	/**
-	 * Gets the pension grade.
-	 *
-	 * @return the pension grade
-	 */
-	public short getPensionGrade() {
-		return pensionGrade;
-	}
-
-	/**
-	 * Sets the pension grade.
-	 *
-	 * @param pensionGrade
-	 *            the new pension grade
-	 */
-	public void setPensionGrade(short pensionGrade) {
 		this.pensionGrade = pensionGrade;
 	}
 
@@ -151,7 +76,7 @@ public class QismtPensionAvgearnPK implements Serializable {
 		hash += (ccd != null ? ccd.hashCode() : 0);
 		hash += (siOfficeCd != null ? siOfficeCd.hashCode() : 0);
 		hash += (histId != null ? histId.hashCode() : 0);
-		hash += (int) pensionGrade;
+		hash += pensionGrade.intValue();
 		return hash;
 	}
 
@@ -162,8 +87,6 @@ public class QismtPensionAvgearnPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
-		// not set
 		if (!(object instanceof QismtPensionAvgearnPK)) {
 			return false;
 		}
@@ -183,17 +106,6 @@ public class QismtPensionAvgearnPK implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "entity.QismtPensionAvgearnPK[ ccd=" + ccd + ", siOfficeCd=" + siOfficeCd + ", histId=" + histId
-				+ ", pensionGrade=" + pensionGrade + " ]";
 	}
 
 }

@@ -5,11 +5,13 @@
 package nts.uk.ctx.pr.core.dom.wagetable;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 public interface CertifyGroupRepository {
-	
+
 	/**
 	 * Adds the.
 	 *
@@ -47,14 +49,6 @@ public interface CertifyGroupRepository {
 	 * @param code the code
 	 * @return the certify group
 	 */
-	CertifyGroup findById(CompanyCode companyCode, WageTableCode code);
+	Optional<CertifyGroup> findById(CompanyCode companyCode, String code);
 
-	/**
-	 * Checks if is duplicate code.
-	 *
-	 * @param companyCode the company code
-	 * @param code the code
-	 * @return true, if is duplicate code
-	 */
-	boolean isDuplicateCode(CompanyCode companyCode, WageTableCode code);
 }
