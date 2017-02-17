@@ -84,9 +84,21 @@
 							</div>
 						</div>
 						<div style="float: left; margin-left: 120px;">
-							<div id="B_LBL_013" data-bind="ntsFormLabel: {  }">住民税納付先</div>
+							<div id="B_LBL_013" data-bind="ntsFormLabel: { required: true }">住民税納付先</div>
+
+
 							<div class="LST_001">
-								<table id="B_LST_001"
+								<div style="width: 700px" id="SCH_001"
+									data-bind="ntsSearchBox: {
+									comId: 'B_LST_001', 
+									items: files, 
+									selected: selectedValue_B_LST_001, 
+									selectedKey: 'id', 
+									fields: ['name', 'id'], 
+									childField: 'childs'}" />
+								<table id="B_LST_001">
+								</table>
+								<!-- 		<table id="B_LST_001"
 									data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
@@ -95,7 +107,7 @@
 								columns: columns_B_LST_001,
 								multiple: true,
 								value: currentCodeList_B_LST_001
-							}"></table>
+							}"></table> -->
 							</div>
 						</div>
 					</div>
@@ -167,7 +179,7 @@
 														value: selectedCode,
 														optionsText: 'name',
 														editable: isEditable,
-														enable: isEnable,
+														enable: isEnable, 
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}">
@@ -205,9 +217,20 @@
 							</div>
 						</div>
 						<div style="float: left; margin-left: 120px;">
-							<div id="C_LBL_014" data-bind="ntsFormLabel: {  }">住民税納付先</div>
+							<div id="C_LBL_014"
+								data-bind="ntsFormLabel: { required: true   }">住民税納付先</div>
 							<div class="LST_001">
-								<table id="C_LST_001"
+								<div style="width: 700px"
+									data-bind="ntsSearchBox: {
+									comId: 'C_LST_001',
+									 items: files, 
+									 selected: selectedValue_C_LST_001, 
+									 selectedKey: 'id',
+									  fields: ['name', 'id'], 
+									  childField: 'childs'}" />
+								<table id="C_LST_001">
+								</table>
+								<!-- 		<table id="C_LST_001"
 									data-bind="ntsGridList: {
 								width: 280,
 								height: 350,
@@ -216,7 +239,7 @@
 								columns: columns_C_LST_001,
 								multiple: true,
 								value: currentCodeList_C_LST_001
-							}"></table>
+							}"></table> -->
 							</div>
 						</div>
 					</div>

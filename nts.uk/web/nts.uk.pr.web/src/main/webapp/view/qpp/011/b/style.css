@@ -133,3 +133,10 @@ input {
 #B_BTN_002 {
 	margin-left: 100px;
 }
+#B_LST_001_container{
+	margin-top: 10px;
+}
+#SCH_001 .ntsSearchBox {
+	height: 32px ;
+	width: 190px;
+}
