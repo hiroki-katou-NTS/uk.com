@@ -30,8 +30,8 @@
 			</div>
 			<div class="contents-area">
 				<div data-bind="ntsFormLabel: {required: true}">事業所 :</div>
-				<span id="lblCode" data-bind="text: healthInsuranceRateModel().officeCode"></span>
-				<span id="lblName" data-bind="text: healthInsuranceRateModel().officeName"></span>
+				<span id="lblCode" data-bind="text: 'office code'"></span>
+				<span id="lblName" data-bind="text: 'office name'"></span>
 				<div style="margin-left: 200px"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
 				<span>(平成28年04月) ~ 9999/12</span>
@@ -138,37 +138,41 @@
 									<td class="bg-green"><span data-bind="text: avgEarn"></span></td>
 									<td class="bg-green"><span data-bind="text: salMin"></span></td>
 									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
-									<com:ko-foreach bind="$parent.listPensionAvgearn">
+									<com:ko-foreach bind="$parent.listPensionAvgearnModel">
 										<com:ko-if bind="$parent.code == levelCode">
 											<td data-bind="css: { hidden: $parents[1].leftShow() }"
 												class="bg-green border_none"></td>
-											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
-												data-bind="value: personalPension.maleAmount"></input></td>
-											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
-												data-bind="value: personalPension.femaleAmount"></input></td>
-											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
-												data-bind="value: personalPension.unknownAmount"></input></td>
-											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
-												data-bind="value: companyPension.maleAmount"></input></td>
-											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
-												data-bind="value: companyPension.femaleAmount"></input></td>
-											<td data-bind="css: { hidden: !$parents[1].leftShow() }"><input
-												data-bind="value: companyPension.unknownAmount"></input></td>
+											<com:ko tag="with" bind="personalPension">
+												<com:ko-if bind="$parents[2].leftShow()">
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+												</com:ko-if>
+											</com:ko>
+											<com:ko tag="with" bind="companyPension">
+												<com:ko-if bind="$parents[2].leftShow()">
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+												</com:ko-if>
+											</com:ko>
 											<td data-bind="css: { hidden: $parents[1].rightShow() }"
 												class="bg-green border_none"></td>
-											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
-												data-bind="value: personalFundExemption.maleAmount"></input></td>
-											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
-												data-bind="value: personalFundExemption.femaleAmount"></input></td>
-											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
-												data-bind="value: personalFundExemption.unknownAmount"></input></td>
-											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
-												data-bind="value: companyFundExemption.maleAmount"></input></td>
-											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
-												data-bind="value: companyFundExemption.femaleAmount"></input></td>
-											<td data-bind=" css: { hidden: !$parents[1].rightShow() }"><input
-												data-bind="value: companyFundExemption.unknownAmount"></input></td>
-											<td><input data-bind="value: childContributionAmount"></input></td>
+											<com:ko tag="with" bind="personalFundExemption">
+												<com:ko-if bind="$parents[2].rightShow()">
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+												</com:ko-if>
+											</com:ko>
+											<com:ko tag="with" bind="companyFundExemption">
+												<com:ko-if bind="$parents[2].rightShow()">
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+												</com:ko-if>
+											</com:ko>
+											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount}"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>

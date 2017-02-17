@@ -4,15 +4,17 @@ module nts.uk.pr.view.qmm008.h {
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         import HealthInsuranceAvgEarnDto = service.model.HealthInsuranceAvgEarnDto;
         import HealthInsuranceAvgEarnValue = service.model.HealthInsuranceAvgEarnValue;
-        import PensionRateItemModel = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateItemModel;
+        import HealthInsuranceRateItemModel = nts.uk.pr.view.qmm008.a.viewmodel.HealthInsuranceRateItemModel;
+        import HealthInsuranceRateModelofScreenA = nts.uk.pr.view.qmm008.a.viewmodel.HealthInsuranceRateModel;
+        import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
 
         export class ScreenModel {
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             healthInsuranceRateModel: HealthInsuranceRateModel;
-            rateItems: Array<PensionRateItemModel>;
+            rateItems: Array<HealthInsuranceRateItemModel>;
 
-            constructor(dataOfSelectedOffice, healthModel) {
+            constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, healthModel: HealthInsuranceRateModelofScreenA) {
                 var self = this;
                 self.healthInsuranceRateModel = new HealthInsuranceRateModel();
                 self.healthInsuranceRateModel.officeCode = dataOfSelectedOffice.code;
@@ -54,7 +56,6 @@ module nts.uk.pr.view.qmm008.h {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findHealthInsuranceAvgEarn('id').done(res => {
-                    //self.listHealthInsuranceAvgearn(res);
                     res.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
                             new HealthInsuranceAvgEarnModel(
