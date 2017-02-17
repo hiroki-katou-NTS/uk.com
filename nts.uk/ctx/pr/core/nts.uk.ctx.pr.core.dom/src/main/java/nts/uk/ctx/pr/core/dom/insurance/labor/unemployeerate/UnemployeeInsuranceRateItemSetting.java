@@ -28,4 +28,16 @@ public class UnemployeeInsuranceRateItemSetting {
 		super();
 	}
 
+	/**
+	 * Instantiates a new unemployee insurance rate item setting.
+	 *
+	 * @param roundAtr the round atr
+	 * @param rate the rate
+	 */
+	public UnemployeeInsuranceRateItemSetting(RoundingMethod roundAtr, Double rate) {
+		super();
+		this.roundAtr = roundAtr;
+		this.rate = rate;
+	}
+
 }

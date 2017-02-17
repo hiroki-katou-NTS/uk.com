@@ -34,15 +34,11 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 
 	/**
 	 * Instantiates a new qwtmt wagetable certify GPK.
-	 */
-	public QwtmtWagetableCertifyGPK() {
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable certify GPK.
 	 *
-	 * @param ccd the ccd
-	 * @param certifyGroupCd the certify group cd
+	 * @param ccd
+	 *            the ccd
+	 * @param certifyGroupCd
+	 *            the certify group cd
 	 */
 	public QwtmtWagetableCertifyGPK(String ccd, String certifyGroupCd) {
 		this.ccd = ccd;

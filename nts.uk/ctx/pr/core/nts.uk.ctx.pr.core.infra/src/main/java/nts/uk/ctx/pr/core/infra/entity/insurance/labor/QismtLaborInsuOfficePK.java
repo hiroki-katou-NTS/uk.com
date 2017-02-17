@@ -34,12 +34,6 @@ public class QismtLaborInsuOfficePK implements Serializable {
 
 	/**
 	 * Instantiates a new qismt labor insu office PK.
-	 */
-	public QismtLaborInsuOfficePK() {
-	}
-
-	/**
-	 * Instantiates a new qismt labor insu office PK.
 	 *
 	 * @param ccd the ccd
 	 * @param liOfficeCd the li office cd
@@ -69,7 +63,6 @@ public class QismtLaborInsuOfficePK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// not set
 		if (!(object instanceof QismtLaborInsuOfficePK)) {
 			return false;
 		}

@@ -170,12 +170,6 @@ public class QismtSocialInsuOffice implements Serializable {
 
 	/**
 	 * Instantiates a new qismt social insu office.
-	 */
-	public QismtSocialInsuOffice() {
-	}
-
-	/**
-	 * Instantiates a new qismt social insu office.
 	 *
 	 * @param qismtSocialInsuOfficePK the qismt social insu office PK
 	 */

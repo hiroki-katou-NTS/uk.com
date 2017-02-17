@@ -34,12 +34,6 @@ public class QcemtCertificationPK implements Serializable {
 
 	/**
 	 * Instantiates a new qcemt certification PK.
-	 */
-	public QcemtCertificationPK() {
-	}
-
-	/**
-	 * Instantiates a new qcemt certification PK.
 	 *
 	 * @param ccd the ccd
 	 * @param certCd the cert cd

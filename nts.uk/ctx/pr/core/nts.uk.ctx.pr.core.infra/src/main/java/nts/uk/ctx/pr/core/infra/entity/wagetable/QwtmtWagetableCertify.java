@@ -88,12 +88,6 @@ public class QwtmtWagetableCertify implements Serializable {
 
 	/**
 	 * Instantiates a new qwtmt wagetable certify.
-	 */
-	public QwtmtWagetableCertify() {
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable certify.
 	 *
 	 * @param qwtmtWagetableCertifyPK the qwtmt wagetable certify PK
 	 */
