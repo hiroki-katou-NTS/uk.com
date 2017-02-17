@@ -6,7 +6,7 @@ module nts.uk.pr.view.qmm016.l {
             findCertifyGroup: "pr/wagetable/certifygroup/find",
             findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
             addCertifyGroup: "pr/wagetable/certifygroup/add",
-            updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
+            updateCertifyGroup: "pr/wagetable/certifygroup/update",
             deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
         };
 
@@ -61,6 +61,21 @@ module nts.uk.pr.view.qmm016.l {
             var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
             console.log(data);
             nts.uk.request.ajax(paths.addCertifyGroup, data)
+                .done(function(res: Array<model.CertifyGroupFindInDto>) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function connection service Update CertifyGroup
+        export function updateCertifyGroup(certifyGroupDto: model.CertifyGroupDto): JQueryPromise<any> {
+            var dfd = $.Deferred<Array<model.CertifyGroupFindInDto>>();
+            var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
+            console.log(data);
+            nts.uk.request.ajax(paths.updateCertifyGroup, data)
                 .done(function(res: Array<model.CertifyGroupFindInDto>) {
                     dfd.resolve(res);
                     //xyz

@@ -109,7 +109,7 @@ module nts.uk.pr.view.qmm016.l {
                 if (self.typeAction() == TypeActionCertifyGroup.add) {
                     service.addCertifyGroup(self.convertDataModel());
                 } else {
-
+                    service.updateCertifyGroup(self.certifyGroupModel());
                 }
             }
             //convert data model => Dto

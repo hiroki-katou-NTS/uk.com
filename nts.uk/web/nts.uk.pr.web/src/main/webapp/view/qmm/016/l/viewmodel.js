@@ -99,6 +99,7 @@ var nts;
                                         l.service.addCertifyGroup(self.convertDataModel());
                                     }
                                     else {
+                                        l.service.updateCertifyGroup(self.certifyGroupModel());
                                     }
                                 };
                                 ScreenModel.prototype.convertDataModel = function () {

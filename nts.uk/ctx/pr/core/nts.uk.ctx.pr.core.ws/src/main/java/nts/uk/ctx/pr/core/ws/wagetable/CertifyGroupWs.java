@@ -17,6 +17,8 @@ import nts.uk.ctx.pr.core.app.insurance.labor.command.LaborInsuranceOfficeAddCom
 import nts.uk.ctx.pr.core.app.wagetable.CertifyGroupDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.CertifyGroupAddCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.CertifyGroupAddCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.CertifyGroupUpdateCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.CertifyGroupUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.find.CertifyGroupFindInDto;
 import nts.uk.ctx.pr.core.app.wagetable.find.CertifyGroupFindOutDto;
 import nts.uk.ctx.pr.core.app.wagetable.find.CertifyGroupFinder;
@@ -33,6 +35,10 @@ public class CertifyGroupWs extends WebService {
 	/** The add. */
 	@Inject
 	private CertifyGroupAddCommandHandler add;
+
+	/** The update. */
+	@Inject
+	private CertifyGroupUpdateCommandHandler update;
 
 	/**
 	 * Find all.
@@ -63,5 +69,11 @@ public class CertifyGroupWs extends WebService {
 	@Path("add")
 	public void addCertifyGroup(CertifyGroupAddCommand command) {
 		this.add.handle(command);
+	}
+
+	@POST
+	@Path("update")
+	public void updateCertifyGroup(CertifyGroupUpdateCommand command) {
+		this.update.handle(command);
 	}
 }
