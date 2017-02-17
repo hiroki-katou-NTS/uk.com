@@ -142,6 +142,13 @@ public class QismtLaborInsuOffice implements Serializable {
 
 	/**
 	 * Instantiates a new qismt labor insu office.
+	 */
+	public QismtLaborInsuOffice() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new qismt labor insu office.
 	 *
 	 * @param qismtLaborInsuOfficePK the qismt labor insu office PK
 	 */

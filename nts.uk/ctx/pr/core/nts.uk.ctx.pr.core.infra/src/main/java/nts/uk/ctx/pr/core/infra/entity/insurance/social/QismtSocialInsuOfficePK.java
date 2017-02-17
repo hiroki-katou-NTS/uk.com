@@ -30,6 +30,13 @@ public class QismtSocialInsuOfficePK implements Serializable {
 
 	/**
 	 * Instantiates a new qismt social insu office PK.
+	 */
+	public QismtSocialInsuOfficePK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new qismt social insu office PK.
 	 *
 	 * @param ccd
 	 *            the ccd

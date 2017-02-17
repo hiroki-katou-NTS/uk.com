@@ -39,6 +39,13 @@ public class QwtmtWagetableCertifyPK implements Serializable {
 
 	/**
 	 * Instantiates a new qwtmt wagetable certify PK.
+	 */
+	public QwtmtWagetableCertifyPK() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new qwtmt wagetable certify PK.
 	 *
 	 * @param ccd
 	 *            the ccd
