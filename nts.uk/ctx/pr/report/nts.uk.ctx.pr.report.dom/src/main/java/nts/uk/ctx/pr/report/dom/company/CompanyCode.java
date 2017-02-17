@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.report.dom.company;
 
 import nts.arc.primitive.constraint.CharType;
@@ -6,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
- * Code of Company
+ * The Class CompanyCode.
  */
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(4)
