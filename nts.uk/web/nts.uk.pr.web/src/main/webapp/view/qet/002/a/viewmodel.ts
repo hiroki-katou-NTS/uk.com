@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qet002.a.viewmodel {
+module qet002.a.viewmodel {
     export class ScreenModel {
         targetYear: KnockoutObservable<number>;
         isLowerLimit: KnockoutObservable<boolean>;
@@ -12,6 +12,7 @@ module nts.uk.pr.view.qet002.a.viewmodel {
             this.isUpperLimit = ko.observable(true);
             this.lowerLimitValue = ko.observable(null);
             this.upperLimitValue = ko.observable(null);
+            //this.printData();
 
         }
 
@@ -19,7 +20,14 @@ module nts.uk.pr.view.qet002.a.viewmodel {
          * Start screen.
          */
         public start(): JQueryPromise<void> {
+            let self = this;
+
             var dfd = $.Deferred<void>();
+//            let query: any;
+//            qet002.a.service.printService().done(function() {
+//                // self.printData();
+//                //console.log("jejejejjejejeje");
+//            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -28,7 +36,9 @@ module nts.uk.pr.view.qet002.a.viewmodel {
         /**
          * Print Report
          */
-        public printData() {
+       public printData(){
+            //console.log("hehe");
+            let query: string;
             var hasError = false;
             if (this.targetYear() == null) {
                 hasError = true;
@@ -55,6 +65,14 @@ module nts.uk.pr.view.qet002.a.viewmodel {
             if (hasError) {
                 return;
             }
+           
+           //Print Report
+           service.printService(query).done(function() {}).done(function(data: any) {
+                console.log("1111111111111111111");
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            })
+
         }
     }
     export class AccumulatedPaymentResultViewModel {
