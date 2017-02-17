@@ -42,7 +42,6 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 
 	@Override
 	public List<Certification> findAll(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
 		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
 		CriteriaQuery<QcemtCertification> q = cb.createQuery(QcemtCertification.class);
 		Root<QcemtCertification> c = q.from(QcemtCertification.class);
