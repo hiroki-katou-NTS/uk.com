@@ -90,12 +90,14 @@ public class QwtmtWagetableCertify implements Serializable {
 	 * Instantiates a new qwtmt wagetable certify.
 	 */
 	public QwtmtWagetableCertify() {
+		super();
 	}
 
 	/**
 	 * Instantiates a new qwtmt wagetable certify.
 	 *
-	 * @param qwtmtWagetableCertifyPK the qwtmt wagetable certify PK
+	 * @param qwtmtWagetableCertifyPK
+	 *            the qwtmt wagetable certify PK
 	 */
 	public QwtmtWagetableCertify(QwtmtWagetableCertifyPK qwtmtWagetableCertifyPK) {
 		this.qwtmtWagetableCertifyPK = qwtmtWagetableCertifyPK;
@@ -104,8 +106,10 @@ public class QwtmtWagetableCertify implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable certify.
 	 *
-	 * @param qwtmtWagetableCertifyPK the qwtmt wagetable certify PK
-	 * @param exclusVer the exclus ver
+	 * @param qwtmtWagetableCertifyPK
+	 *            the qwtmt wagetable certify PK
+	 * @param exclusVer
+	 *            the exclus ver
 	 */
 	public QwtmtWagetableCertify(QwtmtWagetableCertifyPK qwtmtWagetableCertifyPK, long exclusVer) {
 		this.qwtmtWagetableCertifyPK = qwtmtWagetableCertifyPK;
@@ -115,9 +119,12 @@ public class QwtmtWagetableCertify implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable certify.
 	 *
-	 * @param ccd the ccd
-	 * @param certifyGroupCd the certify group cd
-	 * @param certifyCd the certify cd
+	 * @param ccd
+	 *            the ccd
+	 * @param certifyGroupCd
+	 *            the certify group cd
+	 * @param certifyCd
+	 *            the certify cd
 	 */
 	public QwtmtWagetableCertify(String ccd, String certifyGroupCd, String certifyCd) {
 		this.qwtmtWagetableCertifyPK = new QwtmtWagetableCertifyPK(ccd, certifyGroupCd, certifyCd);
@@ -153,4 +160,5 @@ public class QwtmtWagetableCertify implements Serializable {
 		}
 		return true;
 	}
+
 }

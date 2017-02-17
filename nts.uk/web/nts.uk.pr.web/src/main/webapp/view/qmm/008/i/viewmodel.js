@@ -16,9 +16,9 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(dataOfSelectedOffice, pensionModel) {
                                     var self = this;
-                                    self.listAvgEarnLevelMasterSetting = ko.observableArray([]);
-                                    self.listPensionAvgearn = ko.observableArray([]);
-                                    self.healthInsuranceRateModel = ko.observable(new HealthInsuranceRateModel());
+                                    self.listAvgEarnLevelMasterSetting = [];
+                                    self.listPensionAvgearnModel = ko.observableArray([]);
+                                    self.listPensionRateItemModel = pensionModel.rateItems;
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -30,10 +30,8 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.loadAvgEarnLevelMasterSetting().done(function () {
-                                        return self.loadPensionRate().done(function () {
-                                            return self.loadPensionAvgearn().done(function () {
-                                                return dfd.resolve();
-                                            });
+                                        return self.loadPensionAvgearn().done(function () {
+                                            return dfd.resolve();
                                         });
                                     });
                                     return dfd.promise();
@@ -42,17 +40,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     commonService.getAvgEarnLevelMasterSettingList().done(function (res) {
-                                        self.listAvgEarnLevelMasterSetting(res);
-                                        dfd.resolve();
-                                    });
-                                    return dfd.promise();
-                                };
-                                ScreenModel.prototype.loadPensionRate = function () {
-                                    var self = this;
-                                    var dfd = $.Deferred();
-                                    i.service.findPensionRate('id').done(function (res) {
-                                        self.healthInsuranceRateModel().officeCode = res.officeCode;
-                                        self.healthInsuranceRateModel().officeName = res.officeCode;
+                                        self.listAvgEarnLevelMasterSetting = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -61,7 +49,9 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     i.service.findPensionAvgearn('id').done(function (res) {
-                                        self.listPensionAvgearn(res);
+                                        res.forEach(function (item) {
+                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.historyId, item.levelCode, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
+                                        });
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -69,7 +59,7 @@ var nts;
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
                                     var data = [];
-                                    self.listPensionAvgearn().forEach(function (item) {
+                                    self.listPensionAvgearnModel().forEach(function (item) {
                                         data.push(ko.toJS(item));
                                     });
                                     return data;
@@ -90,12 +80,30 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel() {
+                            var PensionAvgearnModel = (function () {
+                                function PensionAvgearnModel(historyId, levelCode, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
+                                    this.historyId = historyId;
+                                    this.levelCode = levelCode;
+                                    this.companyFund = companyFund;
+                                    this.companyFundExemption = companyFundExemption;
+                                    this.companyPension = companyPension;
+                                    this.personalFund = personalFund;
+                                    this.personalFundExemption = personalFundExemption;
+                                    this.personalPension = personalPension;
+                                    this.childContributionAmount = ko.observable(childContributionAmount);
                                 }
-                                return HealthInsuranceRateModel;
+                                return PensionAvgearnModel;
                             }());
-                            viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
+                            viewmodel.PensionAvgearnModel = PensionAvgearnModel;
+                            var PensionAvgearnValueModel = (function () {
+                                function PensionAvgearnValueModel(maleAmount, femaleAmount, unknownAmount) {
+                                    this.maleAmount = ko.observable(maleAmount);
+                                    this.femaleAmount = ko.observable(femaleAmount);
+                                    this.unknownAmount = ko.observable(unknownAmount);
+                                }
+                                return PensionAvgearnValueModel;
+                            }());
+                            viewmodel.PensionAvgearnValueModel = PensionAvgearnValueModel;
                         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
                     })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
