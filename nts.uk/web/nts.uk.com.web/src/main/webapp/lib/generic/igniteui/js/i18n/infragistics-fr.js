@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI data source localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI data source localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -47,8 +46,9 @@
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI common DV widget localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI common DV widget localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -56,7 +56,14 @@
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 $.ig = $.ig || {};
 
@@ -83,9 +90,9 @@ if (!$.ig.Chart) {
 	});
 
 }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI shared localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI shared localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -93,7 +100,6 @@ if (!$.ig.Chart) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -109,8 +115,9 @@ if (!$.ig.SharedLocale) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI templating localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI templating localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -118,7 +125,6 @@ if (!$.ig.SharedLocale) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -132,8 +138,9 @@ if (!$.ig.Templating) {
 	});
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Barcode localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Barcode localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -141,7 +148,14 @@ if (!$.ig.Templating) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -186,9 +200,9 @@ if (!$.ig.Templating) {
 		    }
 	    };
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Combo localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Combo localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -196,7 +210,6 @@ if (!$.ig.Templating) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -217,7 +230,7 @@ if (!$.ig.Templating) {
 })(jQuery);
 
 /*!@license
-* Infragistics.Web.ClientUI Dialog localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Dialog localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -225,7 +238,6 @@ if (!$.ig.Templating) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -237,13 +249,15 @@ if (!$.ig.Templating) {
 			    maximizeButtonTitle: "Maximiser",
 			    pinButtonTitle: "Punaiser",
 			    unpinButtonTitle: "Dépunaiser",
-			    restoreButtonTitle: "Restaurer"
+			    restoreButtonTitle: "Restaurer",
+				setOptionError: "Les modifications de temps d'exécution ne sont pas autorisées pour l'option suivante : "
 		    }
 	    };
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Doughnut Chart localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Doughnut Chart localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -251,7 +265,14 @@ if (!$.ig.Templating) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -264,9 +285,9 @@ if (!$.ig.Templating) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Editors localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Editors localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -274,7 +295,6 @@ if (!$.ig.Templating) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -312,8 +332,8 @@ if (!$.ig.Templating) {
 			    minValErrMsg: "La valeur entrée a atteint la valeur minimum fixée à {0} pour ce champ",
 			    maxValExceedRevertErrMsg: "La valeur entrée a atteint la valeur maximum fixée à {0} et est revenue à la valeur antérieure",
 			    minValExceedRevertErrMsg: "La saisie est inférieure à la valeur minimale de {0} et a été ramenée à la précédente",
-			    maxValExceedSetErrMsg: "Entry exceeded the maximum value of {0} and was set to the maximum value",
-			    minValExceedSetErrMsg: "Entry exceeded the minimum value of {0} and was set to the minimum value",
+			    maxValExceedSetErrMsg: "La saisie a dépassé la valeur maximum de {0} et a été fixée sur la valeur maximum",
+			    minValExceedSetErrMsg: "La saisie a dépassé la valeur minimum de {0} et a été fixée sur la valeur minimum",
 			    maxValExceededWrappedAroundErrMsg: "La valeur entrée a atteint la valeur maximum fixée à {0} et a été fixée à la valeur minimum autorisée",
 			    minValExceededWrappedAroundErrMsg: "La saisie est inférieure à la valeur minimale de {0} et a été réglée sur la valeur maximale autorisée",
 			    btnValueNotSupported: "Une valeur de bouton différente est requise. Choisissez une valeur entre « dropdown », « clear » et « spin ».",
@@ -339,7 +359,8 @@ if (!$.ig.Templating) {
 			    cannotSetRuntime: "Cette option ne peut pas être définie lors de l’exécution",
 			    invalidDate: "Date non valide",
 			    maskMessage: 'Tous les postes requis doivent être remplis',
-			    dateMessage: 'Une date valide doit être saisie',
+			    maskRevertMessage: "Toutes les positions requises doivent être remplies, c'est pourquoi la valeur a été réinitialisée à la dernière valeur valide.",
+				dateMessage: 'Une date valide doit être saisie',
 			    centuryThresholdValidValues: "La propriété centuryThreshold doit être comprise entre 0 et 99. La valeur a été réinitialisée à son état par défaut.",
 			    noListItemsNoButton: "Aucun compteur ni bouton de liste ne s’affiche car il n’y a pas d’éléments de liste."
 		    }
@@ -348,7 +369,7 @@ if (!$.ig.Templating) {
 })(jQuery);
 
 /*!@license
-* Infragistics.Web.ClientUI Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -356,7 +377,14 @@ if (!$.ig.Templating) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 $.ig = $.ig || {};
 
@@ -754,15 +782,18 @@ if (!$.ig.Grid) {
 
     $.extend($.ig.igGridMultiColumnHeaders, {
     	locale: {
-    		multiColumnHeadersNotSupportedWithColumnVirtualization: "La fonction d'en-têtes de colonnes multiples n'est pas prise en charge avec columnVirtualization"
+    	    multiColumnHeadersNotSupportedWithColumnVirtualization: "La fonction d'en-têtes de colonnes multiples n'est pas prise en charge avec columnVirtualization",
+    	    atLeastOneColumnShouldBeShownWhenCollapseOrExpand: 'You should have at least one column shown when you expand or collapse a multi-column header.',
+    	    collapsedColumnIconTooltip: "Expand",
+    	    expandedColumnIconTooltip: "Collapse"
     	}
     });
 
 }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 
 /*!@license
-* Infragistics.Web.ClientUI HTML Editor localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI HTML Editor localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -770,7 +801,6 @@ if (!$.ig.Grid) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -895,8 +925,9 @@ if (!$.ig.HtmlEditor) {
 	});
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Notifier localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Notifier localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -904,7 +935,6 @@ if (!$.ig.HtmlEditor) {
 *
 */
 
-/*global jQuery */
 (function($) {
 $.ig = $.ig || {};
 
@@ -921,8 +951,9 @@ if (!$.ig.Notifier) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Pivot Shared localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Pivot Shared localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -930,7 +961,14 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -950,9 +988,9 @@ if (!$.ig.Notifier) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Pivot Data Selector localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Pivot Data Selector localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -960,7 +998,14 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -984,9 +1029,9 @@ if (!$.ig.Notifier) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Pivot Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Pivot Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -994,7 +1039,14 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1015,9 +1067,9 @@ if (!$.ig.Notifier) {
             }
         });
     }
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Popover localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Popover localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1025,7 +1077,6 @@ if (!$.ig.Notifier) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1041,8 +1092,9 @@ if (!$.ig.Popover) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Rating localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Rating localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1050,7 +1102,6 @@ if (!$.ig.Popover) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1064,8 +1115,9 @@ if (!$.ig.Popover) {
 	    });
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Splitter localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Scroll localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1073,7 +1125,31 @@ if (!$.ig.Popover) {
 *
 */
 
-/*global jQuery */
+(function ($) {
+    $.ig = $.ig || {};
+
+    if (!$.ig.Scroll) {
+	    $.ig.Scroll = {};
+
+	    $.extend($.ig.Scroll, {
+		    locale: {
+		        errorNoElementLink: "L'élément en cours de liaison n'existe pas.",
+		        errorNoScrollbarLink: "L'élément de la barre de défilement en cours de liaison n'existe pas."
+		    }
+	    });
+
+    }
+})(jQuery);
+
+/*!@license
+* Infragistics.Web.ClientUI Splitter localization resources 16.2.20162.2040
+*
+* Copyright (c) 2011-2016 Infragistics Inc.
+*
+* http://www.infragistics.com/
+*
+*/
+
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1089,8 +1165,9 @@ if (!$.ig.Splitter) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Tile Manager localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Tile Manager localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1098,7 +1175,6 @@ if (!$.ig.Splitter) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1114,8 +1190,9 @@ if (!$.ig.TileManager) {
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Toolbar localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Toolbar localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1123,7 +1200,6 @@ if (!$.ig.TileManager) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1140,8 +1216,9 @@ if (!$.ig.Toolbar) {
 	});
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Tree localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Tree localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1149,7 +1226,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1178,8 +1254,9 @@ if (!$.ig.Toolbar) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Tree Grid localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Tree Grid localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1187,7 +1264,14 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
+/*global define, jQuery */
+(function (factory) {
+	if (typeof define === "function" && define.amd) {
+		define( ["jquery"], factory );
+	} else {
+		factory(jQuery);
+	}
+}
 (function ($) {
 	$.ig = $.ig || {};
 
@@ -1226,9 +1310,9 @@ if (!$.ig.Toolbar) {
 			}
 		});
 	}
-})(jQuery);
+}));// REMOVE_FROM_COMBINED_FILES
 /*!@license
-* Infragistics.Web.ClientUI Upload localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Upload localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1236,7 +1320,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1294,8 +1377,9 @@ if (!$.ig.Toolbar) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Validator localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Validator localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1303,7 +1387,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1329,14 +1412,16 @@ if (!$.ig.Toolbar) {
 		        minValueMessage: 'Veuillez entrer une valeur supérieure ou égale à {0}',
 		        maxValueMessage: 'Veuillez entrer une valeur inférieure ou égale à {0}',
 		        emailMessage: 'Une adresse e-mail valide doit être saisie',
+				creditCardMessage: 'Un numéro de carte de paiement valide doit être saisi',
 		        equalToMessage: 'Les deux valeurs ne correspondent pas',
 		        optionalString: '(facultatif)'
 		    }
 	    };
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Video Player localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Video Player localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1344,7 +1429,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1393,8 +1477,9 @@ if (!$.ig.Toolbar) {
 
     }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI Zoombar localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Zoombar localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1402,7 +1487,6 @@ if (!$.ig.Toolbar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
 $.ig = $.ig || {};
 
@@ -1411,17 +1495,19 @@ if (!$.ig.Zoombar) {
 
 	$.extend($.ig.Zoombar, {
 
-	    locale: {
-	        zoombarTargetNotSpecified: "igZoombar a besoin d'une cible valide à laquelle s'attacher.",
-	        zoombarTypeNotSupported: "Le type de widget auquel la barre de zoom tente de s'attacher n'est pas pris en charge.",
-	        optionChangeNotSupported: "La modification de l'option suivante après la création de igZoombar n'est pas prise en charge :"
+		locale: {
+			zoombarTargetNotSpecified: "igZoombar a besoin d'une cible valide à laquelle s'attacher.",
+			zoombarTypeNotSupported: "Le type de widget auquel la barre de zoom tente de s'attacher n'est pas pris en charge.",
+			zoombarProviderNotRecognized: "igZoombar n'a pas pu initialiser un fournisseur à partir de la classe spécifiée, ou alors la valeur transmise n'est pas une classe.",
+			optionChangeNotSupported: "La modification de l'option suivante après la création de igZoombar n'est pas prise en charge :"
 		}
 	});
 
 }
 })(jQuery);
+
 /*!@license
-* Infragistics.Web.ClientUI common utilities localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI common utilities localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -1429,7 +1515,6 @@ if (!$.ig.Zoombar) {
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -1456,4 +1541,5 @@ if (!$.ig.Zoombar) {
 
     }
 })(jQuery);
+
 

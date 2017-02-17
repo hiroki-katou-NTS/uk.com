@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Validator localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Validator localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -33,6 +32,7 @@
 			    minValueMessage: 'Моля попълнете стойност по-голяма или равна на {0}',
 			    maxValueMessage: 'Моля попълнете стойност по-малка или равна на {0}',
 			    emailMessage: 'Трябва да бъде въведен валиден имейл адрес.',
+		        creditCardMessage: 'Трябва да бъде въведен валиден номер на банкова карта.',
 			    equalToMessage: 'Двете стойности не съвпадат.',
 			    optionalString: '(незадължително)'
 		    }

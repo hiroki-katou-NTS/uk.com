@@ -168,7 +168,7 @@ module nts.uk.ui.jqueryExtentions {
     }
 
     module ntsGridList {
-        
+
         let OUTSIDE_AUTO_SCROLL_SPEED = {
             RATIO: 0.2,
             MAX: 30
@@ -187,6 +187,8 @@ module nts.uk.ui.jqueryExtentions {
                     return setSelected($grid, param);
                 case 'deselectAll':
                     return deselectAll($grid);
+                case 'setupDeleteButton':
+                    return setupDeleteButton($grid, param);
             }
         };
 
@@ -225,6 +227,46 @@ module nts.uk.ui.jqueryExtentions {
             $grid.igGridSelection('clearSelection');
         }
 
+        function setupDeleteButton($grid: JQuery, param) {
+            var itemDeletedEvent = new CustomEvent("itemDeleted", {
+                detail: {},
+            });
+            var currentColumns = $grid.igGrid("option", "columns");
+            
+            currentColumns.push({
+                dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField, 
+                    width: 30, formatter: function createButton(deleteField, row) {
+                    var primaryKey = $grid.igGrid("option", "primaryKey");
+                    var result = $('<input class="delete-button" value="delete" type="button"/>');
+                    result.attr("data-value", row[primaryKey]);
+                    if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
+                        return result[0].outerHTML ;
+                    } else {
+                        return result.attr("disabled", "disabled")[0].outerHTML;
+                    }
+                }    
+            });
+            $grid.igGrid("option", "columns", currentColumns);
+            
+            $grid.on( "click", ".delete-button", function() {
+                var key = $(this).attr("data-value");
+                var primaryKey = $grid.igGrid("option", "primaryKey");
+                var source = _.cloneDeep($grid.igGrid("option", "dataSource"));
+                _.remove(source, function(current){
+                    return _.isEqual(current[primaryKey].toString(), key.toString());      
+                });
+                if(!util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function"){
+                    param.sourceTarget(source);
+                }else {
+                    $grid.igGrid("option", "dataSource", source);
+                    $grid.igGrid("dataBind");    
+                }
+                itemDeletedEvent.detail["target"] = key;
+                document.getElementById($grid.attr('id')).dispatchEvent(itemDeletedEvent);
+            });
+            
+        }
+        
         function setupSelecting($grid: JQuery) {
             setupDragging($grid);
             setupSelectingEvents($grid);
@@ -234,23 +276,23 @@ module nts.uk.ui.jqueryExtentions {
 
         function setupDragging($grid: JQuery) {
             var dragSelectRange = [];
-            
+
             // used to auto scrolling when dragged above/below grid)
             var mousePos: { x: number, y: number, rowIndex: number } = null;
-                
-            var $container = $grid.closest('.ui-iggrid-scrolldiv');
+
 
             $grid.bind('mousedown', function(e) {
                 // グリッド内がマウスダウンされていない場合は処理なしで終了
+                var $container = $grid.closest('.ui-iggrid-scrolldiv');
                 if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                     return;
                 }
-                
+
                 // current grid size
                 var gridVerticalRange = new util.Range(
                     $container.offset().top,
                     $container.offset().top + $container.height());
-                
+
                 mousePos = {
                     x: e.pageX,
                     y: e.pageY,
@@ -259,55 +301,55 @@ module nts.uk.ui.jqueryExtentions {
 
                 // set position to start dragging
                 dragSelectRange.push(mousePos.rowIndex);
-                
+
                 var $scroller = $('#' + $grid.attr('id') + '_scrollContainer');
-                
+
                 // auto scroll while mouse is outside grid
                 var timerAutoScroll = setInterval(() => {
                     var distance = gridVerticalRange.distanceFrom(mousePos.y);
                     if (distance === 0) {
                         return;
                     }
-                    
+
                     var delta = Math.min(distance * OUTSIDE_AUTO_SCROLL_SPEED.RATIO, OUTSIDE_AUTO_SCROLL_SPEED.MAX);
                     var currentScrolls = $scroller.scrollTop();
                     $grid.igGrid('virtualScrollTo', (currentScrolls + delta) + 'px');
                 }, 20);
-                
+
                 // handle mousemove on window while dragging (unhandle when mouseup)
                 $(window).bind('mousemove.NtsGridListDragging', function(e) {
-                    
+
                     var newPointedRowIndex = ig.grid.getRowIndexFrom($(e.target));
-                    
+
                     // selected range is not changed
                     if (mousePos.rowIndex === newPointedRowIndex) {
                         return;
                     }
-                    
+
                     mousePos = {
                         x: e.pageX,
                         y: e.pageY,
                         rowIndex: newPointedRowIndex
                     };
-                    
+
                     if (dragSelectRange.length === 1 && !e.ctrlKey) {
                         $grid.igGridSelection('clearSelection');
                     }
-                    
+
                     updateSelections();
                 });
-                
+
                 // stop dragging
                 $(window).one('mouseup', function(e) {
                     mousePos = null;
                     dragSelectRange = [];
-                     $(window).unbind('mousemove.NtsGridListDragging');
+                    $(window).unbind('mousemove.NtsGridListDragging');
                     clearInterval(timerAutoScroll);
                 });
             });
 
             function updateSelections() {
-                
+
                 // rowIndex is NaN when mouse is outside grid
                 if (isNaN(mousePos.rowIndex)) {
                     return;
@@ -400,9 +442,9 @@ module nts.uk.ui.jqueryExtentions {
             }
         }
     }
-    
+
     module ntsWizard {
-        $.fn.ntsWizard = function (action: string, index?: number): any {
+        $.fn.ntsWizard = function(action: string, index?: number): any {
             var $wizard = $(this);
             if (action === "begin") {
                 return begin($wizard);
@@ -426,41 +468,41 @@ module nts.uk.ui.jqueryExtentions {
                 return $wizard;
             };
         }
-        
-        function begin (wizard: JQuery): JQuery {
+
+        function begin(wizard: JQuery): JQuery {
             wizard.setStep(0);
             return wizard;
         }
-        
-        function end (wizard: JQuery): JQuery {
+
+        function end(wizard: JQuery): JQuery {
             wizard.setStep(wizard.data("length") - 1);
             return wizard;
         }
-        
-        function goto (wizard: JQuery, index: number): JQuery {
+
+        function goto(wizard: JQuery, index: number): JQuery {
             wizard.setStep(index);
             return wizard;
         }
-        
-        function prev (wizard: JQuery): JQuery {
+
+        function prev(wizard: JQuery): JQuery {
             wizard.steps("previous");
             return wizard;
         }
-        
-        function next (wizard: JQuery): JQuery {
+
+        function next(wizard: JQuery): JQuery {
             wizard.steps("next");
             return wizard;
         }
-        
-        function getCurrentStep (wizard: JQuery): number {
+
+        function getCurrentStep(wizard: JQuery): number {
             return wizard.steps("getCurrentIndex");
         }
-        
+
     }
 
     module ntsUserGuide {
-        
-        $.fn.ntsUserGuide = function (action?: string): any {
+
+        $.fn.ntsUserGuide = function(action?: string): any {
             var $controls = $(this);
             if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
                 return init($controls);
@@ -484,7 +526,7 @@ module nts.uk.ui.jqueryExtentions {
                 return $controls;
             };
         }
-        
+
         function init(controls: JQuery): JQuery {
             controls.each(function() {
                 // UserGuide container
@@ -495,9 +537,9 @@ module nts.uk.ui.jqueryExtentions {
                 $($control).appendTo($("body")).show();
                 let target = $control.data('target');
                 let direction = $control.data('direction');
-                
+
                 // Userguide Information Box
-                $control.children().each(function(){
+                $control.children().each(function() {
                     let $box = $(this);
                     let boxDirection = $box.data("direction");
                     $box.addClass("userguide-box caret-" + getReveseDirection(boxDirection) + " caret-overlay");
@@ -505,31 +547,31 @@ module nts.uk.ui.jqueryExtentions {
 
                 // Userguide Overlay
                 let $overlay = $("<div class='userguide-overlay'></div>")
-                                .addClass("overlay-" + direction)
-                                .appendTo($control);
+                    .addClass("overlay-" + direction)
+                    .appendTo($control);
                 $control.hide();
             });
             return controls;
         }
-        
+
         function destroy(controls: JQuery) {
             controls.each(function() {
                 $(this).remove();
             });
             return controls;
         }
-        
+
         function show(controls: JQuery): JQuery {
             controls.each(function() {
                 let $control = $(this);
                 $control.show();
-                
+
                 let target = $control.data('target');
                 let direction = $control.data('direction');
-                $control.find(".userguide-overlay").each(function(index, elem){
+                $control.find(".userguide-overlay").each(function(index, elem) {
                     calcOverlayPosition($(elem), target, direction)
                 });
-                $control.children().each(function(){
+                $control.children().each(function() {
                     let $box = $(this);
                     let boxTarget = $box.data("target");
                     let boxDirection = $box.data("direction");
@@ -539,14 +581,14 @@ module nts.uk.ui.jqueryExtentions {
             });
             return controls;
         }
-        
+
         function hide(controls: JQuery): JQuery {
             controls.each(function() {
                 $(this).hide();
             });
             return controls;
         }
-        
+
         function toggle(controls: JQuery): JQuery {
             if (isShow(controls))
                 hide(controls);
@@ -554,7 +596,7 @@ module nts.uk.ui.jqueryExtentions {
                 show(controls);
             return controls;
         }
-        
+
         function isShow(controls: JQuery): boolean {
             let result = true;
             controls.each(function() {
@@ -563,23 +605,23 @@ module nts.uk.ui.jqueryExtentions {
             });
             return result;
         }
-        
+
         function calcOverlayPosition(overlay: JQuery, target: string, direction: string): JQuery {
-            if (direction === "left") 
+            if (direction === "left")
                 return overlay.css("right", "auto")
-                              .css("width", $(target).offset().left);
-            else if (direction === "right") 
+                    .css("width", $(target).offset().left);
+            else if (direction === "right")
                 return overlay.css("left", $(target).offset().left + $(target).outerWidth());
-            else if (direction === "top") 
+            else if (direction === "top")
                 return overlay.css("position", "absolute")
-                              .css("bottom", "auto")
-                              .css("height", $(target).offset().top);
-            else if (direction === "bottom") 
+                    .css("bottom", "auto")
+                    .css("height", $(target).offset().top);
+            else if (direction === "bottom")
                 return overlay.css("position", "absolute")
-                              .css("top", $(target).offset().top + $(target).outerHeight())
-                              .css("height", $("body").height() - $(target).offset().top);
+                    .css("top", $(target).offset().top + $(target).outerHeight())
+                    .css("height", $("body").height() - $(target).offset().top);
         }
-        
+
         function calcBoxPosition(box: JQuery, target: string, direction: string, margin: string): JQuery {
             let operation = "+";
             if (direction === "left" || direction === "top")
@@ -591,72 +633,72 @@ module nts.uk.ui.jqueryExtentions {
                 collision: "none"
             });
         }
-        
+
         function getReveseDirection(direction: string): string {
-            if (direction === "left") 
+            if (direction === "left")
                 return "right";
-            else if (direction === "right") 
+            else if (direction === "right")
                 return "left";
-            else if (direction === "top") 
+            else if (direction === "top")
                 return "bottom";
-            else if (direction === "bottom") 
+            else if (direction === "bottom")
                 return "top";
         }
     }
-    
+
     module ntsSearchBox {
-        $.fn.setupSearchScroll = function(controlType: string, virtualization? : boolean) {
+        $.fn.setupSearchScroll = function(controlType: string, virtualization?: boolean) {
             var $control = this;
-            if(controlType.toLowerCase() == 'iggrid') return setupIgGridScroll($control, virtualization);
-            if(controlType.toLowerCase() == 'igtreegrid') return setupTreeGridScroll($control, virtualization);
-            if(controlType.toLowerCase() == 'igtree') return setupIgTreeScroll($control);
+            if (controlType.toLowerCase() == 'iggrid') return setupIgGridScroll($control, virtualization);
+            if (controlType.toLowerCase() == 'igtreegrid') return setupTreeGridScroll($control, virtualization);
+            if (controlType.toLowerCase() == 'igtree') return setupIgTreeScroll($control);
             return this;
         }
         function setupIgGridScroll($control: JQuery, virtualization?: boolean) {
             var $grid = $control;
-            if(virtualization) {
+            if (virtualization) {
                 $grid.on("selectChange", function() {
                     var row = null;
                     var selectedRows = $grid.igGrid("selectedRows");
-                    if(selectedRows) {
+                    if (selectedRows) {
                         row = selectedRows[0];
                     } else {
-                        row = $grid.igGrid("selectedRow"); 
-                    }                
-                    if(row) $grid.igGrid("virtualScrollTo", row.index);                
+                        row = $grid.igGrid("selectedRow");
+                    }
+                    if (row) $grid.igGrid("virtualScrollTo", row.index);
                 });
             } else {
                 $grid.on("selectChange", function() {
                     var row = null;
                     var selectedRows = $grid.igGrid("selectedRows");
-                    if(selectedRows) {
+                    if (selectedRows) {
                         row = selectedRows[0];
                     } else {
-                        row = $grid.igGrid("selectedRow"); 
-                    }                
-                    if(row) {
+                        row = $grid.igGrid("selectedRow");
+                    }
+                    if (row) {
                         var index = row.index;
                         var height = row.element[0].scrollHeight;
                         var gridId = $grid.attr('id');
-                        $("#" + gridId + "_scrollContainer").scrollTop(index*height); 
-                    }            
-                }); 
+                        $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                    }
+                });
             }
             return $grid;
         }
-        
+
         function setupTreeGridScroll($control: JQuery, virtualization?: boolean) {
             var $treegrid = $control;
-            var id = $treegrid.attr('id');           
+            var id = $treegrid.attr('id');
             $treegrid.on("selectChange", function() {
                 var row = null;
                 var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
-                if(selectedRows) {
+                if (selectedRows) {
                     row = selectedRows[0];
                 } else {
-                    row = $treegrid.igTreeGridSelection("selectedRow"); 
+                    row = $treegrid.igTreeGridSelection("selectedRow");
                 }
-                if(row) {
+                if (row) {
                     var index = row.index;
                     var height = row.element[0].scrollHeight;
                     $("#" + id + "_scroll").scrollTop(index * height);
@@ -664,16 +706,16 @@ module nts.uk.ui.jqueryExtentions {
             });
             return $treegrid;
         }
-        
+
         function setupIgTreeScroll($control: JQuery) {
             //implement later if needed
             return $control;
         }
     }
-    
+
     module ntsSideBar {
-        
-        $.fn.ntsSideBar = function (action?: string, index?: number): any {
+
+        $.fn.ntsSideBar = function(action?: string, index?: number): any {
             var $control = $(this);
             if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
                 return init($control);
@@ -700,10 +742,10 @@ module nts.uk.ui.jqueryExtentions {
                 return $control;
             };
         }
-        
+
         function init(control: JQuery): JQuery {
             control.find("div[role=tabpanel]").hide();
-            control.on("click", "#sidebar-area .navigator a", function(e){
+            control.on("click", "#sidebar-area .navigator a", function(e) {
                 e.preventDefault();
                 if ($(this).attr("disabled") !== "true" &&
                     $(this).attr("disabled") !== "disabled" &&
@@ -714,7 +756,7 @@ module nts.uk.ui.jqueryExtentions {
             control.find("#sidebar-area .navigator a.active").trigger('click');
             return control;
         }
-        
+
         function active(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").removeClass("active");
             control.find("#sidebar-area .navigator a").eq(index).addClass("active");
@@ -722,23 +764,23 @@ module nts.uk.ui.jqueryExtentions {
             $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
             return control;
         }
-        
+
         function enable(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
             return control;
-            
+
         }
-        
+
         function disable(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
             return control;
         }
-        
+
         function show(control: JQuery, index: number): JQuery {
             control.find("#sidebar-area .navigator a").eq(index).show();
             return control;
         }
-        
+
         function hide(control: JQuery, index: number): JQuery {
             var current = getCurrent(control);
             if (current === index) {
@@ -747,12 +789,12 @@ module nts.uk.ui.jqueryExtentions {
             control.find("#sidebar-area .navigator a").eq(index).hide();
             return control;
         }
-        
+
         function getCurrent(control: JQuery): number {
             let index = 0;
             index = control.find("#sidebar-area .navigator a.active").closest("li").index();
             return index;
         }
-        
+
     }
 }

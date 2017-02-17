@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Validator localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Validator localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -33,6 +32,7 @@
 		        minValueMessage: 'A value of at least {0} should be entered',
 		        maxValueMessage: 'A value no more than {0} should be entered',
 		        emailMessage: 'A valid email address should be entered',
+		        creditCardMessage: 'A valid payment card number should be entered',
 		        equalToMessage: 'The two values do not match',
 		        optionalString: '(optional)'
 		    }

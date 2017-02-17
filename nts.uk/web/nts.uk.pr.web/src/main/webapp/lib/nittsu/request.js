@@ -143,6 +143,39 @@ var nts;
                 return dfd.promise();
             }
             request.ajax = ajax;
+            function exportFile(path, data, options) {
+                var dfd = $.Deferred();
+                ajax(path, data, options)
+                    .then(function (res) {
+                    return uk.deferred.repeat(function (conf) { return conf
+                        .task(function () { return specials.getAsyncTaskInfo(res.taskId); })
+                        .while(function (info) { return info.pending || info.running; })
+                        .pause(1000); });
+                })
+                    .done(function (res) {
+                    specials.donwloadFile(res.id);
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.exportFile = exportFile;
+            var specials;
+            (function (specials) {
+                function getAsyncTaskInfo(taskId) {
+                    return ajax('/ntscommons/arc/task/async/' + taskId);
+                }
+                specials.getAsyncTaskInfo = getAsyncTaskInfo;
+                function donwloadFile(fileId) {
+                    $('<iframe/>')
+                        .attr('id', 'download-frame')
+                        .appendTo('body')
+                        .attr('src', resolvePath('/webapi/ntscommons/arc/filegate/get/' + fileId));
+                }
+                specials.donwloadFile = donwloadFile;
+            })(specials = request.specials || (request.specials = {}));
             function jump(path, data) {
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
                 window.location.href = resolvePath(path);
