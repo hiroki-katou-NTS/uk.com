@@ -27,6 +27,13 @@ public class PensionAvgearnValueDto {
 
 	/**
 	 * Instantiates a new pension avgearn value dto.
+	 */
+	public PensionAvgearnValueDto() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new pension avgearn value dto.
 	 *
 	 * @param maleAmount
 	 *            the male amount
