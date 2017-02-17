@@ -7,14 +7,15 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
 
 /**
  * The Class JpaAggrSchemaMemento.
  */
 public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QismtPensionAvgearn typeValue;
 
 	/**
 	 * Instantiates a new jpa aggr schema memento.
@@ -22,7 +23,7 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaPensionAvgearnSetMemento(Object typeValue) {
+	public JpaPensionAvgearnSetMemento(QismtPensionAvgearn typeValue) {
 		this.typeValue = typeValue;
 	}
 
