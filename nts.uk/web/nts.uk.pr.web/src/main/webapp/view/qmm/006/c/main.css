@@ -1,5 +1,6 @@
 .content-1 {
-	margin-left: 25px
+	margin-left: 25px;
+	margin-bottom: -14px
 }
 
 .content-left {
@@ -37,6 +38,7 @@
 
 .caret-right {
 	float: left;
+	margin-left: -1px;
 	margin-top: 160px;
 	font-size: 5rem;
 	color: #97d44a
@@ -49,7 +51,7 @@
 #hr-vertical {
 	float: left;
 	margin-left: 30px;
-	height: 470px;
+	height: 495px;
 }
 
 #hr-horizontal {
