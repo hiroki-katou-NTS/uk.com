@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
+import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
@@ -14,6 +15,9 @@ import nts.uk.shr.com.context.AppContexts;
 public class RemoveBranchCommandHandler extends CommandHandler<RemoveBranchCommand> {
 	@Inject
 	private BankBranchRepository banhBranchRepo;
+	
+	@Inject
+	private PersonBankAccountRepository personBankAccountRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveBranchCommand> context) {

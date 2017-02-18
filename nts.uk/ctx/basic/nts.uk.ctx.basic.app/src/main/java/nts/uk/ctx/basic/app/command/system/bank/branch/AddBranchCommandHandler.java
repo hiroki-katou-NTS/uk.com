@@ -31,6 +31,9 @@ public class AddBranchCommandHandler extends CommandHandler<AddBranchCommand> {
 		
 		BankBranch domain =  BankBranch.createFromJavaType(companyCode, command.getBankCode(), command.getBranchCode(), command.getBranchName(), command.getBranchKnName(), command.getMemo());
 		
+		// validate
+		domain.validate();
+		
 		bankBranchRepository.add(domain);
 	}
 

@@ -78,7 +78,7 @@ module nts.uk.pr.view.qmm002_1.a {
                         var x = self.getNode(codeChanged, undefined);
                         if (x.parentCode !== null) {
                             self.currentEra(x);
-                            self.nodeParent(self.getEra(codeChanged, x.parentCode));
+                            self.nodeParent(self.getNode(codeChanged, x.parentCode));
                         } else {
                             self.nodeParent(x);
                             self.currentEra(new BankInfo());
@@ -137,11 +137,16 @@ module nts.uk.pr.view.qmm002_1.a {
             }
 
             OpenCdialog(): any {
+                var self = this;
                 nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
+                nts.uk.ui.windows.setShared('listItem', self.lst_001());
             }
 
             OpenDdialog(): any {
-                nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" });
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" }).onClosed(() => {
+                    self.getBankList();
+                });
             }
 
             addBranch(): any {
@@ -216,7 +221,18 @@ module nts.uk.pr.view.qmm002_1.a {
 
             removeBranch() {
                 var self = this;
-                service.removeBranch(self.nodeParent().code, self.A_INP_003.value()).done(function() {
+                var parentCode = null;
+                var childCode = null;
+                var check = self.singleSelectedCode().includes("-");
+                if (check) {
+                    var codes = self.singleSelectedCode().split("-");
+                    parentCode = codes[0];
+                    childCode = codes[1];
+                } else {
+                    parentCode = self.singleSelectedCode();
+                }
+                
+                service.removeBank(!check, parentCode, childCode).done(function() {
                     // reload tree
                     self.getBankList();
                     self.cleanBranch();
