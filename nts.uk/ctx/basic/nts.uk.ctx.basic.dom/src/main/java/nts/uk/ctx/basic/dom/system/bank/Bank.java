@@ -2,6 +2,7 @@ package nts.uk.ctx.basic.dom.system.bank;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.shr.com.primitive.Memo;
 
 public class Bank extends AggregateRoot {
@@ -32,6 +33,17 @@ public class Bank extends AggregateRoot {
 	@Getter
 	private Memo memo;
 	
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.bankCode == null || StringUtil.isNullOrEmpty(this.bankCode.v(), true)) {
+			throw new RuntimeException("Bank Code Null");
+		}
+		
+		if (this.bankName == null || StringUtil.isNullOrEmpty(this.bankName.v(), true)) {
+			throw new RuntimeException("Bank Name Null");
+		}
+	}
 	
 	public Bank(String companyCode, BankCode bankCode, BankName bankName, BankNameKana bankNameKana, Memo memo) {
 		super();
