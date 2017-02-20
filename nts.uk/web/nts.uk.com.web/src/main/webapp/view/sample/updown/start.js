@@ -41,6 +41,7 @@ __viewContext.ready(function () {
             this.selectedCode = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);
             this.test = ko.observableArray([]);
+            this.testSingle = ko.observable(null);
         }
         ScreenModel.prototype.remove = function () {
             this.itemsSwap.shift();

@@ -70,6 +70,8 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 					.find(payment.getCompanyCode().v(), item.getCategoryAtr().value, item.getItemCode().v()).get();
 			item.additionalInfo(mItem.getLimitMoney().v(), mItem.getFixedPaidAtr().value, mItem.getAvgPaidAtr().value,
 					mItem.getItemAtr().value);
+			
+			item.additionalInfo(item.getCorrectFlag(), mItem.getSocialInsuranceAtr().value, mItem.getLaborInsuranceAtr().value, mItem.getDeductAttribute());
 			this.paymentDataRepository.insertDetail(payment, item);
 		}
 	}

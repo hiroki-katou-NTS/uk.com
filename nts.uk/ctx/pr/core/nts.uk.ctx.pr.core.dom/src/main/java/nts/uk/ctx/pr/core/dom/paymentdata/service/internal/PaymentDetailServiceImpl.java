@@ -47,7 +47,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		List<PersonalCommuteFee> commuteList = personalCommuteRepo.findAll(
 				param.getCompanyCode(), param.getPersonId().v(), param.getCurrentProcessingYearMonth().v());
 		if (commuteList.isEmpty()) {
-			throw new RuntimeException("Personal commute not found: personId=" + param.getPersonId().v());
+			throw new BusinessException("エラーでは？"); // Personal commute not found: personId=" + param.getPersonId().v()
 		}
 		PersonalCommuteFee commute = commuteList.get(0);
 		
@@ -74,7 +74,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				});
 		
 		// LAYOUT_DETAIL with CTR_ATR = 2
-		List<DetailItem> detailsOfCategoryPersonalTime = new ArrayList<>(); 
+		List<DetailItem> detailsOfCategoryPersonalTime = new ArrayList<>();
+		
 		layoutMasterDetailList.stream()
 				.filter(l -> l.isCategoryPersonalTime())
 				.forEach(l -> {
@@ -167,7 +168,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			value = getPayValueByMonthlyDaily(layout.getItemCode(), param.getHoliday(), param.getPaymentDateMaster(),
 					param.getPayCalBasicInfo());
 		} else {
-			throw new RuntimeException("システムエラー: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v());
+			throw new BusinessException("エラーでは？"); // システムエラー: itemCode="+ layout.getItemCode() + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v()
 		}
 		
 		return this.createDataDetailItem(itemMaster, value, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
@@ -225,7 +226,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 					itemLayoutMasterDetail.getCategoryAtr(), param.getLineList(), itemLayoutMasterDetail.getAutoLineId().v(), itemLayoutMasterDetail.getItemPosColumn().v(), commuteAllowMonth);
 			
 		} else {
-			throw new RuntimeException("システムエラー: itemCode="+ itemCode + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v());
+			throw new BusinessException("エラーでは？"); // システムエラー: itemCode="+ itemCode + "& category=" + itemMaster.getCategoryAtr() + " & personId=" + param.getPersonId().v()
 		}
 	}
 
@@ -293,9 +294,10 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		
 		val detailItem = DetailItem.createDataDetailItem(itemMaster.getItemCode(), value, categoryAtr);
 		detailItem.additionalInfo(CorrectFlag.NO_MODIFY, itemMaster.getSocialInsuranceAtr().value, itemMaster.getLaborInsuranceAtr().value, itemMaster.getDeductAttribute());
-		detailItem.additionalInfo(itemMaster.getLimitMoney().v(), itemMaster.getFixedPaidAtr().value, itemMaster.getAvgPaidAtr().value, itemMaster.getTaxAtr().value);
+		detailItem.additionalInfo(itemMaster.getLimitMoney().v(), itemMaster.getFixedPaidAtr().value, itemMaster.getAvgPaidAtr().value, itemMaster.getItemAtr().value);
 		detailItem.additionalInfo(linePosition, itemPositionColumn);
 		detailItem.additionalInfo(commuteAllowMonth);
+		detailItem.additionalInfo(itemMaster.getTaxAtr());
 		return detailItem;
 	}
 }
