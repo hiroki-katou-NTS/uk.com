@@ -23,7 +23,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="large proceed" data-bind="click: save">登録</button>
+				<button class="large proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
 				<button class="large">印刷</button>
 				<button class="large">再計算</button>
 				<button class="large btn-close" data-bind="click: closeDialog">閉じる</button>
@@ -145,15 +145,15 @@
 											<com:ko tag="with" bind="personalPension">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<com:ko tag="with" bind="companyPension">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<td data-bind="css: { hidden: $parents[1].rightShow() }"
@@ -161,15 +161,15 @@
 											<com:ko tag="with" bind="personalFundExemption">
 												<com:ko-if bind="$parents[2].rightShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<com:ko tag="with" bind="companyFundExemption">
 												<com:ko-if bind="$parents[2].rightShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount}"></input></td>

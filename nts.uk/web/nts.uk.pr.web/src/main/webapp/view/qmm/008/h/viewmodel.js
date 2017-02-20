@@ -63,7 +63,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    h.service.updateHealthInsuranceAvgearn(this.collectData());
+                                    h.service.updateHealthInsuranceAvgearn(self.collectData()).done(function () {
+                                        return self.closeDialog();
+                                    });
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();

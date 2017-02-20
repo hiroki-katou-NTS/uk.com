@@ -6,19 +6,30 @@ package nts.uk.ctx.pr.core.infra.entity.insurance.social;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
 
 /**
  * The Class QismtSocialInsuOffice.
+ */
+
+/*
+ * (non-Javadoc)
+ * 
+ * @see java.lang.Object#toString()
  */
 @Data
 @Entity
@@ -167,6 +178,14 @@ public class QismtSocialInsuOffice implements Serializable {
 	/** The memo. */
 	@Column(name = "MEMO")
 	private String memo;
+
+	/** The qismt pension rate list. */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtSocialInsuOffice")
+	private List<QismtPensionRate> qismtPensionRateList;
+
+	/** The qismt health insu rate list. */
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtSocialInsuOffice")
+	private List<QismtHealthInsuRate> qismtHealthInsuRateList;
 
 	/**
 	 * Instantiates a new qismt social insu office.

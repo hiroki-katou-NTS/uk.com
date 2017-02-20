@@ -6,8 +6,12 @@ package nts.uk.ctx.pr.core.infra.entity.insurance.social;
 
 import java.util.Date;
 
+import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
+
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
 
 /**
  * The Class QismtSocialInsuOffice_.
@@ -117,4 +121,9 @@ public class QismtSocialInsuOffice_ {
 	/** The memo. */
 	public static volatile SingularAttribute<QismtSocialInsuOffice, String> memo;
 
+	/** The qismt pension rate list. */
+	public static volatile ListAttribute<QismtSocialInsuOffice, QismtPensionRate> qismtPensionRateList;
+
+	/** The qismt health insu rate list. */
+	public static volatile ListAttribute<QismtSocialInsuOffice, QismtHealthInsuRate> qismtHealthInsuRateList;
 }

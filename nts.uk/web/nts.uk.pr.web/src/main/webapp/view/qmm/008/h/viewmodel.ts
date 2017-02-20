@@ -94,15 +94,16 @@ module nts.uk.pr.view.qmm008.h {
             /**
              * Call service to save healthInsuaranceAvgearn.
              */
-            private save() {
+            private save(): void {
                 var self = this;
-                service.updateHealthInsuranceAvgearn(this.collectData());
+                service.updateHealthInsuranceAvgearn(self.collectData()).done(() =>
+                    self.closeDialog());
             }
 
             /**
              * Close dialog.
              */
-            private closeDialog() {
+            private closeDialog(): void {
                 nts.uk.ui.windows.close();
             }
         }

@@ -5,16 +5,24 @@
 	min-width: 560px;
 }
 #this-contents-area {
-	margin-top: 20px;
 	margin-left: 20px;
+	padding-bottom: 10px;
 	min-width: 560px;
 }
-
 #this-functions-area {
 	margin-top: 15px;
 }
+#lbl_001 {
+	padding-left: 10px;
+}
 #lbl_002 {
 	padding-left: 80px;
+}
+#lbl_001, #lbl_004 {
+	font-size: 1.3rem;
+}
+#lbl_004 {
+	margin-top: 30px;
 }
 #btn_001 {
 	min-width: 120px;
@@ -24,17 +32,20 @@
 	margin-left: 10px;
 	min-width: 100px;
 }
-
+#sel_019 {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
 table td {
 	padding-bottom: 5px;
 }
 
-.o-vuong {
+.rectangle-wrapper {
 	border: solid black 1px;
 	padding-left: 15px;
 	margin-left: 20px;
 }
-.o-vuong label {
+.rectangle-wrapper label {
 	display: block;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -42,4 +53,11 @@ table td {
 
 .padding-bot-20 {
 	padding-bottom: 20px;
+}
+.margin-left-20 {
+	margin-left: 20px;
+}
+
+.nts-switch-button {
+	min-width: 80px;
 }
