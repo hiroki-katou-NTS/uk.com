@@ -12,14 +12,14 @@ import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
 @Transactional
-public class UpdatePersonBankAccountHander extends CommandHandler<UpdatePersonBankAccount> {
+public class UpdatePersonBankAccountHandler extends CommandHandler<UpdatePersonBankAccountCommand> {
 	
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdatePersonBankAccount> context) {
-        UpdatePersonBankAccount command = context.getCommand();
+	protected void handle(CommandHandlerContext<UpdatePersonBankAccountCommand> context) {
+        UpdatePersonBankAccountCommand command = context.getCommand();
         String companyCode = AppContexts.user().companyCode();
         
         PersonBankAccount domain = new PersonBankAccount(

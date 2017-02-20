@@ -14,14 +14,14 @@ import nts.uk.ctx.basic.infra.entity.system.bank.personaccount.PbamtPersonBankAc
 
 @RequestScoped
 public class JpaPersonBankAccountRepository extends JpaRepository implements PersonBankAccountRepository{
-    private final String SEL_1_1 = 
-    		"SELECT a FROM PbamtPersonBankAccount a"
-    		+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
-    		+ " AND (a.toBankCd1 = :bankCode"
-    		+ " OR a.toBankCd2 = :bankCode"
-    		+ " OR a.toBankCd3 = :bankCode"
-    		+ " OR a.toBankCd4 = :bankCode"
-    		+ " OR a.toBankCd5 = :bankCode)";
+//    private final String SEL_1_1 = 
+//    		"SELECT a FROM PbamtPersonBankAccount a"
+//    		+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
+//    		+ " AND (a.toBankCd1 = :bankCode"
+//    		+ " OR a.toBankCd2 = :bankCode"
+//    		+ " OR a.toBankCd3 = :bankCode"
+//    		+ " OR a.toBankCd4 = :bankCode"
+//    		+ " OR a.toBankCd5 = :bankCode)";
     
     private final String SEL_1 = 
     		"SELECT COUNT(a) FROM PbamtPersonBankAccount a"
@@ -40,6 +40,15 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
     		+ " OR (a.toBankCd3 IN :bankCode AND a.toBranchCd3 IN :branchCode)"
     		+ " OR (a.toBankCd4 IN :bankCode AND a.toBranchCd4 IN :branchCode)"
     		+ " OR (a.toBankCd5 IN :bankCode AND a.toBranchCd2 IN :branchCode))";	
+	
+	private final String SEL_6 = 
+    		"SELECT COUNT(a) FROM PbamtPersonBankAccount a"
+    		+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
+    		+ " AND (a.fromLineBankCd1 IN :lineBankCode"
+    		+ " OR a.fromLineBankCd2 IN :lineBankCode"
+    		+ " OR a.fromLineBankCd3 IN :lineBankCode"
+    		+ " OR a.fromLineBankCd4 IN :lineBankCode"
+    		+ " OR a.fromLineBankCd5 IN :lineBankCode)";
 	
 	private final String SEL_BY_BANKANDBRANCH = 
 			"SELECT a FROM PbamtPersonBankAccount a"
@@ -71,7 +80,13 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 				.getList(x-> toDomain(x));
 	}
 	
-	
+	@Override
+	public List<PersonBankAccount> findAllLineBank(String companyCode, String lineBankCode) {
+		return this.queryProxy().query(SEL_6, PbamtPersonBankAccount.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("lineBankCode", lineBankCode)
+				.getList(x-> toDomain(x));
+	}
 	
 	/**
 	 * Convert data entity to domain object
@@ -112,6 +127,15 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 		return numberOfPerson.get() > 0;
 	}
 
+	@Override
+	public boolean checkExistsLineBankAccount(String companyCode, List<String> lineBank) {
+		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_6, Long.class)
+										.setParameter("companyCode", companyCode)
+										.setParameter("lineBankCode", lineBank)
+										.getSingle();
+		return numberOfPerson.get() > 0;
+	}
+	
 	@Override
 	public void update(PersonBankAccount personBankAccount) {
 		 this.commandProxy().update(toEntity(personBankAccount));
@@ -199,6 +223,4 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 				.setParameter("branchCode", branchCode)
 				.getList(x-> toDomain(x));
 	}
-	
-	
 }

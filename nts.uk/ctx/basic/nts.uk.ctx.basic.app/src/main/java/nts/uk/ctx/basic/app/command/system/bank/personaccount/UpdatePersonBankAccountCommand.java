@@ -6,7 +6,7 @@ import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
 
 @NoArgsConstructor
 @Data
-public class UpdatePersonBankAccount {
+public class UpdatePersonBankAccountCommand {
 	
     private String companyCode;
 	

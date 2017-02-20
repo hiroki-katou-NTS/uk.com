@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class RemoveBranchCommandHandler extends CommandHandler<RemoveBranchCommand> {
 	@Inject
-	private BankBranchRepository banhBranchRepo;
+	private BankBranchRepository bankBranchRepo;
 	
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
@@ -34,7 +34,7 @@ public class RemoveBranchCommandHandler extends CommandHandler<RemoveBranchComma
 	    if(personBankAccountRepository.checkExistsBranchAccount(companyCode, bankCodeList, branchCodeList)){
 	    	throw new BusinessException("選択された＊は使用されているため削除できません。"); // ER008
 	    }
-		banhBranchRepo.remove(companyCode, command.getBankCode(), command.getBranchCode());	
+		bankBranchRepo.remove(companyCode, command.getBankCode(), command.getBranchCode());	
 	}
 
 }

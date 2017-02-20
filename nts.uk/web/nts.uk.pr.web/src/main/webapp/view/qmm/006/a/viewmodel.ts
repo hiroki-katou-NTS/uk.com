@@ -27,7 +27,8 @@ module qmm006.a.viewmodel {
             self.messageList = ko.observableArray([
                 { messageId: "ER001", message: "＊が入力されていません。" },
                 { messageId: "ER007", message: "＊が選択されていません。" },
-                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" }
             ]);
 
             self.columns = ko.observableArray([
@@ -144,37 +145,6 @@ module qmm006.a.viewmodel {
                 item.memo, item.requesterName, item.consignors);
         }
 
-        remove() {
-            var self = this;
-            if (self.items().length == 0) {
-                return;
-            }
-
-            var command = {
-                accountAtr: self.currentLineBank().accountAtr(),
-                accountNo: self.currentLineBank().accountNo(),
-                bankCode: self.currentLineBank().bankCode(),
-                branchCode: self.currentLineBank().branchCode(),
-                consignor: [
-                    { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
-                    { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
-                    { "code": self.currentLineBank().consignors()[2].consignorCode(), "memo": self.currentLineBank().consignors()[2].consignorMemo() },
-                    { "code": self.currentLineBank().consignors()[3].consignorCode(), "memo": self.currentLineBank().consignors()[3].consignorMemo() },
-                    { "code": self.currentLineBank().consignors()[4].consignorCode(), "memo": self.currentLineBank().consignors()[4].consignorMemo() },
-                ],
-                lineBankCode: self.currentLineBank().lineBankCode(),
-                lineBankName: self.currentLineBank().lineBankName(),
-                memo: self.currentLineBank().memo(),
-                requesterName: self.currentLineBank().requesterName()
-            };
-            qmm006.a.service.remove(command)
-                .done(function() {
-                    self.findAll();
-                }).fail(function(error) {
-                    alert(error.message);
-                });
-        }
-
         //find list Bank
         findBankAll() {
             var self = this;
@@ -280,6 +250,37 @@ module qmm006.a.viewmodel {
                     });
                 });
             return dfd.promise();
+        }
+
+        remove() {
+            var self = this;
+            if (self.items().length == 0) {
+                return;
+            }
+
+            var command = {
+                accountAtr: self.currentLineBank().accountAtr(),
+                accountNo: self.currentLineBank().accountNo(),
+                bankCode: self.currentLineBank().bankCode(),
+                branchCode: self.currentLineBank().branchCode(),
+                consignor: [
+                    { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
+                    { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
+                    { "code": self.currentLineBank().consignors()[2].consignorCode(), "memo": self.currentLineBank().consignors()[2].consignorMemo() },
+                    { "code": self.currentLineBank().consignors()[3].consignorCode(), "memo": self.currentLineBank().consignors()[3].consignorMemo() },
+                    { "code": self.currentLineBank().consignors()[4].consignorCode(), "memo": self.currentLineBank().consignors()[4].consignorMemo() },
+                ],
+                lineBankCode: self.currentLineBank().lineBankCode(),
+                lineBankName: self.currentLineBank().lineBankName(),
+                memo: self.currentLineBank().memo(),
+                requesterName: self.currentLineBank().requesterName()
+            };
+            qmm006.a.service.remove(command)
+                .done(function() {
+                    self.findAll();
+                }).fail(function() {
+                    alert(self.messageList()[3].message);
+                });
         }
 
         clearError() {

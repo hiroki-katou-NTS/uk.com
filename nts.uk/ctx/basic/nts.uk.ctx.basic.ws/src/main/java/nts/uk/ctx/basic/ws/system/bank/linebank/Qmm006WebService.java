@@ -55,4 +55,5 @@ public class Qmm006WebService extends WebService {
 	public void remove(RemoveLineBankCommand command){
 		this.removeLineBankCommandHandler.handle(command);
 	}
+	
 } 

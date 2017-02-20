@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.management.RuntimeErrorException;
 import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
@@ -31,7 +30,7 @@ public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> 
 	private PersonBankAccountRepository personBankAccountRepository;
 	
 	@Inject
-	private BankBranchRepository banhBranchRepo;
+	private BankBranchRepository bankBranchRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveBankCommand> context) {
@@ -52,10 +51,10 @@ public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> 
        }
        
        // delete all branch by bank code
-       List<BankBranch> branchAll = banhBranchRepo.findAll(companyCode, new BankCode(command.getBankCode()));
+       List<BankBranch> branchAll = bankBranchRepo.findAll(companyCode, new BankCode(command.getBankCode()));
        if (!branchAll.isEmpty()) {
     	   branchAll.forEach((item) -> {
-    		   banhBranchRepo.remove(companyCode, command.getBankCode(), item.getBankBranchCode().v());
+    		   bankBranchRepo.remove(companyCode, command.getBankCode(), item.getBankBranchCode().v());
     	   }); 
        }
        

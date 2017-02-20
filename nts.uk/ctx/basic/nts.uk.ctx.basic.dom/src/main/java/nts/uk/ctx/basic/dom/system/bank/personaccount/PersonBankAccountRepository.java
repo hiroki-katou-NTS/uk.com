@@ -28,6 +28,13 @@ public interface PersonBankAccountRepository {
 	 * @return list person bank account
 	 */
 	List<PersonBankAccount> findAll(String companyCode, String bankCode);
+	/**
+	 * Get all person bank account base on line bank code
+	 * @param companyCode
+	 * @param lineBankCode
+	 * @return
+	 */
+	List<PersonBankAccount> findAllLineBank(String companyCode, String lineBankCode);
 
 	/**
 	 * Check all person bank account by bank
@@ -47,6 +54,8 @@ public interface PersonBankAccountRepository {
 	boolean checkExistsBankAccount(String companyCode, List<String> bankCode);
 	
 	boolean checkExistsBranchAccount(String companyCode, List<String> bankCode, List<String> branchCode);
+	
+	boolean checkExistsLineBankAccount(String companyCode, List<String> lineBank);
 	/**
 	 * 
 	 * @param personBankAccount
