@@ -49,7 +49,6 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 				.build();
 
 		// Call generator.
-		this.generator.generate(context.getGeneratorContext(),dataSource);
-		System.out.println("222222222222222222222222222");
+		this.generator.generate(context.getGeneratorContext(),dataSource);		
 	}
 }

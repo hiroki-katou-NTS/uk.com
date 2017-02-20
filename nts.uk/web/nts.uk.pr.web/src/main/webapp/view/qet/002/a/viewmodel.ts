@@ -67,8 +67,7 @@ module qet002.a.viewmodel {
             }
            
            //Print Report
-           service.printService(query).done(function() {}).done(function(data: any) {
-                console.log("1111111111111111111");
+           service.printService(query).done(function() {}).done(function(data: any) {                
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             })

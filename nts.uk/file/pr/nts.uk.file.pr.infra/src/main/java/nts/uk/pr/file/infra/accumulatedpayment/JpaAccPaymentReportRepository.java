@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.screen.app.report.qet002.query.AccPaymentReportQuery;
 
 
 @Stateless
-public class AccPaymentReportRepositoryJPA implements AccPaymentRepository{
+public class JpaAccPaymentReportRepository implements AccPaymentRepository{
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.screen.app.report.qet002.AccPaymentRepository

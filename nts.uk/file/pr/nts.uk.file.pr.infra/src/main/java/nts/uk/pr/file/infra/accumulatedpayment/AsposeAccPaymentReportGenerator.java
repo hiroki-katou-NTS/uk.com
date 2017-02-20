@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.ejb.Stateless;
@@ -13,20 +12,18 @@ import com.aspose.cells.BorderType;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.FileFormatType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
-import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import nts.uk.ctx.pr.screen.app.report.qet002.AccPaymentReportGenerator;
 import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource;
 import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentItemData;
+import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
  * The Class AsposeAccPaymentReportGenerator.
@@ -48,9 +45,6 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 
 	/** The Constant BREAKINGPAGE1INDEX. */
 	private static final int BREAKINGPAGE1INDEX = 50;
-
-	/** The Constant TOTALCOLUMNS. */
-	private static final int TOTALCOLUMNS = 8;
 
 	/** The Constant BREAKINGPAGE2INDEX. */
 	private static final int BREAKINGPAGE2INDEX = 112;
@@ -83,7 +77,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			// create worksheet and Formatting ...
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			// FIRST WORKSHEET
-			createSheet(worksheets, 0, 0, BREAKINGPAGE1INDEX, FIRST_ROW_INDEX, accumulatedPaymentList);
+			createSheet(worksheets, 0, FIRSTCOLUMN, BREAKINGPAGE1INDEX, FIRST_ROW_INDEX, accumulatedPaymentList);
 			// WORKSHEET Number 2
 			createSheet(worksheets, 1, BREAKINGPAGE1INDEX, BREAKINGPAGE2INDEX, 0, accumulatedPaymentList);
 			// FINAL WORKSHEET
