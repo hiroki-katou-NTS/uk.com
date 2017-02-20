@@ -44,8 +44,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyCode(this.typeValue.getQismtSocialInsuOfficePK().getCcd());
 	}
 
 	/*
@@ -57,8 +56,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public OfficeCode getCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OfficeCode(this.typeValue.getQismtSocialInsuOfficePK().getSiOfficeCd());
 	}
 
 	/*
@@ -70,8 +68,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public OfficeName getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OfficeName(this.typeValue.getSiOfficeName());
 	}
 
 	/*
@@ -83,8 +80,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public ShortName getShortName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ShortName(this.typeValue.getSiOfficeAbName());
 	}
 
 	/*
@@ -96,8 +92,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public PicName getPicName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PicName(this.typeValue.getPresidentName());
 	}
 
 	/*
@@ -109,8 +104,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public PicPosition getPicPosition() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PicPosition(this.typeValue.getPresidentTitle());
 	}
 
 	/*
@@ -122,8 +116,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public PotalCode getPotalCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PotalCode(this.typeValue.getPostal());
 	}
 
 	/*
@@ -135,8 +128,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getPrefecture() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPrefecture();
 	}
 
 	/*
@@ -148,8 +140,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public Address getAddress1st() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Address(this.typeValue.getAddress1());
 	}
 
 	/*
@@ -161,8 +152,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public Address getAddress2nd() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Address(this.typeValue.getAddress2());
 	}
 
 	/*
@@ -174,8 +164,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public KanaAddress getKanaAddress1st() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KanaAddress(this.typeValue.getKnAddress1());
 	}
 
 	/*
@@ -187,8 +176,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public KanaAddress getKanaAddress2nd() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KanaAddress(this.typeValue.getKnAddress2());
 	}
 
 	/*
@@ -200,8 +188,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getPhoneNumber() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getTelNo();
 	}
 
 	/*
@@ -213,8 +200,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getHealthInsuOfficeRefCode1st() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getHealthInsuOfficeRefno1();
 	}
 
 	/*
@@ -226,8 +212,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getHealthInsuOfficeRefCode2nd() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getHealthInsuOfficeRefno2();
 	}
 
 	/*
@@ -239,8 +224,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getPensionOfficeRefCode1st() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPensionOfficeRefno1();
 	}
 
 	/*
@@ -252,8 +236,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getPensionOfficeRefCode2nd() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPensionOfficeRefno2();
 	}
 
 	/*
@@ -265,8 +248,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getWelfarePensionFundCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPensionFundNo();
 	}
 
 	/*
@@ -278,8 +260,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getOfficePensionFundCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPensionFundOfficeNo();
 	}
 
 	/*
@@ -291,8 +272,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getHealthInsuCityCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getHealthInsuCityMark();
 	}
 
 	/*
@@ -304,8 +284,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getHealthInsuOfficeSign() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getHealthInsuOfficeMark();
 	}
 
 	/*
@@ -317,8 +296,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getPensionCityCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPensionCityMark();
 	}
 
 	/*
@@ -330,8 +308,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getPensionOfficeSign() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getPensionOfficeMark();
 	}
 
 	/*
@@ -343,8 +320,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getHealthInsuOfficeCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getHealthInsuOfficeNo();
 	}
 
 	/*
@@ -356,8 +332,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public String getHealthInsuAssoCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getHealthInsuAssoNo();
 	}
 
 	/*
@@ -369,8 +344,7 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public Memo getMemo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Memo(this.typeValue.getMemo());
 	}
 
 }
