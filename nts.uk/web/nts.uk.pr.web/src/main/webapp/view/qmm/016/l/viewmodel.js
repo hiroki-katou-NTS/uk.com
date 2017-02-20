@@ -15,6 +15,7 @@ var nts;
                         var MultipleTargetSetting = l.service.model.MultipleTargetSetting;
                         var CertifyGroupDto = l.service.model.CertifyGroupDto;
                         var TypeActionCertifyGroup = l.service.model.TypeActionCertifyGroup;
+                        var CertifyGroupDeleteDto = l.service.model.CertifyGroupDeleteDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -58,7 +59,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     l.service.findAllCertification().done(function (data) {
-                                        self.lstCertification = ko.observableArray(data);
+                                        self.lstCertification = data;
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
@@ -67,14 +68,21 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     l.service.findAllCertifyGroup().done(function (data) {
-                                        self.lstCertifyGroup = ko.observableArray(data);
-                                        self.selectCodeLstLstCertifyGroup = ko.observable(data[0].code);
-                                        self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
-                                            self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
-                                        });
-                                        self.findCertifyGroup(data[0].code).done(function (data) {
+                                        if (data != null && data.length > 0) {
+                                            self.lstCertifyGroup = ko.observableArray(data);
+                                            self.selectCodeLstLstCertifyGroup = ko.observable(data[0].code);
+                                            self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
+                                                self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
+                                            });
+                                            self.findCertifyGroup(data[0].code).done(function (data) {
+                                                dfd.resolve(self);
+                                            });
+                                        }
+                                        else {
+                                            self.newmodeEmptyData();
+                                            self.lstCertifyGroup = ko.observableArray([]);
                                             dfd.resolve(self);
-                                        });
+                                        }
                                     });
                                     return dfd.promise();
                                 };
@@ -98,7 +106,7 @@ var nts;
                                             self.certifyGroupModel().name(data.name);
                                             self.certifyGroupModel().multiApplySet(data.multiApplySet);
                                             self.certifyGroupModel().certifies(data.certifies);
-                                            self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(self.lstCertification(), data.certifies));
+                                            self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(self.lstCertification, data.certifies));
                                             self.typeAction(TypeActionCertifyGroup.update);
                                         });
                                     }
@@ -129,6 +137,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.resetValueCertifyGroup = function () {
                                     var self = this;
+                                    if (self.certifyGroupModel == null || self.certifyGroupModel == undefined) {
+                                        self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
+                                    }
                                     self.certifyGroupModel().code('');
                                     self.certifyGroupModel().name('');
                                     self.certifyGroupModel().multiApplySet(MultipleTargetSetting.BigestMethod);
@@ -136,7 +147,7 @@ var nts;
                                     self.lstCertificationInfo([]);
                                     self.selectCodeLstLstCertifyGroup('');
                                     self.certifyGroupModel().certifies([]);
-                                    self.certifyGroupModel().lstCertification(self.lstCertification());
+                                    self.certifyGroupModel().lstCertification(self.lstCertification);
                                 };
                                 ScreenModel.prototype.saveCertifyGroup = function () {
                                     var self = this;
@@ -155,9 +166,34 @@ var nts;
                                     var self = this;
                                     l.service.findAllCertifyGroup().done(function (data) {
                                         self.lstCertifyGroup(data);
-                                        self.selectCodeLstLstCertifyGroup(code);
-                                        self.detailCertifyGroup(code);
+                                        if (code != null && code != undefined && code != '') {
+                                            self.selectCodeLstLstCertifyGroup(code);
+                                            self.detailCertifyGroup(code);
+                                        }
+                                        else {
+                                            self.selectCodeLstLstCertifyGroup(data[0].code);
+                                            self.detailCertifyGroup(data[0].code);
+                                        }
                                     });
+                                };
+                                ScreenModel.prototype.newmodeEmptyData = function () {
+                                    var self = this;
+                                    self.findAllCertification().done(function (data) {
+                                        console.log();
+                                        self.resetValueCertifyGroup();
+                                    });
+                                };
+                                ScreenModel.prototype.deleteCertifyGroup = function () {
+                                    var self = this;
+                                    var certifyGroupDeleteDto = new CertifyGroupDeleteDto();
+                                    certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
+                                    certifyGroupDeleteDto.version = 12;
+                                    l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function (data) {
+                                        self.reloadDataByAction('');
+                                    });
+                                };
+                                ScreenModel.prototype.closeCertifyGroup = function () {
+                                    nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.convertDataModel = function () {
                                     var self = this;
@@ -184,6 +220,7 @@ var nts;
                                         new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "TotalMethod")
                                     ]);
                                     this.certifies = ko.observableArray([]);
+                                    this.lstCertification = ko.observableArray([]);
                                 }
                                 CertifyGroupModel.prototype.setLstCertification = function (lstCertification) {
                                     this.lstCertification = ko.observableArray(lstCertification);

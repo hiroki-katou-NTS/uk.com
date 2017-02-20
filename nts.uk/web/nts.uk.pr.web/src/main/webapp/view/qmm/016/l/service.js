@@ -16,10 +16,9 @@ var nts;
                                 findAllCertification: "pr/wagetable/certification/findall",
                                 findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
                                 findCertifyGroup: "pr/wagetable/certifygroup/find",
-                                findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
                                 addCertifyGroup: "pr/wagetable/certifygroup/add",
                                 updateCertifyGroup: "pr/wagetable/certifygroup/update",
-                                deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
+                                deleteCertifyGroup: "pr/wagetable/certifygroup/delete",
                             };
                             function findAllCertification() {
                                 var dfd = $.Deferred();
@@ -83,6 +82,19 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateCertifyGroup = updateCertifyGroup;
+                            function deleteCertifyGroup(certifyGroupDeleteDto) {
+                                var dfd = $.Deferred();
+                                var data = { certifyGroupDeleteDto: certifyGroupDeleteDto };
+                                nts.uk.request.ajax(paths.deleteCertifyGroup, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.deleteCertifyGroup = deleteCertifyGroup;
                             var model;
                             (function (model) {
                                 var CertificationDto = (function () {
@@ -109,6 +121,12 @@ var nts;
                                     return CertifyGroupDto;
                                 }());
                                 model.CertifyGroupDto = CertifyGroupDto;
+                                var CertifyGroupDeleteDto = (function () {
+                                    function CertifyGroupDeleteDto() {
+                                    }
+                                    return CertifyGroupDeleteDto;
+                                }());
+                                model.CertifyGroupDeleteDto = CertifyGroupDeleteDto;
                                 (function (MultipleTargetSetting) {
                                     MultipleTargetSetting[MultipleTargetSetting["BigestMethod"] = 0] = "BigestMethod";
                                     MultipleTargetSetting[MultipleTargetSetting["TotalMethod"] = 1] = "TotalMethod";

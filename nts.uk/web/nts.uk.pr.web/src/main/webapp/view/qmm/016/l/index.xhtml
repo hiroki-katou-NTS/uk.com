@@ -23,10 +23,9 @@
 					data-bind="click: resetValueCertifyGroup">新規</button>
 				<button class="proceed btnStyle" id="btn_register"
 					data-bind="click: saveCertifyGroup">登録</button>
-				<button id="btn_printing">印刷 (PDF)</button>
-				<button id="btn_masterCorrectionLog">マスタ修正ログ</button>
-				<button class="danger btnStyle" id="btn_delete">削除</button>
-				<label id="lbl_registrationOfLaborInsurancePlant">労働保険事業所の登録</label>
+				<button class="danger btnStyle" id="btn_delete"
+					data-bind="click: deleteCertifyGroup">削除</button>
+				<button id="btn_close" data-bind="click: closeCertifyGroup">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<table>

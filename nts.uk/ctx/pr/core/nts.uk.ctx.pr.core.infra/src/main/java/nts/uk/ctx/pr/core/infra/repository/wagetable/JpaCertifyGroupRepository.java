@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
@@ -55,12 +56,26 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		this.commandProxy().update(toEntity(certifyGroup));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository#remove(nts.uk.ctx
+	 * .core.dom.company.CompanyCode, java.lang.String, java.lang.Long)
+	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
+	public void remove(CompanyCode companyCode, String groupCode, Long version) {
+		this.commandProxy().remove(QwtmtWagetableCertifyG.class,
+				new QwtmtWagetableCertifyGPK(companyCode.v(), groupCode));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository#findById(nts.uk.
+	 * ctx.core.dom.company.CompanyCode, java.lang.String)
+	 */
 	@Override
 	public Optional<CertifyGroup> findById(CompanyCode companyCode, String code) {
 		return this.queryProxy().find(new QwtmtWagetableCertifyGPK(companyCode.v(), code), QwtmtWagetableCertifyG.class)

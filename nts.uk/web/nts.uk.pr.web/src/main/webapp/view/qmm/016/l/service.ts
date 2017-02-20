@@ -4,10 +4,9 @@ module nts.uk.pr.view.qmm016.l {
             findAllCertification: "pr/wagetable/certification/findall",
             findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
             findCertifyGroup: "pr/wagetable/certifygroup/find",
-            findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
             addCertifyGroup: "pr/wagetable/certifygroup/add",
             updateCertifyGroup: "pr/wagetable/certifygroup/update",
-            deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
+            deleteCertifyGroup: "pr/wagetable/certifygroup/delete",
         };
 
         //Function connection service FindAll Certification
@@ -78,6 +77,20 @@ module nts.uk.pr.view.qmm016.l {
                 })
             return dfd.promise();
         }
+        //Function connection service Delete CertifyGroup
+        export function deleteCertifyGroup(certifyGroupDeleteDto: model.CertifyGroupDeleteDto): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var data = { certifyGroupDeleteDto: certifyGroupDeleteDto };
+            nts.uk.request.ajax(paths.deleteCertifyGroup, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                    //xyz
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
 
         export module model {
             export class CertificationDto {
@@ -106,6 +119,14 @@ module nts.uk.pr.view.qmm016.l {
 
                 /** The certifies. */
                 certifies: CertificationDto[];
+            }
+
+            export class CertifyGroupDeleteDto {
+                /** The group code. */
+                groupCode: string;
+
+                /** The version. */
+                version: number;
             }
             export enum MultipleTargetSetting {
                 BigestMethod = 0,//BigestMethod

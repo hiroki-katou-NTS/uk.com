@@ -7,6 +7,7 @@ module nts.uk.pr.view.qmm016.l {
     import CertifyGroupFindOutDto = service.model.CertifyGroupFindOutDto;
     import CertifyGroupDto = service.model.CertifyGroupDto;
     import TypeActionCertifyGroup = service.model.TypeActionCertifyGroup;
+    import CertifyGroupDeleteDto = service.model.CertifyGroupDeleteDto;
     export module viewmodel {
         export class ScreenModel {
             textSearch: any;
@@ -23,7 +24,7 @@ module nts.uk.pr.view.qmm016.l {
             lstCertifyGroup: KnockoutObservableArray<CertifyGroupFindInDto>;
             columnsLstCertifyGroup: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectCodeLstLstCertifyGroup: KnockoutObservable<string>;
-            lstCertification: KnockoutObservableArray<CertificationFindInDto>;
+            lstCertification: CertificationFindInDto[];
             //Info CertifyGroup (DTO View)
             certifyGroupModel: KnockoutObservable<CertifyGroupModel>;
             textEditorOption: KnockoutObservable<any>;
@@ -69,7 +70,7 @@ module nts.uk.pr.view.qmm016.l {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllCertification().done(data => {
-                    self.lstCertification = ko.observableArray<CertificationFindInDto>(data);
+                    self.lstCertification = data;
                     dfd.resolve(self);
                 });
                 return dfd.promise();
@@ -78,14 +79,20 @@ module nts.uk.pr.view.qmm016.l {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllCertifyGroup().done(data => {
-                    self.lstCertifyGroup = ko.observableArray<CertifyGroupFindInDto>(data);
-                    self.selectCodeLstLstCertifyGroup = ko.observable(data[0].code);
-                    self.selectCodeLstLstCertifyGroup.subscribe(function(selectionCodeLstLstCertifyGroup: string) {
-                        self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
-                    });
-                    self.findCertifyGroup(data[0].code).done(data => {
+                    if (data != null && data.length > 0) {
+                        self.lstCertifyGroup = ko.observableArray<CertifyGroupFindInDto>(data);
+                        self.selectCodeLstLstCertifyGroup = ko.observable(data[0].code);
+                        self.selectCodeLstLstCertifyGroup.subscribe(function(selectionCodeLstLstCertifyGroup: string) {
+                            self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
+                        });
+                        self.findCertifyGroup(data[0].code).done(data => {
+                            dfd.resolve(self);
+                        });
+                    } else {
+                        self.newmodeEmptyData();
+                        self.lstCertifyGroup = ko.observableArray([]);
                         dfd.resolve(self);
-                    });
+                    }
                 });
                 return dfd.promise();
             }
@@ -110,7 +117,7 @@ module nts.uk.pr.view.qmm016.l {
                         self.certifyGroupModel().name(data.name);
                         self.certifyGroupModel().multiApplySet(data.multiApplySet);
                         self.certifyGroupModel().certifies(data.certifies);
-                        self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(self.lstCertification(), data.certifies));
+                        self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(self.lstCertification, data.certifies));
                         self.typeAction(TypeActionCertifyGroup.update);
                     });
                 }
@@ -140,6 +147,9 @@ module nts.uk.pr.view.qmm016.l {
             }
             private resetValueCertifyGroup() {
                 var self = this;
+                if (self.certifyGroupModel == null || self.certifyGroupModel == undefined) {
+                    self.certifyGroupModel = ko.observable(new CertifyGroupModel(new CertifyGroupDto()));
+                }
                 self.certifyGroupModel().code('');
                 self.certifyGroupModel().name('');
                 self.certifyGroupModel().multiApplySet(MultipleTargetSetting.BigestMethod);
@@ -147,7 +157,7 @@ module nts.uk.pr.view.qmm016.l {
                 self.lstCertificationInfo([]);
                 self.selectCodeLstLstCertifyGroup('');
                 self.certifyGroupModel().certifies([]);
-                self.certifyGroupModel().lstCertification(self.lstCertification());
+                self.certifyGroupModel().lstCertification(self.lstCertification);
             }
             private saveCertifyGroup() {
                 var self = this;
@@ -166,9 +176,34 @@ module nts.uk.pr.view.qmm016.l {
                 var self = this;
                 service.findAllCertifyGroup().done(data => {
                     self.lstCertifyGroup(data);
-                    self.selectCodeLstLstCertifyGroup(code);
-                    self.detailCertifyGroup(code);
+                    if (code != null && code != undefined && code != '') {
+                        self.selectCodeLstLstCertifyGroup(code);
+                        self.detailCertifyGroup(code);
+                    } else {
+                        self.selectCodeLstLstCertifyGroup(data[0].code);
+                        self.detailCertifyGroup(data[0].code);
+                    }
                 });
+            }
+            //new mode empty data
+            private newmodeEmptyData() {
+                var self = this;
+                self.findAllCertification().done(data => {
+                    console.log()
+                    self.resetValueCertifyGroup();
+                });
+            }
+            private deleteCertifyGroup() {
+                var self = this;
+                var certifyGroupDeleteDto: CertifyGroupDeleteDto = new CertifyGroupDeleteDto();
+                certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
+                certifyGroupDeleteDto.version = 12;
+                service.deleteCertifyGroup(certifyGroupDeleteDto).done(data => {
+                    self.reloadDataByAction('');
+                });
+            }
+            private closeCertifyGroup() {
+                nts.uk.ui.windows.close();
             }
             //convert data model => Dto
             private convertDataModel(): CertifyGroupDto {
@@ -202,6 +237,7 @@ module nts.uk.pr.view.qmm016.l {
                         new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "TotalMethod")//TotalMethod
                     ]);//TotalMethod
                 this.certifies = ko.observableArray<CertificationFindInDto>([]);
+                this.lstCertification = ko.observableArray<CertificationFindInDto>([]);
             }
             setLstCertification(lstCertification: CertificationFindInDto[]) {
                 this.lstCertification = ko.observableArray<CertificationFindInDto>(lstCertification);
