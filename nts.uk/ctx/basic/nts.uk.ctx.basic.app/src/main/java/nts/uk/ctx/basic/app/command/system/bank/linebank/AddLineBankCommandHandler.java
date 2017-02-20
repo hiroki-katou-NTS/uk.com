@@ -28,7 +28,7 @@ public class AddLineBankCommandHandler extends CommandHandler<AddLineBankCommand
 		// check ton tai lineBankCode
 		Optional<LineBank> lineBankOpt = this.lineBankRepository.find(companyCode, lineBank.getLineBankCode().v());
 		if (lineBankOpt.isPresent()) {
-			throw new BusinessException("入力した＊は既に存在しています。\r\n ＊を確認してください。");//ER005
+			throw new BusinessException("ER005");//ER005
 		}
 		this.lineBankRepository.add(lineBank);
 	}

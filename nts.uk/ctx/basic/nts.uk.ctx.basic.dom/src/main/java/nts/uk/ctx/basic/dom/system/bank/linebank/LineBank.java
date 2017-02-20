@@ -57,11 +57,11 @@ public class LineBank extends AggregateRoot {
 	public static LineBank createFromJavaType(String companyCode, int accountAtr, String accountNo, String bankCode,
 			String branchCode, String lineBankCode, String lineBankName, String memo, String requesterName) {
 		if (StringUtil.isNullOrEmpty(lineBankCode, true) || StringUtil.isNullOrEmpty(lineBankName, true) || StringUtil.isNullOrEmpty(accountNo, true)) {
-			throw new BusinessException("�ｼ翫′蜈･蜉帙＆繧後※縺�縺ｾ縺帙ｓ縲�");//ER001
+			throw new BusinessException("ER001");//ER001
 		}
 		
 		if(StringUtil.isNullOrEmpty(bankCode, true)||StringUtil.isNullOrEmpty(branchCode, true)){
-			throw new BusinessException("�ｼ翫′驕ｸ謚槭＆繧後※縺�縺ｾ縺帙ｓ縲�");//ER007
+			throw new BusinessException("ER007");//ER007
 		}
 		
 		return new LineBank(new CompanyCode(companyCode), EnumAdaptor.valueOf(accountAtr, AccountAtr.class),

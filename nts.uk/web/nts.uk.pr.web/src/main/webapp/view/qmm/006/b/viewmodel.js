@@ -29,6 +29,9 @@ var qmm006;
                     var self = this;
                     var dfd = $.Deferred();
                     self.findBankAll().done(function (data) {
+                        if (nts.uk.ui.windows.getShared("branchCode") != null) {
+                            self.singleSelectedCode(nts.uk.ui.windows.getShared("branchCode"));
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                     });

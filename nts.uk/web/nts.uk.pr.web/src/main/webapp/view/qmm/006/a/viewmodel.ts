@@ -25,10 +25,9 @@ module qmm006.a.viewmodel {
             self.currentCode = ko.observable();
 
             self.messageList = ko.observableArray([
-                { messageId: "＊が入力されていません。", message: "＊が入力されていません。" },
-                { messageId: "＊が選択されていません。", message: "＊が選択されていません。" },
-                { messageId: "入力した＊は既に存在しています。\r\n ＊を確認してください。", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
-
+                { messageId: "ER001", message: "＊が入力されていません。" },
+                { messageId: "ER007", message: "＊が選択されていません。" },
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
             ]);
 
             self.columns = ko.observableArray([
@@ -63,6 +62,7 @@ module qmm006.a.viewmodel {
                 } else self.bankName('');
                 if (tmp1 != undefined) {
                     self.branchName(tmp1.name);
+                    self.isAppear(true);
                 } else {
                     self.isAppear(false);
                     self.branchName('');
@@ -90,6 +90,9 @@ module qmm006.a.viewmodel {
         OpenBDialog() {
             var self = this;
             var lineBank = self.currentLineBank();
+            if (lineBank.bankCode() != null && lineBank.branchCode != null) {
+                nts.uk.ui.windows.setShared("branchCode", lineBank.bankCode() + lineBank.branchCode(), true);
+            }
             nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function() {
                 if (nts.uk.ui.windows.getShared("selectedBank") != null) {
                     if (nts.uk.ui.windows.getShared("selectedBank").parentCode == null) {
@@ -148,10 +151,10 @@ module qmm006.a.viewmodel {
             }
 
             var command = {
-                accountAtr: self.currentLineBank().accountAtr(),//A_SEL_001
-                accountNo: self.currentLineBank().accountNo(),//A_INP_003
-                bankCode: self.currentLineBank().bankCode(),//A_LBL_004
-                branchCode: self.currentLineBank().branchCode(),//A_LBL_007
+                accountAtr: self.currentLineBank().accountAtr(),
+                accountNo: self.currentLineBank().accountNo(),
+                bankCode: self.currentLineBank().bankCode(),
+                branchCode: self.currentLineBank().branchCode(),
                 consignor: [
                     { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
                     { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
@@ -159,10 +162,10 @@ module qmm006.a.viewmodel {
                     { "code": self.currentLineBank().consignors()[3].consignorCode(), "memo": self.currentLineBank().consignors()[3].consignorMemo() },
                     { "code": self.currentLineBank().consignors()[4].consignorCode(), "memo": self.currentLineBank().consignors()[4].consignorMemo() },
                 ],
-                lineBankCode: self.currentLineBank().lineBankCode(),//A_INP_001,
-                lineBankName: self.currentLineBank().lineBankName(), //A_INP_002
-                memo: self.currentLineBank().memo(),//A_INP_005
-                requesterName: self.currentLineBank().requesterName()//A_INP_004
+                lineBankCode: self.currentLineBank().lineBankCode(),
+                lineBankName: self.currentLineBank().lineBankName(),
+                memo: self.currentLineBank().memo(),
+                requesterName: self.currentLineBank().requesterName()
             };
             qmm006.a.service.remove(command)
                 .done(function() {
@@ -225,10 +228,10 @@ module qmm006.a.viewmodel {
             self.clearError();
 
             var command = {
-                accountAtr: self.currentLineBank().accountAtr(),//A_SEL_001
-                accountNo: self.currentLineBank().accountNo(),//A_INP_003
-                bankCode: self.currentLineBank().bankCode(),//A_LBL_004
-                branchCode: self.currentLineBank().branchCode(),//A_LBL_007
+                accountAtr: self.currentLineBank().accountAtr(),
+                accountNo: self.currentLineBank().accountNo(),
+                bankCode: self.currentLineBank().bankCode(),
+                branchCode: self.currentLineBank().branchCode(),
                 consignor: [
                     { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
                     { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
@@ -237,10 +240,10 @@ module qmm006.a.viewmodel {
                     { "code": self.currentLineBank().consignors()[4].consignorCode(), "memo": self.currentLineBank().consignors()[4].consignorMemo() },
                 ],
 
-                lineBankCode: self.currentLineBank().lineBankCode(),//A_INP_001,
-                lineBankName: self.currentLineBank().lineBankName(), //A_INP_002
-                memo: self.currentLineBank().memo(),//A_INP_005
-                requesterName: self.currentLineBank().requesterName()//A_INP_004
+                lineBankCode: self.currentLineBank().lineBankCode(),
+                lineBankName: self.currentLineBank().lineBankName(),
+                memo: self.currentLineBank().memo(),
+                requesterName: self.currentLineBank().requesterName()
             };
             qmm006.a.service.saveData(self.isEnable(), command)
                 .done(function() {
@@ -266,8 +269,9 @@ module qmm006.a.viewmodel {
                         }
                     } else if (error.messageId == self.messageList()[2].messageId) {
                         var message = self.messageList()[2].message;
-                        $('#A_INP_001').ntsError('set', error.message);
+                        $('#A_INP_001').ntsError('set', message);
                     }
+                    console.log(error);
                 }).then(function() {
                     //load lai list va chi vao row moi them
                     $.when(self.findAll()).done(function() {

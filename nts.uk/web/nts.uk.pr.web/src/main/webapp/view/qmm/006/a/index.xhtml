@@ -61,7 +61,7 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span> <input id="A_INP_001" data-name="取引先コード"
+							<span> <input id="A_INP_001" data-name="取引銀行区分 "
 								data-bind="ntsTextEditor: {
 									value: lineBankCode,
 									constraint:'LineBankCode',
@@ -74,7 +74,7 @@
 									required: true,
 									enable: $parent.isEnable,
 									readonly: false}" /></span>
-							<span> <input id="A_INP_002" data-name="取引先名"
+							<span> <input id="A_INP_002" data-name="取引銀行名"
 								data-bind="ntsTextEditor: {
 									value: lineBankName,
 									constraint: 'LineBankName',
@@ -90,10 +90,10 @@
 						</div>
 						<div class="control-group">
 							<button id="A_BTN_006" data-bind="click: $parent.OpenBDialog.bind($parent)">参照</button>
-							<label id="A_LBL_004" data-name="取引先銀行コード " data-bind="text: bankCode"></label> <label
+							<label id="A_LBL_004" data-name="銀行コード" data-bind="text: bankCode"></label> <label
 								id="A_LBL_005" data-bind="text: $parent.bankName"></label> <label
 								id="A_LBL_006" data-bind="visible: $parent.isAppear">-</label> <label
-								id="A_LBL_007" data-name="取引先支店コード " data-bind="text: branchCode"></label> <label
+								id="A_LBL_007" data-name="支店コード" data-bind="text: branchCode"></label> <label
 								id="A_LBL_008" data-bind="text: $parent.branchName"></label>
 						</div>
 						<div class="control-group">

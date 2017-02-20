@@ -12,9 +12,9 @@ var qmm006;
                     self.dataSource2 = ko.observableArray([]);
                     self.currentCode = ko.observable();
                     self.messageList = ko.observableArray([
-                        { messageId: "＊が入力されていません。", message: "＊が入力されていません。" },
-                        { messageId: "＊が選択されていません。", message: "＊が選択されていません。" },
-                        { messageId: "入力した＊は既に存在しています。\r\n ＊を確認してください。", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER007", message: "＊が選択されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
                     ]);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', key: 'lineBankCode', width: 45 },
@@ -47,6 +47,7 @@ var qmm006;
                             self.bankName('');
                         if (tmp1 != undefined) {
                             self.branchName(tmp1.name);
+                            self.isAppear(true);
                         }
                         else {
                             self.isAppear(false);
@@ -73,6 +74,9 @@ var qmm006;
                 ScreenModel.prototype.OpenBDialog = function () {
                     var self = this;
                     var lineBank = self.currentLineBank();
+                    if (lineBank.bankCode() != null && lineBank.branchCode != null) {
+                        nts.uk.ui.windows.setShared("branchCode", lineBank.bankCode() + lineBank.branchCode(), true);
+                    }
                     nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared("selectedBank") != null) {
                             if (nts.uk.ui.windows.getShared("selectedBank").parentCode == null) {
@@ -137,7 +141,7 @@ var qmm006;
                         lineBankCode: self.currentLineBank().lineBankCode(),
                         lineBankName: self.currentLineBank().lineBankName(),
                         memo: self.currentLineBank().memo(),
-                        requesterName: self.currentLineBank().requesterName() //A_INP_004
+                        requesterName: self.currentLineBank().requesterName()
                     };
                     qmm006.a.service.remove(command)
                         .done(function () {
@@ -209,7 +213,7 @@ var qmm006;
                         lineBankCode: self.currentLineBank().lineBankCode(),
                         lineBankName: self.currentLineBank().lineBankName(),
                         memo: self.currentLineBank().memo(),
-                        requesterName: self.currentLineBank().requesterName() //A_INP_004
+                        requesterName: self.currentLineBank().requesterName()
                     };
                     qmm006.a.service.saveData(self.isEnable(), command)
                         .done(function () {
@@ -237,8 +241,9 @@ var qmm006;
                         }
                         else if (error.messageId == self.messageList()[2].messageId) {
                             var message = self.messageList()[2].message;
-                            $('#A_INP_001').ntsError('set', error.message);
+                            $('#A_INP_001').ntsError('set', message);
                         }
+                        console.log(error);
                     }).then(function () {
                         //load lai list va chi vao row moi them
                         $.when(self.findAll()).done(function () {
