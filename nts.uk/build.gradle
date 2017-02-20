@@ -97,7 +97,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.13'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.15.1'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.16.6'
 	}
 }
 
@@ -362,7 +362,7 @@ project (':web:nts.uk.pr.web') {
 		runtime project (':screen:pr:nts.uk.screen.pr.app')
 		runtime project (':screen:pr:nts.uk.screen.pr.infra')
 		
-		runtime project (':file:pr:nts.uk.file.pr.ws')
+		runtime project (':file:pr:nts.uk.file.pr.app')
 		runtime project (':file:pr:nts.uk.file.pr.infra')
 		
 		// to provide PrimitiveValue
@@ -374,6 +374,7 @@ project (':web:nts.uk.pr.web') {
 project (':screen:pr:nts.uk.screen.pr.ws') {
 	dependencies {
 		compile project (':screen:pr:nts.uk.screen.pr.app')
+		compile project (':file:pr:nts.uk.file.pr.app')
 	}
 }
 
@@ -389,15 +390,18 @@ project (':screen:pr:nts.uk.screen.pr.infra') {
 	}
 }
 
-project (':file:pr:nts.uk.file.pr.ws') {
+project (':file:pr:nts.uk.file.pr.app') {
 	dependencies {
-		compile project (':file:pr:nts.uk.file.pr.infra')
+		compile project (':screen:pr:nts.uk.screen.pr.app')
+ 	 	compile project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+ 	 	compile project (':ctx:pr:report:nts.uk.ctx.pr.report.dom')
+ 	 	compile project (':ctx:pr:formula:nts.uk.ctx.pr.formula.dom')
 	}
 }
 
 project (':file:pr:nts.uk.file.pr.infra') {
 	dependencies {
- 	 	compile project (':ctx:pr:core:nts.uk.ctx.pr.core.dom')
+		compile project (':file:pr:nts.uk.file.pr.app')
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 	}
 }

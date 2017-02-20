@@ -30,11 +30,10 @@ public class PaymentDataPrintFileGenerator extends FileGenerator {
 
 	private final String fileName = "report/qpp021.xlsx";
 
-	@Override
 	protected void generate(FileGeneratorContext context) {
 		try {
 			// get list PaymentDataResult
-			List<PaymentDataResult> results = context.getParameterAt(0);
+			List<PaymentDataResult> results = null;//context.getParameterAt(0);
 			// create workbook
 			WorkbookDesigner designer = new WorkbookDesigner();
 			String saveFile = File.createTempFile("ukrp", "給与支給明細書.pdf").getPath();

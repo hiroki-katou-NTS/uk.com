@@ -9,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import lombok.val;
-import nts.arc.layer.infra.file.storage.StoredFileInfo;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.web.URLEncode;
