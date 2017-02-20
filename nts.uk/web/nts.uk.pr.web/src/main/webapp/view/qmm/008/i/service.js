@@ -13,13 +13,16 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findPensionRate: "ctx/pr/core/insurance/social/pensionrate/find",
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
                             function updatePensionAvgearn(listPensionAvgearn) {
+                                var dfd = $.Deferred();
                                 var data = { listPensionAvgearn: listPensionAvgearn };
-                                return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
+                                nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(function () {
+                                    return dfd.resolve();
+                                });
+                                return dfd.promise();
                             }
                             service.updatePensionAvgearn = updatePensionAvgearn;
                             function findPensionAvgearn(id) {
@@ -35,19 +38,6 @@ var nts;
                                 ;
                             }
                             service.findPensionAvgearn = findPensionAvgearn;
-                            function findPensionRate(id) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findPensionRate + '/' + id)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                                ;
-                            }
-                            service.findPensionRate = findPensionRate;
                             var model;
                             (function (model) {
                                 var PensionAvgearnValue = (function () {

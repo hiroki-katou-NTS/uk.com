@@ -66,7 +66,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    i.service.updatePensionAvgearn(this.collectData());
+                                    i.service.updatePensionAvgearn(self.collectData()).done(function () {
+                                        return self.closeDialog();
+                                    });
                                 };
                                 ScreenModel.prototype.leftToggle = function () {
                                     this.leftShow(!this.leftShow());

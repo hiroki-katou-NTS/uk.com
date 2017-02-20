@@ -15,26 +15,16 @@ var nts;
                             var paths = {
                                 updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/update",
                                 findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
-                                findHealthInsuranceRate: "ctx/pr/core/insurance/social/healthrate/find",
                             };
                             function updateHealthInsuranceAvgearn(list) {
-                                var data = { listHealthInsuranceAvgearn: list };
-                                return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data);
-                            }
-                            service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
-                            function findHealthInsuranceRate(id) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHealthInsuranceRate + '/' + id)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
+                                var data = { listHealthInsuranceAvgearn: list };
+                                nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(function () {
+                                    return dfd.resolve();
                                 });
                                 return dfd.promise();
-                                ;
                             }
-                            service.findHealthInsuranceRate = findHealthInsuranceRate;
+                            service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
                             function findHealthInsuranceAvgEarn(id) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
@@ -67,24 +57,6 @@ var nts;
                                     return HealthInsuranceAvgEarnDto;
                                 }());
                                 model.HealthInsuranceAvgEarnDto = HealthInsuranceAvgEarnDto;
-                                var HealthInsuranceRate = (function () {
-                                    function HealthInsuranceRate() {
-                                    }
-                                    return HealthInsuranceRate;
-                                }());
-                                model.HealthInsuranceRate = HealthInsuranceRate;
-                                var InsuranceRateItem = (function () {
-                                    function InsuranceRateItem() {
-                                    }
-                                    return InsuranceRateItem;
-                                }());
-                                model.InsuranceRateItem = InsuranceRateItem;
-                                var HealthInsuranceRounding = (function () {
-                                    function HealthInsuranceRounding() {
-                                    }
-                                    return HealthInsuranceRounding;
-                                }());
-                                model.HealthInsuranceRounding = HealthInsuranceRounding;
                             })(model = service.model || (service.model = {}));
                         })(service = h.service || (h.service = {}));
                     })(h = qmm008.h || (qmm008.h = {}));
