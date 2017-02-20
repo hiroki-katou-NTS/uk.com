@@ -3,12 +3,12 @@ package nts.uk.shr.infra.file.report.aspose.cells;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.aspose.cells.ICellsDataTable;
 import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 
 import lombok.Getter;
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
 
 public class AsposeCellsReportContext implements AutoCloseable {
 	
@@ -30,6 +30,12 @@ public class AsposeCellsReportContext implements AutoCloseable {
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
+		
+		// TODO: set localized texts
+	}
+	
+	public void setDataSource(String nameOfVariable, ICellsDataTable dataTable) {
+		this.designer.setDataSource(nameOfVariable, dataTable);
 	}
 	
 	public void setDataSource(String nameOfVariable, Object data) {
