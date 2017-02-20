@@ -10,8 +10,7 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-<!-- 			<com:scriptfile path="service.js" /> -->
+			<com:scriptfile path="start.js" /> 			<com:scriptfile path="service.js" /> 
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.TargetYear = {
@@ -46,14 +45,16 @@
 						<td id="contents-left">
 							<div class="select-target-year">
 								<div class="label" id="target-year-label">対象年度</div>
-								<input id="target-year-input" for="target-year-label" class="save-error" data-bind="ntsNumberEditor: {
+							<!-- 	<input id="target-year-input" for="target-year-label" class="save-error" data-bind="ntsNumberEditor: {
 										value: targetYear,
 										constraint: 'TargetYear',
 										option: {
 											decimallength: 0,
 											width: '60px'
 										},
-										enable: true}"></input>
+										enable: true}"></input> -->
+										
+								<div id="target-year-input" data-bind="ntsDatePicker: {value: targetYear, startDate: '1900/01/01', endDate: '1999/12/30', dateFormat: 'yyyy/MM'}"></div>		
 								<span id="japan-year">(?????)</span>
 							</div>
 							<div class="search-employee"></div>

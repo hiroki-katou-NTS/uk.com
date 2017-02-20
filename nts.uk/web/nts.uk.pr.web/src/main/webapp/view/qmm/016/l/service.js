@@ -18,7 +18,7 @@ var nts;
                                 findCertifyGroup: "pr/wagetable/certifygroup/find",
                                 findLaborInsuranceOffice: "ctx/pr/core/insurance/labor/findLaborInsuranceOffice",
                                 addCertifyGroup: "pr/wagetable/certifygroup/add",
-                                updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
+                                updateCertifyGroup: "pr/wagetable/certifygroup/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
                             function findAllCertification(companyCode) {
@@ -76,6 +76,20 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addCertifyGroup = addCertifyGroup;
+                            function updateCertifyGroup(certifyGroupDto) {
+                                var dfd = $.Deferred();
+                                var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
+                                console.log(data);
+                                nts.uk.request.ajax(paths.updateCertifyGroup, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.updateCertifyGroup = updateCertifyGroup;
                             var model;
                             (function (model) {
                                 var CertificationDto = (function () {

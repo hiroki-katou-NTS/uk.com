@@ -85,11 +85,11 @@ module nts.uk.pr.view.qmm008.a {
             var data = null;
             // Convert json to model here.
             var roundingList: Array<model.finder.Enum> = [
-                new model.finder.Enum('1', 'RoundUp'),
-                new model.finder.Enum('2', 'Truncation'),
-                new model.finder.Enum('3', 'RoundDown'),
-                new model.finder.Enum('4', 'Down5_Up6'),
-                new model.finder.Enum('5', 'Down4_Up5')
+                new model.finder.Enum('1', '切り上げ'),
+                new model.finder.Enum('2', '切捨て'),
+                new model.finder.Enum('3', '四捨五入'),
+                new model.finder.Enum('4', '五捨五超入'),
+                new model.finder.Enum('5', '五捨六入')
             ];
 
             // Resolve.
