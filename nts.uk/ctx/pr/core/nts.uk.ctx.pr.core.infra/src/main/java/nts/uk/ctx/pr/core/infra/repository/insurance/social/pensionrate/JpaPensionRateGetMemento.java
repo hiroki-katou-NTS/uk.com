@@ -15,85 +15,163 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaPensionRateGetMemento.
  */
 public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QismtPensionRate typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa pension rate get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaPensionRateGetMemento(Object typeValue) {
+	public JpaPensionRateGetMemento(QismtPensionRate typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getHistoryId()
+	 */
 	@Override
 	public String getHistoryId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getCompanyCode()
+	 */
 	@Override
 	public CompanyCode getCompanyCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getOfficeCode()
+	 */
 	@Override
 	public OfficeCode getOfficeCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getApplyRange()
+	 */
 	@Override
 	public MonthRange getApplyRange() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getMaxAmount()
+	 */
 	@Override
 	public CommonAmount getMaxAmount() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getFundRateItems()
+	 */
 	@Override
 	public List<FundRateItem> getFundRateItems() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getPremiumRateItems()
+	 */
 	@Override
 	public List<PensionPremiumRateItem> getPremiumRateItems() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getChildContributionRate()
+	 */
 	@Override
 	public Ins2Rate getChildContributionRate() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getRoundingMethods()
+	 */
 	@Override
 	public List<PensionRateRounding> getRoundingMethods() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getFundInputApply()
+	 */
 	@Override
 	public Boolean getFundInputApply() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento
+	 * #getAutoCalculate()
+	 */
 	@Override
 	public Boolean getAutoCalculate() {
 		// TODO Auto-generated method stub

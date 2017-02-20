@@ -12,11 +12,15 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Data;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
 
 /**
  * The Class QismtHealthInsuAvgearn.
@@ -122,6 +126,13 @@ public class QismtHealthInsuAvgearn implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "C_HEALTH_BASIC_MNY")
 	private BigDecimal cHealthBasicMny;
+
+	/** The qismt health insu rate. */
+	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "SI_OFFICE_CD", referencedColumnName = "SI_OFFICE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@ManyToOne(optional = false)
+	private QismtHealthInsuRate qismtHealthInsuRate;
 
 	/**
 	 * Instantiates a new qismt health insu avgearn.
