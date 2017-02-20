@@ -15,7 +15,8 @@ var nts;
                             var servicePath = {
                                 getPaymentData: "/screen/pr/qpp005/paymentdata/find",
                                 insertData: "pr/proto/paymentdata/insert",
-                                updateData: "pr/proto/paymentdata/update"
+                                updateData: "pr/proto/paymentdata/update",
+                                remove: "pr/proto/paymentdata/remove"
                             };
                             function getPaymentData(personId, employeeCode) {
                                 var dfd = $.Deferred();
@@ -44,6 +45,14 @@ var nts;
                                 return nts.uk.request.ajax(servicePath.updateData, result);
                             }
                             service.register = register;
+                            function remove(personId, processingYM) {
+                                var result = {
+                                    personId: personId,
+                                    processingYM: processingYM
+                                };
+                                return nts.uk.request.ajax(servicePath.remove, result);
+                            }
+                            service.remove = remove;
                         })(service = a.service || (a.service = {}));
                     })(a = qpp005.a || (qpp005.a = {}));
                 })(qpp005 = view.qpp005 || (view.qpp005 = {}));

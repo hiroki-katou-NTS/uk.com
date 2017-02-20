@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Editors localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Editors localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
 	$.ig = $.ig || {};
 
@@ -55,7 +54,6 @@
 				spinDeltaCouldntBeNegative: "The spinDelta option cannot be negative. A positive number should be entered.",
 				spinDeltaContainsExceedsMaxDecimals: "Maximum allowed fractions for spinDelta are set to {0}. Either change MaxDecimals or try to shrink your value.",
 				spinDeltaIncorrectFloatingPoint: 'A floating point spinDelta requires a different configuration. Set the dataMode of the editor to either "double" or "float" or set spinDelta to integer.',
-				notEditableOptionByInit: "This option cannot be edited after initialization. Its value should be set during initialization.",
 				numericEditorNoSuchMethod: "The numeric editor does not support this method.",
 				numericEditorNoSuchOption: "The numeric editor does not support this option.",
 				displayFactorIsOfTypeNumber: "displayFactor requires a different value. Its value should be set to 1 or 100 as a number.",
@@ -69,9 +67,10 @@
 				buttonTypeIsDropDownOnly: "Datepicker allows only dropdown and clear values for the buttonType option.",
 				dateEditorMinValue: "MinValue option can not be set runtime.",
 				dateEditorMaxValue: "MaxValue option can not be set runtime.",
-				cannotSetRuntime: "This option can not be set runtime",
+				setOptionError: 'Runtime changes are not allowed for the following option: ',
 				invalidDate: "Invalid date",
 				maskMessage: 'All required positions should be filled',
+				maskRevertMessage: 'All required positions should be filled, that is why the value was reverted to the last valid one.',
 				dateMessage: 'A valid date should be entered',
 				centuryThresholdValidValues: "centuryThreshold property shoud be between 0 and 99. The value has been reverted to defaults.",
 				noListItemsNoButton: "No spin or dropdown button is rendered because there are no listitems."
