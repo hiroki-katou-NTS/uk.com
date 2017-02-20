@@ -20,8 +20,11 @@ __viewContext.ready(function() {
                 { headerText: 'コード', key: 'code', width: 100 },
                 { headerText: '名称', key: 'name', width: 150 }
             ]);
-
-            this.currentCodeListSwap = ko.observableArray([]);
+            var x = [];
+            x.push(_.cloneDeep(array[0]));
+            x.push(_.cloneDeep(array[1]));
+            x.push(_.cloneDeep(array[2]));
+            this.currentCodeListSwap = ko.observableArray(x);
             this.test = ko.observableArray([]);
         }
         

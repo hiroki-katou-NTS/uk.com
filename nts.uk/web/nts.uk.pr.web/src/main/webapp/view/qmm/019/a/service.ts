@@ -41,12 +41,12 @@ module qmm019.a {
         /**
          * Get list getCategoryFull.
          */
-        export function getCategoryFull(layoutCode, startYm, screenModel: ScreenModel): JQueryPromise<Array<model.Category>> {
+        export function getCategoryFull(layoutCode, startYm): JQueryPromise<Array<model.Category>> {
             var dfd = $.Deferred<Array<model.Category>>();
             nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
                 .done(function(res: Array<model.Category>) {
                     var result = _.map(res, function(category: any) {
-                        return new model.Category(category.lines, category.categoryAtr, screenModel);
+                        return new model.Category(category.lines, category.categoryAtr);
                     });
                     dfd.resolve(result);
                 })
@@ -123,7 +123,8 @@ module qmm019.a {
                                     alamRangeHigh: detail.alamRangeHigh(),
                                     isAlamUseLow: detail.isUseLowAlam(),
                                     alamRangeLow: detail.alamRangeLow()});
-                            } else {
+                            } else if (!detail.added()) {
+                                //Chỉ đưa vào mảng những itemCode đã đc lưu trước đó 
                                 listItemCodeDeleted.push({categoryAtr: category.categoryAtr, itemCode: detail.itemCode()});
                             }
                             itemPosColumn++;
@@ -180,17 +181,15 @@ module qmm019.a {
                 categoryName: string;
                 hasSetting: boolean = false;
                 isRemoved: boolean = false;
-                screenModel: KnockoutObservable<ScreenModel>;
                 
-                constructor(lines: Array<Line>, categoryAtr: number, screenModel: ScreenModel) {
-                    this.screenModel = ko.observable(screenModel);
+                constructor(lines: Array<Line>, categoryAtr: number) {
                     this.lines = ko.observableArray([]);
                     this.lines(_.map(lines, function(line: model.Line) {
                         var details = 
                             _.map(line.details, function(detail: model.ItemDetail){
-                                return new model.ItemDetail(detail, screenModel);  
+                                return new model.ItemDetail(detail);  
                             });
-                        return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition, screenModel);
+                        return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
                     }));
                     this.categoryAtr = categoryAtr;
                     switch (categoryAtr){
@@ -233,17 +232,17 @@ module qmm019.a {
                             $("#group-" + data.categoryAtr).addClass("removed");
                             self.isRemoved = true;
                             if (data.categoryAtr === 2)
-                                self.screenModel().notHasKintai(true);
+                                screenQmm019().notHasKintai(true);
                             if (data.categoryAtr === 3)
-                                self.screenModel().notHasKiji(true);
+                                screenQmm019().notHasKiji(true);
                         }
-                        self.screenModel().calculateLine();
+                        screenQmm019().calculateLine();
                         return this;
                     });
                 }
                 addLine(){
                     var self = this;
-                    if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {return this;}
+                    if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
                     
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml',{title: '明細レイアウトの作成＞＋行追加'}).onClosed(() => {
                         var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
@@ -258,10 +257,10 @@ module qmm019.a {
                                 setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                                 distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                                 errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0}, self.screenModel()            
+                                alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0}            
                                 ));
                         }
-                        let line: Line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length, self.screenModel());
+                        let line: Line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length);
                         if (selectedCode === "1") {
                             // cho phep print
                             line.setPrint(true);
@@ -270,11 +269,11 @@ module qmm019.a {
                             line.setPrint(false);                           
                         }
                         self.lines.push(line);
-                        self.screenModel().calculateLine();
+                        screenQmm019().calculateLine();
                         
-                        self.screenModel().bindSortable();
-                        self.screenModel().destroySortable();
-                        self.screenModel().bindSortable();
+                        screenQmm019().bindSortable();
+                        screenQmm019().destroySortable();
+                        screenQmm019().bindSortable();
     
                         return this;
                     });
@@ -291,11 +290,9 @@ module qmm019.a {
                 isDisplayOnPrint: boolean;
                 hasRequiredItem: boolean = false;
                 isRemoved: boolean = false;
-                screenModel: KnockoutObservable<ScreenModel>;
                 
                 constructor(categoryAtr: number, itemDetails: Array<ItemDetail>, 
-                    autoLineId: string, lineDispayAtr: number, linePosition: number, screenModel: ScreenModel) {
-                    this.screenModel = ko.observable(screenModel);
+                    autoLineId: string, lineDispayAtr: number, linePosition: number) {
                     this.details = itemDetails;
                     this.autoLineId = autoLineId;
                     this.rowId = categoryAtr + autoLineId;
@@ -333,7 +330,7 @@ module qmm019.a {
                                 self.isRemoved = true;
                             }
                         }
-                        self.screenModel().calculateLine();
+                        screenQmm019().calculateLine();
                         return this;
                     });
                 }
@@ -378,47 +375,81 @@ module qmm019.a {
                 isUseLowAlam: KnockoutObservable<number>;
                 alamRangeLow: KnockoutObservable<number>;
                 isRemoved: boolean = false;
-                screenModel: KnockoutObservable<ScreenModel>;
+                contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
+                contextMenuClassId : string = "";
                 
-                constructor(itemObject: any, screenModel: ScreenModel) {
-                    this.screenModel = ko.observable(screenModel);
-                    this.itemCode = ko.observable(itemObject.itemCode);
-                    this.itemAbName = ko.observable(itemObject.itemAbName);
+                constructor(itemObject: any) {
+                    var self = this;
+                    self.itemCode = ko.observable(itemObject.itemCode);
+                    self.itemAbName = ko.observable(itemObject.itemAbName);
                     if (itemObject.categoryAtr === 0 && 
                             (itemObject.itemCode === "F001" || itemObject.itemCode === "F002" || itemObject.itemCode === "F003")){
-                            this.isRequired = ko.observable(true);
+                            self.isRequired = ko.observable(true);
                     }
                     if (itemObject.categoryAtr === 1 && 
                             (itemObject.itemCode === "F114")){
-                            this.isRequired = ko.observable(true);
+                            self.isRequired = ko.observable(true);
                     }
-                    this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
-                    this.categoryAtr = ko.observable(itemObject.categoryAtr);
-                    this.autoLineId = ko.observable(itemObject.autoLineId);
-                    this.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
-                    this.setOffItemCode = ko.observable(itemObject.setOffItemCode);
-                    this.commuteAtr = ko.observable(itemObject.commuteAtr);
-                    this.calculationMethod = ko.observable(itemObject.calculationMethod);
-                    this.distributeSet = ko.observable(itemObject.distributeSet);
-                    this.distributeWay = ko.observable(itemObject.distributeWay);
-                    this.personalWageCode = ko.observable(itemObject.personalWageCode);
-                    this.isUseHighError = ko.observable(itemObject.isUseHighError);
-                    this.errRangeHigh = ko.observable(itemObject.errRangeHigh);
-                    this.isUseLowError = ko.observable(itemObject.isUseLowError);
-                    this.errRangeLow = ko.observable(itemObject.errRangeLow);
-                    this.isUseHighAlam = ko.observable(itemObject.isUseHighAlam);
-                    this.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
-                    this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
-                    this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
+                    self.itemPosColumn = ko.observable(itemObject.itemPosColumn);
+                    self.categoryAtr = ko.observable(itemObject.categoryAtr);
+                    self.autoLineId = ko.observable(itemObject.autoLineId);
+                    self.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
+                    self.setOffItemCode = ko.observable(itemObject.setOffItemCode);
+                    self.commuteAtr = ko.observable(itemObject.commuteAtr);
+                    self.calculationMethod = ko.observable(itemObject.calculationMethod);
+                    self.distributeSet = ko.observable(itemObject.distributeSet);
+                    self.distributeWay = ko.observable(itemObject.distributeWay);
+                    self.personalWageCode = ko.observable(itemObject.personalWageCode);
+                    self.isUseHighError = ko.observable(itemObject.isUseHighError);
+                    self.errRangeHigh = ko.observable(itemObject.errRangeHigh);
+                    self.isUseLowError = ko.observable(itemObject.isUseLowError);
+                    self.errRangeLow = ko.observable(itemObject.errRangeLow);
+                    self.isUseHighAlam = ko.observable(itemObject.isUseHighAlam);
+                    self.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
+                    self.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
+                    self.alamRangeLow = ko.observable(itemObject.alamRangeLow);
+                    
+                    self.initContextMenu();
+                }
+                
+                initContextMenu() {
+                    var self = this;
+                    self.contextMenuClassId = "context-menu-" + self.itemCode();
+                    //Chỉ cho phép xóa những item khác dấu "+" và không phải là item required
+                    if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
+                        //Setup context menu for item:
+                        self.contextMenu = new nts.uk.ui.contextmenu.ContextMenu("." + self.contextMenuClassId, [
+                            new nts.uk.ui.contextmenu.ContextMenuItem("delete", "削除", (ui) => {
+                                    self.setDelete(true);
+                                }, "", true),
+                            new nts.uk.ui.contextmenu.ContextMenuItem("undoDelete", "戻す", (ui) => {
+                                    self.setDelete(false);
+                                }, "", false)
+                        ]);
+                    }    
+                }
+                setDelete(isDelete : boolean) {
+                    var self = this;
+                    self.isRemoved = isDelete;
+                    self.contextMenu.setVisibleItem(!isDelete, "delete");
+                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
+                    if (isDelete) {
+                        $("#" + self.itemCode()).addClass("item-isDeleting");    
+                    } else {
+                        $("#" + self.itemCode()).removeClass("item-isDeleting");    
+                    }                 
                 }
                 itemClick(data, event) {
                     var self = this;
+                    // Nếu đang bị delete thì ko cho bật dialog detail
+                    if (self.isRemoved) return this;
+                    
                     var param = {
                         categoryId: data.categoryAtr(),
                         itemCode: data.itemCode(),
                         isUpdate: data.itemAbName() === "+" ? false : true,
-                        startYm: self.screenModel().layoutMaster().startYm,
-                        stmtCode: self.screenModel().layoutMaster().stmtCode
+                        startYm: screenQmm019().layoutMaster().startYm,
+                        stmtCode: screenQmm019().layoutMaster().stmtCode
                     };    
                     nts.uk.ui.windows.setShared('param', param);
                     nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml',{title: '項目の選択・設定', width: 1200, height: 670}).onClosed(() => {
@@ -430,6 +461,7 @@ module qmm019.a {
                             // Them moi
                             self.itemCode(itemResult.itemCode);
                             self.added(true);
+                            self.initContextMenu();
                         } else {
                             if (self.added()) {
                                 // Sửa một detail đang được Thêm mới
