@@ -104,7 +104,7 @@ public class QismtPensionAvgearn implements Serializable {
 	/** The c pension male mny. */
 	@Basic(optional = false)
 	@Column(name = "C_PENSION_MALE_MNY")
-	private long cPensionMaleMny;
+	private BigDecimal cPensionMaleMny;
 
 	/** The c pension fem mny. */
 	@Basic(optional = false)
