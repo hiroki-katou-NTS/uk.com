@@ -38,7 +38,6 @@ public class ClassificationWebService extends WebService {
 	@Path("findAllClassification")
 	@POST
 	public List<ClassificationDto> init() {
-		System.out.println("========== Init Data");
 		return classificationFinder.init();
 	}
 

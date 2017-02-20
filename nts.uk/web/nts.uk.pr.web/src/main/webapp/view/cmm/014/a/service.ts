@@ -9,10 +9,10 @@ module cmm014.a.service {
     /**
      * Get list classification
      */
-    
+
     export function getAllClassification(): JQueryPromise<Array<viewmodel.model.ClassificationDto>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.getAllClassification)
+        nts.uk.request.ajax("com", paths.getAllClassification)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -28,7 +28,11 @@ module cmm014.a.service {
 
     export function addClassification(classification: viewmodel.model.ClassificationDto) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.addClassification, classification).done()
+        nts.uk.request.ajax("com", paths.addClassification, classification).done(
+            function(res: any) {
+                dfd.resolve(res);
+            }
+            )
             .fail(function(res) {
                 dfd.reject(res);
             })
@@ -42,7 +46,11 @@ module cmm014.a.service {
 
     export function updateClassification(classification: viewmodel.model.ClassificationDto) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.updateClassification, classification).done()
+        nts.uk.request.ajax("com", paths.updateClassification, classification).done(
+            function(res: any) {
+                dfd.resolve(res);
+            }
+        )
             .fail(function(res) {
                 dfd.reject(res);
             })
@@ -56,7 +64,11 @@ module cmm014.a.service {
 
     export function removeClassification(classification: viewmodel.model.RemoveClassificationCommand) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.removeClassification, classification).done()
+        nts.uk.request.ajax("com", paths.removeClassification, classification).done(
+            function(res: any) {
+                dfd.resolve(res);
+            }
+        )
             .fail(function(res) {
                 dfd.reject(res);
             })

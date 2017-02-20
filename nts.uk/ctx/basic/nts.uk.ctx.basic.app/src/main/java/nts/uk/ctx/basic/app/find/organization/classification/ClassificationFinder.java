@@ -18,7 +18,6 @@ public class ClassificationFinder {
 
 	public List<ClassificationDto> init() {
 		String companyCode = AppContexts.user().companyCode();
-		System.out.println("========== init");
 		return classificationRepository.findAll(companyCode)
 				.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
 	}

@@ -30,7 +30,9 @@ var cmm014;
             */
             function addClassification(classification) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.addClassification, classification).done()
+                nts.uk.request.ajax("com", paths.addClassification, classification).done(function (res) {
+                    dfd.resolve(res);
+                })
                     .fail(function (res) {
                     dfd.reject(res);
                 });
@@ -42,7 +44,9 @@ var cmm014;
              */
             function updateClassification(classification) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateClassification, classification).done()
+                nts.uk.request.ajax("com", paths.updateClassification, classification).done(function (res) {
+                    dfd.resolve(res);
+                })
                     .fail(function (res) {
                     dfd.reject(res);
                 });
@@ -54,7 +58,9 @@ var cmm014;
             */
             function removeClassification(classification) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.removeClassification, classification).done()
+                nts.uk.request.ajax("com", paths.removeClassification, classification).done(function (res) {
+                    dfd.resolve(res);
+                })
                     .fail(function (res) {
                     dfd.reject(res);
                 });

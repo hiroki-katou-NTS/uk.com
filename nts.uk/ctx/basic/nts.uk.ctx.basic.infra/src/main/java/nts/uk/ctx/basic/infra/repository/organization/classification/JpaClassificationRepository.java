@@ -78,7 +78,6 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 	
 	@Override
 	public List<Classification> findAll(String companyCode) {
-		System.out.println("========== findAll");
 		List<CmnmtClass> resultList = this.queryProxy().query(FIND_ALL, CmnmtClass.class)
 				.setParameter("companyCode",   companyCode )
 				.getList();
@@ -96,11 +95,11 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 
 	private CmnmtClass convertToDbType(Classification classification) {
 		CmnmtClass cmnmtClass = new CmnmtClass();
-		CmnmtClassPK cmnmtClassPK = new CmnmtClassPK(classification.getCompanyCode(),
+		CmnmtClassPK cmnmtClassPK = new CmnmtClassPK(classification.getCompanyCode().toString(),
 				classification.getClassificationCode().toString());
 		cmnmtClass.setMemo(classification.getClassificationMemo().toString());
 		cmnmtClass.setName(classification.getClassificationName().toString());
-		cmnmtClass.setOutCode(classification.getClassificationOutCode().toString());
+		cmnmtClass.setOutCode(classification.getClassificationOutCode() != null? classification.getClassificationOutCode().toString() : null);
 		cmnmtClass.setCmnmtClassPK(cmnmtClassPK);
 		return cmnmtClass;
 	}
@@ -108,7 +107,7 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 	private Classification convertToDomain(CmnmtClass cmnmtClass) {
 		return new Classification(cmnmtClass.getCmnmtClassPK().getCompanyCode(),
 				new ClassificationCode(cmnmtClass.getCmnmtClassPK().getClassificationCode()),
-				new ClassificationName(cmnmtClass.getName()), new ClassificationCode(cmnmtClass.getOutCode()),
+				new ClassificationName(cmnmtClass.getName()), new ClassificationCode(cmnmtClass.getOutCode() != null? cmnmtClass.getOutCode() : "" ),
 				new Memo(cmnmtClass.getMemo()));
 	}
 

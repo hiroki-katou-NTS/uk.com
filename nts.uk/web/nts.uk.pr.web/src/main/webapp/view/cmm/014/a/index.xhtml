@@ -21,12 +21,12 @@
 					
 					__viewContext.primitiveValueConstraints.ClassificationName = {
 							valueType: 'String',
-							charType: 'Numeric',
+							charType: 'AnyHalfWidth',
 							maxLength: 20,
 						};
 					__viewContext.primitiveValueConstraints.Memo = {
 							valueType: 'String',
-							charType: 'Numeric',
+							charType: 'AnyHalfWidth',
 							maxLength: 500,
 						};
 					
@@ -34,7 +34,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-		
+
 			<div id="functions-area" class="divHeader">
 				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
 					class="btnStyle">新規</button>
@@ -45,7 +45,7 @@
 					class="danger btnStyle">削除</button>
 
 			</div>
-			
+
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
 
@@ -53,7 +53,7 @@
 
 					<div class="cf">
 						<div style="float: left">
-							<div
+							<div id="test"
 								data-bind="ntsSearchBox: {
                                     comId: 'single-list',
                                     items: dataSource,         
@@ -98,7 +98,7 @@
 										<input
 											data-bind="ntsTextEditor: {
                                             value: INP_002_code,
-                                            constraint: 'ResidenceCode',
+                                            constraint: 'ClassificationCode',
                                             enable: INP_002_enable}" />
 									</div>
 
@@ -106,7 +106,7 @@
 										<input
 											data-bind="ntsTextEditor: {
                                             value: INP_003_name,
-                                            constraint: 'ResidenceCode'
+                                            constraint: 'ClassificationName'
                                             
                                             }" />
 									</div>
@@ -117,20 +117,17 @@
 
 						<tr>
 							<td>
-								<div
-									data-bind="ntsFormLabel: {constraint: 'Memo'}">
+								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
 									<label id="A_LBL_003">メモ</label>
 								</div>
 							</td>
 							<td class="valign-center">
 								<div>
-									<div class="input_005">
-										<textarea
-											data-bind="ntsMultilineEditor: {
-                                                value: INP_004_notes,
-                                                constraint: 'ResidenceCode'
-                                                }" />
-									</div>
+									<textarea
+										data-bind="ntsMultilineEditor: {
+											value: INP_004_notes,
+											constraint: 'Memo'
+											}" />
 								</div>
 							</td>
 						</tr>

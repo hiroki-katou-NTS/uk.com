@@ -15,6 +15,7 @@ var cmm014;
                     self.currentCode = ko.observable(null);
                     self.currentCodeList = ko.observableArray([]);
                     self.currentItem = ko.observable(null);
+                    self.multilineeditor = ko.observable(null);
                     self.INP_002_code = ko.observable(null);
                     self.INP_002_enable = ko.observable(false);
                     self.INP_003_name = ko.observable(null);
@@ -24,6 +25,7 @@ var cmm014;
                         if (self.currentItem() != null) {
                             self.INP_002_code(self.currentItem().classificationCode);
                             self.INP_003_name(self.currentItem().classificationName);
+                            self.INP_004_notes(self.currentItem().memo);
                         }
                     }));
                 }
@@ -42,7 +44,9 @@ var cmm014;
                     self.INP_002_enable(true);
                     self.INP_002_code("");
                     self.INP_003_name("");
+                    self.INP_004_notes("");
                     self.currentCode(null);
+                    $("#test input").val("");
                 };
                 ScreenModel.prototype.checkInput = function () {
                     var self = this;
@@ -62,41 +66,21 @@ var cmm014;
                         for (var i = 0; i < self.dataSource().length; i++) {
                             if (self.INP_002_code() == self.dataSource()[i].classificationCode) {
                                 var classification_old = self.dataSource()[i];
-                                var classification_update = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name());
-                                classification_update.classificationMemo = self.INP_004_notes();
+                                var classification_update = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.updateClassification(classification_update).done(function () {
-                                    a.service.getAllClassification().done(function (classification_arr) {
-                                        self.dataSource(classification_arr);
-                                        dfd.resolve();
-                                    }).fail(function (res) {
-                                        dfd.reject(res);
-                                    });
-                                    dfd.resolve();
+                                    self.getClassificationList();
                                 }).fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                //                        self.dataSource.replace(classification_old, classification_update);
-                                //                        console.log("update");
-                                //                        console.log(classification_update);
                                 break;
                             }
                             else if (self.INP_002_code() != self.dataSource()[i].classificationCode && i == self.dataSource().length - 1) {
-                                var classification_new = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name());
-                                classification_new.classificationMemo = self.INP_004_notes();
+                                var classification_new = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.addClassification(classification_new).done(function () {
-                                    a.service.getAllClassification().done(function (classification_arr) {
-                                        self.dataSource(classification_arr);
-                                        dfd.resolve();
-                                    }).fail(function (res) {
-                                        dfd.reject(res);
-                                    });
-                                    dfd.resolve();
+                                    self.getClassificationList();
                                 }).fail(function (res) {
                                     dfd.reject(res);
                                 });
-                                //                        self.dataSource.push(classification_new);
-                                //                        console.log("dang ky moi");
-                                //                        console.log(classification_new);
                                 break;
                             }
                         }
@@ -106,15 +90,10 @@ var cmm014;
                     var self = this;
                     var dfd = $.Deferred();
                     var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
-                    a.service.removeClassification(item).done(function () {
-                        a.service.getAllClassification().done(function (classification_arr) {
-                            self.dataSource(classification_arr);
-                            dfd.resolve();
-                        }).fail(function (res) {
-                            dfd.reject(res);
-                        });
-                        //   self.dataSource(classification_arr);
-                        //  dfd.resolve();
+                    self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
+                    console.log(self.index_of_itemDelete);
+                    a.service.removeClassification(item).done(function (res) {
+                        self.getClassificationList_aftefDelete();
                     }).fail(function (res) {
                         dfd.reject(res);
                     });
@@ -125,9 +104,60 @@ var cmm014;
                     var dfd = $.Deferred();
                     a.service.getAllClassification().done(function (classification_arr) {
                         self.dataSource(classification_arr);
+                        self.INP_002_code(self.dataSource()[0].classificationCode);
+                        self.INP_003_name(self.dataSource()[0].classificationName);
+                        self.INP_004_notes(self.dataSource()[0].memo);
+                        self.currentCode(self.dataSource()[0].classificationCode);
                         dfd.resolve();
-                    }).fail(function (res) {
-                        dfd.reject(res);
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.getClassificationList = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllClassification().done(function (classification_arr) {
+                        self.dataSource(classification_arr);
+                        self.INP_002_code(self.dataSource()[0].classificationCode);
+                        self.INP_003_name(self.dataSource()[0].classificationName);
+                        self.INP_004_notes(self.dataSource()[0].memo);
+                        if (self.dataSource().length > 1) {
+                            self.currentCode(self.dataSource()[0].classificationCode);
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.getClassificationList_aftefDelete = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllClassification().done(function (classification_arr) {
+                        self.dataSource(classification_arr);
+                        if (self.dataSource().length > 0) {
+                            if (self.index_of_itemDelete === self.dataSource().length) {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].classificationCode);
+                                self.INP_002_code(self.dataSource()[self.index_of_itemDelete - 1].classificationCode);
+                                self.INP_003_name(self.dataSource()[self.index_of_itemDelete - 1].classificationName);
+                                self.INP_004_notes(self.dataSource()[self.index_of_itemDelete - 1].memo);
+                            }
+                            else {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete].classificationCode);
+                                self.INP_002_code(self.dataSource()[self.index_of_itemDelete].classificationCode);
+                                self.INP_003_name(self.dataSource()[self.index_of_itemDelete].classificationName);
+                                self.INP_004_notes(self.dataSource()[self.index_of_itemDelete].memo);
+                            }
+                        }
+                        else {
+                            self.initRegisterClassification();
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
                     });
                     dfd.resolve();
                     return dfd.promise();
@@ -138,9 +168,10 @@ var cmm014;
             var model;
             (function (model) {
                 var ClassificationDto = (function () {
-                    function ClassificationDto(classificationCode, classificationName) {
+                    function ClassificationDto(classificationCode, classificationName, memo) {
                         this.classificationCode = classificationCode;
                         this.classificationName = classificationName;
+                        this.memo = memo;
                     }
                     return ClassificationDto;
                 }());
