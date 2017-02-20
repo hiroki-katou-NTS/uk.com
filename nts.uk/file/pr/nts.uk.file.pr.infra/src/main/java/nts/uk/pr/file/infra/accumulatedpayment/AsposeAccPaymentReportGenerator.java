@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
 import java.io.IOException;
@@ -24,73 +28,81 @@ import nts.uk.ctx.pr.screen.app.report.qet002.AccPaymentReportGenerator;
 import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource;
 import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentItemData;
 
+/**
+ * The Class AsposeAccPaymentReportGenerator.
+ */
 @Stateless
-public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator
-		implements AccPaymentReportGenerator {
+public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator implements AccPaymentReportGenerator {
 
+	/** The Constant REPORT_FILE_NAME. */
 	private static final String REPORT_FILE_NAME = "AccumulatedPaymentReport.pdf";
 
+	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/AccumulatedPaymentReport.xlsx";
 
-
+	/** The Constant FIRST_ROW_INDEX. */
 	private static final int FIRST_ROW_INDEX = 13;
 
-
+	/** The Constant FIRSTCOLUMN. */
 	private static final int FIRSTCOLUMN = 0;
 
-
+	/** The Constant BREAKINGPAGE1INDEX. */
 	private static final int BREAKINGPAGE1INDEX = 50;
 
-
+	/** The Constant TOTALCOLUMNS. */
 	private static final int TOTALCOLUMNS = 8;
 
-
+	/** The Constant BREAKINGPAGE2INDEX. */
 	private static final int BREAKINGPAGE2INDEX = 112;
 
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * nts.uk.ctx.pr.screen.app.report.qet002.AccPaymentReportGenerator#generate
+	 * (nts.arc.layer.infra.file.export.FileGeneratorContext,
+	 * nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource)
+	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource) {
-		 ArrayList<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
-		 for (int i = 0; i < 130; i++) {
-				AccPaymentItemData accumulatedPayment =  AccPaymentItemData
-						.builder()
-						.empDesignation("Designation" + (i + 1))
-						.empCode("Code " + (i + 1))
-						.empName("Name " + (i + 1))
-						.taxAmount(1.0 + i)
-						.socialInsuranceAmount(1.0 + i)
-						.widthHoldingTaxAmount(1.0 + i)
-						.amountAfterTaxDeduction(1.0 + i)
-						.enrollmentStatus("Enrolment Status")
-						.directionalStatus("onloan")
-						.build();				
-				accumulatedPaymentList.add(accumulatedPayment);
-			}			
-		
-		try{
-			//accumulatedPaymentList = (ArrayList<AccPaymentItemData>) dataSource.getAccPaymentItemData();
-		//WorkbookDesigner designer = new WorkbookDesigner();
-		val designer = this.createContext(TEMPLATE_FILE);	
-		Workbook workbook = designer.getWorkbook();		
-		
-		// create worksheet and Formatting ...
-		WorksheetCollection worksheets = workbook.getWorksheets();
-		// FIRST WORKSHEET
-					createSheet(worksheets, 0, 0, BREAKINGPAGE1INDEX, FIRST_ROW_INDEX, accumulatedPaymentList);
-					// WORKSHEET Number 2
-					createSheet(worksheets, 1, BREAKINGPAGE1INDEX, BREAKINGPAGE2INDEX, 0, accumulatedPaymentList);
-					// FINAL WORKSHEET
-					createSheet(worksheets, 2, BREAKINGPAGE2INDEX, accumulatedPaymentList.size(), 0, accumulatedPaymentList);
-					designer.getDesigner().setWorkbook(workbook);
-					designer.processDesigner();
-					designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
-					//designer.getWorkbook().save("D:/test.pdf", FileFormatType.PDF);
+		ArrayList<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
+		for (int i = 0; i < 130; i++) {
+			AccPaymentItemData accumulatedPayment = AccPaymentItemData.builder().empDesignation("Designation" + (i + 1))
+					.empCode("Code " + (i + 1)).empName("Name " + (i + 1)).taxAmount(1.0 + i)
+					.socialInsuranceAmount(1.0 + i).widthHoldingTaxAmount(1.0 + i).amountAfterTaxDeduction(1.0 + i)
+					.enrollmentStatus("Enrolment Status").directionalStatus("onloan").build();
+			accumulatedPaymentList.add(accumulatedPayment);
+		}
+
+		try {
+			// accumulatedPaymentList = (ArrayList<AccPaymentItemData>)
+			// dataSource.getAccPaymentItemData();
+			// WorkbookDesigner designer = new WorkbookDesigner();
+			val designer = this.createContext(TEMPLATE_FILE);
+			Workbook workbook = designer.getWorkbook();
+
+			// create worksheet and Formatting ...
+			WorksheetCollection worksheets = workbook.getWorksheets();
+			// FIRST WORKSHEET
+			createSheet(worksheets, 0, 0, BREAKINGPAGE1INDEX, FIRST_ROW_INDEX, accumulatedPaymentList);
+			// WORKSHEET Number 2
+			createSheet(worksheets, 1, BREAKINGPAGE1INDEX, BREAKINGPAGE2INDEX, 0, accumulatedPaymentList);
+			// FINAL WORKSHEET
+			createSheet(worksheets, 2, BREAKINGPAGE2INDEX, accumulatedPaymentList.size(), 0, accumulatedPaymentList);
+			designer.getDesigner().setWorkbook(workbook);
+			designer.processDesigner();
+			designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+			// designer.getWorkbook().save("D:/test.pdf", FileFormatType.PDF);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
-
+	/**
+	 * Sets the column width.
+	 *
+	 * @param cells the new column width
+	 */
 	// Set Columns Width Method
 	private void setColumnWidth(Cells cells) {
 		cells.setColumnWidth(0, 12);
@@ -103,6 +115,16 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator
 		cells.setColumnWidth(7, 40);
 	}
 
+	/**
+	 * Creates the sheet.
+	 *
+	 * @param worksheets the worksheets
+	 * @param sheetIndex the sheet index
+	 * @param firstIndex the first index
+	 * @param breakingPageIndex the breaking page index
+	 * @param rowIndex the row index
+	 * @param accumulatedPaymentList the accumulated payment list
+	 */
 	// Create Sheet
 	private void createSheet(WorksheetCollection worksheets, int sheetIndex, int firstIndex, int breakingPageIndex,
 			int rowIndex, ArrayList<AccPaymentItemData> accumulatedPaymentList) {
