@@ -10,9 +10,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -20,7 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @Transactional
-public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAddCommand> {
+public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGroupDeleteCommand> {
 
 	/** The certify group repository. */
 	@Inject
@@ -34,10 +33,11 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<CertifyGroupAddCommand> context) {
+	protected void handle(CommandHandlerContext<CertifyGroupDeleteCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
-		this.certifyGroupRepository.add(certifyGroup);
+		this.certifyGroupRepository.remove(new CompanyCode(companyCode),
+				context.getCommand().getCertifyGroupDeleteDto().getGroupCode(),
+				context.getCommand().getCertifyGroupDeleteDto().getVersion());
 	}
 
 }

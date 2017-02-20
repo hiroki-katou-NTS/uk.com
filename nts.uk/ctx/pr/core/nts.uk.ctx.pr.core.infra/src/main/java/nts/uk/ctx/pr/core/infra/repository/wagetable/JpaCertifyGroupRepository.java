@@ -11,15 +11,12 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import mockit.external.asm.Opcodes;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
@@ -28,8 +25,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
@@ -61,12 +56,26 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		this.commandProxy().update(toEntity(certifyGroup));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository#remove(nts.uk.ctx
+	 * .core.dom.company.CompanyCode, java.lang.String, java.lang.Long)
+	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
+	public void remove(CompanyCode companyCode, String groupCode, Long version) {
+		this.commandProxy().remove(QwtmtWagetableCertifyG.class,
+				new QwtmtWagetableCertifyGPK(companyCode.v(), groupCode));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository#findById(nts.uk.
+	 * ctx.core.dom.company.CompanyCode, java.lang.String)
+	 */
 	@Override
 	public Optional<CertifyGroup> findById(CompanyCode companyCode, String code) {
 		return this.queryProxy().find(new QwtmtWagetableCertifyGPK(companyCode.v(), code), QwtmtWagetableCertifyG.class)

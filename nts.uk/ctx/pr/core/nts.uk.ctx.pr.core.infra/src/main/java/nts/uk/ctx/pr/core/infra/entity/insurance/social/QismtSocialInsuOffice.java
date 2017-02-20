@@ -25,12 +25,6 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPension
 /**
  * The Class QismtSocialInsuOffice.
  */
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
- */
 @Data
 @Entity
 @Table(name = "QISMT_SOCIAL_INSU_OFFICE")

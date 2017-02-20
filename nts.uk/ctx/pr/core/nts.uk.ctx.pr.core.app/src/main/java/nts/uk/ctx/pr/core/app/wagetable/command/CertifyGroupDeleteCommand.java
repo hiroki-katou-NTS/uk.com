@@ -8,28 +8,21 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDeleteDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDto;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
 
 /**
- * The Class CertifyGroupAddCommand.
+ * The Class CertifyGroupDeleteCommand.
  */
 @Setter
 @Getter
-public class CertifyGroupAddCommand implements Serializable {
+public class CertifyGroupDeleteCommand implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The certify group dto. */
-	private CertifyGroupDto certifyGroupDto;
+	private CertifyGroupDeleteDto certifyGroupDeleteDto;
 
-	/**
-	 * To domain.
-	 *
-	 * @return the certify group
-	 */
-	public CertifyGroup toDomain(String companyCode) {
-		return certifyGroupDto.toDomain(companyCode);
-	}
 }

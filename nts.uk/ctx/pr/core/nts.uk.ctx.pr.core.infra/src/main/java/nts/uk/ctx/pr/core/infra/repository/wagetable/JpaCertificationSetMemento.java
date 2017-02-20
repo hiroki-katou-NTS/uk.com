@@ -1,13 +1,14 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.CertificationSetMemento;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyPK;
 
 /**
  * The Class JpaCertificationSetMemento.
@@ -15,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK;
 public class JpaCertificationSetMemento implements CertificationSetMemento {
 
 	/** The type value. */
-	protected QcemtCertification typeValue;
+	protected QwtmtWagetableCertify typeValue;
 
 	/**
 	 * Instantiates a new jpa certification set memento.
@@ -23,8 +24,11 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCertificationSetMemento(QcemtCertification typeValue) {
+	public JpaCertificationSetMemento(QwtmtWagetableCertify typeValue, String groupCode) {
 		this.typeValue = typeValue;
+		QwtmtWagetableCertifyPK qcemtCertificationPK = new QwtmtWagetableCertifyPK();
+		qcemtCertificationPK.setCertifyGroupCd(groupCode);
+		this.typeValue.setQwtmtWagetableCertifyPK(qcemtCertificationPK);
 	}
 
 	/*
@@ -36,9 +40,9 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		QcemtCertificationPK qcemtCertificationPK = new QcemtCertificationPK();
+		QwtmtWagetableCertifyPK qcemtCertificationPK = this.typeValue.getQwtmtWagetableCertifyPK();
 		qcemtCertificationPK.setCcd(companyCode.v());
-		this.typeValue.setQcemtCertificationPK(qcemtCertificationPK);
+		this.typeValue.setQwtmtWagetableCertifyPK(qcemtCertificationPK);
 	}
 
 	/*
@@ -50,21 +54,22 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 	 */
 	@Override
 	public void setCode(String code) {
-		QcemtCertificationPK qcemtCertificationPK = this.typeValue.getQcemtCertificationPK();
-		qcemtCertificationPK.setCertCd(code);
-		this.typeValue.setQcemtCertificationPK(qcemtCertificationPK);
+		// Certification Code
+		QwtmtWagetableCertifyPK qcemtCertificationPK = this.typeValue.getQwtmtWagetableCertifyPK();
+		qcemtCertificationPK.setCertifyCd(code);
+		this.typeValue.setQwtmtWagetableCertifyPK(qcemtCertificationPK);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.CertificationSetMemento#setName(java.
-	 * lang.String)
+	/**
+	 * Sets the name.
+	 *
+	 * @param name
+	 *            the new name
 	 */
 	@Override
 	public void setName(String name) {
-		this.typeValue.setName(name);
+		// TODO Auto-generated method stub
+
 	}
 
 }
