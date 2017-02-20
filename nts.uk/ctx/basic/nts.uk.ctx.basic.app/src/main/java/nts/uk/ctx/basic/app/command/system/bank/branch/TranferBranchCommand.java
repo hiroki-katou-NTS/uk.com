@@ -13,4 +13,5 @@ public class TranferBranchCommand {
 	 */
 	private List<TranferBranch> branchCodes;
 	private String bankNewCode;
+	private String branchNewCode;
 }

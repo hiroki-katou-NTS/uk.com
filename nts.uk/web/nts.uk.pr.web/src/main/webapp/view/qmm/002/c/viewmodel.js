@@ -42,9 +42,13 @@ var qmm002;
                             branchCode: branchCode
                         });
                     });
+                    var code = self.singleSelectedCode().split('-');
+                    var bankNewCode = code[0];
+                    var branchNewCode = code[1];
                     var data = {
                         branchCodes: branchCodesMap,
-                        bankNewCode: self.singleSelectedCode()
+                        bankNewCode: bankNewCode,
+                        branchNewCode: branchNewCode
                     };
                     c.service.tranferBranch(data).done(function () {
                         self.getBankList();

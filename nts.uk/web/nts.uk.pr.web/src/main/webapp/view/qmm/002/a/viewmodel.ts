@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm002_1.a {
             singleSelectedCode: any;
             selectedCodes: any;
             parentNode: KnockoutObservable<BankInfo>;
-            A_INP_002: any;
+//            A_INP_002: any;
             A_INP_006: any;
             A_INP_003: any;
             A_INP_004: any;
@@ -44,20 +44,20 @@ module nts.uk.pr.view.qmm002_1.a {
                     enable: ko.observable(),
                     readonly: ko.observable(false)
                 };
-
-                self.A_INP_002 = {
-                    value: ko.observable(''),
-                    constraint: 'ResidenceCode',
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                        resizeable: true,
-                        placeholder: "",
-                        width: "250px",
-                        textalign: "left"
-                    })),
-                    required: ko.observable(true),
-                    enable: ko.observable(true),
-                    readonly: ko.observable(false)
-                };
+                
+//                self.A_INP_002 = {
+//                    value: ko.observable(''),
+//                    constraint: 'ResidenceCode',
+//                    option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+//                        resizeable: true,
+//                        placeholder: "",
+//                        width: "250px",
+//                        textalign: "left"
+//                    })),
+//                    required: ko.observable(true),
+//                    enable: ko.observable(true),
+//                    readonly: ko.observable(true)
+//                };
 
                 self.A_INP_006 = {
                     value: ko.observable(''),
@@ -285,6 +285,7 @@ module nts.uk.pr.view.qmm002_1.a {
                 self.name = name;
                 self.nodeText = self.code + ' ' + self.name;
                 self.childs = childs;
+          
             }
         }
     }
