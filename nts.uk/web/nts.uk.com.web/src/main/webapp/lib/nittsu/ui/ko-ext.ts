@@ -15,18 +15,32 @@ module nts.uk.ui.koExtentions {
             }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+            
+            $input.focus(() => {
+                $input.select();
+            });
+            
             $input.change(() => {
                 var validator = this.getValidator(data);
-                var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
                     setValue(result.parsedValue);
-                    $input.val(formatter.format(result.parsedValue));
                 } else {
                     $input.ntsError('set', result.errorMessage);
                     setValue(newText);
+                }
+            });
+            
+            // format on blur
+            $input.blur(() => {
+                var validator = this.getValidator(data);
+                var formatter = this.getFormatter(data);
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                if (result.isValid) {
+                    $input.val(formatter.format(result.parsedValue));
                 }
             });
         }
@@ -166,6 +180,16 @@ module nts.uk.ui.koExtentions {
     }
 
     class NumberEditorProcessor extends EditorProcessor {
+        
+        init($input: JQuery, data: any) {
+            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            
+            $input.focus(() => {
+                $input.val(data.value());
+            });
+            
+            super.init($input, data);
+        }
 
         update($input: JQuery, data: any) {
             super.update($input, data);
@@ -1540,7 +1564,7 @@ module nts.uk.ui.koExtentions {
                 features: features
             });
 
-            if (!util.isNullOrUndefined(deleteOptions) && util.isNullOrUndefined(deleteOptions.deleteField)
+            if (!util.isNullOrUndefined(deleteOptions) && !util.isNullOrUndefined(deleteOptions.deleteField)
                 && deleteOptions.visible === true) {
                 var sources = (data.dataSource !== undefined ? data.dataSource : data.options);
                 $grid.ntsGridList("setupDeleteButton", {
@@ -2157,8 +2181,8 @@ module nts.uk.ui.koExtentions {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             var HEADER_HEIGHT = 27;
             var CHECKBOX_WIDTH = 70;
-            var SEARCH_AREA_HEIGHT = 40;
-            var BUTTON_SEARCH_WIDTH = 85;
+            var SEARCH_AREA_HEIGHT = 45;
+            var BUTTON_SEARCH_WIDTH = 60;
             var INPUT_SEARCH_PADDING = 65;
 
             var $swap = $(element);
@@ -2227,14 +2251,16 @@ module nts.uk.ui.koExtentions {
                     $SearchArea.append("<div class='ntsSearchTextContainer'/>")
                         .append("<div class='ntsSearchButtonContainer'/>");
                 
-                    $SearchArea.find(".ntsSearchTextContainer").append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
-                    $SearchArea.find(".ntsSearchButtonContainer").append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn'/>");
+                    $SearchArea.find(".ntsSearchTextContainer")
+                        .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
+                    $SearchArea.find(".ntsSearchButtonContainer")
+                        .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
                     $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function(event, ui) {
                         if (event.which === 13) {
                             search($SearchArea, targetId, primaryKey);
                         }
                     });
-                    $SearchArea.find(".ntsSearchButton").text("Search").click(function(event, ui) {
+                    $SearchArea.find(".ntsSearchButton").text("検索").click(function(event, ui) {
                         search($SearchArea, targetId, primaryKey);
                     });  
                 }
@@ -2388,8 +2414,9 @@ module nts.uk.ui.koExtentions {
             var currentSource = $grid1.igGrid('option', 'dataSource');
             var currentSelected = $grid2.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+            var selectedSources = data.value();
             _.remove(sources, function(item) {
-                return _.find(currentSelected, function(selected) {
+                return _.find(selectedSources, function(selected) {
                     return selected[primaryKey] === item[primaryKey];
                 }) !== undefined;
             });
@@ -2398,8 +2425,8 @@ module nts.uk.ui.koExtentions {
                 $grid1.igGrid("dataBind");
             }
 
-            if (!_.isEqual(currentSelected, data.value())) {
-                $grid2.igGrid('option', 'dataSource', data.value().slice());
+            if (!_.isEqual(currentSelected, selectedSources)) {
+                $grid2.igGrid('option', 'dataSource', selectedSources.slice());
                 $grid2.igGrid("dataBind");
             }
         }

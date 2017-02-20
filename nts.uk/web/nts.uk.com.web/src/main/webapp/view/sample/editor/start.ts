@@ -73,8 +73,7 @@ __viewContext.ready(function () {
                 value: ko.observable(12),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3,
-                    decimallength: 2})),
+                    grouplength: 3})),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
