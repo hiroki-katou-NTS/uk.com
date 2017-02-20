@@ -5,6 +5,7 @@ __viewContext.ready(function () {
         employeeeditor: any;
         multilineeditor: any;
         numbereditor: any;
+        numbereditor2: any;
         currencyeditor: any;
         currencyeditor2: any;
         timeeditor: any;
@@ -72,8 +73,20 @@ __viewContext.ready(function () {
                 value: ko.observable(12),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3})),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // NumberEditor
+            self.numbereditor2 = {
+                value: ko.observable(12),
+                constraint: '',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
-                    decimallength: 2})),
+                    decimallength: 2,
+                    symbolChar: '%',
+                    symbolPosition: 'right'})),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)

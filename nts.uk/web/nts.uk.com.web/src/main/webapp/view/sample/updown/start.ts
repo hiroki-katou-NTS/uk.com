@@ -7,6 +7,7 @@ __viewContext.ready(function() {
         currentCodeListSwap: KnockoutObservableArray<any>;
         test: KnockoutObservableArray<any>;
         selectedCode: KnockoutObservableArray<any>;
+        testSingle: KnockoutObservable<any>;
         columns2: KnockoutObservableArray<any>;
 
         constructor() {
@@ -53,6 +54,7 @@ __viewContext.ready(function() {
             this.selectedCode = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);
             this.test = ko.observableArray([]);
+            this.testSingle = ko.observable(null);
         }
         
         remove(){
