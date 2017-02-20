@@ -10,6 +10,8 @@ var cmm001;
                 var self = this;
                 var node;
                 self.init();
+                console.log(self.items());
+                console.log(self.companys());
                 self.currentCode.subscribe(function (newValue) {
                     var dfd = $.Deferred();
                     cmm001.a.service.getAllCompanys().done(function (companies) {
@@ -25,6 +27,7 @@ var cmm001;
                         dfd.resolve();
                     });
                 });
+                console.log(nts.uk.text.allHalfKatakana("ｱｱｱ"));
                 self.checked2.subscribe(function (newValue) {
                     self.columns2()[2]._initiallyHidden = false;
                     self.columns2()[2].hidden = false;
@@ -71,7 +74,7 @@ var cmm001;
                             { headerText: '名称', prop: 'name', width: 200 },
                             { headerText: '廃止', prop: 'description', width: 50, hidden: false }
                         ]);
-                        $(function () {
+                        $(document).ready(function () {
                             $("#single-list").igGrid({
                                 height: 450,
                                 width: 390,
@@ -81,47 +84,47 @@ var cmm001;
                         });
                     }
                 });
-            }
-            ScreenModel.prototype.getObj = function (items, newValue) {
-                var self = this;
-                var node;
-                _.find(items, function (obj) {
-                    if (!node) {
-                        if (obj.code == newValue) {
-                            node = obj;
-                        }
-                    }
+                self.selectedRuleCode1.subscribe(function (value) {
+                    console.log(value);
                 });
-            };
+            }
             ScreenModel.prototype.getDetailCompany = function (items, newValue) {
                 var self = this;
-                var node;
+                var node = new cmm001.a.service.model.CompanyDto();
+                //            $(document).ready(function(data) {
+                //                $("#A_BTN_002").attr('disabled', 'true');
+                //            });
                 _.find(items, function (obj) {
                     if (obj.companyCode.toString() == newValue) {
-                        node = obj;
-                        //                    self.A_INP_002().enable = false;
-                        //                    self.A_INP_002().readonly = true;
-                        //                    console.log(self.A_INP_002().readonly);
-                        //                    console.log(self.A_INP_002().enable);
+                        console.log(obj);
+                        $(document).ready(function (data) {
+                            $("#A_INP_002").attr('disabled', 'true');
+                            $("#A_INP_002").attr('readonly', 'true');
+                        });
+                        node.companyCode = obj.companyCode;
+                        node.companyName = obj.companyName;
+                        node.companyNameAbb = obj.companyNameAbb;
+                        node.companyNameKana = obj.companyNameKana;
+                        node.corporateMyNumber = obj.corporateMyNumber;
+                        node.presidentName = obj.presidentName;
+                        node.presidentJobTitle = obj.presidentJobTitle;
+                        node.address1 = obj.address1;
+                        node.address2 = obj.address2;
+                        node.addressKana1 = obj.addressKana1;
+                        node.addressKana2 = obj.addressKana2;
+                        node.telephoneNo = obj.telephoneNo;
+                        node.faxNo = obj.faxNo;
+                        node.postal = obj.postal;
+                        node.use_Jj_Set = obj.use_Jj_Set;
+                        node.use_kt_Set = obj.use_kt_Set;
+                        node.use_Qy_Set = obj.use_Qy_Set;
+                        node.depWorkPlaceSet = obj.depWorkPlaceSet;
+                        self.selectedRuleCode(obj.use_Jj_Set);
+                        self.selectedRuleCode1(obj.use_kt_Set);
+                        self.selectedRuleCode2(obj.use_Qy_Set);
+                        self.selectedRuleCode3(obj.depWorkPlaceSet);
+                        self.testCompany(ko.mapping.fromJS(node));
                         self.currentCompanyDto(node);
-                        self.txt002(obj.companyCode);
-                        self.txt003(obj.companyName);
-                        self.text004(obj.companyNameKana);
-                        self.text005(obj.companyNameAbb);
-                        self.b_text001(obj.corporateMyNumber);
-                        self.b_text002(obj.presidentName);
-                        self.b_text003(obj.presidentJobTitle);
-                        self.C_text001(obj.corporateMyNumber);
-                        self.C_text002(obj.address1);
-                        self.C_text003(obj.address2);
-                        self.C_text004(obj.addressKana1);
-                        self.C_text005(obj.addressKana2);
-                        self.C_text006(obj.telephoneNo);
-                        self.C_text007(obj.faxNo);
-                        self.D_text001(obj.use_Jj_Set);
-                        self.D_text002(obj.use_kt_Set);
-                        self.D_text003(obj.use_Qy_Set);
-                        self.D_text004(obj.depWorkPlaceSet);
                     }
                 });
                 return node;
@@ -129,21 +132,31 @@ var cmm001;
             ScreenModel.prototype.resetData = function () {
                 var self = this;
                 self.editMode = false;
-                self.currentCode({});
-                self.txt002("");
-                self.txt003("");
-                self.text004("");
-                self.text005("");
-                self.b_text001("");
-                self.b_text002("");
-                self.b_text003("");
-                self.C_text001("");
-                self.C_text002("");
-                self.C_text003("");
-                self.C_text004("");
-                self.C_text005("");
-                self.C_text006("");
-                self.C_text007("");
+                //self.currentCode({});
+                var companyDto = new cmm001.a.service.model.CompanyDto();
+                companyDto.companyCode = "";
+                companyDto.companyName = "";
+                companyDto.companyNameGlobal = "";
+                companyDto.companyNameAbb = "";
+                companyDto.companyNameKana = "";
+                companyDto.corporateMyNumber = "";
+                companyDto.address1 = "";
+                companyDto.address2 = "";
+                companyDto.addressKana1 = "";
+                companyDto.addressKana2 = "";
+                companyDto.depWorkPlaceSet = 0;
+                companyDto.displayAttribute = 0;
+                companyDto.faxNo = "";
+                companyDto.postal = "";
+                companyDto.presidentName = "";
+                companyDto.presidentJobTitle = "";
+                companyDto.telephoneNo = '';
+                companyDto.termBeginMon = 0;
+                companyDto.use_Gr_Set = 0;
+                companyDto.use_kt_Set = 0;
+                companyDto.use_Qy_Set = 0;
+                companyDto.use_Jj_Set = 0;
+                self.testCompany(ko.mapping.fromJS(companyDto));
             };
             ScreenModel.prototype.init = function () {
                 var self = this;
@@ -154,45 +167,7 @@ var cmm001;
                     { headerText: '名称', prop: 'name', width: 200 },
                     { headerText: '廃止', prop: 'description', width: 50, hidden: false }
                 ]);
-                self.currentCode = ko.observable(" ");
-                self.txt002 = ko.observable("");
-                self.A_INP_002 = ko.observable(new TextEditor(self.currentCode, 'CompanyCode', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.txt003 = ko.observable("");
-                self.text004 = ko.observable("");
-                self.text005 = ko.observable("");
-                self.b_text001 = ko.observable("");
-                self.b_text002 = ko.observable("");
-                self.b_text003 = ko.observable("");
-                self.C_text001 = ko.observable("");
-                self.C_text002 = ko.observable("");
-                self.C_text003 = ko.observable("");
-                self.C_text003 = ko.observable("");
-                self.C_text003 = ko.observable("");
-                self.C_text004 = ko.observable("");
-                self.C_text005 = ko.observable("");
-                self.C_text006 = ko.observable("");
-                self.C_text007 = ko.observable("");
-                //self.A_list_a = ko.observable("");
-                self.D_text001 = ko.observable("");
-                self.D_text002 = ko.observable("");
-                self.D_text003 = ko.observable("");
-                self.D_text004 = ko.observable("");
-                // self.A_LIST_A  = ko.observable(new GridList(450,self.items,'code',self.columns2,self.currentCode));
-                self.A_INP_002 = ko.observable(new TextEditor(self.txt002, 'CompanyCode', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.A_INP_003 = ko.observable(new TextEditor(self.txt003, 'CompanyName', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.A_INP_004 = ko.observable(new TextEditor(self.text004, 'CompanyNameAbb', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.A_INP_005 = ko.observable(new TextEditor(self.text005, 'CompanyNameKana', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.B_INP_001 = ko.observable(new TextEditor(self.b_text001, 'CorporateMyNumber', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.B_INP_002 = ko.observable(new TextEditor(self.b_text002, 'PresidentName', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.B_INP_003 = ko.observable(new TextEditor(self.b_text003, 'PresidentJobTitle', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_001 = ko.observable(new TextEditor(self.C_text001, 'Postal', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_002 = ko.observable(new TextEditor(self.C_text002, 'Address1', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_003 = ko.observable(new TextEditor(self.C_text003, 'Address2', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_004 = ko.observable(new TextEditor(self.C_text004, 'AddressKana1', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_005 = ko.observable(new TextEditor(self.C_text005, 'AddressKana2', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_006 = ko.observable(new TextEditor(self.C_text006, 'TelephoneNo', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                self.C_INP_007 = ko.observable(new TextEditor(self.C_text007, 'FaxNo', ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()), true, false));
-                //self.currentCode = ko.observable("");
+                self.currentCode = ko.observable("0001");
                 self.currentCodeList = ko.observableArray(null);
                 //tabpanel
                 self.tabs = ko.observableArray([
@@ -211,8 +186,7 @@ var cmm001;
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
                 ]);
-                console.log(self.roundingRules());
-                self.selectedRuleCode1 = ko.observable(self.roundingRules1()[0].code);
+                self.selectedRuleCode1 = ko.observable("1");
                 self.roundingRules2 = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -223,7 +197,7 @@ var cmm001;
                     new RoundingRule('0', '区別しない')
                 ]);
                 self.selectedRuleCode3 = ko.observable(self.roundingRules3()[0].code);
-                self.selectedRuleCode1 = ko.observable(1);
+                //self.selectedRuleCode1 = ko.observable(1);
                 //COMBOX 
                 self.itemList = ko.observableArray([
                     new Company('1', '1月', ''),
@@ -245,7 +219,47 @@ var cmm001;
                 self.isEditable = ko.observable(true);
                 //check
                 self.checked2 = ko.observable(true);
-                self.currentCompanyDto = ko.observable(new cmm001.a.service.model.CompanyDto());
+                //self.currentCompanyDto = ko.observable(new cmm001.a.service.model.CompanyDto());
+                var companyDto = new cmm001.a.service.model.CompanyDto();
+                //companyDto.companyCode = "0001";
+                var dfd = $.Deferred();
+                cmm001.a.service.getAllCompanys().done(function (companies) {
+                    if (companies.length > 0) {
+                        _.find(companies, function (obj) {
+                            if (companyDto.companyCode == obj.companyCode) {
+                                companyDto = obj;
+                            }
+                        });
+                    }
+                });
+                console.log(companyDto);
+                companyDto.companyCode = "0001";
+                companyDto.companyName = "samsung";
+                companyDto.companyNameGlobal = "1111";
+                companyDto.companyNameAbb = "11111";
+                companyDto.companyNameKana = "heheeh";
+                companyDto.corporateMyNumber = "21111111";
+                companyDto.address1 = "toshiba";
+                companyDto.address2 = "nagoya";
+                companyDto.addressKana1 = "toshiba";
+                companyDto.addressKana2 = "nagoya";
+                companyDto.depWorkPlaceSet = 1;
+                companyDto.displayAttribute = 2;
+                companyDto.faxNo = "11111111";
+                companyDto.postal = "22222222222";
+                companyDto.presidentName = "Lan";
+                companyDto.presidentJobTitle = "Dir";
+                companyDto.telephoneNo = '00285894396';
+                companyDto.termBeginMon = 2;
+                companyDto.use_Gr_Set = 1;
+                companyDto.use_kt_Set = 1;
+                companyDto.use_Qy_Set = 1;
+                companyDto.use_Jj_Set = 1;
+                //            
+                //companyDto.companyName = "s";
+                self.testCompany = ko.observable(ko.mapping.fromJS(companyDto));
+                self.currentCompanyDto = ko.observable(ko.mapping.fromJS(companyDto));
+                self.item1s = ko.observableArray([]);
             };
             // register company information
             //BTN-002 
@@ -253,27 +267,22 @@ var cmm001;
                 var self = this;
                 var dfd = $.Deferred();
                 self.currentCompanyDto().companyCode = $("#A_INP_002").val();
-                self.currentCompanyDto().companyName = $("#A_INP_003").val();
                 var companyNameGlobal;
                 self.currentCompanyDto().address1 = $("#C_INP_002").val();
                 self.currentCompanyDto().address2 = $("#C_INP_003").val();
                 self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
                 self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
                 self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
-                self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
                 self.currentCompanyDto().corporateMyNumber = $("#B_INP_001").val();
-                var depWorkPlaceSet;
-                var displayAttribute;
                 self.currentCompanyDto().faxNo = $("#C_INP_007").val();
                 self.currentCompanyDto().postal = $("#C_INP_001").val();
                 self.currentCompanyDto().presidentName = $("#B_INP_002").val();
                 self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
                 self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
                 var termBeginMon;
-                var use_Gr_Set;
-                var use_kt_Set;
-                var use_Qy_Set;
-                var use_Jj_Set;
+                self.currentCompanyDto().use_kt_Set = self.selectedRuleCode1();
+                self.currentCompanyDto().use_Qy_Set = self.selectedRuleCode2();
+                self.currentCompanyDto().depWorkPlaceSet = self.selectedRuleCode3();
                 var use_Ac_Set;
                 var use_Gw_Set;
                 var use_Hc_Set;
@@ -288,22 +297,60 @@ var cmm001;
                 var use_Rs07_Set;
                 var use_Rs08_Set;
                 var use_Rs10_Set;
-                console.log(self.currentCode());
-                console.log(self.currentCompanyDto().companyCode);
-                if (self.currentCompanyDto().companyCode != self.currentCode()) {
-                    cmm001.a.service.addData(self.currentCompanyDto()).done(function () {
-                        self.items.remove(function (item) { return item.code == ""; });
-                        self.items.push(new Company(self.currentCompanyDto().companyCode, self.currentCompanyDto().companyName, ""));
-                        self.items.push(new Company("", "", ""));
-                    });
+                var items;
+                var error;
+                console.log(nts.uk.util.isNullOrUndefined($("#A_INP_003").val()));
+                //console.log(self.currentCompanyDto().companyName);
+                if (nts.uk.text.allHalfKatakana($("#A_INP_004").val()) === true) {
+                    $('#A_INP_004').ntsError('clear');
+                    self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
+                    error = true;
                 }
                 else {
-                    cmm001.a.service.updateData(self.currentCompanyDto()).done(function () {
-                        self.items.remove(function (item) { return item.code === self.currentCode() || item.code == ""; });
-                        self.items.push(new Company(self.currentCompanyDto().companyCode, self.currentCompanyDto().companyName, ""));
-                        self.items.push(new Company("", "", ""));
-                    });
+                    $('#A_INP_004').ntsError('set', 'this text must be half katakana type');
+                    error = false;
                 }
+                if ($("#A_INP_003").val() !== "") {
+                    self.currentCompanyDto().companyName = $("#A_INP_003").val();
+                    error = true;
+                }
+                else {
+                    $("#A_INP_003").ntsError('set', 'this text must be not null');
+                    error = false;
+                }
+                // if(nts.uk.text.)
+                if (self.currentCompanyDto().companyCode != self.currentCode()) {
+                    if (error === true) {
+                        cmm001.a.service.addData(self.currentCompanyDto()).done(function () {
+                            self.start();
+                            self.currentCode("0001");
+                            self.currentCode(self.currentCompanyDto().companyCode);
+                        });
+                        self.currentCode(self.currentCompanyDto().companyCode);
+                    }
+                }
+                else {
+                    if (error == true) {
+                        cmm001.a.service.updateData(self.currentCompanyDto()).done(function () {
+                            self.start();
+                            console.log(self.items());
+                            //self.currentCode("0001");
+                            $(document).ready(function (data) {
+                                $("#A_BTN_002").attr('disabled', 'true');
+                            });
+                        });
+                        self.currentCode(self.currentCompanyDto().companyCode);
+                    }
+                }
+                self.currentCode(self.currentCompanyDto().companyCode);
+            };
+            ScreenModel.prototype.update = function (items, companyCode) {
+                var self = this;
+                _.forEach(items, function (obj) {
+                    if (obj.code === companyCode) {
+                        return _.update(obj, "obj.name", function (companyname) { return companyname = self.currentCompanyDto().companyName; });
+                    }
+                });
             };
             //BTN-003 -Setting cac thong so ban dau
             ScreenModel.prototype.ClickSetting = function () {
@@ -336,6 +383,7 @@ var cmm001;
                     if (companies.length > 0) {
                         self.companys(companies);
                         self.buildGridDataSource(companies);
+                        self.currentCode("0001");
                     }
                     dfd.resolve();
                 });
@@ -343,10 +391,11 @@ var cmm001;
             };
             ScreenModel.prototype.buildGridDataSource = function (items) {
                 var self = this;
+                self.items = ko.observableArray([]);
                 _.forEach(items, function (obj) {
                     self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ""));
                 });
-                self.items().push(new Company("", "", ""));
+                self.currentCode(self.currentCompanyDto().companyCode);
             };
             return ScreenModel;
         }());

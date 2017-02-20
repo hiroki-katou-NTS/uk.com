@@ -7,7 +7,21 @@
 #contents-area {
 	width: 1300px;
 }
-
+#functions-area{
+	height: 50px;
+}
+#A_BTN_001{
+	width: 100px;
+}
+#A_BTN_002{
+	width: 100px;
+}
+#A_BTN_003{
+	width: 200px;
+}
+#A_BTN_004{
+	width: 150px;
+}
 #A_INP_002 {
 	width: 50px;
 	text-align: center;
@@ -32,6 +46,7 @@
 
 .group-button-1 {
 	margin-left: 30px;
+	margin-top: 10px;
 }
 
 .div-table {
@@ -126,14 +141,16 @@ button.search-btn {
 #A_LBL_002 {
 	width: 200px;
 }
-
+/* #A_INP_003{
+	width: 500px !important;
+} */
 #A_INP_004 {
-	width: 500px;
+	width: 360px !important;
 	margin-bottom: 10px;
 }
 
 #A_INP_005 {
-	width: 500px;
+	width:360px !important;
 }
 
 #A_INP_006 {
@@ -160,7 +177,12 @@ button.search-btn {
 }
 
 #C_INP_002 {
-	width: 200px !important;
+	width: 360px !important;
+	margin-bottom: 10px !important;
+	
+} 
+#C_INP_003 {
+	width: 360px !important;
 	margin-bottom: 10px !important;
 	
 } 
@@ -171,9 +193,14 @@ input#C_INP_002.save-error.nts-editor.nts-input {
 } */
 
 #C_INP_004 {
-	width: 200px !important;
+	width: 360px !important;
 	margin-bottom: 10px !important;
 }
+#C_INP_005 {
+	width: 360px !important;
+	margin-bottom: 10px !important;
+	
+} 
 
 #C_BTN_001 {
 	
@@ -207,4 +234,10 @@ input#C_INP_002.save-error.nts-editor.nts-input {
 	margin-left: 10px;
 	margin-top: 6px;
 	height: 25px;
+}
+body > div:nth-child(4){
+	height: 0px;
+	top: 0px;
+	left: 0px;
+	width: 0px;
 }

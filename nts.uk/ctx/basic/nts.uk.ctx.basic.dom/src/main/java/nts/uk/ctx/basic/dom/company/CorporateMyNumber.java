@@ -10,6 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(13)
+@StringCharType(CharType.ALPHA_NUMERIC)
 public class CorporateMyNumber extends StringPrimitiveValue<CorporateMyNumber>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
