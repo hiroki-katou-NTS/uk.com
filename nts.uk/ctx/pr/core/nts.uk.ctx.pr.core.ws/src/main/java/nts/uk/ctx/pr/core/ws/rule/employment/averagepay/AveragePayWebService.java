@@ -1,7 +1,5 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.averagepay;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,8 +8,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.RegisterAveragePayCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.RegisterAveragePayCommandHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.RemoveAveragePayCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.RemoveAveragePayCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.UpdateAveragePayCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.UpdateAveragePayCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.AveragePayFinder;
@@ -21,9 +17,9 @@ import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.dto.AveragePayDto;
  * @author Doan Duy Hung
  *
  */
-@Path("pr/core/avepay")
+@Path("pr/core/averagepay")
 @Produces("application/json")
-public class Qmm018WebService extends WebService {
+public class AveragePayWebService extends WebService {
 	
 	@Inject
 	private RegisterAveragePayCommandHandler registerAveragePayCommandHandler;
@@ -33,9 +29,6 @@ public class Qmm018WebService extends WebService {
 	
 	@Inject
 	private AveragePayFinder averagePayFinder;
-	
-	@Inject
-	private RemoveAveragePayCommandHandler removeAveragePayCommandHandler;
 	
 	@POST
 	@Path("register")
@@ -49,21 +42,9 @@ public class Qmm018WebService extends WebService {
 		this.updateAveragePayCommandHandler.handle(command);
 	}
 	
-	/*@POST
-	@Path("find")
-	public AvePayDto find() {
-		return this.avePayFinder.find();
-	}*/
-	
 	@POST
-	@Path("findAll")
-	public List<AveragePayDto> findAll() {
-		return this.averagePayFinder.findAll();
-	}
-	
-	@POST
-	@Path("remove")
-	public void remove(RemoveAveragePayCommand command) {
-		this.removeAveragePayCommandHandler.handle(command);
+	@Path("findByCompanyCode")
+	public AveragePayDto findByCompanyCode() {
+		return this.averagePayFinder.findByCompanyCode();
 	}
 }

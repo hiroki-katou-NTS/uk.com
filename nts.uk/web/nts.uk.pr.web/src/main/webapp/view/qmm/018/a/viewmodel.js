@@ -8,10 +8,9 @@ var qmm018;
                 function ScreenModel() {
                     var self = this;
                     self.averagePay = ko.observable(new AveragePay(1, 1, 0, 1));
-                    self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedItemList1 = ko.observableArray([]);
                     self.selectedItemList2 = ko.observableArray([]);
-                    self.texteditor1 = {
+                    self.texteditor1 = ko.observable({
                         value: ko.computed(function () {
                             var s;
                             ko.utils.arrayForEach(self.selectedItemList1(), function (item) { if (!s) {
@@ -22,8 +21,8 @@ var qmm018;
                             } });
                             return s;
                         })
-                    };
-                    self.texteditor2 = {
+                    });
+                    self.texteditor2 = ko.observable({
                         value: ko.computed(function () {
                             var s;
                             ko.utils.arrayForEach(self.selectedItemList2(), function (item) { if (!s) {
@@ -34,50 +33,59 @@ var qmm018;
                             } });
                             return s;
                         })
-                    };
-                    self.averagePay().roundTimingSet.subscribe(function (value) { self.averagePay().roundTimingSet(value ? 1 : 0); });
+                    });
+                    self.isUpdate = false;
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm018.a.service.getPaymentDateProcessingList().done(function (data) {
+                    qmm018.a.service.getAveragePay().done(function (data) {
+                        if (data) {
+                            qmm018.a.service.getItem(1).done(function (data) {
+                                dfd.resolve();
+                            }).fail(function (res) {
+                            });
+                            self.averagePay(new AveragePay(data.roundTimingSet, data.attendDayGettingSet, data.roundDigitSet, data.exceptionPayRate));
+                            self.isUpdate = true;
+                        }
+                        else {
+                            self.averagePay(new AveragePay(0, 0, 0, 0));
+                            self.isUpdate = false;
+                            $("#inp-1").ntsError('set', 'ER007');
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                     });
                     return dfd.promise();
                 };
-                ScreenModel.prototype.saveData = function () {
+                ScreenModel.prototype.saveData = function (isUpdate) {
                     var self = this;
                     var dfd = $.Deferred();
                     var command = ko.mapping.toJS(self.averagePay());
-                    qmm018.a.service.saveData(command).done(function (data) {
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
-                    return dfd.promise();
-                };
-                ScreenModel.prototype.updateData = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    var command = ko.mapping.toJS(self.averagePay());
-                    qmm018.a.service.updateData(command).done(function (data) {
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
-                    return dfd.promise();
-                };
-                ScreenModel.prototype.removeData = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    var command = ko.mapping.toJS(self.averagePay());
-                    qmm018.a.service.removeData(command).done(function (data) {
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
+                    if (isUpdate) {
+                        qmm018.a.service.updateAveragePay(command).done(function (data) {
+                            dfd.resolve();
+                        }).fail(function (res) {
+                        });
+                    }
+                    else {
+                        qmm018.a.service.registerAveragePay(command).done(function (data) {
+                            dfd.resolve();
+                        }).fail(function (res) {
+                        });
+                    }
                     return dfd.promise();
                 };
                 ScreenModel.prototype.openSubWindow = function (n) {
                     var self = this;
+                    if (!n) {
+                        nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1);
+                        nts.uk.ui.windows.setShared('categoryAtr', 1);
+                    }
+                    else {
+                        nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2);
+                        nts.uk.ui.windows.setShared('categoryAtr', 2);
+                    }
                     nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function () {
                         var selectedList = nts.uk.ui.windows.getShared('selectedItemList');
                         if (!n) {
@@ -91,6 +99,10 @@ var qmm018;
                             if (selectedList().length) {
                                 ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList2.push(item); });
                             }
+                            if (!self.selectedItemList2().length)
+                                $("#inp-1").ntsError('set', 'ER007');
+                            else
+                                $("#inp-1").ntsError('clear');
                         }
                     });
                 };
@@ -105,11 +117,23 @@ var qmm018;
                 return ItemModel;
             }());
             var AveragePay = (function () {
-                function AveragePay(roundDigitSet, attendDayGettingSet, roundTimingSet, exceptionPayRate) {
-                    this.roundDigitSet = ko.observable(roundDigitSet);
-                    this.attendDayGettingSet = ko.observable(attendDayGettingSet);
-                    this.roundTimingSet = ko.observable(roundTimingSet);
-                    this.exceptionPayRate = ko.observable(exceptionPayRate);
+                function AveragePay(roundTimingSet, attendDayGettingSet, roundDigitSet, exceptionPayRate) {
+                    var self = this;
+                    self.roundTimingSet = ko.observable(roundTimingSet);
+                    self.attendDayGettingSet = ko.observable(attendDayGettingSet);
+                    self.roundDigitSet = ko.observable(roundDigitSet);
+                    self.exceptionPayRate = ko.observable(exceptionPayRate);
+                    self.oldExceptionPayRate = ko.observable(exceptionPayRate);
+                    self.roundTimingSet.subscribe(function (value) { self.roundTimingSet(value ? 1 : 0); });
+                    self.exceptionPayRate.subscribe(function (value) {
+                        if ($("#inp-2").ntsError("hasError")) {
+                            self.oldExceptionPayRate(exceptionPayRate);
+                        }
+                        else {
+                            exceptionPayRate = value;
+                            self.oldExceptionPayRate(value);
+                        }
+                    });
                 }
                 return AveragePay;
             }());

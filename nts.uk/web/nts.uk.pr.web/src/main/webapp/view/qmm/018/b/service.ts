@@ -1,12 +1,12 @@
 module qmm018.b.service {
     var paths: any = {
-        getItemList: "pr/proto/item/findall/bycategory/0"
+        getItemList: "pr/proto/item/findall/bycategory/{0}"
     }
     
-    export function getItemList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getItemList)
-            .done(function(res: Array<any>) {
+    export function getItemList(categoryAtr): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(nts.uk.text.format(paths.getItemList, categoryAtr))
+            .done(function(res: any) {
                 dfd.resolve(res);
             })
             .fail(function(res) {

@@ -5,14 +5,14 @@ var qmm018;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall",
-                saveData: "pr/core/avepay/register",
-                updateData: "pr/core/avepay/update",
-                removeData: "pr/core/avepay/remove"
+                getAveragePay: "pr/core/averagepay/findByCompanyCode",
+                registerAveragePay: "pr/core/averagepay/register",
+                updateAveragePay: "pr/core/averagepay/update",
+                getItem: "pr/proto/item/findall/bycategory/{0}"
             };
-            function getPaymentDateProcessingList() {
+            function getAveragePay() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+                nts.uk.request.ajax(paths.getAveragePay)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -21,12 +21,11 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
-            function saveData(command) {
+            service.getAveragePay = getAveragePay;
+            function registerAveragePay(command) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.saveData, command)
+                nts.uk.request.ajax(paths.registerAveragePay, command)
                     .done(function (res) {
-                    console.log(res);
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -34,12 +33,11 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.saveData = saveData;
-            function updateData(command) {
+            service.registerAveragePay = registerAveragePay;
+            function updateAveragePay(command) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.updateData, command)
+                nts.uk.request.ajax(paths.updateAveragePay, command)
                     .done(function (res) {
-                    console.log(res);
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -47,12 +45,11 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.updateData = updateData;
-            function removeData(command) {
+            service.updateAveragePay = updateAveragePay;
+            function getItem(categoryAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.removeData, command)
+                nts.uk.request.ajax(nts.uk.text.format(paths.getItem, categoryAtr))
                     .done(function (res) {
-                    console.log(res);
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -60,7 +57,7 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.removeData = removeData;
+            service.getItem = getItem;
         })(service = a.service || (a.service = {}));
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));

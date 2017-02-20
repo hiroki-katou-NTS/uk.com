@@ -7,17 +7,28 @@ var qmm018;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.selectedPaymentDate = ko.observable(null);
                     self.items = ko.observableArray([]);
-                    self.currentCodeListSwap = ko.observableArray([]);
+                    self.currentCodeListSwap = ko.observableArray([new ItemModel("0001", "支給1")]);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm018.b.service.getItemList().done(function (data) {
-                        data.forEach(function (dataItem) {
-                            self.items().push(new ItemModel(dataItem.itemCode, dataItem.itemAbName));
-                        });
+                    qmm018.b.service.getItemList(nts.uk.ui.windows.getShared('categoryAtr')).done(function (data) {
+                        if (!data.length) {
+                            $("#label-span").ntsError('set', 'ER010');
+                        }
+                        else {
+                            data.forEach(function (dataItem) {
+                                self.items().push(new ItemModel(dataItem.itemCode, dataItem.itemAbName));
+                            });
+                            self.currentCodeListSwap(nts.uk.ui.windows.getShared('selectedItemList')());
+                            self.currentCodeListSwap.subscribe(function (value) {
+                                if (!value.length)
+                                    $("#label-span").ntsError('set', 'ER010');
+                                else
+                                    $("#label-span").ntsError('clear');
+                            });
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                     });

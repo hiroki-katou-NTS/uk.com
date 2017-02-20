@@ -5,11 +5,11 @@ var qmm018;
         var service;
         (function (service) {
             var paths = {
-                getItemList: "pr/proto/item/findall/bycategory/0"
+                getItemList: "pr/proto/item/findall/bycategory/{0}"
             };
-            function getItemList() {
+            function getItemList(categoryAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getItemList)
+                nts.uk.request.ajax(nts.uk.text.format(paths.getItemList, categoryAtr))
                     .done(function (res) {
                     dfd.resolve(res);
                 })

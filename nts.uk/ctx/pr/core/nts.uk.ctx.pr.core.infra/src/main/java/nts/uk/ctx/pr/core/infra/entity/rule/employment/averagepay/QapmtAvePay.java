@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="QAPMT_AVE_PAY")
-public class QapmtAvePay extends TableEntity{
+public class QapmtAvePay extends TableEntity {
 	@Id
 	@Column(name="CCD")
 	public String companyCode;

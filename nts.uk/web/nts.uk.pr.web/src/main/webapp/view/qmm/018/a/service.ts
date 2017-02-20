@@ -1,16 +1,15 @@
 module qmm018.a.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall",
-        saveData: "pr/core/avepay/register",
-        updateData: "pr/core/avepay/update",
-        removeData: "pr/core/avepay/remove"
+        getAveragePay: "pr/core/averagepay/findByCompanyCode",
+        registerAveragePay: "pr/core/averagepay/register",
+        updateAveragePay: "pr/core/averagepay/update",
+        getItem: "pr/proto/item/findall/bycategory/{0}"
     }
     
-    
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-            .done(function(res: Array<any>) {
+    export function getAveragePay(): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.getAveragePay)
+            .done(function(res: any) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -19,12 +18,10 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    
-    export function saveData(command): JQueryPromise<any> {
+    export function registerAveragePay(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.saveData, command)
+        nts.uk.request.ajax(paths.registerAveragePay, command)
             .done(function(res: any) {
-                console.log(res);
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -33,11 +30,10 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function updateData(command): JQueryPromise<any> {
+    export function updateAveragePay(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.updateData, command)
+        nts.uk.request.ajax(paths.updateAveragePay, command)
             .done(function(res: any) {
-                console.log(res);
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -46,11 +42,10 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function removeData(command): JQueryPromise<any> {
+    export function getItem(categoryAtr): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.removeData, command)
+        nts.uk.request.ajax(nts.uk.text.format(paths.getItem, categoryAtr))
             .done(function(res: any) {
-                console.log(res);
                 dfd.resolve(res);
             })
             .fail(function(res) {

@@ -18,7 +18,7 @@
 			<ui:define name="content">
 				<div id="contents-area">
 					<div id="center-top">
-						<span>対象労働日数項目を選択してください。</span>
+						<span id="label-span">対象労働日数項目を選択してください。</span>
 					</div>
 					<div id="center-middle">
 						<div id="swap-list" data-bind="ntsSwapList: {
@@ -34,7 +34,7 @@
 					</div>
 					<hr id="division"/>
 					<div id="center-bottom" class="valign-center control-group">
-						<button class="x-large proceed center-e" data-bind="click: saveData">決定</button>
+						<button class="x-large proceed center-e" data-bind="click: saveData, enable: $root.errors.isEmpty">決定</button>
 						<button class="ui-dialog-titlebar-close" data-bind="click: closeWindow">キャンセル</button>
 					</div>
 				</div>

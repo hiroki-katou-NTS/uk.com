@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 
-import java.util.List;
 import java.util.Optional;
 /**
  * 
@@ -12,14 +11,10 @@ public interface AveragePayRepository {
 	 * 
 	 */
 	
-	void add(AveragePay averagePay);
+	void register(AveragePay averagePay);
 	
-	//Optional<AvePay> find(String companyCode);
-	
-	List<AveragePay> findAll();
+	Optional<AveragePay> findByCompanyCode(String companyCode);
 	
 	void update(AveragePay averagePay);
-
-	void remove(AveragePay averagePay);
 	
 }

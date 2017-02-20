@@ -27,35 +27,19 @@ public class AveragePayFinder {
 	 * 
 	 * @return
 	 */
-	/*public AvePayDto find() {
+	
+	public AveragePayDto findByCompanyCode() {
 		String companyCode = AppContexts.user().companyCode();
-		
-		Optional<AvePay> domain = avePayRepository.find(companyCode);
-		
-		if (!domain.isPresent()) {
+		Optional<AveragePay> data= this.averagePayRepository.findByCompanyCode(companyCode);
+		if (!data.isPresent()) {
 			return null;
 		}
-		
-		AvePay avePay = domain.get();
-		
-		return new AvePayDto(
-				avePay.getAttendDayGettingSet().value, 
-				avePay.getExceptionPayRate().v(), 
-				avePay.getRoundDigitSet().value, 
-				avePay.getRoundTimingSet().value); 
-	}*/
-	
-	public List<AveragePayDto> findAll() {
-		return this.averagePayRepository.findAll()
-									.stream()
-									.map(x -> new AveragePayDto(
-											x.getCompanyCode().v(),
-											x.getAttendDayGettingSet().value, 
-											x.getExceptionPayRate().v(), 
-											x.getRoundTimingSet().value, 
-											x.getRoundDigitSet().value))
-									.collect(Collectors.toList());
-		
+		AveragePay x = data.get();
+		return new AveragePayDto(
+				x.getCompanyCode().v(),
+				x.getAttendDayGettingSet().value, 
+				x.getExceptionPayRate().v(), 
+				x.getRoundTimingSet().value, 
+				x.getRoundDigitSet().value);
 	}
-		
 }

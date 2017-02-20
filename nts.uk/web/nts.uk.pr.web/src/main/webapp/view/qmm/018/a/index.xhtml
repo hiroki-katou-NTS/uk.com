@@ -19,7 +19,7 @@
 			
 			<ui:define name="content">
 				<div id="functions-area" class="valign-center control-group">
-					<button class="proceed short-button" data-bind="click : updateData">登録</button>
+					<button class="proceed short-button" data-bind="click: function () { saveData(isUpdate); }, enable: $root.errors.isEmpty">登録</button>
 					<button>マスタ修正ログ</button>
 				</div>
 				<div id="contents-area">
@@ -53,7 +53,7 @@
 							<span class="formula-text">直近3か月間の    B：出勤日数</span>
 						</div>
 						<div class="cell valign-center halign-center">
-							<span style="margin-left: 5px;" class="formula-text">× C: <span class="formula-text" data-bind="text: averagePay().exceptionPayRate"></span>%</span>
+							<span style="margin-left: 5px;" class="formula-text">× C: <span class="formula-text" data-bind="text: averagePay().oldExceptionPayRate "></span>%</span>
 						</div>
 					</div>
 					<div class="table">
@@ -64,19 +64,20 @@
 								<div data-bind="ntsFormLabel: { required: true } ">A：対象賃金項目</div>
 								<button class="short-button" data-bind="click: function () { openSubWindow(0); }">設定</button>
 								<span id="item-inp" data-bind="with: texteditor1">
-									<input id="selected-inp" data-bind="ntsTextEditor: {
+									<input id="inp-3" data-name="対象賃金項目" data-bind="ntsTextEditor: {
 										value: value,
 										constraint: 'ResidenceCode',
 										option: { width: '500px' },
-										required: true }" />
+										required: true, 
+										readonly: true }" />
 								</span>
 							</div>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { required: true } ">B：出勤日数の取得方法</div>
 								<span data-bind="ntsSwitchButton: {
 												options: ko.observableArray([
-									                { code: '1', name: '就業からの連携' },
-									                { code: '2', name: '明細書項目から選択' }
+									                { code: 0, name: '就業からの連携' },
+									                { code: 1, name: '明細書項目から選択' }
 									            ]),
 												optionsValue: 'code',
 												optionsText: 'name',
@@ -86,8 +87,8 @@
 								<span>給与の項目を</span>
 								<div id="combo-box" data-bind="ntsComboBox: {
 															options: ko.observableArray([
-												                { code: '1', name: '足した後' },
-												                { code: '2', name: '足す前' }
+												                { code: 0, name: '足した後' },
+												                { code: 1, name: '足す前' }
 												            ]),
 															optionsValue: 'code',
 															value: averagePay().roundDigitSet,
@@ -99,21 +100,22 @@
 								<span>対象労働日数項目</span>
 								<button class="short-button" data-bind="click: function () { openSubWindow(1); }">設定</button>
 								<span id="item-inp" data-bind="with: texteditor2">
-									<input id="selected-inp" data-bind="ntsTextEditor: {
+									<input id="inp-1" data-name="対象労働日数項目" data-bind="ntsTextEditor: {
 										value: value,
 										constraint: 'ResidenceCode',
 										option: { width: '500px' },
-										required: true }" />
+										required: true,
+										readonly: true }" />
 								</span>
 							</div>
 							<div class="valign-center control-group">
 								<div data-bind="ntsFormLabel: { required: true } ">C：一日当たりに支払われた賃金の</div>
 								<span>
-									<input data-bind="ntsTextEditor: {
+									<input id="inp-2" data-name="例外処理計算率" data-bind="ntsNumberEditor: {
 										value: averagePay().exceptionPayRate,
 										constraint: 'ExceptionPayRate',
-										option: { width: '30px', textalign: 'center' },
-										required: true }, valueUpdate: 'afterkeydown'" />
+										option: { width: '70px', textalign: 'left' },
+										required: true }" />
 								</span>
 								<span>％で計算する</span>
 							</div>
